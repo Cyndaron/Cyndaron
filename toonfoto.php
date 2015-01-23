@@ -75,7 +75,6 @@ if ($fotodir = @opendir("./fotoalbums/$boekid"))
 		{
 			$volgende++;
 		}
-
 	}
 
 	echo '</td></tr></table>';
