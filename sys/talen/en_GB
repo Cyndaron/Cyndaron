@@ -1,0 +1,45 @@
+<?php
+/*
+ * Translation of Cyndaron CMS in British English.
+ */
+// Algemene strings
+// Ja
+$strings[1]='Yes';
+// Nee
+$strings[2]='No';
+// OK
+$strings[3]='OK';
+// Annuleren
+$strings[4]='Cancel';
+// Verzenden
+$strings[5]='Send';
+// Incorrecte parameter
+$strings[6]='Received incorrect parameter.';
+// Fout
+$strings[7]='Error.';
+// Gebruikersbeheer
+// Inloggen
+$strings[101]='Login';
+// Gebruikersnaam
+$strings[102]='Username';
+// Wachtwoord
+$strings[103]='Password';
+// Uitleg loginpagina
+$strings[104]='This page allows site admins to edit the site. If you are not a site admin, you cannot do anything here. You can click any of the links in the menu to leave this page.';
+// Succesvolle login (lang)
+$strings[105]='You are now logged in.';
+// Succesvolle login (kort)
+$strings[106]='Logged in.';
+// Verkeerde gebruikersnaam
+$strings[107]='Incorrect username.';
+// Verkeerd wachtwoord
+$strings[108]='Incorrect password.'
+// Tooncategorie
+// Meer lezen...
+$strings[201]='Read more...';
+// Categorie leeg/bestaat niet
+$strings[202]='Category is either empty or does not exist.';
+// Fotoalbums
+// Geen albums gevonden
+$strings[301]='No photo albums found.';
+?>
