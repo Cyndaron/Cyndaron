@@ -228,7 +228,7 @@ function geefMenu()
 
 function vervangMenu($nieuwmenu)
 {
-	geefEen('DELETE FROM menu;');
+	geefEen('DELETE FROM menu;',array());
 	$teller=1;
 	foreach ($nieuwmenu as $menuitem)
 	{
