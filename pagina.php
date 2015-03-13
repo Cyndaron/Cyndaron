@@ -53,7 +53,6 @@ class Pagina
 
 	public function toonPrepagina()
 	{
-
 		$isadmin=isAdmin();
 		$websitenaam=geefInstelling('websitenaam');
 		$ondertitel=geefInstelling('ondertitel'); ?>
@@ -62,7 +61,7 @@ class Pagina
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title><? echo $this->paginanaam . ' - ' . $websitenaam . '</title>'; 
+	<title><?php echo $this->paginanaam . ' - ' . $websitenaam . '</title>'; 
 		echo '<link href="stijl.css" type="text/css" rel="stylesheet" />';
 		if($favicon=geefInstelling('favicon'))
 		{
@@ -97,12 +96,13 @@ class Pagina
 	
 		</script>
 		</head>
-		<body><?
+		<body><?php
 		if ($this->nietDelen==false)
 		{
 			toonIndienAanwezig(geefInstelling('extra_bodycode'));
 			if (geefInstelling('facebook_share')==1)
-			{?>
+			{
+				echo '
 				<div id="fb-root"></div>
 				<script>(function(d, s, id) {
 				  var js, fjs = d.getElementsByTagName(s)[0];
@@ -110,14 +110,14 @@ class Pagina
 				  js = d.createElement(s); js.id = id;
 				  js.src = "//connect.facebook.net/nl_NL/all.js#xfbml=1";
 				  fjs.parentNode.insertBefore(js, fjs);
-				}(document, 'script', 'facebook-jssdk'));</script>
-			<?}
-		}?>
+				}(document, \'script\', \'facebook-jssdk\'));</script>';
+			}
+		}
+		echo '
 		<div class="paginacontainer">
 		<div class="menucontainer">
 		<div class="menu">
-		<?php
-		echo '<h1>'.$websitenaam.'</h1>'.$ondertitel;
+		<h1>'.$websitenaam.'</h1>'.$ondertitel;
 		if ($ondertitel && $isadmin)
 		{
 			echo ' - ';
