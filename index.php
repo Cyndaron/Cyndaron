@@ -17,7 +17,7 @@ if (geefUnfriendlyUrl($hoofdurl)==geefUnfriendlyUrl($request))
 }
 
 //Hoofdpagina
-if ($request=='/')
+if ($request=='/' || $request==false)
 {
 	verwerkUrl($hoofdurl);
 }
@@ -46,5 +46,3 @@ else
 {
 	header('Location: 404.php');
 }
-#echo "Deze pagina is op dit moment gesloten."
-?>

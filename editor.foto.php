@@ -6,9 +6,7 @@ if ($id)
 	$content=geefEen('SELECT bijschrift FROM bijschriften WHERE hash=?', array($id));
 }
 
-function toonSpecifiekeKnoppen()
-{
-
-}
+// Geen specifieke knoppen
+function toonSpecifiekeKnoppen() {}
 
 ?>
