@@ -136,35 +136,35 @@ foreach($subs->fetchAll() as $sub)
 <form method="post" action="overzicht.php?type=categorie&amp;actie=nieuw">
 Nieuwe categorie: <input name="naam" type="text" /><input type="submit" value="Aanmaken" />
 </form>
-<table><?
+<table><?php
 $categorieen=$connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC;');
 $categorieen->execute();
 foreach($categorieen as $categorie)
 {?>
 	<tr>
-	<td style="vertical-align: bottom;"><?
+	<td style="vertical-align: bottom;"><?php
 		//knop_js('bewerken', 'wissel(true,\'categorie-'.$categorie['id'].'\');', 'Geef deze categorie een andere naam', null, 16);
 		knop('bewerken', 'editor.php?type=categorie&amp;id='.$categorie['id'], 'Deze categorie bewerken', null, 16);
 		knop('verwijderen', 'overzicht.php?type=categorie&amp;actie=verwijderen&amp;id='.$categorie['id'], 'Verwijder deze categorie', null, 16);
 		knop('aanmenutoevoegen', 'overzicht.php?type=categorie&amp;actie=aanmenutoevoegen&amp;id='.$categorie['id'], 'Voeg deze categorie toe aan het menu', null, 16); ?>
 	</td><td style="vertical-align: middle; font-size: 15px;">
-		<form method="post" action="overzicht.php?type=categorie&amp;actie=bewerken&amp;id=<? echo $categorie['id'];?>">
-			<span style="text-align: middle;" id="categorie-<? echo $categorie['id'];?>-oud">
-				<a href="tooncategorie.php?id=<? echo $categorie['id'];?>"><b><? echo $categorie['naam'];?></b></a>
+		<form method="post" action="overzicht.php?type=categorie&amp;actie=bewerken&amp;id=<?php echo $categorie['id'];?>">
+			<span style="text-align: middle;" id="categorie-<?php echo $categorie['id'];?>-oud">
+				<a href="tooncategorie.php?id=<?php echo $categorie['id'];?>"><b><?php echo $categorie['naam'];?></b></a>
 			</span>
-			<span id="categorie-<? echo $categorie['id'];?>-nieuw" style="display:none;">
-				<input name="naam" value="<? echo $categorie['naam'];?>"/>
+			<span id="categorie-<?php echo $categorie['id'];?>-nieuw" style="display:none;">
+				<input name="naam" value="<?php echo $categorie['naam'];?>"/>
 			</span>
 			<span style="vertical-align:bottom;">
-				<button id="categorie-<? echo $categorie['id'];?>-nieuw-opslaan" style="display:none;" class="sys" type="submit">
+				<button id="categorie-<?php echo $categorie['id'];?>-nieuw-opslaan" style="display:none;" class="sys" type="submit">
 					<img alt="" class="sys" style="height:16px; width: 16px;" src="sys/pictogrammen/mono/accepteren.png" />
-				</button><button id="categorie-<? echo $categorie['id'];?>-nieuw-annuleren" style="display:none;" class="sys" type="button" onclick="wissel(false,'categorie-<? echo $categorie['id'];?>');">
+				</button><button id="categorie-<?php echo $categorie['id'];?>-nieuw-annuleren" style="display:none;" class="sys" type="button" onclick="wissel(false,'categorie-<?php echo $categorie['id'];?>');">
 					<img alt="" class="sys" style="height:16px; width: 16px;" src="sys/pictogrammen/mono/annuleren.png" />
 				</button>
 			</span>
 		</form>
 	</td></tr>
-<?}?>
+<?php }?>
 </table><br />
 
 <!-- Fotoboeken -->
@@ -172,37 +172,37 @@ foreach($categorieen as $categorie)
 <form method="post" action="overzicht.php?type=fotoboek&amp;actie=nieuw">
 Nieuw fotoboek: <input name="naam" type="text" /><input type="submit" value="Aanmaken" />
 </form>
-<table><?
+<table><?php
 $fotoboeken=$connectie->prepare('SELECT id,naam FROM fotoboeken ORDER BY id ASC;');
 $fotoboeken->execute();
 foreach ($fotoboeken as $fotoboek)
 {?>
 	<tr>
-	<td style="vertical-align: bottom;"><? /*
-		<button class="sys" onclick="wissel(true,'fotoboek-<? echo $fotoboek['id']?>');">
+	<td style="vertical-align: bottom;"><?php /*
+		<button class="sys" onclick="wissel(true,'fotoboek-<?php echo $fotoboek['id']?>');">
 		<img alt="" class="sys" style="height:16px; width: 16px;" src="sys/pictogrammen/mono/bewerken.png" />
 		</button>*/
 		knop('bewerken', 'editor.php?type=fotoboek&amp;id='.$fotoboek['id'],'Bewerk dit fotoboek',null,16);
 		knop('verwijderen', 'overzicht.php?type=fotoboek&amp;actie=verwijderen&amp;id='.$fotoboek['id'], 'Verwijder dit fotoboek', null, 16);
 		knop('aanmenutoevoegen', 'overzicht.php?type=fotoboek&amp;actie=aanmenutoevoegen&amp;id='.$fotoboek['id'], 'Voeg dit fotoboek toe aan het menu', null, 16); ?>
 	</td><td style="vertical-align: middle; font-size: 15px;">
-		<form method="post" action="overzicht.php?type=fotoboek&amp;actie=bewerken&amp;id=<? echo $fotoboek['id'];?>">
-			<span style="text-align: middle;" id="fotoboek-<? echo $fotoboek['id'];?>-oud">
-				<a href="toonfotoboek.php?id=<? echo $fotoboek['id'];?>"><b><? echo $fotoboek['naam'];?></b></a> (mapnummer <? echo $fotoboek['id'];?>)
+		<form method="post" action="overzicht.php?type=fotoboek&amp;actie=bewerken&amp;id=<?php echo $fotoboek['id'];?>">
+			<span style="text-align: middle;" id="fotoboek-<?php echo $fotoboek['id'];?>-oud">
+				<a href="toonfotoboek.php?id=<?php echo $fotoboek['id'];?>"><b><?php echo $fotoboek['naam'];?></b></a> (mapnummer <?php echo $fotoboek['id'];?>)
 			</span>
-			<span id="fotoboek-<? echo $fotoboek['id'];?>-nieuw" style="display:none;">
-				<input name="naam" value="<? echo $fotoboek['naam'];?>"/>
+			<span id="fotoboek-<?php echo $fotoboek['id'];?>-nieuw" style="display:none;">
+				<input name="naam" value="<?php echo $fotoboek['naam'];?>"/>
 			</span>
 			<span style="vertical-align:bottom;">
-				<button id="fotoboek-<? echo $fotoboek['id'];?>-nieuw-opslaan" style="display:none;" class="sys" type="submit">
+				<button id="fotoboek-<?php echo $fotoboek['id'];?>-nieuw-opslaan" style="display:none;" class="sys" type="submit">
 					<img alt="" class="sys" style="height:16px; width: 16px;" src="sys/pictogrammen/mono/accepteren.png" />
-				</button><button id="fotoboek-<? echo $fotoboek['id'];?>-nieuw-annuleren" style="display:none;" class="sys" type="button" onclick="wissel(false,'fotoboek-<? echo $fotoboek['id'];?>');">
+				</button><button id="fotoboek-<?php echo $fotoboek['id'];?>-nieuw-annuleren" style="display:none;" class="sys" type="button" onclick="wissel(false,'fotoboek-<?php echo $fotoboek['id'];?>');">
 					<img alt="" class="sys" style="height:16px; width: 16px;" src="sys/pictogrammen/mono/annuleren.png" />
 				</button>
 			</span>
 		</form>
 	</td></tr>
-<?}?>
+<?php }?>
 </table><br />
 <h2>Friendly URL's</h2>
 <form method="post" action="overzicht.php?type=friendlyurl&amp;actie=nieuw">
@@ -211,8 +211,8 @@ foreach ($fotoboeken as $fotoboek)
 <tr><td style="vertical-align: bottom;">URL: <input name="naam" type="text" /></td>
 <td style="vertical-align: bottom;">Verwijzingsdoel: <input name="doel" type="text" /></td>
 <td><button class="sys" type="submit">
-<img alt="" class="sys" style="height:16px; width: 16px;" src="<? echo geefPictogram('accepteren') ?>" /></button></td>
-</tr></table></form><?
+<img alt="" class="sys" style="height:16px; width: 16px;" src="<?php echo geefPictogram('accepteren') ?>" /></button></td>
+</tr></table></form><?php
 $friendlyurls=$connectie->prepare('SELECT naam,doel FROM friendlyurls ORDER BY naam ASC;');
 $friendlyurls->execute();
 echo '<br /><table><tr><th></th><th>URL</th><th>Verwijzingsdoel</th></tr>';
