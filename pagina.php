@@ -94,6 +94,13 @@ class Pagina
 		  email();
 		}
 	
+		function geefInstelling(instelling)
+		{
+			if (instelling=='artikelkleur')
+			{
+				return '<?php echo geefInstelling('artikelkleur');?>';
+			}
+		}
 		</script>
 		</head>
 		<body><?php
