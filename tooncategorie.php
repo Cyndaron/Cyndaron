@@ -1,5 +1,4 @@
 <?php
-require_once('functies.lingo.php');
 require_once('functies.db.php');
 require_once('functies.url.php');
 require_once('pagina.php');
@@ -8,7 +7,7 @@ $id=($_GET['id']);
 if ($id!='fotoboeken' && (!is_numeric($id) || $id<0))
 {
 	header("Location: 404.php");
-	die(Lingo::geefTekst(6, 'Incorrecte parameter ontvangen.'));
+	die('Incorrecte parameter ontvangen.');
 }
 if ($id!='fotoboeken')
 {
@@ -33,7 +32,7 @@ if ($id!='fotoboeken')
 		else
 		{
 			echo "\n<p><h3><a href=\"".$link.'">'.$pagina['naam']."</a></h3>\n";	
-			echo woordlimiet($pagina['tekst'], 30, "..."). '<a href="'.$link.'"><br /><i>'.Lingo::geefTekst(201, 'Meer lezen...').'</i></a></p>';
+			echo woordlimiet($pagina['tekst'], 30, "..."). '<a href="'.$link.'"><br /><i>Meer lezen...</i></a></p>';
 		}
 	}
 	if ($alleentitel)

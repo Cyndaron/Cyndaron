@@ -1,6 +1,5 @@
 <?php
 require_once('pagina.php');
-require_once('functies.lingo.php');
 require_once('functies.db.php');
 
 if (!$_SESSION)
@@ -21,18 +20,18 @@ if(!empty($_POST))
 
 		if (!$userdata)
 		{
-			$pagina=new Pagina(Lingo::geefTekst(7, 'Fout'));
+			$pagina=new Pagina('Fout');
 			$pagina->maakNietDelen(true);
 			$pagina->toonPrePagina();
-			echo Lingo::geefTekst(107, 'Verkeerde gebruikersnaam.');
+			echo 'Verkeerde gebruikersnaam.';
 			$pagina->toonPostPagina();
 		}
 		elseif($userdata['wachtwoord']!==$login['wach'])
 		{
-			$pagina=new Pagina(Lingo::geefTekst(7, 'Fout'));
+			$pagina=new Pagina('Fout');
 			$pagina->maakNietDelen(true);
 			$pagina->toonPrePagina();
-			echo Lingo::geefTekst(108, 'Verkeerd wachtwoord.');
+			echo 'Verkeerd wachtwoord.';
 			$pagina->toonPostPagina();
            	}
   		elseif($userdata['wachtwoord']==$login['wach'] && $userdata['gebruikersnaam']==$login['naam'])
@@ -40,7 +39,7 @@ if(!empty($_POST))
 			$_SESSION['naam'] = $login['naam'];
 			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
 			$_SESSION['niveau'] = $userdata['niveau'];
-			nieuweMelding(Lingo::geefTekst(105, 'U bent ingelogd.'));
+			nieuweMelding('U bent ingelogd.');
 			if ($_SESSION['redirect'])
 			{
 				$_SESSION['request']=$_SESSION['redirect'];
@@ -53,7 +52,7 @@ if(!empty($_POST))
 		}
 		else
 		{
-			$pagina=new Pagina(Lingo::geefTekst(7, 'Fout'));
+			$pagina=new Pagina('Fout');
 			$pagina->maakNietDelen(true);
 			$pagina->toonPrePagina();
 			echo 'Er is een fout opgetreden.';
@@ -62,10 +61,10 @@ if(!empty($_POST))
     	}
 	else
 	{
-		$pagina=new Pagina(Lingo::geefTekst(7, 'Fout'));
+		$pagina=new Pagina('Fout');
 		$pagina->maakNietDelen(true);
 		$pagina->toonPrePagina();
-		echo Lingo::geefTekst(107, 'Verkeerde gebruikersnaam.');
+		echo 'Verkeerde gebruikersnaam.';
 		$pagina->toonPostPagina();
 	}
 }
@@ -73,15 +72,15 @@ else
 {
 	if (!$_SESSION['redirect'])
 		$_SESSION['redirect']=geefReferrerVeilig();
-	$pagina=new Pagina(Lingo::geefTekst(101, 'Inloggen'));
+	$pagina=new Pagina('Inloggen');
 	$pagina->maakNietDelen(true);
 	$pagina->toonPrePagina();
 	echo '
 <form method="post" action="#">
-<p>'.Lingo::geefTekst(104, 'Dit is bedoeld voor beheerders om wijzigingen aan de pagina aan te brengen. Als u hier toevallig terecht bent gekomen kunt u hier niets doen. U kunt dan klikken op &eacute;&eacute;n van de onderdelen in het menu.').'</p>
-<p>'.Lingo::geefTekst(102, 'Gebruikersnaam').':<br /><input type="text" name="login_naam" maxlength="20" /></p>
-<p>'.Lingo::geefTekst(103, 'Wachtwoord').':<br /><input type="password" name="login_wach" maxlength="20" /></p>
-<p><input type="submit" name="submit" value="'.Lingo::geefTekst(101, 'Inloggen').'" /></p>
+<p>Dit is bedoeld voor beheerders om wijzigingen aan de pagina aan te brengen. Als u hier toevallig terecht bent gekomen kunt u hier niets doen. U kunt dan klikken op &eacute;&eacute;n van de onderdelen in het menu.</p>
+<p>Gebruikersnaam:<br /><input type="text" name="login_naam" maxlength="20" /></p>
+<p>Wachtwoord:<br /><input type="password" name="login_wach" maxlength="20" /></p>
+<p><input type="submit" name="submit" value="Inloggen" /></p>
 </form>
 ';
 	$pagina->toonPostPagina();
