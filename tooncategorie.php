@@ -32,7 +32,7 @@ if ($id!='fotoboeken')
 		else
 		{
 			echo "\n<p><h3><a href=\"".$link.'">'.$pagina['naam']."</a></h3>\n";	
-			echo woordlimiet($pagina['tekst'], 30, "..."). '<a href="'.$link.'"><br /><i>Meer lezen...</i></a></p>';
+			echo woordlimiet(trim($pagina['tekst']), 30, "..."). '<a href="'.$link.'"><br /><i>Meer lezen...</i></a></p>';
 		}
 	}
 	if ($alleentitel)
