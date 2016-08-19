@@ -29,7 +29,7 @@ function geefInstelling($naam)
 	$connectie=newPDO();
 	$setting=$connectie->prepare('SELECT waarde FROM instellingen WHERE naam= ?');
 	$setting->execute(array($naam));
-	return htmlentities($setting->fetchColumn(),null,'UTF-8');
+	return htmlentities($setting->fetchColumn(), ENT_COMPAT | ENT_XHTML,'UTF-8');
 }
 function maakInstelling($naam, $waarde)
 {
