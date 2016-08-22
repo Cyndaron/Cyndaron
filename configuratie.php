@@ -40,16 +40,17 @@ $pagina->toonPrePagina();
     <form method="post" action="configuratie.php">
         <table>
 <?php
-echo '<tr><td>Naam website:</td><td><input type="text" name="websitenaam" value="' . geefInstelling('websitenaam') . '" /></td></tr>';
-echo '<tr><td>Ondertitel:</td><td><input type="text" name="ondertitel" value="' . geefInstelling('ondertitel') . '" /></td></tr>';
-echo '<tr><td>Paneel:</td><td><input type="text" name="paneel" value="' . geefInstelling('paneel') . '" /></td></tr>';
-echo '<tr><td>Websitepictogram:</td><td><input type="text" name="favicon" value="' . geefInstelling('favicon') . '" /></td></tr>';
-echo '<tr><td>Achtergrondkleur hele pagina:</td><td><input type="text" name="achtergrondkleur" value="' . geefInstelling('achtergrondkleur') . '" /></td></tr>';
-echo '<tr><td>Achtergrondkleur menu:</td><td><input type="text" name="menukleur" value="' . geefInstelling('menukleur') . '" /></td></tr>';
-echo '<tr><td>Achtergrondafbeelding menu:</td><td><input type="text" name="menuachtergrond" value="' . geefInstelling('menuachtergrond') . '" /></td></tr>';
-echo '<tr><td>Achtergrondkleur artikel:</td><td><input type="text" name="artikelkleur" value="' . geefInstelling('artikelkleur') . '" /></td></tr>';
-if (geefInstelling('facebook_share') == 1)
-    $fbselected = ' checked="checked"';
+echo '<tr><td>Naam website:</td><td><input type="text" name="websitenaam" value="' . geefInstelling('websitenaam', TRUE) . '" /></td></tr>';
+echo '<tr><td>Ondertitel:</td><td><input type="text" name="ondertitel" value="' . geefInstelling('ondertitel', TRUE) . '" /></td></tr>';
+echo '<tr><td>Paneel:</td><td><input type="text" name="paneel" value="' . geefInstelling('paneel', TRUE) . '" /></td></tr>';
+echo '<tr><td>Websitepictogram:</td><td><input type="text" name="favicon" value="' . geefInstelling('favicon', TRUE) . '" /></td></tr>';
+echo '<tr><td>Achtergrondkleur hele pagina:</td><td><input type="text" name="achtergrondkleur" value="' . geefInstelling('achtergrondkleur', TRUE) . '" /></td></tr>';
+echo '<tr><td>Achtergrondkleur menu:</td><td><input type="text" name="menukleur" value="' . geefInstelling('menukleur', TRUE) . '" /></td></tr>';
+echo '<tr><td>Achtergrondafbeelding menu:</td><td><input type="text" name="menuachtergrond" value="' . geefInstelling('menuachtergrond', TRUE) . '" /></td></tr>';
+echo '<tr><td>Achtergrondkleur artikel:</td><td><input type="text" name="artikelkleur" value="' . geefInstelling('artikelkleur', TRUE) . '" /></td></tr>';
+
+$fbselected = (geefInstelling('facebook_share') == 1) ? ' checked="checked"' : '';
+
 echo '<tr><td>Facebookintegratie:</td><td><input type="checkbox" name="facebook_share" value="1"' . $fbselected . ' /></td></tr>';
 echo '<tr><td>Standaardcategorie:</td><td><select name="standaardcategorie">';
 echo '<option value="0"';

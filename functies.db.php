@@ -26,11 +26,14 @@ function maakEen($query, $vars)
     return $connectie->lastInsertId();
 }
 
-function geefInstelling($naam)
+function geefInstelling($naam, $escape = FALSE)
 {
     $connectie = newPDO();
     $setting = $connectie->prepare('SELECT waarde FROM instellingen WHERE naam= ?');
     $setting->execute(array($naam));
+    if (!$escape)
+        return $setting->fetchColumn();
+
     return htmlentities($setting->fetchColumn(), ENT_COMPAT | ENT_HTML5, 'UTF-8');
 }
 
