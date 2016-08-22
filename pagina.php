@@ -5,12 +5,12 @@ require_once('functies.pagina.php');
 require_once('functies.gebruikers.php');
 // Verwijs oude URLs door
 
-if ($_GET['friendlyurls']!==true && $url=geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
+if (!empty($_GET['friendlyurls'])  && $url=geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
 {
 	header('Location: '.$url);
 }
 
-if (!$_SESSION)
+if (empty($_SESSION))
 {
 	session_start();
 }
@@ -104,10 +104,14 @@ class Pagina
 		{
 			echo ' - ';
 		}
-		toonIndienAanwezigEnAdmin('Ingelogd als '.$_SESSION['naam'].' - <a href="logoff.php">Uitloggen</a>');
-		toonIndienAanwezigEnAdmin(knopcode('instellingen.png', 'configuratie.php','Instellingen aanpassen'),' ','');
-		toonIndienAanwezigEnAdmin(knopcode('lijst.png', 'overzicht.php','Paginaoverzicht'),' ','');
-		toonIndienAanwezigEnAdmin(knopcode('nieuw', "editor.php?type=sub", 'Nieuwe sub aanmaken'),' ','');
+
+        if (!empty($_SESSION) && !empty($_SESSION['naam']))
+        {
+            toonIndienAanwezigEnAdmin('Ingelogd als '.$_SESSION['naam'].' - <a href="logoff.php">Uitloggen</a>');
+            toonIndienAanwezigEnAdmin(knopcode('instellingen.png', 'configuratie.php','Instellingen aanpassen'),' ','');
+            toonIndienAanwezigEnAdmin(knopcode('lijst.png', 'overzicht.php','Paginaoverzicht'),' ','');
+            toonIndienAanwezigEnAdmin(knopcode('nieuw', "editor.php?type=sub", 'Nieuwe sub aanmaken'),' ','');
+        }
 
 		echo '<div class="dottop"><ul class="menulijst">';
         $menuarray = geefMenu();

@@ -251,3 +251,42 @@ function voegToeAanMenu($link, $alias = "")
     $teller = geefEen('SELECT MAX(volgorde) FROM menu;', array()) + 1;
     geefEen('INSERT INTO menu(volgorde,link,alias) VALUES(?,?,?);', array($teller, $link, $alias));
 }
+
+function parseTextForInlineImages($text)
+{
+    return preg_replace_callback('/src="(data\:)(.*)"/', 'extractImages', $text);
+}
+
+function extractImages($matches)
+{
+    $data = $matches[0];
+    $type = explode(';', $matches[1])[0];
+
+    switch($type)
+    {
+        case 'image/gif':
+            $extensie = 'gif';
+            break;
+        case 'image/jpeg':
+            $extensie = 'jpg';
+            break;
+        case 'image/png':
+            $extensie = 'png';
+            break;
+        case 'image/bmp':
+            $extensie = 'bmp';
+            break;
+        default:
+            return $matches[0];
+    }
+
+    $source = fopen($data, 'r');
+    $destination = fopen('image.' . $extensie, 'w');
+
+    stream_copy_to_stream($source, $destination);
+
+    fclose($source);
+    fclose($destination);
+
+    return $destination;
+}

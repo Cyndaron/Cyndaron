@@ -13,7 +13,7 @@ if (!is_numeric($subid) || $subid <= 0)
 }
 $subnaam = geefEen('SELECT naam FROM subs WHERE id=?', array($subid));
 $reactiesaan = geefEen('SELECT reacties_aan FROM subs WHERE id=?', array($subid));
-$referrer = htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8');
+$referrer = htmlentities(@$_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8');
 if ($reactiesaan && !empty($_POST))
 {
     $auteur = $_POST['auteur'];
@@ -39,12 +39,14 @@ echo geefEen('SELECT tekst FROM subs WHERE id=?', array($subid));
 
 $reacties = $connectie->prepare("SELECT *,DATE_FORMAT(datum, '%d-%m-%Y') AS rdatum,DATE_FORMAT(datum, '%H:%i') AS rtijd FROM reacties WHERE subid=? ORDER BY datum ASC");
 $reacties->execute(array($subid));
+$reactiesaanwezig = FALSE;
+
 foreach ($reacties->fetchAll() as $reactie)
 {
     echo '<div class="reactiecontainer">';
     echo "\nReactie van <strong>" . $reactie['auteur'] . "</strong> op " . $reactie['rdatum'] . " om " . $reactie['rtijd'] . ":<br />\n";
     echo '<div class="reactie">' . $reactie['tekst'] . "</div></div>\n";
-    $reactiesaanwezig = true;
+    $reactiesaanwezig = TRUE;
 }
 if ($reactiesaanwezig || $reactiesaan)
     echo '<div class="reactiecontainer"><br />';

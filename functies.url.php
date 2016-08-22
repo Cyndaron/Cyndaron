@@ -60,17 +60,26 @@ function isDezelfdePagina($url1, $url2)
 
 function geefPostVeilig($var)
 {
-    return htmlentities($_POST[$var], null, 'UTF-8');
+    if (!empty($_POST[$var]))
+        return htmlentities($_POST[$var], null, 'UTF-8');
+
+    return '';
 }
 
 function geefGetVeilig($var)
 {
-    return htmlentities($_GET[$var], null, 'UTF-8');
+    if (!empty($_GET[$var]))
+        return htmlentities($_GET[$var], null, 'UTF-8');
+
+    return '';
 }
 
 function geefReferrerVeilig()
 {
-    return htmlentities($_SERVER['HTTP_REFERER'], null, 'UTF-8');
+    if (!empty($_SERVER['HTTP_REFERER']))
+        return htmlentities($_SERVER['HTTP_REFERER'], null, 'UTF-8');
+
+    return '';
 }
 
 function maakFriendlyUrl($naam, $doel)

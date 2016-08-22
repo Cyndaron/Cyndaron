@@ -2,6 +2,12 @@
 require_once('functies.db.php');
 require_once('functies.url.php');
 
+if (!file_exists(__DIR__ . '/instellingen.php'))
+{
+    echo 'Geen instellingenbestand gevonden!';
+    die();
+}
+
 $request = htmlentities($_GET['pagina'], null, 'UTF-8');
 
 if ((substr($request, 0, 1) == '.' || substr($request, 0, 1) == '/') && $request != '/')
