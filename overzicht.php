@@ -178,10 +178,7 @@ $fotoboeken->execute();
 foreach ($fotoboeken as $fotoboek)
 {?>
 	<tr>
-	<td style="vertical-align: bottom;"><?php /*
-		<button class="sys" onclick="wissel(true,'fotoboek-<?php echo $fotoboek['id']?>');">
-		<img alt="" class="sys" style="height:16px; width: 16px;" src="sys/pictogrammen/mono/bewerken.png" />
-		</button>*/
+	<td style="vertical-align: bottom;"><?php
 		knop('bewerken', 'editor.php?type=fotoboek&amp;id='.$fotoboek['id'],'Bewerk dit fotoboek',null,16);
 		knop('verwijderen', 'overzicht.php?type=fotoboek&amp;actie=verwijderen&amp;id='.$fotoboek['id'], 'Verwijder dit fotoboek', null, 16);
 		knop('aanmenutoevoegen', 'overzicht.php?type=fotoboek&amp;actie=aanmenutoevoegen&amp;id='.$fotoboek['id'], 'Voeg dit fotoboek toe aan het menu', null, 16); ?>
@@ -225,31 +222,6 @@ foreach($friendlyurls as $friendlyurl)
 }
 ?>
 </table>
-<script type="text/javascript">
-/* <![CDATA[ */
-function wissel(bewerken, veld)
-{
-	var oud=document.getElementById(veld+'-oud');
-	var nieuw=document.getElementById(veld+'-nieuw');
-	var nieuwopslaan=document.getElementById(veld+'-nieuw-opslaan');
-	var nieuwannuleren=document.getElementById(veld+'-nieuw-annuleren');
-	if (bewerken==true)
-	{
-		oud.style.display='none';
-		nieuw.style.display='inline';
-		nieuwopslaan.style.display='inline';
-		nieuwannuleren.style.display='inline';
-	}
-	else
-	{
-		oud.style.display='inline';
-		nieuw.style.display='none';
-		nieuwopslaan.style.display='none';
-		nieuwannuleren.style.display='none';
-	}
-}
-/* ]]> */
-</script>
+<script type="text/javascript" src="/sys/js/pagina-overzicht.js"></script>
 <?php
 $pagina->toonPostPagina();
-?>

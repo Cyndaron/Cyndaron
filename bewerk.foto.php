@@ -4,13 +4,13 @@ require_once('functies.pagina.php');
 require_once('functies.gebruikers.php');
 require_once('pagina.php');
 
-$actie=$_GET['actie'];
+$actie = $_GET['actie'];
 
-if ($actie=='bewerken')
+if ($actie == 'bewerken')
 {
-	$hash=$_GET['id'];
-	$bijschrift=$_POST['artikel'];
+    $hash = $_GET['id'];
+    $bijschrift = $_POST['artikel'];
 
-	maakBijschrift($hash, $bijschrift);
-	nieuweMelding('Bijschrift bewerkt.');
+    maakBijschrift($hash, $bijschrift);
+    nieuweMelding('Bijschrift bewerkt.');
 }

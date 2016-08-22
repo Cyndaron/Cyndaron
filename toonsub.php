@@ -3,62 +3,62 @@ require_once('functies.db.php');
 require_once('functies.gebruikers.php');
 require_once('functies.pagina.php');
 require_once('pagina.php');
-$isadmin=isAdmin();
-$connectie=newPDO();
-$subid=$_GET['id'];
-if (!is_numeric($subid) || $subid<=0)
+$isadmin = isAdmin();
+$connectie = newPDO();
+$subid = $_GET['id'];
+if (!is_numeric($subid) || $subid <= 0)
 {
-	header("Location: 404.php");
-	die('Incorrecte parameter ontvangen.');
+    header("Location: 404.php");
+    die('Incorrecte parameter ontvangen.');
 }
-$subnaam=geefEen('SELECT naam FROM subs WHERE id=?', array($subid));
-$reactiesaan=geefEen('SELECT reacties_aan FROM subs WHERE id=?',array($subid));
+$subnaam = geefEen('SELECT naam FROM subs WHERE id=?', array($subid));
+$reactiesaan = geefEen('SELECT reacties_aan FROM subs WHERE id=?', array($subid));
 $referrer = htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8');
 if ($reactiesaan && !empty($_POST))
 {
-	$auteur=$_POST['auteur'];
-	$reactie=$_POST['reactie'];
-	$antispam=strtolower($_POST['antispam']);
-	if ($auteur && $reactie && ($antispam=='acht' || $antispam=='8'))
-	{
-		$datum=date('Y-m-d H:i:s');
-		$prep=$connectie->prepare('INSERT INTO reacties(subid, auteur, tekst, datum) VALUES (?, ?, ?, ?)');
-		$prep->execute(array($subid, $auteur, $reactie, $datum));
-	}
+    $auteur = $_POST['auteur'];
+    $reactie = $_POST['reactie'];
+    $antispam = strtolower($_POST['antispam']);
+    if ($auteur && $reactie && ($antispam == 'acht' || $antispam == '8'))
+    {
+        $datum = date('Y-m-d H:i:s');
+        $prep = $connectie->prepare('INSERT INTO reacties(subid, auteur, tekst, datum) VALUES (?, ?, ?, ?)');
+        $prep->execute(array($subid, $auteur, $reactie, $datum));
+    }
 }
-$controls=knopcode('bewerken', "editor.php?type=sub&amp;id=$subid", "Bewerk deze sub");
-$controls.=knopcode('verwijderen', "overzicht.php?type=sub&amp;actie=verwijderen&amp;id=$subid", "Verwijder deze sub");
+$controls = knopcode('bewerken', "editor.php?type=sub&amp;id=$subid", "Bewerk deze sub");
+$controls .= knopcode('verwijderen', "overzicht.php?type=sub&amp;actie=verwijderen&amp;id=$subid", "Verwijder deze sub");
 if (geefEen('SELECT * FROM vorigesubs WHERE id= ?', array($subid)))
 {
-	$controls.=knopcode('vorigeversie', "editor.php?type=sub&amp;vorigeversie=1&amp;id=$subid", "Vorige versie");
+    $controls .= knopcode('vorigeversie', "editor.php?type=sub&amp;vorigeversie=1&amp;id=$subid", "Vorige versie");
 }
-$pagina=new Pagina($subnaam, $controls);
+$pagina = new Pagina($subnaam, $controls);
 $pagina->toonPrePagina();
 
 echo geefEen('SELECT tekst FROM subs WHERE id=?', array($subid));
 
-$reacties=$connectie->prepare("SELECT *,DATE_FORMAT(datum, '%d-%m-%Y') AS rdatum,DATE_FORMAT(datum, '%H:%i') AS rtijd FROM reacties WHERE subid=? ORDER BY datum ASC");
+$reacties = $connectie->prepare("SELECT *,DATE_FORMAT(datum, '%d-%m-%Y') AS rdatum,DATE_FORMAT(datum, '%H:%i') AS rtijd FROM reacties WHERE subid=? ORDER BY datum ASC");
 $reacties->execute(array($subid));
-foreach($reacties->fetchAll() as $reactie)
+foreach ($reacties->fetchAll() as $reactie)
 {
-	echo '<div class="reactiecontainer">';
-	echo "\nReactie van <strong>".$reactie['auteur']."</strong> op ".$reactie['rdatum']." om ".$reactie['rtijd'].":<br />\n";
-	echo '<div class="reactie">'.$reactie['tekst']."</div></div>\n";
-	$reactiesaanwezig=true;
+    echo '<div class="reactiecontainer">';
+    echo "\nReactie van <strong>" . $reactie['auteur'] . "</strong> op " . $reactie['rdatum'] . " om " . $reactie['rtijd'] . ":<br />\n";
+    echo '<div class="reactie">' . $reactie['tekst'] . "</div></div>\n";
+    $reactiesaanwezig = true;
 }
 if ($reactiesaanwezig || $reactiesaan)
-	echo '<div class="reactiecontainer"><br />';
+    echo '<div class="reactiecontainer"><br />';
 
 if ($reactiesaanwezig)
 {
-	if (!$reactiesaan)
-	{
-		echo 'Op dit bericht kan niet (meer) worden gereageerd.<br />';
-	}
+    if (!$reactiesaan)
+    {
+        echo 'Op dit bericht kan niet (meer) worden gereageerd.<br />';
+    }
 }
 if ($reactiesaan)
 {
-	echo '<h3>Reageren:</h3><form name="reactie" method="post" action="toonsub.php?id='.$subid.'">
+    echo '<h3>Reageren:</h3><form name="reactie" method="post" action="toonsub.php?id=' . $subid . '">
 		<table>
 		<tr><td>Naam:</td><td><input style="width: 300px;" name="auteur" maxlength="100" /></td></tr>
 		<tr><td>Reactie:</td><td><textarea style="width: 300px; height: 80px;" name="reactie"></textarea></td></tr>
@@ -67,7 +67,7 @@ if ($reactiesaan)
 		</table></form>';
 }
 if ($reactiesaanwezig || $reactiesaan)
-	echo '</div>';
+    echo '</div>';
 #echo "<a href=\"$referrer\">Terug</a><br />";
 $pagina->toonPostPagina();
 ?>

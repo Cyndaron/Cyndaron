@@ -6,12 +6,12 @@ require_once('functies.gebruikers.php');
 */
 session_start();
 
-if(!isset($_SESSION['naam']) OR $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
+if (!isset($_SESSION['naam']) OR $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
 {
-	session_destroy(); 
-	session_start();
-	nieuweMelding('U moet inloggen om deze pagina te bekijken');
-	$_SESSION['redirect']=$_SERVER['REQUEST_URI'];
-    	header('Location: login.php');
-	die();
+    session_destroy();
+    session_start();
+    nieuweMelding('U moet inloggen om deze pagina te bekijken');
+    $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
+    header('Location: login.php');
+    die();
 }
