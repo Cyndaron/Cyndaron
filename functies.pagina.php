@@ -2,9 +2,9 @@
 /**
  * Functies voor het beheren van pagina's en elementen erop.
  */
-function nieuweCategorie($naam, $alleentitel = false)
+function nieuweCategorie($naam, $alleentitel = false, $beschrijving = '')
 {
-    return maakEen('INSERT INTO categorieen(`naam`,`alleentitel`) VALUES (?,?);', array($naam, (int)$alleentitel));
+    return maakEen('INSERT INTO categorieen(`naam`,`alleentitel`, `beschrijving`) VALUES (?,?,?);', array($naam, (int)$alleentitel, $beschrijving));
 }
 
 function nieuwFotoalbum($naam, $notities = "")
@@ -259,8 +259,7 @@ function parseTextForInlineImages($text)
 
 function extractImages($matches)
 {
-    $data = $matches[0];
-    $type = explode(';', $matches[1])[0];
+    list($type, $image) = explode(';', $matches[2]);
 
     switch($type)
     {
@@ -277,16 +276,17 @@ function extractImages($matches)
             $extensie = 'bmp';
             break;
         default:
-            return $matches[0];
+            return 'src="' . $matches[0] . '"';
     }
 
-    $source = fopen($data, 'r');
-    $destination = fopen('image.' . $extensie, 'w');
+    $image = str_replace('base64', '', $image);
+    $image = base64_decode(str_replace(' ', '+', $image));
+    $uploadDir = './afb/via-editor/';
+    $destinationFilename = $uploadDir . date('c') . '.' . $extensie;
+    //$oldUmask = umask(0);
+    @mkdir($uploadDir, 0777, TRUE);
+    file_put_contents($destinationFilename, $image);
+    //umask($oldUmask);
 
-    stream_copy_to_stream($source, $destination);
-
-    fclose($source);
-    fclose($destination);
-
-    return $destination;
+    return 'src="' . $destinationFilename . '"';
 }

@@ -10,7 +10,7 @@ if ($actie == 'bewerken')
 {
     $id = $_GET['id'];
     $titel = $_POST['titel'];
-    $beschrijving = $_POST['artikel'];
+    $beschrijving = parseTextForInlineImages($_POST['artikel']);
     $alleentitel = parseCheckBoxAlsBool($_POST['alleentitel']);
 
     if ($id > 0) // Als het id is meegegeven bestond de categorie al.

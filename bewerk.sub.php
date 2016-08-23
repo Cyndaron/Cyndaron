@@ -11,8 +11,8 @@ if ($actie == 'bewerken')
     $id = $_GET['id'];
     $titel = $_POST['titel'];
     $tekst = parseTextForInlineImages($_POST['artikel']);
-    $reacties_aan = $_POST['reacties_aan'];
-    $categorieid = $_POST['categorieid'];
+    $reacties_aan = @$_POST['reacties_aan'];
+    $categorieid = @$_POST['categorieid'];
 
     if (!$categorieid)
         $categorieid = '0';

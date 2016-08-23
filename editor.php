@@ -6,10 +6,7 @@ require_once('pagina.php');
 
 $id = geefGetVeilig('id');
 $vorigeversie = geefGetVeilig('vorigeversie');
-if ($vorigeversie)
-{
-    $vvstring = "vorige";
-}
+$vvstring = $vorigeversie ? 'vorige' : '';
 
 $type = geefGetVeilig('type');
 $heeftTitel = true;
@@ -63,7 +60,7 @@ if ($unfriendlyUrl == $friendlyUrl)
 echo '<table>';
 if ($heeftTitel === true)
     echo '<tr><td class="tablesys">Titel: <input type="text" name="titel" value="' . $titel . '" /></td></tr>';
-$dir = dirname($_SERVER[PHP_SELF]);
+$dir = dirname($_SERVER['PHP_SELF']);
 if ($dir == '/')
     $dir = '';
 echo '<tr><td class="tablesys">Friendly URL: http://' . $_SERVER['HTTP_HOST'] . $dir . '/<input type="text" name="friendlyUrl" value="' . $friendlyUrl . '" /></td></tr>
