@@ -47,9 +47,9 @@ class Pagina
 
 	public function toonPrepagina()
 	{
-		$isadmin=isAdmin();
-		$websitenaam=geefInstelling('websitenaam');
-		$ondertitel=geefInstelling('ondertitel');
+        $isadmin = isAdmin();
+        $websitenaam = geefInstelling('websitenaam');
+        $ondertitel = geefInstelling('ondertitel');
 		?>
 <!DOCTYPE HTML>
 <html>
@@ -58,7 +58,9 @@ class Pagina
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?php echo $this->paginanaam . ' - ' . $websitenaam;?></title>
         <?php
-		echo '<link href="/sys/css/stijl.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="/sys/css/normalize.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="/sys/css/bootstrap.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="/sys/css/cyndaron.css" type="text/css" rel="stylesheet" />';
         echo '<link href="/user.css" type="text/css" rel="stylesheet" />';
         if ($favicon = geefInstelling('favicon'))
         {
@@ -98,56 +100,79 @@ class Pagina
 		echo '
 		<div class="paginacontainer">
 		<div class="menucontainer">
-		<div class="menu">
-		<h1>'.$websitenaam.'</h1>'.$ondertitel;
-		if ($ondertitel && $isadmin)
-		{
-			echo ' - ';
-		}
+		<nav class="menu navbar navbar-inverse">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">' . $websitenaam . '</a>
+            </div>
 
-        if (!empty($_SESSION) && !empty($_SESSION['naam']))
-        {
-            toonIndienAanwezigEnAdmin('Ingelogd als '.$_SESSION['naam'].' - <a href="logoff.php">Uitloggen</a>');
-            toonIndienAanwezigEnAdmin(knopcode('instellingen.png', 'configuratie.php','Instellingen aanpassen'),' ','');
-            toonIndienAanwezigEnAdmin(knopcode('lijst.png', 'overzicht.php','Paginaoverzicht'),' ','');
-            toonIndienAanwezigEnAdmin(knopcode('nieuw', "editor.php?type=sub", 'Nieuwe sub aanmaken'),' ','');
-        }
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">';
 
-		echo '<div class="dottop"><ul class="menulijst">';
         $menuarray = geefMenu();
-		foreach($menuarray as $menuitem)
-		{
+        foreach($menuarray as $menuitem)
+        {
             // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
             if ($menuitem['link'] == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuitem['link'] == './' && substr($_SERVER['REQUEST_URI'], -1) == '/'))
-            {
-                echo '<li>' . $menuitem['naam'] . "</li>\n";
-            }
+                echo '<li class="active">';
             else
-            {
-                echo '<li><a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . "</a></li>\n";
-            }
+                echo '<li>';
+
+            echo '<a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . '</a></li>';
         }
-		toonIndienAanwezigEnGeenAdmin('<li><span class="small"><a href="login.php">L </a></span></li>');
 
-        $paneel = geefInstelling('paneel');
-		echo '</ul></div>';
-		toonIndienAanwezig($paneel, '<div class="dottop">', "</div>\n");
 
-		//Meldingen:
+        echo '</ul>
+              <ul class="nav navbar-nav navbar-right">';
+
+        if (isAdmin())
+        {
+            printf('<p class="navbar-text">Ingelogd als %s</p>', $_SESSION['naam']);
+
+            echo '
+                    <li><a title="Uitloggen" href="logoff.php"><span class="glyphicon glyphicon-log-out"></span></a></li>
+                    <li><a title="Instellingen aanpassen" href="configuratie.php"><span class="glyphicon glyphicon-cog"></span></a></li>
+                    <li><a title="Paginaoverzicht" href="overzicht.php"><span class="glyphicon glyphicon-th-list"></span></a></li>
+                    <li><a title="Nieuwe pagina aanmaken" href="editor.php?type=sub"><span class="glyphicon glyphicon-plus"></span></a></li>
+                ';
+        }
+        else
+        {
+            echo '<li><a title="Inloggen" href="login.php"><span class="glyphicon glyphicon-lock"></span></a></li>';
+        }
+
+        echo '
+              </ul>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>';
+
+
         $meldingen = geefMeldingen();
 		if ($meldingen)
 		{
-			echo '<div style="display: inline-block; border-radius: 3px; padding: 3px; border: 1px dotted #333333; background-color: #EEEEEE;"><ul style="margin: 0px; padding-left: 10px;">';
+            echo '<div class="meldingencontainer">';
+			echo '<div class="meldingen alert alert-info"><ul>';
 
 			foreach ($meldingen as $melding)
 			{
-				echo '<li style="font-size: 11px;">'.$melding.'</li>';
+				echo '<li>'.$melding.'</li>';
 			}
-			echo '</ul></div>';
+
+			echo '</ul></div></div>';
 		}
 
-		echo '</div></div><div class="inhoudcontainer"><div class="inhoud"><div class="paginatitel"><h1 style="display: inline; margin-right:8px;">'.$this->paginanaam.'</h1>';
-		toonIndienAanwezigEnAdmin($this->titelknoppen, '<span style="vertical-align: middle; margin-bottom: 15px; padding-bottom: 15px;">', '</span>');
+		echo '</div><div class="inhoudcontainer"><div class="inhoud"><div class="paginatitel"><h1 style="display: inline; margin-right:8px;">'.$this->paginanaam.'</h1>';
+//		toonIndienAanwezigEnAdmin($this->titelknoppen, '<span style="vertical-align: middle; margin-bottom: 15px; padding-bottom: 15px;">', '</span>');
+        toonIndienAanwezigEnAdmin($this->titelknoppen, '<div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">', '</div>');
 		echo "</div>\n";
 	}
 

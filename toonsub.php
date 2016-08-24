@@ -5,7 +5,7 @@ require_once('functies.pagina.php');
 require_once('pagina.php');
 $isadmin = isAdmin();
 $connectie = newPDO();
-$subid = $_GET['id'];
+$subid = intval($_GET['id']);
 if (!is_numeric($subid) || $subid <= 0)
 {
     header("Location: 404.php");
@@ -26,11 +26,13 @@ if ($reactiesaan && !empty($_POST))
         $prep->execute(array($subid, $auteur, $reactie, $datum));
     }
 }
-$controls = knopcode('bewerken', "editor.php?type=sub&amp;id=$subid", "Bewerk deze sub");
-$controls .= knopcode('verwijderen', "overzicht.php?type=sub&amp;actie=verwijderen&amp;id=$subid", "Verwijder deze sub");
+
+$controls = sprintf('<a href="editor.php?type=sub&amp;id=%d" class="btn btn-default" title="Bewerk deze sub"><span class="glyphicon glyphicon-pencil"></span></a>', $subid);
+$controls .= sprintf('<a href="overzicht.php?type=sub&amp;actie=verwijderen&amp;id=%d" class="btn btn-default" title="Verwijder deze sub"><span class="glyphicon glyphicon-trash"></span></a>', $subid);
+
 if (geefEen('SELECT * FROM vorigesubs WHERE id= ?', array($subid)))
 {
-    $controls .= knopcode('vorigeversie', "editor.php?type=sub&amp;vorigeversie=1&amp;id=$subid", "Vorige versie");
+    $controls .= sprintf('<a href="editor.php?type=sub&amp;vorigeversie=1&amp;id=%d" class="btn btn-default" title="Vorige versie"><span class="glyphicon glyphicon-vorige-versie"></span></a>', $subid);
 }
 $pagina = new Pagina($subnaam, $controls);
 $pagina->toonPrePagina();
@@ -65,7 +67,7 @@ if ($reactiesaan)
 		<tr><td>Naam:</td><td><input style="width: 300px;" name="auteur" maxlength="100" /></td></tr>
 		<tr><td>Reactie:</td><td><textarea style="width: 300px; height: 80px;" name="reactie"></textarea></td></tr>
 		<tr><td>Hoeveel is de<br />wortel uit 64?</td><td><input style="width: 300px;" name="antispam" /></td></tr>
-		<tr><td colspan="100%"><input type="submit" value="Versturen" /></td></tr>
+		<tr><td colspan="100%"><input type="submit" class="btn btn-primary" value="Versturen" /></td></tr>
 		</table></form>';
 }
 if ($reactiesaanwezig || $reactiesaan)

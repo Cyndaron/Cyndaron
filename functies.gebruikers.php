@@ -38,7 +38,7 @@ function nieuweMelding($tekst)
 
 function geefMeldingen()
 {
-    $return = $_SESSION['meldingen'];
+    $return = @$_SESSION['meldingen'];
     $_SESSION['meldingen'] = null;
     return $return;
 

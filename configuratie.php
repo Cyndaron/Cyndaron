@@ -15,7 +15,7 @@ if ($_POST)
     maakInstelling('menuachtergrond', $_POST['menuachtergrond']);
     maakInstelling('artikelkleur', $_POST['artikelkleur']);
     maakInstelling('standaardcategorie', $_POST['standaardcategorie']);
-    maakInstelling('facebook_share', $_POST['facebook_share']);
+    maakInstelling('facebook_share', @$_POST['facebook_share']);
     maakInstelling('extra_bodycode', $_POST['extra_bodycode']);
     $menu = $_POST['menu'];
     $split1 = explode(';', $menu);

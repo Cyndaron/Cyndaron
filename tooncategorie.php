@@ -4,16 +4,21 @@ require_once('functies.url.php');
 require_once('pagina.php');
 $connectie = newPDO();
 $id = ($_GET['id']);
-if ($id != 'fotoboeken' && (!is_numeric($id) || $id < 0))
-{
-    header("Location: 404.php");
-    die('Incorrecte parameter ontvangen.');
-}
+
 if ($id != 'fotoboeken')
 {
+    $id = intval($id);
+
+    if (!is_numeric($id) || $id < 0)
+    {
+        header("Location: 404.php");
+        die('Incorrecte parameter ontvangen.');
+    }
+
     $naam = geefEen("SELECT naam FROM categorieen WHERE id= ?;", array($id));
     $alleentitel = geefEen("SELECT alleentitel FROM categorieen WHERE id=?", array($id));
-    $controls = knopcode('bewerken', "editor.php?type=categorie&amp;id=$id", "Bewerk deze categorie");
+    //$controls = knopcode('bewerken', "editor.php?type=categorie&amp;id=$id", "Bewerk deze categorie");
+    $controls = sprintf('<a href="editor.php?type=categorie&amp;id=%d" class="btn btn-default" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
     $hpagina = new Pagina($naam, $controls);
     $hpagina->toonPrePagina();
     $beschrijving = geefEen('SELECT beschrijving FROM categorieen WHERE id= ?', array($id));

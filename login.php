@@ -70,17 +70,23 @@ if (!empty($_POST))
 }
 else
 {
-    if (!$_SESSION['redirect'])
+    if (empty($_SESSION['redirect']))
         $_SESSION['redirect'] = geefReferrerVeilig();
     $pagina = new Pagina('Inloggen');
     $pagina->maakNietDelen(true);
     $pagina->toonPrePagina();
     echo '
-<form method="post" action="#">
+<form class="form" method="post" action="#">
 <p>Dit is bedoeld voor beheerders om wijzigingen aan de pagina aan te brengen. Als u hier toevallig terecht bent gekomen kunt u hier niets doen. U kunt dan klikken op &eacute;&eacute;n van de onderdelen in het menu.</p>
-<p>Gebruikersnaam:<br /><input type="text" name="login_naam" maxlength="20" /></p>
-<p>Wachtwoord:<br /><input type="password" name="login_wach" maxlength="20" /></p>
-<p><input type="submit" name="submit" value="Inloggen" /></p>
+<div class="form-group">
+    <label for="login_naam">Gebruikersnaam:</label>
+    <input type="text" class="form-control form-control-inline" id="login_naam" name="login_naam" maxlength="20" />
+</div>
+<div class="form-group">
+    <label for="login_wach">Wachtwoord:</label>
+    <input type="password" class="form-control form-control-inline" id="login_wach" name="login_wach" maxlength="20" />
+</div>
+<input type="submit" class="btn btn-primary" name="submit" value="Inloggen" />
 </form>
 ';
     $pagina->toonPostPagina();
