@@ -1,0 +1,12 @@
+Versie 4.1 (in ontwikkeling)
+- Ingebedde afbeeldingen worden uit de tekst geëxtraheerd en in de map afb/via-editor geplaatst
+- Lingo-klasse verwijderd
+- Losse spaties voor en na samenvattingen op categoriepagina's verwijderd
+- Tags zonder spaties ervoor/erna gefixt (nodig voor PHP 7)
+- CKeditor geüpdatet
+- CKeditor neemt achtergrondkleur van de pagina over
+- Klassiek pictogrammenthema verwijderd
+- Codeverbeteringen: verwijderen uitgecommente code, enkele notices verholpen
+- Verbeteringen voor mobiele apparatuur: viewport
+- Instellingen in het configuratiepaneel worden nu geëscapet
+- Inline Javascript is deels verplaatst naar eigen bestanden
