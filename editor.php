@@ -23,7 +23,9 @@ else
 $_SESSION['referrer'] = htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8');
 
 // Zorgen voor juiste codering
-$content = htmlentities($content, ENT_QUOTES, 'UTF-8');
+$content = !empty($content) ? htmlentities($content, ENT_QUOTES, 'UTF-8') : '';
+if (empty($titel))
+    $titel = '';
 
 $pagina = new Pagina('Editor');
 $pagina->maakNietDelen(true);

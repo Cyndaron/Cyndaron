@@ -270,11 +270,15 @@ function geefMenu()
 function vervangMenu($nieuwmenu)
 {
     geefEen('DELETE FROM menu;', array());
-    $teller = 1;
-    foreach ($nieuwmenu as $menuitem)
+
+    if (count($nieuwmenu) > 0)
     {
-        geefEen('INSERT INTO menu(volgorde,link,alias) VALUES(?,?,?);', array($teller, $menuitem['link'], $menuitem['alias']));
-        $teller++;
+        $teller = 1;
+        foreach ($nieuwmenu as $menuitem)
+        {
+            geefEen('INSERT INTO menu(volgorde,link,alias) VALUES(?,?,?);', array($teller, $menuitem['link'], $menuitem['alias']));
+            $teller++;
+        }
     }
 }
 
