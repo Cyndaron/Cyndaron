@@ -2,13 +2,20 @@
 function verwerkUrl($url)
 {
     $url = geefUnfriendlyUrl($url);
-    list($bestand, $rest) = explode('?', $url, 2);
-    $restarray = explode('&', $rest);
-    $_GET = array('friendlyurls' => true);
-    foreach ($restarray as $var)
+    if (strpos($url, '?') !== FALSE)
     {
-        list($key, $value) = explode('=', $var);
-        $_GET[$key] = $value;
+        list($bestand, $rest) = explode('?', $url, 2);
+        $restarray = explode('&', $rest);
+        $_GET = array('friendlyurls' => true);
+        foreach ($restarray as $var)
+        {
+            list($key, $value) = explode('=', $var);
+            $_GET[$key] = $value;
+        }
+    }
+    else
+    {
+        $bestand = $url;
     }
 
     if (file_exists($bestand))

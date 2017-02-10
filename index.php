@@ -8,7 +8,7 @@ if (!file_exists(__DIR__ . '/instellingen.php'))
     die();
 }
 
-$request = htmlentities($_GET['pagina'], null, 'UTF-8');
+$request = !empty($_GET['pagina']) ? htmlentities($_GET['pagina'], null, 'UTF-8') : '/';
 
 if ((substr($request, 0, 1) == '.' || substr($request, 0, 1) == '/') && $request != '/')
 {
@@ -23,7 +23,7 @@ if (geefUnfriendlyUrl($hoofdurl) == geefUnfriendlyUrl($request))
 }
 
 //Hoofdpagina
-if ($request == '/' || $request == false)
+if ($request == '/')
 {
     verwerkUrl($hoofdurl);
 }

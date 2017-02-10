@@ -118,17 +118,19 @@ class Pagina
               <ul class="nav navbar-nav">';
 
         $menuarray = geefMenu();
-        foreach($menuarray as $menuitem)
+        if (count($menuarray) > 0)
         {
-            // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
-            if ($menuitem['link'] == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuitem['link'] == './' && substr($_SERVER['REQUEST_URI'], -1) == '/'))
-                echo '<li class="active">';
-            else
-                echo '<li>';
+            foreach($menuarray as $menuitem)
+            {
+                // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
+                if ($menuitem['link'] == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuitem['link'] == './' && substr($_SERVER['REQUEST_URI'], -1) == '/'))
+                    echo '<li class="active">';
+                else
+                    echo '<li>';
 
-            echo '<a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . '</a></li>';
+                echo '<a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . '</a></li>';
+            }
         }
-
 
         echo '</ul>
               <ul class="nav navbar-nav navbar-right">';
