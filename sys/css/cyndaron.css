@@ -1,0 +1,267 @@
+body
+{
+    overflow-y: scroll;
+}
+
+a:hover
+{
+	color: #FF8C00;
+	text-decoration: underline;
+}
+.paginacontainer
+{
+	border: 0px;
+	margin: auto;
+	height: 96%;
+	width: 90%;
+	overflow: auto;
+}
+.menucontainer
+{
+	overflow: auto;
+	margin-top: 18px;
+	margin-bottom: 18px;
+}
+.menu
+{
+	/*padding: 5px 18px;*/
+	/*text-align:center;*/
+	/*border-radius:4px;*/
+	/*overflow:auto;*/
+}
+.inhoudcontainer
+{
+	overflow:auto;
+	margin-top:18px;
+	margin-bottom:18px;
+}
+.inhoud
+{
+	padding: 13px 18px 13px 18px;
+	/*color: #000044;*/
+	border-radius: 4px;
+	overflow:auto;
+}
+.paginatitel
+{
+	border-bottom: 1px dotted;
+	margin-bottom: 10px;
+}
+h1, h2, h3, h4, h5, h6
+{
+	font-family: Trebuchet MS, Arial, sans-serif !important;
+}
+img:not(.lb-image)
+{
+	border: 0px;
+	padding: 5px 5px 5px 5px;
+}
+img.panel
+{
+	padding: 5px 5px 5px 5px;
+}
+img.sys
+{
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+}
+td
+{
+	/*border: 0px;*/
+	/*vertical-align: top;*/
+}
+
+.uitwerk
+{
+	font-size: 11px;
+	border: 1px solid #DDDDDD;
+	padding: 4px;
+	border-collapse: collapse;
+}
+.uitwerk tr th
+{
+	text-align: left;
+}
+.uitwerk tr td, .uitwerk tr th
+{
+	border: 1px solid #DDDDDD;
+	padding: 3px;
+}
+.small
+{
+	font-size: 10px;
+}
+.u
+{
+	text-decoration: underline;
+}
+h1, h2, h3, h4, h5, h6
+{
+	margin: 0px;
+}
+img.thumb
+{
+	margin: 3px 4px 3px 4px;
+}
+.tablesys
+{
+	border: 0px;
+	background-color: inherit;
+}
+hr
+{
+	height:0px;
+	border-bottom: 0px;
+	border-top: 1px dotted #777777;
+}
+table.metlijnen tr td {
+	border: 1px solid #BBBBBB;
+}
+ul
+{
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+ul.menulijst
+{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+ul.menulijst li
+{
+	font-weight: bold;
+	display: inline;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+ul.zonderbullets, ul.zonderbullets li
+{
+	list-style-type: none;
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+}
+div.center
+{
+	text-align: center;
+}
+.dottop
+{
+	margin: 5px 4px 5px 4px;
+	padding: 4px 4px 1px 4px;
+	border-top: 1px dotted rgba(255,255,255,0.25);
+}
+
+button.sys
+{
+	margin: 0px 0px 0px 0px; 
+	padding: 0px 0px 0px 0px;
+}
+.emailadres {
+  background-color: inherit;
+  color: #00228B;
+}
+
+.hidden {
+  display: none
+}
+
+.reactiecontainer
+{
+	border-top: 1px dotted #000000;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	margin-top: 0px;
+	margin-bottom: 5px;
+}
+.scale
+{
+	max-width:100%; padding:0px;
+}
+
+.form-control-inline
+{
+    width: auto;
+}
+
+.meldingencontainer
+{
+    text-align: center;
+}
+
+.meldingen
+{
+    display: inline-block;
+    /*border-radius: 4px;*/
+    /*padding: 5px;*/
+    /*border: 1px dotted #333333;*/
+    /*background-color: #EEEEEE;*/
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+.meldingen ul
+{
+    margin: 0px;
+    padding-left: 10px;
+}
+
+.meldingen li
+{
+    /*font-size: 11px;*/
+}
+
+.glyphicon-vorige-versie
+{
+    -moz-transform: scale(-1, 1);
+    -webkit-transform: scale(-1, 1);
+    -o-transform: scale(-1, 1);
+    -ms-transform: scale(-1, 1);
+    transform: scale(-1, 1);
+}
+
+.glyphicon-vorige-versie::before {
+    content: "\e095";
+}
+
+.navbar-inverse .navbar-nav > li > a, .navbar-inverse .navbar-brand
+{
+    color: #f5f5f5;
+}
+
+.navbar-inverse .navbar-text
+{
+    color: #dddddd;
+}
+
+.table-inline
+{
+    width: auto;
+}
+
+.table-overzicht td:first-child
+{
+    width: 150px;
+}
+
+.table-overzicht > tbody > tr > td
+{
+    vertical-align: middle;
+}
+
+.navbar-inverse
+{
+	border-color: transparent;
+}
+
+.fotoalbum
+{
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+	flex-wrap: wrap;
+}
+
+.fotobadge
+{
+	text-align: center;
+}

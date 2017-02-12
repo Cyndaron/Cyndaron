@@ -61,6 +61,7 @@ class Pagina
         echo '<link href="/sys/css/normalize.css" type="text/css" rel="stylesheet" />';
         echo '<link href="/sys/css/bootstrap.css" type="text/css" rel="stylesheet" />';
         echo '<link href="/sys/css/cyndaron.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="/sys/css/lightbox.css" type="text/css" rel="stylesheet" />';
         echo '<link href="/user.css" type="text/css" rel="stylesheet" />';
         if ($favicon = geefInstelling('favicon'))
         {
@@ -70,14 +71,15 @@ class Pagina
         ?>
 		<style type="text/css">
             <?php
-            toonIndienAanwezig(geefInstelling('achtergrondkleur'), 'body { background-color: ',";}\n");
+            toonIndienAanwezig(geefInstelling('achtergrondkleur'), 'body, .lightboxOverlay { background-color: ',";}\n");
             toonIndienAanwezig(geefInstelling('menukleur'), '.menu { background-color: ',";}\n");
             toonIndienAanwezig(geefInstelling('menuachtergrond'), '.menu { background-image: url(\'',"');}\n");
             toonIndienAanwezig(geefInstelling('artikelkleur'), '.inhoud { background-color: ',";}\n");
             ?>
         </style>
-        <script type="text/javascript" src="/sys/js/email-antispam.js"></script>
 		<script type="text/javascript">
+		var isAdmin = <?=$isadmin;?>;
+
 		function geefInstelling(instelling)
 		{
 			if (instelling == 'artikelkleur')
@@ -185,6 +187,14 @@ class Pagina
             toonDeelknoppen();
         }
         // Eerste div: inhoud. Tweede div: inhoudcontainer. Derde div: paginacontainer
-        echo "</div></div></div>\n</body>\n</html>";
+        echo '</div></div></div>
+
+        <script type="text/javascript" src="/sys/js/email-antispam.js"></script>
+        <script type="text/javascript" src="/sys/js/jquery-3.1.1.min.js"></script>
+        <script type="text/javascript" src="/sys/js/lightbox.min.js"></script>
+        
+        </body>
+        </html>
+        ';
     }
 }

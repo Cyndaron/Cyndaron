@@ -32,7 +32,7 @@ if ($fotodir = @opendir("./fotoalbums/$boekid"))
     $waregrootte = true;
     $aantal = 0;
 
-    $uitvoer = "";
+    $uitvoer = '<div class="fotoalbum">';
 
     for ($index = 0; $index < $indexCount; $index++)
     {
@@ -45,10 +45,18 @@ if ($fotodir = @opendir("./fotoalbums/$boekid"))
             {
                 $waregrootte = false;
 
-                $uitvoer .= "<a href=\"toonfoto.php?boekid=$boekid&amp;bestandsnr=$index\"><img class=\"thumb\" src=\"fotoalbums/$boekid";
-                $thumbnail = 'fotoalbums/' . $boekid . 'thumbnails/' . $dirArray[$index];
+                $fotoLink = 'fotoalbums/' . $boekid . '/' . $dirArray[$index];
+                $thumbnailLink = 'fotoalbums/' . $boekid . 'thumbnails/' . $dirArray[$index];
+                $hash = md5_file($fotoLink);
+                $dataTitleTag = '';
+                if ($bijschrift = geefEen('SELECT bijschrift FROM bijschriften WHERE hash=?', array($hash)))
+                {
+                    $dataTitleTag = 'data-title="' . $bijschrift . '"';
+                }
 
-                if (file_exists($thumbnail))
+                $uitvoer .= sprintf('<div class="fotobadge"><a href="%s" data-lightbox="%s" %s data-hash="%s"><img class="thumb" src="fotoalbums/%d', $fotoLink, htmlspecialchars($boeknaam), $dataTitleTag, $hash, $boekid);
+
+                if (file_exists($thumbnailLink))
                 {
                     $uitvoer .= 'thumbnails/' . $dirArray[$index] . '"';
                 }
@@ -57,6 +65,11 @@ if ($fotodir = @opendir("./fotoalbums/$boekid"))
                     $uitvoer .= '/' . $dirArray[$index] . '" style="width:270px; height:200px"';
                 }
                 $uitvoer .= " alt=\"" . $dirArray[$index] . "\" /></a>";
+                if (isAdmin())
+                {
+                    $uitvoer .= '<br>' . knopcode('bewerken', 'editor.php?type=foto&amp;id=' . $hash, 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
+                }
+                $uitvoer .= '</div>';
             }
             else
             {
@@ -64,6 +77,7 @@ if ($fotodir = @opendir("./fotoalbums/$boekid"))
             }
         }
     }
+    $uitvoer .= '</div>';
 
     toonIndienAanwezig($notities, '', '');
     if ($aantal == 1)
