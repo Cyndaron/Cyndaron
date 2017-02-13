@@ -99,7 +99,8 @@ if ($actie == 'verwijderen' && $zeker != 1)
 /* Subs */
 echo '<h2>Statische pagina\'s (subs)</h2>';
 
-knop('nieuw', 'editor.php?type=sub', 'Nieuwe sub', 'Nieuwe sub');
+knop('nieuw', 'editor.php?type=sub', 'Nieuwe statische pagina', 'Nieuwe statische pagina');
+echo '<br />';
 
 $subs = $connectie->prepare('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
 $subs->execute();
@@ -149,7 +150,7 @@ foreach ($subsPerCategorie as $categorie => $subs)
         <div class="form-group">
             <label for="naam">Nieuwe categorie:</label> <input class="form-control" id="naam" name="naam" type="text"/>
         </div>
-        <input class="btn btn-default" type="submit" value="Aanmaken"/>
+        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
     </form>
     <br />
     <table class="table table-striped table-bordered table-overzicht"><?php
@@ -173,77 +174,65 @@ foreach ($subsPerCategorie as $categorie => $subs)
 
     <!-- Fotoboeken -->
     <h2>Fotoboeken</h2>
-    <form method="post" action="overzicht.php?type=fotoboek&amp;actie=nieuw">
-        Nieuw fotoboek: <input name="naam" type="text"/><input type="submit" value="Aanmaken"/>
+    <form method="post" action="overzicht.php?type=fotoboek&amp;actie=nieuw" class="form-inline">
+        <div class="form-group">
+            <label for="fobonaam">Nieuw fotoboek:</label> <input id="fobonaam" name="naam" type="text" class="form-control"/><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+        </div>
     </form>
-    <table><?php
+    <br />
+    <table class="table table-striped table-bordered table-overzicht"><?php
         $fotoboeken = $connectie->prepare('SELECT id,naam FROM fotoboeken ORDER BY id ASC;');
         $fotoboeken->execute();
         foreach ($fotoboeken as $fotoboek)
         {
             ?>
             <tr>
-                <td style="vertical-align: bottom;"><?php
+                <td><?php
                     knop('bewerken', 'editor.php?type=fotoboek&amp;id=' . $fotoboek['id'], 'Bewerk dit fotoboek', null, 16);
                     knop('verwijderen', 'overzicht.php?type=fotoboek&amp;actie=verwijderen&amp;id=' . $fotoboek['id'], 'Verwijder dit fotoboek', null, 16);
                     knop('aanmenutoevoegen', 'overzicht.php?type=fotoboek&amp;actie=aanmenutoevoegen&amp;id=' . $fotoboek['id'], 'Voeg dit fotoboek toe aan het menu', null, 16); ?>
                 </td>
-                <td style="vertical-align: middle; font-size: 15px;">
-                    <form method="post"
-                          action="overzicht.php?type=fotoboek&amp;actie=bewerken&amp;id=<?php echo $fotoboek['id']; ?>">
-			<span style="text-align: middle;" id="fotoboek-<?php echo $fotoboek['id']; ?>-oud">
-				<a href="toonfotoboek.php?id=<?php echo $fotoboek['id']; ?>"><b><?php echo $fotoboek['naam']; ?></b></a> (mapnummer <?php echo $fotoboek['id']; ?>
-                )
-			</span>
-			<span id="fotoboek-<?php echo $fotoboek['id']; ?>-nieuw" style="display:none;">
-				<input name="naam" value="<?php echo $fotoboek['naam']; ?>"/>
-			</span>
-			<span style="vertical-align:bottom;">
-				<button id="fotoboek-<?php echo $fotoboek['id']; ?>-nieuw-opslaan" style="display:none;" class="sys"
-                        type="submit">
-                    <img alt="" class="sys" style="height:16px; width: 16px;"
-                         src="sys/pictogrammen/mono/accepteren.png"/>
-                </button><button id="fotoboek-<?php echo $fotoboek['id']; ?>-nieuw-annuleren" style="display:none;"
-                                 class="sys" type="button"
-                                 onclick="wissel(false,'fotoboek-<?php echo $fotoboek['id']; ?>');">
-                    <img alt="" class="sys" style="height:16px; width: 16px;"
-                         src="sys/pictogrammen/mono/annuleren.png"/>
-                </button>
-			</span>
-                    </form>
+                <td>
+                    <a href="toonfotoboek.php?id=<?php echo $fotoboek['id']; ?>"><b><?php echo $fotoboek['naam']; ?></b></a> (mapnummer <?php echo $fotoboek['id']; ?>)
                 </td>
             </tr>
         <?php } ?>
     </table><br/>
     <h2>Friendly URL's</h2>
-    <form method="post" action="overzicht.php?type=friendlyurl&amp;actie=nieuw">
-        <table>
+    <br/>
+
+    <form method="post" action="overzicht.php?type=friendlyurl&amp;actie=nieuw" class="form-inline">
+
+        <table class="table table-striped table-bordered table-overzicht">
             <tr>
-                <td colspan="100%">Nieuwe friendly URL:</td>
+                <th></th>
+                <th>URL</th>
+                <th>Verwijzingsdoel</th>
             </tr>
             <tr>
-                <td style="vertical-align: bottom;">URL: <input name="naam" type="text"/></td>
-                <td style="vertical-align: bottom;">Verwijzingsdoel: <input name="doel" type="text"/></td>
+                <td>Nieuwe friendly URL:</td>
                 <td>
-                    <button class="sys" type="submit">
-                        <img alt="" class="sys" style="height:16px; width: 16px;"
-                             src="<?php echo geefPictogram('accepteren') ?>"/></button>
+                    <input id="furl-naam" name="naam" type="text" placeholder="URL" class="form-control form-control-inline"/></td>
+                <td>
+                    <input id="furl-doel" name="doel" type="text" placeholder="Verwijzingsdoel" class="form-control form-control-inline"/>
+                    <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
                 </td>
             </tr>
+            <?php
+            $friendlyurls = $connectie->prepare('SELECT naam,doel FROM friendlyurls ORDER BY naam ASC;');
+            $friendlyurls->execute();
+
+            foreach ($friendlyurls as $friendlyurl)
+            {
+                echo '<tr><td>';
+                knop('verwijderen', 'overzicht.php?type=friendlyurl&amp;actie=verwijderen&amp;naam=' . $friendlyurl['naam'], 'Verwijder deze friendly URL', null, 16);
+                knop('aanmenutoevoegen', 'overzicht.php?type=friendlyurl&amp;actie=aanmenutoevoegen&amp;naam=' . $friendlyurl['naam'], 'Voeg deze friendly url toe aan het menu', null, 16);
+                echo '</td><td><strong>' . $friendlyurl['naam'] . '</strong></td><td>' . $friendlyurl['doel'] . '</td></tr>';
+            }
+        ?>
         </table>
-    </form><?php
-$friendlyurls = $connectie->prepare('SELECT naam,doel FROM friendlyurls ORDER BY naam ASC;');
-$friendlyurls->execute();
-echo '<br /><table><tr><th></th><th>URL</th><th>Verwijzingsdoel</th></tr>';
-foreach ($friendlyurls as $friendlyurl)
-{
-    echo '<tr><td>';
-    knop('verwijderen', 'overzicht.php?type=friendlyurl&amp;actie=verwijderen&amp;naam=' . $friendlyurl['naam'], 'Verwijder deze friendly URL', null, 16);
-    knop('aanmenutoevoegen', 'overzicht.php?type=friendlyurl&amp;actie=aanmenutoevoegen&amp;naam=' . $friendlyurl['naam'], 'Voeg deze friendly url toe aan het menu', null, 16);
-    echo '</td><td style="vertical-align: middle;"><strong>' . $friendlyurl['naam'] . '</strong></td><td style="vertical-align: middle;">' . $friendlyurl['doel'] . '</td></tr>';
-}
-?>
-    </table>
-    <script type="text/javascript" src="/sys/js/pagina-overzicht.js"></script>
+    </form>
+
+<script type="text/javascript" src="/sys/js/pagina-overzicht.js"></script>
 <?php
 $pagina->toonPostPagina();

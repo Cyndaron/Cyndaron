@@ -145,7 +145,7 @@ class Pagina
                     <li><a title="Uitloggen" href="logoff.php"><span class="glyphicon glyphicon-log-out"></span></a></li>
                     <li><a title="Instellingen aanpassen" href="configuratie.php"><span class="glyphicon glyphicon-cog"></span></a></li>
                     <li><a title="Paginaoverzicht" href="overzicht.php"><span class="glyphicon glyphicon-th-list"></span></a></li>
-                    <li><a title="Nieuwe pagina aanmaken" href="editor.php?type=sub"><span class="glyphicon glyphicon-plus"></span></a></li>
+                    <li><a title="Nieuwe statische pagina aanmaken" href="editor.php?type=sub"><span class="glyphicon glyphicon-plus"></span></a></li>
                 ';
         }
         else

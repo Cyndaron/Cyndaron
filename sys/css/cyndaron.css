@@ -151,11 +151,6 @@ div.center
 	border-top: 1px dotted rgba(255,255,255,0.25);
 }
 
-button.sys
-{
-	margin: 0px 0px 0px 0px; 
-	padding: 0px 0px 0px 0px;
-}
 .emailadres {
   background-color: inherit;
   color: #00228B;
@@ -180,6 +175,7 @@ button.sys
 
 .form-control-inline
 {
+    display: inline-block;
     width: auto;
 }
 
