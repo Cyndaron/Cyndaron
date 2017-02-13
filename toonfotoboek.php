@@ -10,7 +10,7 @@ if (!is_numeric($boekid) || $boekid < 1)
 }
 $boeknaam = geefEen('SELECT naam FROM fotoboeken WHERE id=?', array($boekid));
 $notities = geefEen('SELECT notities FROM fotoboeken WHERE id=?', array($boekid));
-$_SESSION['referrer'] = htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8');
+$_SESSION['referrer'] = !empty($_SERVER['HTTP_REFERER']) ? htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '';
 
 $controls = knopcode('bewerken', 'editor.php?type=fotoboek&amp;id=' . $boekid, 'Dit fotoboek bewerken');
 $pagina = new Pagina($boeknaam, $controls);
