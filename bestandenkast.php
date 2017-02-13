@@ -38,5 +38,3 @@ if ($bestandendir = @opendir("./bestandenkast"))
     echo '</ul>';
 }
 $pagina->toonPostPagina();
-
-?>
