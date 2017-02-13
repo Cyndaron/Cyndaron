@@ -63,8 +63,12 @@ foreach($prep->fetchAll() as $kaartsoort)
 <div <?=$concert_info[0]['bezorgen_verplicht'] ? 'style="display:none"' : '';?>><input id="bezorgen" name="bezorgen" onclick="javascript:berekenTotaalprijs();" type="checkbox" value="1"/><label for="bezorgen">Bezorg mijn kaarten thuis (meerprijs van <?php echo naarEuro($concert_info[0]['verzendkosten']);?> per kaart)</label></div>
 
 <?php if ($concert_info[0]['heeft_gereserveerde_plaatsen']): ?>
-<input id="gereserveerde_plaatsen" name="gereserveerde_plaatsen" onclick="javascript:berekenTotaalprijs();" type="checkbox" value="1" /><label for="gereserveerde_plaatsen">Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs van <?php echo naarEuro($concert_info[0]['toeslag_gereserveerde_plaats']);?> per kaart)</label>
-<br />
+    <?php if ($concert_info[0]['gereserveerde_plaatsen_uitverkocht']): ?>
+        U kunt voor dit concert nog kaarten voor vrije plaatsen kopen. De gereserveerde plaatsen zijn inmiddels uitverkocht.
+    <?php else: ?>
+        <input id="gereserveerde_plaatsen" name="gereserveerde_plaatsen" onclick="javascript:berekenTotaalprijs();" type="checkbox" value="1" /><label for="gereserveerde_plaatsen">Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs van <?php echo naarEuro($concert_info[0]['toeslag_gereserveerde_plaats']);?> per kaart)</label>
+    <?php endif; ?>
+    <br />
 <?php else: ?>
 <input id="gereserveerde_plaatsen" type="hidden" value="0">
 <?php endif; ?>
