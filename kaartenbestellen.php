@@ -64,6 +64,7 @@ foreach($prep->fetchAll() as $kaartsoort)
 
 <?php if ($concert_info[0]['heeft_gereserveerde_plaatsen']): ?>
     <?php if ($concert_info[0]['gereserveerde_plaatsen_uitverkocht']): ?>
+        <input id="gereserveerde_plaatsen" name="gereserveerde_plaatsen" style="display:none;" type="checkbox" value="1" />
         U kunt voor dit concert nog kaarten voor vrije plaatsen kopen. De gereserveerde plaatsen zijn inmiddels uitverkocht.
     <?php else: ?>
         <input id="gereserveerde_plaatsen" name="gereserveerde_plaatsen" onclick="javascript:berekenTotaalprijs();" type="checkbox" value="1" /><label for="gereserveerde_plaatsen">Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs van <?php echo naarEuro($concert_info[0]['toeslag_gereserveerde_plaats']);?> per kaart)</label>
