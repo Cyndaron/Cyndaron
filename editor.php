@@ -34,6 +34,7 @@ if ($dir == '/')
 
 $pagina = new Pagina('Editor');
 $pagina->maakNietDelen(true);
+$pagina->extraScripts = array_merge($pagina->extraScripts, ["ckeditor/ckeditor.js", "sys/js/editor.js"]);
 $pagina->toonPrePagina();
 
 $unfriendlyUrl = 'toon' . $type . '.php?id=' . $id;
@@ -43,8 +44,6 @@ if ($unfriendlyUrl == $friendlyUrl)
     $friendlyUrl = "";
 }
 ?>
-<script src="ckeditor/ckeditor.js"></script>
-<script src="sys/js/editor.js"></script>
 
 <form name="bewerkartikel" method="post" action="bewerk.php?id=<?=$id;?>&amp;type=<?=$type;?>&amp;actie=bewerken" class="form-horizontal">
 
@@ -95,7 +94,7 @@ endif;
             }
             ?>
         </select>
-        <input type="button" id="plaklink" class="btn btn-default" onclick="plakLink()" value="Invoegen"/>
+        <input type="button" id="plaklink" class="btn btn-default" value="Invoegen"/>
     </div>
 </div>
 

@@ -22,11 +22,12 @@ class Pagina
     private $titelknoppen = null;
     private $connectie = null;
     private $nietDelen = false;
+    public $extraScripts = [];
 
 	// Gebruik met tweede parameter is deprecated
     public function __construct($paginanaam, $titelcontrols = null)
 	{
-		$this->paginanaam=$paginanaam;
+		$this->paginanaam = $paginanaam;
 		$this->maakTitelknoppen($titelcontrols);
 	}
 
@@ -187,14 +188,21 @@ class Pagina
             toonDeelknoppen();
         }
         // Eerste div: inhoud. Tweede div: inhoudcontainer. Derde div: paginacontainer
-        echo '</div></div></div>
+        ?>
+        </div></div></div>
 
         <script type="text/javascript" src="/sys/js/email-antispam.js"></script>
         <script type="text/javascript" src="/sys/js/jquery-3.1.1.min.js"></script>
         <script type="text/javascript" src="/sys/js/lightbox.min.js"></script>
-        
+        <?php
+        foreach ($this->extraScripts as $extraScript)
+        {
+            printf('<script type="text/javascript" src="%s"></script>', $extraScript);
+        }
+        ?>
+
         </body>
         </html>
-        ';
+        <?php
     }
 }

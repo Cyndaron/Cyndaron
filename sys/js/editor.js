@@ -16,14 +16,18 @@
 
 function plakLink()
 {
-    CKEDITOR.tools.callFunction(185, this)
+    // Open het dialoogvenster voor het invoeren van een link
+    $('.cke_button__link').first().click();
+
     setTimeout(function ()
     {
-        var input = document.getElementById('cke_110_select');
-        input.value = "";
+        var link = $('#verwijzing').val();
+        // Het veld voor de link heeft standaardfocus
+        $(':focus').val(link);
 
-        var input2 = document.getElementById('cke_113_textInput');
-        var link = document.getElementById("verwijzing");
-        input2.value = link.value;
+        // Zet de selector voor het linktype op 'anders'
+        $(':focus').parent().parent().parent().parent().parent().find('select').val('');
     }, 800);
 }
+
+$('#plaklink').on('click', function() {plakLink();});
