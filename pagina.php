@@ -47,9 +47,7 @@ class Pagina
 
 	public function toonPrepagina()
 	{
-        $isadmin = isAdmin();
         $this->websitenaam = geefInstelling('websitenaam');
-        $ondertitel = geefInstelling('ondertitel');
 		?>
 <!DOCTYPE HTML>
 <html>
@@ -125,6 +123,16 @@ class Pagina
 
 	protected function toonMenu()
     {
+        $menutype = geefInstelling('menutype');
+
+        if (!empty($menutype) && $menutype === 'klassiek')
+            $this->toonKlassiekMenu();
+        else
+            $this->toonModernMenu();
+    }
+
+	protected function toonModernMenu()
+    {
         $websitelogo = sprintf('<img alt="" src="%s"> ', geefInstelling('websitelogo'));
         ?>
         <nav class="menu navbar navbar-inverse">
@@ -142,7 +150,7 @@ class Pagina
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-              <ul class="nav navbar-nav">';
+              <ul class="nav navbar-nav">
 
         <?php
         $menuarray = geefMenu();
@@ -177,6 +185,50 @@ class Pagina
           </div><!-- /.container-fluid -->
         </nav>
         <?php
+    }
+
+    protected function toonKlassiekMenu()
+    {
+        $isadmin = isAdmin();
+        $ondertitel = geefInstelling('ondertitel');
+
+        echo '<div class="menu klassiek-menu">';
+        if ($logo = geefInstelling('websitelogo'))
+        {
+            echo '<img src="' . $logo . '" alt="" class="websitelogo-klassiek"/>';
+        }
+
+        echo '<h1>' . $this->websitenaam . '</h1>' . $ondertitel;
+        if ($ondertitel && $isadmin)
+        {
+            echo ' - ';
+        }
+        if (!empty($_SESSION) && !empty($_SESSION['naam']) && $isadmin)
+        {
+            echo 'Ingelogd als ' . $_SESSION['naam'] . ' ';
+            echo '<div class="btn-group">';
+            knop('log-out', 'logoff.php', 'Uitloggen', null, 16);
+            knop('cog', 'configuratie.php', 'Instellingen aanpassen', null, 16);
+            knop('list', 'overzicht.php', 'Paginaoverzicht', null, 16);
+            knop('plus', "editor.php?type=sub", 'Nieuwe sub aanmaken', null, 16);
+            echo '</div>';
+        }
+        echo '<div class="dottop"><ul class="menulijst">';
+        $menuarray = geefMenu();
+        foreach ($menuarray as $menuitem)
+        {
+            // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
+            if ($menuitem['link'] == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuitem['link'] == './' && substr($_SERVER['REQUEST_URI'], -1) == '/'))
+            {
+                echo '<li>' . $menuitem['naam'] . "</li>\n";
+            }
+            else
+            {
+                echo '<li><a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . "</a></li>\n";
+            }
+        }
+        toonIndienAanwezigEnGeenAdmin('<li><span class="small"><a href="login.php">L </a></span></li>');
+        echo '</ul></div>';
     }
 
     public function toonPostPagina()

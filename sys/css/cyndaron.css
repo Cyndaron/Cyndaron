@@ -22,13 +22,6 @@ a:hover
 	margin-top: 18px;
 	margin-bottom: 18px;
 }
-.menu
-{
-	/*padding: 5px 18px;*/
-	/*text-align:center;*/
-	/*border-radius:4px;*/
-	/*overflow:auto;*/
-}
 .inhoudcontainer
 {
 	overflow:auto;
@@ -346,4 +339,43 @@ button.aantalKaarten
 	height: 46px;
 	padding: 0;
 	margin: -15px 0;
+}
+
+.klassiek-menu
+{
+	padding: 5px 18px;
+	text-align: center;
+	font-family: Trebuchet MS, Arial, sans-serif;
+	border-radius: 4px;
+	overflow: auto;
+}
+
+.klassiek-menu ul.menulijst
+{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+.klassiek-menu ul.menulijst li
+{
+	font-weight: bold;
+	/*display: inline;*/
+	padding-left: 10px;
+	padding-right: 10px;
+
+	background-color: #ECECEC;
+	display: inline-block;
+	overflow: hidden;
+	width: 200px;
+	border-radius: 4px;
+}
+
+.websitelogo-klassiek
+{
+	background-color:#FFFFFF;
+	opacity:0.96;
+	border-radius:3px;
+	padding:0px !important;
+	margin:3px 6px 3px 0px;
+	float:left;
+	height:120px;
 }
