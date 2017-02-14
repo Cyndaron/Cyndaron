@@ -23,6 +23,7 @@ class Pagina
     private $connectie = null;
     private $nietDelen = false;
     public $extraScripts = [];
+    protected $websitenaam = '';
 
     public function __construct($paginanaam)
 	{
@@ -47,7 +48,7 @@ class Pagina
 	public function toonPrepagina()
 	{
         $isadmin = isAdmin();
-        $websitenaam = geefInstelling('websitenaam');
+        $this->websitenaam = geefInstelling('websitenaam');
         $ondertitel = geefInstelling('ondertitel');
 		?>
 <!DOCTYPE HTML>
@@ -55,7 +56,7 @@ class Pagina
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title><?php echo $this->paginanaam . ' - ' . $websitenaam;?></title>
+	<title><?php echo $this->paginanaam . ' - ' . $this->websitenaam;?></title>
         <?php
         echo '<link href="/sys/css/normalize.css" type="text/css" rel="stylesheet" />';
         echo '<link href="/sys/css/bootstrap.css" type="text/css" rel="stylesheet" />';
@@ -96,68 +97,12 @@ class Pagina
 				<script type="text/javascript" src="/sys/js/facebook-like.js"></script>';
 			}
 		}
-		$websitelogo = sprintf('<img alt="" src="%s"> ', geefInstelling('websitelogo'));
 
 		echo '
 		<div class="paginacontainer">
-		<div class="menucontainer">
-		<nav class="menu navbar navbar-inverse">
-          <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="/">' . $websitelogo . $websitenaam . '</a>
-            </div>
+		<div class="menucontainer">';
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-              <ul class="nav navbar-nav">';
-
-        $menuarray = geefMenu();
-        if (count($menuarray) > 0)
-        {
-            foreach($menuarray as $menuitem)
-            {
-                // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
-                if ($menuitem['link'] == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuitem['link'] == './' && substr($_SERVER['REQUEST_URI'], -1) == '/'))
-                    echo '<li class="active">';
-                else
-                    echo '<li>';
-
-                echo '<a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . '</a></li>';
-            }
-        }
-
-        echo '</ul>
-              <ul class="nav navbar-nav navbar-right">';
-
-        if (isAdmin())
-        {
-            printf('<p class="navbar-text">Ingelogd als %s</p>', $_SESSION['naam']);
-
-            echo '
-                    <li><a title="Uitloggen" href="logoff.php"><span class="glyphicon glyphicon-log-out"></span></a></li>
-                    <li><a title="Instellingen aanpassen" href="configuratie.php"><span class="glyphicon glyphicon-cog"></span></a></li>
-                    <li><a title="Paginaoverzicht" href="overzicht.php"><span class="glyphicon glyphicon-th-list"></span></a></li>
-                    <li><a title="Nieuwe statische pagina aanmaken" href="editor.php?type=sub"><span class="glyphicon glyphicon-plus"></span></a></li>
-                ';
-        }
-        else
-        {
-            echo '<li><a title="Inloggen" href="login.php"><span class="glyphicon glyphicon-lock"></span></a></li>';
-        }
-
-        echo '
-              </ul>
-            </div><!-- /.navbar-collapse -->
-          </div><!-- /.container-fluid -->
-        </nav>';
-
+        $this->toonMenu();
 
         $meldingen = geefMeldingen();
 		if ($meldingen)
@@ -174,10 +119,65 @@ class Pagina
 		}
 
 		echo '</div><div class="inhoudcontainer"><div class="inhoud"><div class="paginatitel"><h1 style="display: inline; margin-right:8px;">'.$this->paginanaam.'</h1>';
-//		toonIndienAanwezigEnAdmin($this->titelknoppen, '<span style="vertical-align: middle; margin-bottom: 15px; padding-bottom: 15px;">', '</span>');
         toonIndienAanwezigEnAdmin($this->titelknoppen, '<div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">', '</div>');
 		echo "</div>\n";
 	}
+
+	protected function toonMenu()
+    {
+        $websitelogo = sprintf('<img alt="" src="%s"> ', geefInstelling('websitelogo'));
+        ?>
+        <nav class="menu navbar navbar-inverse">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Navigatie omschakelen</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/"><?=$websitelogo . $this->websitenaam;?></a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">';
+
+        <?php
+        $menuarray = geefMenu();
+        if (count($menuarray) > 0)
+        {
+            foreach($menuarray as $menuitem)
+            {
+                // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
+                if ($menuitem['link'] == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuitem['link'] == './' && substr($_SERVER['REQUEST_URI'], -1) == '/'))
+                    echo '<li class="active">';
+                else
+                    echo '<li>';
+
+                echo '<a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . '</a></li>';
+            }
+        }
+
+        echo '</ul><ul class="nav navbar-nav navbar-right">';
+
+        if (isAdmin()): ?>
+            <p class="navbar-text">Ingelogd als <?=$_SESSION['naam'];?></p>
+            <li><a title="Uitloggen" href="logoff.php"><span class="glyphicon glyphicon-log-out"></span></a></li>
+            <li><a title="Instellingen aanpassen" href="configuratie.php"><span class="glyphicon glyphicon-cog"></span></a></li>
+            <li><a title="Paginaoverzicht" href="overzicht.php"><span class="glyphicon glyphicon-th-list"></span></a></li>
+            <li><a title="Nieuwe statische pagina aanmaken" href="editor.php?type=sub"><span class="glyphicon glyphicon-plus"></span></a></li>
+        <?php else: ?>
+            <li><a title="Inloggen" href="login.php"><span class="glyphicon glyphicon-lock"></span></a></li>
+        <?php endif; ?>
+
+              </ul>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+        <?php
+    }
 
     public function toonPostPagina()
     {
@@ -191,7 +191,7 @@ class Pagina
 
         <script type="text/javascript" src="/sys/js/email-antispam.js"></script>
         <script type="text/javascript" src="/sys/js/jquery-3.1.1.min.js"></script>
-        <script type="text/javascript" src="/sys/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="/sys/js/bootstrap.min.js"></script>
         <?php
         foreach ($this->extraScripts as $extraScript)
         {

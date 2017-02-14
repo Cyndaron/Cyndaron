@@ -14,6 +14,7 @@ $_SESSION['referrer'] = !empty($_SERVER['HTTP_REFERER']) ? htmlentities($_SERVER
 
 $controls = knopcode('bewerken', 'editor.php?type=fotoboek&amp;id=' . $boekid, 'Dit fotoboek bewerken');
 $pagina = new Pagina($boeknaam, $controls);
+$pagina->extraScripts = array_merge($pagina->extraScripts, ['/sys/js/lightbox.min.js']);
 $pagina->toonPrepagina();
 // het album openen
 if ($fotodir = @opendir("./fotoalbums/$boekid"))
