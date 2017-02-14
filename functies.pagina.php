@@ -176,42 +176,9 @@ function knopcode($soort, $link, $beschrijving = null, $tekst = null, $formaat =
     return sprintf('<a class="btn btn-default %s" href="%s" %s><span class="glyphicon glyphicon-%s"></span>%s</a>', $btnClass, $link, $title, $pictogram, $tekstNaPictogram);
 }
 
-function knopcode_js($soort, $js, $beschrijving = null, $tekst = null, $formaat = 20)
-{
-    $code = '<button class="sys" onClick="' . $js . '"';
-    if ($beschrijving)
-        $code .= ' title="' . $beschrijving . '"';
-    $code .= '><img class="sys" style="vertical-align: middle; width: ' . $formaat . 'px; height: ' . $formaat . 'px;"  src="';
-    $code .= geefPictogram($soort);
-    $code .= '" alt="' . $beschrijving . '"';
-
-    if ($beschrijving)
-        $code .= ' title="' . $beschrijving . '"';
-
-    $code .= '/>';
-    if ($tekst)
-        $code .= '<span style="vertical-align: middle; ">&nbsp;' . $tekst . '</span>';
-    $code .= "</button>";
-    return $code;
-}
-
-function knop_js($soort, $js, $beschrijving = null, $tekst = null, $formaat = 20)
-{
-    echo knopcode_js($soort, $js, $beschrijving, $tekst, $formaat);
-}
-
 function knop($soort, $link, $beschrijving = null, $tekst = null, $formaat = 20)
 {
     echo knopcode($soort, $link, $beschrijving, $tekst, $formaat);
-}
-
-function geefPictogram($naam)
-{
-    $prefix = 'sys/pictogrammen/mono/';
-    if (file_exists($prefix . $naam . '.png'))
-        return $prefix . $naam . '.png';
-    else
-        return $prefix . $naam;
 }
 
 function woordlimiet($string, $lengte = 50, $ellips = "...")
