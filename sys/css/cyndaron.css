@@ -173,6 +173,33 @@ div.center
 	max-width:100%; padding:0px;
 }
 
+tr.rotate
+{
+
+}
+
+th.rotate
+{
+	/* Something you can count on */
+	height: 140px;
+	white-space: nowrap;
+	vertical-align: inherit !important;
+}
+
+th.rotate > div
+{
+	transform:
+		/* Magic Numbers */
+			translate(5px, 51px)
+				/* 45 is really 360 - 45 */
+			rotate(315deg);
+	width: 30px;
+}
+th.rotate > div > span {
+	border-bottom: 1px solid #BBBBBB;
+	padding: 2px 5px;
+}
+
 .form-control-inline
 {
     display: inline-block;
@@ -260,4 +287,63 @@ div.center
 .fotobadge
 {
 	text-align: center;
+}
+
+.overzichtBestellingen
+{
+	border: 1px solid #ddd;
+}
+
+/*.overzichtBestellingen tr td*/
+/*{*/
+	/*vertical-align: middle;*/
+	/*border: 1px #DDDDDD solid;*/
+	/*padding: 5px;*/
+/*}*/
+
+table.kaartverkoop
+{
+	width: auto;
+	border: 1px solid #ddd;
+}
+
+table.kaartverkoop tr th
+{
+	text-align:left;
+}
+table.kaartverkoop tr td, table.kaartverkoop tr th
+{
+	padding-right:30px;
+	vertical-align: middle;
+}
+input.aantalKaarten
+{
+	text-align: center;
+	width: 40px;
+	padding: initial;
+}
+
+button.aantalKaarten
+{
+	margin-top: -1px;
+	margin-bottom: 1px;
+}
+#verzendknop
+{
+	width:150px;
+	height:50px;
+	font-size:18px;
+}
+
+.control-label
+{
+	text-align: left !important;
+}
+
+.navbar-brand > img
+{
+	display: inline-block;
+	height: 46px;
+	padding: 0;
+	margin: -15px 0;
 }

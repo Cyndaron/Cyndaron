@@ -176,7 +176,7 @@ foreach ($subsPerCategorie as $categorie => $subs)
     <h2>Fotoboeken</h2>
     <form method="post" action="overzicht.php?type=fotoboek&amp;actie=nieuw" class="form-inline">
         <div class="form-group">
-            <label for="fobonaam">Nieuw fotoboek:</label> <input id="fobonaam" name="naam" type="text" class="form-control"/><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+            <label for="fobonaam">Nieuw fotoboek:</label> <input id="fobonaam" name="naam" type="text" class="form-control"/> <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
         </div>
     </form>
     <br />

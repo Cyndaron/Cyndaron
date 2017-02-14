@@ -78,8 +78,6 @@ class Pagina
             ?>
         </style>
 		<script type="text/javascript">
-		var isAdmin = <?=$isadmin;?>;
-
 		function geefInstelling(instelling)
 		{
 			if (instelling == 'artikelkleur')
@@ -99,6 +97,8 @@ class Pagina
 				<script type="text/javascript" src="/sys/js/facebook-like.js"></script>';
 			}
 		}
+		$websitelogo = sprintf('<img alt="" src="%s"> ', geefInstelling('websitelogo'));
+
 		echo '
 		<div class="paginacontainer">
 		<div class="menucontainer">
@@ -112,7 +112,7 @@ class Pagina
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="#">' . $websitenaam . '</a>
+              <a class="navbar-brand" href="/">' . $websitelogo . $websitenaam . '</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->

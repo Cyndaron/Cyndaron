@@ -7,8 +7,8 @@ require_once('pagina.php');
 if ($_POST)
 {
     maakInstelling('websitenaam', $_POST['websitenaam']);
+    maakInstelling('websitelogo', $_POST['websitelogo']);
     maakInstelling('ondertitel', $_POST['ondertitel']);
-    maakInstelling('paneel', $_POST['paneel']);
     maakInstelling('favicon', $_POST['favicon']);
     maakInstelling('achtergrondkleur', $_POST['achtergrondkleur']);
     maakInstelling('menukleur', $_POST['menukleur']);
@@ -43,8 +43,8 @@ $pagina->toonPrePagina();
 $fbselected = (geefInstelling('facebook_share') == 1) ? ' checked="checked"' : '';
 
 echo '<div class="form-group"><label class="col-sm-3 control-label">Naam website:</label> <div class="col-sm-6"><input class="form-control" type="text" name="websitenaam" value="' . geefInstelling('websitenaam', TRUE) . '" /></div></div>';
+echo '<div class="form-group"><label class="col-sm-3 control-label">Websitelogo:</label> <div class="col-sm-6"><input class="form-control" type="text" name="websitelogo" value="' . geefInstelling('websitelogo', TRUE) . '" /></div></div>';
 echo '<div class="form-group"><label class="col-sm-3 control-label">Ondertitel:</label> <div class="col-sm-6"><input class="form-control" type="text" name="ondertitel" value="' . geefInstelling('ondertitel', TRUE) . '" /></div></div>';
-echo '<div class="form-group"><label class="col-sm-3 control-label">Paneel:</label> <div class="col-sm-6"><input class="form-control" type="text" name="paneel" value="' . geefInstelling('paneel', TRUE) . '" /></div></div>';
 echo '<div class="form-group"><label class="col-sm-3 control-label">Websitepictogram:</label> <div class="col-sm-6"><input class="form-control" type="text" name="favicon" value="' . geefInstelling('favicon', TRUE) . '" /></div></div>';
 echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondkleur hele pagina:</label> <div class="col-sm-6"><input class="form-control" type="text" name="achtergrondkleur" value="' . geefInstelling('achtergrondkleur', TRUE) . '" /></div></div>';
 echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondkleur menu:</label> <div class="col-sm-6"><input class="form-control" type="text" name="menukleur" value="' . geefInstelling('menukleur', TRUE) . '" /></div></div>';
@@ -81,7 +81,7 @@ foreach ($menu as $menuitem)
     echo $link . '|' . $alias . ';';
 }
 echo '"/></div></div>';
-echo '<div class="form-group"><label class="col-sm-3 control-label">Extra bodycode (o.a. Google Analytics)</label> <div class="col-sm-6"><textarea style="width: 225px; height: 75px;" name="extra_bodycode">' . geefInstelling('extra_bodycode') . '</textarea></div></div>';
+echo '<div class="form-group"><label class="col-sm-3 control-label">Extra bodycode (o.a. Google Analytics)</label> <div class="col-sm-6"><textarea style="height: 75px;" name="extra_bodycode" class="form-control">' . geefInstelling('extra_bodycode') . '</textarea></div></div>';
 ?>
 <div class="form-group">
     <div class="col-sm-offset-3 col-sm-6">

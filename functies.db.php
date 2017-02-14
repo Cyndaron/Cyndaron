@@ -10,7 +10,7 @@ function newPDO()
     return new PDO($dbmethode . ':host=' . $dbplek . ';dbname=' . $dbnaam . ';charset=utf8', $dbuser, $dbpass);
 }
 
-function geefEen($query, $vars)
+function geefEen($query, $vars = [])
 {
     $connectie = newPDO();
     $resultaat = $connectie->prepare($query);

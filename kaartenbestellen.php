@@ -37,11 +37,11 @@ echo '<p>' . $concert_info[0]['beschrijving'] . '</p>';
 Vrije plaatsen zijn: de zijvakken en de balkons.</p>
 
 <br />
-<form method="post" action="verwerk-kaarten-bestellen">
+<form method="post" action="verwerk-kaarten-bestellen" class="form-horizontal" id="kaartenbestellen">
 <h3>Kaartsoorten:</h3>
 <input type="hidden" name="concert_id" value="<?php echo $concert_id;?>"/>
-<table class="kaartverkoop">
-<tr><th>Kaartsoort:</th><th>Prijs / stuk:</th><th>Aantal:</th></tr>
+<table class="kaartverkoop table table-striped">
+<tr><th>Kaartsoort:</th><th>Prijs per stuk:</th><th>Aantal:</th></tr>
 <?php
 $prep = $connectie->prepare('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC');
 $prep->execute(array($concert_id));
@@ -51,9 +51,9 @@ foreach($prep->fetchAll() as $kaartsoort)
 				<td>%1$s</td>
 				<td>%2$s</td>
 				<td>
-					<input class="aantalKaarten" readonly="readonly" size="2" name="kaartsoort-%3$d" id="kaartsoort-%3$d" value="0"/>
-					<button type="button" onclick="javascript:increase(\'kaartsoort-%3$d\');">+</button>
-					<button type="button" onclick="javascript:decrease(\'kaartsoort-%3$d\');">−</button>
+					<input class="aantalKaarten form-control form-control-inline" readonly="readonly" size="2" name="kaartsoort-%3$d" id="kaartsoort-%3$d" value="0"/>
+					<button type="button" class="aantalKaarten btn btn-default" onclick="javascript:increase(\'kaartsoort-%3$d\');"><span class="glyphicon glyphicon-plus"></span></button>
+					<button type="button" class="aantalKaarten btn btn-default" onclick="javascript:decrease(\'kaartsoort-%3$d\');"><span class="glyphicon glyphicon-minus"></span></button>
 				</td>
 		</tr>',
 	$kaartsoort['naam'], naarEuro($kaartsoort['prijs']), $kaartsoort['id']);
@@ -80,36 +80,82 @@ foreach($prep->fetchAll() as $kaartsoort)
 		Bij dit concert is het alleen mogelijk om uw kaarten te laten thuisbezorgen. Als u op Walcheren woont is dit gratis. Woont u buiten Walcheren, dan kost het thuisbezorgen <?=naarEuro($concert_info[0]['verzendkosten']);?> per kaart.<br>Het is ook mogelijk om uw kaarten te laten ophalen door een koorlid. Dit is gratis. <a href="#" onclick="buitenland = true;">Woont u in het buitenland? Klik dan hier.</a>
 	</p>
 	<p>
-		Vul hieronder uw postcode in om de totaalprijs te laten berekenen.<br>
-<table>
-	<tr><td>Postcode <b>(verplicht)</b>:</td><td><input id="postcode" name="postcode"/></td></tr>
-	<tr><td colspan="100%">
-		<div id="ophalen_door_koorlid_div" style="display:none;">
-			<input id="ophalen_door_koorlid" name="ophalen_door_koorlid" onclick="javascript:berekenTotaalprijs();" type="checkbox" value="1" /><label for="ophalen_door_koorlid">Mijn kaarten laten ophalen door een koorlid</label><br>
-			&nbsp; &nbsp; &nbsp; <label for="naam_koorlid">Naam koorlid: </label><input id="naam_koorlid" name="naam_koorlid" type="text" />
-		</div>
-	</td></tr>
+		Vul hieronder uw postcode in om de totaalprijs te laten berekenen.
+    </p>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="postcode">Postcode (verplicht):</label>
+        <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control form-control-inline" maxlength="7"/></div>
+    </div>
+
+    <div id="ophalen_door_koorlid_div" style="display:none;">
+        <input id="ophalen_door_koorlid" name="ophalen_door_koorlid" onclick="javascript:berekenTotaalprijs();" type="checkbox" value="1" /> <label for="ophalen_door_koorlid">Mijn kaarten laten ophalen door een koorlid</label><br>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="naam_koorlid">Naam koorlid:</label>
+            <div class="col-sm-5"><input id="naam_koorlid" name="naam_koorlid" type="text" class="form-control"/></div>
+        </div>
+    </div>
 <?php endif; ?>
-<tr><td colspan="100%">
-	<p><b>Totaalprijs:</b> <span id="prijsvak">€&nbsp;0,00</span></p>
-</td></tr>
-<tr><td colspan="100%"><h3>Uw gegevens (verplicht):</h3></td></tr>
-<tr><td>Achternaam:</td><td><input id="achternaam" name="achternaam"/></td></tr>
-<tr><td>Voorletters:</td><td><input id="voorletters" name="voorletters"/></td></tr>
-<tr><td>E-mailadres:</td><td><input id="e-mailadres" name="e-mailadres"/></td></tr>
-<tr><td colspan="100%"><h3 id="adresgegevensKop">Uw adresgegevens (nodig als u de kaarten wilt laten bezorgen):</h3></td></tr>
-<tr><td>Straatnaam en huisnummer:</td><td><input id="straatnaam_en_huisnummer" name="straatnaam_en_huisnummer"/></td></tr>
+
+<div class="well"><b>Totaalprijs:</b> <span id="prijsvak">€&nbsp;0,00</span></div>
+
+<h3>Uw gegevens (verplicht):</h3>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="achternaam">Achternaam:</label>
+    <div class="col-sm-5"><input id="achternaam" name="achternaam" class="form-control"/></div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="voorletters">Voorletters:</label>
+    <div class="col-sm-5"><input id="voorletters" name="voorletters" class="form-control"/></div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="e-mailadres">E-mailadres:</label>
+    <div class="col-sm-5"><input id="e-mailadres" name="e-mailadres" class="form-control"/></div>
+</div>
+
+
+<h3 id="adresgegevensKop">Uw adresgegevens (nodig als u de kaarten wilt laten bezorgen):</h3>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="straatnaam_en_huisnummer">Straatnaam en huisnummer:</label>
+    <div class="col-sm-5"><input id="straatnaam_en_huisnummer" name="straatnaam_en_huisnummer" class="form-control"/></div>
+</div>
+
 <?php if (!$concert_info[0]['bezorgen_verplicht']): ?>
-	<tr><td>Postcode:</td><td><input id="postcode" name="postcode"/></td></tr>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="postcode">Postcode:</label>
+        <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control"/></div>
+    </div>
 <?php endif; ?>
-<tr><td>Woonplaats:</td><td><input id="woonplaats" name="woonplaats"/></td></tr>
-<tr><td colspan="100%"><h3>Opmerkingen (niet verplicht):</h3></td></tr>
-<tr><td colspan="100%"><textarea id="opmerkingen" name="opmerkingen" cols="50" rows="4"></textarea></td></tr>
-<tr><td colspan="100%"><h3>Verzenden:</h3></td></tr>
-<tr><td colspan="100%" style="padding-bottom:15px;">Om te voorkomen dat er spam wordt verstuurd met dit formulier<br />wordt u verzocht in het onderstaande vak <span style="font-family:monospace;">Vlissingen</span> in te vullen.</td></tr>
-<tr><td>Antispam:</td><td><input id="antispam" name="antispam"/></td></tr>
-<tr><td colspan="100%"><input id="verzendknop" type="submit" value="Bestellen" /></td></tr>
-</table>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="woonplaats">Woonplaats:</label>
+    <div class="col-sm-5"><input id="woonplaats" name="woonplaats" class="form-control"/></div>
+</div>
+
+
+<h3>Verzenden:</h3>
+
+<p>Als u nog opmerkingen heeft kunt u deze hier kwijt.</p>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="opmerkingen">Opmerkingen (niet verplicht):</label>
+    <div class="col-sm-5"><textarea id="opmerkingen" name="opmerkingen" class="form-control" rows="4"></textarea></div>
+</div>
+
+<p>Om te voorkomen dat er spam wordt verstuurd met dit formulier<br />wordt u verzocht in het onderstaande vak <span style="font-family:monospace;">Vlissingen</span> in te vullen.</p>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="antispam">Antispam:</label>
+    <div class="col-sm-5"><input id="antispam" name="antispam" class="form-control"/></div>
+</div>
+
+<div class="col-sm-offset-2"><input id="verzendknop" class="btn btn-primary" type="submit" value="Bestellen" /></div>
+
 <input type="hidden" id="buitenland" name="buitenland" value="0"/>
 </form>
 <script type="text/javascript">
