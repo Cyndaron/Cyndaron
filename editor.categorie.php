@@ -10,10 +10,13 @@ if ($id)
 function toonSpecifiekeKnoppen()
 {
     global $id;
-    echo '<input name="alleentitel" type="checkbox" ';
-    if (geefEen('SELECT alleentitel FROM categorieen WHERE id=?', array($id)))
-        echo 'checked="checked"';
-    echo '/> Toon alleen titels<br />';
-
-    echo '</td></tr><tr><td class="tablesys">';
+    $checked = geefEen('SELECT alleentitel FROM categorieen WHERE id=?', array($id)) ? 'checked="checked"' : '';
+    ?>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="alleentitel">Toon alleen titels: </label>
+        <div class="col-sm-5">
+            <input id="alleentitel" name="alleentitel" type="checkbox" <?=$checked;?>/>
+        </div>
+    </div>
+    <?php
 }
