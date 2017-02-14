@@ -24,11 +24,9 @@ class Pagina
     private $nietDelen = false;
     public $extraScripts = [];
 
-	// Gebruik met tweede parameter is deprecated
-    public function __construct($paginanaam, $titelcontrols = null)
+    public function __construct($paginanaam)
 	{
 		$this->paginanaam = $paginanaam;
-		$this->maakTitelknoppen($titelcontrols);
 	}
 
     public function maakExtraMeta($extraMeta)
