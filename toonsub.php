@@ -34,7 +34,8 @@ if (geefEen('SELECT * FROM vorigesubs WHERE id= ?', array($subid)))
 {
     $controls .= sprintf('<a href="editor.php?type=sub&amp;vorigeversie=1&amp;id=%d" class="btn btn-default" title="Vorige versie"><span class="glyphicon glyphicon-vorige-versie"></span></a>', $subid);
 }
-$pagina = new Pagina($subnaam, $controls);
+$pagina = new Pagina($subnaam);
+$pagina->maakTitelknoppen($controls);
 $pagina->toonPrePagina();
 
 echo geefEen('SELECT tekst FROM subs WHERE id=?', array($subid));
