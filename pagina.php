@@ -17,11 +17,11 @@ if (empty($_SESSION))
 
 class Pagina
 {
-    private $extraMeta = "";
-    private $paginanaam = "";
-    private $titelknoppen = null;
-    private $connectie = null;
-    private $nietDelen = false;
+    protected $extraMeta = "";
+    protected $paginanaam = "";
+    protected $titelknoppen = null;
+    protected $connectie = null;
+    protected $nietDelen = false;
     public $extraScripts = [];
     protected $websitenaam = '';
 
@@ -254,5 +254,10 @@ class Pagina
         </body>
         </html>
         <?php
+    }
+
+    public function voegScriptToe($scriptnaam)
+    {
+        $this->extraScripts[] = $scriptnaam;
     }
 }

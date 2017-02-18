@@ -34,7 +34,8 @@ if ($dir == '/')
 
 $pagina = new Pagina('Editor');
 $pagina->maakNietDelen(true);
-$pagina->extraScripts = array_merge($pagina->extraScripts, ["ckeditor/ckeditor.js", "sys/js/editor.js"]);
+$pagina->voegScriptToe('ckeditor/ckeditor.js');
+$pagina->voegScriptToe('sys/js/editor.js');
 $pagina->toonPrePagina();
 
 $unfriendlyUrl = 'toon' . $type . '.php?id=' . $id;
