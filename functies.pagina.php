@@ -201,39 +201,6 @@ function toonIndienAanwezig($string, $voor = null, $na = null)
     }
 }
 
-function toonDeelknoppen()
-{
-    if (geefInstelling('facebook_share') == 1)
-    {
-        echo '<br /><div class="fb-like" data-href="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true" data-font="trebuchet ms"></div>';
-    }
-}
-
-function geefMenu()
-{
-    $connectie = newPDO();
-    $menu = $connectie->prepare('SELECT * FROM menu ORDER BY volgorde ASC;');
-    $menu->execute();
-    $menuitems = null;
-    $eersteitem = true;
-    foreach ($menu->fetchAll() as $menuitem)
-    {
-        $menuitem['naam'] = $menuitem['alias'] ? strtr($menuitem['alias'], array(' ' => '&nbsp;')) : geefPaginanaam($menuitem['link']);
-        if ($eersteitem)
-        {
-            // De . is nodig omdat het menu anders niet goed werkt in subdirectories.
-            $menuitem['link'] = './';
-        }
-        elseif ($url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array($menuitem['link'])))
-        {
-            $menuitem['link'] = $url;
-        }
-        $menuitems[] = $menuitem;
-        $eersteitem = false;
-    }
-    return $menuitems;
-}
-
 function vervangMenu($nieuwmenu)
 {
     geefEen('DELETE FROM menu;', array());

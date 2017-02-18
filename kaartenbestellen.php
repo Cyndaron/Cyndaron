@@ -1,11 +1,8 @@
 <?php
 require_once('functies.db.php');
 require_once('pagina.php');
+require_once('functies.kaartverkoop.php');
 
-function naarEuro($bedrag)
-{
-	return '&euro;&nbsp;' . number_format($bedrag, 2, ',', '.');
-}
 $connectie = newPDO();
 
 $concert_id = intval(htmlentities($_GET['id'], NULL, 'UTF-8'));

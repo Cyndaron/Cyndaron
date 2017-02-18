@@ -1,40 +1,38 @@
 <?php
 require_once('pagina.php');
 
-$pagina = new Pagina('Bestandenkast');
-$pagina->toonPrePagina();
-$includefile = './bestandenkast/include.html';
-if ($handle = @fopen($includefile, 'r'))
+class Bestandenkast extends Pagina
 {
-    $contents = fread($handle, filesize($includefile));
-    preg_match("/<body(.*?)>(.*?)<\\/body>/si", $contents, $match);
-    echo $match[2];
-    fclose($handle);
-}
-
-if ($bestandendir = @opendir("./bestandenkast"))
-{
-    // Bestanden inlezen
-    while ($entryName = readdir($bestandendir))
+    public function __construct()
     {
-        $dirArray[] = $entryName;
-    }
-    closedir($bestandendir);
-
-    $aantalBestanden = count($dirArray);
-    sort($dirArray);
-
-    // Einde begeleidende tekst, begin bestandenlijst
-    echo '<hr />';
-    echo '<ul>';
-
-    for ($index = 0; $index < $aantalBestanden; $index++)
-    {
-        if ((substr("$dirArray[$index]", 0, 1) != ".") && (substr("$dirArray[$index]", -4) != "html") && (substr("$dirArray[$index]", -3) != "php")) // verberg eventuele verborgen bestanden plus html- en php-bestanden
+        parent::__construct('Bestandenkast');
+        $this->toonPrePagina();
+        $includefile = './bestandenkast/include.html';
+        if ($handle = @fopen($includefile, 'r'))
         {
-            echo '<li><a href="./bestandenkast/' . $dirArray[$index] . '">' . pathinfo($dirArray[$index], PATHINFO_FILENAME) . '</a></li>';
+            $contents = fread($handle, filesize($includefile));
+            preg_match("/<body(.*?)>(.*?)<\\/body>/si", $contents, $match);
+            echo $match[2];
+            fclose($handle);
         }
+
+        if ($bestanden = scandir("./bestandenkast"))
+        {
+            // Einde begeleidende tekst, begin bestandenlijst
+            echo '<hr />';
+            echo '<ul>';
+
+            for ($index = 0; $index < count($bestanden); $index++)
+            {
+                if ((substr("$bestanden[$index]", 0, 1) != ".") && (substr("$bestanden[$index]", -4) != "html") && (substr("$bestanden[$index]", -3) != "php")) // verberg eventuele verborgen bestanden plus html- en php-bestanden
+                {
+                    echo '<li><a href="./bestandenkast/' . $bestanden[$index] . '">' . pathinfo($bestanden[$index], PATHINFO_FILENAME) . '</a></li>';
+                }
+            }
+            echo '</ul>';
+        }
+        $this->toonPostPagina();
     }
-    echo '</ul>';
 }
-$pagina->toonPostPagina();
+
+$pagina = new Bestandenkast();

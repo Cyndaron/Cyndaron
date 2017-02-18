@@ -27,6 +27,9 @@ class Pagina
 
     public function __construct($paginanaam)
 	{
+	    if ($this->connectie == NULL)
+	        $this->connectie = newPDO();
+
 		$this->paginanaam = $paginanaam;
 	}
 
@@ -153,13 +156,12 @@ class Pagina
               <ul class="nav navbar-nav">
 
         <?php
-        $menuarray = geefMenu();
+        $menuarray = $this->geefMenu();
         if (count($menuarray) > 0)
         {
             foreach($menuarray as $menuitem)
             {
-                // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
-                if ($menuitem['link'] == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuitem['link'] == './' && substr($_SERVER['REQUEST_URI'], -1) == '/'))
+                if ($this->menuItemIsHuidigePagina($menuitem['link']))
                     echo '<li class="active">';
                 else
                     echo '<li>';
@@ -214,11 +216,10 @@ class Pagina
             echo '</div>';
         }
         echo '<div class="dottop"><ul class="menulijst">';
-        $menuarray = geefMenu();
+        $menuarray = $this->geefMenu();
         foreach ($menuarray as $menuitem)
         {
-            // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
-            if ($menuitem['link'] == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuitem['link'] == './' && substr($_SERVER['REQUEST_URI'], -1) == '/'))
+            if ($this->menuItemIsHuidigePagina($menuitem['link']))
             {
                 echo '<li>' . $menuitem['naam'] . "</li>\n";
             }
@@ -231,12 +232,19 @@ class Pagina
         echo '</ul></div>';
     }
 
+    private function menuItemIsHuidigePagina(string $menuItem): bool
+    {
+        // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
+        if ($menuItem == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuItem == './' && substr($_SERVER['REQUEST_URI'], -1) == '/'))
+            return TRUE;
+
+        return FALSE;
+    }
+
     public function toonPostPagina()
     {
-        if ($this->nietDelen == false)
-        {
-            toonDeelknoppen();
-        }
+        $this->toonDeelknoppen();
+
         // Eerste div: inhoud. Tweede div: inhoudcontainer. Derde div: paginacontainer
         ?>
         </div></div></div>
@@ -259,5 +267,38 @@ class Pagina
     public function voegScriptToe($scriptnaam)
     {
         $this->extraScripts[] = $scriptnaam;
+    }
+
+    private function toonDeelknoppen()
+    {
+        if ($this->nietDelen && geefInstelling('facebook_share') == 1)
+        {
+            echo '<br /><div class="fb-like" data-href="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true" data-font="trebuchet ms"></div>';
+        }
+    }
+
+    public function geefMenu()
+    {
+        $menu = $this->connectie->prepare('SELECT * FROM menu ORDER BY volgorde ASC;');
+        $menu->execute();
+        $menuitems = NULL;
+        $eersteitem = TRUE;
+
+        foreach ($menu->fetchAll() as $menuitem)
+        {
+            $menuitem['naam'] = $menuitem['alias'] ? strtr($menuitem['alias'], [' ' => '&nbsp;']) : geefPaginanaam($menuitem['link']);
+            if ($eersteitem)
+            {
+                // De . is nodig omdat het menu anders niet goed werkt in subdirectories.
+                $menuitem['link'] = './';
+            }
+            elseif ($url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', [$menuitem['link']]))
+            {
+                $menuitem['link'] = $url;
+            }
+            $menuitems[] = $menuitem;
+            $eersteitem = FALSE;
+        }
+        return $menuitems;
     }
 }
