@@ -115,9 +115,6 @@ function geefPaginanaam($link)
     }
     switch ($split[0])
     {
-        case 'toonhoofdstuk.php':
-            $sql = 'SELECT naam FROM hoofdstukken WHERE id=?';
-            break;
         case 'toonsub.php':
             $sql = 'SELECT naam FROM subs WHERE id=?';
             break;
