@@ -252,11 +252,9 @@ function extractImages($matches)
     $image = str_replace('base64', '', $image);
     $image = base64_decode(str_replace(' ', '+', $image));
     $uploadDir = './afb/via-editor/';
-    $destinationFilename = $uploadDir . date('c') . '.' . $extensie;
-    //$oldUmask = umask(0);
+    $destinationFilename = $uploadDir . date('c') . '-' . md5($image) . '.' . $extensie;
     @mkdir($uploadDir, 0777, TRUE);
     file_put_contents($destinationFilename, $image);
-    //umask($oldUmask);
 
     return 'src="' . $destinationFilename . '"';
 }
