@@ -16,26 +16,41 @@ class Ideeenbus extends Pagina
             if (!empty($_POST))
             {
                 $naam = htmlentities($_POST['naam'], ENT_QUOTES, 'utf-8');
-                $tekst = htmlentities($_POST['tekst'], ENT_QUOTES, 'utf-8');
+                $tekst = htmlentities($_POST['idee'], ENT_QUOTES, 'utf-8');
                 $input = $connectie->prepare('INSERT INTO ideeen VALUES (NULL, ?, ?)');
                 $input->execute(array($naam, $tekst));
                 echo '<p>Commentaar is achtergelaten.</p><br />';
             }
             else
             {
-                echo '<form method="post" action="ideeenbus.php"><p>Uw naam:<br /><input type="text" name="naam" /><br />Uw idee:<br />
-			    <textarea name="tekst" rows="6" cols="60"></textarea><br /><input type="submit" value="Versturen" /></p></form>';
+                ?>
+                <div class="col-lg-6" style="float: initial; margin-bottom: 25px;">
+                    <form method="post" action="ideeenbus.php">
+                        <div class="form-group">
+                            <label for="naam">Uw naam: </label>
+                            <input type="text" id="naam" name="naam" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="idee">Uw idee: </label>
+                            <textarea id="idee" name="idee" rows="6" cols="60" class="form-control"></textarea><br/>
+                        </div>
+                        <input type="submit" value="Versturen" class="btn btn-primary">
+                    </form>
+                </div>
+
+                <?php
             }
             $inhoud = $connectie->prepare("SELECT id, naam, tekst FROM ideeen ORDER BY id DESC ;");
             $inhoud->execute();
             foreach ($inhoud->fetchAll() as $idee)
             {
-                echo '<p>';
-                if (isAdmin())
-                {
-                    knop('verwijderen', 'ideeenbus.php?actie=verwijderen&amp;id=' . $idee['id'], 'Verwijder dit idee');
-                }
-                echo '<b>Achtergelaten door: ' . $idee['naam'] . '</b><br />' . $idee['tekst'] . '</p>';
+                $knopcode = isAdmin() ? knopcode('verwijderen', 'ideeenbus.php?actie=verwijderen&amp;id=' . $idee['id'], 'Verwijder dit idee') : '';
+
+                echo '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">';
+                printf('Idee van <strong>%s</strong>: %s', $idee['naam'], $knopcode);
+                echo '</h3></div><div class="panel-body">';
+                echo $idee['tekst'];
+                echo '</div></div>';
             }
         }
         else

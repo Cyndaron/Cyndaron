@@ -187,11 +187,11 @@ foreach ($subsPerCategorie as $categorie => $subs)
         {
             ?>
             <tr>
-                <td><?php
+                <td><div class="btn-group"><?php
                     knop('bewerken', 'editor.php?type=fotoboek&amp;id=' . $fotoboek['id'], 'Bewerk dit fotoboek', null, 16);
                     knop('verwijderen', 'overzicht.php?type=fotoboek&amp;actie=verwijderen&amp;id=' . $fotoboek['id'], 'Verwijder dit fotoboek', null, 16);
                     knop('aanmenutoevoegen', 'overzicht.php?type=fotoboek&amp;actie=aanmenutoevoegen&amp;id=' . $fotoboek['id'], 'Voeg dit fotoboek toe aan het menu', null, 16); ?>
-                </td>
+                </div</td>
                 <td>
                     <a href="toonfotoboek.php?id=<?php echo $fotoboek['id']; ?>"><b><?php echo $fotoboek['naam']; ?></b></a> (mapnummer <?php echo $fotoboek['id']; ?>)
                 </td>
@@ -224,10 +224,10 @@ foreach ($subsPerCategorie as $categorie => $subs)
 
             foreach ($friendlyurls as $friendlyurl)
             {
-                echo '<tr><td>';
+                echo '<tr><td><div class="btn-group">';
                 knop('verwijderen', 'overzicht.php?type=friendlyurl&amp;actie=verwijderen&amp;naam=' . $friendlyurl['naam'], 'Verwijder deze friendly URL', null, 16);
                 knop('aanmenutoevoegen', 'overzicht.php?type=friendlyurl&amp;actie=aanmenutoevoegen&amp;naam=' . $friendlyurl['naam'], 'Voeg deze friendly url toe aan het menu', null, 16);
-                echo '</td><td><strong>' . $friendlyurl['naam'] . '</strong></td><td>' . $friendlyurl['doel'] . '</td></tr>';
+                echo '</div></td><td><strong>' . $friendlyurl['naam'] . '</strong></td><td>' . $friendlyurl['doel'] . '</td></tr>';
             }
         ?>
         </table>
