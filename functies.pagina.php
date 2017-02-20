@@ -106,12 +106,12 @@ function geefPaginanaam($link)
     $pos = strrpos($link, '/', -1);
     $laatstedeel = substr($link, $pos);
     $split = explode('?', $laatstedeel);
-    $vars = explode('&', $split[1]);
+    $vars = @explode('&', $split[1]);
     $values = null;
     foreach ($vars as $var)
     {
         $temp = explode('=', $var);
-        $values[$temp[0]] = $temp[1];
+        $values[$temp[0]] = @$temp[1];
     }
     switch ($split[0])
     {
@@ -127,6 +127,8 @@ function geefPaginanaam($link)
         case 'toonfotoboek.php':
             $sql = 'SELECT naam FROM fotoboeken WHERE id=?';
             break;
+        default:
+            return $link;
     }
     if ($naam = geefEen($sql, array($values['id'])))
         return $naam;
