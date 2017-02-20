@@ -415,5 +415,10 @@ button.aantalKaarten
 
 .klassiek-menu-donker
 {
-    color: #EEEEEE;
+    color: #DDDDDD;
+}
+
+.klassiek-menu-donker ul.menulijst li
+{
+    color: #333333; /* Standaardkleur Bootstrap */
 }

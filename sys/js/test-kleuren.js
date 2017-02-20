@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-function testkleuren()
+function testKleuren()
 {
     var body = document.getElementsByTagName('body');
     var bodyset = document.getElementsByName('achtergrondkleur');
@@ -29,4 +29,4 @@ function testkleuren()
     artikel[0].style.backgroundColor = artikelset[0].value;
 }
 
-$('#testKleuren').on('click', testkleuren());
+$('#testKleuren').on('click', function() { testKleuren(); });
