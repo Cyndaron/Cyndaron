@@ -412,3 +412,8 @@ button.aantalKaarten
     float: left;
     height: 120px;
 }
+
+.klassiek-menu-donker
+{
+    color: #EEEEEE;
+}

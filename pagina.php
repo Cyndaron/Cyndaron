@@ -1,11 +1,27 @@
 <?php
+/*
+ * Copyright © 2009-2017, Michael Steenbeek
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
 require_once('functies.url.php');
 require_once('functies.db.php');
 require_once('functies.pagina.php');
 require_once('functies.gebruikers.php');
 // Verwijs oude URLs door
 
-if (!empty($_GET['friendlyurls'])  && $url=geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
+if (!empty($_GET['friendlyurls']) && $url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
 {
 	header('Location: '.$url);
 }
@@ -22,7 +38,7 @@ class Pagina
     protected $titelknoppen = null;
     protected $connectie = null;
     protected $nietDelen = false;
-    public $extraScripts = [];
+    protected $extraScripts = [];
     protected $websitenaam = '';
 
     public function __construct($paginanaam)
@@ -137,8 +153,9 @@ class Pagina
 	protected function toonModernMenu()
     {
         $websitelogo = sprintf('<img alt="" src="%s"> ', geefInstelling('websitelogo'));
+        $inverseClass = (geefInstelling('menuthema') == 'donker') ? 'navbar-inverse' : '';
         ?>
-        <nav class="menu navbar navbar-inverse">
+        <nav class="menu navbar <?=$inverseClass;?>">
           <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -193,8 +210,9 @@ class Pagina
     {
         $isadmin = isAdmin();
         $ondertitel = geefInstelling('ondertitel');
+        $donkerClass = (geefInstelling('menuthema') == 'donker') ? 'klassiek-menu-donker' : '';
 
-        echo '<div class="menu klassiek-menu">';
+        printf('<div class="menu klassiek-menu %s">', $donkerClass);
         if ($logo = geefInstelling('websitelogo'))
         {
             echo '<img src="' . $logo . '" alt="" class="websitelogo-klassiek"/>';
@@ -228,8 +246,8 @@ class Pagina
                 echo '<li><a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . "</a></li>\n";
             }
         }
-        toonIndienAanwezigEnGeenAdmin('<li><span class="small"><a href="login.php">L </a></span></li>');
         echo '</ul></div>';
+        toonIndienAanwezigEnGeenAdmin('<div style="float: right;">' . knopcode('log-in', 'login.php', 'Inloggen', null, 16) . '</div>');
     }
 
     private function menuItemIsHuidigePagina(string $menuItem): bool
