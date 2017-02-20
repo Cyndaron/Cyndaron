@@ -8,7 +8,9 @@ ErrorDocument 404 /404.php
 RewriteEngine On
 RewriteBase /
 
-RewriteRule ^$ index.php?pagina=/ [QSA,L]
+RewriteRule ^$ index.php?pagina=/ [QSA,NC,L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?pagina=$1 [NC,L]
+RewriteRule ^(.*)$ index.php?pagina=$1 [QSA,NC,L]
+
