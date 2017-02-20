@@ -109,7 +109,6 @@ class OverzichtPagina extends Pagina
 
         $subs = $connectie->prepare('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
         $subs->execute();
-        $laatstecategorie = "";
         $subsPerCategorie = array();
 
         foreach ($subs->fetchAll() as $sub)
