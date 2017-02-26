@@ -7,7 +7,7 @@ class FotoalbumPagina extends Pagina
 {
     public function __construct()
     {
-        $boekid = $_GET['id'];
+        $boekid = geefGetVeilig('id');
         if (!is_numeric($boekid) || $boekid < 1)
         {
             header("Location: 404.php");

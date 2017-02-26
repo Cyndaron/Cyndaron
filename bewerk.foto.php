@@ -4,12 +4,12 @@ require_once('functies.pagina.php');
 require_once('functies.gebruikers.php');
 require_once('pagina.php');
 
-$actie = $_GET['actie'];
+$actie = geefGetVeilig('actie');
 
 if ($actie == 'bewerken')
 {
-    $hash = $_GET['id'];
-    $bijschrift = $_POST['artikel'];
+    $hash = geefGetVeilig('id');
+    $bijschrift = geefPostOnveilig('artikel');
 
     maakBijschrift($hash, $bijschrift);
     nieuweMelding('Bijschrift bewerkt.');

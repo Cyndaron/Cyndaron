@@ -10,7 +10,7 @@ class KaartenBestellenPagina extends Pagina
         $this->connectie = newPDO();
         $this->voegScriptToe('sys/js/kaartverkoop.js');
 
-        $concert_id = !empty($_GET['id']) ? intval(htmlentities($_GET['id'], NULL, 'UTF-8')) : '';
+        $concert_id = geefGetVeilig('id');
         $prep = $this->connectie->prepare('SELECT * FROM kaartverkoop_concerten WHERE id=?');
         $prep->execute(array($concert_id));
         $concert_info = $prep->fetch();

@@ -1,6 +1,6 @@
 <?php
 
-$boekid = htmlentities($_GET['boekid'], null, 'UTF-8');
+$boekid = geefGetVeilig('boekid');
 if (!is_numeric($boekid) || $boekid < 1)
 {
     header("Location: 404.php");

@@ -7,10 +7,10 @@ if (!$_SESSION)
 
 if (!empty($_POST))
 {
-    if (!empty($_POST['login_naam']) && !empty($_POST['login_wach']))
+    if (geefPostVeilig('login_naam') && geefPostVeilig('login_wach'))
     {
-        $login['naam'] = htmlentities($_POST['login_naam'], ENT_QUOTES, 'UTF-8');
-        $login['wach'] = hash('sha512', $_POST['login_wach']);
+        $login['naam'] = geefPostVeilig('login_naam');
+        $login['wach'] = hash('sha512', geefPostVeilig('login_wach'));
 
         $connectie = newPDO();
 

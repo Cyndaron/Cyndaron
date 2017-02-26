@@ -11,21 +11,21 @@ class ConfiguratiePagina extends Pagina
     {
         if ($_POST)
         {
-            maakInstelling('websitenaam', $_POST['websitenaam']);
-            maakInstelling('websitelogo', $_POST['websitelogo']);
-            maakInstelling('ondertitel', $_POST['ondertitel']);
-            maakInstelling('favicon', $_POST['favicon']);
-            maakInstelling('achtergrondkleur', $_POST['achtergrondkleur']);
-            maakInstelling('menukleur', $_POST['menukleur']);
-            maakInstelling('menuachtergrond', $_POST['menuachtergrond']);
-            maakInstelling('artikelkleur', $_POST['artikelkleur']);
-            maakInstelling('standaardcategorie', $_POST['standaardcategorie']);
-            maakInstelling('facebook_share', @$_POST['facebook_share']);
-            maakInstelling('extra_bodycode', $_POST['extra_bodycode']);
-            maakInstelling('menutype', $_POST['menutype']);
-            maakInstelling('menuthema', $_POST['menuthema']);
+            maakInstelling('websitenaam', geefPostVeilig('websitenaam'));
+            maakInstelling('websitelogo', geefPostVeilig('websitelogo'));
+            maakInstelling('ondertitel', geefPostVeilig('ondertitel'));
+            maakInstelling('favicon', geefPostVeilig('favicon'));
+            maakInstelling('achtergrondkleur', geefPostVeilig('achtergrondkleur'));
+            maakInstelling('menukleur', geefPostVeilig('menukleur'));
+            maakInstelling('menuachtergrond', geefPostOnveilig('menuachtergrond'));
+            maakInstelling('artikelkleur', geefPostVeilig('artikelkleur'));
+            maakInstelling('standaardcategorie', geefPostVeilig('standaardcategorie'));
+            maakInstelling('facebook_share', geefPostVeilig('facebook_share'));
+            maakInstelling('extra_bodycode', geefPostOnveilig('extra_bodycode'));
+            maakInstelling('menutype', geefPostVeilig('menutype'));
+            maakInstelling('menuthema', geefPostVeilig('menuthema'));
 
-            $menu = $_POST['menu'];
+            $menu = geefPostVeilig('menu');
             $split1 = explode(';', $menu);
             $nieuwmenu = null;
 

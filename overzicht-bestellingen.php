@@ -5,7 +5,7 @@ require_once('functies.kaartverkoop.php');
 require_once('pagina.php');
 
 $connectie = newPDO();
-$concert_id = !empty($_GET['id']) ? htmlentities($_GET['id'], NULL, 'UTF-8') : geefEen('SELECT MAX(id) FROM kaartverkoop_concerten');
+$concert_id = geefGetVeilig('id') ?: geefEen('SELECT MAX(id) FROM kaartverkoop_concerten');
 
 $kaartverkoop_per_bestelling = array();
 

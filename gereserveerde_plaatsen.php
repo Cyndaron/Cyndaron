@@ -4,7 +4,7 @@ require_once('functies.db.php');
 require_once('functies.kaartverkoop.php');
 
 $connectie = newPDO();
-$concert_id = intval(htmlspecialchars($_GET['id'], ENT_NOQUOTES, 'UTF-8'));
+$concert_id = intval(geefGetVeilig('id'));
 
 $bezette_plaatsen_per_rij = array();
 

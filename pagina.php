@@ -19,9 +19,11 @@ require_once('functies.url.php');
 require_once('functies.db.php');
 require_once('functies.pagina.php');
 require_once('functies.gebruikers.php');
+require_once(__DIR__ . '/sys/classes/Widget.class.php');
+
 // Verwijs oude URLs door
 
-if (!empty($_GET['friendlyurls']) && $url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
+if (!empty(geefGetVeilig('friendlyurls')) && $url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
 {
 	header('Location: '.$url);
 }

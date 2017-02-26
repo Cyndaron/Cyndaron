@@ -4,13 +4,13 @@ require_once('functies.pagina.php');
 require_once('functies.gebruikers.php');
 require_once('pagina.php');
 
-$actie = $_GET['actie'];
+$actie = geefGetVeilig('actie');
 
 if ($actie == 'bewerken')
 {
-    $id = $_GET['id'];
-    $naam = $_POST['titel'];
-    $notities = $_POST['artikel'];
+    $id = geefGetVeilig('id');
+    $naam = geefPostOnveilig('titel');
+    $notities = geefPostOnveilig('artikel');
 
     if ($id > 0) // Als het id is meegegeven bestond de categorie al.
     {

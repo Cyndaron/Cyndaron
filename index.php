@@ -8,7 +8,7 @@ if (!file_exists(__DIR__ . '/instellingen.php'))
     die();
 }
 
-$request = !empty($_GET['pagina']) ? htmlentities($_GET['pagina'], null, 'UTF-8') : '/';
+$request = geefGetVeilig('pagina') ?: '/';
 
 if ((substr($request, 0, 1) == '.' || substr($request, 0, 1) == '/') && $request != '/')
 {

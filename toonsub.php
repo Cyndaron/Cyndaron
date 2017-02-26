@@ -9,7 +9,7 @@ class StatischePagina extends Pagina
     public function __construct()
     {
         $connectie = newPDO();
-        $subid = intval($_GET['id']);
+        $subid = intval(geefGetVeilig('id'));
         if (!is_numeric($subid) || $subid <= 0)
         {
             header('Location: 404.php');
@@ -17,12 +17,12 @@ class StatischePagina extends Pagina
         }
         $subnaam = geefEen('SELECT naam FROM subs WHERE id=?', array($subid));
         $reactiesaan = geefEen('SELECT reacties_aan FROM subs WHERE id=?', array($subid));
-        $referrer = htmlentities(@$_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8');
+
         if ($reactiesaan && !empty($_POST))
         {
-            $auteur = $_POST['auteur'];
-            $reactie = $_POST['reactie'];
-            $antispam = strtolower($_POST['antispam']);
+            $auteur = geefPostVeilig('auteur');
+            $reactie = geefPostVeilig('reactie');
+            $antispam = strtolower(geefPostVeilig('antispam'));
             if ($auteur && $reactie && ($antispam == 'acht' || $antispam == '8'))
             {
                 $datum = date('Y-m-d H:i:s');

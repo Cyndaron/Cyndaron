@@ -3,17 +3,17 @@ require_once('functies.db.php');
 require_once('functies.kaartverkoop.php');
 require_once('pagina.php');
 
-if(empty($_POST) || !$_POST['concert_id'])
+if(empty($_POST) || empty(geefPostVeilig('concert_id')))
 {
-	$pagina=new Pagina('Bestelling niet verwerkt');
+	$pagina = new Pagina('Bestelling niet verwerkt');
 	$pagina->toonPrePagina();
 	echo 'De bestellingsgegevens zijn niet goed aangekomen.';
 	$pagina->toonPostPagina();
 	die();
 }
 
-$connectie=newPDO();
-$concert_id=geefPostVeilig('concert_id');
+$connectie = newPDO();
+$concert_id = geefPostVeilig('concert_id');
 $postcode = geefPostVeilig('postcode');
 $buitenland = geefPostVeilig('buitenland') ? true : false;
 $ophalenDoorKoorlid = geefPostVeilig('ophalen_door_koorlid') ? true : false;

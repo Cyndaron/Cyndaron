@@ -8,7 +8,7 @@ class CategoriePagina extends Pagina
     public function __construct()
     {
         $this->connectie = newPDO();
-        $id = ($_GET['id']);
+        $id = geefGetVeilig('id');
 
         if ($id != 'fotoboeken')
         {

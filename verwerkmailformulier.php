@@ -1,7 +1,7 @@
 <?php
 require_once('functies.db.php');
 require_once('pagina.php');
-$id = htmlentities($_GET['id'], null, 'UTF-8');
+$id = intval(geefGetVeilig('id'));
 $connectie = newPDO();
 $formprep = $connectie->prepare('SELECT * FROM mailformulieren WHERE id=?');
 $formprep->execute(array($id));
@@ -9,18 +9,20 @@ $form = $formprep->fetch();
 
 if ($form['naam'])
 {
-    if (strtolower($_POST['antispam']) == strtolower($form['antispamantwoord']))
+    if (strtolower(geefPostVeilig('antispam')) == strtolower($form['antispamantwoord']))
     {
         foreach (array_keys($_POST) as $vraag)
         {
+            $vraag = wasVariabele($vraag);
+
             if ($vraag !== 'antispam')
-                $tekst .= htmlentities($vraag, null, 'UTF-8') . ': ' . strtr(htmlentities($_POST[$vraag], null, 'UTF-8'), array('\\' => '')) . "\n";
+                $tekst .= $vraag . ': ' . strtr(geefPostVeilig($vraag), array('\\' => '')) . "\n";
         }
         $ontvanger = $form['mailadres'];
         $onderwerp = $form['naam'];
-        if ($_POST['E-mailadres'])
+        if (geefPostVeilig('E-mailadres'))
         {
-            $extraheaders = 'From: ' . $_POST['E-mailadres'];
+            $extraheaders = 'From: ' . geefPostVeilig('E-mailadres');
         }
         else
         {

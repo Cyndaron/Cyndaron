@@ -4,14 +4,14 @@ require_once('functies.pagina.php');
 require_once('functies.gebruikers.php');
 require_once('pagina.php');
 
-$actie = $_GET['actie'];
+$actie = geefGetVeilig('actie');
 
 if ($actie == 'bewerken')
 {
-    $id = $_GET['id'];
-    $titel = $_POST['titel'];
-    $beschrijving = parseTextForInlineImages($_POST['artikel']);
-    $alleentitel = parseCheckBoxAlsBool($_POST['alleentitel']);
+    $id = geefGetVeilig('id');
+    $titel = geefPostOnveilig('titel');
+    $beschrijving = parseTextForInlineImages(geefPostOnveilig('artikel'));
+    $alleentitel = parseCheckBoxAlsBool(geefPostOnveilig('alleentitel'));
 
     if ($id > 0) // Als het id is meegegeven bestond de categorie al.
     {

@@ -4,15 +4,15 @@ require_once('functies.pagina.php');
 require_once('functies.gebruikers.php');
 require_once('pagina.php');
 
-$actie = $_GET['actie'];
+$actie = geefGetVeilig('actie');
 
 if ($actie == 'bewerken')
 {
-    $id = $_GET['id'];
-    $titel = $_POST['titel'];
-    $tekst = parseTextForInlineImages($_POST['artikel']);
-    $reacties_aan = @$_POST['reacties_aan'];
-    $categorieid = @$_POST['categorieid'];
+    $id = geefGetVeilig('id');
+    $titel = geefPostOnveilig('titel');
+    $tekst = parseTextForInlineImages(geefPostOnveilig('artikel'));
+    $reacties_aan = geefPostOnveilig('reacties_aan');
+    $categorieid = geefPostOnveilig('categorieid');
 
     if (!$categorieid)
         $categorieid = '0';
