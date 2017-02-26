@@ -44,8 +44,9 @@ class StatischePagina extends Pagina
 
         echo geefEen('SELECT tekst FROM subs WHERE id=?', array($subid));
 
-        $reacties = $connectie->prepare("SELECT *,DATE_FORMAT(datum, '%d-%m-%Y') AS rdatum,DATE_FORMAT(datum, '%H:%i') AS rtijd FROM reacties WHERE subid=? ORDER BY datum ASC");
-        $reacties->execute(array($subid));
+        $prep = $connectie->prepare("SELECT *,DATE_FORMAT(datum, '%d-%m-%Y') AS rdatum,DATE_FORMAT(datum, '%H:%i') AS rtijd FROM reacties WHERE subid=? ORDER BY datum ASC");
+        $prep->execute(array($subid));
+        $reacties = $prep->fetchAll();
         $reactiesaanwezig = FALSE;
 
         if (count($reacties) > 0)
@@ -53,7 +54,7 @@ class StatischePagina extends Pagina
             $reactiesaanwezig = TRUE;
             echo '<hr>';
 
-            foreach ($reacties->fetchAll() as $reactie)
+            foreach ($reacties as $reactie)
             {
                 echo '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">';
                 printf('Reactie van <strong>%s</strong> op %s om %s:', $reactie['auteur'], $reactie['rdatum'], $reactie['rtijd']);
