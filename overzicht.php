@@ -85,7 +85,7 @@ class OverzichtPagina extends Pagina
 
         parent::__construct('Paginaoverzicht');
         $this->maakNietDelen(true);
-        $this->voegScriptToe('/sys/js/pagina-overzicht.js');
+        $this->voegScriptToe('sys/js/pagina-overzicht.js');
         $this->toonPrepagina();
         $connectie = newPDO();
 

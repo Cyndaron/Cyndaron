@@ -44,7 +44,7 @@ class ConfiguratiePagina extends Pagina
         $this->maakNietDelen(true);
         $this->toonPrePagina();
         $this->connectie = newPDO();
-        $this->voegScriptToe('/sys/js/test-kleuren.js')
+        $this->voegScriptToe('sys/js/test-kleuren.js')
 
         ?>
         <form method="post" action="configuratie.php" class="form-horizontal">

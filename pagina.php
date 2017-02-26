@@ -77,11 +77,11 @@ class Pagina
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?php echo $this->paginanaam . ' - ' . $this->websitenaam;?></title>
         <?php
-        echo '<link href="/sys/css/normalize.css" type="text/css" rel="stylesheet" />';
-        echo '<link href="/sys/css/bootstrap.css" type="text/css" rel="stylesheet" />';
-        echo '<link href="/sys/css/cyndaron.css" type="text/css" rel="stylesheet" />';
-        echo '<link href="/sys/css/lightbox.css" type="text/css" rel="stylesheet" />';
-        echo '<link href="/user.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="sys/css/normalize.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="sys/css/bootstrap.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="sys/css/cyndaron.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="sys/css/lightbox.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="user.css" type="text/css" rel="stylesheet" />';
         if ($favicon = geefInstelling('favicon'))
         {
             $extensie = substr(strrchr($favicon, "."), 1);
@@ -113,7 +113,7 @@ class Pagina
 			if (geefInstelling('facebook_share')==1)
 			{
 				echo '<div id="fb-root"></div>
-				<script type="text/javascript" src="/sys/js/facebook-like.js"></script>';
+				<script type="text/javascript" src="sys/js/facebook-like.js"></script>';
 			}
 		}
 
@@ -167,7 +167,7 @@ class Pagina
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="/"><?=$websitelogo . $this->websitenaam;?></a>
+              <a class="navbar-brand" href="./"><?=$websitelogo . $this->websitenaam;?></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -269,9 +269,9 @@ class Pagina
         ?>
         </div></div></div>
 
-        <script type="text/javascript" src="/sys/js/email-antispam.js"></script>
-        <script type="text/javascript" src="/sys/js/jquery-3.1.1.min.js"></script>
-        <script type="text/javascript" src="/sys/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="sys/js/email-antispam.js"></script>
+        <script type="text/javascript" src="sys/js/jquery-3.1.1.min.js"></script>
+        <script type="text/javascript" src="sys/js/bootstrap.min.js"></script>
         <?php
         foreach ($this->extraScripts as $extraScript)
         {

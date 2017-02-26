@@ -6,7 +6,6 @@ ErrorDocument 403 /403.php
 ErrorDocument 404 /404.php
 
 RewriteEngine On
-RewriteBase /
 
 RewriteRule ^$ index.php?pagina=/ [QSA,NC,L]
 

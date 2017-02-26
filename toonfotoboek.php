@@ -20,7 +20,7 @@ class FotoalbumPagina extends Pagina
         $controls = knopcode('bewerken', 'editor.php?type=fotoboek&amp;id=' . $boekid, 'Dit fotoboek bewerken');
         parent::__construct($boeknaam);
         $this->maakTitelknoppen($controls);
-        $this->voegScriptToe('/sys/js/lightbox.min.js');
+        $this->voegScriptToe('sys/js/lightbox.min.js');
         $this->toonPrepagina();
 
         if ($dirArray = scandir("./fotoalbums/$boekid"))
