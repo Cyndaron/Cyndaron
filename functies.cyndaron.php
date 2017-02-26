@@ -2,7 +2,7 @@
 function geefCyndaronVersie()
 {
     // Dit is de versie van de Cyndaron Engine.
-    return '4.9.98.0';
+    return '4.9.99.0';
 }
 
 function geefProductCodenaam()
@@ -12,7 +12,7 @@ function geefProductCodenaam()
 
 function geefProductVersie()
 {
-    return '5.0 alpha 0';
+    return '5.0 beta 0';
 }
 
 function geefProductNaam()
