@@ -180,12 +180,37 @@ class Pagina
         {
             foreach($menuarray as $menuitem)
             {
-                if ($this->menuItemIsHuidigePagina($menuitem['link']))
-                    echo '<li class="active">';
-                else
-                    echo '<li>';
+                if (strpos($menuitem['link'], 'tooncategorie') !== false && strpos($menuitem['link'], '#dd') !== false)
+                {
+                    $id = intval(str_replace(['tooncategorie.php?id=', '#dd'], '', $menuitem['link']));
+                    $paginasInCategorie = $this->connectie->prepare('SELECT * FROM subs WHERE categorieid=? ORDER BY naam ASC;');
+                    $paginasInCategorie->execute([$id]);
 
-                echo '<a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . '</a></li>';
+//                    if ($this->menuItemIsHuidigePagina($menuitem['link']))
+//                        echo '<li class="active dropdown">';
+//                    else
+                        echo '<li class="dropdown">';
+
+                    echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' . $menuitem['naam'] . '<span class="caret"></span></a>';
+                    echo '<ul class="dropdown-menu">';
+
+                    foreach ($paginasInCategorie->fetchAll() as $pagina)
+                    {
+                        $link = geefFriendlyUrl('toonsub.php?id=' . $pagina['id']);
+                        printf('<li><a href="%s">%s</a></li>', $link, $pagina['naam']);
+                    }
+
+                    echo '</ul></li>';
+                }
+                else
+                {
+                    if ($this->menuItemIsHuidigePagina($menuitem['link']))
+                        echo '<li class="active">';
+                    else
+                        echo '<li>';
+
+                    echo '<a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . '</a></li>';
+                }
             }
         }
 
@@ -239,6 +264,8 @@ class Pagina
         $menuarray = $this->geefMenu();
         foreach ($menuarray as $menuitem)
         {
+            $menuitem['link'] = str_replace('#dd', '', $menuitem['link']);
+
             if ($this->menuItemIsHuidigePagina($menuitem['link']))
             {
                 echo '<li>' . $menuitem['naam'] . "</li>\n";
