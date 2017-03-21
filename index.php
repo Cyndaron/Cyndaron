@@ -22,6 +22,17 @@ if (geefUnfriendlyUrl($hoofdurl) == geefUnfriendlyUrl($request))
     header('Location: /');
 }
 
+// Verwijs oude URLs door
+if (!empty(geefGetVeilig('friendlyurls')) && $url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
+{
+    header('Location: '.$url);
+}
+
+if (empty($_SESSION))
+{
+    session_start();
+}
+
 //Hoofdpagina
 if ($request == '/')
 {

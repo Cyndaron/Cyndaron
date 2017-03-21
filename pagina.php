@@ -21,18 +21,6 @@ require_once('functies.pagina.php');
 require_once('functies.gebruikers.php');
 require_once(__DIR__ . '/sys/classes/Widget.class.php');
 
-// Verwijs oude URLs door
-
-if (!empty(geefGetVeilig('friendlyurls')) && $url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
-{
-	header('Location: '.$url);
-}
-
-if (empty($_SESSION))
-{
-	session_start();
-}
-
 class Pagina
 {
     protected $extraMeta = "";
