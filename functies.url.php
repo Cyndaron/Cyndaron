@@ -97,9 +97,29 @@ function geefPostOnveilig($var)
     return $_POST[$var];
 }
 
+function postIsLeeg(): bool
+{
+    if (empty($_POST))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+function getIsLeeg(): bool
+{
+    if (empty($_GET))
+    {
+        return true;
+    }
+
+    return false;
+}
+
 function wasVariabele($var)
 {
-    // Dit filters niet-bestaande en ongewenste UTF-8 tekens uit een string.
+    // Dit filtert niet-bestaande en ongewenste UTF-8 tekens uit een string.
     // Line feeds, carriage returns en horizontale tabs zijn toegestaan.
     // Let op: de (zelden gebruikte) mb4-tekens worden er ook uitgefilterd.
     $output = preg_replace('/[\x00-\x08\x10\x0B\x0C\x0E-\x19\x7F]|(?<=^|[\x00-\x7F])[\x80-\xBF]+'.

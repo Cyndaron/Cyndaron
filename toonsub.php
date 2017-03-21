@@ -18,7 +18,7 @@ class StatischePagina extends Pagina
         $subnaam = geefEen('SELECT naam FROM subs WHERE id=?', array($subid));
         $reactiesaan = geefEen('SELECT reacties_aan FROM subs WHERE id=?', array($subid));
 
-        if ($reactiesaan && !empty($_POST))
+        if ($reactiesaan && !postIsLeeg())
         {
             $auteur = geefPostVeilig('auteur');
             $reactie = geefPostVeilig('reactie');

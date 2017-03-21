@@ -5,7 +5,7 @@ require_once('functies.db.php');
 if (!$_SESSION)
     session_start();
 
-if (!empty($_POST))
+if (!postIsLeeg())
 {
     if (geefPostVeilig('login_naam') && geefPostVeilig('login_wach'))
     {

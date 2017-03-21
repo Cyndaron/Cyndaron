@@ -9,7 +9,7 @@ class ConfiguratiePagina extends Pagina
 {
     public function __construct()
     {
-        if ($_POST)
+        if (!postIsLeeg())
         {
             maakInstelling('websitenaam', geefPostVeilig('websitenaam'));
             maakInstelling('websitelogo', geefPostVeilig('websitelogo'));

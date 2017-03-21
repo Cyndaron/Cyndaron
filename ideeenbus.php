@@ -20,7 +20,7 @@ class Ideeenbus extends Pagina
             echo new GoedeMelding('Idee verwijderd.');
         }
 
-        if (!empty($_POST))
+        if (!postIsLeeg())
         {
             $naam = geefPostVeilig('naam');
             $tekst = geefPostVeilig('idee');

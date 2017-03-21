@@ -3,7 +3,7 @@ require_once('functies.db.php');
 require_once('functies.kaartverkoop.php');
 require_once('pagina.php');
 
-if(empty($_POST) || empty(geefPostVeilig('concert_id')))
+if(postIsLeeg() || empty(geefPostVeilig('concert_id')))
 {
 	$pagina = new Pagina('Bestelling niet verwerkt');
 	$pagina->toonPrePagina();
