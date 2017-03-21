@@ -4,19 +4,22 @@ require_once('pagina.php');
 
 class MinecraftLedenPagina extends Pagina
 {
+	private $niveau = [
+		"In de Goelag",
+		"Aspirant-lid",
+		"Lid",
+		"Moderator",
+		"Medebeheerder",
+		"Eeuwige Dictator en Geliefde Leider van TXcraft",
+	];
+
     public function __construct()
     {
         parent::__construct('Spelers');
         $this->toonPrePagina();
 
-        $connectie = newPDO();
-        $spelers = $connectie->query("SELECT * FROM mcleden ORDER BY niveau DESC, mcnaam ASC");
-        $niveau[0] = "In de Goelag";
-        $niveau[1] = "Aspirant-lid";
-        $niveau[2] = "Lid";
-        $niveau[3] = "Moderator";
-        $niveau[4] = "Medebeheerder";
-        $niveau[5] = "Eeuwige Dictator en Geliefde Leider van TXcraft";
+        $spelers = $this->connectie->query("SELECT * FROM mcleden ORDER BY niveau DESC, mcnaam ASC");
+
         $tePreloaden = [];
 
         $laatsteniveau = 0;
@@ -57,17 +60,8 @@ class MinecraftLedenPagina extends Pagina
             if ($speler['niveau'] >= 3 && $speler['niveau'] <= 5)
             {
                 echo '<br />Niveau: ';
-                echo $niveau[$speler['niveau']];
+                echo $this->niveau[$speler['niveau']];
             }
-
-            /*if ($speler['whovian']==1)
-            {
-                echo '<br />Klasse: <abbr title="Deze gebruiker kijkt naar Doctor Who">Timelord</abbr>';
-            }
-            elseif($speler['whovian']==2)
-            {
-                echo '<br />Klasse: <abbr title="Deze gebruiker kijkt niet naar Doctor Who">Weeping Angels</abbr>';
-            }*/
 
             echo '</td>';
             echo '</tr>';

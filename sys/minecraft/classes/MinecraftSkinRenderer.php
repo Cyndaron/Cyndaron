@@ -12,9 +12,8 @@ class MinecraftSkinRenderer
      * @param string $username
      * @return resource
      */
-    public static function getSkinImageByUsername($username = 'cajogos')
+    public static function getSkinImageByUsername($username = '')
     {
-        //die(realpath(self::FALLBACK_IMAGE));
         $url = 'https://s3.amazonaws.com/MinecraftSkins/' . $username . '.png';
         if (trim($username) == '')
         {
