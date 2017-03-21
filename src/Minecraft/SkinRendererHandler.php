@@ -1,9 +1,6 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-require_once __DIR__ . '/Point.php';
-require_once __DIR__ . '/Polygon.php';
-require_once __DIR__ . '/SkinRenderer.php';
 require_once __DIR__ . '/../../functies.url.php';
 
 /* ***** MINECRAFT 3D Skin Generator *****

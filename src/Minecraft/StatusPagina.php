@@ -2,7 +2,6 @@
 namespace Cyndaron\Minecraft;
 
 require_once __DIR__ . '/../../pagina.php';
-require_once __DIR__ .'/Server.php';
 
 class StatusPagina extends \Pagina
 {

@@ -1,6 +1,8 @@
 <?php
 function verwerkUrl($url)
 {
+    global $endpoints;
+
     $url = geefUnfriendlyUrl($url);
     if (strpos($url, '?') !== FALSE)
     {
@@ -18,7 +20,12 @@ function verwerkUrl($url)
         $bestand = $url;
     }
 
-    if (file_exists($bestand))
+    if (array_key_exists($bestand, $endpoints))
+    {
+        $classname = $endpoints[$bestand];
+        $handler = new $classname();
+    }
+    elseif (file_exists($bestand))
     {
         include($bestand);
     }

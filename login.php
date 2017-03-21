@@ -2,9 +2,6 @@
 require_once('pagina.php');
 require_once('functies.db.php');
 
-if (!$_SESSION)
-    session_start();
-
 if (!postIsLeeg())
 {
     if (geefPostVeilig('login_naam') && geefPostVeilig('login_wach'))

@@ -1,9 +1,10 @@
 <?php
-require_once('functies.db.php');
-require_once('pagina.php');
-require_once('functies.kaartverkoop.php');
+namespace Cyndaron\Kaartverkoop;
 
-class KaartenBestellenPagina extends Pagina
+require_once __DIR__ . '/../../functies.db.php';
+require_once __DIR__ . '/../../pagina.php';
+
+class KaartenBestellenPagina extends \Pagina
 {
     public function __construct()
     {
@@ -67,14 +68,14 @@ class KaartenBestellenPagina extends Pagina
 					<button type="button" class="aantalKaarten btn btn-default aantalKaarten-decrease" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-minus"></span></button>
 				</td>
 		</tr>',
-                        $kaartsoort['naam'], naarEuro($kaartsoort['prijs']), $kaartsoort['id']);
+                        $kaartsoort['naam'], Util::naarEuro($kaartsoort['prijs']), $kaartsoort['id']);
                 }
                 ?>
             </table>
             <div <?= $concert_info['bezorgen_verplicht'] ? 'style="display:none"' : ''; ?>>
                 <input id="bezorgen" name="bezorgen" type="checkbox" value="1" class="berekenTotaalprijsOpnieuw">
                 <label for="bezorgen">
-                    Bezorg mijn kaarten thuis (meerprijs van <?php echo naarEuro($concert_info['verzendkosten']); ?> per kaart)
+                    Bezorg mijn kaarten thuis (meerprijs van <?php echo Util::naarEuro($concert_info['verzendkosten']); ?> per kaart)
                 </label>
             </div>
 
@@ -85,7 +86,7 @@ class KaartenBestellenPagina extends Pagina
                 <?php else: ?>
                     <input id="gereserveerde_plaatsen" class="berekenTotaalprijsOpnieuw" name="gereserveerde_plaatsen" type="checkbox" value="1"/>
                     <label for="gereserveerde_plaatsen">
-                        Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs van <?php echo naarEuro($concert_info['toeslag_gereserveerde_plaats']); ?>per kaart)
+                        Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs van <?php echo Util::naarEuro($concert_info['toeslag_gereserveerde_plaats']); ?>per kaart)
                     </label>
                 <?php endif; ?>
                 <br/>
@@ -98,7 +99,7 @@ class KaartenBestellenPagina extends Pagina
                 <p>
                     Bij dit concert is het alleen mogelijk om uw kaarten te laten thuisbezorgen. Als u op Walcheren
                     woont is dit gratis. Woont u buiten Walcheren, dan kost het
-                    thuisbezorgen <?= naarEuro($concert_info['verzendkosten']); ?> per kaart.<br>Het is ook mogelijk
+                    thuisbezorgen <?= Util::naarEuro($concert_info['verzendkosten']); ?> per kaart.<br>Het is ook mogelijk
                     om uw kaarten te laten ophalen door een koorlid. Dit is gratis.
                     <a href="#" onclick="buitenland = true;">Woont u in het buitenland? Klik dan hier.</a>
                 </p>
@@ -294,5 +295,3 @@ class KaartenBestellenPagina extends Pagina
         $this->toonPostPagina();
     }
 }
-
-$pagina = new KaartenBestellenPagina();

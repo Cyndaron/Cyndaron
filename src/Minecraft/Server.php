@@ -1,8 +1,6 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-require_once __DIR__ . '/Util.php';
-
 class Server
 {
     protected $name;
