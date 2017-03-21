@@ -1,4 +1,5 @@
 <?php
+namespace Cyndaron\Minecraft;
 
 /**
  * Class Point
