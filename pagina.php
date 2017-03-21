@@ -79,8 +79,8 @@ class Pagina
         <?php
         echo '<link href="sys/css/normalize.css" type="text/css" rel="stylesheet" />';
         echo '<link href="sys/css/bootstrap.css" type="text/css" rel="stylesheet" />';
-        echo '<link href="sys/css/cyndaron.css" type="text/css" rel="stylesheet" />';
         echo '<link href="sys/css/lightbox.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="sys/css/cyndaron.css" type="text/css" rel="stylesheet" />';
         echo '<link href="user.css" type="text/css" rel="stylesheet" />';
         if ($favicon = geefInstelling('favicon'))
         {

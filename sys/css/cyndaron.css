@@ -51,6 +51,12 @@ h1, h2, h3, h4, h5, h6
     font-family: Trebuchet MS, Arial, sans-serif !important;
 }
 
+/* Native font stack */
+body, .tooltip, .popover
+{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Cantarell", "Fira Sans", "Helvetica Neue",  Helvetica, Arial, sans-serif;
+}
+
 img:not(.lb-image)
 {
     border: 0px;
