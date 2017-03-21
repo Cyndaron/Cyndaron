@@ -4,7 +4,7 @@ namespace Cyndaron\Minecraft;
 require_once __DIR__ . '/../../functies.db.php';
 require_once __DIR__ . '/../../pagina.php';
 
-class MinecraftLedenPagina extends \Pagina
+class LedenPagina extends \Pagina
 {
     private $niveau = [
         "In de Goelag",

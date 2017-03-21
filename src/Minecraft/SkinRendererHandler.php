@@ -38,9 +38,9 @@ class SkinRendererHandler
 
         $times[] = ['Start', $this->microtime_float()];
 
-        $username = ǵeefGetVeilig('user');
+        $username = geefGetVeilig('user');
 
-        $img_png = MinecraftSkinRenderer::getSkinImageByUsername($username);
+        $img_png = SkinRenderer::getSkinImageByUsername($username);
 
         $width = imagesx($img_png);
         $height = imagesy($img_png);
@@ -51,9 +51,8 @@ class SkinRendererHandler
         if (!($width == $height * 2) || $height % 32 != 0)
         {
             // Bad ratio created
-            $img_png = imagecreatefrompng(MinecraftSkinRenderer::FALLBACK_IMAGE);
+            $img_png = imagecreatefrompng(SkinRenderer::FALLBACK_IMAGE);
         }
-
 
         $hd_ratio = $height / 32; // Set HD ratio to 2 if the skin is 128x64
 
@@ -67,6 +66,16 @@ class SkinRendererHandler
         // Rotation variables in radians (3D Rendering)
         $alpha = deg2rad($vertical_rotation); // Vertical rotation on the X axis.
         $omega = deg2rad($horizontal_rotation); // Horizontal rotation on the Y axis.
+
+        // Snif...
+        global $cos_alpha;
+        global $sin_alpha;
+        global $cos_omega;
+        global $sin_omega;
+        global $minX;
+        global $maxX;
+        global $minY;
+        global $maxY;
 
         // Cosine and Sine values
         $cos_alpha = cos($alpha);
@@ -83,7 +92,7 @@ class SkinRendererHandler
             'sin_omega' => sin(0),
         ];
         $alpha_head = 0;
-        $omega_head = deg2rad(geefGetVeilig('hrh'));
+        $omega_head = deg2rad(floatval(geefGetVeilig('hrh')));
         $parts_angles['head'] = [
             'cos_alpha' => cos($alpha_head),
             'sin_alpha' => sin($alpha_head),
@@ -96,7 +105,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_head),
             'sin_omega' => sin($omega_head),
         ];
-        $alpha_right_arm = deg2rad(geefGetVeilig('vrra'));
+        $alpha_right_arm = deg2rad(floatval(geefGetVeilig('vrra')));
         $omega_right_arm = 0;
         $parts_angles['rightArm'] = [
             'cos_alpha' => cos($alpha_right_arm),
@@ -104,7 +113,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_right_arm),
             'sin_omega' => sin($omega_right_arm),
         ];
-        $alpha_left_arm = deg2rad(geefGetVeilig('vrla'));
+        $alpha_left_arm = deg2rad(floatval(geefGetVeilig('vrla')));
         $omega_left_arm = 0;
         $parts_angles['leftArm'] = [
             'cos_alpha' => cos($alpha_left_arm),
@@ -112,7 +121,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_left_arm),
             'sin_omega' => sin($omega_left_arm),
         ];
-        $alpha_right_leg = deg2rad(geefGetVeilig('vrrl'));
+        $alpha_right_leg = deg2rad(floatval(geefGetVeilig('vrrl')));
         $omega_right_leg = 0;
         $parts_angles['rightLeg'] = [
             'cos_alpha' => cos($alpha_right_leg),
@@ -120,7 +129,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_right_leg),
             'sin_omega' => sin($omega_right_leg),
         ];
-        $alpha_left_leg = deg2rad(geefGetVeilig('vrll'));
+        $alpha_left_leg = deg2rad(floatval(geefGetVeilig('vrll')));
         $omega_left_leg = 0;
         $parts_angles['leftLeg'] = [
             'cos_alpha' => cos($alpha_left_leg),
@@ -1005,12 +1014,12 @@ class SkinRendererHandler
         $ratio = intval(geefGetVeilig('ratio'));
         $ratio = ($ratio < $min_ratio) ? $min_ratio : $ratio;
 
-        if (MinecraftSkinRenderer::SECONDS_TO_CACHE > 0)
+        if (SkinRenderer::SECONDS_TO_CACHE > 0)
         {
-            $ts = gmdate("D, d M Y H:i:s", time() + MinecraftSkinRenderer::SECONDS_TO_CACHE) . ' GMT';
+            $ts = gmdate("D, d M Y H:i:s", time() + SkinRenderer::SECONDS_TO_CACHE) . ' GMT';
             header('Expires: ' . $ts);
             header('Pragma: cache');
-            header('Cache-Control: max-age=' . MinecraftSkinRenderer::SECONDS_TO_CACHE);
+            header('Cache-Control: max-age=' . SkinRenderer::SECONDS_TO_CACHE);
         }
 
         $image = null;

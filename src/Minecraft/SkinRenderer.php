@@ -15,13 +15,13 @@ class SkinRenderer
      */
     public static function getSkinImageByUsername($username = '')
     {
-        $url = 'https://s3.amazonaws.com/MinecraftSkins/' . $username . '.png';
         if (trim($username) == '')
         {
             $img_png = imagecreatefrompng(self::FALLBACK_IMAGE);
         }
         else
         {
+            $url = 'https://s3.amazonaws.com/MinecraftSkins/' . $username . '.png';
             $img_png = @imagecreatefrompng($url);
         }
 
