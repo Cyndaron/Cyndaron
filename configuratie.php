@@ -109,8 +109,13 @@ class ConfiguratiePagina extends Pagina
         echo '<h2>Informatie</h2>';
         echo geefProductNaam() . ' ' . geefProductVersie() . ' (' . geefProductCodenaam() . ')<br />';
         echo '© Michael Steenbeek, 2009-2014<br />';
-        echo 'Beschikbaar onder de ISC-licentie (zie het bestand LICENSE), m.u.v. CKeditor.<br />';
-        echo 'CKeditor gebruikt onder LGPL-licentie.<br />';
+        echo 'Beschikbaar onder de ISC-licentie (zie het bestand LICENSE), m.u.v. van de volgende onderdelen:<ul>';
+        echo '<li>Bootstrap: MIT-licentie (LICENSE.Bootstrap)</li>';
+        echo '<li>CKeditor: LGPL-licentie (ckeditor/LICENSE.md)</li>';
+        echo '<li>jQuery: MIT-licentie (LICENSE.jQuery)</li>';
+        echo '<li>Lightbox: MIT-licentie (LICENSE.Lightbox)</li>';
+        echo '<li>MinecraftSkinRenderer: BSD-3-licentie (LICENSE.MinecraftSkinRenderer)</li>';
+        echo '</ul>';
         echo 'Engineversie: ' . geefCyndaronVersie();
         $this->toonPostPagina();
     }
