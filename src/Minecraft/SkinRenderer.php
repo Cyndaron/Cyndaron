@@ -7,7 +7,7 @@ namespace Cyndaron\Minecraft;
 class SkinRenderer
 {
     const SECONDS_TO_CACHE = 604800; // Cache for 7 days
-    const FALLBACK_IMAGE = __DIR__ . '/../../sys/minecraft/res/char.png';
+    const FALLBACK_IMAGE = __DIR__ . '/char.png';
 
     /**
      * @param string $username

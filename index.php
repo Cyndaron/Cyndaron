@@ -7,6 +7,7 @@ $endpoints = [
     'overzicht-bestellingen.php' => '\Cyndaron\Kaartverkoop\OverzichtBestellingenPagina',
     'kaarten-gereserveerde-plaatsen' => '\Cyndaron\Kaartverkoop\GereserveerdePlaatsen',
     'mc-leden' => '\Cyndaron\Minecraft\LedenPagina',
+    'mc-skinrenderer' => '\Cyndaron\Minecraft\SkinRendererHandler',
     'mc-status' => '\Cyndaron\Minecraft\StatusPagina',
 ];
 
