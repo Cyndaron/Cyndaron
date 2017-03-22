@@ -2,7 +2,6 @@
 require('check.php');
 require_once('functies.pagina.php');
 require_once('functies.db.php');
-require_once('pagina.php');
 
 #migreer hoofdstukken naar subs
 $connectie = newPDO();
@@ -13,7 +12,7 @@ foreach ($hoofdstukken as $hoofdstuk)
 {
     $inhoud = "";
     $artikelen = $connectie->prepare('SELECT tekst FROM artikelen WHERE hid=? ORDER BY id DESC;');
-    $artikelen->execute(array($hoofdstuk['id']));
+    $artikelen->execute([$hoofdstuk['id']]);
     foreach ($artikelen as $artikel)
     {
         if ($inhoud != "")
@@ -28,7 +27,7 @@ foreach ($hoofdstukken as $hoofdstuk)
 
     $vorigeinhoud = "";
     $vorigeartikelen = $connectie->prepare('SELECT tekst FROM vorigeartikelen WHERE hid=? ORDER BY id ASC;');
-    $vorigeartikelen->execute(array($hoofdstuk['id']));
+    $vorigeartikelen->execute([$hoofdstuk['id']]);
     foreach ($vorigeartikelen as $vorigartikel)
     {
         if ($vorigeinhoud != "")
@@ -38,7 +37,7 @@ foreach ($hoofdstukken as $hoofdstuk)
         $vorigeinhoud .= $vorigartikel['tekst'];
     }
 
-    geefEen('INSERT INTO vorigesubs(id,naam,tekst) VALUES (?,?,?);', array($id, $hoofdstuk['naam'], $vorigeinhoud));
+    geefEen('INSERT INTO vorigesubs(id,naam,tekst) VALUES (?,?,?);', [$id, $hoofdstuk['naam'], $vorigeinhoud]);
 }
 
 $categorieen = $connectie->prepare('SELECT id FROM categorieen ORDER BY id ASC;');
@@ -61,9 +60,9 @@ foreach ($extramenuitems as $extramenuitem)
     voegToeAanMenu($extramenuitem['link'], $extramenuitem['naam']);
 }
 
-geefEen('DROP TABLE vorigeartikelen', array());
-geefEen('DROP TABLE artikelen', array());
-geefEen('DROP TABLE hoofdstukken', array());
-geefEen('DROP TABLE vastemenuitems', array());
+geefEen('DROP TABLE vorigeartikelen', []);
+geefEen('DROP TABLE artikelen', []);
+geefEen('DROP TABLE hoofdstukken', []);
+geefEen('DROP TABLE vastemenuitems', []);
 
 echo 'Script voltooid';

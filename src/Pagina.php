@@ -1,4 +1,6 @@
 <?php
+namespace Cyndaron;
+
 /*
  * Copyright © 2009-2017, Michael Steenbeek
  *
@@ -15,11 +17,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-require_once('functies.url.php');
-require_once('functies.db.php');
-require_once('functies.pagina.php');
-require_once('functies.gebruikers.php');
-require_once(__DIR__ . '/sys/classes/Widget.class.php');
+require_once __DIR__ . '/../functies.db.php';
+require_once __DIR__ . '/../functies.gebruikers.php';
+require_once __DIR__ . '/../functies.pagina.php';
+require_once __DIR__ . '/../functies.url.php';
+require_once(__DIR__ . '/../sys/classes/Widget.class.php');
 
 // Hopelijk tijdelijk
 // Verwijs oude URLs door

@@ -2,7 +2,6 @@
 require_once('check.php');
 require_once('functies.pagina.php');
 require_once('functies.gebruikers.php');
-require_once('pagina.php');
 
 $actie = geefGetVeilig('actie');
 

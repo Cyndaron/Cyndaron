@@ -1,7 +1,8 @@
 <?php
-require_once('functies.db.php');
-require_once('functies.pagina.php');
-require_once('pagina.php');
+namespace Cyndaron;
+
+require_once __DIR__ . '/../functies.db.php';
+require_once __DIR__ . '/../functies.url.php';
 
 class FotoalbumPagina extends Pagina
 {
@@ -93,9 +94,6 @@ class FotoalbumPagina extends Pagina
         {
             echo 'Dit album bestaat niet.<br />';
         }
-        #echo '<br /><a href="' . $_SESSION['referrer'] . "\">Terug</a>\n";
         $this->toonPostPagina();
     }
 }
-
-$pagina = new FotoalbumPagina();

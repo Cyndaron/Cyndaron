@@ -1,11 +1,12 @@
 <?php
 namespace Cyndaron\Kaartverkoop;
 
-require_once __DIR__ . '/../../pagina.php';
+use Cyndaron\Pagina;
+
 require_once __DIR__ . '/../../functies.db.php';
 
 // FIXME: Controle op boekingen voor een gesloten concert
-class VerwerkBestellingPagina extends \Pagina
+class VerwerkBestellingPagina extends Pagina
 {
     public function __construct()
     {

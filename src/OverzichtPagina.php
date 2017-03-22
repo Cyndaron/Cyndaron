@@ -1,8 +1,9 @@
 <?php
-require('check.php');
-require_once('functies.pagina.php');
-require_once('functies.db.php');
-require_once('pagina.php');
+namespace Cyndaron;
+
+require_once __DIR__ . '/../check.php';
+require_once __DIR__ . '/../functies.db.php';
+require_once __DIR__ . '/../functies.pagina.php';
 
 class OverzichtPagina extends Pagina
 {
@@ -109,12 +110,14 @@ class OverzichtPagina extends Pagina
 
         $subs = $connectie->prepare('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
         $subs->execute();
-        $subsPerCategorie = array();
+        $subsPerCategorie = [];
 
         foreach ($subs->fetchAll() as $sub)
         {
             if (empty($subsPerCategorie[$sub['categorie']]))
-                $subsPerCategorie[$sub['categorie']] = array();
+            {
+                $subsPerCategorie[$sub['categorie']] = [];
+            }
 
             $subsPerCategorie[$sub['categorie']][$sub['id']] = $sub['naam'];
         }
@@ -131,20 +134,20 @@ class OverzichtPagina extends Pagina
                 knop('verwijderen', 'overzicht.php?type=sub&amp;actie=verwijderen&amp;id=' . $subId, 'Verwijder deze sub', null, 16);
                 knop('aanmenutoevoegen', 'overzicht.php?type=sub&amp;actie=aanmenutoevoegen&amp;id=' . $subId, 'Voeg deze sub toe aan het menu', null, 16);
                 $vvsub = $connectie->prepare('SELECT * FROM vorigesubs WHERE id= ?');
-                $vvsub->execute(array($subId));
+                $vvsub->execute([$subId]);
 
                 if ($vvsub->fetchColumn())
                 {
                     knop('vorigeversie', 'editor.php?type=sub&amp;vorigeversie=1&amp;id=' . $subId, 'Vorige versie terugzetten', null, 16);
                 }
                 echo '</div></td><td>';
-                $subNaam = strtr($subNaam, array(' ' => '&nbsp;'));
+                $subNaam = strtr($subNaam, [' ' => '&nbsp;']);
                 echo '<span style="font-size: 15px;">';
                 echo '<a href="toonsub.php?id=' . $subId . '"><b>' . $subNaam . '</b></a>';
                 echo "</span></td></tr>\n";
             }
 
-            echo  '</table>';
+            echo '</table>';
         }
         ?>
 
@@ -152,11 +155,13 @@ class OverzichtPagina extends Pagina
         <h2>Categorieën</h2>
         <form method="post" action="overzicht.php?type=categorie&amp;actie=nieuw" class="form-inline">
             <div class="form-group">
-                <label for="naam">Nieuwe categorie:</label> <input class="form-control" id="naam" name="naam" type="text"/>
+                <label for="naam">Nieuwe categorie:</label> <input class="form-control" id="naam" name="naam"
+                                                                   type="text"/>
             </div>
-            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Aanmaken
+            </button>
         </form>
-        <br />
+        <br/>
         <table class="table table-striped table-bordered table-overzicht"><?php
             $categorieen = $connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC;');
             $categorieen->execute();
@@ -164,11 +169,13 @@ class OverzichtPagina extends Pagina
             {
                 ?>
                 <tr>
-                    <td><div class="btn-group"><?php
+                    <td>
+                        <div class="btn-group"><?php
                             knop('bewerken', 'editor.php?type=categorie&amp;id=' . $categorie['id'], 'Deze categorie bewerken', null, 16);
                             knop('verwijderen', 'overzicht.php?type=categorie&amp;actie=verwijderen&amp;id=' . $categorie['id'], 'Verwijder deze categorie', null, 16);
                             knop('aanmenutoevoegen', 'overzicht.php?type=categorie&amp;actie=aanmenutoevoegen&amp;id=' . $categorie['id'], 'Voeg deze categorie toe aan het menu', null, 16); ?>
-                        </div></td>
+                        </div>
+                    </td>
                     <td>
                         <a href="tooncategorie.php?id=<?php echo $categorie['id']; ?>"><b><?php echo $categorie['naam']; ?></b></a>
                     </td>
@@ -180,10 +187,13 @@ class OverzichtPagina extends Pagina
         <h2>Fotoboeken</h2>
         <form method="post" action="overzicht.php?type=fotoboek&amp;actie=nieuw" class="form-inline">
             <div class="form-group">
-                <label for="fobonaam">Nieuw fotoboek:</label> <input id="fobonaam" name="naam" type="text" class="form-control"/> <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+                <label for="fobonaam">Nieuw fotoboek:</label> <input id="fobonaam" name="naam" type="text"
+                                                                     class="form-control"/>
+                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Aanmaken
+                </button>
             </div>
         </form>
-        <br />
+        <br/>
         <table class="table table-striped table-bordered table-overzicht"><?php
             $fotoboeken = $connectie->prepare('SELECT id,naam FROM fotoboeken ORDER BY id ASC;');
             $fotoboeken->execute();
@@ -191,13 +201,16 @@ class OverzichtPagina extends Pagina
             {
                 ?>
                 <tr>
-                    <td><div class="btn-group"><?php
+                    <td>
+                        <div class="btn-group"><?php
                             knop('bewerken', 'editor.php?type=fotoboek&amp;id=' . $fotoboek['id'], 'Bewerk dit fotoboek', null, 16);
                             knop('verwijderen', 'overzicht.php?type=fotoboek&amp;actie=verwijderen&amp;id=' . $fotoboek['id'], 'Verwijder dit fotoboek', null, 16);
                             knop('aanmenutoevoegen', 'overzicht.php?type=fotoboek&amp;actie=aanmenutoevoegen&amp;id=' . $fotoboek['id'], 'Voeg dit fotoboek toe aan het menu', null, 16); ?>
-                        </div</td>
+                        </div
+                    </td>
                     <td>
-                        <a href="toonfotoboek.php?id=<?php echo $fotoboek['id']; ?>"><b><?php echo $fotoboek['naam']; ?></b></a> (mapnummer <?php echo $fotoboek['id']; ?>)
+                        <a href="toonfotoboek.php?id=<?php echo $fotoboek['id']; ?>"><b><?php echo $fotoboek['naam']; ?></b></a>
+                        (mapnummer <?php echo $fotoboek['id']; ?>)
                     </td>
                 </tr>
             <?php } ?>
@@ -216,10 +229,14 @@ class OverzichtPagina extends Pagina
                 <tr>
                     <td>Nieuwe friendly URL:</td>
                     <td>
-                        <input id="furl-naam" name="naam" type="text" placeholder="URL" class="form-control form-control-inline"/></td>
+                        <input id="furl-naam" name="naam" type="text" placeholder="URL"
+                               class="form-control form-control-inline"/></td>
                     <td>
-                        <input id="furl-doel" name="doel" type="text" placeholder="Verwijzingsdoel" class="form-control form-control-inline"/>
-                        <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+                        <input id="furl-doel" name="doel" type="text" placeholder="Verwijzingsdoel"
+                               class="form-control form-control-inline"/>
+                        <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span>
+                            Aanmaken
+                        </button>
                     </td>
                 </tr>
                 <?php
@@ -240,5 +257,3 @@ class OverzichtPagina extends Pagina
         $this->toonPostPagina();
     }
 }
-
-$pagina = new OverzichtPagina();

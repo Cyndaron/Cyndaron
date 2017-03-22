@@ -112,7 +112,7 @@ class Polygon
      */
     function addPngPolygon(&$image, $minX, $minY, $ratio)
     {
-        $points_2d = array();
+        $points_2d = [];
         $nb_points = 0;
         $r = ($this->_colour >> 16) & 0xFF;
         $g = ($this->_colour >> 8) & 0xFF;

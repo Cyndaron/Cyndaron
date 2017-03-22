@@ -14,7 +14,7 @@ class Point
     /**
      * @var array
      */
-    private $_destCoord = array();
+    private $_destCoord = [];
 
     /**
      * @var bool
@@ -34,15 +34,15 @@ class Point
     {
         if (is_array($originCoord) && count($originCoord) == 3)
         {
-            $this->_originCoord = array(
+            $this->_originCoord = [
                 'x' => (isset($originCoord['x']) ? $originCoord['x'] : 0),
                 'y' => (isset($originCoord['y']) ? $originCoord['y'] : 0),
-                'z' => (isset($originCoord['z']) ? $originCoord['z'] : 0)
-            );
+                'z' => (isset($originCoord['z']) ? $originCoord['z'] : 0),
+            ];
         }
         else
         {
-            $this->_originCoord = array('x' => 0, 'y' => 0, 'z' => 0);
+            $this->_originCoord = ['x' => 0, 'y' => 0, 'z' => 0];
         }
     }
 

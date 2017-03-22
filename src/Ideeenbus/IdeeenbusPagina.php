@@ -1,9 +1,12 @@
 <?php
-require_once('functies.db.php');
-require_once('functies.gebruikers.php');
-require_once('pagina.php');
+namespace Cyndaron\Ideeenbus;
 
-class Ideeenbus extends Pagina
+use Cyndaron\Pagina;
+
+require_once __DIR__ . '/../../functies.db.php';
+require_once __DIR__ . '/../../functies.gebruikers.php';
+
+class IdeeenbusPagina extends Pagina
 {
     public function __construct()
     {
@@ -63,5 +66,3 @@ class Ideeenbus extends Pagina
         $this->toonPostPagina();
     }
 }
-
-$pagina = new Ideeenbus();

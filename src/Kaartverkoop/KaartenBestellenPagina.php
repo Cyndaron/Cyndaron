@@ -1,10 +1,11 @@
 <?php
 namespace Cyndaron\Kaartverkoop;
 
-require_once __DIR__ . '/../../functies.db.php';
-require_once __DIR__ . '/../../pagina.php';
+use Cyndaron\Pagina;
 
-class KaartenBestellenPagina extends \Pagina
+require_once __DIR__ . '/../../functies.db.php';
+
+class KaartenBestellenPagina extends Pagina
 {
     public function __construct()
     {

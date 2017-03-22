@@ -1,17 +1,18 @@
 <?php
 namespace Cyndaron\Kaartverkoop;
 
+use Cyndaron\Pagina;
+
 require_once __DIR__ . '/../../check.php';
 require_once __DIR__ . '/../../functies.db.php';
-require_once __DIR__ . '/../../pagina.php';
 
-class OverzichtBestellingenPagina extends \Pagina
+class OverzichtBestellingenPagina extends Pagina
 {
     public function __construct()
     {
         $concert_id = geefGetVeilig('id') ?: geefEen('SELECT MAX(id) FROM kaartverkoop_concerten');
         $this->connectie = newPDO();
-        $kaartverkoop_per_bestelling = array();
+        $kaartverkoop_per_bestelling = [];
 
         $bestellingsquery = "	SELECT DISTINCT b.id AS bestellingsnr,achternaam,voorletters,`e-mailadres`,straat_en_huisnummer,postcode,woonplaats,thuisbezorgen,is_bezorgd,gereserveerde_plaatsen,is_betaald,opmerkingen,ophalen_door_koorlid,naam_koorlid,woont_in_buitenland
 					FROM 	`kaartverkoop_bestellingen` AS b,
@@ -28,19 +29,19 @@ class OverzichtBestellingenPagina extends \Pagina
         $concertquery = "SELECT * FROM `kaartverkoop_concerten` WHERE id=?";
 
         $prep = $this->connectie->prepare($bestellingsquery);
-        $prep->execute(array($concert_id));
+        $prep->execute([$concert_id]);
         $bestellingen = $prep->fetchAll();
 
         $prep = $this->connectie->prepare($kaartverkoopquery);
-        $prep->execute(array($concert_id));
+        $prep->execute([$concert_id]);
         $kaartverkoop = $prep->fetchAll();
 
         $prep = $this->connectie->prepare($kaartsoortenquery);
-        $prep->execute(array($concert_id));
+        $prep->execute([$concert_id]);
         $kaartsoorten = $prep->fetchAll();
 
         $prep = $this->connectie->prepare($concertquery);
-        $prep->execute(array($concert_id));
+        $prep->execute([$concert_id]);
         $concert = $prep->fetch();
 
         parent::__construct('Overzicht bestellingen: ' . $concert['naam']);
@@ -51,7 +52,9 @@ class OverzichtBestellingenPagina extends \Pagina
             $bestellingsid = $kaarttype['bestelling_id'];
             $kaartsoort = $kaarttype['kaartsoort_id'];
             if (!array_key_exists($bestellingsid, $kaartverkoop_per_bestelling))
+            {
                 $kaartverkoop_per_bestelling[$bestellingsid] = [];
+            }
 
             $kaartverkoop_per_bestelling[$bestellingsid][$kaartsoort] = $kaarttype['aantal'];
         }
@@ -147,17 +150,25 @@ class OverzichtBestellingenPagina extends \Pagina
             {
                 echo '<td>';
                 if ($bestelling['ophalen_door_koorlid'])
+                {
                     echo $bestelling['naam_koorlid'];
+                }
                 else
+                {
                     echo 'Nee';
+                }
                 echo '</td>';
             }
 
             echo '<td>';
             if ($bestelling['thuisbezorgen'] || $concert['bezorgen_verplicht'])
+            {
                 echo Util::boolNaarTekst($bestelling['is_bezorgd']);
+            }
             else
+            {
                 echo '&nbsp;';
+            }
 
             echo '</td><td>' . Util::boolNaarTekst($bestelling['gereserveerde_plaatsen']);
 

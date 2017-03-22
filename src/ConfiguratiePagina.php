@@ -1,9 +1,10 @@
 <?php
-require_once('check.php');
-require_once('functies.pagina.php');
-require_once('functies.db.php');
-require_once('functies.cyndaron.php');
-require_once('pagina.php');
+namespace Cyndaron;
+
+require_once __DIR__ . '/../check.php';
+require_once __DIR__ . '/../functies.cyndaron.php';
+require_once __DIR__ . '/../functies.db.php';
+require_once __DIR__ . '/../functies.pagina.php';
 
 class ConfiguratiePagina extends Pagina
 {
@@ -133,6 +134,3 @@ class ConfiguratiePagina extends Pagina
         return $return;
     }
 }
-
-
-$pagina = new ConfiguratiePagina();

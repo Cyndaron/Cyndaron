@@ -1,9 +1,9 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-require_once __DIR__ . '/../../pagina.php';
+use Cyndaron\Pagina;
 
-class StatusPagina extends \Pagina
+class StatusPagina extends Pagina
 {
     public function __construct()
     {

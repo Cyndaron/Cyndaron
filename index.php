@@ -3,7 +3,22 @@ require_once('functies.db.php');
 require_once('functies.url.php');
 
 $endpoints = [
+    // Standaard
+    '403.php' => '\Cyndaron\Error403Pagina',
+    '404.php' => '\Cyndaron\Error404Pagina',
+    'configuratie.php' => '\Cyndaron\ConfiguratiePagina',
+    'editor.php' => '\Cyndaron\EditorPagina',
+    'login.php' => '\Cyndaron\LoginPagina',
+    'logoff.php' => '\Cyndaron\Loguit',
+    'overzicht.php' => '\Cyndaron\OverzichtPagina',
+    'tooncategorie.php' => '\Cyndaron\CategoriePagina',
+    'toonfotoboek.php' => '\Cyndaron\FotoalbumPagina',
+    'toonsub.php' => '\Cyndaron\StatischePagina',
+    'verwerkmailformulier.php' => '\Cyndaron\VerwerkMailFormulierPagina',
+    // Standaard-plugins
+    'bestandenkast.php' => '\Cyndaron\Bestandenkast\OverzichtPagina',
     'kaartenbestellen.php' => '\Cyndaron\Kaartverkoop\KaartenBestellenPagina',
+    'ideeenbus.php' => '\Cyndaron\Ideeenbus\IdeeenbusPagina',
     'overzicht-bestellingen.php' => '\Cyndaron\Kaartverkoop\OverzichtBestellingenPagina',
     'kaarten-gereserveerde-plaatsen' => '\Cyndaron\Kaartverkoop\GereserveerdePlaatsen',
     'kaarten-verwerk-bestelling' => '\Cyndaron\Kaartverkoop\VerwerkBestellingPagina',

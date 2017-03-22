@@ -11,16 +11,16 @@ class GereserveerdePlaatsen
         $connectie = newPDO();
         $concert_id = intval(geefGetVeilig('id'));
 
-        $bezette_plaatsen_per_rij = array();
+        $bezette_plaatsen_per_rij = [];
 
         $prep = $connectie->prepare('SELECT * FROM kaartverkoop_gereserveerde_plaatsen WHERE bestelling_id IN (SELECT id FROM kaartverkoop_bestellingen WHERE concert_id=?)');
-        $prep->execute(array($concert_id));
+        $prep->execute([$concert_id]);
         $bezette_plaatsen_rijen = $prep->fetchAll();
 
         foreach ($bezette_plaatsen_rijen as $bezette_plaatsen)
         {
             $prep = $connectie->prepare('SELECT * FROM kaartverkoop_bestellingen WHERE id=?');
-            $prep->execute(array($bezette_plaatsen['bestelling_id']));
+            $prep->execute([$bezette_plaatsen['bestelling_id']]);
             $bestelling = $prep->fetch();
 
             for ($i = $bezette_plaatsen['eerste_stoel']; $i <= $bezette_plaatsen['laatste_stoel']; $i++)
@@ -49,9 +49,13 @@ class GereserveerdePlaatsen
             foreach ($stoelen_per_rij as $stoel)
             {
                 if (isset($bezette_plaatsen_per_rij[$rij][$stoel]))
+                {
                     printf('<td style="text-align: center;">%s</td>', $bezette_plaatsen_per_rij[$rij][$stoel]);
+                }
                 else
+                {
                     echo '<td style="text-align: center;">&nbsp;</td>';
+                }
             }
 
             echo '</tr>';

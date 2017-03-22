@@ -1,8 +1,9 @@
 <?php
-require_once('functies.db.php');
-require_once('functies.gebruikers.php');
-require_once('functies.pagina.php');
-require_once('pagina.php');
+namespace Cyndaron;
+
+require_once __DIR__ . '/../functies.db.php';
+require_once __DIR__ . '/../functies.gebruikers.php';
+require_once __DIR__ . '/../functies.pagina.php';
 
 class StatischePagina extends Pagina
 {
@@ -112,4 +113,3 @@ class StatischePagina extends Pagina
         $this->toonPostPagina();
     }
 }
-$pagina = new StatischePagina();

@@ -1,7 +1,8 @@
 <?php
-require_once('functies.db.php');
-require_once('functies.url.php');
-require_once('pagina.php');
+namespace Cyndaron;
+
+require_once __DIR__ . '/../functies.db.php';
+require_once __DIR__ . '/../functies.url.php';
 
 class CategoriePagina extends Pagina
 {
@@ -81,4 +82,3 @@ class CategoriePagina extends Pagina
         $this->toonPostPagina();
     }
 }
-$pagina = new CategoriePagina();
