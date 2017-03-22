@@ -20,7 +20,7 @@ Versie 3.0 (Athenae)
 - Mysql-extensie vervangen door PDO
 - Editor is nu WYSIWYG (CKeditor)
 - Fotoboeken kunnen nu een beschrijving hebben
-- Betere HTML: paginalayout werkt met <div> in plaats van <table>, menu is gecodeerd als een <ul>, artikelen staan nu tussen <p>-tags in plaats van <br /><br />
+- Betere HTML: paginalayout werkt met `<div>` in plaats van `<table>`, menu is gecodeerd als een `<ul>`, artikelen staan nu tussen `<p>`-tags in plaats van `<br /><br />`
 - Nieuw pictogrammenthema: monochroom
 
 Versie 2.2 (Tolosa)
