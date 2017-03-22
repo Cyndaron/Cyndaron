@@ -2,6 +2,7 @@
 namespace Cyndaron\Kaartverkoop;
 
 use Cyndaron\Pagina;
+use Cyndaron\Request;
 
 require_once __DIR__ . '/../../functies.db.php';
 

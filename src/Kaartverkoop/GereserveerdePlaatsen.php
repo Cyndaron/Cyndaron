@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron\Kaartverkoop;
 
+use Cyndaron\Request;
+
 require_once __DIR__ . '/../../check.php';
 require_once __DIR__ . '/../../functies.db.php';
 
