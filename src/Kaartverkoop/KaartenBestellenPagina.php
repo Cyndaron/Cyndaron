@@ -45,7 +45,7 @@ class KaartenBestellenPagina extends \Pagina
             Vrije plaatsen zijn: de zijvakken en de balkons.</p>
 
         <br/>
-        <form method="post" action="verwerk-kaarten-bestellen" class="form-horizontal" id="kaartenbestellen">
+        <form method="post" action="kaarten-verwerk-bestelling" class="form-horizontal" id="kaartenbestellen">
             <h3>Kaartsoorten:</h3>
             <input type="hidden" name="concert_id" value="<?php echo $concert_id; ?>"/>
             <table class="kaartverkoop table table-striped">
