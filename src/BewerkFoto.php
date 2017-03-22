@@ -9,12 +9,13 @@ class BewerkFoto extends Bewerk
     {
         $this->type = 'foto';
         $actie = Request::geefGetVeilig('actie');
+        $hash = Request::geefGetVeilig('hash');
 
         if ($actie == 'bewerken')
         {
             $bijschrift = Request::geefPostOnveilig('artikel');
 
-            maakBijschrift($this->id, $bijschrift);
+            maakBijschrift($hash, $bijschrift);
             Gebruiker::nieuweMelding('Bijschrift bewerkt.');
         }
     }

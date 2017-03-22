@@ -3,8 +3,10 @@
 * Require deze pagina bovenaan iedere pagina die alleen voor members toegankelijk mag zijn.
 * Dit moet helemaal bovenaan, omdat anders de session_start() & header() functie niet werken.
 */
-session_start();
-
+if (empty($_SESSION))
+{
+    session_start();
+}
 if (!isset($_SESSION['naam']) OR $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
 {
     session_destroy();

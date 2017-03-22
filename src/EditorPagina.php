@@ -27,10 +27,10 @@ abstract class EditorPagina extends Pagina
         $_SESSION['referrer'] = htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8');
 
         // Zorgen voor juiste codering
-        $content = !empty($content) ? htmlentities($content, ENT_QUOTES, 'UTF-8') : '';
+        $this->content = !empty($this->content) ? htmlentities($this->content, ENT_QUOTES, 'UTF-8') : '';
 
-        if (empty($titel))
-            $titel = '';
+        if (empty($this->titel))
+            $this->titel = '';
 
         $dir = dirname($_SERVER['PHP_SELF']);
         if ($dir == '/')
@@ -44,10 +44,12 @@ abstract class EditorPagina extends Pagina
 
         $unfriendlyUrl = new Url('toon' . $this->type . '.php?id=' . $this->id);
         $friendlyUrl = new Url($unfriendlyUrl->geefFriendly());
-        if ($unfriendlyUrl->isGelijkAan($friendlyUrl));
+
+        if ($unfriendlyUrl == $friendlyUrl)
         {
             $friendlyUrl = "";
         }
+
         $saveUrl = sprintf($this->saveUrl, $this->id ? (string)$this->id : '');
         ?>
 
@@ -59,7 +61,7 @@ abstract class EditorPagina extends Pagina
                 <div class="form-group">
                     <label class="col-sm-2 control-label" for="titel">Titel: </label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" id="titel" name="titel" value="<?=$titel;?>" />
+                        <input type="text" class="form-control" id="titel" name="titel" value="<?=$this->titel;?>" />
                     </div>
                 </div>
                 <?php
@@ -76,7 +78,7 @@ abstract class EditorPagina extends Pagina
                 </div>
             </div>
 
-            <textarea class="ckeditor" name="artikel" rows="25" cols="125"><?=$content; ?></textarea>
+            <textarea class="ckeditor" name="artikel" rows="25" cols="125"><?=$this->content; ?></textarea>
 
             <div class="form-group">
                 <label class="col-sm-2 control-label" for="verwijzing">Interne link maken: </label>
@@ -105,7 +107,7 @@ abstract class EditorPagina extends Pagina
             </div>
 
             <?php
-            toonSpecifiekeKnoppen();
+            $this->toonSpecifiekeKnoppen();
             ?>
             <input type="submit" value="Opslaan" class="btn btn-primary"/>
             <a role="button" class="btn btn-default" href="<?=$_SESSION['referrer'];?>">Annuleren</a>

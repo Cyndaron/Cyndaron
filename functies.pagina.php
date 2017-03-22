@@ -1,4 +1,6 @@
 <?php
+
+use Cyndaron\Gebruiker;
 /**
  * Functies voor het beheren van pagina's en elementen erop.
  */

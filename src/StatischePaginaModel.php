@@ -4,13 +4,13 @@ namespace Cyndaron;
 class StatischePaginaModel
 {
     protected $id = null;
-    protected $titel = '';
+    protected $naam = '';
     protected $tekst = '';
     protected $reactiesAan = false;
     protected $categorieId;
 
 
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
@@ -18,17 +18,17 @@ class StatischePaginaModel
     /**
      * @return string
      */
-    public function getTitel(): string
+    public function getNaam(): string
     {
-        return $this->titel;
+        return $this->naam;
     }
 
     /**
-     * @param string $titel
+     * @param string $naam
      */
-    public function setTitel(string $titel)
+    public function setNaam(string $naam)
     {
-        $this->titel = $titel;
+        $this->naam = $naam;
     }
 
     /**
@@ -99,7 +99,7 @@ class StatischePaginaModel
         $prep->execute([$this->id]);
         $record = $prep->fetch();
 
-        $this->titel = $record['titel'];
+        $this->naam = $record['naam'];
         $this->tekst = $record['tekst'];
         $this->reactiesAan = $record['reacties_aan'] == 1 ? true : false;
         $this->categorieId = $record['categorieid'];
@@ -126,7 +126,7 @@ class StatischePaginaModel
 
             $connectie = newPDO();
             $prep = $connectie->prepare('INSERT INTO subs(naam, tekst, reacties_aan, categorieid) VALUES ( ?, ?, ?, ?)');
-            $prep->execute([$this->titel, $this->tekst, $reacties_aan, $this->categorieId]);
+            $prep->execute([$this->naam, $this->tekst, $reacties_aan, $this->categorieId]);
             return $connectie->lastInsertId();
         }
         else
@@ -144,7 +144,7 @@ class StatischePaginaModel
             $prep->execute([$this->id, $this->id]);
 
             $prep = $connectie->prepare('UPDATE subs SET tekst= ?, naam= ?, reacties_aan=?, categorieid= ? WHERE id= ?');
-            $prep->execute([$this->tekst, $this->titel, $reacties_aan, $this->categorieId, $this->id]);
+            $prep->execute([$this->tekst, $this->naam, $reacties_aan, $this->categorieId, $this->id]);
             return $this->id;
         }
     }

@@ -15,7 +15,7 @@ class Router
         '404.php' => '\Cyndaron\Error404Pagina',
         'bewerk-categorie' => '\Cyndaron\BewerkCategorie',
         'bewerk-foto' => '\Cyndaron\BewerkFoto',
-        'bewerk-fotoalbum' => '\Cyndaron\BewerkFotoAlbum',
+        'bewerk-fotoalbum' => '\Cyndaron\BewerkFotoalbum',
         'bewerk-statischepagina' => '\Cyndaron\BewerkStatischePagina',
         'configuratie.php' => '\Cyndaron\ConfiguratiePagina',
         'editor-categorie' => '\Cyndaron\EditorCategorie',
@@ -58,7 +58,7 @@ class Router
         }
 
         // Verwijs oude URLs door
-        if (!empty(Request::geefGetVeilig('friendlyurls')) && $url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
+        if ($url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
         {
             header('Location: '.$url);
         }

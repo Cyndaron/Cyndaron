@@ -38,8 +38,8 @@ class LedenPagina extends Pagina
             if ($speler['niveau'] == 0 && $laatsteniveau >= 1)
                 echo '<h2 style="border-bottom: 1px dotted;">In de Goelag</h2>';
             $laatsteniveau = $speler['niveau'];
-            $vooraanzicht = "minecraft-skinrenderer?vr=-10&hr=20&hrh=0&vrla=0&vrra=0&vrll=0&vrrl=0&ratio=4&format=png&displayHair=false&headOnly=false&user={$speler['mcnaam']}";
-            $achteraanzicht = "minecraft-skinrenderer?vr=-10&hr=200&hrh=0&vrla=0&vrra=0&vrll=0&vrrl=0&ratio=4&format=png&displayHair=false&headOnly=false&user={$speler['mcnaam']}";
+            $vooraanzicht = "mc-skinrenderer?vr=-10&hr=20&hrh=0&vrla=0&vrra=0&vrll=0&vrrl=0&ratio=4&format=png&displayHair=false&headOnly=false&user={$speler['mcnaam']}";
+            $achteraanzicht = "mc-skinrenderer?vr=-10&hr=200&hrh=0&vrla=0&vrra=0&vrll=0&vrrl=0&ratio=4&format=png&displayHair=false&headOnly=false&user={$speler['mcnaam']}";
             $tePreloaden[] = $achteraanzicht;
 
             echo '<div style="display: inline-block; overflow:hidden;">';

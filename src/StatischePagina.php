@@ -41,7 +41,7 @@ class StatischePagina extends Pagina
         {
             $controls .= sprintf('<a href="editor-statischepagina?vorigeversie=1&amp;id=%d" class="btn btn-default" title="Vorige versie"><span class="glyphicon glyphicon-vorige-versie"></span></a>', $subid);
         }
-        parent::__construct($model->getTitel());
+        parent::__construct($model->getNaam());
         $this->maakTitelknoppen($controls);
         $this->toonPrePagina();
 

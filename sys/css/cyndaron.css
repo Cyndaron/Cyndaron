@@ -15,7 +15,7 @@ a:hover
     margin: auto;
     height: 96%;
     width: 90%;
-    overflow: auto;
+    /*overflow: auto;*/
 }
 
 .menucontainer
@@ -27,7 +27,7 @@ a:hover
 
 .inhoudcontainer
 {
-    overflow: auto;
+    /*overflow: auto;*/
     margin-top: 18px;
     margin-bottom: 18px;
 }
@@ -48,7 +48,7 @@ a:hover
 
 h1, h2, h3, h4, h5, h6
 {
-    font-family: Trebuchet MS, Arial, sans-serif !important;
+    font-family: "Trebuchet MS", Arial, sans-serif !important;
 }
 
 /* Native font stack */

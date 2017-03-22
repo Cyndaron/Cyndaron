@@ -18,7 +18,7 @@ class BewerkStatischePagina extends Bewerk
             $categorieid = intval(Request::geefPostOnveilig('categorieid'));
 
             $model = new StatischePaginaModel($this->id);
-            $model->setTitel($titel);
+            $model->setNaam($titel);
             $model->setTekst($tekst);
             $model->setReactiesAan($reacties_aan);
             $model->setCategorieId($categorieid);
