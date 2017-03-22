@@ -21,7 +21,6 @@ require_once __DIR__ . '/../functies.db.php';
 require_once __DIR__ . '/../functies.gebruikers.php';
 require_once __DIR__ . '/../functies.pagina.php';
 require_once __DIR__ . '/../functies.url.php';
-require_once(__DIR__ . '/../sys/classes/Widget.class.php');
 
 // Hopelijk tijdelijk
 // Verwijs oude URLs door

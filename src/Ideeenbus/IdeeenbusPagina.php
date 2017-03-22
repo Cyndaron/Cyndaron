@@ -2,6 +2,7 @@
 namespace Cyndaron\Ideeenbus;
 
 use Cyndaron\Pagina;
+use Cyndaron\Widget\GoedeMelding;
 
 require_once __DIR__ . '/../../functies.db.php';
 require_once __DIR__ . '/../../functies.gebruikers.php';
