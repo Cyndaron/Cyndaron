@@ -10,7 +10,7 @@ class VerwerkBestellingPagina extends Pagina
 {
     public function __construct()
     {
-        if (postIsLeeg() || empty(geefPostVeilig('concert_id')))
+        if (Request::postIsLeeg() || empty(Request::geefPostVeilig('concert_id')))
         {
             parent::__construct('Bestelling niet verwerkt');
             $this->toonPrePagina();
@@ -20,10 +20,10 @@ class VerwerkBestellingPagina extends Pagina
         }
 
         $this->connectie = newPDO();
-        $concert_id = geefPostVeilig('concert_id');
-        $postcode = geefPostVeilig('postcode');
-        $buitenland = geefPostVeilig('buitenland') ? true : false;
-        $ophalenDoorKoorlid = geefPostVeilig('ophalen_door_koorlid') ? true : false;
+        $concert_id = Request::geefPostVeilig('concert_id');
+        $postcode = Request::geefPostVeilig('postcode');
+        $buitenland = Request::geefPostVeilig('buitenland') ? true : false;
+        $ophalenDoorKoorlid = Request::geefPostVeilig('ophalen_door_koorlid') ? true : false;
         $ophalenDoorKoorlid = $buitenland ? true : $ophalenDoorKoorlid;
 
         $concertquery = "SELECT * FROM `kaartverkoop_concerten` WHERE id=?";
@@ -62,7 +62,7 @@ class VerwerkBestellingPagina extends Pagina
                 if ($ophalenDoorKoorlid)
                 {
                     $bezorgen = false;
-                    $naam_koorlid = geefPostVeilig('naam_koorlid');
+                    $naam_koorlid = Request::geefPostVeilig('naam_koorlid');
                 }
                 else
                 {
@@ -73,10 +73,10 @@ class VerwerkBestellingPagina extends Pagina
         }
         else
         {
-            $bezorgen = geefPostVeilig('bezorgen') ? true : false;
+            $bezorgen = Request::geefPostVeilig('bezorgen') ? true : false;
         }
         $bezorgprijs = $bezorgen ? $concert['verzendkosten'] : 0;
-        $gereserveerde_plaatsen = geefPostVeilig('gereserveerde_plaatsen') ? true : false;
+        $gereserveerde_plaatsen = Request::geefPostVeilig('gereserveerde_plaatsen') ? true : false;
         $toeslag_gereserveerde_plaats = $gereserveerde_plaatsen ? $concert['toeslag_gereserveerde_plaats'] : 0;
         $bestelling_kaartsoorten = [];
         $prep = $this->connectie->prepare('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC');
@@ -84,7 +84,7 @@ class VerwerkBestellingPagina extends Pagina
         $kaartsoorten = $prep->fetchAll();
         foreach ($kaartsoorten as $kaartsoort)
         {
-            $bestelling_kaartsoorten[$kaartsoort['id']] = intval(geefPostVeilig('kaartsoort-' . $kaartsoort['id']));
+            $bestelling_kaartsoorten[$kaartsoort['id']] = intval(Request::geefPostVeilig('kaartsoort-' . $kaartsoort['id']));
             $totaalprijs += $bestelling_kaartsoorten[$kaartsoort['id']] * ($kaartsoort['prijs'] + $bezorgprijs + $toeslag_gereserveerde_plaats);
             $totaalAantalKaarten += $bestelling_kaartsoorten[$kaartsoort['id']];
         }
@@ -124,13 +124,13 @@ Content-Type: text/plain; charset="UTF-8"';
             $opstuurtekst = 'voor u klaargelegd worden bij de ingang van de kerk';
         }
 
-        $emailadres = geefPostVeilig('e-mailadres');
-        $achternaam = geefPostVeilig('achternaam');
-        $voorletters = geefPostVeilig('voorletters');
-        $straatnaam_en_huisnummer = geefPostVeilig('straatnaam_en_huisnummer');
-        $postcode = geefPostVeilig('postcode');
-        $woonplaats = geefPostVeilig('woonplaats');
-        $opmerkingen = geefPostVeilig('opmerkingen');
+        $emailadres = Request::geefPostVeilig('e-mailadres');
+        $achternaam = Request::geefPostVeilig('achternaam');
+        $voorletters = Request::geefPostVeilig('voorletters');
+        $straatnaam_en_huisnummer = Request::geefPostVeilig('straatnaam_en_huisnummer');
+        $postcode = Request::geefPostVeilig('postcode');
+        $woonplaats = Request::geefPostVeilig('woonplaats');
+        $opmerkingen = Request::geefPostVeilig('opmerkingen');
 
         $bestellingsnummer = maakEen('INSERT INTO kaartverkoop_bestellingen
 			(`concert_id`, 	`achternaam`, 	`voorletters`, 	`e-mailadres`, 	`straat_en_huisnummer`, 	`postcode`, `woonplaats`, 	`thuisbezorgen`, 		`gereserveerde_plaatsen`, 			`ophalen_door_koorlid`,	`naam_koorlid`,	`woont_in_buitenland`,	`opmerkingen`) VALUES
@@ -269,39 +269,39 @@ Voorletters: ' . $voorletters . "\n\n";
     private function checkFormulier($bezorgenVerplicht = false, $ophalenDoorKoorlid = false)
     {
         $incorrecteVelden = [];
-        if (strtoupper(geefPostVeilig('antispam')) !== 'VLISSINGEN')
+        if (strtoupper(Request::geefPostVeilig('antispam')) !== 'VLISSINGEN')
         {
             $incorrecteVelden[] = 'Antispam';
         }
 
-        if (strlen(geefPostVeilig('achternaam')) === 0)
+        if (strlen(Request::geefPostVeilig('achternaam')) === 0)
         {
             $incorrecteVelden[] = 'Achternaam';
         }
 
-        if (strlen(geefPostVeilig('voorletters')) === 0)
+        if (strlen(Request::geefPostVeilig('voorletters')) === 0)
         {
             $incorrecteVelden[] = 'Voorletters';
         }
 
-        if (strlen(geefPostVeilig('e-mailadres')) === 0)
+        if (strlen(Request::geefPostVeilig('e-mailadres')) === 0)
         {
             $incorrecteVelden[] = 'E-mailadres';
         }
 
-        if ((!$bezorgenVerplicht && geefPostVeilig('bezorgen')) || ($bezorgenVerplicht && !$ophalenDoorKoorlid))
+        if ((!$bezorgenVerplicht && Request::geefPostVeilig('bezorgen')) || ($bezorgenVerplicht && !$ophalenDoorKoorlid))
         {
-            if (strlen(geefPostVeilig('straatnaam_en_huisnummer')) === 0)
+            if (strlen(Request::geefPostVeilig('straatnaam_en_huisnummer')) === 0)
             {
                 $incorrecteVelden[] = 'Straatnaam en huisnummer';
             }
 
-            if (strlen(geefPostVeilig('postcode')) === 0)
+            if (strlen(Request::geefPostVeilig('postcode')) === 0)
             {
                 $incorrecteVelden[] = 'Postcode';
             }
 
-            if (strlen(geefPostVeilig('woonplaats')) === 0)
+            if (strlen(Request::geefPostVeilig('woonplaats')) === 0)
             {
                 $incorrecteVelden[] = 'Woonplaats';
             }

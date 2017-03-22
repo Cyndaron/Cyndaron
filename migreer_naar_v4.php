@@ -66,3 +66,16 @@ geefEen('DROP TABLE hoofdstukken', []);
 geefEen('DROP TABLE vastemenuitems', []);
 
 echo 'Script voltooid';
+
+function nieuweSub($titel, $tekst, $reacties_aan, $categorieid)
+{
+    if (!$reacties_aan)
+        $reacties_aan = '0';
+    else
+        $reacties_aan = '1';
+
+    $connectie = newPDO();
+    $prep = $connectie->prepare('INSERT INTO subs(naam, tekst, reacties_aan, categorieid) VALUES ( ?, ?, ?, ?)');
+    $prep->execute(array($titel, $tekst, $reacties_aan, $categorieid));
+    return $connectie->lastInsertId();
+}

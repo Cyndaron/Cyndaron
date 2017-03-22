@@ -2,7 +2,6 @@
 namespace Cyndaron;
 
 require_once __DIR__ . '/../functies.db.php';
-require_once __DIR__ . '/../functies.gebruikers.php';
 require_once __DIR__ . '/../functies.pagina.php';
 
 class StatischePagina extends Pagina
@@ -10,49 +9,52 @@ class StatischePagina extends Pagina
     public function __construct()
     {
         $connectie = newPDO();
-        $subid = intval(geefGetVeilig('id'));
+        $subid = intval(Request::geefGetVeilig('id'));
         if (!is_numeric($subid) || $subid <= 0)
         {
             header('Location: 404.php');
             die('Incorrecte parameter ontvangen.');
         }
-        $subnaam = geefEen('SELECT naam FROM subs WHERE id=?', array($subid));
-        $reactiesaan = geefEen('SELECT reacties_aan FROM subs WHERE id=?', array($subid));
 
-        if ($reactiesaan && !postIsLeeg())
+        $model = new StatischePaginaModel($subid);
+        $model->laden();
+
+        $reactiesAan = $model->getReactiesAan();
+
+        if ($reactiesAan && !Request::postIsLeeg())
         {
-            $auteur = geefPostVeilig('auteur');
-            $reactie = geefPostVeilig('reactie');
-            $antispam = strtolower(geefPostVeilig('antispam'));
+            $auteur = Request::geefPostVeilig('auteur');
+            $reactie = Request::geefPostVeilig('reactie');
+            $antispam = strtolower(Request::geefPostVeilig('antispam'));
             if ($auteur && $reactie && ($antispam == 'acht' || $antispam == '8'))
             {
                 $datum = date('Y-m-d H:i:s');
                 $prep = $connectie->prepare('INSERT INTO reacties(subid, auteur, tekst, datum) VALUES (?, ?, ?, ?)');
-                $prep->execute(array($subid, $auteur, $reactie, $datum));
+                $prep->execute([$subid, $auteur, $reactie, $datum]);
             }
         }
 
         $controls = sprintf('<a href="editor-statischepagina?id=%d" class="btn btn-default" title="Bewerk deze sub"><span class="glyphicon glyphicon-pencil"></span></a>', $subid);
         $controls .= sprintf('<a href="overzicht.php?type=sub&amp;actie=verwijderen&amp;id=%d" class="btn btn-default" title="Verwijder deze sub"><span class="glyphicon glyphicon-trash"></span></a>', $subid);
 
-        if (geefEen('SELECT * FROM vorigesubs WHERE id= ?', array($subid)))
+        if (geefEen('SELECT * FROM vorigesubs WHERE id= ?', [$subid]))
         {
             $controls .= sprintf('<a href="editor-statischepagina?vorigeversie=1&amp;id=%d" class="btn btn-default" title="Vorige versie"><span class="glyphicon glyphicon-vorige-versie"></span></a>', $subid);
         }
-        parent::__construct($subnaam);
+        parent::__construct($model->getTitel());
         $this->maakTitelknoppen($controls);
         $this->toonPrePagina();
 
-        echo geefEen('SELECT tekst FROM subs WHERE id=?', array($subid));
+        echo $model->getTekst();
 
         $prep = $connectie->prepare("SELECT *,DATE_FORMAT(datum, '%d-%m-%Y') AS rdatum,DATE_FORMAT(datum, '%H:%i') AS rtijd FROM reacties WHERE subid=? ORDER BY datum ASC");
-        $prep->execute(array($subid));
+        $prep->execute([$subid]);
         $reacties = $prep->fetchAll();
-        $reactiesaanwezig = FALSE;
+        $reactiesaanwezig = false;
 
         if (count($reacties) > 0)
         {
-            $reactiesaanwezig = TRUE;
+            $reactiesaanwezig = true;
             echo '<hr>';
 
             foreach ($reacties as $reactie)
@@ -65,19 +67,19 @@ class StatischePagina extends Pagina
             }
         }
 
-        if ($reactiesaanwezig || $reactiesaan)
+        if ($reactiesaanwezig || $reactiesAan)
         {
             echo '<div class="reactiecontainer"><br />';
         }
 
-        if ($reactiesaanwezig && !$reactiesaan)
+        if ($reactiesaanwezig && !$reactiesAan)
         {
             echo 'Op dit bericht kan niet (meer) worden gereageerd.<br />';
         }
-        if ($reactiesaan):
-        ?>
+        if ($reactiesAan):
+            ?>
             <h3>Reageren:</h3>
-            <form name="reactie" method="post" action="toonsub.php?id=<?=$subid;?>" class="form-horizontal">
+            <form name="reactie" method="post" action="toonsub.php?id=<?= $subid; ?>" class="form-horizontal">
                 <div class="form-group">
                     <label for="auteur" class="col-sm-1 control-label">Naam: </label>
                     <div class="col-sm-4">
@@ -98,14 +100,14 @@ class StatischePagina extends Pagina
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-1 col-sm-4">
-                        <input type="submit" class="btn btn-primary" value="Versturen" />
+                        <input type="submit" class="btn btn-primary" value="Versturen"/>
                     </div>
                 </div>
             </form>
-        <?php
+            <?php
         endif;
 
-        if ($reactiesaanwezig || $reactiesaan)
+        if ($reactiesaanwezig || $reactiesAan)
         {
             echo '</div>';
         }

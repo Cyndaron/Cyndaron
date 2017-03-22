@@ -7,7 +7,7 @@ class VerwerkMailformulierPagina extends Pagina
 {
     public function __construct()
     {
-        $id = intval(geefGetVeilig('id'));
+        $id = intval(Request::geefGetVeilig('id'));
         $this->connectie = newPDO();
         $formprep = $this->connectie->prepare('SELECT * FROM mailformulieren WHERE id=?');
         $formprep->execute(array($id));
@@ -16,20 +16,20 @@ class VerwerkMailformulierPagina extends Pagina
 
         if ($form['naam'])
         {
-            if (strtolower(geefPostVeilig('antispam')) == strtolower($form['antispamantwoord']))
+            if (strtolower(Request::geefPostVeilig('antispam')) == strtolower($form['antispamantwoord']))
             {
                 foreach (array_keys($_POST) as $vraag)
                 {
-                    $vraag = wasVariabele($vraag);
+                    $vraag = Request::wasVariabele($vraag);
 
                     if ($vraag !== 'antispam')
-                        $tekst .= $vraag . ': ' . strtr(geefPostVeilig($vraag), array('\\' => '')) . "\n";
+                        $tekst .= $vraag . ': ' . strtr(Request::geefPostVeilig($vraag), array('\\' => '')) . "\n";
                 }
                 $ontvanger = $form['mailadres'];
                 $onderwerp = $form['naam'];
-                if (geefPostVeilig('E-mailadres'))
+                if (Request::geefPostVeilig('E-mailadres'))
                 {
-                    $extraheaders = 'From: ' . geefPostVeilig('E-mailadres');
+                    $extraheaders = 'From: ' . Request::geefPostVeilig('E-mailadres');
                 }
                 else
                 {

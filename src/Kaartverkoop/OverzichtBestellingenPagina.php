@@ -10,7 +10,7 @@ class OverzichtBestellingenPagina extends Pagina
 {
     public function __construct()
     {
-        $concert_id = geefGetVeilig('id') ?: geefEen('SELECT MAX(id) FROM kaartverkoop_concerten');
+        $concert_id = Request::geefGetVeilig('id') ?: geefEen('SELECT MAX(id) FROM kaartverkoop_concerten');
         $this->connectie = newPDO();
         $kaartverkoop_per_bestelling = [];
 

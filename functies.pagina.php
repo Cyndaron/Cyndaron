@@ -40,44 +40,6 @@ function verwijderFotoalbum($id)
     geefEen('DELETE FROM fotoboeken WHERE id=?;', array($id));
 }
 
-function nieuweSub($titel, $tekst, $reacties_aan, $categorieid)
-{
-    if (!$reacties_aan)
-        $reacties_aan = '0';
-    else
-        $reacties_aan = '1';
-
-    $connectie = newPDO();
-    $prep = $connectie->prepare('INSERT INTO subs(naam, tekst, reacties_aan, categorieid) VALUES ( ?, ?, ?, ?)');
-    $prep->execute(array($titel, $tekst, $reacties_aan, $categorieid));
-    return $connectie->lastInsertId();
-}
-
-function wijzigSub($id, $titel, $tekst, $reacties_aan, $categorieid)
-{
-    $reacties_aan = parseCheckboxAlsInt($reacties_aan);
-    $connectie = newPDO();
-    if (!geefEen('SELECT * FROM vorigesubs WHERE id=?', array($id)))
-    {
-        $prep = $connectie->prepare('INSERT INTO vorigesubs VALUES (?, \'\', \'\')');
-        $prep->execute(array($id));
-    }
-    $prep = $connectie->prepare('UPDATE vorigesubs SET tekst=( SELECT tekst FROM subs WHERE id=? ) WHERE id=?');
-    $prep->execute(array($id, $id));
-    $prep = $connectie->prepare('UPDATE vorigesubs SET naam=( SELECT naam FROM subs WHERE id=? ) WHERE id=?');
-    $prep->execute(array($id, $id));
-
-    $prep = $connectie->prepare('UPDATE subs SET tekst= ?, naam= ?, reacties_aan=?, categorieid= ? WHERE id= ?');
-    $prep->execute(array($tekst, $titel, $reacties_aan, $categorieid, $id));
-}
-
-function verwijderSub($id)
-{
-    geefEen('DELETE FROM subs WHERE id=?;', array($id));
-    geefEen('DELETE FROM vorigesubs WHERE id=?;', array($id));
-}
-
-
 function maakBijschrift($hash, $bijschrift)
 {
     geefEen('DELETE FROM bijschriften WHERE hash = ?', array($hash));
@@ -98,86 +60,6 @@ function parseCheckBoxAlsBool($waarde)
         return false;
     else
         return true;
-}
-
-function geefPaginanaam($link)
-{
-    $link = geefUnfriendlyUrl($link);
-    $pos = strrpos($link, '/', -1);
-    $laatstedeel = substr($link, $pos);
-    $split = explode('?', $laatstedeel);
-    $vars = @explode('&', $split[1]);
-    $values = null;
-    foreach ($vars as $var)
-    {
-        $temp = explode('=', $var);
-        $values[$temp[0]] = @$temp[1];
-    }
-    switch ($split[0])
-    {
-        case 'toonsub.php':
-            $sql = 'SELECT naam FROM subs WHERE id=?';
-            break;
-        case 'tooncategorie.php':
-            if ($values['id'] == 'fotoboeken')
-                return 'Fotoboeken';
-            else
-                $sql = 'SELECT naam FROM categorieen WHERE id=?';
-            break;
-        case 'toonfotoboek.php':
-            $sql = 'SELECT naam FROM fotoboeken WHERE id=?';
-            break;
-        default:
-            return $link;
-    }
-    if ($naam = geefEen($sql, array($values['id'])))
-        return $naam;
-    elseif ($naam = geefEen('SELECT naam FROM friendlyurls WHERE link=?', array($link)))
-        return $naam;
-    else
-        return $link;
-}
-
-function knopcode($soort, $link, $beschrijving = null, $tekst = null, $formaat = 20)
-{
-    switch ($soort)
-    {
-        case 'nieuw':
-            $pictogram = 'plus';
-            break;
-        case 'bewerken':
-            $pictogram = 'pencil';
-            break;
-        case 'verwijderen':
-            $pictogram = 'trash';
-            break;
-        case 'vorigeversie':
-            $pictogram = 'vorige-versie';
-            break;
-        case 'aanmenutoevoegen':
-            $pictogram = 'bookmark';
-            break;
-        default:
-            $pictogram = $soort;
-    }
-
-    switch ($formaat)
-    {
-        case 16:
-            $btnClass = 'btn-sm';
-            break;
-        default:
-            $btnClass = '';
-    }
-
-    $title = $beschrijving ? 'title="' . $beschrijving . '"' : '';
-    $tekstNaPictogram = $tekst ? ' ' . $tekst : '';
-    return sprintf('<a class="btn btn-default %s" href="%s" %s><span class="glyphicon glyphicon-%s"></span>%s</a>', $btnClass, $link, $title, $pictogram, $tekstNaPictogram);
-}
-
-function knop($soort, $link, $beschrijving = null, $tekst = null, $formaat = 20)
-{
-    echo knopcode($soort, $link, $beschrijving, $tekst, $formaat);
 }
 
 function woordlimiet($string, $lengte = 50, $ellips = "...")
@@ -221,39 +103,22 @@ function voegToeAanMenu($link, $alias = "")
     geefEen('INSERT INTO menu(volgorde,link,alias) VALUES(?,?,?);', array($teller, $link, $alias));
 }
 
-function parseTextForInlineImages($text)
+function toonIndienAanwezigEnAdmin($string, $voor = null, $na = null)
 {
-    return preg_replace_callback('/src="(data\:)(.*)"/', 'extractImages', $text);
+    if (Gebruiker::isAdmin() && $string)
+    {
+        echo $voor;
+        echo $string;
+        echo $na;
+    }
 }
 
-function extractImages($matches)
+function toonIndienAanwezigEnGeenAdmin($string, $voor = null, $na = null)
 {
-    list($type, $image) = explode(';', $matches[2]);
-
-    switch($type)
+    if (!Gebruiker::isAdmin() && $string)
     {
-        case 'image/gif':
-            $extensie = 'gif';
-            break;
-        case 'image/jpeg':
-            $extensie = 'jpg';
-            break;
-        case 'image/png':
-            $extensie = 'png';
-            break;
-        case 'image/bmp':
-            $extensie = 'bmp';
-            break;
-        default:
-            return 'src="' . $matches[0] . '"';
+        echo $voor;
+        echo $string;
+        echo $na;
     }
-
-    $image = str_replace('base64', '', $image);
-    $image = base64_decode(str_replace(' ', '+', $image));
-    $uploadDir = './afb/via-editor/';
-    $destinationFilename = $uploadDir . date('c') . '-' . md5($image) . '.' . $extensie;
-    @mkdir($uploadDir, 0777, TRUE);
-    file_put_contents($destinationFilename, $image);
-
-    return 'src="' . $destinationFilename . '"';
 }

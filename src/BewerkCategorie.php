@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron;
 
-require_once __DIR__ . '/../functies.gebruikers.php';
 require_once __DIR__ . '/../functies.pagina.php';
 
 class BewerkCategorie extends Bewerk
@@ -9,13 +8,13 @@ class BewerkCategorie extends Bewerk
     protected function prepare()
     {
         $this->type = 'categorie';
-        $actie = geefGetVeilig('actie');
+        $actie = Request::geefGetVeilig('actie');
 
         if ($actie == 'bewerken')
         {
-            $titel = geefPostOnveilig('titel');
-            $beschrijving = parseTextForInlineImages(geefPostOnveilig('artikel'));
-            $alleentitel = parseCheckBoxAlsBool(geefPostOnveilig('alleentitel'));
+            $titel = Request::geefPostOnveilig('titel');
+            $beschrijving = $this->parseTextForInlineImages(Request::geefPostOnveilig('artikel'));
+            $alleentitel = parseCheckBoxAlsBool(Request::geefPostOnveilig('alleentitel'));
 
             if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
             {
@@ -26,7 +25,7 @@ class BewerkCategorie extends Bewerk
                 $this->id = nieuweCategorie($titel, $alleentitel, $beschrijving);
             }
 
-            nieuweMelding('Categorie bewerkt.');
+            Gebruiker::nieuweMelding('Categorie bewerkt.');
             $this->returnUrl = 'tooncategorie.php?id=' . $this->id;
         }
 

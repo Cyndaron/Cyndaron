@@ -2,7 +2,6 @@
 namespace Cyndaron;
 
 require_once __DIR__ . '/../check.php';
-require_once __DIR__ . '/../functies.cyndaron.php';
 require_once __DIR__ . '/../functies.db.php';
 require_once __DIR__ . '/../functies.pagina.php';
 
@@ -10,23 +9,23 @@ class ConfiguratiePagina extends Pagina
 {
     public function __construct()
     {
-        if (!postIsLeeg())
+        if (!Request::postIsLeeg())
         {
-            maakInstelling('websitenaam', geefPostVeilig('websitenaam'));
-            maakInstelling('websitelogo', geefPostVeilig('websitelogo'));
-            maakInstelling('ondertitel', geefPostVeilig('ondertitel'));
-            maakInstelling('favicon', geefPostVeilig('favicon'));
-            maakInstelling('achtergrondkleur', geefPostVeilig('achtergrondkleur'));
-            maakInstelling('menukleur', geefPostVeilig('menukleur'));
-            maakInstelling('menuachtergrond', geefPostOnveilig('menuachtergrond'));
-            maakInstelling('artikelkleur', geefPostVeilig('artikelkleur'));
-            maakInstelling('standaardcategorie', geefPostVeilig('standaardcategorie'));
-            maakInstelling('facebook_share', geefPostVeilig('facebook_share'));
-            maakInstelling('extra_bodycode', geefPostOnveilig('extra_bodycode'));
-            maakInstelling('menutype', geefPostVeilig('menutype'));
-            maakInstelling('menuthema', geefPostVeilig('menuthema'));
+            maakInstelling('websitenaam', Request::geefPostVeilig('websitenaam'));
+            maakInstelling('websitelogo', Request::geefPostVeilig('websitelogo'));
+            maakInstelling('ondertitel', Request::geefPostVeilig('ondertitel'));
+            maakInstelling('favicon', Request::geefPostVeilig('favicon'));
+            maakInstelling('achtergrondkleur', Request::geefPostVeilig('achtergrondkleur'));
+            maakInstelling('menukleur', Request::geefPostVeilig('menukleur'));
+            maakInstelling('menuachtergrond', Request::geefPostOnveilig('menuachtergrond'));
+            maakInstelling('artikelkleur', Request::geefPostVeilig('artikelkleur'));
+            maakInstelling('standaardcategorie', Request::geefPostVeilig('standaardcategorie'));
+            maakInstelling('facebook_share', Request::geefPostVeilig('facebook_share'));
+            maakInstelling('extra_bodycode', Request::geefPostOnveilig('extra_bodycode'));
+            maakInstelling('menutype', Request::geefPostVeilig('menutype'));
+            maakInstelling('menuthema', Request::geefPostVeilig('menuthema'));
 
-            $menu = geefPostVeilig('menu');
+            $menu = Request::geefPostVeilig('menu');
             $split1 = explode(';', $menu);
             $nieuwmenu = null;
 
@@ -108,7 +107,7 @@ class ConfiguratiePagina extends Pagina
 
         <?php
         echo '<h2>Informatie</h2>';
-        echo geefProductNaam() . ' ' . geefProductVersie() . ' (' . geefProductCodenaam() . ')<br />';
+        echo CyndaronInfo::PRODUCT_NAAM . ' ' . CyndaronInfo::PRODUCT_VERSIE . ' (' . CyndaronInfo::PRODUCT_CODENAAM . ')<br />';
         echo '© Michael Steenbeek, 2009-2014<br />';
         echo 'Beschikbaar onder de ISC-licentie (zie het bestand LICENSE), m.u.v. van de volgende onderdelen:<ul>';
         echo '<li>Bootstrap: MIT-licentie (LICENSE.Bootstrap)</li>';
@@ -117,7 +116,7 @@ class ConfiguratiePagina extends Pagina
         echo '<li>Lightbox: MIT-licentie (LICENSE.Lightbox)</li>';
         echo '<li>MinecraftSkinRenderer: BSD-3-licentie (LICENSE.MinecraftSkinRenderer)</li>';
         echo '</ul>';
-        echo 'Engineversie: ' . geefCyndaronVersie();
+        echo 'Engineversie: ' . CyndaronInfo::ENGINE_VERSIE;
         $this->toonPostPagina();
     }
 

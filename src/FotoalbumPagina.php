@@ -1,14 +1,15 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\Widget\Knop;
+
 require_once __DIR__ . '/../functies.db.php';
-require_once __DIR__ . '/../functies.url.php';
 
 class FotoalbumPagina extends Pagina
 {
     public function __construct()
     {
-        $boekid = geefGetVeilig('id');
+        $boekid = Request::geefGetVeilig('id');
         if (!is_numeric($boekid) || $boekid < 1)
         {
             header("Location: 404.php");
@@ -18,7 +19,7 @@ class FotoalbumPagina extends Pagina
         $notities = geefEen('SELECT notities FROM fotoboeken WHERE id=?', array($boekid));
         $_SESSION['referrer'] = !empty($_SERVER['HTTP_REFERER']) ? htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '';
 
-        $controls = knopcode('bewerken', 'editor-fotoalbum?id=' . $boekid, 'Dit fotoboek bewerken');
+        $controls = new Knop('bewerken', 'editor-fotoalbum?id=' . $boekid, 'Dit fotoboek bewerken');
         parent::__construct($boeknaam);
         $this->maakTitelknoppen($controls);
         $this->voegScriptToe('sys/js/lightbox.min.js');
@@ -62,9 +63,9 @@ class FotoalbumPagina extends Pagina
                             $uitvoer .= '/' . $dirArray[$index] . '" style="width:270px; height:200px"';
                         }
                         $uitvoer .= " alt=\"" . $dirArray[$index] . "\" /></a>";
-                        if (isAdmin())
+                        if (Gebruiker::isAdmin())
                         {
-                            $uitvoer .= '<br>' . knopcode('bewerken', 'editor-foto?id=' . $hash, 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
+                            $uitvoer .= '<br>' . new Knop('bewerken', 'editor-foto?id=' . $hash, 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
                         }
                         $uitvoer .= '</div>';
                     }

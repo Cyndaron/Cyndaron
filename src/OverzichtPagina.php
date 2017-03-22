@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\Widget\Knop;
+
 require_once __DIR__ . '/../check.php';
 require_once __DIR__ . '/../functies.db.php';
 require_once __DIR__ . '/../functies.pagina.php';
@@ -9,11 +11,11 @@ class OverzichtPagina extends Pagina
 {
     public function __construct()
     {
-        $type = geefGetVeilig('type');
-        $actie = geefGetVeilig('actie');
-        $id = geefGetVeilig('id');
-        $zeker = geefGetVeilig('zeker');
-        $naam = geefPostVeilig('naam');
+        $type = Request::geefGetVeilig('type');
+        $actie = Request::geefGetVeilig('actie');
+        $id = Request::geefGetVeilig('id');
+        $zeker = Request::geefGetVeilig('zeker');
+        $naam = Request::geefPostVeilig('naam');
 
         if ($type == 'categorie')
         {
@@ -57,7 +59,8 @@ class OverzichtPagina extends Pagina
         {
             if ($actie == 'verwijderen' && $zeker == 1)
             {
-                verwijderSub($id);
+                $model = new StatischePaginaModel($id);
+                $model->verwijder();
             }
             elseif ($actie == 'aanmenutoevoegen')
             {
@@ -69,17 +72,17 @@ class OverzichtPagina extends Pagina
         {
             if ($actie == 'nieuw')
             {
-                $doel = geefPostVeilig('doel');
-                maakFriendlyUrl($naam, $doel);
+                $doel = new Url(Request::geefPostVeilig('doel'));
+                $doel->maakFriendly($naam);
             }
             elseif ($actie == 'verwijderen' && $zeker == 1)
             {
-                $naam = geefGetVeilig('naam');
-                verwijderFriendlyUrl($naam);
+                $naam = Request::geefGetVeilig('naam');
+                Url::verwijderFriendlyUrl($naam);
             }
             elseif ($actie == 'aanmenutoevoegen')
             {
-                $naam = geefGetVeilig('naam');
+                $naam = Request::geefGetVeilig('naam');
                 voegToeAanMenu($naam);
             }
         }
@@ -105,7 +108,7 @@ class OverzichtPagina extends Pagina
         /* Subs */
         echo '<h2>Statische pagina\'s (subs)</h2>';
 
-        knop('nieuw', 'editor-statischepagina', 'Nieuwe statische pagina', 'Nieuwe statische pagina');
+        echo new Knop('nieuw', 'editor-statischepagina', 'Nieuwe statische pagina', 'Nieuwe statische pagina');
         echo '<br />';
 
         $subs = $connectie->prepare('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
@@ -130,15 +133,15 @@ class OverzichtPagina extends Pagina
             foreach ($subs as $subId => $subNaam)
             {
                 echo '<tr><td><div class="btn-group">';
-                knop('bewerken', 'editor-statischepagina?id=' . $subId, 'Bewerk deze sub', null, 16);
-                knop('verwijderen', 'overzicht.php?type=sub&amp;actie=verwijderen&amp;id=' . $subId, 'Verwijder deze sub', null, 16);
-                knop('aanmenutoevoegen', 'overzicht.php?type=sub&amp;actie=aanmenutoevoegen&amp;id=' . $subId, 'Voeg deze sub toe aan het menu', null, 16);
+                echo new Knop('bewerken', 'editor-statischepagina?id=' . $subId, 'Bewerk deze sub', null, 16);
+                echo new Knop('verwijderen', 'overzicht.php?type=sub&amp;actie=verwijderen&amp;id=' . $subId, 'Verwijder deze sub', null, 16);
+                echo new Knop('aanmenutoevoegen', 'overzicht.php?type=sub&amp;actie=aanmenutoevoegen&amp;id=' . $subId, 'Voeg deze sub toe aan het menu', null, 16);
                 $vvsub = $connectie->prepare('SELECT * FROM vorigesubs WHERE id= ?');
                 $vvsub->execute([$subId]);
 
                 if ($vvsub->fetchColumn())
                 {
-                    knop('vorigeversie', 'editor-statischepagina?vorigeversie=1&amp;id=' . $subId, 'Vorige versie terugzetten', null, 16);
+                    echo new Knop('vorigeversie', 'editor-statischepagina?vorigeversie=1&amp;id=' . $subId, 'Vorige versie terugzetten', null, 16);
                 }
                 echo '</div></td><td>';
                 $subNaam = strtr($subNaam, [' ' => '&nbsp;']);
@@ -171,9 +174,9 @@ class OverzichtPagina extends Pagina
                 <tr>
                     <td>
                         <div class="btn-group"><?php
-                            knop('bewerken', 'editor-categorie?id=' . $categorie['id'], 'Deze categorie bewerken', null, 16);
-                            knop('verwijderen', 'overzicht.php?type=categorie&amp;actie=verwijderen&amp;id=' . $categorie['id'], 'Verwijder deze categorie', null, 16);
-                            knop('aanmenutoevoegen', 'overzicht.php?type=categorie&amp;actie=aanmenutoevoegen&amp;id=' . $categorie['id'], 'Voeg deze categorie toe aan het menu', null, 16); ?>
+                            echo new Knop('bewerken', 'editor-categorie?id=' . $categorie['id'], 'Deze categorie bewerken', null, 16);
+                            echo new Knop('verwijderen', 'overzicht.php?type=categorie&amp;actie=verwijderen&amp;id=' . $categorie['id'], 'Verwijder deze categorie', null, 16);
+                            echo new Knop('aanmenutoevoegen', 'overzicht.php?type=categorie&amp;actie=aanmenutoevoegen&amp;id=' . $categorie['id'], 'Voeg deze categorie toe aan het menu', null, 16); ?>
                         </div>
                     </td>
                     <td>
@@ -203,9 +206,9 @@ class OverzichtPagina extends Pagina
                 <tr>
                     <td>
                         <div class="btn-group"><?php
-                            knop('bewerken', 'editor-fotoalbum?id=' . $fotoboek['id'], 'Bewerk dit fotoboek', null, 16);
-                            knop('verwijderen', 'overzicht.php?type=fotoboek&amp;actie=verwijderen&amp;id=' . $fotoboek['id'], 'Verwijder dit fotoboek', null, 16);
-                            knop('aanmenutoevoegen', 'overzicht.php?type=fotoboek&amp;actie=aanmenutoevoegen&amp;id=' . $fotoboek['id'], 'Voeg dit fotoboek toe aan het menu', null, 16); ?>
+                            echo new Knop('bewerken', 'editor-fotoalbum?id=' . $fotoboek['id'], 'Bewerk dit fotoboek', null, 16);
+                            echo new Knop('verwijderen', 'overzicht.php?type=fotoboek&amp;actie=verwijderen&amp;id=' . $fotoboek['id'], 'Verwijder dit fotoboek', null, 16);
+                            echo new Knop('aanmenutoevoegen', 'overzicht.php?type=fotoboek&amp;actie=aanmenutoevoegen&amp;id=' . $fotoboek['id'], 'Voeg dit fotoboek toe aan het menu', null, 16); ?>
                         </div
                     </td>
                     <td>
@@ -246,8 +249,8 @@ class OverzichtPagina extends Pagina
                 foreach ($friendlyurls as $friendlyurl)
                 {
                     echo '<tr><td><div class="btn-group">';
-                    knop('verwijderen', 'overzicht.php?type=friendlyurl&amp;actie=verwijderen&amp;naam=' . $friendlyurl['naam'], 'Verwijder deze friendly URL', null, 16);
-                    knop('aanmenutoevoegen', 'overzicht.php?type=friendlyurl&amp;actie=aanmenutoevoegen&amp;naam=' . $friendlyurl['naam'], 'Voeg deze friendly url toe aan het menu', null, 16);
+                    echo new Knop('verwijderen', 'overzicht.php?type=friendlyurl&amp;actie=verwijderen&amp;naam=' . $friendlyurl['naam'], 'Verwijder deze friendly URL', null, 16);
+                    echo new Knop('aanmenutoevoegen', 'overzicht.php?type=friendlyurl&amp;actie=aanmenutoevoegen&amp;naam=' . $friendlyurl['naam'], 'Voeg deze friendly url toe aan het menu', null, 16);
                     echo '</div></td><td><strong>' . $friendlyurl['naam'] . '</strong></td><td>' . $friendlyurl['doel'] . '</td></tr>';
                 }
                 ?>

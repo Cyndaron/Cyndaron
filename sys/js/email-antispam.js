@@ -18,7 +18,7 @@ function email()
 {
     var spantags = document.getElementsByTagName('span');
     var stlength = spantags.length;
-    for (i = stlength - 1; i >= 0; i--)
+    for (var i = stlength - 1; i >= 0; i--)
     {
         if (spantags[i].className == 'emailadres')
         {

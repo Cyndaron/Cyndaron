@@ -43,7 +43,7 @@ class Router
 
     public function __construct()
     {
-        $request = geefGetVeilig('pagina') ?: '/';
+        $request = Request::geefGetVeilig('pagina') ?: '/';
 
         if ((substr($request, 0, 1) == '.' || substr($request, 0, 1) == '/') && $request != '/')
         {
@@ -51,14 +51,14 @@ class Router
             die('Deze locatie mag niet worden opgevraagd.');
         }
 
-        $hoofdurl = geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', array());
-        if (geefUnfriendlyUrl($hoofdurl) == geefUnfriendlyUrl($request))
+        $hoofdurl = new Url(geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', array()));
+        if ($hoofdurl->isGelijkAan(new Url($request)))
         {
             header('Location: /');
         }
 
         // Verwijs oude URLs door
-        if (!empty(geefGetVeilig('friendlyurls')) && $url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
+        if (!empty(Request::geefGetVeilig('friendlyurls')) && $url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
         {
             header('Location: '.$url);
         }
@@ -90,7 +90,7 @@ class Router
         }
 
         // Bekende friendly URL
-        elseif ($url = geefEen('SELECT doel FROM friendlyurls WHERE naam=?', array($request)))
+        elseif ($url = new Url(geefEen('SELECT doel FROM friendlyurls WHERE naam=?', array($request))))
         {
             $this->verwerkUrl($url);
         }
@@ -102,7 +102,7 @@ class Router
         // Oude directe link naar een foto
         elseif ($request === 'toonfoto.php')
         {
-            $boekid = geefGetVeilig('boekid');
+            $boekid = Request::geefGetVeilig('boekid');
             header('Location: toonfotoboek.php?id=' . $boekid);
         }
         //Niet gevonden
@@ -112,12 +112,12 @@ class Router
         }
     }
 
-    public function verwerkUrl($url)
+    public function verwerkUrl(Url $url)
     {
-        $url = geefUnfriendlyUrl($url);
-        if (strpos($url, '?') !== FALSE)
+        $ufUrl = $url->geefUnfriendly();
+        if (strpos($ufUrl, '?') !== FALSE)
         {
-            list($bestand, $rest) = explode('?', $url, 2);
+            list($bestand, $rest) = explode('?', $ufUrl, 2);
             $restarray = explode('&', $rest);
             $_GET = array('friendlyurls' => true);
             foreach ($restarray as $var)
@@ -128,7 +128,7 @@ class Router
         }
         else
         {
-            $bestand = $url;
+            $bestand = $ufUrl;
         }
 
         if (array_key_exists($bestand, $this->endpoints))

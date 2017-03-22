@@ -1,6 +1,5 @@
 <?php
 require_once('functies.db.php');
-require_once('functies.url.php');
 
 if (!file_exists(__DIR__ . '/instellingen.php'))
 {

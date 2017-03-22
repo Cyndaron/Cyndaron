@@ -9,7 +9,7 @@ class GereserveerdePlaatsen
     public function __construct()
     {
         $connectie = newPDO();
-        $concert_id = intval(geefGetVeilig('id'));
+        $concert_id = intval(Request::geefGetVeilig('id'));
 
         $bezette_plaatsen_per_rij = [];
 

@@ -3,7 +3,6 @@ namespace Cyndaron;
 
 require_once __DIR__ . '/../check.php';
 require_once __DIR__ . '/../functies.db.php';
-require_once __DIR__ . '/../functies.url.php';
 
 abstract class EditorPagina extends Pagina
 {
@@ -18,8 +17,8 @@ abstract class EditorPagina extends Pagina
 
     public function __construct()
     {
-        $this->id = geefGetVeilig('id');
-        $this->vorigeversie = geefGetVeilig('vorigeversie');
+        $this->id = Request::geefGetVeilig('id');
+        $this->vorigeversie = Request::geefGetVeilig('vorigeversie');
         $this->vvstring = $this->vorigeversie ? 'vorige' : '';
         $this->connectie = newPDO();
 
@@ -43,9 +42,9 @@ abstract class EditorPagina extends Pagina
         $this->voegScriptToe('sys/js/editor.js');
         $this->toonPrePagina();
 
-        $unfriendlyUrl = 'toon' . $this->type . '.php?id=' . $this->id;
-        $friendlyUrl = geefFriendlyUrl($unfriendlyUrl);
-        if ($unfriendlyUrl == $friendlyUrl)
+        $unfriendlyUrl = new Url('toon' . $this->type . '.php?id=' . $this->id);
+        $friendlyUrl = new Url($unfriendlyUrl->geefFriendly());
+        if ($unfriendlyUrl->isGelijkAan($friendlyUrl));
         {
             $friendlyUrl = "";
         }

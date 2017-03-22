@@ -12,7 +12,7 @@ class KaartenBestellenPagina extends Pagina
         $this->connectie = newPDO();
         $this->voegScriptToe('sys/js/kaartverkoop.js');
 
-        $concert_id = geefGetVeilig('id');
+        $concert_id = Request::geefGetVeilig('id');
         $prep = $this->connectie->prepare('SELECT * FROM kaartverkoop_concerten WHERE id=?');
         $prep->execute(array($concert_id));
         $concert_info = $prep->fetch();
@@ -284,7 +284,7 @@ class KaartenBestellenPagina extends Pagina
                     echo '	totaalprijs=totaalprijs+(toeslag_gereserveerde_plaats*aantal);' . "\n";
                 }
                 ?>
-                totaalprijs_text = totaalprijs.toLocaleString("nl-NL", {
+                var totaalprijs_text = totaalprijs.toLocaleString("nl-NL", {
                     style: "currency",
                     currency: "EUR",
                     minimumFractionDigits: 2

@@ -7,12 +7,12 @@ class LoginPagina extends Pagina
 {
     public function __construct()
     {
-        if (!postIsLeeg())
+        if (!Request::postIsLeeg())
         {
-            if (geefPostVeilig('login_naam') && geefPostVeilig('login_wach'))
+            if (Request::geefPostVeilig('login_naam') && Request::geefPostVeilig('login_wach'))
             {
-                $login['naam'] = geefPostVeilig('login_naam');
-                $login['wach'] = hash('sha512', geefPostVeilig('login_wach'));
+                $login['naam'] = Request::geefPostVeilig('login_naam');
+                $login['wach'] = hash('sha512', Request::geefPostVeilig('login_wach'));
 
                 $this->connectie = newPDO();
 
@@ -41,7 +41,7 @@ class LoginPagina extends Pagina
                     $_SESSION['naam'] = $login['naam'];
                     $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
                     $_SESSION['niveau'] = $userdata['niveau'];
-                    nieuweMelding('U bent ingelogd.');
+                    Gebruiker::nieuweMelding('U bent ingelogd.');
                     if ($_SESSION['redirect'])
                     {
                         $_SESSION['request'] = $_SESSION['redirect'];
@@ -73,7 +73,7 @@ class LoginPagina extends Pagina
         else
         {
             if (empty($_SESSION['redirect']))
-                $_SESSION['redirect'] = geefReferrerVeilig();
+                $_SESSION['redirect'] = Request::geefReferrerVeilig();
             parent::__construct('Inloggen');
             $this->maakNietDelen(true);
             $this->toonPrePagina();

@@ -1,0 +1,160 @@
+<?php
+namespace Cyndaron;
+
+class StatischePaginaModel
+{
+    protected $id = null;
+    protected $titel = '';
+    protected $tekst = '';
+    protected $reactiesAan = false;
+    protected $categorieId;
+
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitel(): string
+    {
+        return $this->titel;
+    }
+
+    /**
+     * @param string $titel
+     */
+    public function setTitel(string $titel)
+    {
+        $this->titel = $titel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTekst(): string
+    {
+        return $this->tekst;
+    }
+
+    /**
+     * @param mixed $tekst
+     */
+    public function setTekst(string $tekst)
+    {
+        $this->tekst = $tekst;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getReactiesAan(): bool
+    {
+        return $this->reactiesAan;
+    }
+
+    /**
+     * @param mixed $reactiesAan
+     */
+    public function setReactiesAan(bool $reactiesAan)
+    {
+        $this->reactiesAan = $reactiesAan;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCategorieId(): int
+    {
+        return $this->categorieId;
+    }
+
+    /**
+     * @param mixed $categorieId
+     */
+    public function setCategorieId(int $categorieId)
+    {
+        $this->categorieId = $categorieId;
+    }
+
+    public function __construct(int $id = null)
+    {
+        if ($id > 0)
+        {
+            $this->id = $id;
+        }
+    }
+
+    public function laden(): bool
+    {
+        if ($this->id === null)
+        {
+            return false;
+        }
+
+        $connectie = newPDO();
+        $prep = $connectie->prepare('SELECT * FROM subs WHERE id=?');
+        $prep->execute([$this->id]);
+        $record = $prep->fetch();
+
+        $this->titel = $record['titel'];
+        $this->tekst = $record['tekst'];
+        $this->reactiesAan = $record['reacties_aan'] == 1 ? true : false;
+        $this->categorieId = $record['categorieid'];
+        return true;
+    }
+
+    /**
+     * Slaat de statische pagina op
+     *
+     * @return int Het ID van de statische pagina.
+     */
+    public function opslaan(): int
+    {
+        if ($this->id === null)
+        {
+            if (!$this->reactiesAan)
+            {
+                $reacties_aan = '0';
+            }
+            else
+            {
+                $reacties_aan = '1';
+            }
+
+            $connectie = newPDO();
+            $prep = $connectie->prepare('INSERT INTO subs(naam, tekst, reacties_aan, categorieid) VALUES ( ?, ?, ?, ?)');
+            $prep->execute([$this->titel, $this->tekst, $reacties_aan, $this->categorieId]);
+            return $connectie->lastInsertId();
+        }
+        else
+        {
+            $reacties_aan = parseCheckboxAlsInt($this->reactiesAan);
+            $connectie = newPDO();
+            if (!geefEen('SELECT * FROM vorigesubs WHERE id=?', [$this->id]))
+            {
+                $prep = $connectie->prepare('INSERT INTO vorigesubs VALUES (?, \'\', \'\')');
+                $prep->execute([$this->id]);
+            }
+            $prep = $connectie->prepare('UPDATE vorigesubs SET tekst=( SELECT tekst FROM subs WHERE id=? ) WHERE id=?');
+            $prep->execute([$this->id, $this->id]);
+            $prep = $connectie->prepare('UPDATE vorigesubs SET naam=( SELECT naam FROM subs WHERE id=? ) WHERE id=?');
+            $prep->execute([$this->id, $this->id]);
+
+            $prep = $connectie->prepare('UPDATE subs SET tekst= ?, naam= ?, reacties_aan=?, categorieid= ? WHERE id= ?');
+            $prep->execute([$this->tekst, $this->titel, $reacties_aan, $this->categorieId, $this->id]);
+            return $this->id;
+        }
+    }
+
+    public function verwijder()
+    {
+        if ($this->id != null)
+        {
+            maakEen('DELETE FROM subs WHERE id=?;', [$this->id]);
+            maakEen('DELETE FROM vorigesubs WHERE id=?;', [$this->id]);
+        }
+    }
+}
