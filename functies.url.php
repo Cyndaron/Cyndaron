@@ -1,40 +1,4 @@
 <?php
-function verwerkUrl($url)
-{
-    global $endpoints;
-
-    $url = geefUnfriendlyUrl($url);
-    if (strpos($url, '?') !== FALSE)
-    {
-        list($bestand, $rest) = explode('?', $url, 2);
-        $restarray = explode('&', $rest);
-        $_GET = array('friendlyurls' => true);
-        foreach ($restarray as $var)
-        {
-            list($key, $value) = explode('=', $var);
-            $_GET[$key] = $value;
-        }
-    }
-    else
-    {
-        $bestand = $url;
-    }
-
-    if (array_key_exists($bestand, $endpoints))
-    {
-        $classname = $endpoints[$bestand];
-        $handler = new $classname();
-    }
-    elseif (file_exists($bestand))
-    {
-        include($bestand);
-    }
-    else
-    {
-        include('404.php');
-        die();
-    }
-}
 
 function geefFriendlyUrl($url)
 {

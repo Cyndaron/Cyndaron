@@ -2,55 +2,15 @@
 require_once('functies.db.php');
 require_once('functies.url.php');
 
-$endpoints = [
-    // Standaard
-    '403.php' => '\Cyndaron\Error403Pagina',
-    '404.php' => '\Cyndaron\Error404Pagina',
-    'configuratie.php' => '\Cyndaron\ConfiguratiePagina',
-    'editor.php' => '\Cyndaron\EditorPagina',
-    'login.php' => '\Cyndaron\LoginPagina',
-    'logoff.php' => '\Cyndaron\Loguit',
-    'overzicht.php' => '\Cyndaron\OverzichtPagina',
-    'tooncategorie.php' => '\Cyndaron\CategoriePagina',
-    'toonfotoboek.php' => '\Cyndaron\FotoalbumPagina',
-    'toonsub.php' => '\Cyndaron\StatischePagina',
-    'verwerkmailformulier.php' => '\Cyndaron\VerwerkMailFormulierPagina',
-    // Standaard-plugins
-    'bestandenkast.php' => '\Cyndaron\Bestandenkast\OverzichtPagina',
-    'kaartenbestellen.php' => '\Cyndaron\Kaartverkoop\KaartenBestellenPagina',
-    'ideeenbus.php' => '\Cyndaron\Ideeenbus\IdeeenbusPagina',
-    'overzicht-bestellingen.php' => '\Cyndaron\Kaartverkoop\OverzichtBestellingenPagina',
-    'kaarten-gereserveerde-plaatsen' => '\Cyndaron\Kaartverkoop\GereserveerdePlaatsen',
-    'kaarten-verwerk-bestelling' => '\Cyndaron\Kaartverkoop\VerwerkBestellingPagina',
-    'mc-leden' => '\Cyndaron\Minecraft\LedenPagina',
-    'mc-skinrenderer' => '\Cyndaron\Minecraft\SkinRendererHandler',
-    'mc-status' => '\Cyndaron\Minecraft\StatusPagina',
-];
-
-
 if (!file_exists(__DIR__ . '/instellingen.php'))
 {
     echo 'Geen instellingenbestand gevonden!';
     die();
 }
 
-$request = geefGetVeilig('pagina') ?: '/';
-
-if ((substr($request, 0, 1) == '.' || substr($request, 0, 1) == '/') && $request != '/')
-{
-    header('Location: 403.php');
-    die('Deze locatie mag niet worden opgevraagd.');
-}
-
-$hoofdurl = geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', array());
-if (geefUnfriendlyUrl($hoofdurl) == geefUnfriendlyUrl($request))
-{
-    header('Location: /');
-}
-
-/////
-//
-///
+/**
+ * Autoloader (PSR-4)
+ */
 spl_autoload_register(function ($class) {
 
     // project-specific namespace prefix
@@ -80,53 +40,4 @@ spl_autoload_register(function ($class) {
     }
 });
 
-
-
-// Nog even niet...
-//// Verwijs oude URLs door
-//if (!empty(geefGetVeilig('friendlyurls')) && $url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
-//{
-//    header('Location: '.$url);
-//}
-//
-//if (empty($_SESSION))
-//{
-//    session_start();
-//}
-
-//Hoofdpagina
-if ($request == '/')
-{
-    verwerkUrl($hoofdurl);
-}
-//Non-friendly URL
-elseif (strpos($request, '.php'))
-{
-    verwerkUrl($request);
-}
-//Normaal bestand
-elseif (@file_exists($request))
-{
-    include($request);
-}
-elseif (array_key_exists($request, $endpoints))
-{
-    $classname = $endpoints[$request];
-    $handler = new $classname();
-}
-
-//Bekende URL
-elseif ($url = geefEen('SELECT doel FROM friendlyurls WHERE naam=?', array($request)))
-{
-    verwerkUrl($url);
-}
-//Normaal bestand zonder .php
-elseif (@file_exists($request . '.php'))
-{
-    include($request . '.php');
-}
-//Niet gevonden
-else
-{
-    header('Location: 404.php');
-}
+$router = new \Cyndaron\Router();
