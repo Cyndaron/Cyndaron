@@ -10,6 +10,8 @@ Versie 5.0 (Scupi) (in ontwikkeling)
 - Verbeteringen voor mobiele apparatuur: viewport
 - Instellingen in het configuratiepaneel worden nu geëscapet
 - Inline Javascript is deels verplaatst naar eigen bestanden
+- Minecraft- en Kaartverkoopmodules gebruiken nu namespaces
+- PSR-4-autoloader
 
 Versie 4.0 (Roma)
 - 'Hoofdstukken' en 'artikelen' vervangen door statische pagina's (subs)
