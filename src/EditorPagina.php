@@ -5,27 +5,24 @@ require_once __DIR__ . '/../check.php';
 require_once __DIR__ . '/../functies.db.php';
 require_once __DIR__ . '/../functies.url.php';
 
-class EditorPagina extends Pagina
+abstract class EditorPagina extends Pagina
 {
+    protected $id = null;
+    protected $heeftTitel = true;
+    protected $vorigeversie = null;
+    protected $vvstring = '';
+    protected $content;
+    protected $titel;
+    protected $type;
+
     public function __construct()
     {
-        global $vvstring;
+        $this->id = geefGetVeilig('id');
+        $this->vorigeversie = geefGetVeilig('vorigeversie');
+        $this->vvstring = $this->vorigeversie ? 'vorige' : '';
+        $this->connectie = newPDO();
 
-        $id = geefGetVeilig('id');
-        $vorigeversie = geefGetVeilig('vorigeversie');
-        $vvstring = $vorigeversie ? 'vorige' : '';
-
-        $type = geefGetVeilig('type');
-        $heeftTitel = true;
-
-        if (@file_exists('editor.' . $type . '.php'))
-        {
-            require(__DIR__ . '/../editor.' . $type . '.php');
-        }
-        else
-        {
-            die ('Ongeldig paginatype!');
-        }
+        $this->prepare();
 
         $_SESSION['referrer'] = htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8');
 
@@ -45,7 +42,7 @@ class EditorPagina extends Pagina
         $this->voegScriptToe('sys/js/editor.js');
         $this->toonPrePagina();
 
-        $unfriendlyUrl = 'toon' . $type . '.php?id=' . $id;
+        $unfriendlyUrl = 'toon' . $this->type . '.php?id=' . $this->id;
         $friendlyUrl = geefFriendlyUrl($unfriendlyUrl);
         if ($unfriendlyUrl == $friendlyUrl)
         {
@@ -53,10 +50,10 @@ class EditorPagina extends Pagina
         }
         ?>
 
-        <form name="bewerkartikel" method="post" action="bewerk.php?id=<?=$id;?>&amp;type=<?=$type;?>&amp;actie=bewerken" class="form-horizontal">
+        <form name="bewerkartikel" method="post" action="bewerk.php?id=<?=$this->id;?>&amp;type=<?=$this->type;?>&amp;actie=bewerken" class="form-horizontal">
 
             <?php
-            if ($heeftTitel === true):
+            if ($this->heeftTitel === true):
                 ?>
                 <div class="form-group">
                     <label class="col-sm-2 control-label" for="titel">Titel: </label>
@@ -117,4 +114,8 @@ class EditorPagina extends Pagina
         $this->toonPostPagina();
 
     }
+
+    abstract protected function prepare();
+
+    abstract protected function toonSpecifiekeKnoppen();
 }
