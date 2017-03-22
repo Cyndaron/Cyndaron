@@ -105,7 +105,7 @@ class OverzichtPagina extends Pagina
         /* Subs */
         echo '<h2>Statische pagina\'s (subs)</h2>';
 
-        knop('nieuw', 'editor.php?type=sub', 'Nieuwe statische pagina', 'Nieuwe statische pagina');
+        knop('nieuw', 'editor-statischepagina', 'Nieuwe statische pagina', 'Nieuwe statische pagina');
         echo '<br />';
 
         $subs = $connectie->prepare('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
@@ -130,7 +130,7 @@ class OverzichtPagina extends Pagina
             foreach ($subs as $subId => $subNaam)
             {
                 echo '<tr><td><div class="btn-group">';
-                knop('bewerken', 'editor.php?type=sub&amp;id=' . $subId, 'Bewerk deze sub', null, 16);
+                knop('bewerken', 'editor-statischepagina?id=' . $subId, 'Bewerk deze sub', null, 16);
                 knop('verwijderen', 'overzicht.php?type=sub&amp;actie=verwijderen&amp;id=' . $subId, 'Verwijder deze sub', null, 16);
                 knop('aanmenutoevoegen', 'overzicht.php?type=sub&amp;actie=aanmenutoevoegen&amp;id=' . $subId, 'Voeg deze sub toe aan het menu', null, 16);
                 $vvsub = $connectie->prepare('SELECT * FROM vorigesubs WHERE id= ?');
@@ -138,7 +138,7 @@ class OverzichtPagina extends Pagina
 
                 if ($vvsub->fetchColumn())
                 {
-                    knop('vorigeversie', 'editor.php?type=sub&amp;vorigeversie=1&amp;id=' . $subId, 'Vorige versie terugzetten', null, 16);
+                    knop('vorigeversie', 'editor-statischepagina?vorigeversie=1&amp;id=' . $subId, 'Vorige versie terugzetten', null, 16);
                 }
                 echo '</div></td><td>';
                 $subNaam = strtr($subNaam, [' ' => '&nbsp;']);
@@ -171,7 +171,7 @@ class OverzichtPagina extends Pagina
                 <tr>
                     <td>
                         <div class="btn-group"><?php
-                            knop('bewerken', 'editor.php?type=categorie&amp;id=' . $categorie['id'], 'Deze categorie bewerken', null, 16);
+                            knop('bewerken', 'editor-categorie?id=' . $categorie['id'], 'Deze categorie bewerken', null, 16);
                             knop('verwijderen', 'overzicht.php?type=categorie&amp;actie=verwijderen&amp;id=' . $categorie['id'], 'Verwijder deze categorie', null, 16);
                             knop('aanmenutoevoegen', 'overzicht.php?type=categorie&amp;actie=aanmenutoevoegen&amp;id=' . $categorie['id'], 'Voeg deze categorie toe aan het menu', null, 16); ?>
                         </div>
@@ -203,7 +203,7 @@ class OverzichtPagina extends Pagina
                 <tr>
                     <td>
                         <div class="btn-group"><?php
-                            knop('bewerken', 'editor.php?type=fotoboek&amp;id=' . $fotoboek['id'], 'Bewerk dit fotoboek', null, 16);
+                            knop('bewerken', 'editor-fotoalbum?id=' . $fotoboek['id'], 'Bewerk dit fotoboek', null, 16);
                             knop('verwijderen', 'overzicht.php?type=fotoboek&amp;actie=verwijderen&amp;id=' . $fotoboek['id'], 'Verwijder dit fotoboek', null, 16);
                             knop('aanmenutoevoegen', 'overzicht.php?type=fotoboek&amp;actie=aanmenutoevoegen&amp;id=' . $fotoboek['id'], 'Voeg dit fotoboek toe aan het menu', null, 16); ?>
                         </div

@@ -7,6 +7,7 @@ class EditorFotoalbum extends EditorPagina
     {
         $this->heeftTitel = true;
         $this->type = 'fotoboek';
+        $this->saveUrl = 'bewerk-categorie?actie=fotoalbum&amp;id=%s';
 
         if ($this->id)
         {

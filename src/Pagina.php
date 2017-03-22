@@ -210,7 +210,7 @@ class Pagina
             <li><a title="Uitloggen" href="logoff.php"><span class="glyphicon glyphicon-log-out"></span></a></li>
             <li><a title="Instellingen aanpassen" href="configuratie.php"><span class="glyphicon glyphicon-cog"></span></a></li>
             <li><a title="Paginaoverzicht" href="overzicht.php"><span class="glyphicon glyphicon-th-list"></span></a></li>
-            <li><a title="Nieuwe statische pagina aanmaken" href="editor.php?type=sub"><span class="glyphicon glyphicon-plus"></span></a></li>
+            <li><a title="Nieuwe statische pagina aanmaken" href="editor-statischepagina"><span class="glyphicon glyphicon-plus"></span></a></li>
         <?php else: ?>
             <li><a title="Inloggen" href="login.php"><span class="glyphicon glyphicon-lock"></span></a></li>
         <?php endif; ?>
@@ -246,7 +246,7 @@ class Pagina
             knop('log-out', 'logoff.php', 'Uitloggen', null, 16);
             knop('cog', 'configuratie.php', 'Instellingen aanpassen', null, 16);
             knop('list', 'overzicht.php', 'Paginaoverzicht', null, 16);
-            knop('plus', "editor.php?type=sub", 'Nieuwe sub aanmaken', null, 16);
+            knop('plus', "editor-statischepagina", 'Nieuwe sub aanmaken', null, 16);
             echo '</div>';
         }
         echo '<div class="dottop"><ul class="menulijst">';

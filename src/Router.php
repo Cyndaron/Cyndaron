@@ -13,6 +13,10 @@ class Router
         // Standaard
         '403.php' => '\Cyndaron\Error403Pagina',
         '404.php' => '\Cyndaron\Error404Pagina',
+        'bewerk-categorie' => '\Cyndaron\BewerkCategorie',
+        'bewerk-foto' => '\Cyndaron\BewerkFoto',
+        'bewerk-fotoalbum' => '\Cyndaron\BewerkFotoAlbum',
+        'bewerk-statischepagina' => '\Cyndaron\BewerkStatischePagina',
         'configuratie.php' => '\Cyndaron\ConfiguratiePagina',
         'editor-categorie' => '\Cyndaron\EditorCategorie',
         'editor-foto' => '\Cyndaron\EditorFoto',
@@ -70,22 +74,22 @@ class Router
             $this->verwerkUrl($hoofdurl);
         }
         //Non-friendly URL
-        elseif (strpos($request, '.php'))
-        {
-            $this->verwerkUrl($request);
-        }
-        //Normaal bestand
-        elseif (@file_exists($request))
-        {
-            include($request);
-        }
+//        elseif (strpos($request, '.php'))
+//        {
+//            $this->verwerkUrl($request);
+//        }
+//        //Normaal bestand
+//        elseif (@file_exists($request))
+//        {
+//            include($request);
+//        }
         elseif (array_key_exists($request, $this->endpoints))
         {
             $classname = $this->endpoints[$request];
             $handler = new $classname();
         }
 
-        //Bekende URL
+        // Bekende friendly URL
         elseif ($url = geefEen('SELECT doel FROM friendlyurls WHERE naam=?', array($request)))
         {
             $this->verwerkUrl($url);
@@ -94,6 +98,12 @@ class Router
         elseif (@file_exists($request . '.php'))
         {
             include($request . '.php');
+        }
+        // Oude directe link naar een foto
+        elseif ($request === 'toonfoto.php')
+        {
+            $boekid = geefGetVeilig('boekid');
+            header('Location: toonfotoboek.php?id=' . $boekid);
         }
         //Niet gevonden
         else

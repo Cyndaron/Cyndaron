@@ -7,6 +7,7 @@ class EditorFoto extends EditorPagina
     {
         $this->heeftTitel = false;
         $this->type = 'foto';
+        $this->saveUrl = 'bewerk-foto?actie=bewerken&amp;id=%s';
 
         if ($this->id)
         {

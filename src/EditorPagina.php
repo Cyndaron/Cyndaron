@@ -14,6 +14,7 @@ abstract class EditorPagina extends Pagina
     protected $content;
     protected $titel;
     protected $type;
+    protected $saveUrl;
 
     public function __construct()
     {
@@ -48,9 +49,10 @@ abstract class EditorPagina extends Pagina
         {
             $friendlyUrl = "";
         }
+        $saveUrl = sprintf($this->saveUrl, $this->id ? (string)$this->id : '');
         ?>
 
-        <form name="bewerkartikel" method="post" action="bewerk.php?id=<?=$this->id;?>&amp;type=<?=$this->type;?>&amp;actie=bewerken" class="form-horizontal">
+        <form name="bewerkartikel" method="post" action="<?=$saveUrl;?>" class="form-horizontal">
 
             <?php
             if ($this->heeftTitel === true):
