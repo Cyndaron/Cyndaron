@@ -23,7 +23,7 @@ class KaartenBestellenPagina extends Pagina
         parent::__construct('Kaarten bestellen: ' . $concertnaam);
         $this->toonPrePagina();
 
-        if ($concert_info['open_voor_verkoop'] == FALSE)
+        if ($concert_info['open_voor_verkoop'] == false)
         {
             if ($concert_info['beschrijving_indien_gesloten'])
                 echo $concert_info['beschrijving_indien_gesloten'];

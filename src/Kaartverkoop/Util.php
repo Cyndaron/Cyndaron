@@ -10,9 +10,9 @@ class Util
         $postcode = intval($postcode);
 
         if ($postcode >= 4330 && $postcode <= 4399)
-            return TRUE;
+            return true;
         else
-            return FALSE;
+            return false;
     }
 
     public static function naarEuro($bedrag)

@@ -25,7 +25,7 @@ class Instelling
         $setting->execute(array($this->waarde, $this->naam));
     }
 
-    public static function geefInstelling($naam, $escape = FALSE)
+    public static function geefInstelling($naam, $escape = false)
     {
         $connectie = DBConnection::getPDO();
         $setting = $connectie->prepare('SELECT waarde FROM instellingen WHERE naam= ?');

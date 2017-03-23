@@ -33,7 +33,7 @@ class DBConnection
     {
         $prep = static::$pdo->prepare($query);
         $result = $prep->execute($vars);
-        return $result == FALSE ? $result : static::$pdo->lastInsertId();
+        return $result == false ? $result : static::$pdo->lastInsertId();
     }
 
     public function doQueryAndFetchAll(string $query, array $vars = [])

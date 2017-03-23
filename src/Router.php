@@ -115,7 +115,7 @@ class Router
     public function verwerkUrl(Url $url)
     {
         $ufUrl = $url->geefUnfriendly();
-        if (strpos($ufUrl, '?') !== FALSE)
+        if (strpos($ufUrl, '?') !== false)
         {
             list($bestand, $rest) = explode('?', $ufUrl, 2);
             $restarray = explode('&', $rest);
