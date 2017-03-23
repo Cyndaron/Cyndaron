@@ -40,6 +40,7 @@ class Router
         'mc-leden' => '\Cyndaron\Minecraft\LedenPagina',
         'mc-skinrenderer' => '\Cyndaron\Minecraft\SkinRendererHandler',
         'mc-status' => '\Cyndaron\Minecraft\StatusPagina',
+        'wieiswie' => '\Cyndaron\WieIsWie\OverzichtPagina',
     ];
 
     public function __construct()
