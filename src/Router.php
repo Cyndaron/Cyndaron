@@ -23,6 +23,8 @@ class Router
         'editor-statischepagina' => '\Cyndaron\EditorStatischePagina',
         'login.php' => '\Cyndaron\LoginPagina',
         'logoff.php' => '\Cyndaron\Loguit',
+        'migreer_naar_v4.php' => '\Cyndaron\MigreerNaar4_0',
+        'migreer_naar_v5.php' => '\Cyndaron\MigreerNaar5_0',
         'overzicht.php' => '\Cyndaron\OverzichtPagina',
         'tooncategorie.php' => '\Cyndaron\CategoriePagina',
         'toonfotoboek.php' => '\Cyndaron\FotoalbumPagina',

@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron;
 
-require_once __DIR__ . '/../functies.pagina.php';
 
 class BewerkStatischePagina extends Bewerk
 {

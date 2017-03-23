@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron;
 
-require_once __DIR__ . '/../functies.pagina.php';
 
 class BewerkFotoalbum extends Bewerk
 {
@@ -17,11 +16,11 @@ class BewerkFotoalbum extends Bewerk
 
             if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
             {
-                wijzigFotoalbum($this->id, $naam, $notities);
+                FotoalbumModel::wijzigFotoalbum($this->id, $naam, $notities);
             }
             else
             {
-                $this->id = nieuwFotoalbum($naam, $notities);
+                $this->id = FotoalbumModel::nieuwFotoalbum($naam, $notities);
             }
 
             Gebruiker::nieuweMelding('Fotoboek bewerkt.');

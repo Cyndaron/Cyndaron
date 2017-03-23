@@ -131,7 +131,7 @@ class StatischePaginaModel
         }
         else
         {
-            $reacties_aan = parseCheckboxAlsInt($this->reactiesAan);
+            $reacties_aan = Util::parseCheckboxAlsInt($this->reactiesAan);
             $connectie = DBConnection::getPDO();
             if (!DBConnection::geefEen('SELECT * FROM vorigesubs WHERE id=?', [$this->id]))
             {

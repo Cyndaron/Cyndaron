@@ -76,7 +76,7 @@ class FotoalbumPagina extends Pagina
             }
             $uitvoer .= '</div>';
 
-            toonIndienAanwezig($notities, '', '');
+            static::toonIndienAanwezig($notities, '', '');
             if ($aantal == 1)
                 echo "Dit album bevat 1 foto.";
             else

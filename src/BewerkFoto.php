@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron;
 
-require_once __DIR__ . '/../functies.pagina.php';
 
 class BewerkFoto extends Bewerk
 {
@@ -15,7 +14,7 @@ class BewerkFoto extends Bewerk
         {
             $bijschrift = Request::geefPostOnveilig('artikel');
 
-            maakBijschrift($hash, $bijschrift);
+            FotoModel::maakBijschrift($hash, $bijschrift);
             Gebruiker::nieuweMelding('Bijschrift bewerkt.');
         }
     }

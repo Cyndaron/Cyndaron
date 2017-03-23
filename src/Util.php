@@ -12,4 +12,20 @@ class Util
         else
             return $string;
     }
+
+    public static function parseCheckboxAlsInt($waarde)
+    {
+        if (!$waarde)
+            return 0;
+        else
+            return 1;
+    }
+
+    public static function parseCheckBoxAlsBool($waarde)
+    {
+        if (!$waarde)
+            return false;
+        else
+            return true;
+    }
 }

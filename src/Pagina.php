@@ -19,7 +19,6 @@ use Cyndaron\Widget\Knop;
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-require_once __DIR__ . '/../functies.pagina.php';
 
 class Pagina
 {
@@ -80,10 +79,10 @@ class Pagina
             ?>
             <style type="text/css">
                 <?php
-                toonIndienAanwezig(Instelling::geefInstelling('achtergrondkleur'), 'body, .lightboxOverlay { background-color: ',";}\n");
-                toonIndienAanwezig(Instelling::geefInstelling('menukleur'), '.menu { background-color: ',";}\n");
-                toonIndienAanwezig(Instelling::geefInstelling('menuachtergrond'), '.menu { background-image: url(\'',"');}\n");
-                toonIndienAanwezig(Instelling::geefInstelling('artikelkleur'), '.inhoud { background-color: ',";}\n");
+                static::toonIndienAanwezig(Instelling::geefInstelling('achtergrondkleur'), 'body, .lightboxOverlay { background-color: ',";}\n");
+                static::toonIndienAanwezig(Instelling::geefInstelling('menukleur'), '.menu { background-color: ',";}\n");
+                static::toonIndienAanwezig(Instelling::geefInstelling('menuachtergrond'), '.menu { background-image: url(\'',"');}\n");
+                static::toonIndienAanwezig(Instelling::geefInstelling('artikelkleur'), '.inhoud { background-color: ',";}\n");
                 ?>
             </style>
             <script type="text/javascript">
@@ -97,7 +96,7 @@ class Pagina
         <body><?php
         if ($this->nietDelen == false)
         {
-            toonIndienAanwezig(Instelling::geefInstelling('extra_bodycode'));
+            static::toonIndienAanwezig(Instelling::geefInstelling('extra_bodycode'));
             if (Instelling::geefInstelling('facebook_share') == 1)
             {
                 echo '<div id="fb-root"></div>
@@ -126,7 +125,7 @@ class Pagina
         }
 
         echo '</div><div class="inhoudcontainer"><div class="inhoud"><div class="paginatitel"><h1 style="display: inline; margin-right:8px;">' . $this->paginanaam . '</h1>';
-        toonIndienAanwezigEnAdmin($this->titelknoppen, '<div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">', '</div>');
+        static::toonIndienAanwezigEnAdmin($this->titelknoppen, '<div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">', '</div>');
         echo "</div>\n";
     }
 
@@ -279,7 +278,7 @@ class Pagina
             }
         }
         echo '</ul></div>';
-        toonIndienAanwezigEnGeenAdmin('<div style="float: right;">' . new Knop('log-in', 'login.php', 'Inloggen', null, 16) . '</div>');
+        static::toonIndienAanwezigEnGeenAdmin('<div style="float: right;">' . new Knop('log-in', 'login.php', 'Inloggen', null, 16) . '</div>');
     }
 
     private function menuItemIsHuidigePagina(string $menuItem): bool
@@ -362,5 +361,35 @@ class Pagina
             $eersteitem = false;
         }
         return $menuitems;
+    }
+
+    public static function toonIndienAanwezig($string, $voor = null, $na = null)
+    {
+        if ($string)
+        {
+            echo $voor;
+            echo $string;
+            echo $na;
+        }
+    }
+
+    public static function toonIndienAanwezigEnAdmin($string, $voor = null, $na = null)
+    {
+        if (Gebruiker::isAdmin() && $string)
+        {
+            echo $voor;
+            echo $string;
+            echo $na;
+        }
+    }
+
+    public static function toonIndienAanwezigEnGeenAdmin($string, $voor = null, $na = null)
+    {
+        if (!Gebruiker::isAdmin() && $string)
+        {
+            echo $voor;
+            echo $string;
+            echo $na;
+        }
     }
 }

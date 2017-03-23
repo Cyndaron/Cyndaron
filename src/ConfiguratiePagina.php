@@ -2,7 +2,6 @@
 namespace Cyndaron;
 
 require_once __DIR__ . '/../check.php';
-require_once __DIR__ . '/../functies.pagina.php';
 
 class ConfiguratiePagina extends Pagina
 {
@@ -37,7 +36,7 @@ class ConfiguratiePagina extends Pagina
                     $nieuwmenu[] = array('link' => $menuitem[0], 'alias' => $menuitem[1]);
                 }
             }
-            vervangMenu($nieuwmenu);
+            MenuModel::vervangMenu($nieuwmenu);
         }
         parent::__construct('Configuratie');
         $this->maakNietDelen(true);

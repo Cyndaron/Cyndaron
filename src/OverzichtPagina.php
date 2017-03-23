@@ -4,7 +4,6 @@ namespace Cyndaron;
 use Cyndaron\Widget\Knop;
 
 require_once __DIR__ . '/../check.php';
-require_once __DIR__ . '/../functies.pagina.php';
 
 class OverzichtPagina extends Pagina
 {
@@ -20,38 +19,38 @@ class OverzichtPagina extends Pagina
         {
             if ($actie == 'nieuw')
             {
-                nieuweCategorie($naam);
+                CategorieModel::nieuweCategorie($naam);
             }
             elseif ($actie == 'bewerken')
             {
-                wijzigCategorie($id, $naam);
+                CategorieModel::wijzigCategorie($id, $naam);
             }
             elseif ($actie == 'verwijderen' && $zeker == 1)
             {
-                verwijderCategorie($id);
+                CategorieModel::verwijderCategorie($id);
             }
             elseif ($actie == 'aanmenutoevoegen')
             {
-                voegToeAanMenu('tooncategorie.php?id=' . $id);
+                MenuModel::voegToeAanMenu('tooncategorie.php?id=' . $id);
             }
         }
         elseif ($type == 'fotoboek')
         {
             if ($actie == 'nieuw')
             {
-                nieuwFotoalbum($naam);
+                FotoalbumModel::nieuwFotoalbum($naam);
             }
             elseif ($actie == 'bewerken')
             {
-                wijzigFotoalbum($id, $naam);
+                FotoalbumModel::wijzigFotoalbum($id, $naam);
             }
             elseif ($actie == 'verwijderen' && $zeker == 1)
             {
-                verwijderFotoalbum($id);
+                FotoalbumModel::verwijderFotoalbum($id);
             }
             elseif ($actie == 'aanmenutoevoegen')
             {
-                voegToeAanMenu('toonfotoboek.php?id=' . $id);
+                MenuModel::voegToeAanMenu('toonfotoboek.php?id=' . $id);
             }
         }
         elseif ($type == 'sub')
@@ -63,7 +62,7 @@ class OverzichtPagina extends Pagina
             }
             elseif ($actie == 'aanmenutoevoegen')
             {
-                voegToeAanMenu('toonsub.php?id=' . $id);
+                MenuModel::voegToeAanMenu('toonsub.php?id=' . $id);
             }
 
         }
@@ -82,7 +81,7 @@ class OverzichtPagina extends Pagina
             elseif ($actie == 'aanmenutoevoegen')
             {
                 $naam = Request::geefGetVeilig('naam');
-                voegToeAanMenu($naam);
+                MenuModel::voegToeAanMenu($naam);
             }
         }
 

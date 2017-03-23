@@ -24,7 +24,7 @@ class OverzichtPagina extends Pagina
             echo $lid['achternaam'] . '</span></b><br /><br />';
             echo $lid['functie'];
 
-            toonIndienAanwezig($lid['opmerkingen'], '<br />', '');
+            static::toonIndienAanwezig($lid['opmerkingen'], '<br />', '');
             echo '</td></tr>';
         }
         echo '</table>';
