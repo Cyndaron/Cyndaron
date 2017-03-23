@@ -1,17 +1,26 @@
 Versie 5.0 (Scupi) (in ontwikkeling)
-- Ingebedde afbeeldingen worden uit de tekst geëxtraheerd en in de map afb/via-editor geplaatst
-- Lingo-klasse verwijderd
-- Losse spaties voor en na samenvattingen op categoriepagina's verwijderd
-- Tags zonder spaties ervoor/erna gefixt (nodig voor PHP 7)
-- CKeditor geüpdatet
-- CKeditor neemt achtergrondkleur van de pagina over
-- Klassiek pictogrammenthema verwijderd
-- Codeverbeteringen: verwijderen uitgecommente code, enkele notices verholpen
-- Verbeteringen voor mobiele apparatuur: viewport
-- Instellingen in het configuratiepaneel worden nu geëscapet
-- Inline Javascript is deels verplaatst naar eigen bestanden
-- Afgezien van de libraries is alles overgezet naar OOP met namespacing
-- PSR-4-autoloader
+- Code
+  - Alles is overgezet naar OOP met namespacing
+  - PSR-4-autoloader
+  - Tags zonder spaties ervoor/erna gefixt (nodig voor PHP 7)
+  - Enkele notices verholpen
+  - Instellingen in het configuratiepaneel worden nu geëscapet
+  - Inline Javascript en CSS is deels verplaatst naar eigen bestanden
+  - Een deel van de uitgecommente code is verwijderd
+  - Code houdt zich beter aan codestijl
+- Nieuwe features
+  - Ingebedde afbeeldingen worden uit de tekst geëxtraheerd en in de map `afb/via-editor` geplaatst
+  - CKeditor geüpdatet
+  - CKeditor neemt achtergrondkleur van de pagina over
+- Verwijderde onderdelen
+  - Lingo-klasse
+  - Klassiek pictogrammenthema
+- Look and feel
+  - Native font stack
+  - Gebruik van Bootstrap en Lightbox
+  - Uiterlijk is gemoderniseerd
+  - Verbeteringen voor mobiele apparatuur: viewport
+  - Losse spaties voor en na samenvattingen op categoriepagina's verwijderd
 
 Versie 4.0 (Roma)
 - 'Hoofdstukken' en 'artikelen' vervangen door statische pagina's (subs)
