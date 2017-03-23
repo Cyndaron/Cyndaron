@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 26, 2017 at 10:28 PM
+-- Generation Time: Mar 23, 2017 at 08:03 PM
 -- Server version: 5.7.17-0ubuntu0.16.04.1
--- PHP Version: 7.0.15-0ubuntu0.16.04.2
+-- PHP Version: 7.0.15-0ubuntu0.16.04.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -89,7 +89,8 @@ CREATE TABLE `gebruikers` (
 CREATE TABLE `ideeen` (
   `id` int(4) NOT NULL,
   `naam` varchar(100) NOT NULL,
-  `tekst` text NOT NULL
+  `tekst` text NOT NULL,
+  `datum` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -210,9 +211,23 @@ CREATE TABLE `mc_leden` (
   `echtenaam` varchar(150) NOT NULL,
   `niveau` int(2) NOT NULL,
   `status` varchar(100) NOT NULL,
-  `whovian` int(1) NOT NULL DEFAULT '0',
-  `donateur` int(1) NOT NULL DEFAULT '0'
+  `donateur` int(1) NOT NULL DEFAULT '0',
+  `renderAvatarHaar` int(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mc_servers`
+--
+
+CREATE TABLE `mc_servers` (
+  `id` int(11) NOT NULL,
+  `naam` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `hostname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `port` int(11) NOT NULL,
+  `dynmapPort` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -304,7 +319,8 @@ ALTER TABLE `fotoboeken`
 --
 ALTER TABLE `friendlyurls`
   ADD PRIMARY KEY (`naam`),
-  ADD UNIQUE KEY `naam` (`naam`);
+  ADD UNIQUE KEY `naam` (`naam`),
+  ADD KEY `doel` (`doel`);
 
 --
 -- Indexes for table `gebruikers`
@@ -373,6 +389,12 @@ ALTER TABLE `mc_leden`
   ADD PRIMARY KEY (`mcnaam`);
 
 --
+-- Indexes for table `mc_servers`
+--
+ALTER TABLE `mc_servers`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `menu`
 --
 ALTER TABLE `menu`
@@ -388,7 +410,8 @@ ALTER TABLE `reacties`
 -- Indexes for table `subs`
 --
 ALTER TABLE `subs`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `categorieid` (`categorieid`);
 
 --
 -- Indexes for table `vorigeartikelen`
@@ -450,6 +473,11 @@ ALTER TABLE `kaartverkoop_kaartsoorten`
 -- AUTO_INCREMENT for table `mailformulieren`
 --
 ALTER TABLE `mailformulieren`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `mc_servers`
+--
+ALTER TABLE `mc_servers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `menu`

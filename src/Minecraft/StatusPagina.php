@@ -17,24 +17,9 @@ class StatusPagina extends Pagina
 
         foreach ($serverData as $server)
         {
-            $serverObj = new Server($server['naam'], $server['ip'], $server['port'], $server['dynmapport']);
-            $serverObj->retrieve();
-            $servers[] = $serverObj;
+            $serverObj = new Server($server['naam'], $server['hostname'], $server['port'], $server['dynmapPort']);
+            $servers[] = $serverObj->retrieve();
         }
-
-//        $creative_server_ip = '185.114.156.169';
-//        $creative_server_poort = '25852';
-//
-//        $survival_server_ip = '5.200.23.161';
-//        $survival_server_poort = '26176';
-//
-//        $creative_serverdata = new Server('Creatieve server', $creative_server_ip, $creative_server_poort, 8888);
-//        $creative_server = $creative_serverdata->retrieve();
-//
-//        $survival_serverdata = new Server('Survivalserver', $survival_server_ip, $survival_server_poort, 8888);
-//        $survival_server = $survival_serverdata->retrieve();
-//
-//        $servers = [$creative_server, $survival_server];
 
         foreach ($servers as $server)
         {
@@ -58,8 +43,8 @@ class StatusPagina extends Pagina
             if ($server->is_online == true)
             {
                 echo '<br /><br />';
-                printf('<h3>Landkaart %s (<a href="http://%s:%d">Maximaliseren</a>)</h3>', $server->name, $server->hostname, $server->dynmappoort);
-                printf('<iframe src="http://%s:%d/" style="border-radius:7px;" width="800" height="600"></iframe>', $server->hostname, $server->dynmappoort);
+                printf('<h3>Landkaart %s (<a href="http://%s:%d">Maximaliseren</a>)</h3>', $server->name, $server->hostname, $server->dynmapPort);
+                printf('<iframe src="http://%s:%d/" style="border-radius:7px;" width="800" height="600"></iframe>', $server->hostname, $server->dynmapPort);
             }
         }
 

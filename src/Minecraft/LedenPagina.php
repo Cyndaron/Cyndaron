@@ -20,7 +20,7 @@ class LedenPagina extends Pagina
         parent::__construct('Spelers');
         $this->toonPrePagina();
 
-        $spelers = $this->connectie->query("SELECT * FROM mcleden ORDER BY niveau DESC, mcnaam ASC");
+        $spelers = $this->connectie->query("SELECT * FROM mc_leden ORDER BY niveau DESC, mcnaam ASC");
 
         $tePreloaden = [];
 
@@ -37,8 +37,9 @@ class LedenPagina extends Pagina
             if ($speler['niveau'] == 0 && $laatsteniveau >= 1)
                 echo '<h2>In de Goelag</h2>';
             $laatsteniveau = $speler['niveau'];
-            $vooraanzicht = "mc-skinrenderer?vr=-10&hr=20&hrh=0&vrla=-20&vrra=20&vrll=15&vrrl=-10&ratio=4&format=png&displayHair=false&headOnly=false&user={$speler['mcnaam']}";
-            $achteraanzicht = "mc-skinrenderer?vr=-10&hr=200&hrh=0&vrla=-20&vrra=20&vrll=15&vrrl=-10&ratio=4&format=png&displayHair=false&headOnly=false&user={$speler['mcnaam']}";
+            $displayHair = ($speler['renderAvatarHaar'] == 1) ? 'true' : 'false';
+            $vooraanzicht = "mc-skinrenderer?vr=-10&amp;hr=20&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;displayHair={$displayHair}&amp;headOnly=false&amp;user={$speler['mcnaam']}";
+            $achteraanzicht = "mc-skinrenderer?vr=-10&amp;hr=200&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;displayHair={$displayHair}&amp;headOnly=false&amp;user={$speler['mcnaam']}";
             $tePreloaden[] = $achteraanzicht;
 
             echo '<div class="spelerswrapper">';
@@ -74,7 +75,7 @@ class LedenPagina extends Pagina
 
         foreach ($tePreloaden as $image)
         {
-            $preloadUrls .= sprintf('url(%s) ', $image);
+            $preloadUrls .= sprintf('url(%s) ', str_replace('&amp;', '&', $image));
         }
         ?>
         <style type="text/css">
