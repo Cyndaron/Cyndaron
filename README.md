@@ -3,7 +3,7 @@ Simpel en lichtgewicht CMS, beschikbaar onder de ISC-licentie. Deze is te raadpl
 
 Code van derden en alle daaraan aangebrachte wijzigingen vallen onder de volgende licenties:
 - Bootstrap: MIT (LICENSE.Bootstrap)
-- CKeditor: LGPL (ckeditor/LICENSE.md)
+- CKeditor: MPL, LGPL, GPL (ckeditor/LICENSE.md)
 - jQuery: MIT (LICENSE.jQuery)
 - Lightbox: MIT (LICENSE.Lightbox)
 - MinecraftSkinRenderer: BSD-3 (LICENSE.MinecraftSkinRenderer)

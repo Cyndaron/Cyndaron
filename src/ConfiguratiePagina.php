@@ -111,7 +111,7 @@ class ConfiguratiePagina extends Pagina
         echo '© Michael Steenbeek, 2009-2017<br />';
         echo 'Beschikbaar onder de ISC-licentie (zie het bestand LICENSE), m.u.v. van de volgende onderdelen:<ul>';
         echo '<li>Bootstrap: MIT-licentie (LICENSE.Bootstrap)</li>';
-        echo '<li>CKeditor: LGPL-licentie (ckeditor/LICENSE.md)</li>';
+        echo '<li>CKeditor: MPL-, LGPL- en GPL-licenties (ckeditor/LICENSE.md)</li>';
         echo '<li>jQuery: MIT-licentie (LICENSE.jQuery)</li>';
         echo '<li>Lightbox: MIT-licentie (LICENSE.Lightbox)</li>';
         echo '<li>MinecraftSkinRenderer: BSD-3-licentie (LICENSE.MinecraftSkinRenderer)</li>';
