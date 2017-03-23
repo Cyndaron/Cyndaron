@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Pagina;
 
 class StatusPagina extends Pagina
@@ -10,21 +11,30 @@ class StatusPagina extends Pagina
         parent::__construct('Status en landkaart');
         parent::toonPrePagina();
 
-        $creative_server_ip = '185.114.156.169';
-        $creative_server_poort = '25852';
+        $connectie = DBConnection::getInstance();
+        $serverData = $connectie->doQueryAndFetchAll('SELECT * FROM mc_servers ORDER BY naam');
+        $servers = [];
 
-        $survival_server_ip = '5.200.23.161';
-        $survival_server_poort = '26176';
+        foreach ($serverData as $server)
+        {
+            $serverObj = new Server($server['naam'], $server['ip'], $server['port'], $server['dynmapport']);
+            $serverObj->retrieve();
+            $servers[] = $serverObj;
+        }
 
-        $creative_serverdata = new Server('Creatieve server', $creative_server_ip, $creative_server_poort);
-        $creative_server = $creative_serverdata->retrieve();
-        $creative_server->dynmappoort = 8888;
-
-        $survival_serverdata = new Server('Survivalserver', $survival_server_ip, $survival_server_poort);
-        $survival_server = $survival_serverdata->retrieve();
-        $survival_server->dynmappoort = 8888;
-
-        $servers = array($creative_server, $survival_server);
+//        $creative_server_ip = '185.114.156.169';
+//        $creative_server_poort = '25852';
+//
+//        $survival_server_ip = '5.200.23.161';
+//        $survival_server_poort = '26176';
+//
+//        $creative_serverdata = new Server('Creatieve server', $creative_server_ip, $creative_server_poort, 8888);
+//        $creative_server = $creative_serverdata->retrieve();
+//
+//        $survival_serverdata = new Server('Survivalserver', $survival_server_ip, $survival_server_poort, 8888);
+//        $survival_server = $survival_serverdata->retrieve();
+//
+//        $servers = [$creative_server, $survival_server];
 
         foreach ($servers as $server)
         {
@@ -47,9 +57,9 @@ class StatusPagina extends Pagina
         {
             if ($server->is_online == true)
             {
-                echo '<br /><br />
-		<h3>Landkaart ' . $server->name . ' (<a href="http://' . $server->hostname . ':' . $server->dynmappoort . '">Maximaliseren</a>)</h3>
-		<iframe src="http://' . $server->hostname . ':' . $server->dynmappoort . '/" style="border-radius:7px;" width="800" height="600"></iframe>';
+                echo '<br /><br />';
+                printf('<h3>Landkaart %s (<a href="http://%s:%d">Maximaliseren</a>)</h3>', $server->name, $server->hostname, $server->dynmappoort);
+                printf('<iframe src="http://%s:%d/" style="border-radius:7px;" width="800" height="600"></iframe>', $server->hostname, $server->dynmappoort);
             }
         }
 

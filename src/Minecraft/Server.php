@@ -6,11 +6,13 @@ class Server
     protected $name;
     protected $hostname;
     protected $port;
+    protected $dynmapPort;
 
-    public function __construct(string $name, string $hostname = '127.0.0.1', int $port = 25565)
+    public function __construct(string $name, string $hostname = '127.0.0.1', int $port = 25565, int $dynmapPort = 8888)
     {
         $this->name = $name;
-        $this->setPort($port);
+        $this->port = $port;
+        $this->dynmapPort = $dynmapPort;
         $this->setHostname($hostname);
     }
 
@@ -19,7 +21,7 @@ class Server
      *
      * @param string $hostname The hostname. Must be IP or domain (only IPv4).
      */
-    public function setHostname(string $hostname)
+    protected function setHostname(string $hostname)
     {
         // Overload for hostname:port syntax.
         if (preg_match('/:\d+$/', $hostname))
@@ -41,46 +43,15 @@ class Server
         }
     }
 
-    /**
-     * Returns the hostname of the server.
-     *
-     * @return string The hostname of the server.
-     */
-    public function getHostname(): string
-    {
-        return $this->hostname;
-    }
-
-    public function setPort(int $port)
-    {
-        if (is_int($port))
-        {
-            $this->port = $port;
-        }
-        else if (is_numeric($port))
-        {
-            $this->port = intval($port);
-        }
-    }
-
-    public function getPort(): int
-    {
-        return $this->port;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
     function retrieve(): \stdClass
     {
         $socket = @stream_socket_client(sprintf('tcp://%s:%u', $this->getHostname(), $this->getPort()), $errno, $errstr, 1);
 
         $stats = new \stdClass;
-        $stats->hostname = $this->getHostname();
-        $stats->port = $this->getPort();
-        $stats->name = $this->getName();
+        $stats->hostname = $this->hostname;
+        $stats->port = $this->port;
+        $stats->dynmapPort = $this->dynmapPort;
+        $stats->name = $this->name;
         $stats->is_online = false;
 
         if (!$socket)

@@ -19,7 +19,7 @@ class DBConnection
         static::connect();
     }
 
-    public static function getInstance()
+    public static function getInstance(): DBConnection
     {
         if (static::$instance === null)
         {
