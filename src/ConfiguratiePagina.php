@@ -33,7 +33,7 @@ class ConfiguratiePagina extends Pagina
 
                 if ($menuitem[0])
                 {
-                    $nieuwmenu[] = array('link' => $menuitem[0], 'alias' => $menuitem[1]);
+                    $nieuwmenu[] = ['link' => $menuitem[0], 'alias' => $menuitem[1]];
                 }
             }
             MenuModel::vervangMenu($nieuwmenu);
@@ -82,7 +82,9 @@ class ConfiguratiePagina extends Pagina
             {
                 $selected = '';
                 if ($categorie['id'] == $standaardcategorie)
+                {
                     $selected = ' selected="selected"';
+                }
                 echo '<option value="' . $categorie['id'] . '"' . $selected . '>' . $categorie['naam'] . '</option>';
             }
             echo '</select></div></div>';
@@ -97,8 +99,8 @@ class ConfiguratiePagina extends Pagina
             ?>
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-6">
-                    <input class="btn btn-primary" type="submit" value="Opslaan" />
-                    <input class="btn btn-default" type="button" id="testKleuren" value="Kleuren testen" />
+                    <input class="btn btn-primary" type="submit" value="Opslaan"/>
+                    <input class="btn btn-default" type="button" id="testKleuren" value="Kleuren testen"/>
                 </div>
             </div>
         </form>

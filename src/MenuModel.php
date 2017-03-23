@@ -5,14 +5,14 @@ class MenuModel
 {
     public static function vervangMenu($nieuwmenu)
     {
-        DBConnection::geefEen('DELETE FROM menu;', array());
+        DBConnection::geefEen('DELETE FROM menu;', []);
 
         if (count($nieuwmenu) > 0)
         {
             $teller = 1;
             foreach ($nieuwmenu as $menuitem)
             {
-                DBConnection::geefEen('INSERT INTO menu(volgorde,link,alias) VALUES(?,?,?);', array($teller, $menuitem['link'], $menuitem['alias']));
+                DBConnection::geefEen('INSERT INTO menu(volgorde,link,alias) VALUES(?,?,?);', [$teller, $menuitem['link'], $menuitem['alias']]);
                 $teller++;
             }
         }
@@ -20,7 +20,7 @@ class MenuModel
 
     public static function voegToeAanMenu($link, $alias = "")
     {
-        $teller = DBConnection::geefEen('SELECT MAX(volgorde) FROM menu;', array()) + 1;
-        DBConnection::geefEen('INSERT INTO menu(volgorde,link,alias) VALUES(?,?,?);', array($teller, $link, $alias));
+        $teller = DBConnection::geefEen('SELECT MAX(volgorde) FROM menu;', []) + 1;
+        DBConnection::geefEen('INSERT INTO menu(volgorde,link,alias) VALUES(?,?,?);', [$teller, $link, $alias]);
     }
 }

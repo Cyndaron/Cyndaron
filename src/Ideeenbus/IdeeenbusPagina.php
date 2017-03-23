@@ -22,7 +22,7 @@ class IdeeenbusPagina extends Pagina
         {
             $id = intval(Request::geefGetVeilig('id'));
             $deletion = $connectie->prepare('DELETE FROM ideeen WHERE id=?');
-            $deletion->execute(array($id));
+            $deletion->execute([$id]);
             echo new GoedeMelding('Idee verwijderd.');
         }
 
@@ -31,7 +31,7 @@ class IdeeenbusPagina extends Pagina
             $naam = Request::geefPostVeilig('naam');
             $tekst = Request::geefPostVeilig('idee');
             $input = $connectie->prepare('INSERT INTO ideeen VALUES (NULL, ?, ?)');
-            $input->execute(array($naam, $tekst));
+            $input->execute([$naam, $tekst]);
             echo new GoedeMelding('Uw idee is succesvol ingediend.');
         }
         else

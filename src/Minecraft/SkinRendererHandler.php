@@ -185,7 +185,7 @@ class SkinRendererHandler
                 {
                     $cube_max_depth_faces = $cube_point;
                 }
-                else if ($cube_max_depth_faces[0]->getDepth() > $cube_point[0]->getDepth())
+                elseif ($cube_max_depth_faces[0]->getDepth() > $cube_point[0]->getDepth())
                 {
                     $cube_max_depth_faces = $cube_point;
                 }

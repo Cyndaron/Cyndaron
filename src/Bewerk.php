@@ -32,12 +32,12 @@ abstract class Bewerk
             Url::verwijderFriendlyUrl($oudeFriendlyUrl);
             $unfriendlyUrl->maakFriendly($friendlyUrl);
             // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast
-            DBConnection::geefEen('UPDATE menu SET link = ? WHERE link = ?', array($friendlyUrl, $oudeFriendlyUrl));
+            DBConnection::geefEen('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oudeFriendlyUrl]);
         }
         if (!$returnUrl)
         {
             $returnUrl = $_SESSION['referrer'];
-            $returnUrl = strtr($returnUrl, array('&amp;' => '&'));
+            $returnUrl = strtr($returnUrl, ['&amp;' => '&']);
         }
         header('Location: ' . $returnUrl);
     }
@@ -53,7 +53,7 @@ abstract class Bewerk
     {
         list($type, $image) = explode(';', $matches[2]);
 
-        switch($type)
+        switch ($type)
         {
             case 'image/gif':
                 $extensie = 'gif';

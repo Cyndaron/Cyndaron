@@ -9,7 +9,7 @@ class VerwerkMailformulierPagina extends Pagina
         $id = intval(Request::geefGetVeilig('id'));
         $this->connectie = DBConnection::getPDO();
         $formprep = $this->connectie->prepare('SELECT * FROM mailformulieren WHERE id=?');
-        $formprep->execute(array($id));
+        $formprep->execute([$id]);
         $form = $formprep->fetch();
         $tekst = '';
 
@@ -22,7 +22,9 @@ class VerwerkMailformulierPagina extends Pagina
                     $vraag = Request::wasVariabele($vraag);
 
                     if ($vraag !== 'antispam')
-                        $tekst .= $vraag . ': ' . strtr(Request::geefPostVeilig($vraag), array('\\' => '')) . "\n";
+                    {
+                        $tekst .= $vraag . ': ' . strtr(Request::geefPostVeilig($vraag), ['\\' => '']) . "\n";
+                    }
                 }
                 $ontvanger = $form['mailadres'];
                 $onderwerp = $form['naam'];

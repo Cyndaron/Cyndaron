@@ -14,8 +14,8 @@ class FotoalbumPagina extends Pagina
             header("Location: 404.php");
             die('Incorrecte parameter ontvangen.');
         }
-        $boeknaam = DBConnection::geefEen('SELECT naam FROM fotoboeken WHERE id=?', array($boekid));
-        $notities = DBConnection::geefEen('SELECT notities FROM fotoboeken WHERE id=?', array($boekid));
+        $boeknaam = DBConnection::geefEen('SELECT naam FROM fotoboeken WHERE id=?', [$boekid]);
+        $notities = DBConnection::geefEen('SELECT notities FROM fotoboeken WHERE id=?', [$boekid]);
         $_SESSION['referrer'] = !empty($_SERVER['HTTP_REFERER']) ? htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '';
 
         $controls = new Knop('bewerken', 'editor-fotoalbum?id=' . $boekid, 'Dit fotoboek bewerken');
@@ -46,7 +46,7 @@ class FotoalbumPagina extends Pagina
                         $thumbnailLink = 'fotoalbums/' . $boekid . 'thumbnails/' . $dirArray[$index];
                         $hash = md5_file($fotoLink);
                         $dataTitleTag = '';
-                        if ($bijschrift = DBConnection::geefEen('SELECT bijschrift FROM bijschriften WHERE hash=?', array($hash)))
+                        if ($bijschrift = DBConnection::geefEen('SELECT bijschrift FROM bijschriften WHERE hash=?', [$hash]))
                         {
                             $dataTitleTag = 'data-title="' . $bijschrift . '"';
                         }
@@ -78,14 +78,22 @@ class FotoalbumPagina extends Pagina
 
             static::toonIndienAanwezig($notities, '', '');
             if ($aantal == 1)
+            {
                 echo "Dit album bevat 1 foto.";
+            }
             else
+            {
                 echo "Dit album bevat $aantal foto's.";
+            }
 
             if (!$waregrootte && $aantal == 1)
+            {
                 echo " Klik op de verkleinde foto om een vergroting te zien.";
+            }
             if (!$waregrootte && $aantal != 1)
+            {
                 echo " Klik op de verkleinde foto's om een vergroting te zien.";
+            }
 
             echo '<br /><br />';
             echo $uitvoer;

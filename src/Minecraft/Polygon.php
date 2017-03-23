@@ -48,12 +48,12 @@ class Polygon
             $this->_face = 'x';
             $this->_faceDepth = $coord_0['x'];
         }
-        else if ($coord_0['y'] == $coord_1['y'] && $coord_1['y'] == $coord_2['y'])
+        elseif ($coord_0['y'] == $coord_1['y'] && $coord_1['y'] == $coord_2['y'])
         {
             $this->_face = 'y';
             $this->_faceDepth = $coord_0['y'];
         }
-        else if ($coord_0['z'] == $coord_1['z'] && $coord_1['z'] == $coord_2['z'])
+        elseif ($coord_0['z'] == $coord_1['z'] && $coord_1['z'] == $coord_2['z'])
         {
             $this->_face = 'z';
             $this->_faceDepth = $coord_0['z'];

@@ -78,13 +78,17 @@ class MigreerNaar4_0 extends Pagina
     private function nieuweSub($titel, $tekst, $reacties_aan, $categorieid)
     {
         if (!$reacties_aan)
+        {
             $reacties_aan = '0';
+        }
         else
+        {
             $reacties_aan = '1';
+        }
 
         $connectie = DBConnection::getPDO();
         $prep = $connectie->prepare('INSERT INTO subs(naam, tekst, reacties_aan, categorieid) VALUES ( ?, ?, ?, ?)');
-        $prep->execute(array($titel, $tekst, $reacties_aan, $categorieid));
+        $prep->execute([$titel, $tekst, $reacties_aan, $categorieid]);
         return $connectie->lastInsertId();
     }
 }

@@ -16,7 +16,7 @@ class LoginPagina extends Pagina
                 $this->connectie = DBConnection::getPDO();
 
                 $prep = $this->connectie->prepare('SELECT * FROM gebruikers WHERE gebruikersnaam=?');
-                $prep->execute(array($login['naam']));
+                $prep->execute([$login['naam']]);
                 $userdata = $prep->fetch();
 
                 if (!$userdata)
@@ -47,7 +47,9 @@ class LoginPagina extends Pagina
                         $_SESSION['redirect'] = null;
                     }
                     else
+                    {
                         $_SESSION['request'] = '/';
+                    }
                     header('Location: ' . $_SESSION['request']);
 
                 }
@@ -72,7 +74,9 @@ class LoginPagina extends Pagina
         else
         {
             if (empty($_SESSION['redirect']))
+            {
                 $_SESSION['redirect'] = Request::geefReferrerVeilig();
+            }
             parent::__construct('Inloggen');
             $this->maakNietDelen(true);
             $this->toonPrePagina();

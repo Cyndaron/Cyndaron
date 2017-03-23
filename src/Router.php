@@ -51,16 +51,16 @@ class Router
             die('Deze locatie mag niet worden opgevraagd.');
         }
 
-        $hoofdurl = new Url(DBConnection::geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', array()));
+        $hoofdurl = new Url(DBConnection::geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', []));
         if ($hoofdurl->isGelijkAan(new Url($request)))
         {
             header('Location: /');
         }
 
         // Verwijs oude URLs door
-        if ($url = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
+        if ($url = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel=?', [basename(substr($_SERVER['REQUEST_URI'], 1))]))
         {
-            header('Location: '.$url);
+            header('Location: ' . $url);
         }
 
         if (empty($_SESSION))
@@ -74,15 +74,15 @@ class Router
             $this->verwerkUrl($hoofdurl);
         }
         //Non-friendly URL
-//        elseif (strpos($request, '.php'))
-//        {
-//            $this->verwerkUrl($request);
-//        }
-//        //Normaal bestand
-//        elseif (@file_exists($request))
-//        {
-//            include $request;
-//        }
+        //        elseif (strpos($request, '.php'))
+        //        {
+        //            $this->verwerkUrl($request);
+        //        }
+        //        //Normaal bestand
+        //        elseif (@file_exists($request))
+        //        {
+        //            include $request;
+        //        }
         elseif (array_key_exists($request, $this->endpoints))
         {
             $classname = $this->endpoints[$request];
@@ -90,7 +90,7 @@ class Router
         }
 
         // Bekende friendly URL
-        elseif ($url = new Url(DBConnection::geefEen('SELECT doel FROM friendlyurls WHERE naam=?', array($request))))
+        elseif ($url = new Url(DBConnection::geefEen('SELECT doel FROM friendlyurls WHERE naam=?', [$request])))
         {
             $this->verwerkUrl($url);
         }
@@ -119,7 +119,7 @@ class Router
         {
             list($bestand, $rest) = explode('?', $ufUrl, 2);
             $restarray = explode('&', $rest);
-            $_GET = array('friendlyurls' => true);
+            $_GET = ['friendlyurls' => true];
             foreach ($restarray as $var)
             {
                 list($key, $value) = explode('=', $var);
