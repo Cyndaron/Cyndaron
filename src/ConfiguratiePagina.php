@@ -108,7 +108,7 @@ class ConfiguratiePagina extends Pagina
         <?php
         echo '<h2>Informatie</h2>';
         echo CyndaronInfo::PRODUCT_NAAM . ' ' . CyndaronInfo::PRODUCT_VERSIE . ' (' . CyndaronInfo::PRODUCT_CODENAAM . ')<br />';
-        echo '© Michael Steenbeek, 2009-2014<br />';
+        echo '© Michael Steenbeek, 2009-2017<br />';
         echo 'Beschikbaar onder de ISC-licentie (zie het bestand LICENSE), m.u.v. van de volgende onderdelen:<ul>';
         echo '<li>Bootstrap: MIT-licentie (LICENSE.Bootstrap)</li>';
         echo '<li>CKeditor: LGPL-licentie (ckeditor/LICENSE.md)</li>';
