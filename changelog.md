@@ -21,6 +21,10 @@ Versie 5.0 (Scupi) (in ontwikkeling)
   - Uiterlijk is gemoderniseerd
   - Verbeteringen voor mobiele apparatuur: viewport
   - Losse spaties voor en na samenvattingen op categoriepagina's verwijderd
+- Documentatie
+  - Changelog toegevoegd
+  - Licentie-informatie van code van derde partijen toegevoegd
+  - Enkele fixes aan PHPDoc
 
 Versie 4.0 (Roma)
 - 'Hoofdstukken' en 'artikelen' vervangen door statische pagina's (subs)
