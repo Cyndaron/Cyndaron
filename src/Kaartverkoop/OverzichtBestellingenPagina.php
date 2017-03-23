@@ -15,15 +15,15 @@ class OverzichtBestellingenPagina extends Pagina
         $this->connectie = DBConnection::getPDO();
         $kaartverkoop_per_bestelling = [];
 
-        $bestellingsquery = "	SELECT DISTINCT b.id AS bestellingsnr,achternaam,voorletters,`e-mailadres`,straat_en_huisnummer,postcode,woonplaats,thuisbezorgen,is_bezorgd,gereserveerde_plaatsen,is_betaald,opmerkingen,ophalen_door_koorlid,naam_koorlid,woont_in_buitenland
-					FROM 	`kaartverkoop_bestellingen` AS b,
-							`kaartverkoop_bestellingen_kaartsoorten` AS bk,
-							`kaartverkoop_kaartsoorten` AS k
-					WHERE b.id=bk.bestelling_id AND k.id=bk.kaartsoort_id AND k.concert_id=?
-					ORDER BY bestellingsnr;";
+        $bestellingsquery = "    SELECT DISTINCT b.id AS bestellingsnr,achternaam,voorletters,`e-mailadres`,straat_en_huisnummer,postcode,woonplaats,thuisbezorgen,is_bezorgd,gereserveerde_plaatsen,is_betaald,opmerkingen,ophalen_door_koorlid,naam_koorlid,woont_in_buitenland
+                    FROM     `kaartverkoop_bestellingen` AS b,
+                            `kaartverkoop_bestellingen_kaartsoorten` AS bk,
+                            `kaartverkoop_kaartsoorten` AS k
+                    WHERE b.id=bk.bestelling_id AND k.id=bk.kaartsoort_id AND k.concert_id=?
+                    ORDER BY bestellingsnr;";
 
         $kaartverkoopquery = "SELECT bestelling_id,kaartsoort_id,aantal
-					FROM 	`kaartverkoop_bestellingen_kaartsoorten`";
+                    FROM     `kaartverkoop_bestellingen_kaartsoorten`";
 
         $kaartsoortenquery = "SELECT * FROM `kaartverkoop_kaartsoorten` WHERE concert_id=? ORDER BY prijs DESC";
 

@@ -95,12 +95,12 @@ class OverzichtPagina extends Pagina
         {
             $url = $_SERVER['REQUEST_URI'] . '&amp;zeker=1';
             echo '  <form method="post" action="' . $url . '">
-		<p>Weet u zeker dat u dit item wilt verwijderen?
-		<input name="inhoud" value="1" style="display:none;"/>
-		</p><p>
-		<input type="submit" style="width:200px" value="Ja"/>
-		<button type="button" style="width:200px" onclick="window.location=\'overzicht.php\'"/>Nee</button>
-		</p></form>';
+        <p>Weet u zeker dat u dit item wilt verwijderen?
+        <input name="inhoud" value="1" style="display:none;"/>
+        </p><p>
+        <input type="submit" style="width:200px" value="Ja"/>
+        <button type="button" style="width:200px" onclick="window.location=\'overzicht.php\'"/>Nee</button>
+        </p></form>';
         }
 
         /* Subs */

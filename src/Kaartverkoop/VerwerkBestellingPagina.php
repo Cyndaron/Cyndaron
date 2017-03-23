@@ -141,8 +141,8 @@ Content-Type: text/plain; charset="UTF-8"';
         $opmerkingen = Request::geefPostVeilig('opmerkingen');
 
         $bestellingsnummer = DBConnection::maakEen('INSERT INTO kaartverkoop_bestellingen
-			(`concert_id`, 	`achternaam`, 	`voorletters`, 	`e-mailadres`, 	`straat_en_huisnummer`, 	`postcode`, `woonplaats`, 	`thuisbezorgen`, 		`gereserveerde_plaatsen`, 			`ophalen_door_koorlid`,	`naam_koorlid`,	`woont_in_buitenland`,	`opmerkingen`) VALUES
-			(?, 			?, 				?, 				?, 				?, 							?, 			?, 				?, 						?, 									?,						?,				?,						?)',
+            (`concert_id`,  `achternaam`,     `voorletters`,     `e-mailadres`,     `straat_en_huisnummer`, `postcode`, `woonplaats`,     `thuisbezorgen`,         `gereserveerde_plaatsen`,             `ophalen_door_koorlid`,    `naam_koorlid`,    `woont_in_buitenland`,    `opmerkingen`) VALUES
+            (?,             ?,                 ?,                 ?,                 ?,                     ?,          ?,                 ?,                       ?,                                   ?,                         ?,                 ?,                        ?)',
             [$concert_id, $achternaam, $voorletters, $emailadres, $straatnaam_en_huisnummer, $postcode, $woonplaats, ($bezorgen ? 1 : 0), ($gereserveerde_plaatsen ? 1 : 0), $ophalenDoorKoorlid, $naam_koorlid, $buitenland, $opmerkingen]);
         foreach ($kaartsoorten as $kaartsoort)
         {
@@ -174,8 +174,8 @@ Content-Type: text/plain; charset="UTF-8"';
             $eerste_stoel = 0;
             $laatste_stoel = 0;
 
-            //	for ($rij = 'A'; $rij <= 'P'; $rij++)
-            //	{
+            //    for ($rij = 'A'; $rij <= 'P'; $rij++)
+            //    {
             $rij = 'A';
             $vrije_plaatsen_naast_elkaar = 0;
             for ($stoel = 1; $stoel <= Util::STOELEN_PER_RIJ; $stoel++)
@@ -199,7 +199,7 @@ Content-Type: text/plain; charset="UTF-8"';
                     break;
                 }
             }
-            //	}
+            //    }
 
             if ($plaatsGevonden)
             {

@@ -65,15 +65,16 @@ class KaartenBestellenPagina extends Pagina
                 $prep->execute([$concert_id]);
                 foreach ($prep->fetchAll() as $kaartsoort)
                 {
-                    printf('<tr>
-				<td>%1$s</td>
-				<td>%2$s</td>
-				<td>
-					<input class="aantalKaarten form-control form-control-inline" readonly="readonly" size="2" name="kaartsoort-%3$d" id="kaartsoort-%3$d" value="0"/>
-					<button type="button" class="aantalKaarten btn btn-default aantalKaarten-increase" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-plus"></span></button>
-					<button type="button" class="aantalKaarten btn btn-default aantalKaarten-decrease" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-minus"></span></button>
-				</td>
-		</tr>',
+                    printf('
+                        <tr>
+                            <td>%1$s</td>
+                            <td>%2$s</td>
+                            <td>
+                                <input class="aantalKaarten form-control form-control-inline" readonly="readonly" size="2" name="kaartsoort-%3$d" id="kaartsoort-%3$d" value="0"/>
+                                <button type="button" class="aantalKaarten btn btn-default aantalKaarten-increase" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-plus"></span></button>
+                                <button type="button" class="aantalKaarten btn btn-default aantalKaarten-decrease" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-minus"></span></button>
+                            </td>
+                        </tr>',
                         $kaartsoort['naam'], Util::naarEuro($kaartsoort['prijs']), $kaartsoort['id']);
                 }
                 ?>
@@ -279,10 +280,10 @@ class KaartenBestellenPagina extends Pagina
                 $prep->execute([$concert_id]);
                 foreach ($prep->fetchAll() as $kaartsoort)
                 {
-                    echo '	var aantal=document.getElementById("kaartsoort-' . $kaartsoort['id'] . "\").value;\n";
-                    echo '	totaalprijs=totaalprijs+(' . $kaartsoort['prijs'] . "*aantal);\n";
-                    echo '	totaalprijs=totaalprijs+(verzendkosten*aantal);' . "\n";
-                    echo '	totaalprijs=totaalprijs+(toeslag_gereserveerde_plaats*aantal);' . "\n";
+                    echo '    var aantal=document.getElementById("kaartsoort-' . $kaartsoort['id'] . "\").value;\n";
+                    echo '    totaalprijs=totaalprijs+(' . $kaartsoort['prijs'] . "*aantal);\n";
+                    echo '    totaalprijs=totaalprijs+(verzendkosten*aantal);' . "\n";
+                    echo '    totaalprijs=totaalprijs+(toeslag_gereserveerde_plaats*aantal);' . "\n";
                 }
                 ?>
                 var totaalprijs_text = totaalprijs.toLocaleString("nl-NL", {

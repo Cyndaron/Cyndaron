@@ -74,7 +74,7 @@ class Pagina
             if ($favicon = Instelling::geefInstelling('favicon'))
             {
                 $extensie = substr(strrchr($favicon, "."), 1);
-                echo '	<link rel="icon" type="image/' . $extensie . '" href="' . $favicon . '">';
+                echo '<link rel="icon" type="image/' . $extensie . '" href="' . $favicon . '">';
             }
             ?>
             <style type="text/css">
@@ -100,13 +100,13 @@ class Pagina
             if (Instelling::geefInstelling('facebook_share') == 1)
             {
                 echo '<div id="fb-root"></div>
-				<script type="text/javascript" src="sys/js/facebook-like.js"></script>';
+                <script type="text/javascript" src="sys/js/facebook-like.js"></script>';
             }
         }
 
         echo '
-		<div class="paginacontainer">
-		<div class="menucontainer">';
+        <div class="paginacontainer">
+        <div class="menucontainer">';
 
         $this->toonMenu();
 
