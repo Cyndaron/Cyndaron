@@ -86,6 +86,7 @@ class Util
                                 $ending = "</span>" . $ending;
                                 break;
                             }
+                        // fallthrough
                         case "m":
                             if (strlen($individual) > 2)
                             {
@@ -93,6 +94,7 @@ class Util
                                 $ending = "</span>" . $ending;
                                 break;
                             }
+                        // fallthrough
                         case "n":
                             if (strlen($individual) > 2)
                             {
@@ -100,6 +102,7 @@ class Util
                                 $ending = "</span>" . $ending;
                                 break;
                             }
+                        // fallthrough
                         case "o":
                             if (strlen($individual) > 2)
                             {
@@ -107,6 +110,7 @@ class Util
                                 $ending = "</span>" . $ending;
                                 break;
                             }
+                        // fallthrough
                         case "r":
                             $returnstring = $returnstring . $ending;
                             $ending = '';
