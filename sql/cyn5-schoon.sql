@@ -202,10 +202,10 @@ CREATE TABLE `mailformulieren` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `mcleden`
+-- Table structure for table `mc_leden`
 --
 
-CREATE TABLE `mcleden` (
+CREATE TABLE `mc_leden` (
   `mcnaam` varchar(100) NOT NULL,
   `echtenaam` varchar(150) NOT NULL,
   `niveau` int(2) NOT NULL,
@@ -367,9 +367,9 @@ ALTER TABLE `mailformulieren`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `mcleden`
+-- Indexes for table `mc_leden`
 --
-ALTER TABLE `mcleden`
+ALTER TABLE `mc_leden`
   ADD PRIMARY KEY (`mcnaam`);
 
 --
