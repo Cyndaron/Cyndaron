@@ -30,6 +30,7 @@ class Server
             // if protocol (e.g., 'http') was included; strip it out
             if (preg_match('/:\/\//', $hostname))
             {
+                /** @noinspection PhpUnusedLocalVariableInspection */
                 list($protocol, $this->hostname, $this->port) = explode(':', str_replace('//', '', $hostname));
             }
             else
@@ -45,7 +46,7 @@ class Server
 
     function retrieve(): \stdClass
     {
-        $socket = @stream_socket_client(sprintf('tcp://%s:%u', $this->getHostname(), $this->getPort()), $errno, $errstr, 1);
+        $socket = @stream_socket_client(sprintf('tcp://%s:%u', $this->hostname, $this->port), $errno, $errstr, 1);
 
         $stats = new \stdClass;
         $stats->hostname = $this->hostname;
