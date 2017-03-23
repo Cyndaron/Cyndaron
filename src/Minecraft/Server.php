@@ -56,7 +56,9 @@ class Server
         $stats->is_online = false;
 
         if (!$socket)
+        {
             return $stats;
+        }
 
         fwrite($socket, "\xfe\x01");
         $data = fread($socket, 1024);
@@ -64,7 +66,9 @@ class Server
 
         // Is this a disconnect with the ping?
         if ($data == false && substr($data, 0, 1) != "\xFF")
+        {
             return $stats;
+        }
 
         $data = substr($data, 9);
         $data = mb_convert_encoding($data, 'auto', 'UCS-2');
