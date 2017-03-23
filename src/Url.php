@@ -12,7 +12,7 @@ class Url
 
     public function geefFriendly(): string
     {
-        if ($friendly = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', [$this->url]))
+        if ($friendly = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel=?', [$this->url]))
         {
             return $friendly;
         }
@@ -24,7 +24,7 @@ class Url
 
     public function geefUnfriendly(): string
     {
-        if ($unfriendly = geefEen('SELECT doel FROM friendlyurls WHERE naam=?', [$this->url]))
+        if ($unfriendly = DBConnection::geefEen('SELECT doel FROM friendlyurls WHERE naam=?', [$this->url]))
         {
             return $unfriendly;
         }
@@ -45,7 +45,7 @@ class Url
         }
         else
         {
-            /*$hoofdurl=geefUnfriendlyUrl(geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)',array()));
+            /*$hoofdurl=geefUnfriendlyUrl(DBConnection::geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)',array()));
             if (($url1=='/' && $url2==$hoofdurl) || ($url2=='/' && $url1==$hoofdurl))
             {
                 return true;
@@ -61,12 +61,12 @@ class Url
 
     public function maakFriendly(string $naam)
     {
-        maakEen('INSERT INTO friendlyurls(naam,doel) VALUES (?,?)', array($naam, $this->url));
+        DBConnection::maakEen('INSERT INTO friendlyurls(naam,doel) VALUES (?,?)', array($naam, $this->url));
     }
 
     public static function verwijderFriendlyUrl(string $naam)
     {
-        maakEen('DELETE FROM friendlyurls WHERE naam=?', array($naam));
+        DBConnection::maakEen('DELETE FROM friendlyurls WHERE naam=?', array($naam));
     }
 
     public function geefPaginanaam(): string
@@ -99,9 +99,9 @@ class Url
             default:
                 return $link;
         }
-        if ($naam = geefEen($sql, array($values['id'])))
+        if ($naam = DBConnection::geefEen($sql, array($values['id'])))
             return $naam;
-        elseif ($naam = geefEen('SELECT naam FROM friendlyurls WHERE link=?', array($link)))
+        elseif ($naam = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE link=?', array($link)))
             return $naam;
         else
             return $link;

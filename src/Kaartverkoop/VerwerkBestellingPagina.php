@@ -1,10 +1,10 @@
 <?php
 namespace Cyndaron\Kaartverkoop;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Pagina;
 use Cyndaron\Request;
 
-require_once __DIR__ . '/../../functies.db.php';
 
 // FIXME: Controle op boekingen voor een gesloten concert
 class VerwerkBestellingPagina extends Pagina
@@ -20,7 +20,7 @@ class VerwerkBestellingPagina extends Pagina
             die();
         }
 
-        $this->connectie = newPDO();
+        $this->connectie = DBConnection::getPDO();
         $concert_id = Request::geefPostVeilig('concert_id');
         $postcode = Request::geefPostVeilig('postcode');
         $buitenland = Request::geefPostVeilig('buitenland') ? true : false;
@@ -133,7 +133,7 @@ Content-Type: text/plain; charset="UTF-8"';
         $woonplaats = Request::geefPostVeilig('woonplaats');
         $opmerkingen = Request::geefPostVeilig('opmerkingen');
 
-        $bestellingsnummer = maakEen('INSERT INTO kaartverkoop_bestellingen
+        $bestellingsnummer = DBConnection::maakEen('INSERT INTO kaartverkoop_bestellingen
 			(`concert_id`, 	`achternaam`, 	`voorletters`, 	`e-mailadres`, 	`straat_en_huisnummer`, 	`postcode`, `woonplaats`, 	`thuisbezorgen`, 		`gereserveerde_plaatsen`, 			`ophalen_door_koorlid`,	`naam_koorlid`,	`woont_in_buitenland`,	`opmerkingen`) VALUES
 			(?, 			?, 				?, 				?, 				?, 							?, 			?, 				?, 						?, 									?,						?,				?,						?)',
             [$concert_id, $achternaam, $voorletters, $emailadres, $straatnaam_en_huisnummer, $postcode, $woonplaats, ($bezorgen ? 1 : 0), ($gereserveerde_plaatsen ? 1 : 0), $ophalenDoorKoorlid, $naam_koorlid, $buitenland, $opmerkingen]);
@@ -141,7 +141,7 @@ Content-Type: text/plain; charset="UTF-8"';
         {
             if ($bestelling_kaartsoorten[$kaartsoort['id']] > 0)
             {
-                maakEen('INSERT INTO kaartverkoop_bestellingen_kaartsoorten(`bestelling_id`, `kaartsoort_id`, `aantal`) VALUES(?, ?, ?)', [$bestellingsnummer, $kaartsoort['id'], $bestelling_kaartsoorten[$kaartsoort['id']]]);
+                DBConnection::maakEen('INSERT INTO kaartverkoop_bestellingen_kaartsoorten(`bestelling_id`, `kaartsoort_id`, `aantal`) VALUES(?, ?, ?)', [$bestellingsnummer, $kaartsoort['id'], $bestelling_kaartsoorten[$kaartsoort['id']]]);
             }
         }
 
@@ -196,7 +196,7 @@ Content-Type: text/plain; charset="UTF-8"';
 
             if ($plaatsGevonden)
             {
-                maakEen('INSERT INTO kaartverkoop_gereserveerde_plaatsen(`bestelling_id`, `rij`, `eerste_stoel`, `laatste_stoel`) VALUES(?, ?, ?, ?)', [$bestellingsnummer, $gereserveerde_rij, $eerste_stoel, $laatste_stoel]);
+                DBConnection::maakEen('INSERT INTO kaartverkoop_gereserveerde_plaatsen(`bestelling_id`, `rij`, `eerste_stoel`, `laatste_stoel`) VALUES(?, ?, ?, ?)', [$bestellingsnummer, $gereserveerde_rij, $eerste_stoel, $laatste_stoel]);
                 $stoelen = range($eerste_stoel, $laatste_stoel);
                 //$voor_u_reserveerde_plaatsen = "\r\n\r\nDe volgende plaatsen zijn voor u gereserveerd op rij $gereserveerde_rij: ";
                 $voor_u_reserveerde_plaatsen = "\r\n\r\nDe volgende plaatsen zijn voor u gereserveerd: ";
@@ -207,7 +207,7 @@ Content-Type: text/plain; charset="UTF-8"';
                 $gereserveerde_plaatsen = false;
                 $totaalprijs -= $totaalAantalKaarten * $toeslag_gereserveerde_plaats;
                 $voor_u_reserveerde_plaatsen = "\r\n\r\nEr waren helaas niet voldoende plaatsen om te reserveren. De gerekende toeslag voor gereserveerde kaarten is weer van het totaalbedrag afgetrokken.";
-                maakEen('UPDATE kaartverkoop_bestellingen SET gereserveerde_plaatsen = 0 WHERE id=?', [$bestellingsnummer]);
+                DBConnection::maakEen('UPDATE kaartverkoop_bestellingen SET gereserveerde_plaatsen = 0 WHERE id=?', [$bestellingsnummer]);
             }
         }
 

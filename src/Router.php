@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron;
 
-require_once __DIR__ . '/../functies.db.php';
 
 /**
  * Zorgt voor correct doorverwijzen van verzoeken.
@@ -51,14 +50,14 @@ class Router
             die('Deze locatie mag niet worden opgevraagd.');
         }
 
-        $hoofdurl = new Url(geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', array()));
+        $hoofdurl = new Url(DBConnection::geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', array()));
         if ($hoofdurl->isGelijkAan(new Url($request)))
         {
             header('Location: /');
         }
 
         // Verwijs oude URLs door
-        if ($url = geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
+        if ($url = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel=?', array(basename(substr($_SERVER['REQUEST_URI'],1)))))
         {
             header('Location: '.$url);
         }
@@ -90,7 +89,7 @@ class Router
         }
 
         // Bekende friendly URL
-        elseif ($url = new Url(geefEen('SELECT doel FROM friendlyurls WHERE naam=?', array($request))))
+        elseif ($url = new Url(DBConnection::geefEen('SELECT doel FROM friendlyurls WHERE naam=?', array($request))))
         {
             $this->verwerkUrl($url);
         }

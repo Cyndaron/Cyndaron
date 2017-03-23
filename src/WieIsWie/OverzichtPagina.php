@@ -1,15 +1,15 @@
 <?php
 namespace Cyndaron\WieIsWie;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Pagina;
 
-require_once __DIR__ . '/../../functies.db.php';
 
 class OverzichtPagina extends Pagina
 {
     public function __construct()
     {
-        $connectie = newPDO();
+        $connectie = DBConnection::getPDO();
         $leden = $connectie->query('SELECT * FROM leden ORDER BY achternaam,tussenvoegsel,voornaam;');
         parent::__construct('Wie is wie');
         $this->toonPrePagina();

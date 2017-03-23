@@ -19,7 +19,6 @@ use Cyndaron\Widget\Knop;
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-require_once __DIR__ . '/../functies.db.php';
 require_once __DIR__ . '/../functies.pagina.php';
 
 class Pagina
@@ -36,7 +35,7 @@ class Pagina
     {
         if ($this->connectie == null)
         {
-            $this->connectie = newPDO();
+            $this->connectie = DBConnection::getPDO();
         }
 
         $this->paginanaam = $paginanaam;
@@ -59,7 +58,7 @@ class Pagina
 
     public function toonPrepagina()
     {
-        $this->websitenaam = geefInstelling('websitenaam');
+        $this->websitenaam = Instelling::geefInstelling('websitenaam');
         ?>
         <!DOCTYPE HTML>
         <html>
@@ -73,7 +72,7 @@ class Pagina
             echo '<link href="sys/css/lightbox.css" type="text/css" rel="stylesheet" />';
             echo '<link href="sys/css/cyndaron.css" type="text/css" rel="stylesheet" />';
             echo '<link href="user.css" type="text/css" rel="stylesheet" />';
-            if ($favicon = geefInstelling('favicon'))
+            if ($favicon = Instelling::geefInstelling('favicon'))
             {
                 $extensie = substr(strrchr($favicon, "."), 1);
                 echo '	<link rel="icon" type="image/' . $extensie . '" href="' . $favicon . '">';
@@ -81,16 +80,16 @@ class Pagina
             ?>
             <style type="text/css">
                 <?php
-                toonIndienAanwezig(geefInstelling('achtergrondkleur'), 'body, .lightboxOverlay { background-color: ',";}\n");
-                toonIndienAanwezig(geefInstelling('menukleur'), '.menu { background-color: ',";}\n");
-                toonIndienAanwezig(geefInstelling('menuachtergrond'), '.menu { background-image: url(\'',"');}\n");
-                toonIndienAanwezig(geefInstelling('artikelkleur'), '.inhoud { background-color: ',";}\n");
+                toonIndienAanwezig(Instelling::geefInstelling('achtergrondkleur'), 'body, .lightboxOverlay { background-color: ',";}\n");
+                toonIndienAanwezig(Instelling::geefInstelling('menukleur'), '.menu { background-color: ',";}\n");
+                toonIndienAanwezig(Instelling::geefInstelling('menuachtergrond'), '.menu { background-image: url(\'',"');}\n");
+                toonIndienAanwezig(Instelling::geefInstelling('artikelkleur'), '.inhoud { background-color: ',";}\n");
                 ?>
             </style>
             <script type="text/javascript">
                 function geefInstelling(instelling) {
                     if (instelling == 'artikelkleur') {
-                        return '<?php echo geefInstelling('artikelkleur');?>';
+                        return '<?php echo Instelling::geefInstelling('artikelkleur');?>';
                     }
                 }
             </script>
@@ -98,8 +97,8 @@ class Pagina
         <body><?php
         if ($this->nietDelen == false)
         {
-            toonIndienAanwezig(geefInstelling('extra_bodycode'));
-            if (geefInstelling('facebook_share') == 1)
+            toonIndienAanwezig(Instelling::geefInstelling('extra_bodycode'));
+            if (Instelling::geefInstelling('facebook_share') == 1)
             {
                 echo '<div id="fb-root"></div>
 				<script type="text/javascript" src="sys/js/facebook-like.js"></script>';
@@ -133,7 +132,7 @@ class Pagina
 
     protected function toonMenu()
     {
-        $menutype = geefInstelling('menutype');
+        $menutype = Instelling::geefInstelling('menutype');
 
         if (!empty($menutype) && $menutype === 'klassiek')
         {
@@ -147,8 +146,8 @@ class Pagina
 
     protected function toonModernMenu()
     {
-        $websitelogo = sprintf('<img alt="" src="%s"> ', geefInstelling('websitelogo'));
-        $inverseClass = (geefInstelling('menuthema') == 'donker') ? 'navbar-inverse' : '';
+        $websitelogo = sprintf('<img alt="" src="%s"> ', Instelling::geefInstelling('websitelogo'));
+        $inverseClass = (Instelling::geefInstelling('menuthema') == 'donker') ? 'navbar-inverse' : '';
         ?>
         <nav class="menu navbar <?= $inverseClass; ?>">
             <div class="container-fluid">
@@ -240,11 +239,11 @@ class Pagina
     protected function toonKlassiekMenu()
     {
         $isadmin = Gebruiker::isAdmin();
-        $ondertitel = geefInstelling('ondertitel');
-        $donkerClass = (geefInstelling('menuthema') == 'donker') ? 'klassiek-menu-donker' : '';
+        $ondertitel = Instelling::geefInstelling('ondertitel');
+        $donkerClass = (Instelling::geefInstelling('menuthema') == 'donker') ? 'klassiek-menu-donker' : '';
 
         printf('<div class="menu klassiek-menu %s">', $donkerClass);
-        if ($logo = geefInstelling('websitelogo'))
+        if ($logo = Instelling::geefInstelling('websitelogo'))
         {
             echo '<img src="' . $logo . '" alt="" class="websitelogo-klassiek"/>';
         }
@@ -324,7 +323,7 @@ class Pagina
 
     private function toonDeelknoppen()
     {
-        if ($this->nietDelen && geefInstelling('facebook_share') == 1)
+        if ($this->nietDelen && Instelling::geefInstelling('facebook_share') == 1)
         {
             echo '<br /><div class="fb-like" data-href="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true" data-font="trebuchet ms"></div>';
         }

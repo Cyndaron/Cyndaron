@@ -1,13 +1,13 @@
 <?php
 namespace Cyndaron\Ideeenbus;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Gebruiker;
 use Cyndaron\Pagina;
 use Cyndaron\Request;
 use Cyndaron\Widget\GoedeMelding;
 use Cyndaron\Widget\Knop;
 
-require_once __DIR__ . '/../../functies.db.php';
 
 class IdeeenbusPagina extends Pagina
 {
@@ -16,7 +16,7 @@ class IdeeenbusPagina extends Pagina
         parent::__construct('Idee&euml;nbus');
         $this->toonPrePagina();
         $actie = Request::geefGetVeilig('actie');
-        $connectie = newPDO();
+        $connectie = DBConnection::getPDO();
 
         if ($actie == 'verwijderen' && Gebruiker::isAdmin())
         {

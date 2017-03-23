@@ -1,14 +1,13 @@
 <?php
 namespace Cyndaron;
 
-require_once __DIR__ . '/../functies.db.php';
 
 class VerwerkMailformulierPagina extends Pagina
 {
     public function __construct()
     {
         $id = intval(Request::geefGetVeilig('id'));
-        $this->connectie = newPDO();
+        $this->connectie = DBConnection::getPDO();
         $formprep = $this->connectie->prepare('SELECT * FROM mailformulieren WHERE id=?');
         $formprep->execute(array($id));
         $form = $formprep->fetch();

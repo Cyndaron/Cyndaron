@@ -1,5 +1,4 @@
 <?php
-require_once('functies.db.php');
 
 if (!file_exists(__DIR__ . '/instellingen.php'))
 {

@@ -1,18 +1,18 @@
 <?php
 namespace Cyndaron\Kaartverkoop;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Pagina;
 use Cyndaron\Request;
 
 require_once __DIR__ . '/../../check.php';
-require_once __DIR__ . '/../../functies.db.php';
 
 class OverzichtBestellingenPagina extends Pagina
 {
     public function __construct()
     {
-        $concert_id = Request::geefGetVeilig('id') ?: geefEen('SELECT MAX(id) FROM kaartverkoop_concerten');
-        $this->connectie = newPDO();
+        $concert_id = Request::geefGetVeilig('id') ?: DBConnection::geefEen('SELECT MAX(id) FROM kaartverkoop_concerten');
+        $this->connectie = DBConnection::getPDO();
         $kaartverkoop_per_bestelling = [];
 
         $bestellingsquery = "	SELECT DISTINCT b.id AS bestellingsnr,achternaam,voorletters,`e-mailadres`,straat_en_huisnummer,postcode,woonplaats,thuisbezorgen,is_bezorgd,gereserveerde_plaatsen,is_betaald,opmerkingen,ophalen_door_koorlid,naam_koorlid,woont_in_buitenland

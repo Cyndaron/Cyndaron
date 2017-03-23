@@ -1,14 +1,13 @@
 <?php
 namespace Cyndaron;
 
-require_once __DIR__ . '/../functies.db.php';
 require_once __DIR__ . '/../functies.pagina.php';
 
 class StatischePagina extends Pagina
 {
     public function __construct()
     {
-        $connectie = newPDO();
+        $connectie = DBConnection::getPDO();
         $subid = intval(Request::geefGetVeilig('id'));
         if (!is_numeric($subid) || $subid <= 0)
         {
@@ -37,7 +36,7 @@ class StatischePagina extends Pagina
         $controls = sprintf('<a href="editor-statischepagina?id=%d" class="btn btn-default" title="Bewerk deze sub"><span class="glyphicon glyphicon-pencil"></span></a>', $subid);
         $controls .= sprintf('<a href="overzicht.php?type=sub&amp;actie=verwijderen&amp;id=%d" class="btn btn-default" title="Verwijder deze sub"><span class="glyphicon glyphicon-trash"></span></a>', $subid);
 
-        if (geefEen('SELECT * FROM vorigesubs WHERE id= ?', [$subid]))
+        if (DBConnection::geefEen('SELECT * FROM vorigesubs WHERE id= ?', [$subid]))
         {
             $controls .= sprintf('<a href="editor-statischepagina?vorigeversie=1&amp;id=%d" class="btn btn-default" title="Vorige versie"><span class="glyphicon glyphicon-vorige-versie"></span></a>', $subid);
         }

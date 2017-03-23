@@ -4,7 +4,6 @@ namespace Cyndaron;
 use Cyndaron\Widget\Knop;
 
 require_once __DIR__ . '/../check.php';
-require_once __DIR__ . '/../functies.db.php';
 require_once __DIR__ . '/../functies.pagina.php';
 
 class OverzichtPagina extends Pagina
@@ -91,7 +90,7 @@ class OverzichtPagina extends Pagina
         $this->maakNietDelen(true);
         $this->voegScriptToe('sys/js/pagina-overzicht.js');
         $this->toonPrepagina();
-        $connectie = newPDO();
+        $connectie = DBConnection::getPDO();
 
         if ($actie == 'verwijderen' && $zeker != 1)
         {

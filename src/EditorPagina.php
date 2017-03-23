@@ -2,7 +2,6 @@
 namespace Cyndaron;
 
 require_once __DIR__ . '/../check.php';
-require_once __DIR__ . '/../functies.db.php';
 
 abstract class EditorPagina extends Pagina
 {
@@ -20,7 +19,7 @@ abstract class EditorPagina extends Pagina
         $this->id = Request::geefGetVeilig('id');
         $this->vorigeversie = Request::geefGetVeilig('vorigeversie');
         $this->vvstring = $this->vorigeversie ? 'vorige' : '';
-        $this->connectie = newPDO();
+        $this->connectie = DBConnection::getPDO();
 
         $this->prepare();
 
@@ -85,7 +84,7 @@ abstract class EditorPagina extends Pagina
                 <div class="col-sm-5">
                     <select id="verwijzing" class="form-control form-control-inline">
                         <?php
-                        $connectie = newPDO();
+                        $connectie = DBConnection::getPDO();
                         $sql = "
     SELECT * FROM (SELECT CONCAT('toonsub.php?id=', id) AS link, CONCAT('Statische pag.: ', naam) AS naam FROM subs ORDER BY naam ASC) AS twee
     UNION

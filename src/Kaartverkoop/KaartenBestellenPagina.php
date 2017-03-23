@@ -1,16 +1,16 @@
 <?php
 namespace Cyndaron\Kaartverkoop;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Pagina;
 use Cyndaron\Request;
 
-require_once __DIR__ . '/../../functies.db.php';
 
 class KaartenBestellenPagina extends Pagina
 {
     public function __construct()
     {
-        $this->connectie = newPDO();
+        $this->connectie = DBConnection::getPDO();
         $this->voegScriptToe('sys/js/kaartverkoop.js');
 
         $concert_id = Request::geefGetVeilig('id');

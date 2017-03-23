@@ -94,7 +94,7 @@ class StatischePaginaModel
             return false;
         }
 
-        $connectie = newPDO();
+        $connectie = DBConnection::getPDO();
         $prep = $connectie->prepare('SELECT * FROM subs WHERE id=?');
         $prep->execute([$this->id]);
         $record = $prep->fetch();
@@ -124,7 +124,7 @@ class StatischePaginaModel
                 $reacties_aan = '1';
             }
 
-            $connectie = newPDO();
+            $connectie = DBConnection::getPDO();
             $prep = $connectie->prepare('INSERT INTO subs(naam, tekst, reacties_aan, categorieid) VALUES ( ?, ?, ?, ?)');
             $prep->execute([$this->naam, $this->tekst, $reacties_aan, $this->categorieId]);
             return $connectie->lastInsertId();
@@ -132,8 +132,8 @@ class StatischePaginaModel
         else
         {
             $reacties_aan = parseCheckboxAlsInt($this->reactiesAan);
-            $connectie = newPDO();
-            if (!geefEen('SELECT * FROM vorigesubs WHERE id=?', [$this->id]))
+            $connectie = DBConnection::getPDO();
+            if (!DBConnection::geefEen('SELECT * FROM vorigesubs WHERE id=?', [$this->id]))
             {
                 $prep = $connectie->prepare('INSERT INTO vorigesubs VALUES (?, \'\', \'\')');
                 $prep->execute([$this->id]);
@@ -153,8 +153,8 @@ class StatischePaginaModel
     {
         if ($this->id != null)
         {
-            maakEen('DELETE FROM subs WHERE id=?;', [$this->id]);
-            maakEen('DELETE FROM vorigesubs WHERE id=?;', [$this->id]);
+            DBConnection::maakEen('DELETE FROM subs WHERE id=?;', [$this->id]);
+            DBConnection::maakEen('DELETE FROM vorigesubs WHERE id=?;', [$this->id]);
         }
     }
 }

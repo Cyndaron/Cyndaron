@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron;
 
-require_once __DIR__ . '/../functies.db.php';
 
 class LoginPagina extends Pagina
 {
@@ -14,7 +13,7 @@ class LoginPagina extends Pagina
                 $login['naam'] = Request::geefPostVeilig('login_naam');
                 $login['wach'] = hash('sha512', Request::geefPostVeilig('login_wach'));
 
-                $this->connectie = newPDO();
+                $this->connectie = DBConnection::getPDO();
 
                 $prep = $this->connectie->prepare('SELECT * FROM gebruikers WHERE gebruikersnaam=?');
                 $prep->execute(array($login['naam']));

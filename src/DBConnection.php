@@ -1,6 +1,9 @@
 <?php
 namespace Cyndaron;
 
+use PDO;
+use PDOException;
+
 ini_set('memory_limit', '96M');
 
 /**
@@ -26,7 +29,7 @@ class DBConnection
         return static::$instance;
     }
 
-    public function doQuery($query, $vars = [])
+    public function doQuery(string $query, array $vars = [])
     {
         $prep = static::$pdo->prepare($query);
         $result = $prep->execute($vars);
@@ -61,6 +64,11 @@ class DBConnection
 
     private static function connect()
     {
+        if (static::$pdo !== null)
+        {
+            return;
+        }
+
         $dbmethode = 'mysql';
         $dbuser = 'root';
         $dbpass = '';
@@ -70,9 +78,9 @@ class DBConnection
 
         try
         {
-            static::$pdo = @new \PDO($dbmethode . ':host=' . $dbplek . ';dbname=' . $dbnaam . ';charset=utf8', $dbuser, $dbpass);
+            static::$pdo = @new PDO($dbmethode . ':host=' . $dbplek . ';dbname=' . $dbnaam . ';charset=utf8', $dbuser, $dbpass);
         }
-        catch(\PDOException $e)
+        catch(PDOException $e)
         {
             error_log($e);
             echo 'Kan niet verbinden met database!<br>';
@@ -81,11 +89,37 @@ class DBConnection
         }
     }
 
-    public static function getPdo()
+    public static function getPdo(): PDO
     {
-        if (static::$pdo === null)
-        {
-            static::connect();
-        }
+        static::connect();
+        return static::$pdo;
+    }
+
+    /**
+     * @deprecated
+     * @param $query
+     * @param array $vars
+     * @return string
+     */
+    public static function geefEen($query, $vars = [])
+    {
+        static::connect();
+        $resultaat = static::$pdo->prepare($query);
+        $resultaat->execute($vars);
+        return $resultaat->fetchColumn();
+    }
+
+    /**
+     * @deprecated
+     * @param $query
+     * @param $vars
+     * @return string
+     */
+    public static function maakEen($query, $vars)
+    {
+        static::connect();
+        $resultaat = static::$pdo->prepare($query);
+        $resultaat->execute($vars);
+        return static::$pdo->lastInsertId();
     }
 }

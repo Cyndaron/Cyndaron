@@ -1,10 +1,12 @@
 <?php
 require('check.php');
 require_once('functies.pagina.php');
-require_once('functies.db.php');
+require_once __DIR__ . '/src/DBConnection.php';
+
+use Cyndaron\DBConnection;
 
 #migreer hoofdstukken naar subs
-$connectie = newPDO();
+$connectie = DBConnection::getPDO();
 $hoofdstukken = $connectie->prepare('SELECT * FROM hoofdstukken ORDER BY id ASC;');
 $hoofdstukken->execute();
 
@@ -37,7 +39,7 @@ foreach ($hoofdstukken as $hoofdstuk)
         $vorigeinhoud .= $vorigartikel['tekst'];
     }
 
-    geefEen('INSERT INTO vorigesubs(id,naam,tekst) VALUES (?,?,?);', [$id, $hoofdstuk['naam'], $vorigeinhoud]);
+    DBConnection::geefEen('INSERT INTO vorigesubs(id,naam,tekst) VALUES (?,?,?);', [$id, $hoofdstuk['naam'], $vorigeinhoud]);
 }
 
 $categorieen = $connectie->prepare('SELECT id FROM categorieen ORDER BY id ASC;');
@@ -60,10 +62,10 @@ foreach ($extramenuitems as $extramenuitem)
     voegToeAanMenu($extramenuitem['link'], $extramenuitem['naam']);
 }
 
-geefEen('DROP TABLE vorigeartikelen', []);
-geefEen('DROP TABLE artikelen', []);
-geefEen('DROP TABLE hoofdstukken', []);
-geefEen('DROP TABLE vastemenuitems', []);
+DBConnection::geefEen('DROP TABLE vorigeartikelen', []);
+DBConnection::geefEen('DROP TABLE artikelen', []);
+DBConnection::geefEen('DROP TABLE hoofdstukken', []);
+DBConnection::geefEen('DROP TABLE vastemenuitems', []);
 
 echo 'Script voltooid';
 
@@ -74,7 +76,7 @@ function nieuweSub($titel, $tekst, $reacties_aan, $categorieid)
     else
         $reacties_aan = '1';
 
-    $connectie = newPDO();
+    $connectie = DBConnection::getPDO();
     $prep = $connectie->prepare('INSERT INTO subs(naam, tekst, reacties_aan, categorieid) VALUES ( ?, ?, ?, ?)');
     $prep->execute(array($titel, $tekst, $reacties_aan, $categorieid));
     return $connectie->lastInsertId();

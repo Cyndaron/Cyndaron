@@ -3,7 +3,6 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Pagina;
 
-require_once __DIR__ . '/../../functies.db.php';
 
 class LedenPagina extends Pagina
 {

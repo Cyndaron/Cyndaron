@@ -32,7 +32,7 @@ abstract class Bewerk
             Url::verwijderFriendlyUrl($oudeFriendlyUrl);
             $unfriendlyUrl->maakFriendly($friendlyUrl);
             // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast
-            geefEen('UPDATE menu SET link = ? WHERE link = ?', array($friendlyUrl, $oudeFriendlyUrl));
+            DBConnection::geefEen('UPDATE menu SET link = ? WHERE link = ?', array($friendlyUrl, $oudeFriendlyUrl));
         }
         if (!$returnUrl)
         {

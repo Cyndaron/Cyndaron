@@ -12,15 +12,15 @@ class EditorStatischePagina extends EditorPagina
 
         if ($this->id)
         {
-            $this->content = geefEen('SELECT tekst FROM ' . $this->vvstring . 'subs WHERE id=?', array($this->id));
-            $this->titel = geefEen('SELECT naam FROM ' . $this->vvstring . 'subs WHERE id=?', array($this->id));
+            $this->content = DBConnection::geefEen('SELECT tekst FROM ' . $this->vvstring . 'subs WHERE id=?', array($this->id));
+            $this->titel = DBConnection::geefEen('SELECT naam FROM ' . $this->vvstring . 'subs WHERE id=?', array($this->id));
         }
 
     }
 
     protected function toonSpecifiekeKnoppen()
     {
-        $checked = geefEen('SELECT reacties_aan FROM subs WHERE id=?', array($this->id)) ? ' checked="checked"' : '';
+        $checked = DBConnection::geefEen('SELECT reacties_aan FROM subs WHERE id=?', array($this->id)) ? ' checked="checked"' : '';
         ?>
         <div class="form-group">
             <label class="col-sm-2 control-label" for="reacties_aan">Reacties aan: </label>
@@ -36,9 +36,9 @@ class EditorStatischePagina extends EditorPagina
                     <?php
 
                     if ($this->id)
-                        $categorieid = geefEen('SELECT categorieid FROM subs WHERE id= ?', array($this->id));
+                        $categorieid = DBConnection::geefEen('SELECT categorieid FROM subs WHERE id= ?', array($this->id));
                     else
-                        $categorieid = geefInstelling('standaardcategorie');
+                        $categorieid = Instelling::geefInstelling('standaardcategorie');
 
                     $categorieen = $this->connectie->query("SELECT * FROM categorieen ORDER BY naam;");
                     foreach ($categorieen->fetchAll() as $categorie)

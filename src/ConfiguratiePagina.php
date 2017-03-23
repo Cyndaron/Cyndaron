@@ -2,7 +2,6 @@
 namespace Cyndaron;
 
 require_once __DIR__ . '/../check.php';
-require_once __DIR__ . '/../functies.db.php';
 require_once __DIR__ . '/../functies.pagina.php';
 
 class ConfiguratiePagina extends Pagina
@@ -11,19 +10,19 @@ class ConfiguratiePagina extends Pagina
     {
         if (!Request::postIsLeeg())
         {
-            maakInstelling('websitenaam', Request::geefPostVeilig('websitenaam'));
-            maakInstelling('websitelogo', Request::geefPostVeilig('websitelogo'));
-            maakInstelling('ondertitel', Request::geefPostVeilig('ondertitel'));
-            maakInstelling('favicon', Request::geefPostVeilig('favicon'));
-            maakInstelling('achtergrondkleur', Request::geefPostVeilig('achtergrondkleur'));
-            maakInstelling('menukleur', Request::geefPostVeilig('menukleur'));
-            maakInstelling('menuachtergrond', Request::geefPostOnveilig('menuachtergrond'));
-            maakInstelling('artikelkleur', Request::geefPostVeilig('artikelkleur'));
-            maakInstelling('standaardcategorie', Request::geefPostVeilig('standaardcategorie'));
-            maakInstelling('facebook_share', Request::geefPostVeilig('facebook_share'));
-            maakInstelling('extra_bodycode', Request::geefPostOnveilig('extra_bodycode'));
-            maakInstelling('menutype', Request::geefPostVeilig('menutype'));
-            maakInstelling('menuthema', Request::geefPostVeilig('menuthema'));
+            Instelling::maakInstelling('websitenaam', Request::geefPostVeilig('websitenaam'));
+            Instelling::maakInstelling('websitelogo', Request::geefPostVeilig('websitelogo'));
+            Instelling::maakInstelling('ondertitel', Request::geefPostVeilig('ondertitel'));
+            Instelling::maakInstelling('favicon', Request::geefPostVeilig('favicon'));
+            Instelling::maakInstelling('achtergrondkleur', Request::geefPostVeilig('achtergrondkleur'));
+            Instelling::maakInstelling('menukleur', Request::geefPostVeilig('menukleur'));
+            Instelling::maakInstelling('menuachtergrond', Request::geefPostOnveilig('menuachtergrond'));
+            Instelling::maakInstelling('artikelkleur', Request::geefPostVeilig('artikelkleur'));
+            Instelling::maakInstelling('standaardcategorie', Request::geefPostVeilig('standaardcategorie'));
+            Instelling::maakInstelling('facebook_share', Request::geefPostVeilig('facebook_share'));
+            Instelling::maakInstelling('extra_bodycode', Request::geefPostOnveilig('extra_bodycode'));
+            Instelling::maakInstelling('menutype', Request::geefPostVeilig('menutype'));
+            Instelling::maakInstelling('menuthema', Request::geefPostVeilig('menuthema'));
 
             $menu = Request::geefPostVeilig('menu');
             $split1 = explode(';', $menu);
@@ -43,34 +42,34 @@ class ConfiguratiePagina extends Pagina
         parent::__construct('Configuratie');
         $this->maakNietDelen(true);
         $this->toonPrePagina();
-        $this->connectie = newPDO();
+        $this->connectie = DBConnection::getPDO();
         $this->voegScriptToe('sys/js/test-kleuren.js')
 
         ?>
         <form method="post" action="configuratie.php" class="form-horizontal">
             <?php
-            $fbselected = (geefInstelling('facebook_share') == 1) ? ' checked="checked"' : '';
-            $standaardcategorie = geefInstelling('standaardcategorie');
+            $fbselected = (Instelling::geefInstelling('facebook_share') == 1) ? ' checked="checked"' : '';
+            $standaardcategorie = Instelling::geefInstelling('standaardcategorie');
             $categorieen = $this->connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC');
             $categorieen->execute();
             $menu = $this->connectie->prepare('SELECT link,alias FROM menu ORDER BY volgorde ASC;');
             $menu->execute();
             $menustring = $this->menuNaarString($menu);
-            $menutype = geefInstelling('menutype');
+            $menutype = Instelling::geefInstelling('menutype');
             $modernMenu = ($menutype !== 'klassiek') ? 'selected' : '';
             $klassiekMenu = ($menutype === 'klassiek') ? 'selected' : '';
-            $menuthema = geefInstelling('menuthema');
+            $menuthema = Instelling::geefInstelling('menuthema');
             $lichtMenu = ($menuthema !== 'donker') ? 'selected' : '';
             $donkerMenu = ($menuthema === 'donker') ? 'selected' : '';
 
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Naam website:</label> <div class="col-sm-6"><input class="form-control" type="text" name="websitenaam" value="' . geefInstelling('websitenaam', TRUE) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Websitelogo:</label> <div class="col-sm-6"><input class="form-control" type="text" name="websitelogo" value="' . geefInstelling('websitelogo', TRUE) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Ondertitel:</label> <div class="col-sm-6"><input class="form-control" type="text" name="ondertitel" value="' . geefInstelling('ondertitel', TRUE) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Websitepictogram:</label> <div class="col-sm-6"><input class="form-control" type="text" name="favicon" value="' . geefInstelling('favicon', TRUE) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondkleur hele pagina:</label> <div class="col-sm-6"><input class="form-control" type="text" name="achtergrondkleur" value="' . geefInstelling('achtergrondkleur', TRUE) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondkleur menu:</label> <div class="col-sm-6"><input class="form-control" type="text" name="menukleur" value="' . geefInstelling('menukleur', TRUE) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondafbeelding menu:</label> <div class="col-sm-6"><input class="form-control" type="text" name="menuachtergrond" value="' . geefInstelling('menuachtergrond', TRUE) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondkleur artikel:</label> <div class="col-sm-6"><input class="form-control" type="text" name="artikelkleur" value="' . geefInstelling('artikelkleur', TRUE) . '" /></div></div>';
+            echo '<div class="form-group"><label class="col-sm-3 control-label">Naam website:</label> <div class="col-sm-6"><input class="form-control" type="text" name="websitenaam" value="' . Instelling::geefInstelling('websitenaam', TRUE) . '" /></div></div>';
+            echo '<div class="form-group"><label class="col-sm-3 control-label">Websitelogo:</label> <div class="col-sm-6"><input class="form-control" type="text" name="websitelogo" value="' . Instelling::geefInstelling('websitelogo', TRUE) . '" /></div></div>';
+            echo '<div class="form-group"><label class="col-sm-3 control-label">Ondertitel:</label> <div class="col-sm-6"><input class="form-control" type="text" name="ondertitel" value="' . Instelling::geefInstelling('ondertitel', TRUE) . '" /></div></div>';
+            echo '<div class="form-group"><label class="col-sm-3 control-label">Websitepictogram:</label> <div class="col-sm-6"><input class="form-control" type="text" name="favicon" value="' . Instelling::geefInstelling('favicon', TRUE) . '" /></div></div>';
+            echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondkleur hele pagina:</label> <div class="col-sm-6"><input class="form-control" type="text" name="achtergrondkleur" value="' . Instelling::geefInstelling('achtergrondkleur', TRUE) . '" /></div></div>';
+            echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondkleur menu:</label> <div class="col-sm-6"><input class="form-control" type="text" name="menukleur" value="' . Instelling::geefInstelling('menukleur', TRUE) . '" /></div></div>';
+            echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondafbeelding menu:</label> <div class="col-sm-6"><input class="form-control" type="text" name="menuachtergrond" value="' . Instelling::geefInstelling('menuachtergrond', TRUE) . '" /></div></div>';
+            echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondkleur artikel:</label> <div class="col-sm-6"><input class="form-control" type="text" name="artikelkleur" value="' . Instelling::geefInstelling('artikelkleur', TRUE) . '" /></div></div>';
             echo '<div class="form-group"><label class="col-sm-3 control-label">Facebookintegratie:</label><div class="col-sm-6"><input type="checkbox" name="facebook_share" value="1" ' . $fbselected . ' /> Geactiveerd</div></div>';
             echo '<div class="form-group"><label class="col-sm-3 control-label">Standaardcategorie:</label> <div class="col-sm-6"><select name="standaardcategorie">';
             echo '<option value="0"';
@@ -95,7 +94,7 @@ class ConfiguratiePagina extends Pagina
             printf('<div class="form-group"><label class="col-sm-3 control-label">Menuthema:</label><div class="col-sm-6"><select id="menuthema" name="menuthema"><option value="licht" %s>Licht</option><option value="donker" %s>Donker</option></select></div></div>', $lichtMenu, $donkerMenu);
 
 
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Extra bodycode (o.a. Google Analytics)</label> <div class="col-sm-6"><textarea style="height: 75px;" name="extra_bodycode" class="form-control">' . geefInstelling('extra_bodycode') . '</textarea></div></div>';
+            echo '<div class="form-group"><label class="col-sm-3 control-label">Extra bodycode (o.a. Google Analytics)</label> <div class="col-sm-6"><textarea style="height: 75px;" name="extra_bodycode" class="form-control">' . Instelling::geefInstelling('extra_bodycode') . '</textarea></div></div>';
             ?>
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-6">
