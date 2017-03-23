@@ -11,7 +11,7 @@ a:hover
 
 .paginacontainer
 {
-    border: 0px;
+    border: 0;
     margin: auto;
     height: 96%;
     width: 90%;
@@ -59,7 +59,7 @@ body, .tooltip, .popover
 
 img:not(.lb-image)
 {
-    border: 0px;
+    border: 0;
     padding: 5px 5px 5px 5px;
 }
 
@@ -76,7 +76,7 @@ img.sys
 
 td
 {
-    /*border: 0px;*/
+    /*border: 0;*/
     /*vertical-align: top;*/
 }
 
@@ -111,7 +111,7 @@ td
 
 h1, h2, h3, h4, h5, h6
 {
-    margin: 0px;
+    margin: 0;
 }
 
 img.thumb
@@ -121,14 +121,14 @@ img.thumb
 
 .tablesys
 {
-    border: 0px;
+    border: 0;
     background-color: inherit;
 }
 
 hr
 {
-    height: 0px;
-    border-bottom: 0px;
+    height: 0;
+    border-bottom: 0;
     border-top: 1px dotted #777777;
 }
 
@@ -145,8 +145,8 @@ ul
 
 ul.menulijst
 {
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 ul.menulijst li
@@ -160,8 +160,8 @@ ul.menulijst li
 ul.zonderbullets, ul.zonderbullets li
 {
     list-style-type: none;
-    margin: 0px 0px 0px 0px;
-    padding: 0px 0px 0px 0px;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
 }
 
 div.center
@@ -192,14 +192,14 @@ div.center
     border-top: 1px dotted #000000;
     padding-top: 4px;
     padding-bottom: 4px;
-    margin-top: 0px;
+    margin-top: 0;
     margin-bottom: 5px;
 }
 
 .scale
 {
     max-width: 100%;
-    padding: 0px;
+    padding: 0;
 }
 
 tr.rotate
@@ -251,7 +251,7 @@ th.rotate > div > span
 
 .meldingen ul
 {
-    margin: 0px;
+    margin: 0;
     padding-left: 10px;
 }
 
@@ -390,8 +390,8 @@ button.aantalKaarten
 
 .klassiek-menu ul.menulijst
 {
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .klassiek-menu ul.menulijst li
@@ -413,8 +413,8 @@ button.aantalKaarten
     background-color: #FFFFFF;
     opacity: 0.96;
     border-radius: 3px;
-    padding: 0px !important;
-    margin: 3px 6px 3px 0px;
+    padding: 0 !important;
+    margin: 3px 6px 3px 0;
     float: left;
     height: 120px;
 }

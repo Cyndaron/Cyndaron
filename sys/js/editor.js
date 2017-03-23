@@ -22,11 +22,12 @@ function plakLink()
     setTimeout(function ()
     {
         var link = $('#verwijzing').val();
+        var focus = $(':focus');
         // Het veld voor de link heeft standaardfocus
-        $(':focus').val(link);
+        focus.val(link);
 
         // Zet de selector voor het linktype op 'anders'
-        $(':focus').parent().parent().parent().parent().parent().find('select').val('');
+        focus.parent().parent().parent().parent().parent().find('select').val('');
     }, 800);
 }
 

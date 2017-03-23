@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron;
 
-require __DIR__ . '/check.php';
+require __DIR__ . '/../check.php';
 
 class MigreerNaar5_0 extends Pagina
 {

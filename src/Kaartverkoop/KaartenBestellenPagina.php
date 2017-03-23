@@ -196,6 +196,8 @@ class KaartenBestellenPagina extends Pagina
             function berekenTotaalprijs()
             {
                 var totaalprijs = 0.0;
+                var bezorgen = false;
+                var verzendkosten = 0.0;
 
                 if (buitenland)
                 {
@@ -228,27 +230,27 @@ class KaartenBestellenPagina extends Pagina
 
                     if (!woontOpWalcheren && !ophalenDoorKoorlid)
                     {
-                        var bezorgen = true;
+                        bezorgen = true;
                     }
                     else
                     {
-                        var bezorgen = false;
+                        bezorgen = false;
                         document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
                     }
                 }
                 else
                 {
-                    var bezorgen = document.getElementById('bezorgen').checked;
+                    bezorgen = document.getElementById('bezorgen').checked;
                 }
 
                 if (bezorgen)
                 {
-                    var verzendkosten =<?php echo $concert_info['verzendkosten'];?>;
+                    verzendkosten =<?php echo $concert_info['verzendkosten'];?>;
                     document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
                 }
                 else
                 {
-                    var verzendkosten = 0.0;
+                    verzendkosten = 0.0;
                     if (!bezorgenVerplicht)
                         document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
                 }

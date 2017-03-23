@@ -14,9 +14,10 @@ class Server
         $this->setHostname($hostname);
     }
 
-
     /**
-     * Must be IP or domain. (only IPv4)
+     * Set the hostname of the server.
+     *
+     * @param string $hostname The hostname. Must be IP or domain (only IPv4).
      */
     public function setHostname(string $hostname)
     {
@@ -40,7 +41,12 @@ class Server
         }
     }
 
-    public function getHostname()
+    /**
+     * Returns the hostname of the server.
+     *
+     * @return string The hostname of the server.
+     */
+    public function getHostname(): string
     {
         return $this->hostname;
     }
@@ -85,7 +91,7 @@ class Server
         fclose($socket);
 
         // Is this a disconnect with the ping?
-        if ($data == false AND substr($data, 0, 1) != "\xFF")
+        if ($data == false && substr($data, 0, 1) != "\xFF")
             return $stats;
 
         $data = substr($data, 9);
@@ -98,5 +104,4 @@ class Server
 
         return $stats;
     }
-
 }

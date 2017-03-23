@@ -34,4 +34,4 @@ function email()
 window.onload = function ()
 {
     email();
-}
+};

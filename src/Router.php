@@ -82,7 +82,7 @@ class Router
 //        //Normaal bestand
 //        elseif (@file_exists($request))
 //        {
-//            include($request);
+//            include $request;
 //        }
         elseif (array_key_exists($request, $this->endpoints))
         {
@@ -98,7 +98,7 @@ class Router
         //Normaal bestand zonder .php
         elseif (@file_exists($request . '.php'))
         {
-            include($request . '.php');
+            include $request . '.php';
         }
         // Oude directe link naar een foto
         elseif ($request === 'toonfoto.php')
