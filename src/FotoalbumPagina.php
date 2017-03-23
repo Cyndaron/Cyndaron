@@ -48,7 +48,8 @@ class FotoalbumPagina extends Pagina
                         $dataTitleTag = '';
                         if ($bijschrift = DBConnection::geefEen('SELECT bijschrift FROM bijschriften WHERE hash=?', [$hash]))
                         {
-                            $dataTitleTag = 'data-title="' . $bijschrift . '"';
+                            // Vervangen van aanhalingstekens is nodig omdat er links in de beschrijving kunnen zitten.
+                            $dataTitleTag = 'data-title="' . str_replace('"', '&quot;', $bijschrift) . '"';
                         }
 
                         $uitvoer .= sprintf('<div class="fotobadge"><a href="%s" data-lightbox="%s" %s data-hash="%s"><img class="thumb" src="fotoalbums/%d', $fotoLink, htmlspecialchars($boeknaam), $dataTitleTag, $hash, $boekid);
