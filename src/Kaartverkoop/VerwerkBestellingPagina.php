@@ -6,7 +6,6 @@ use Cyndaron\Pagina;
 use Cyndaron\Request;
 
 
-// FIXME: Controle op boekingen voor een gesloten concert
 class VerwerkBestellingPagina extends Pagina
 {
     public function __construct()
@@ -32,8 +31,16 @@ class VerwerkBestellingPagina extends Pagina
         $prep->execute([$concert_id]);
         $concert = $prep->fetch();
 
-        $incorrecteVelden = $this->checkFormulier($concert['bezorgen_verplicht'], $ophalenDoorKoorlid);
+        if ($concert['open_voor_verkoop'] == false)
+        {
+            parent::__construct('Verkoop gesloten');
+            $this->toonPrePagina();
+            echo 'De verkoop voor dit concert is helaas gesloten, u kunt geen kaarten meer bestellen.';
+            $this->toonPostPagina();
+            die();
+        }
 
+        $incorrecteVelden = $this->checkFormulier($concert['bezorgen_verplicht'], $ophalenDoorKoorlid);
         if (!empty($incorrecteVelden))
         {
             parent::__construct('Bestelling niet verwerkt');
