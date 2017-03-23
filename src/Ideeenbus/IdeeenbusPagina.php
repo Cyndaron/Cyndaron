@@ -30,7 +30,7 @@ class IdeeenbusPagina extends Pagina
         {
             $naam = Request::geefPostVeilig('naam');
             $tekst = Request::geefPostVeilig('idee');
-            $input = $connectie->prepare('INSERT INTO ideeen VALUES (NULL, ?, ?)');
+            $input = $connectie->prepare('INSERT INTO ideeen(id, naam, tekst, datum) VALUES (NULL, ?, ?, CURRENT_TIMESTAMP)');
             $input->execute([$naam, $tekst]);
             echo new GoedeMelding('Uw idee is succesvol ingediend.');
         }
@@ -53,7 +53,7 @@ class IdeeenbusPagina extends Pagina
 
             <?php
         }
-        $inhoud = $connectie->prepare("SELECT id, naam, tekst FROM ideeen ORDER BY id DESC ;");
+        $inhoud = $connectie->prepare("SELECT *, DATE_FORMAT(datum, '%d-%m-%Y') AS datumfriendly FROM ideeen ORDER BY id DESC ;");
         $inhoud->execute();
         foreach ($inhoud->fetchAll() as $idee)
         {
@@ -63,6 +63,13 @@ class IdeeenbusPagina extends Pagina
             printf('Idee van <strong>%s</strong>: %s', $idee['naam'], $knopcode);
             echo '</h3></div><div class="panel-body">';
             echo $idee['tekst'];
+
+            if ($idee['datumfriendly'] != '00-00-0000')
+            {
+                echo '<br /><br />';
+                echo '<i>Achtergelaten op ' . $idee['datumfriendly'] . '</i>.';
+            }
+
             echo '</div></div>';
         }
 
