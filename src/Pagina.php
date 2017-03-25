@@ -86,8 +86,10 @@ class Pagina
                 ?>
             </style>
             <script type="text/javascript">
-                function geefInstelling(instelling) {
-                    if (instelling == 'artikelkleur') {
+                function geefInstelling(instelling)
+                {
+                    if (instelling == 'artikelkleur')
+                    {
                         return '<?php echo Instelling::geefInstelling('artikelkleur');?>';
                     }
                 }
@@ -145,8 +147,9 @@ class Pagina
 
     protected function toonModernMenu()
     {
-        $websitelogo = sprintf('<img alt="" src="%s"> ', Instelling::geefInstelling('websitelogo'));
+        $websitelogo = Instelling::geefInstelling('websitelogo');
         $inverseClass = (Instelling::geefInstelling('menuthema') == 'donker') ? 'navbar-inverse' : '';
+        $navbar = $websitelogo ? sprintf('<img alt="" src="%s"> ', $websitelogo) : $this->websitenaam;
         ?>
         <nav class="menu navbar <?= $inverseClass; ?>">
             <div class="container-fluid">
@@ -159,7 +162,7 @@ class Pagina
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="./"><?= $websitelogo . $this->websitenaam; ?></a>
+                    <a class="navbar-brand" href="./"><?= $navbar; ?></a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -168,6 +171,9 @@ class Pagina
 
                         <?php
                         $menuarray = $this->geefMenu();
+                        // Laat eerste menuonderdeel weg, daar is het logo voor.
+                        array_shift($menuarray);
+
                         if (count($menuarray) > 0)
                         {
                             foreach ($menuarray as $menuitem)
