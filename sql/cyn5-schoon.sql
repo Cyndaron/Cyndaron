@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 23, 2017 at 08:03 PM
+-- Generation Time: Mar 25, 2017 at 10:26 PM
 -- Server version: 5.7.17-0ubuntu0.16.04.1
 -- PHP Version: 7.0.15-0ubuntu0.16.04.4
 
@@ -53,7 +53,8 @@ CREATE TABLE `categorieen` (
 CREATE TABLE `fotoboeken` (
   `id` int(3) NOT NULL,
   `naam` varchar(100) NOT NULL,
-  `notities` text NOT NULL
+  `notities` text NOT NULL,
+  `categorieid` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -312,7 +313,8 @@ ALTER TABLE `categorieen`
 -- Indexes for table `fotoboeken`
 --
 ALTER TABLE `fotoboeken`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `categorieid` (`categorieid`);
 
 --
 -- Indexes for table `friendlyurls`

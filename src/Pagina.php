@@ -175,12 +175,16 @@ class Pagina
                                 if (strpos($menuitem['link'], 'tooncategorie') !== false && strpos($menuitem['link'], '#dd') !== false)
                                 {
                                     $id = intval(str_replace(['tooncategorie.php?id=', '#dd'], '', $menuitem['link']));
-                                    $paginasInCategorie = $this->connectie->prepare('SELECT * FROM subs WHERE categorieid=? ORDER BY naam ASC;');
-                                    $paginasInCategorie->execute([$id]);
+                                    $paginasInCategorie = $this->connectie->prepare("
+										SELECT * FROM
+										(
+											SELECT 'sub' AS type, id, naam FROM subs WHERE categorieid=?
+											UNION
+											SELECT 'fotoboek' AS type, id, naam FROM fotoboeken WHERE categorieid=?
+										) AS een
+										ORDER BY naam ASC;");
+                                    $paginasInCategorie->execute([$id, $id]);
 
-                                    //                    if ($this->menuItemIsHuidigePagina($menuitem['link']))
-                                    //                        echo '<li class="active dropdown">';
-                                    //                    else
                                     echo '<li class="dropdown">';
 
                                     echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' . $menuitem['naam'] . '<span class="caret"></span></a>';
@@ -188,7 +192,7 @@ class Pagina
 
                                     foreach ($paginasInCategorie->fetchAll() as $pagina)
                                     {
-                                        $url = new Url('toonsub.php?id=' . $pagina['id']);
+                                        $url = new Url(sprintf('toon%s.php?id=%d', $pagina['type'], $pagina['id']));
                                         $link = $url->geefFriendly();
                                         printf('<li><a href="%s">%s</a></li>', $link, $pagina['naam']);
                                     }

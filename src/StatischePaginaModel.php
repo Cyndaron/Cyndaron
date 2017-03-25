@@ -127,7 +127,8 @@ class StatischePaginaModel
             $connectie = DBConnection::getPDO();
             $prep = $connectie->prepare('INSERT INTO subs(naam, tekst, reacties_aan, categorieid) VALUES ( ?, ?, ?, ?)');
             $prep->execute([$this->naam, $this->tekst, $reacties_aan, $this->categorieId]);
-            return $connectie->lastInsertId();
+            $this->id = $connectie->lastInsertId();
+            return $this->id;
         }
         else
         {
