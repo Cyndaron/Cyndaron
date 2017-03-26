@@ -35,7 +35,7 @@ class Instelling
             return $setting->fetchColumn();
         }
 
-        return htmlentities($setting->fetchColumn(), ENT_COMPAT | ENT_HTML5, 'UTF-8');
+        return htmlspecialchars($setting->fetchColumn(), ENT_COMPAT | ENT_HTML5, 'UTF-8', false);
     }
 
     public static function maakInstelling($naam, $waarde)
