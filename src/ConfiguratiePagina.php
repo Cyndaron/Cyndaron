@@ -114,6 +114,7 @@ class ConfiguratiePagina extends Pagina
         echo '<li>CKeditor: MPL-, LGPL- en GPL-licenties (ckeditor/LICENSE.md)</li>';
         echo '<li>jQuery: MIT-licentie (LICENSE.jQuery)</li>';
         echo '<li>Lightbox: MIT-licentie (LICENSE.Lightbox)</li>';
+        echo '<li>MCServerStats: MIT-licentie (LICENSE.MCServerStats)</li>';
         echo '<li>MinecraftSkinRenderer: BSD-3-licentie (LICENSE.MinecraftSkinRenderer)</li>';
         echo '</ul>';
         echo 'Engineversie: ' . CyndaronInfo::ENGINE_VERSIE;
