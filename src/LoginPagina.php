@@ -86,13 +86,13 @@ class LoginPagina extends Pagina
 <div class="form-group">
     <label for="login_naam" class="control-label col-sm-2">Gebruikersnaam:</label>
     <div class="col-sm-3">
-        <input type="text" class="form-control" id="login_naam" name="login_naam" maxlength="20" />
+        <input type="text" class="form-control" id="login_naam" name="login_naam"/>
     </div>
 </div>
 <div class="form-group">
     <label for="login_wach" class="control-label col-sm-2">Wachtwoord:</label>
     <div class="col-sm-3">
-        <input type="password" class="form-control" id="login_wach" name="login_wach" maxlength="20" />
+        <input type="password" class="form-control" id="login_wach" name="login_wach"/>
     </div>
 </div>
 <input type="submit" class="btn btn-primary" name="submit" value="Inloggen" />
