@@ -23,14 +23,14 @@ class StatusPagina extends Pagina
 
         foreach ($servers as $server)
         {
-            printf('<h3>%s: ', $server->name);
+            printf('<br /><h3>%s: ', $server->name);
 
             if ($server->is_online == true)
             {
                 echo 'online</h3>';
                 printf('Aantal spelers online: %d (maximaal %d)<br />', $server->online_players, $server->max_players);
                 echo 'Versie: ' . $server->game_version . '<br />';
-                echo '<abbr title="Message of the day">MOTD</abbr>: ' . $server->motd . '<br /><br />';
+                echo '<abbr title="Message of the day">MOTD</abbr>: ' . $server->motd . '<br />';
             }
             else
             {
@@ -42,9 +42,10 @@ class StatusPagina extends Pagina
         {
             if ($server->is_online == true)
             {
-                echo '<br /><br />';
-                printf('<h3>Landkaart %s (<a href="http://%s:%d">Maximaliseren</a>)</h3>', $server->name, $server->hostname, $server->dynmapPort);
+                echo '<br />';
+                printf('<h3>Landkaart %s <a href="http://%s:%d" class="btn btn-default" role="button"><span class="glyphicon glyphicon-resize-full"></span> Maximaliseren</a></h3><br>', $server->name, $server->hostname, $server->dynmapPort);
                 printf('<iframe src="http://%s:%d/" style="border-radius:7px;" width="800" height="600"></iframe>', $server->hostname, $server->dynmapPort);
+                echo '<br />';
             }
         }
 
