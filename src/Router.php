@@ -29,7 +29,7 @@ class Router
         'tooncategorie.php' => '\Cyndaron\CategoriePagina',
         'toonfotoboek.php' => '\Cyndaron\FotoalbumPagina',
         'toonsub.php' => '\Cyndaron\StatischePagina',
-        'verwerkmailformulier.php' => '\Cyndaron\VerwerkMailFormulierPagina',
+        'verwerkmailformulier.php' => '\Cyndaron\VerwerkMailformulierPagina',
         // Standaard-plugins
         'bestandenkast.php' => '\Cyndaron\Bestandenkast\OverzichtPagina',
         'kaartenbestellen.php' => '\Cyndaron\Kaartverkoop\KaartenBestellenPagina',
