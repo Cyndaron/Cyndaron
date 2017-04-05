@@ -29,6 +29,7 @@ use Cyndaron\Request;
  * format - The format in which the image is to be rendered. PNG ("png") is used by default set to "svg" to use a vector version.
  * ratio - The size of the "png" image. The default and minimum value is 2.
  */
+
 class SkinRendererHandler
 {
     public static $cos_alpha;
@@ -55,8 +56,8 @@ class SkinRendererHandler
         $height = imagesy($img_png);
         if ($height == $width || $useNewRenderer == 'true')
         {
-            //render the skin and make it 5 times bigger
-            $result = MinecraftSkins::skin($img_png, 5);
+            //render the skin and make it 4 times bigger
+            $result = MinecraftSkins::skin($img_png, 4);
 
             //this part is for rendering the skin only
             //tell the browser that we will send the raw image without HTML
@@ -144,7 +145,6 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_left_leg),
             'sin_omega' => sin($omega_left_leg),
         ];
-
 
 
         $times[] = ['Angle-Calculations', $this->microtime_float()];

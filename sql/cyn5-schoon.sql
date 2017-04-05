@@ -198,7 +198,9 @@ CREATE TABLE `mailformulieren` (
   `id` int(11) NOT NULL,
   `naam` varchar(200) NOT NULL,
   `mailadres` varchar(200) NOT NULL,
-  `antispamantwoord` varchar(200) NOT NULL
+  `antispamantwoord` varchar(200) NOT NULL,
+  `stuur_bevestiging` TINYINT(1) NOT NULL DEFAULT '0',
+  `tekst_bevestiging` TEXT NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -213,7 +215,8 @@ CREATE TABLE `mc_leden` (
   `niveau` int(2) NOT NULL,
   `status` varchar(100) NOT NULL,
   `donateur` int(1) NOT NULL DEFAULT '0',
-  `renderAvatarHaar` int(1) NOT NULL DEFAULT '1'
+  `renderAvatarHaar` int(1) NOT NULL DEFAULT '1',
+  `newRenderer` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
