@@ -54,7 +54,7 @@ class SkinRendererHandler
 
         $width = imagesx($img_png);
         $height = imagesy($img_png);
-        if ($height == $width || $useNewRenderer == 'true')
+        if ($useNewRenderer == 'true')
         {
             //render the skin and make it 4 times bigger
             $result = MinecraftSkins::skin($img_png, 4);
@@ -64,7 +64,13 @@ class SkinRendererHandler
             header('Content-type: image/png');
             imagepng($result);
             die();
-
+        }
+        elseif ($height == $width)
+        {
+            $img_png_old = $img_png;
+            $img_png = imagecreatetruecolor($width, $height / 2);
+            imagecopyresampled($img_png, $img_png_old, 0, 0, 0, 0, $width, $height / 2, $width, $height / 2);
+            $height = imagesy($img_png);
         }
         elseif (!($width == $height * 2) || $height % 32 != 0)
         {
