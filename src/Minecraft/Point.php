@@ -30,9 +30,9 @@ class Point
      * Point constructor.
      * @param $originCoord
      */
-    function __construct($originCoord)
+    function __construct(array $originCoord)
     {
-        if (is_array($originCoord) && count($originCoord) == 3)
+        if (count($originCoord) == 3)
         {
             $this->_originCoord = [
                 'x' => (isset($originCoord['x']) ? $originCoord['x'] : 0),
@@ -48,8 +48,11 @@ class Point
 
     function project()
     {
-        global $cos_alpha, $sin_alpha, $cos_omega, $sin_omega;
-        global $minX, $maxX, $minY, $maxY;
+        $cos_alpha = SkinRendererHandler::$cos_alpha;
+        $sin_alpha = SkinRendererHandler::$sin_alpha;
+        $cos_omega = SkinRendererHandler::$cos_omega;
+        $sin_omega = SkinRendererHandler::$sin_omega;
+
         // 1, 0, 1, 0
         $x = $this->_originCoord['x'];
         $y = $this->_originCoord['y'];
@@ -58,10 +61,10 @@ class Point
         $this->_destCoord['y'] = $x * $sin_alpha * $sin_omega + $y * $cos_alpha - $z * $sin_alpha * $cos_omega;
         $this->_destCoord['z'] = -$x * $cos_alpha * $sin_omega + $y * $sin_alpha + $z * $cos_alpha * $cos_omega;
         $this->_isProjected = true;
-        $minX = min($minX, $this->_destCoord['x']);
-        $maxX = max($maxX, $this->_destCoord['x']);
-        $minY = min($minY, $this->_destCoord['y']);
-        $maxY = max($maxY, $this->_destCoord['y']);
+        SkinRendererHandler::$minX = min(SkinRendererHandler::$minX, $this->_destCoord['x']);
+        SkinRendererHandler::$maxX = max(SkinRendererHandler::$maxX, $this->_destCoord['x']);
+        SkinRendererHandler::$minY = min(SkinRendererHandler::$minY, $this->_destCoord['y']);
+        SkinRendererHandler::$maxY = max(SkinRendererHandler::$maxY, $this->_destCoord['y']);
     }
 
     function preProject($dx, $dy, $dz, $cos_alpha, $sin_alpha, $cos_omega, $sin_omega)

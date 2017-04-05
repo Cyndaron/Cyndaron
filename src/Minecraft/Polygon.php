@@ -69,18 +69,6 @@ class Polygon
     }
 
     /**
-     * @return int
-     */
-    function getFaceDepth()
-    {
-        if (!$this->_isProjected)
-        {
-            $this->project();
-        }
-        return $this->_faceDepth;
-    }
-
-    /**
      * @param int $ratio
      * @return string
      */

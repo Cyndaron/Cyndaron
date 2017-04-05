@@ -29,6 +29,15 @@ use Cyndaron\Request;
  */
 class SkinRendererHandler
 {
+    public static $cos_alpha;
+    public static $sin_alpha;
+    public static $cos_omega;
+    public static $sin_omega;
+    public static $minX = 0;
+    public static $maxX = 0;
+    public static $minY = 0;
+    public static $maxY = 0;
+
     public function __construct()
     {
         $times = [];
@@ -64,21 +73,11 @@ class SkinRendererHandler
         $alpha = deg2rad($vertical_rotation); // Vertical rotation on the X axis.
         $omega = deg2rad($horizontal_rotation); // Horizontal rotation on the Y axis.
 
-        // Snif...
-        global $cos_alpha;
-        global $sin_alpha;
-        global $cos_omega;
-        global $sin_omega;
-        global $minX;
-        global $maxX;
-        global $minY;
-        global $maxY;
-
         // Cosine and Sine values
-        $cos_alpha = cos($alpha);
-        $sin_alpha = sin($alpha);
-        $cos_omega = cos($omega);
-        $sin_omega = sin($omega);
+        static::$cos_alpha = cos($alpha);
+        static::$sin_alpha = sin($alpha);
+        static::$cos_omega = cos($omega);
+        static::$sin_omega = sin($omega);
 
         // Head, Helmet, Torso, Arms, Legs
         $parts_angles = [];
@@ -135,7 +134,7 @@ class SkinRendererHandler
             'sin_omega' => sin($omega_left_leg),
         ];
 
-        $minX = $maxX = $minY = $maxY = 0;
+
 
         $times[] = ['Angle-Calculations', $this->microtime_float()];
 
@@ -163,68 +162,46 @@ class SkinRendererHandler
         ];
 
         // Loop each preProject and Project then calculate the visible faces for each - also display
-        foreach ($visible_faces as $k => &$v)
+        foreach ($visible_faces as $faceName => &$faceFormat)
         {
-            unset($cube_max_depth_faces, $cube_points);
+            unset($cube_max_depth_faces, $cubePoints);
 
-            $cube_points = [];
-            $cube_points[] = [new Point(['x' => 0, 'y' => 0, 'z' => 0]), ['back', 'right', 'top']]; // 0
-            $cube_points[] = [new Point(['x' => 0, 'y' => 0, 'z' => 1]), ['front', 'right', 'top']]; // 1
-            $cube_points[] = [new Point(['x' => 0, 'y' => 1, 'z' => 0]), ['back', 'right', 'bottom']]; // 2
-            $cube_points[] = [new Point(['x' => 0, 'y' => 1, 'z' => 1]), ['front', 'right', 'bottom']]; // 3
-            $cube_points[] = [new Point(['x' => 1, 'y' => 0, 'z' => 0]), ['back', 'left', 'top']]; // 4
-            $cube_points[] = [new Point(['x' => 1, 'y' => 0, 'z' => 1]), ['front', 'left', 'top']]; // 5
-            $cube_points[] = [new Point(['x' => 1, 'y' => 1, 'z' => 0]), ['back', 'left', 'bottom']]; // 6
-            $cube_points[] = [new Point(['x' => 1, 'y' => 1, 'z' => 1]), ['front', 'left', 'bottom']]; // 7
+            $cubePoints = $this->generateCubePoints();
+            $cube_max_depth_faces = $cubePoints[0];
 
-            foreach ($cube_points as $cube_point)
+            foreach ($cubePoints as $cubePoint)
             {
-                $cube_point[0]->preProject(0, 0, 0, $parts_angles[$k]['cos_alpha'], $parts_angles[$k]['sin_alpha'], $parts_angles[$k]['cos_omega'], $parts_angles[$k]['sin_omega']);
-                $cube_point[0]->project();
-                if (!isset($cube_max_depth_faces))
+                $cubePoint->getPoint()->preProject(0, 0, 0, $parts_angles[$faceName]['cos_alpha'], $parts_angles[$faceName]['sin_alpha'], $parts_angles[$faceName]['cos_omega'], $parts_angles[$faceName]['sin_omega']);
+                $cubePoint->getPoint()->project();
+
+                if ($cube_max_depth_faces->getPoint()->getDepth() > $cubePoint->getPoint()->getDepth())
                 {
-                    $cube_max_depth_faces = $cube_point;
-                }
-                elseif ($cube_max_depth_faces[0]->getDepth() > $cube_point[0]->getDepth())
-                {
-                    $cube_max_depth_faces = $cube_point;
+                    $cube_max_depth_faces = $cubePoint;
                 }
             }
-            $v['back'] = $cube_max_depth_faces[1];
-            $v['front'] = array_diff($all_faces, $v['back']);
+            $faceFormat['back'] = $cube_max_depth_faces->getPlaces();
+            $faceFormat['front'] = array_diff($all_faces, $faceFormat['back']);
         }
-
-
-        $cube_points = [];
-        $cube_points[] = [new Point(['x' => 0, 'y' => 0, 'z' => 0]), ['back', 'right', 'top']]; // 0
-        $cube_points[] = [new Point(['x' => 0, 'y' => 0, 'z' => 1]), ['front', 'right', 'top']]; // 1
-        $cube_points[] = [new Point(['x' => 0, 'y' => 1, 'z' => 0]), ['back', 'right', 'bottom']]; // 2
-        $cube_points[] = [new Point(['x' => 0, 'y' => 1, 'z' => 1]), ['front', 'right', 'bottom']]; // 3
-        $cube_points[] = [new Point(['x' => 1, 'y' => 0, 'z' => 0]), ['back', 'left', 'top']]; // 4
-        $cube_points[] = [new Point(['x' => 1, 'y' => 0, 'z' => 1]), ['front', 'left', 'top']]; // 5
-        $cube_points[] = [new Point(['x' => 1, 'y' => 1, 'z' => 0]), ['back', 'left', 'bottom']]; // 6
-        $cube_points[] = [new Point(['x' => 1, 'y' => 1, 'z' => 1]), ['front', 'left', 'bottom']]; // 7
 
         unset($cube_max_depth_faces);
-        foreach ($cube_points as $cube_point)
+        $cubePoints = $this->generateCubePoints();
+        $cube_max_depth_faces = $cubePoints[0];
+
+        /** @var CubePoint $cubePoint */
+        foreach ($cubePoints as $cubePoint)
         {
-            $cube_point[0]->project();
-            if (!isset($cube_max_depth_faces))
+            $cubePoint->getPoint()->project();
+            if ($cube_max_depth_faces->getPoint()->getDepth() > $cubePoint->getPoint()->getDepth())
             {
-                $cube_max_depth_faces = $cube_point;
+                $cube_max_depth_faces = $cubePoint;
             }
-            elseif ($cube_max_depth_faces[0]->getDepth() > $cube_point[0]->getDepth())
-            {
-                $cube_max_depth_faces = $cube_point;
-            }
+
         }
-        $back_faces = $cube_max_depth_faces[1];
+        $back_faces = $cube_max_depth_faces->getPlaces();
         $front_faces = array_diff($all_faces, $back_faces);
 
         $times[] = ['Determination-of-faces', $this->microtime_float()];
 
-        $depths_of_face = [];
-        $polygons = [];
         $cube_faces_array = [
             'front' => [],
             'back' => [],
@@ -242,6 +219,8 @@ class SkinRendererHandler
             'rightLeg' => $cube_faces_array,
             'leftLeg' => $cube_faces_array,
         ];
+        $volume_points = [];
+
         // HEAD
         for ($i = 0; $i < 9 * $hd_ratio; $i++)
         {
@@ -259,29 +238,29 @@ class SkinRendererHandler
         }
         for ($j = 0; $j < 9 * $hd_ratio; $j++)
         {
-            for ($k = -2 * $hd_ratio; $k < 7 * $hd_ratio; $k++)
+            for ($faceName = -2 * $hd_ratio; $faceName < 7 * $hd_ratio; $faceName++)
             {
-                if (!isset($volume_points[0][$j][$k]))
+                if (!isset($volume_points[0][$j][$faceName]))
                 {
-                    $volume_points[0][$j][$k] = new Point(['x' => 0, 'y' => $j, 'z' => $k]);
+                    $volume_points[0][$j][$faceName] = new Point(['x' => 0, 'y' => $j, 'z' => $faceName]);
                 }
-                if (!isset($volume_points[8 * $hd_ratio][$j][$k]))
+                if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
                 {
-                    $volume_points[8 * $hd_ratio][$j][$k] = new Point(['x' => 8 * $hd_ratio, 'y' => $j, 'z' => $k]);
+                    $volume_points[8 * $hd_ratio][$j][$faceName] = new Point(['x' => 8 * $hd_ratio, 'y' => $j, 'z' => $faceName]);
                 }
             }
         }
         for ($i = 0; $i < 9 * $hd_ratio; $i++)
         {
-            for ($k = -2 * $hd_ratio; $k < 7 * $hd_ratio; $k++)
+            for ($faceName = -2 * $hd_ratio; $faceName < 7 * $hd_ratio; $faceName++)
             {
-                if (!isset($volume_points[$i][0][$k]))
+                if (!isset($volume_points[$i][0][$faceName]))
                 {
-                    $volume_points[$i][0][$k] = new Point(['x' => $i, 'y' => 0, 'z' => $k]);
+                    $volume_points[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0, 'z' => $faceName]);
                 }
-                if (!isset($volume_points[$i][8 * $hd_ratio][$k]))
+                if (!isset($volume_points[$i][8 * $hd_ratio][$faceName]))
                 {
-                    $volume_points[$i][8 * $hd_ratio][$k] = new Point(['x' => $i, 'y' => 8 * $hd_ratio, 'z' => $k]);
+                    $volume_points[$i][8 * $hd_ratio][$faceName] = new Point(['x' => $i, 'y' => 8 * $hd_ratio, 'z' => $faceName]);
                 }
             }
         }
@@ -305,38 +284,38 @@ class SkinRendererHandler
         }
         for ($j = 0; $j < 8 * $hd_ratio; $j++)
         {
-            for ($k = -2 * $hd_ratio; $k < 6 * $hd_ratio; $k++)
+            for ($faceName = -2 * $hd_ratio; $faceName < 6 * $hd_ratio; $faceName++)
             {
                 $polygons['head']['right'][] = new Polygon([
-                    $volume_points[0][$j][$k],
-                    $volume_points[0][$j][$k + 1],
-                    $volume_points[0][$j + 1][$k + 1],
-                    $volume_points[0][$j + 1][$k],
-                ], imagecolorat($img_png, $k + 2 * $hd_ratio, 8 * $hd_ratio + $j));
+                    $volume_points[0][$j][$faceName],
+                    $volume_points[0][$j][$faceName + 1],
+                    $volume_points[0][$j + 1][$faceName + 1],
+                    $volume_points[0][$j + 1][$faceName],
+                ], imagecolorat($img_png, $faceName + 2 * $hd_ratio, 8 * $hd_ratio + $j));
                 $polygons['head']['left'][] = new Polygon([
-                    $volume_points[8 * $hd_ratio][$j][$k],
-                    $volume_points[8 * $hd_ratio][$j][$k + 1],
-                    $volume_points[8 * $hd_ratio][$j + 1][$k + 1],
-                    $volume_points[8 * $hd_ratio][$j + 1][$k],
-                ], imagecolorat($img_png, (24 * $hd_ratio - 1) - $k - 2 * $hd_ratio, 8 * $hd_ratio + $j));
+                    $volume_points[8 * $hd_ratio][$j][$faceName],
+                    $volume_points[8 * $hd_ratio][$j][$faceName + 1],
+                    $volume_points[8 * $hd_ratio][$j + 1][$faceName + 1],
+                    $volume_points[8 * $hd_ratio][$j + 1][$faceName],
+                ], imagecolorat($img_png, (24 * $hd_ratio - 1) - $faceName - 2 * $hd_ratio, 8 * $hd_ratio + $j));
             }
         }
         for ($i = 0; $i < 8 * $hd_ratio; $i++)
         {
-            for ($k = -2 * $hd_ratio; $k < 6 * $hd_ratio; $k++)
+            for ($faceName = -2 * $hd_ratio; $faceName < 6 * $hd_ratio; $faceName++)
             {
                 $polygons['head']['top'][] = new Polygon([
-                    $volume_points[$i][0][$k],
-                    $volume_points[$i + 1][0][$k],
-                    $volume_points[$i + 1][0][$k + 1],
-                    $volume_points[$i][0][$k + 1],
-                ], imagecolorat($img_png, 8 * $hd_ratio + $i, $k + 2 * $hd_ratio));
+                    $volume_points[$i][0][$faceName],
+                    $volume_points[$i + 1][0][$faceName],
+                    $volume_points[$i + 1][0][$faceName + 1],
+                    $volume_points[$i][0][$faceName + 1],
+                ], imagecolorat($img_png, 8 * $hd_ratio + $i, $faceName + 2 * $hd_ratio));
                 $polygons['head']['bottom'][] = new Polygon([
-                    $volume_points[$i][8 * $hd_ratio][$k],
-                    $volume_points[$i + 1][8 * $hd_ratio][$k],
-                    $volume_points[$i + 1][8 * $hd_ratio][$k + 1],
-                    $volume_points[$i][8 * $hd_ratio][$k + 1],
-                ], imagecolorat($img_png, 16 * $hd_ratio + $i, (8 * $hd_ratio - 1) - ($k + 2 * $hd_ratio)));
+                    $volume_points[$i][8 * $hd_ratio][$faceName],
+                    $volume_points[$i + 1][8 * $hd_ratio][$faceName],
+                    $volume_points[$i + 1][8 * $hd_ratio][$faceName + 1],
+                    $volume_points[$i][8 * $hd_ratio][$faceName + 1],
+                ], imagecolorat($img_png, 16 * $hd_ratio + $i, (8 * $hd_ratio - 1) - ($faceName + 2 * $hd_ratio)));
             }
         }
         if ($display_hair)
@@ -359,29 +338,29 @@ class SkinRendererHandler
             }
             for ($j = 0; $j < 9 * $hd_ratio; $j++)
             {
-                for ($k = -2 * $hd_ratio; $k < 7 * $hd_ratio; $k++)
+                for ($faceName = -2 * $hd_ratio; $faceName < 7 * $hd_ratio; $faceName++)
                 {
-                    if (!isset($volume_points[0][$j][$k]))
+                    if (!isset($volume_points[0][$j][$faceName]))
                     {
-                        $volume_points[0][$j][$k] = new Point(['x' => -0.5 * $hd_ratio, 'y' => $j * 9 / 8 - 0.5 * $hd_ratio, 'z' => $k * 9 / 8 - 0.5 * $hd_ratio]);
+                        $volume_points[0][$j][$faceName] = new Point(['x' => -0.5 * $hd_ratio, 'y' => $j * 9 / 8 - 0.5 * $hd_ratio, 'z' => $faceName * 9 / 8 - 0.5 * $hd_ratio]);
                     }
-                    if (!isset($volume_points[8 * $hd_ratio][$j][$k]))
+                    if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
                     {
-                        $volume_points[8 * $hd_ratio][$j][$k] = new Point(['x' => 8.5 * $hd_ratio, 'y' => $j * 9 / 8 - 0.5 * $hd_ratio, 'z' => $k * 9 / 8 - 0.5 * $hd_ratio]);
+                        $volume_points[8 * $hd_ratio][$j][$faceName] = new Point(['x' => 8.5 * $hd_ratio, 'y' => $j * 9 / 8 - 0.5 * $hd_ratio, 'z' => $faceName * 9 / 8 - 0.5 * $hd_ratio]);
                     }
                 }
             }
             for ($i = 0; $i < 9 * $hd_ratio; $i++)
             {
-                for ($k = -2 * $hd_ratio; $k < 7 * $hd_ratio; $k++)
+                for ($faceName = -2 * $hd_ratio; $faceName < 7 * $hd_ratio; $faceName++)
                 {
-                    if (!isset($volume_points[$i][0][$k]))
+                    if (!isset($volume_points[$i][0][$faceName]))
                     {
-                        $volume_points[$i][0][$k] = new Point(['x' => $i * 9 / 8 - 0.5 * $hd_ratio, 'y' => -0.5 * $hd_ratio, 'z' => $k * 9 / 8 - 0.5 * $hd_ratio]);
+                        $volume_points[$i][0][$faceName] = new Point(['x' => $i * 9 / 8 - 0.5 * $hd_ratio, 'y' => -0.5 * $hd_ratio, 'z' => $faceName * 9 / 8 - 0.5 * $hd_ratio]);
                     }
-                    if (!isset($volume_points[$i][8 * $hd_ratio][$k]))
+                    if (!isset($volume_points[$i][8 * $hd_ratio][$faceName]))
                     {
-                        $volume_points[$i][8 * $hd_ratio][$k] = new Point(['x' => $i * 9 / 8 - 0.5 * $hd_ratio, 'y' => 8.5 * $hd_ratio, 'z' => $k * 9 / 8 - 0.5 * $hd_ratio]);
+                        $volume_points[$i][8 * $hd_ratio][$faceName] = new Point(['x' => $i * 9 / 8 - 0.5 * $hd_ratio, 'y' => 8.5 * $hd_ratio, 'z' => $faceName * 9 / 8 - 0.5 * $hd_ratio]);
                     }
                 }
             }
@@ -405,38 +384,38 @@ class SkinRendererHandler
             }
             for ($j = 0; $j < 8 * $hd_ratio; $j++)
             {
-                for ($k = -2 * $hd_ratio; $k < 6 * $hd_ratio; $k++)
+                for ($faceName = -2 * $hd_ratio; $faceName < 6 * $hd_ratio; $faceName++)
                 {
                     $polygons['helmet']['right'][] = new Polygon([
-                        $volume_points[0][$j][$k],
-                        $volume_points[0][$j][$k + 1],
-                        $volume_points[0][$j + 1][$k + 1],
-                        $volume_points[0][$j + 1][$k],
-                    ], imagecolorat($img_png, 32 * $hd_ratio + $k + 2 * $hd_ratio, 8 * $hd_ratio + $j));
+                        $volume_points[0][$j][$faceName],
+                        $volume_points[0][$j][$faceName + 1],
+                        $volume_points[0][$j + 1][$faceName + 1],
+                        $volume_points[0][$j + 1][$faceName],
+                    ], imagecolorat($img_png, 32 * $hd_ratio + $faceName + 2 * $hd_ratio, 8 * $hd_ratio + $j));
                     $polygons['helmet']['left'][] = new Polygon([
-                        $volume_points[8 * $hd_ratio][$j][$k],
-                        $volume_points[8 * $hd_ratio][$j][$k + 1],
-                        $volume_points[8 * $hd_ratio][$j + 1][$k + 1],
-                        $volume_points[8 * $hd_ratio][$j + 1][$k],
-                    ], imagecolorat($img_png, 32 * $hd_ratio + (24 * $hd_ratio - 1) - $k - 2 * $hd_ratio, 8 * $hd_ratio + $j));
+                        $volume_points[8 * $hd_ratio][$j][$faceName],
+                        $volume_points[8 * $hd_ratio][$j][$faceName + 1],
+                        $volume_points[8 * $hd_ratio][$j + 1][$faceName + 1],
+                        $volume_points[8 * $hd_ratio][$j + 1][$faceName],
+                    ], imagecolorat($img_png, 32 * $hd_ratio + (24 * $hd_ratio - 1) - $faceName - 2 * $hd_ratio, 8 * $hd_ratio + $j));
                 }
             }
             for ($i = 0; $i < 8 * $hd_ratio; $i++)
             {
-                for ($k = -2 * $hd_ratio; $k < 6 * $hd_ratio; $k++)
+                for ($faceName = -2 * $hd_ratio; $faceName < 6 * $hd_ratio; $faceName++)
                 {
                     $polygons['helmet']['top'][] = new Polygon([
-                        $volume_points[$i][0][$k],
-                        $volume_points[$i + 1][0][$k],
-                        $volume_points[$i + 1][0][$k + 1],
-                        $volume_points[$i][0][$k + 1],
-                    ], imagecolorat($img_png, 32 * $hd_ratio + 8 * $hd_ratio + $i, $k + 2 * $hd_ratio));
+                        $volume_points[$i][0][$faceName],
+                        $volume_points[$i + 1][0][$faceName],
+                        $volume_points[$i + 1][0][$faceName + 1],
+                        $volume_points[$i][0][$faceName + 1],
+                    ], imagecolorat($img_png, 32 * $hd_ratio + 8 * $hd_ratio + $i, $faceName + 2 * $hd_ratio));
                     $polygons['helmet']['bottom'][] = new Polygon([
-                        $volume_points[$i][8 * $hd_ratio][$k],
-                        $volume_points[$i + 1][8 * $hd_ratio][$k],
-                        $volume_points[$i + 1][8 * $hd_ratio][$k + 1],
-                        $volume_points[$i][8 * $hd_ratio][$k + 1],
-                    ], imagecolorat($img_png, 32 * $hd_ratio + 16 * $hd_ratio + $i, (8 * $hd_ratio - 1) - ($k + 2 * $hd_ratio)));
+                        $volume_points[$i][8 * $hd_ratio][$faceName],
+                        $volume_points[$i + 1][8 * $hd_ratio][$faceName],
+                        $volume_points[$i + 1][8 * $hd_ratio][$faceName + 1],
+                        $volume_points[$i][8 * $hd_ratio][$faceName + 1],
+                    ], imagecolorat($img_png, 32 * $hd_ratio + 16 * $hd_ratio + $i, (8 * $hd_ratio - 1) - ($faceName + 2 * $hd_ratio)));
                 }
             }
         }
@@ -460,29 +439,29 @@ class SkinRendererHandler
             }
             for ($j = 0; $j < 13 * $hd_ratio; $j++)
             {
-                for ($k = 0; $k < 5 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
                 {
-                    if (!isset($volume_points[0][$j][$k]))
+                    if (!isset($volume_points[0][$j][$faceName]))
                     {
-                        $volume_points[0][$j][$k] = new Point(['x' => 0, 'y' => $j + 8 * $hd_ratio, 'z' => $k]);
+                        $volume_points[0][$j][$faceName] = new Point(['x' => 0, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
                     }
-                    if (!isset($volume_points[8 * $hd_ratio][$j][$k]))
+                    if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
                     {
-                        $volume_points[8 * $hd_ratio][$j][$k] = new Point(['x' => 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $k]);
+                        $volume_points[8 * $hd_ratio][$j][$faceName] = new Point(['x' => 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
                     }
                 }
             }
             for ($i = 0; $i < 9 * $hd_ratio; $i++)
             {
-                for ($k = 0; $k < 5 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
                 {
-                    if (!isset($volume_points[$i][0][$k]))
+                    if (!isset($volume_points[$i][0][$faceName]))
                     {
-                        $volume_points[$i][0][$k] = new Point(['x' => $i, 'y' => 0 + 8 * $hd_ratio, 'z' => $k]);
+                        $volume_points[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0 + 8 * $hd_ratio, 'z' => $faceName]);
                     }
-                    if (!isset($volume_points[$i][12 * $hd_ratio][$k]))
+                    if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
                     {
-                        $volume_points[$i][12 * $hd_ratio][$k] = new Point(['x' => $i, 'y' => 12 * $hd_ratio + 8 * $hd_ratio, 'z' => $k]);
+                        $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i, 'y' => 12 * $hd_ratio + 8 * $hd_ratio, 'z' => $faceName]);
                     }
                 }
             }
@@ -506,38 +485,38 @@ class SkinRendererHandler
             }
             for ($j = 0; $j < 12 * $hd_ratio; $j++)
             {
-                for ($k = 0; $k < 4 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
                 {
                     $polygons['torso']['right'][] = new Polygon([
-                        $volume_points[0][$j][$k],
-                        $volume_points[0][$j][$k + 1],
-                        $volume_points[0][$j + 1][$k + 1],
-                        $volume_points[0][$j + 1][$k],
-                    ], imagecolorat($img_png, 16 * $hd_ratio + $k, 20 * $hd_ratio + $j));
+                        $volume_points[0][$j][$faceName],
+                        $volume_points[0][$j][$faceName + 1],
+                        $volume_points[0][$j + 1][$faceName + 1],
+                        $volume_points[0][$j + 1][$faceName],
+                    ], imagecolorat($img_png, 16 * $hd_ratio + $faceName, 20 * $hd_ratio + $j));
                     $polygons['torso']['left'][] = new Polygon([
-                        $volume_points[8 * $hd_ratio][$j][$k],
-                        $volume_points[8 * $hd_ratio][$j][$k + 1],
-                        $volume_points[8 * $hd_ratio][$j + 1][$k + 1],
-                        $volume_points[8 * $hd_ratio][$j + 1][$k],
-                    ], imagecolorat($img_png, (32 * $hd_ratio - 1) - $k, 20 * $hd_ratio + $j));
+                        $volume_points[8 * $hd_ratio][$j][$faceName],
+                        $volume_points[8 * $hd_ratio][$j][$faceName + 1],
+                        $volume_points[8 * $hd_ratio][$j + 1][$faceName + 1],
+                        $volume_points[8 * $hd_ratio][$j + 1][$faceName],
+                    ], imagecolorat($img_png, (32 * $hd_ratio - 1) - $faceName, 20 * $hd_ratio + $j));
                 }
             }
             for ($i = 0; $i < 8 * $hd_ratio; $i++)
             {
-                for ($k = 0; $k < 4 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
                 {
                     $polygons['torso']['top'][] = new Polygon([
-                        $volume_points[$i][0][$k],
-                        $volume_points[$i + 1][0][$k],
-                        $volume_points[$i + 1][0][$k + 1],
-                        $volume_points[$i][0][$k + 1],
-                    ], imagecolorat($img_png, 20 * $hd_ratio + $i, 16 * $hd_ratio + $k));
+                        $volume_points[$i][0][$faceName],
+                        $volume_points[$i + 1][0][$faceName],
+                        $volume_points[$i + 1][0][$faceName + 1],
+                        $volume_points[$i][0][$faceName + 1],
+                    ], imagecolorat($img_png, 20 * $hd_ratio + $i, 16 * $hd_ratio + $faceName));
                     $polygons['torso']['bottom'][] = new Polygon([
-                        $volume_points[$i][12 * $hd_ratio][$k],
-                        $volume_points[$i + 1][12 * $hd_ratio][$k],
-                        $volume_points[$i + 1][12 * $hd_ratio][$k + 1],
-                        $volume_points[$i][12 * $hd_ratio][$k + 1],
-                    ], imagecolorat($img_png, 28 * $hd_ratio + $i, (20 * $hd_ratio - 1) - $k));
+                        $volume_points[$i][12 * $hd_ratio][$faceName],
+                        $volume_points[$i + 1][12 * $hd_ratio][$faceName],
+                        $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
+                        $volume_points[$i][12 * $hd_ratio][$faceName + 1],
+                    ], imagecolorat($img_png, 28 * $hd_ratio + $i, (20 * $hd_ratio - 1) - $faceName));
                 }
             }
             // RIGHT ARM
@@ -558,29 +537,29 @@ class SkinRendererHandler
             }
             for ($j = 0; $j < 13 * $hd_ratio; $j++)
             {
-                for ($k = 0; $k < 5 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
                 {
-                    if (!isset($volume_points[0][$j][$k]))
+                    if (!isset($volume_points[0][$j][$faceName]))
                     {
-                        $volume_points[0][$j][$k] = new Point(['x' => 0 - 4 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $k]);
+                        $volume_points[0][$j][$faceName] = new Point(['x' => 0 - 4 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
                     }
-                    if (!isset($volume_points[8 * $hd_ratio][$j][$k]))
+                    if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
                     {
-                        $volume_points[4 * $hd_ratio][$j][$k] = new Point(['x' => 4 * $hd_ratio - 4 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $k]);
+                        $volume_points[4 * $hd_ratio][$j][$faceName] = new Point(['x' => 4 * $hd_ratio - 4 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
                     }
                 }
             }
             for ($i = 0; $i < 9 * $hd_ratio; $i++)
             {
-                for ($k = 0; $k < 5 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
                 {
-                    if (!isset($volume_points[$i][0][$k]))
+                    if (!isset($volume_points[$i][0][$faceName]))
                     {
-                        $volume_points[$i][0][$k] = new Point(['x' => $i - 4 * $hd_ratio, 'y' => 0 + 8 * $hd_ratio, 'z' => $k]);
+                        $volume_points[$i][0][$faceName] = new Point(['x' => $i - 4 * $hd_ratio, 'y' => 0 + 8 * $hd_ratio, 'z' => $faceName]);
                     }
-                    if (!isset($volume_points[$i][12 * $hd_ratio][$k]))
+                    if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
                     {
-                        $volume_points[$i][12 * $hd_ratio][$k] = new Point(['x' => $i - 4 * $hd_ratio, 'y' => 12 * $hd_ratio + 8 * $hd_ratio, 'z' => $k]);
+                        $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i - 4 * $hd_ratio, 'y' => 12 * $hd_ratio + 8 * $hd_ratio, 'z' => $faceName]);
                     }
                 }
             }
@@ -604,38 +583,38 @@ class SkinRendererHandler
             }
             for ($j = 0; $j < 12 * $hd_ratio; $j++)
             {
-                for ($k = 0; $k < 4 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
                 {
                     $polygons['rightArm']['right'][] = new Polygon([
-                        $volume_points[0][$j][$k],
-                        $volume_points[0][$j][$k + 1],
-                        $volume_points[0][$j + 1][$k + 1],
-                        $volume_points[0][$j + 1][$k],
-                    ], imagecolorat($img_png, 40 * $hd_ratio + $k, 20 * $hd_ratio + $j));
+                        $volume_points[0][$j][$faceName],
+                        $volume_points[0][$j][$faceName + 1],
+                        $volume_points[0][$j + 1][$faceName + 1],
+                        $volume_points[0][$j + 1][$faceName],
+                    ], imagecolorat($img_png, 40 * $hd_ratio + $faceName, 20 * $hd_ratio + $j));
                     $polygons['rightArm']['left'][] = new Polygon([
-                        $volume_points[4 * $hd_ratio][$j][$k],
-                        $volume_points[4 * $hd_ratio][$j][$k + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$k + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$k],
-                    ], imagecolorat($img_png, (52 * $hd_ratio - 1) - $k, 20 * $hd_ratio + $j));
+                        $volume_points[4 * $hd_ratio][$j][$faceName],
+                        $volume_points[4 * $hd_ratio][$j][$faceName + 1],
+                        $volume_points[4 * $hd_ratio][$j + 1][$faceName + 1],
+                        $volume_points[4 * $hd_ratio][$j + 1][$faceName],
+                    ], imagecolorat($img_png, (52 * $hd_ratio - 1) - $faceName, 20 * $hd_ratio + $j));
                 }
             }
             for ($i = 0; $i < 4 * $hd_ratio; $i++)
             {
-                for ($k = 0; $k < 4 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
                 {
                     $polygons['rightArm']['top'][] = new Polygon([
-                        $volume_points[$i][0][$k],
-                        $volume_points[$i + 1][0][$k],
-                        $volume_points[$i + 1][0][$k + 1],
-                        $volume_points[$i][0][$k + 1],
-                    ], imagecolorat($img_png, 44 * $hd_ratio + $i, 16 * $hd_ratio + $k));
+                        $volume_points[$i][0][$faceName],
+                        $volume_points[$i + 1][0][$faceName],
+                        $volume_points[$i + 1][0][$faceName + 1],
+                        $volume_points[$i][0][$faceName + 1],
+                    ], imagecolorat($img_png, 44 * $hd_ratio + $i, 16 * $hd_ratio + $faceName));
                     $polygons['rightArm']['bottom'][] = new Polygon([
-                        $volume_points[$i][12 * $hd_ratio][$k],
-                        $volume_points[$i + 1][12 * $hd_ratio][$k],
-                        $volume_points[$i + 1][12 * $hd_ratio][$k + 1],
-                        $volume_points[$i][12 * $hd_ratio][$k + 1],
-                    ], imagecolorat($img_png, 48 * $hd_ratio + $i, (20 * $hd_ratio - 1) - $k));
+                        $volume_points[$i][12 * $hd_ratio][$faceName],
+                        $volume_points[$i + 1][12 * $hd_ratio][$faceName],
+                        $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
+                        $volume_points[$i][12 * $hd_ratio][$faceName + 1],
+                    ], imagecolorat($img_png, 48 * $hd_ratio + $i, (20 * $hd_ratio - 1) - $faceName));
                 }
             }
             // LEFT ARM
@@ -656,29 +635,29 @@ class SkinRendererHandler
             }
             for ($j = 0; $j < 13 * $hd_ratio; $j++)
             {
-                for ($k = 0; $k < 5 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
                 {
-                    if (!isset($volume_points[0][$j][$k]))
+                    if (!isset($volume_points[0][$j][$faceName]))
                     {
-                        $volume_points[0][$j][$k] = new Point(['x' => 0 + 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $k]);
+                        $volume_points[0][$j][$faceName] = new Point(['x' => 0 + 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
                     }
-                    if (!isset($volume_points[8 * $hd_ratio][$j][$k]))
+                    if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
                     {
-                        $volume_points[4 * $hd_ratio][$j][$k] = new Point(['x' => 4 * $hd_ratio + 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $k]);
+                        $volume_points[4 * $hd_ratio][$j][$faceName] = new Point(['x' => 4 * $hd_ratio + 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
                     }
                 }
             }
             for ($i = 0; $i < 9 * $hd_ratio; $i++)
             {
-                for ($k = 0; $k < 5 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
                 {
-                    if (!isset($volume_points[$i][0][$k]))
+                    if (!isset($volume_points[$i][0][$faceName]))
                     {
-                        $volume_points[$i][0][$k] = new Point(['x' => $i + 8 * $hd_ratio, 'y' => 0 + 8 * $hd_ratio, 'z' => $k]);
+                        $volume_points[$i][0][$faceName] = new Point(['x' => $i + 8 * $hd_ratio, 'y' => 0 + 8 * $hd_ratio, 'z' => $faceName]);
                     }
-                    if (!isset($volume_points[$i][12 * $hd_ratio][$k]))
+                    if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
                     {
-                        $volume_points[$i][12 * $hd_ratio][$k] = new Point(['x' => $i + 8 * $hd_ratio, 'y' => 12 * $hd_ratio + 8 * $hd_ratio, 'z' => $k]);
+                        $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i + 8 * $hd_ratio, 'y' => 12 * $hd_ratio + 8 * $hd_ratio, 'z' => $faceName]);
                     }
                 }
             }
@@ -702,38 +681,38 @@ class SkinRendererHandler
             }
             for ($j = 0; $j < 12 * $hd_ratio; $j++)
             {
-                for ($k = 0; $k < 4 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
                 {
                     $polygons['leftArm']['right'][] = new Polygon([
-                        $volume_points[0][$j][$k],
-                        $volume_points[0][$j][$k + 1],
-                        $volume_points[0][$j + 1][$k + 1],
-                        $volume_points[0][$j + 1][$k],
-                    ], imagecolorat($img_png, 40 * $hd_ratio + ((4 * $hd_ratio - 1) - $k), 20 * $hd_ratio + $j));
+                        $volume_points[0][$j][$faceName],
+                        $volume_points[0][$j][$faceName + 1],
+                        $volume_points[0][$j + 1][$faceName + 1],
+                        $volume_points[0][$j + 1][$faceName],
+                    ], imagecolorat($img_png, 40 * $hd_ratio + ((4 * $hd_ratio - 1) - $faceName), 20 * $hd_ratio + $j));
                     $polygons['leftArm']['left'][] = new Polygon([
-                        $volume_points[4 * $hd_ratio][$j][$k],
-                        $volume_points[4 * $hd_ratio][$j][$k + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$k + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$k],
-                    ], imagecolorat($img_png, (52 * $hd_ratio - 1) - ((4 * $hd_ratio - 1) - $k), 20 * $hd_ratio + $j));
+                        $volume_points[4 * $hd_ratio][$j][$faceName],
+                        $volume_points[4 * $hd_ratio][$j][$faceName + 1],
+                        $volume_points[4 * $hd_ratio][$j + 1][$faceName + 1],
+                        $volume_points[4 * $hd_ratio][$j + 1][$faceName],
+                    ], imagecolorat($img_png, (52 * $hd_ratio - 1) - ((4 * $hd_ratio - 1) - $faceName), 20 * $hd_ratio + $j));
                 }
             }
             for ($i = 0; $i < 4 * $hd_ratio; $i++)
             {
-                for ($k = 0; $k < 4 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
                 {
                     $polygons['leftArm']['top'][] = new Polygon([
-                        $volume_points[$i][0][$k],
-                        $volume_points[$i + 1][0][$k],
-                        $volume_points[$i + 1][0][$k + 1],
-                        $volume_points[$i][0][$k + 1],
-                    ], imagecolorat($img_png, 44 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), 16 * $hd_ratio + $k));
+                        $volume_points[$i][0][$faceName],
+                        $volume_points[$i + 1][0][$faceName],
+                        $volume_points[$i + 1][0][$faceName + 1],
+                        $volume_points[$i][0][$faceName + 1],
+                    ], imagecolorat($img_png, 44 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), 16 * $hd_ratio + $faceName));
                     $polygons['leftArm']['bottom'][] = new Polygon([
-                        $volume_points[$i][12 * $hd_ratio][$k],
-                        $volume_points[$i + 1][12 * $hd_ratio][$k],
-                        $volume_points[$i + 1][12 * $hd_ratio][$k + 1],
-                        $volume_points[$i][12 * $hd_ratio][$k + 1],
-                    ], imagecolorat($img_png, 48 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), (20 * $hd_ratio - 1) - $k));
+                        $volume_points[$i][12 * $hd_ratio][$faceName],
+                        $volume_points[$i + 1][12 * $hd_ratio][$faceName],
+                        $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
+                        $volume_points[$i][12 * $hd_ratio][$faceName + 1],
+                    ], imagecolorat($img_png, 48 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), (20 * $hd_ratio - 1) - $faceName));
                 }
             }
             // RIGHT LEG
@@ -754,29 +733,29 @@ class SkinRendererHandler
             }
             for ($j = 0; $j < 13 * $hd_ratio; $j++)
             {
-                for ($k = 0; $k < 5 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
                 {
-                    if (!isset($volume_points[0][$j][$k]))
+                    if (!isset($volume_points[0][$j][$faceName]))
                     {
-                        $volume_points[0][$j][$k] = new Point(['x' => 0, 'y' => $j + 20 * $hd_ratio, 'z' => $k]);
+                        $volume_points[0][$j][$faceName] = new Point(['x' => 0, 'y' => $j + 20 * $hd_ratio, 'z' => $faceName]);
                     }
-                    if (!isset($volume_points[8 * $hd_ratio][$j][$k]))
+                    if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
                     {
-                        $volume_points[4 * $hd_ratio][$j][$k] = new Point(['x' => 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => $k]);
+                        $volume_points[4 * $hd_ratio][$j][$faceName] = new Point(['x' => 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => $faceName]);
                     }
                 }
             }
             for ($i = 0; $i < 9 * $hd_ratio; $i++)
             {
-                for ($k = 0; $k < 5 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
                 {
-                    if (!isset($volume_points[$i][0][$k]))
+                    if (!isset($volume_points[$i][0][$faceName]))
                     {
-                        $volume_points[$i][0][$k] = new Point(['x' => $i, 'y' => 0 + 20 * $hd_ratio, 'z' => $k]);
+                        $volume_points[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0 + 20 * $hd_ratio, 'z' => $faceName]);
                     }
-                    if (!isset($volume_points[$i][12 * $hd_ratio][$k]))
+                    if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
                     {
-                        $volume_points[$i][12 * $hd_ratio][$k] = new Point(['x' => $i, 'y' => 12 * $hd_ratio + 20 * $hd_ratio, 'z' => $k]);
+                        $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i, 'y' => 12 * $hd_ratio + 20 * $hd_ratio, 'z' => $faceName]);
                     }
                 }
             }
@@ -800,38 +779,38 @@ class SkinRendererHandler
             }
             for ($j = 0; $j < 12 * $hd_ratio; $j++)
             {
-                for ($k = 0; $k < 4 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
                 {
                     $polygons['rightLeg']['right'][] = new Polygon([
-                        $volume_points[0][$j][$k],
-                        $volume_points[0][$j][$k + 1],
-                        $volume_points[0][$j + 1][$k + 1],
-                        $volume_points[0][$j + 1][$k],
-                    ], imagecolorat($img_png, 0 + $k, 20 * $hd_ratio + $j));
+                        $volume_points[0][$j][$faceName],
+                        $volume_points[0][$j][$faceName + 1],
+                        $volume_points[0][$j + 1][$faceName + 1],
+                        $volume_points[0][$j + 1][$faceName],
+                    ], imagecolorat($img_png, 0 + $faceName, 20 * $hd_ratio + $j));
                     $polygons['rightLeg']['left'][] = new Polygon([
-                        $volume_points[4 * $hd_ratio][$j][$k],
-                        $volume_points[4 * $hd_ratio][$j][$k + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$k + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$k],
-                    ], imagecolorat($img_png, (12 * $hd_ratio - 1) - $k, 20 * $hd_ratio + $j));
+                        $volume_points[4 * $hd_ratio][$j][$faceName],
+                        $volume_points[4 * $hd_ratio][$j][$faceName + 1],
+                        $volume_points[4 * $hd_ratio][$j + 1][$faceName + 1],
+                        $volume_points[4 * $hd_ratio][$j + 1][$faceName],
+                    ], imagecolorat($img_png, (12 * $hd_ratio - 1) - $faceName, 20 * $hd_ratio + $j));
                 }
             }
             for ($i = 0; $i < 4 * $hd_ratio; $i++)
             {
-                for ($k = 0; $k < 4 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
                 {
                     $polygons['rightLeg']['top'][] = new Polygon([
-                        $volume_points[$i][0][$k],
-                        $volume_points[$i + 1][0][$k],
-                        $volume_points[$i + 1][0][$k + 1],
-                        $volume_points[$i][0][$k + 1],
-                    ], imagecolorat($img_png, 4 * $hd_ratio + $i, 16 * $hd_ratio + $k));
+                        $volume_points[$i][0][$faceName],
+                        $volume_points[$i + 1][0][$faceName],
+                        $volume_points[$i + 1][0][$faceName + 1],
+                        $volume_points[$i][0][$faceName + 1],
+                    ], imagecolorat($img_png, 4 * $hd_ratio + $i, 16 * $hd_ratio + $faceName));
                     $polygons['rightLeg']['bottom'][] = new Polygon([
-                        $volume_points[$i][12 * $hd_ratio][$k],
-                        $volume_points[$i + 1][12 * $hd_ratio][$k],
-                        $volume_points[$i + 1][12 * $hd_ratio][$k + 1],
-                        $volume_points[$i][12 * $hd_ratio][$k + 1],
-                    ], imagecolorat($img_png, 8 * $hd_ratio + $i, (20 * $hd_ratio - 1) - $k));
+                        $volume_points[$i][12 * $hd_ratio][$faceName],
+                        $volume_points[$i + 1][12 * $hd_ratio][$faceName],
+                        $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
+                        $volume_points[$i][12 * $hd_ratio][$faceName + 1],
+                    ], imagecolorat($img_png, 8 * $hd_ratio + $i, (20 * $hd_ratio - 1) - $faceName));
                 }
             }
             // LEFT LEG
@@ -852,29 +831,29 @@ class SkinRendererHandler
             }
             for ($j = 0; $j < 13 * $hd_ratio; $j++)
             {
-                for ($k = 0; $k < 5 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
                 {
-                    if (!isset($volume_points[0][$j][$k]))
+                    if (!isset($volume_points[0][$j][$faceName]))
                     {
-                        $volume_points[0][$j][$k] = new Point(['x' => 0 + 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => $k]);
+                        $volume_points[0][$j][$faceName] = new Point(['x' => 0 + 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => $faceName]);
                     }
-                    if (!isset($volume_points[8 * $hd_ratio][$j][$k]))
+                    if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
                     {
-                        $volume_points[4 * $hd_ratio][$j][$k] = new Point(['x' => 4 * $hd_ratio + 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => $k]);
+                        $volume_points[4 * $hd_ratio][$j][$faceName] = new Point(['x' => 4 * $hd_ratio + 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => $faceName]);
                     }
                 }
             }
             for ($i = 0; $i < 9 * $hd_ratio; $i++)
             {
-                for ($k = 0; $k < 5 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
                 {
-                    if (!isset($volume_points[$i][0][$k]))
+                    if (!isset($volume_points[$i][0][$faceName]))
                     {
-                        $volume_points[$i][0][$k] = new Point(['x' => $i + 4 * $hd_ratio, 'y' => 0 + 20 * $hd_ratio, 'z' => $k]);
+                        $volume_points[$i][0][$faceName] = new Point(['x' => $i + 4 * $hd_ratio, 'y' => 0 + 20 * $hd_ratio, 'z' => $faceName]);
                     }
-                    if (!isset($volume_points[$i][12 * $hd_ratio][$k]))
+                    if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
                     {
-                        $volume_points[$i][12 * $hd_ratio][$k] = new Point(['x' => $i + 4 * $hd_ratio, 'y' => 12 * $hd_ratio + 20 * $hd_ratio, 'z' => $k]);
+                        $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i + 4 * $hd_ratio, 'y' => 12 * $hd_ratio + 20 * $hd_ratio, 'z' => $faceName]);
                     }
                 }
             }
@@ -898,38 +877,38 @@ class SkinRendererHandler
             }
             for ($j = 0; $j < 12 * $hd_ratio; $j++)
             {
-                for ($k = 0; $k < 4 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
                 {
                     $polygons['leftLeg']['right'][] = new Polygon([
-                        $volume_points[0][$j][$k],
-                        $volume_points[0][$j][$k + 1],
-                        $volume_points[0][$j + 1][$k + 1],
-                        $volume_points[0][$j + 1][$k],
-                    ], imagecolorat($img_png, 0 + ((4 * $hd_ratio - 1) - $k), 20 * $hd_ratio + $j));
+                        $volume_points[0][$j][$faceName],
+                        $volume_points[0][$j][$faceName + 1],
+                        $volume_points[0][$j + 1][$faceName + 1],
+                        $volume_points[0][$j + 1][$faceName],
+                    ], imagecolorat($img_png, 0 + ((4 * $hd_ratio - 1) - $faceName), 20 * $hd_ratio + $j));
                     $polygons['leftLeg']['left'][] = new Polygon([
-                        $volume_points[4 * $hd_ratio][$j][$k],
-                        $volume_points[4 * $hd_ratio][$j][$k + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$k + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$k],
-                    ], imagecolorat($img_png, (12 * $hd_ratio - 1) - ((4 * $hd_ratio - 1) - $k), 20 * $hd_ratio + $j));
+                        $volume_points[4 * $hd_ratio][$j][$faceName],
+                        $volume_points[4 * $hd_ratio][$j][$faceName + 1],
+                        $volume_points[4 * $hd_ratio][$j + 1][$faceName + 1],
+                        $volume_points[4 * $hd_ratio][$j + 1][$faceName],
+                    ], imagecolorat($img_png, (12 * $hd_ratio - 1) - ((4 * $hd_ratio - 1) - $faceName), 20 * $hd_ratio + $j));
                 }
             }
             for ($i = 0; $i < 4 * $hd_ratio; $i++)
             {
-                for ($k = 0; $k < 4 * $hd_ratio; $k++)
+                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
                 {
                     $polygons['leftLeg']['top'][] = new Polygon([
-                        $volume_points[$i][0][$k],
-                        $volume_points[$i + 1][0][$k],
-                        $volume_points[$i + 1][0][$k + 1],
-                        $volume_points[$i][0][$k + 1],
-                    ], imagecolorat($img_png, 4 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), 16 * $hd_ratio + $k));
+                        $volume_points[$i][0][$faceName],
+                        $volume_points[$i + 1][0][$faceName],
+                        $volume_points[$i + 1][0][$faceName + 1],
+                        $volume_points[$i][0][$faceName + 1],
+                    ], imagecolorat($img_png, 4 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), 16 * $hd_ratio + $faceName));
                     $polygons['leftLeg']['bottom'][] = new Polygon([
-                        $volume_points[$i][12 * $hd_ratio][$k],
-                        $volume_points[$i + 1][12 * $hd_ratio][$k],
-                        $volume_points[$i + 1][12 * $hd_ratio][$k + 1],
-                        $volume_points[$i][12 * $hd_ratio][$k + 1],
-                    ], imagecolorat($img_png, 8 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), (20 * $hd_ratio - 1) - $k));
+                        $volume_points[$i][12 * $hd_ratio][$faceName],
+                        $volume_points[$i + 1][12 * $hd_ratio][$faceName],
+                        $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
+                        $volume_points[$i][12 * $hd_ratio][$faceName + 1],
+                    ], imagecolorat($img_png, 8 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), (20 * $hd_ratio - 1) - $faceName));
                 }
             }
         }
@@ -940,6 +919,7 @@ class SkinRendererHandler
         {
             foreach ($face as $poly)
             {
+                /** @var Polygon $poly */
                 $poly->preProject(4, 8, 2, $parts_angles['head']['cos_alpha'], $parts_angles['head']['sin_alpha'], $parts_angles['head']['cos_omega'], $parts_angles['head']['sin_omega']);
             }
         }
@@ -949,6 +929,7 @@ class SkinRendererHandler
             {
                 foreach ($face as $poly)
                 {
+                    /** @var Polygon $poly */
                     $poly->preProject(4, 8, 2, $parts_angles['head']['cos_alpha'], $parts_angles['head']['sin_alpha'], $parts_angles['head']['cos_omega'], $parts_angles['head']['sin_omega']);
                 }
             }
@@ -959,11 +940,13 @@ class SkinRendererHandler
             {
                 foreach ($face as $poly)
                 {
+                    /** @var Polygon $poly */
                     $poly->preProject(-2, 8, 2, $parts_angles['rightArm']['cos_alpha'], $parts_angles['rightArm']['sin_alpha'], $parts_angles['rightArm']['cos_omega'], $parts_angles['rightArm']['sin_omega']);
                 }
             }
             foreach ($polygons['leftArm'] as $face)
             {
+                /** @var Polygon $poly */
                 foreach ($face as $poly)
                 {
                     $poly->preProject(10, 8, 2, $parts_angles['leftArm']['cos_alpha'], $parts_angles['leftArm']['sin_alpha'], $parts_angles['leftArm']['cos_omega'], $parts_angles['leftArm']['sin_omega']);
@@ -971,6 +954,7 @@ class SkinRendererHandler
             }
             foreach ($polygons['rightLeg'] as $face)
             {
+                /** @var Polygon $poly */
                 foreach ($face as $poly)
                 {
                     $poly->preProject(2, 20, ($parts_angles['rightLeg']['sin_alpha'] < 0 ? 0 : 4), $parts_angles['rightLeg']['cos_alpha'], $parts_angles['rightLeg']['sin_alpha'], $parts_angles['rightLeg']['cos_omega'], $parts_angles['rightLeg']['sin_omega']);
@@ -978,6 +962,7 @@ class SkinRendererHandler
             }
             foreach ($polygons['leftLeg'] as $face)
             {
+                /** @var Polygon $poly */
                 foreach ($face as $poly)
                 {
                     $poly->preProject(6, 20, ($parts_angles['leftLeg']['sin_alpha'] < 0 ? 0 : 4), $parts_angles['leftLeg']['cos_alpha'], $parts_angles['leftLeg']['sin_alpha'], $parts_angles['leftLeg']['cos_omega'], $parts_angles['leftLeg']['sin_omega']);
@@ -1003,8 +988,8 @@ class SkinRendererHandler
 
         $times[] = ['Projection-plan', $this->microtime_float()];
 
-        $width = $maxX - $minX;
-        $height = $maxY - $minY;
+        $width = static::$maxX - static::$minX;
+        $height = static::$maxY - static::$minY;
 
         // Handle the ratio
         $min_ratio = 2;
@@ -1028,7 +1013,7 @@ class SkinRendererHandler
         "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
         <svg width="100%" height="100%" version="1.1"
-        xmlns="http://www.w3.org/2000/svg" viewBox="' . $minX . ' ' . $minY . ' ' . $width . ' ' . $height . '">';
+        xmlns="http://www.w3.org/2000/svg" viewBox="' . static::$minX . ' ' . static::$minY . ' ' . $width . ' ' . $height . '">';
         }
         else
         {
@@ -1123,7 +1108,7 @@ class SkinRendererHandler
                         }
                         else
                         {
-                            $poly->addPngPolygon($image, $minX, $minY, $ratio);
+                            $poly->addPngPolygon($image, static::$minX, static::$minY, $ratio);
                         }
                     }
                 }
@@ -1161,5 +1146,22 @@ class SkinRendererHandler
     {
         $micro = explode(' ', microtime());
         return (float)$micro[0] + (float)$micro[1];
+    }
+
+    /**
+     * @return CubePoint[];
+     */
+    private function generateCubePoints(): array
+    {
+        $cubePoints = [];
+        $cubePoints[0] = new CubePoint(new Point(['x' => 0, 'y' => 0, 'z' => 0]), ['back', 'right', 'top']);
+        $cubePoints[1] = new CubePoint(new Point(['x' => 0, 'y' => 0, 'z' => 1]), ['front', 'right', 'top']);
+        $cubePoints[2] = new CubePoint(new Point(['x' => 0, 'y' => 1, 'z' => 0]), ['back', 'right', 'bottom']);
+        $cubePoints[3] = new CubePoint(new Point(['x' => 0, 'y' => 1, 'z' => 1]), ['front', 'right', 'bottom']);
+        $cubePoints[4] = new CubePoint(new Point(['x' => 1, 'y' => 0, 'z' => 0]), ['back', 'left', 'top']);
+        $cubePoints[5] = new CubePoint(new Point(['x' => 1, 'y' => 0, 'z' => 1]), ['front', 'left', 'top']);
+        $cubePoints[6] = new CubePoint(new Point(['x' => 1, 'y' => 1, 'z' => 0]), ['back', 'left', 'bottom']);
+        $cubePoints[7] = new CubePoint(new Point(['x' => 1, 'y' => 1, 'z' => 1]), ['front', 'left', 'bottom']);
+        return $cubePoints;
     }
 }
