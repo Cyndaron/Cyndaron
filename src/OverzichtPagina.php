@@ -104,7 +104,7 @@ class OverzichtPagina extends Pagina
         }
 
         /* Subs */
-        echo '<h2>Statische pagina\'s (subs)</h2>';
+        echo '<h2>Statische pagina\'s</h2>';
 
         echo new Knop('nieuw', 'editor-statischepagina', 'Nieuwe statische pagina', 'Nieuwe statische pagina');
         echo '<br />';
