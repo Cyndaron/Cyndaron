@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron\Minecraft;
 
+require_once __DIR__ . '/../../vendor/MinecraftSkins/MinecraftSkins.php';
+use MinecraftSkins\MinecraftSkins;
 use Cyndaron\Request;
 
 /* ***** MINECRAFT 3D Skin Generator *****
@@ -45,16 +47,25 @@ class SkinRendererHandler
         $times[] = ['Start', $this->microtime_float()];
 
         $username = Request::geefGetVeilig('user');
+        $useNewRenderer = Request::geefGetVeilig('newRenderer');
 
         $img_png = SkinRenderer::getSkinImageByUsername($username);
 
         $width = imagesx($img_png);
         $height = imagesy($img_png);
-        if ($height == 64 && $width == 64)
+        if ($height == $width || $useNewRenderer == 'true')
         {
-            // TODO: Implement new 64x64 skins
+            //render the skin and make it 5 times bigger
+            $result = MinecraftSkins::skin($img_png, 5);
+
+            //this part is for rendering the skin only
+            //tell the browser that we will send the raw image without HTML
+            header('Content-type: image/png');
+            imagepng($result);
+            die();
+
         }
-        if (!($width == $height * 2) || $height % 32 != 0)
+        elseif (!($width == $height * 2) || $height % 32 != 0)
         {
             // Bad ratio created
             $img_png = imagecreatefrompng(SkinRenderer::FALLBACK_IMAGE);
