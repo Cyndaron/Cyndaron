@@ -28,6 +28,7 @@ Versie 5.0 (Scupi) (in ontwikkeling)
 
 Versie 4.0 (Roma)
 - 'Hoofdstukken' en 'artikelen' vervangen door statische pagina's (subs)
+- Overzichtspagina voor statische pagina's, categorieën, fotoboeken en friendly URL's
 
 Versie 3.0 (Athenae)
 - Mysql-extensie vervangen door PDO
