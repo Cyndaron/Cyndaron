@@ -7,10 +7,10 @@ if (!file_exists(__DIR__ . '/instellingen.php'))
 }
 
 /**
- * Autoloader (PSR-4)
+ * Cyndaron autoloader (PSR-4)
  */
-spl_autoload_register(function ($class) {
-
+spl_autoload_register(function ($class)
+{
     // project-specific namespace prefix
     $prefix = 'Cyndaron\\';
 
@@ -19,7 +19,8 @@ spl_autoload_register(function ($class) {
 
     // does the class use the namespace prefix?
     $len = strlen($prefix);
-    if (strncmp($prefix, $class, $len) !== 0) {
+    if (strncmp($prefix, $class, $len) !== 0)
+    {
         // no, move to the next registered autoloader
         return;
     }
@@ -33,7 +34,28 @@ spl_autoload_register(function ($class) {
     $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
 
     // if the file exists, require it
-    if (file_exists($file)) {
+    if (file_exists($file))
+    {
+        require $file;
+    }
+});
+
+/**
+ * Vendor autoloader (PSR-4)
+ */
+spl_autoload_register(function ($class)
+{
+    // base directory for the namespace prefix
+    $base_dir = __DIR__ . '/vendor/';
+
+    // replace the namespace prefix with the base directory, replace namespace
+    // separators with directory separators in the relative class name, append
+    // with .php
+    $file = $base_dir . str_replace('\\', '/', $class) . '.php';
+
+    // if the file exists, require it
+    if (file_exists($file))
+    {
         require $file;
     }
 });
