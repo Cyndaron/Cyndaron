@@ -193,7 +193,7 @@ class Pagina
 
                                     echo '<li class="dropdown">';
 
-                                    echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' . $menuitem['naam'] . '<span class="caret"></span></a>';
+                                    echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' . $menuitem['naam'] . ' <span class="caret"></span></a>';
                                     echo '<ul class="dropdown-menu">';
 
                                     foreach ($paginasInCategorie->fetchAll() as $pagina)
