@@ -126,7 +126,16 @@ class Pagina
             echo '</ul></div></div>';
         }
 
-        echo '</div><div class="inhoudcontainer"><div class="inhoud"><div class="paginatitel"><h1 style="display: inline; margin-right:8px;">' . $this->paginanaam . '</h1>';
+        echo '</div>';
+
+        if (Instelling::geefInstelling('voorpagina_is_jumbo') && Instelling::geefInstelling('jumbo_inhoud'))
+        {
+            echo '<div class="welkom-jumbo">';
+            echo Instelling::geefInstelling('jumbo_inhoud');
+            echo '</div>';
+        }
+
+        echo '<div class="inhoudcontainer"><div class="inhoud"><div class="paginatitel"><h1 style="display: inline; margin-right:8px;">' . $this->paginanaam . '</h1>';
         static::toonIndienAanwezigEnAdmin($this->titelknoppen, '<div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">', '</div>');
         echo "</div>\n";
     }

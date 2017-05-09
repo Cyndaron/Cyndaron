@@ -428,3 +428,26 @@ button.aantalKaarten
 {
     color: #333333; /* Standaardkleur Bootstrap */
 }
+
+/* Jumbotron */
+.welkom-jumbo
+{
+    text-align: center;
+    width: 100%;
+    padding-top: 28vh;
+    padding-bottom: 28vh;
+}
+
+.welkom-jumbo h1
+{
+    font-size: 10vw;
+    display: inline-block;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.welkom-jumbo img
+{
+    background-color: rgba(255, 255, 255, 0.5);
+}
+/* Einde jumbotron */
