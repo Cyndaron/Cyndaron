@@ -79,7 +79,7 @@ class Pagina
             ?>
             <style type="text/css">
                 <?php
-                static::toonIndienAanwezig(Instelling::geefInstelling('achtergrondkleur'), 'body, .lightboxOverlay { background-color: ',";}\n");
+                static::toonIndienAanwezig(Instelling::geefInstelling('achtergrondkleur'), 'body.cyndaron, .lightboxOverlay { background-color: ',";}\n");
                 static::toonIndienAanwezig(Instelling::geefInstelling('menukleur'), '.menu { background-color: ',";}\n");
                 static::toonIndienAanwezig(Instelling::geefInstelling('menuachtergrond'), '.menu { background-image: url(\'',"');}\n");
                 static::toonIndienAanwezig(Instelling::geefInstelling('artikelkleur'), '.inhoud { background-color: ',";}\n");
@@ -95,7 +95,7 @@ class Pagina
                 }
             </script>
         </head>
-        <body><?php
+        <body class="cyndaron"><?php
         if ($this->nietDelen == false)
         {
             static::toonIndienAanwezig(Instelling::geefInstelling('extra_bodycode'));
