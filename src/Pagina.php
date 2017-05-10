@@ -341,7 +341,7 @@ class Pagina
 
     private function toonDeelknoppen()
     {
-        if ($this->nietDelen && Instelling::geefInstelling('facebook_share') == 1)
+        if ($this->nietDelen == false && Instelling::geefInstelling('facebook_share') == 1)
         {
             echo '<br /><div class="fb-like" data-href="https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true" data-font="trebuchet ms"></div>';
         }
