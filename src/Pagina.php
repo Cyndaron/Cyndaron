@@ -135,7 +135,15 @@ class Pagina
             echo '</div>';
         }
 
-        echo '<div class="inhoudcontainer"><div class="inhoud"><div class="paginatitel"><h1 style="display: inline; margin-right:8px;">' . $this->paginanaam . '</h1>';
+        echo '<div class="inhoudcontainer"><div class="inhoud">';
+
+        $class = '';
+        if (substr($_SERVER['REQUEST_URI'], -1) == '/')
+        {
+            $class = 'voorpagina';
+        }
+
+        echo '<div class="paginatitel ' . $class . '"><h1 style="display: inline; margin-right:8px;">' . $this->paginanaam . '</h1>';
         static::toonIndienAanwezigEnAdmin($this->titelknoppen, '<div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">', '</div>');
         echo "</div>\n";
     }
