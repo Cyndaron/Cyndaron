@@ -26,7 +26,6 @@ class FotoalbumPagina extends Pagina
 
         if ($dirArray = scandir("./fotoalbums/$boekid"))
         {
-            $waregrootte = true;
             $aantal = 0;
 
             $uitvoer = '<div class="fotoalbum">';
@@ -36,43 +35,36 @@ class FotoalbumPagina extends Pagina
                 if (substr($dirArray[$index], 0, 1) != ".")
                 {
                     $aantal++;
-                    $size = getimagesize('fotoalbums/' . $boekid . '/' . $dirArray[$index]);
-                    $width = $size[0];
-                    if ($width >= '270')
+//                    $size = getimagesize('fotoalbums/' . $boekid . '/' . $dirArray[$index]);
+//                    $width = $size[0];
+
+                    $fotoLink = 'fotoalbums/' . $boekid . '/' . $dirArray[$index];
+                    $thumbnailLink = 'fotoalbums/' . $boekid . 'thumbnails/' . $dirArray[$index];
+                    $hash = md5_file($fotoLink);
+                    $dataTitleTag = '';
+                    if ($bijschrift = DBConnection::geefEen('SELECT bijschrift FROM bijschriften WHERE hash=?', [$hash]))
                     {
-                        $waregrootte = false;
+                        // Vervangen van aanhalingstekens is nodig omdat er links in de beschrijving kunnen zitten.
+                        $dataTitleTag = 'data-title="' . str_replace('"', '&quot;', $bijschrift) . '"';
+                    }
 
-                        $fotoLink = 'fotoalbums/' . $boekid . '/' . $dirArray[$index];
-                        $thumbnailLink = 'fotoalbums/' . $boekid . 'thumbnails/' . $dirArray[$index];
-                        $hash = md5_file($fotoLink);
-                        $dataTitleTag = '';
-                        if ($bijschrift = DBConnection::geefEen('SELECT bijschrift FROM bijschriften WHERE hash=?', [$hash]))
-                        {
-                            // Vervangen van aanhalingstekens is nodig omdat er links in de beschrijving kunnen zitten.
-                            $dataTitleTag = 'data-title="' . str_replace('"', '&quot;', $bijschrift) . '"';
-                        }
+                    $uitvoer .= sprintf('<div class="fotobadge"><a href="%s" data-lightbox="%s" %s data-hash="%s"><img class="thumb" src="fotoalbums/%d', $fotoLink, htmlspecialchars($boeknaam), $dataTitleTag, $hash, $boekid);
 
-                        $uitvoer .= sprintf('<div class="fotobadge"><a href="%s" data-lightbox="%s" %s data-hash="%s"><img class="thumb" src="fotoalbums/%d', $fotoLink, htmlspecialchars($boeknaam), $dataTitleTag, $hash, $boekid);
-
-                        if (file_exists($thumbnailLink))
-                        {
-                            $uitvoer .= 'thumbnails/' . $dirArray[$index] . '"';
-                        }
-                        else
-                        {
-                            $uitvoer .= '/' . $dirArray[$index] . '" style="width:270px; height:200px"';
-                        }
-                        $uitvoer .= " alt=\"" . $dirArray[$index] . "\" /></a>";
-                        if (Gebruiker::isAdmin())
-                        {
-                            $uitvoer .= '<br>' . new Knop('bewerken', 'editor-foto?id=' . $hash, 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
-                        }
-                        $uitvoer .= '</div>';
+                    if (file_exists($thumbnailLink))
+                    {
+                        $uitvoer .= 'thumbnails/' . $dirArray[$index] . '"';
                     }
                     else
                     {
-                        $uitvoer .= "<img class=\"thumb\" src=\"fotoalbums/$boekid/$dirArray[$index]\">";
+                        $uitvoer .= '/' . $dirArray[$index] . '" style="width:270px; height:200px"';
                     }
+                    $uitvoer .= " alt=\"" . $dirArray[$index] . "\" /></a>";
+                    if (Gebruiker::isAdmin())
+                    {
+                        $uitvoer .= '<br>' . new Knop('bewerken', 'editor-foto?id=' . $hash, 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
+                    }
+                    $uitvoer .= '</div>';
+
                 }
             }
             $uitvoer .= '</div>';
@@ -87,11 +79,11 @@ class FotoalbumPagina extends Pagina
                 echo "Dit album bevat $aantal foto's.";
             }
 
-            if (!$waregrootte && $aantal == 1)
+            if ($aantal == 1)
             {
                 echo " Klik op de verkleinde foto om een vergroting te zien.";
             }
-            if (!$waregrootte && $aantal != 1)
+            else
             {
                 echo " Klik op de verkleinde foto's om een vergroting te zien.";
             }
