@@ -1,4 +1,8 @@
-Versie 5.0 (Scupi) (in ontwikkeling)
+Versie 5.0.1
+- Slecht werkende code voor het op ware grootte tonen van foto's in fotoalbum verwijderd
+- Klassiek menu was niet goed afgesloten
+
+Versie 5.0 (Scupi)
 - Code
   - Alles is overgezet naar OOP met namespacing
   - PSR-4-autoloader

@@ -306,6 +306,7 @@ class Pagina
         }
         echo '</ul></div>';
         static::toonIndienAanwezigEnGeenAdmin('<div style="float: right;">' . new Knop('log-in', 'login.php', 'Inloggen', null, 16) . '</div>');
+        echo '</div>';
     }
 
     private function menuItemIsHuidigePagina(string $menuItem): bool
