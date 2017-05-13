@@ -1,6 +1,7 @@
 Versie 5.0.1
 - Slecht werkende code voor het op ware grootte tonen van foto's in fotoalbum verwijderd
 - Klassiek menu was niet goed afgesloten
+- Ontbrekende bestandenkast toegevoegd
 
 Versie 5.0 (Scupi)
 - Code
