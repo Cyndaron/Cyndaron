@@ -2,6 +2,15 @@ Header set X-Frame-Options "SAMEORIGIN"
 Header set X-XSS-Protection "1; mode=block"
 Header set X-Content-Type-Options "nosniff"
 
+# Voorkomt indexeren van mappen
+Options -Indexes
+
+# Scherm .htaccess af
+<Files .htaccess>
+Order Allow,Deny
+Deny from all
+</Files>
+
 ErrorDocument 403 /403.php
 ErrorDocument 404 /404.php
 
