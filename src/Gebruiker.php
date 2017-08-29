@@ -5,7 +5,7 @@ class Gebruiker
 {
     public static function isAdmin()
     {
-        if (!isset($_SESSION['naam']) OR $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] OR $_SESSION['niveau'] < 4)
+        if (!isset($_SESSION['naam']) || $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] || $_SESSION['niveau'] < 4)
         {
             return false;
         }

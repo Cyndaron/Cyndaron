@@ -7,7 +7,7 @@ if (empty($_SESSION))
 {
     session_start();
 }
-if (!isset($_SESSION['naam']) OR $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
+if (!isset($_SESSION['naam']) || $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] || $_SESSION['niveau'] < 4)
 {
     session_destroy();
     session_start();
