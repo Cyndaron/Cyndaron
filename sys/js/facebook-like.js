@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+"use strict";
+
 (function (d, s, id)
 {
     var js, fjs = d.getElementsByTagName(s)[0];

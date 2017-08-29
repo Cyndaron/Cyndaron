@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+"use strict";
+
 function email()
 {
     var spantags = document.getElementsByTagName('span');
@@ -31,7 +33,8 @@ function email()
     }
 }
 
-window.onload = function ()
+$(document).ready(function ()
 {
     email();
-};
+});
+

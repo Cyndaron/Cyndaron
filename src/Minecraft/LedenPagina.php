@@ -18,6 +18,7 @@ class LedenPagina extends Pagina
     public function __construct()
     {
         parent::__construct('Spelers');
+        $this->voegScriptToe('sys/js/mc-ledenpagina.js');
         $this->toonPrePagina();
 
         $spelers = $this->connectie->query("SELECT * FROM mc_leden ORDER BY niveau DESC, mcnaam ASC");
@@ -56,7 +57,7 @@ class LedenPagina extends Pagina
             echo '<table>';
             echo '<tr><td class="avatarbox">';
 
-            echo '<img alt="Avatar van ' . $speler['echtenaam'] . '" title="Avatar van ' . $speler['echtenaam'] . '" src="' . $vooraanzicht . '" onmouseover="this.src=\'' . $achteraanzicht . '\'" onmouseout="this.src=\'' . $vooraanzicht . '\'" />';
+            echo '<img class="mc-speler-avatar" alt="Avatar van ' . $speler['echtenaam'] . '" title="Avatar van ' . $speler['echtenaam'] . '" src="' . $vooraanzicht . '" data-vooraanzicht="' . $vooraanzicht . '" data-achteraanzicht="' . $achteraanzicht . '" />';
             echo '</td>';
             echo '<td class="spelersinfobox">';
 

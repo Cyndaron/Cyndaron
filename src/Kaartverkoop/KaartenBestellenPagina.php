@@ -53,7 +53,7 @@ class KaartenBestellenPagina extends Pagina
         <br/>
         <form method="post" action="kaarten-verwerk-bestelling" class="form-horizontal" id="kaartenbestellen">
             <h3>Kaartsoorten:</h3>
-            <input type="hidden" name="concert_id" value="<?php echo $concert_id; ?>"/>
+            <input type="hidden" id="concertId" name="concert_id" value="<?php echo $concert_id; ?>"/>
             <table class="kaartverkoop table table-striped">
                 <tr>
                     <th>Kaartsoort:</th>
@@ -113,7 +113,7 @@ class KaartenBestellenPagina extends Pagina
                     thuisbezorgen <?= Util::naarEuro($concert_info['verzendkosten']); ?> per kaart.<br>Het is ook
                     mogelijk
                     om uw kaarten te laten ophalen door een koorlid. Dit is gratis.
-                    <a href="#" onclick="buitenland = true;">Woont u in het buitenland? Klik dan hier.</a>
+                    <a id="buitenland" href="#">Woont u in het buitenland? Klik dan hier.</a>
                 </p>
                 <p>
                     Vul hieronder uw postcode in om de totaalprijs te laten berekenen.
@@ -203,97 +203,6 @@ class KaartenBestellenPagina extends Pagina
 
             <input type="hidden" id="buitenland" name="buitenland" value="0"/>
         </form>
-        <script type="text/javascript">
-
-            var bezorgenVerplicht = <?=$concert_info['bezorgen_verplicht'];?>;
-            var buitenland = false;
-
-            function berekenTotaalprijs() {
-                var totaalprijs = 0.0;
-                var bezorgen = false;
-                var verzendkosten = 0.0;
-
-                if (buitenland) {
-                    document.getElementById('ophalen_door_koorlid').checked = true;
-                    document.getElementById('ophalen_door_koorlid').disabled = true;
-                    document.getElementById('buitenland').value = 1;
-                }
-
-                if (bezorgenVerplicht) {
-                    var postcode = document.getElementById('postcode').value;
-
-                    if (postcode.length < 6 && !buitenland) {
-                        document.getElementById('prijsvak').innerHTML = "€&nbsp;-";
-                        return;
-                    }
-
-                    var woontOpWalcheren = postcodeLigtInWalcheren(postcode);
-                    var ophalenDoorKoorlid = document.getElementById('ophalen_door_koorlid').checked;
-
-                    if (!woontOpWalcheren) {
-                        document.getElementById('ophalen_door_koorlid_div').style.display = "block";
-                    }
-                    else {
-                        document.getElementById('ophalen_door_koorlid_div').style.display = "none";
-                    }
-
-                    if (!woontOpWalcheren && !ophalenDoorKoorlid) {
-                        bezorgen = true;
-                    }
-                    else {
-                        bezorgen = false;
-                        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
-                    }
-                }
-                else {
-                    bezorgen = document.getElementById('bezorgen').checked;
-                }
-
-                if (bezorgen) {
-                    verzendkosten =<?php echo $concert_info['verzendkosten'];?>;
-                    document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
-                }
-                else {
-                    verzendkosten = 0.0;
-                    if (!bezorgenVerplicht)
-                        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
-                }
-                var toeslag_gereserveerde_plaats = 0.0;
-                if (document.getElementById('gereserveerde_plaatsen').checked) {
-                    toeslag_gereserveerde_plaats = <?php echo $concert_info['toeslag_gereserveerde_plaats'];?>;
-                }
-
-                if (!bezorgenVerplicht && bezorgen) {
-                    document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
-                }
-                else if (!bezorgenVerplicht && !bezorgen) {
-                    document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
-                }
-                else if (bezorgenVerplicht && !ophalenDoorKoorlid && !buitenland) {
-                    document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
-                }
-                else if (bezorgenVerplicht && (ophalenDoorKoorlid || buitenland)) {
-                    document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
-                }
-
-                <?php
-                $prep->execute([$concert_id]);
-                foreach ($prep->fetchAll() as $kaartsoort)
-                {
-                    echo '    var aantal=document.getElementById("kaartsoort-' . $kaartsoort['id'] . "\").value;\n";
-                    echo '    totaalprijs=totaalprijs+(' . $kaartsoort['prijs'] . "*aantal);\n";
-                    echo '    totaalprijs=totaalprijs+(verzendkosten*aantal);' . "\n";
-                    echo '    totaalprijs=totaalprijs+(toeslag_gereserveerde_plaats*aantal);' . "\n";
-                }
-                ?>
-                var totaalprijs_text = totaalprijs.toLocaleString("nl-NL", {
-                    style: "currency",
-                    currency: "EUR",
-                    minimumFractionDigits: 2
-                });
-                document.getElementById('prijsvak').innerHTML = totaalprijs_text;
-            }
-        </script>
         <?php
         $this->toonPostPagina();
     }

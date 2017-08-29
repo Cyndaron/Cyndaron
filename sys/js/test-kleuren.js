@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+"use strict";
+
 function testKleuren()
 {
     var body = document.getElementsByTagName('body');

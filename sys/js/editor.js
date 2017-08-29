@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+"use strict";
+
 function plakLink()
 {
     // Open het dialoogvenster voor het invoeren van een link
@@ -29,6 +31,14 @@ function plakLink()
         // Zet de selector voor het linktype op 'anders'
         focus.parent().parent().parent().parent().parent().find('select').val('');
     }, 800);
+}
+
+function geefInstelling(instelling)
+{
+    if (instelling === 'artikelkleur')
+    {
+        return $('body').first().attr('data-artikelkleur');
+    }
 }
 
 $('#plaklink').on('click', function() {plakLink();});

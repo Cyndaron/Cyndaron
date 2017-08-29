@@ -85,17 +85,8 @@ class Pagina
                 static::toonIndienAanwezig(Instelling::geefInstelling('artikelkleur'), '.inhoud { background-color: ',";}\n");
                 ?>
             </style>
-            <script type="text/javascript">
-                function geefInstelling(instelling)
-                {
-                    if (instelling == 'artikelkleur')
-                    {
-                        return '<?php echo Instelling::geefInstelling('artikelkleur');?>';
-                    }
-                }
-            </script>
         </head>
-        <body class="cyndaron"><?php
+        <body class="cyndaron" data-artikelkleur="<?=Instelling::geefInstelling('artikelkleur');?>"><?php
         if ($this->nietDelen == false)
         {
             static::toonIndienAanwezig(Instelling::geefInstelling('extra_bodycode'));

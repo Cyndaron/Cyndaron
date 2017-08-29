@@ -98,8 +98,8 @@ class OverzichtPagina extends Pagina
         <p>Weet u zeker dat u dit item wilt verwijderen?
         <input name="inhoud" value="1" style="display:none;"/>
         </p><p>
-        <input type="submit" style="width:200px" value="Ja"/>
-        <button type="button" style="width:200px" onclick="window.location=\'overzicht.php\'"/>Nee</button>
+        <input type="submit" class="btn btn-primary" value="Ja"/>
+        <a role="button" class="btn btn-default" />Nee</button>
         </p></form>';
         }
 
