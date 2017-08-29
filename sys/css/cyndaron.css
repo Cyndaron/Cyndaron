@@ -429,6 +429,11 @@ button.aantalKaarten
     color: #333333; /* Standaardkleur Bootstrap */
 }
 
+.klassiek-menu-login-container
+{
+    float: right;
+}
+
 /* Jumbotron */
 .welkom-jumbo
 {
