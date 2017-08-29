@@ -25,6 +25,7 @@ class VerwerkBestellingPagina extends Pagina
         $buitenland = Request::geefPostVeilig('buitenland') ? true : false;
         $ophalenDoorKoorlid = Request::geefPostVeilig('ophalen_door_koorlid') ? true : false;
         $ophalenDoorKoorlid = $buitenland ? true : $ophalenDoorKoorlid;
+        $naam_koorlid = '';
 
         $concertquery = "SELECT * FROM `kaartverkoop_concerten` WHERE id=?";
         $prep = $this->connectie->prepare($concertquery);

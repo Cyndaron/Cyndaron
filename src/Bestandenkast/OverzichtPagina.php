@@ -20,6 +20,8 @@ class OverzichtPagina extends Pagina
 
         if($bestandendir = @opendir("./bestandenkast"))
         {
+            $dirArray = [];
+
             // in de juiste vorm gieten
             while($entryName = readdir($bestandendir))
             {
