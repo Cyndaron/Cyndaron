@@ -57,6 +57,8 @@ class Pagina
 
     public function toonPrepagina()
     {
+        $titel = $this->paginanaam . ' - ' . $this->websitenaam;
+
         $this->websitenaam = Instelling::geefInstelling('websitenaam');
         ?>
         <!DOCTYPE HTML>
@@ -64,7 +66,10 @@ class Pagina
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title><?php echo $this->paginanaam . ' - ' . $this->websitenaam; ?></title>
+            <meta name="twitter:card" content="summary" />
+            <meta name="twitter:title" content="<?=$titel;?>" />
+            <meta name="twitter:description" content="Klik hier om verder te lezen..." />
+            <title><?=$titel;?></title>
             <?php
             echo '<link href="sys/css/normalize.css" type="text/css" rel="stylesheet" />';
             echo '<link href="sys/css/bootstrap.css" type="text/css" rel="stylesheet" />';

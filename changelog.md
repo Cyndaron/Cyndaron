@@ -4,6 +4,7 @@ Versie 5.1 (Heraclea Lyncestis)
 - Gebruik $_POST niet meer buiten Request
 - Update CKeditor naar 4.7.2
 - Inlogknop van klassiek menu kan nu gestyled worden (#39)
+- Integratie met Twitter Cards (#41)
 
 Versie 5.0.1
 - Slecht werkende code voor het op ware grootte tonen van foto's in fotoalbum verwijderd
