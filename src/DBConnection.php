@@ -11,7 +11,9 @@ ini_set('memory_limit', '96M');
  */
 class DBConnection
 {
+    /** @var DBConnection $instance */
     private static $instance;
+    /** @var PDO $pdo */
     private static $pdo;
 
     private function __construct()
