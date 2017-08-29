@@ -40,7 +40,7 @@ class LoginPagina extends Pagina
                         if (password_needs_rehash($userdata['wachtwoord'], PASSWORD_DEFAULT))
                         {
                             $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
-                            $connObj->doQuery('UPDATE gebruiker SET wachtwoord=? WHERE gebruikersnaam=?', [$wachtwoord, $gebruikersnaam]);
+                            $connObj->doQuery('UPDATE gebruikers SET wachtwoord=? WHERE gebruikersnaam=?', [$wachtwoord, $gebruikersnaam]);
                         }
                     }
                     elseif ($userdata['wachtwoord'] == $wachtwoord512)
@@ -48,7 +48,7 @@ class LoginPagina extends Pagina
                         $loginGelukt = true;
 
                         $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
-                        $connObj->doQuery('UPDATE gebruiker SET wachtwoord=? WHERE gebruikersnaam=?', [$wachtwoord, $gebruikersnaam]);
+                        $connObj->doQuery('UPDATE gebruikers SET wachtwoord=? WHERE gebruikersnaam=?', [$wachtwoord, $gebruikersnaam]);
                     }
 
                     if ($loginGelukt)
