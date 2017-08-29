@@ -6,6 +6,7 @@ Code van derden en alle daaraan aangebrachte wijzigingen vallen onder de volgend
 - CKeditor: MPL, LGPL, GPL (ckeditor/LICENSE.md)
 - jQuery: MIT (LICENSE.jQuery)
 - Lightbox: MIT (LICENSE.Lightbox)
+- MCServerStats: MIT (LICENSE.MCServerStats)
 - MinecraftSkinRenderer: BSD-3 (LICENSE.MinecraftSkinRenderer)
 
 ## Codestijl
