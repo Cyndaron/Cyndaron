@@ -17,9 +17,9 @@
 "use strict";
 
 $('.mc-speler-avatar').on('mouseover', function() {
-   $(this).src = $(this).attr('data-achteraanzicht');
+   $(this).attr('src', $(this).attr('data-achteraanzicht'));
 });
 
 $('.mc-speler-avatar').on('mouseout', function() {
-    $(this).src = $(this).attr('data-vooraanzicht');
+    $(this).attr('src', $(this).attr('data-vooraanzicht'));
 });
