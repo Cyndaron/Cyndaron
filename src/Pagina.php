@@ -319,9 +319,9 @@ class Pagina
         ?>
         </div></div></div>
 
-        <script type="text/javascript" src="sys/js/email-antispam.js"></script>
         <script type="text/javascript" src="sys/js/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="sys/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="sys/js/cyndaron.js"></script>
     <?php
     foreach ($this->extraScripts as $extraScript)
     {

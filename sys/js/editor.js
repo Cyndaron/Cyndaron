@@ -33,12 +33,4 @@ function plakLink()
     }, 800);
 }
 
-function geefInstelling(instelling)
-{
-    if (instelling === 'artikelkleur')
-    {
-        return $('body').first().attr('data-artikelkleur');
-    }
-}
-
 $('#plaklink').on('click', function() {plakLink();});

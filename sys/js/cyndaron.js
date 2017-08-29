@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016, Michael Steenbeek
+ * Copyright © 2009-2017, Michael Steenbeek
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -22,7 +22,7 @@ function email()
     var stlength = spantags.length;
     for (var i = stlength - 1; i >= 0; i--)
     {
-        if (spantags[i].className == 'emailadres')
+        if (spantags[i].className === 'emailadres')
         {
             var address = spantags[i].childNodes[0].nodeValue + spantags[i].childNodes[2].nodeValue;
             var mailto = document.createElement('a');
@@ -33,8 +33,15 @@ function email()
     }
 }
 
+function geefInstelling(instelling)
+{
+    if (instelling === 'artikelkleur')
+    {
+        return $('body').first().attr('data-artikelkleur');
+    }
+}
+
 $(document).ready(function ()
 {
     email();
 });
-
