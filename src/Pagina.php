@@ -57,9 +57,9 @@ class Pagina
 
     public function toonPrepagina()
     {
+        $this->websitenaam = Instelling::geefInstelling('websitenaam');
         $titel = $this->paginanaam . ' - ' . $this->websitenaam;
 
-        $this->websitenaam = Instelling::geefInstelling('websitenaam');
         ?>
         <!DOCTYPE HTML>
         <html>
@@ -124,7 +124,7 @@ class Pagina
 
         echo '</div>';
 
-        if (Instelling::geefInstelling('voorpagina_is_jumbo') && Instelling::geefInstelling('jumbo_inhoud'))
+        if ($this->isVoorPagina() && Instelling::geefInstelling('voorpagina_is_jumbo') && Instelling::geefInstelling('jumbo_inhoud'))
         {
             echo '<div class="welkom-jumbo">';
             echo Instelling::geefInstelling('jumbo_inhoud');
@@ -134,7 +134,7 @@ class Pagina
         echo '<div class="inhoudcontainer"><div class="inhoud">';
 
         $class = '';
-        if (substr($_SERVER['REQUEST_URI'], -1) == '/')
+        if ($this->isVoorPagina())
         {
             $class = 'voorpagina';
         }
@@ -142,6 +142,15 @@ class Pagina
         echo '<div class="paginatitel ' . $class . '"><h1 style="display: inline; margin-right:8px;">' . $this->paginanaam . '</h1>';
         static::toonIndienAanwezigEnAdmin($this->titelknoppen, '<div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">', '</div>');
         echo "</div>\n";
+    }
+
+    public function isVoorPagina(): bool
+    {
+        if (substr($_SERVER['REQUEST_URI'], -1) == '/')
+        {
+            return true;
+        }
+        return false;
     }
 
     protected function toonMenu()
