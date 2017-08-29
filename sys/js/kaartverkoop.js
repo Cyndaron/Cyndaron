@@ -196,7 +196,7 @@ function berekenTotaalprijs()
 $('.aantalKaarten-increase').on('click', function() { increase('kaartsoort-' + $(this).attr('data-kaartsoort')); });
 $('.aantalKaarten-decrease').on('click', function() { decrease('kaartsoort-' + $(this).attr('data-kaartsoort')); });
 $('.berekenTotaalprijsOpnieuw').on('click', function() { berekenTotaalprijs(); });
-$('#buitenland').on('click', function() { buitenland = true; });
+$('#buitenland-link').on('click', function() { buitenland = true; });
 
 setInterval(blokkeerFormulierBijOngeldigeInvoer, 1000);
 setInterval(berekenTotaalprijs, 1000);
