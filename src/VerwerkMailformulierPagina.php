@@ -25,13 +25,11 @@ class VerwerkMailformulierPagina extends Pagina
             }
             elseif (strtolower(Request::geefPostVeilig('antispam')) == strtolower($form['antispamantwoord']))
             {
-                foreach (array_keys($_POST) as $vraag)
+                foreach (Request::geefPostArrayVeilig() as $vraag => $antwoord)
                 {
-                    $vraag = Request::wasVariabele($vraag);
-
                     if ($vraag !== 'antispam')
                     {
-                        $tekst .= $vraag . ': ' . strtr(Request::geefPostVeilig($vraag), ['\\' => '']) . "\n";
+                        $tekst .= $vraag . ': ' . strtr($antwoord, ['\\' => '']) . "\n";
                     }
                 }
                 $ontvanger = $form['mailadres'];

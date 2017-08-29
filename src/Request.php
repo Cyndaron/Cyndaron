@@ -55,6 +55,36 @@ class Request
         return false;
     }
 
+    public static function geefPostArrayVeilig()
+    {
+        $ret = [];
+
+        foreach ($_POST as $key => $value)
+        {
+            $key = self::wasVariabele($key);
+            $ret[$key] = self::wasArray($value);
+        }
+
+        return $ret;
+    }
+
+    private static function wasArray($invoer)
+    {
+        if (is_array($invoer))
+        {
+            $tmp = [];
+            foreach ($invoer as $key => $value)
+            {
+                $tmp[$key] = self::wasArray($value);
+            }
+            return $tmp;
+        }
+        else
+        {
+            return self::wasVariabele($invoer);
+        }
+    }
+
     public static function wasVariabele($var)
     {
         // Dit filtert niet-bestaande en ongewenste UTF-8 tekens uit een string.

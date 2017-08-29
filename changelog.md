@@ -1,6 +1,7 @@
 Versie 5.1
 - Verwijder inline scripting uit Cyndaron zelf (CKeditor is nog niet aangepakt)
 - Gebruik password_hash voor het opslaan van wachtwoorden in plaats van SHA512.
+- Gebruik $_POST niet meer buiten Request
 
 Versie 5.0.1
 - Slecht werkende code voor het op ware grootte tonen van foto's in fotoalbum verwijderd
