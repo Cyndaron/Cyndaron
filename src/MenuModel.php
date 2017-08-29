@@ -20,7 +20,7 @@ class MenuModel
 
     public static function voegToeAanMenu($link, $alias = "")
     {
-        $teller = DBConnection::geefEen('SELECT MAX(volgorde) FROM menu;', []) + 1;
+        $teller = intval(DBConnection::geefEen('SELECT MAX(volgorde) FROM menu;', [])) + 1;
         DBConnection::geefEen('INSERT INTO menu(volgorde,link,alias) VALUES(?,?,?);', [$teller, $link, $alias]);
     }
 }
