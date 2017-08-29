@@ -108,20 +108,6 @@ class Pagina
 
         $this->toonMenu();
 
-        $meldingen = Gebruiker::geefMeldingen();
-        if ($meldingen)
-        {
-            echo '<div class="meldingencontainer">';
-            echo '<div class="meldingen alert alert-info"><ul>';
-
-            foreach ($meldingen as $melding)
-            {
-                echo '<li>' . $melding . '</li>';
-            }
-
-            echo '</ul></div></div>';
-        }
-
         echo '</div>';
 
         if ($this->isVoorPagina() && Instelling::geefInstelling('voorpagina_is_jumbo') && Instelling::geefInstelling('jumbo_inhoud'))
@@ -265,6 +251,19 @@ class Pagina
             </div><!-- /.container-fluid -->
         </nav>
         <?php
+        $meldingen = Gebruiker::geefMeldingen();
+        if ($meldingen)
+        {
+            echo '<div class="meldingencontainer">';
+            echo '<div class="meldingen alert alert-info"><ul>';
+
+            foreach ($meldingen as $melding)
+            {
+                echo '<li>' . $melding . '</li>';
+            }
+
+            echo '</ul></div></div>';
+        }
     }
 
     protected function toonKlassiekMenu()
@@ -311,6 +310,21 @@ class Pagina
         }
         echo '</ul></div>';
         static::toonIndienAanwezigEnGeenAdmin('<div class="klassiek-menu-login-container">' . new Knop('log-in', 'login.php', 'Inloggen', null, 16) . '</div>');
+
+        $meldingen = Gebruiker::geefMeldingen();
+        if ($meldingen)
+        {
+            echo '<div class="meldingencontainer">';
+            echo '<div class="meldingen alert alert-info"><ul>';
+
+            foreach ($meldingen as $melding)
+            {
+                echo '<li>' . $melding . '</li>';
+            }
+
+            echo '</ul></div></div>';
+        }
+
         echo '</div>';
     }
 
