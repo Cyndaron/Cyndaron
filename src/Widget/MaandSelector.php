@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron\Widget;
 
+use Cyndaron\Util;
+
 class MaandSelector extends Widget
 {
     public function __construct(int $geselecteerdeMaand, bool $toonLegeOptie = false)
