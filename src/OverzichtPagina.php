@@ -98,7 +98,7 @@ class OverzichtPagina extends Pagina
         <input name="inhoud" value="1" style="display:none;"/>
         </p><p>
         <input type="submit" class="btn btn-primary" value="Ja"/>
-        <a role="button" class="btn btn-default" />Nee</button>
+        <a role="button" class="btn btn-default">Nee</a>
         </p></form>';
         }
 
