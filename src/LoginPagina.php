@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron;
 
-
 class LoginPagina extends Pagina
 {
     public function __construct()
@@ -11,12 +10,15 @@ class LoginPagina extends Pagina
             if (Request::geefPostVeilig('login_naam') && Request::geefPostVeilig('login_wach'))
             {
                 $login['naam'] = Request::geefPostVeilig('login_naam');
-                $login['wach'] = hash('sha512', Request::geefPostVeilig('login_wach'));
+                $gebruikersnaam = Request::geefPostVeilig('login_naam');
+                $wachtwoord = Request::geefPostVeilig('login_wach');
+                $wachtwoord512 = hash('sha512', $wachtwoord);
 
-                $this->connectie = DBConnection::getPDO();
+                $connectie = DBConnection::getPDO();
+                $connObj = DBConnection::getInstance();
 
-                $prep = $this->connectie->prepare('SELECT * FROM gebruikers WHERE gebruikersnaam=?');
-                $prep->execute([$login['naam']]);
+                $prep = $connectie->prepare('SELECT * FROM gebruikers WHERE gebruikersnaam=?');
+                $prep->execute([$gebruikersnaam]);
                 $userdata = $prep->fetch();
 
                 if (!$userdata)
@@ -27,39 +29,53 @@ class LoginPagina extends Pagina
                     echo 'Verkeerde gebruikersnaam.';
                     $this->toonPostPagina();
                 }
-                elseif ($userdata['wachtwoord'] !== $login['wach'])
+                else
                 {
-                    parent::__construct('Fout');
-                    $this->maakNietDelen(true);
-                    $this->toonPrePagina();
-                    echo 'Verkeerd wachtwoord.';
-                    $this->toonPostPagina();
-                }
-                elseif ($userdata['wachtwoord'] == $login['wach'] && $userdata['gebruikersnaam'] == $login['naam'])
-                {
-                    $_SESSION['naam'] = $login['naam'];
-                    $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
-                    $_SESSION['niveau'] = $userdata['niveau'];
-                    Gebruiker::nieuweMelding('U bent ingelogd.');
-                    if ($_SESSION['redirect'])
+                    $loginGelukt = false;
+
+                    if (password_verify($wachtwoord, $userdata['wachtwoord']))
                     {
-                        $_SESSION['request'] = $_SESSION['redirect'];
-                        $_SESSION['redirect'] = null;
+                        $loginGelukt = true;
+
+                        if (password_needs_rehash($userdata['wachtwoord'], PASSWORD_DEFAULT))
+                        {
+                            $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
+                            $connObj->doQuery('UPDATE gebruiker SET wachtwoord=? WHERE gebruikersnaam=?', [$wachtwoord, $gebruikersnaam]);
+                        }
+                    }
+                    elseif ($userdata['wachtwoord'] == $wachtwoord512)
+                    {
+                        $loginGelukt = true;
+
+                        $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
+                        $connObj->doQuery('UPDATE gebruiker SET wachtwoord=? WHERE gebruikersnaam=?', [$wachtwoord, $gebruikersnaam]);
+                    }
+
+                    if ($loginGelukt)
+                    {
+                        $_SESSION['naam'] = $gebruikersnaam;
+                        $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+                        $_SESSION['niveau'] = $userdata['niveau'];
+                        Gebruiker::nieuweMelding('U bent ingelogd.');
+                        if ($_SESSION['redirect'])
+                        {
+                            $_SESSION['request'] = $_SESSION['redirect'];
+                            $_SESSION['redirect'] = null;
+                        }
+                        else
+                        {
+                            $_SESSION['request'] = '/';
+                        }
+                        header('Location: ' . $_SESSION['request']);
                     }
                     else
                     {
-                        $_SESSION['request'] = '/';
+                        parent::__construct('Fout');
+                        $this->maakNietDelen(true);
+                        $this->toonPrePagina();
+                        echo 'Verkeerd wachtwoord.';
+                        $this->toonPostPagina();
                     }
-                    header('Location: ' . $_SESSION['request']);
-
-                }
-                else
-                {
-                    parent::__construct('Fout');
-                    $this->maakNietDelen(true);
-                    $this->toonPrePagina();
-                    echo 'Er is een fout opgetreden.';
-                    $this->toonPostPagina();
                 }
             }
             else
