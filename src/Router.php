@@ -54,11 +54,12 @@ class Router
             die('Deze locatie mag niet worden opgevraagd.');
         }
 
-        global $gebruikTLS;
-        if (!empty($gebruikTLS) && $gebruikTLS === true)
+        if (Util::siteGebruiktTLS())
         {
             ini_set('session.cookie_secure', 1);
 
+            // De CKeditor heeft helaas nog inline scripting nodig. Op deze manier voorkomen we dat de hele site
+            // daaronder moet lijden.
             if (strpos($request, 'editor-') === 0)
             {
                 header("Content-Security-Policy: upgrade-insecure-requests; script-src 'self' 'unsafe-inline'; font-src 'self'; base-uri 'none'; object-src 'none'");

@@ -50,6 +50,7 @@ abstract class EditorPagina extends Pagina
         }
 
         $saveUrl = sprintf($this->saveUrl, $this->id ? (string)$this->id : '');
+        $protocol = Util::siteGebruiktTLS() ? 'https://' : 'http://';
         ?>
 
         <form name="bewerkartikel" method="post" action="<?=$saveUrl;?>" class="form-horizontal">
@@ -70,7 +71,7 @@ abstract class EditorPagina extends Pagina
                 <label class="col-sm-2 control-label" for="friendlyUrl">Friendly URL: </label>
                 <div class="col-sm-5">
                     <div class="input-group">
-                        <span class="input-group-addon">http://<?=$_SERVER['HTTP_HOST'] . $dir;?>/</span>
+                        <span class="input-group-addon"><?=$protocol . $_SERVER['HTTP_HOST'] . $dir;?>/</span>
                         <input type="text" class="form-control" id="friendlyUrl" name="friendlyUrl" value="<?=$friendlyUrl;?>" />
                     </div>
 
