@@ -1,9 +1,20 @@
 <?php
+// Geef sessie-ID enkel door via cookies, niet via URL's
+ini_set('session.use_only_cookies', 1);
+// Voorkom dat cookies door Javascript worden ingelezen
+ini_set('session.cookie_httponly', 1);
 
 if (!file_exists(__DIR__ . '/instellingen.php'))
 {
     echo 'Geen instellingenbestand gevonden!';
     die();
+}
+
+include __DIR__ . '/instellingen.php';
+
+if (!empty($gebruikTLS) && $gebruikTLS === true)
+{
+    ini_set('session.cookie_secure', 1);
 }
 
 /**
