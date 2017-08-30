@@ -54,6 +54,25 @@ class Router
             die('Deze locatie mag niet worden opgevraagd.');
         }
 
+        global $gebruikTLS;
+        if (!empty($gebruikTLS) && $gebruikTLS === true)
+        {
+            ini_set('session.cookie_secure', 1);
+
+            if (strpos($request, 'editor-') === 0)
+            {
+                header("Content-Security-Policy: upgrade-insecure-requests; script-src 'self' 'unsafe-inline'; font-src 'self'; base-uri 'none'; object-src 'none'");
+            }
+            else
+            {
+                header("Content-Security-Policy: upgrade-insecure-requests; script-src 'self'; font-src 'self'; base-uri 'none'; object-src 'none'");
+            }
+        }
+        else
+        {
+            header("Content-Security-Policy: script-src 'self' 'unsafe-inline'; font-src 'self'; base-uri 'none'; object-src 'none'");
+        }
+
         $hoofdurl = new Url(DBConnection::geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', []));
         if ($hoofdurl->isGelijkAan(new Url($request)))
         {

@@ -12,11 +12,6 @@ if (!file_exists(__DIR__ . '/instellingen.php'))
 
 include __DIR__ . '/instellingen.php';
 
-if (!empty($gebruikTLS) && $gebruikTLS === true)
-{
-    ini_set('session.cookie_secure', 1);
-}
-
 /**
  * Cyndaron autoloader (PSR-4)
  */
