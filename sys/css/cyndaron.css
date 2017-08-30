@@ -432,6 +432,9 @@ button.aantalKaarten
 .klassiek-menu-login-container
 {
     float: right;
+    position: relative;
+    bottom: 132px;
+    height: 0px;
 }
 
 /* Jumbotron */
