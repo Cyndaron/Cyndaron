@@ -2,6 +2,7 @@ Versie 5.1.1
 - Beveilig cookies beter
 - Stel referrer-policy in
 - Fix weergave meldingen in klassiek menu (#40)
+- Voeg een CSP toe (nog niet aangepast voor Facebook-integratie)
 
 Versie 5.1 (Heraclea Lyncestis)
 - Verwijder inline scripting uit Cyndaron zelf (CKeditor is nog niet aangepakt)
