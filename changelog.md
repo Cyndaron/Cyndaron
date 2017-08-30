@@ -1,3 +1,8 @@
+Versie 5.1.1
+- Beveilig cookies beter
+- Stel referrer-policy in
+- Fix weergave meldingen in klassiek menu (#40)
+
 Versie 5.1 (Heraclea Lyncestis)
 - Verwijder inline scripting uit Cyndaron zelf (CKeditor is nog niet aangepakt)
 - Gebruik password_hash voor het opslaan van wachtwoorden in plaats van SHA512 (#14)
