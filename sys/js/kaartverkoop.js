@@ -119,6 +119,8 @@ function berekenTotaalprijs()
         document.getElementById('ophalen_door_koorlid').checked = true;
         document.getElementById('ophalen_door_koorlid').disabled = true;
         document.getElementById('buitenland').value = 1;
+
+        $('.postcode-gerelateerd').css({display: 'none'});
     }
 
     if (bezorgenVerplicht) {
