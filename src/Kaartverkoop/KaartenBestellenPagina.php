@@ -113,7 +113,7 @@ class KaartenBestellenPagina extends Pagina
                     thuisbezorgen <?= Util::naarEuro($concert_info['verzendkosten']); ?> per kaart.<br>Het is ook
                     mogelijk
                     om uw kaarten te laten ophalen door een koorlid. Dit is gratis.
-                    <a id="buitenland-link" href="">Woont u in het buitenland? Klik dan hier.</a>
+                    <a id="buitenland-link">Woont u in het buitenland? Klik dan hier.</a>
                 </p>
                 <p class="postcode-gerelateerd">
                     Vul hieronder uw postcode in om de totaalprijs te laten berekenen.
