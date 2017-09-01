@@ -97,7 +97,7 @@ class KaartenBestellenPagina extends Pagina
                            type="checkbox" value="1"/>
                     <label for="gereserveerde_plaatsen">
                         Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs
-                        van <?php echo Util::naarEuro($concert_info['toeslag_gereserveerde_plaats']); ?>per kaart)
+                        van <?php echo Util::naarEuro($concert_info['toeslag_gereserveerde_plaats']); ?> per kaart)
                     </label>
                 <?php endif; ?>
                 <br/>
