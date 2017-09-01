@@ -3,7 +3,7 @@ namespace Cyndaron\Kaartverkoop;
 
 class Util
 {
-    const STOELEN_PER_RIJ = 300;
+    const STOELEN_PER_RIJ = 330;
 
     public static function postcodeLigtInWalcheren($postcode)
     {

@@ -36,31 +36,35 @@ class GereserveerdePlaatsen
         $rijen = ['A'];
         $stoelen_per_rij = range(1, Util::STOELEN_PER_RIJ);
 
-        echo '<table><thead><tr><th>&nbsp;</th>';
-        foreach ($stoelen_per_rij as $stoel)
-        {
-            printf('<th>%d</th>', (int)$stoel);
-        }
+//        echo '<table><thead><tr><th>&nbsp;</th>';
+//        foreach ($stoelen_per_rij as $stoel)
+//        {
+//            printf('<th>%d</th>', (int)$stoel);
+//        }
 
-        echo '</tr></thead><tbody>';
+        //echo '</tr></thead><tbody>';
 
         foreach ($rijen as $rij)
         {
-            printf('<tr><th>%s</th>', $rij);
+            //printf('<tr><th>%s</th>', $rij);
 
             foreach ($stoelen_per_rij as $stoel)
             {
+                echo '<div style="display: inline-block; text-align: center; width: 220px; margin: 5px;">' . $stoel . '<br>';
                 if (isset($bezette_plaatsen_per_rij[$rij][$stoel]))
                 {
-                    printf('<td style="text-align: center;">%s</td>', $bezette_plaatsen_per_rij[$rij][$stoel]);
+                    //printf('<td style="text-align: center;">%s</td>', $bezette_plaatsen_per_rij[$rij][$stoel]);
+                    echo $bezette_plaatsen_per_rij[$rij][$stoel];
                 }
                 else
                 {
-                    echo '<td style="text-align: center;">&nbsp;</td>';
+                    //echo '<td style="text-align: center;">&nbsp;</td>';
+                    echo '&nbsp;';
                 }
+                echo '</div>';
             }
 
-            echo '</tr>';
+            //echo '</tr>';
         }
 
     }
