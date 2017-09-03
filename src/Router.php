@@ -69,6 +69,13 @@ class Router
         {
             ini_set('session.cookie_secure', 1);
             $uir = 'upgrade-insecure-requests;';
+
+            if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off"){
+                $redirect = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+                header('HTTP/1.1 301 Moved Permanently');
+                header('Location: ' . $redirect);
+                exit();
+            }
         }
 
         if (Instelling::geefInstelling('facebook_share') == 1)
