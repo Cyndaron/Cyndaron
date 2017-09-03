@@ -1,3 +1,6 @@
+Versie 5.2.1
+- Fix "Content-Type"-header in betalingsbevestiging kaartverkoop
+
 Versie 5.2 (Stobi)
 - Beveilig cookies beter
 - Stel referrer-policy in
