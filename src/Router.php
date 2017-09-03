@@ -38,6 +38,7 @@ class Router
         'kaarten-gereserveerde-plaatsen' => '\Cyndaron\Kaartverkoop\GereserveerdePlaatsen',
         'kaarten-verwerk-bestelling' => '\Cyndaron\Kaartverkoop\VerwerkBestellingPagina',
         'kaarten-ajax-endpoint' => '\Cyndaron\Kaartverkoop\AjaxEndpoint',
+        'kaarten-update-bestelling' => '\Cyndaron\Kaartverkoop\BestellingUpdate',
         'mc-leden' => '\Cyndaron\Minecraft\LedenPagina',
         'mc-skinrenderer' => '\Cyndaron\Minecraft\SkinRendererHandler',
         'mc-status' => '\Cyndaron\Minecraft\StatusPagina',

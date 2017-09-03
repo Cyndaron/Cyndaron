@@ -176,7 +176,7 @@ class OverzichtBestellingenPagina extends Pagina
             $extralinks = "";
             if (!$bestelling['is_betaald'])
             {
-                $extralinks .= '<td><a href="bestelling_update.php?bestellings_id=' . $bestelling['bestellingsnr'] . '&amp;actie=isbetaald">Markeren als betaald</a></td>';
+                $extralinks .= '<td><a href="kaarten-update-bestelling?bestellings_id=' . $bestelling['bestellingsnr'] . '&amp;actie=isbetaald">Markeren als betaald</a></td>';
             }
             else
             {
@@ -185,7 +185,7 @@ class OverzichtBestellingenPagina extends Pagina
 
             if (($concert['bezorgen_verplicht'] || $bestelling['thuisbezorgen']) && !$bestelling['is_bezorgd'])
             {
-                $extralinks .= '<td><a href="bestelling_update.php?bestellings_id=' . $bestelling['bestellingsnr'] . '&amp;actie=isbezorgd">Markeren als verstuurd</a></td>';
+                $extralinks .= '<td><a href="kaarten-update-bestelling?bestellings_id=' . $bestelling['bestellingsnr'] . '&amp;actie=isbezorgd">Markeren als verstuurd</a></td>';
             }
             else
             {
