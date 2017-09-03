@@ -55,25 +55,29 @@ class Router
             die('Deze locatie mag niet worden opgevraagd.');
         }
 
+        $uir = '';
+        $scriptSrc = "'self'";
+
+        // De CKeditor heeft helaas nog inline scripting nodig. Op deze manier voorkomen we dat de hele site
+        // daaronder moet lijden.
+        if (strpos($request, 'editor-') === 0)
+        {
+            $scriptSrc .= " 'unsafe-inline'";
+        }
+
         if (Util::siteGebruiktTLS())
         {
             ini_set('session.cookie_secure', 1);
+            $uir = 'upgrade-insecure-requests;';
+        }
 
-            // De CKeditor heeft helaas nog inline scripting nodig. Op deze manier voorkomen we dat de hele site
-            // daaronder moet lijden.
-            if (strpos($request, 'editor-') === 0)
-            {
-                header("Content-Security-Policy: upgrade-insecure-requests; script-src 'self' 'unsafe-inline'; font-src 'self'; base-uri 'none'; object-src 'none'");
-            }
-            else
-            {
-                header("Content-Security-Policy: upgrade-insecure-requests; script-src 'self'; font-src 'self'; base-uri 'none'; object-src 'none'");
-            }
-        }
-        else
+        if (Instelling::geefInstelling('facebook_share') == 1)
         {
-            header("Content-Security-Policy: script-src 'self' 'unsafe-inline'; font-src 'self'; base-uri 'none'; object-src 'none'");
+            $scriptSrc .= " connect.facebook.net";
         }
+
+        header("Content-Security-Policy: $uir script-src $scriptSrc; font-src 'self'; base-uri 'none'; object-src 'none'");
+
 
         $hoofdurl = new Url(DBConnection::geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', []));
         if ($hoofdurl->isGelijkAan(new Url($request)))

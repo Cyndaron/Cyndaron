@@ -2,10 +2,11 @@ Versie 5.2 (Stobi)
 - Beveilig cookies beter
 - Stel referrer-policy in
 - Fix weergave meldingen in klassiek menu (kan nog verbeterd worden, #40)
-- Voeg een CSP toe (nog niet aangepast voor Facebook-integratie)
+- Voeg een CSP toe
 - Friendly-url-preview in de editor toont nu het juiste protocol (#42)
 - Plaats inlogknop klassiek menu beter (kan nog verbeterd worden, #39)
 - Verbeter overzicht gereserveerde plaatsen in kaartverkoopmodule
+- Fix bevestigen van betalingen in kaartverkoopmodule (#43)
 
 Versie 5.1 (Heraclea Lyncestis)
 - Verwijder inline scripting uit Cyndaron zelf (CKeditor is nog niet aangepakt)
