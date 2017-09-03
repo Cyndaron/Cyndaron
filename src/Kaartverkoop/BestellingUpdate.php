@@ -36,8 +36,8 @@ class BestellingUpdate
                 $tekst .= 'Uw kaarten zullen op de avond van het concert voor u klaarliggen bij de kassa.';
             }
 
-            $extraheaders = 'From: "Vlissingse Oratorium Vereniging" <noreply@vlissingse-oratoriumvereniging.nl>;
-	Content-Type: text/plain; charset="UTF-8";';
+            $extraheaders = 'From: "Vlissingse Oratorium Vereniging" <noreply@vlissingse-oratoriumvereniging.nl>;' . "\n" .
+	                        'Content-Type: text/plain; charset="UTF-8";';
             mail($record['e-mailadres'], 'Betalingsbevestiging', $tekst, $extraheaders);
 
 
