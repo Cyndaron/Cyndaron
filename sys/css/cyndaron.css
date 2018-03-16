@@ -15,19 +15,16 @@ a:hover
     margin: auto;
     height: 96%;
     width: 90%;
-    /*overflow: auto;*/
 }
 
 .menucontainer
 {
-    /*overflow: auto;*/
     margin-top: 18px;
     margin-bottom: 18px;
 }
 
 .inhoudcontainer
 {
-    /*overflow: auto;*/
     margin-top: 18px;
     margin-bottom: 18px;
 }
@@ -35,7 +32,6 @@ a:hover
 .inhoud
 {
     padding: 13px 18px 13px 18px;
-    /*color: #000044;*/
     border-radius: 4px;
     overflow: auto;
 }
@@ -72,12 +68,6 @@ img.sys
 {
     margin: 0 0 0 0;
     padding: 0 0 0 0;
-}
-
-td
-{
-    /*border: 0;*/
-    /*vertical-align: top;*/
 }
 
 .uitwerk
@@ -209,7 +199,6 @@ tr.rotate
 
 th.rotate
 {
-    /* Something you can count on */
     height: 140px;
     white-space: nowrap;
     vertical-align: inherit !important;
@@ -241,10 +230,6 @@ th.rotate > div > span
 .meldingen
 {
     display: inline-block;
-    /*border-radius: 4px;*/
-    /*padding: 5px;*/
-    /*border: 1px dotted #333333;*/
-    /*background-color: #EEEEEE;*/
     text-align: left;
     margin-bottom: 5px;
 }
@@ -253,11 +238,6 @@ th.rotate > div > span
 {
     margin: 0;
     padding-left: 10px;
-}
-
-.meldingen li
-{
-    /*font-size: 11px;*/
 }
 
 .glyphicon-vorige-versie
@@ -321,13 +301,6 @@ th.rotate > div > span
 {
     border: 1px solid #ddd;
 }
-
-/*.overzichtBestellingen tr td*/
-/*{*/
-/*vertical-align: middle;*/
-/*border: 1px #DDDDDD solid;*/
-/*padding: 5px;*/
-/*}*/
 
 table.kaartverkoop
 {
