@@ -40,17 +40,17 @@ class Pagina
         $this->paginanaam = $paginanaam;
     }
 
-    public function maakExtraMeta($extraMeta)
+    public function maakExtraMeta(string $extraMeta)
     {
         $this->extraMeta = $extraMeta;
     }
 
-    public function maaknietDelen($bool)
+    public function maaknietDelen(bool $bool)
     {
-        $this->nietDelen = (bool)$bool;
+        $this->nietDelen = $bool;
     }
 
-    public function maakTitelknoppen($titelknoppen)
+    public function maakTitelknoppen(string $titelknoppen)
     {
         $this->titelknoppen = $titelknoppen;
     }
@@ -72,7 +72,7 @@ class Pagina
             <title><?=$titel;?></title>
             <?php
             printf('<link href="sys/css/normalize.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
-            printf('<link href="sys/css/bootstrap.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE)
+            printf('<link href="sys/css/bootstrap.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="sys/css/lightbox.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="sys/css/cyndaron.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="user.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
