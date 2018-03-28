@@ -91,7 +91,7 @@ class KaartenBestellenPagina extends Pagina
                 <?php if ($concert_info['gereserveerde_plaatsen_uitverkocht']): ?>
                     <input id="gereserveerde_plaatsen" name="gereserveerde_plaatsen" style="display:none;"
                            type="checkbox" value="1"/>
-                    U kunt voor dit concert nog kaarten voor vrije plaatsen kopen. De gereserveerde plaatsen zijn inmiddels uitverkocht.
+                    U kunt voor dit concert nog kaarten voor vrije plaatsen kopen. <b>De gereserveerde plaatsen zijn inmiddels uitverkocht.</b>
                 <?php else: ?>
                     <input id="gereserveerde_plaatsen" class="berekenTotaalprijsOpnieuw" name="gereserveerde_plaatsen"
                            type="checkbox" value="1"/>
