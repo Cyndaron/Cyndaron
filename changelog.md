@@ -1,3 +1,5 @@
+Versie 5.3 (Lychnidus)
+
 Versie 5.2.1
 - Fix "Content-Type"-header in betalingsbevestiging kaartverkoop
 
