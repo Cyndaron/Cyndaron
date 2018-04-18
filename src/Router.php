@@ -43,6 +43,7 @@ class Router
         'mc-skinrenderer' => '\Cyndaron\Minecraft\SkinRendererHandler',
         'mc-status' => '\Cyndaron\Minecraft\StatusPagina',
         'wieiswie' => '\Cyndaron\WieIsWie\OverzichtPagina',
+        'verwerkmailformulier-ldbf' => '\Cyndaron\VerwerkMailformulierPaginaLDBF',
     ];
 
     public function __construct()
