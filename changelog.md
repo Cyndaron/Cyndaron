@@ -1,4 +1,7 @@
 Versie 5.3 (Lychnidus)
+- Gebruik versienummer bij opvragen CSS (#50)
+- CSS-fixes voor kaartverkoop (#48 en #49)
+- Handel redirect naar HTTPS af in PHP
 
 Versie 5.2.1
 - Fix "Content-Type"-header in betalingsbevestiging kaartverkoop
