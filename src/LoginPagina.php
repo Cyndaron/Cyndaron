@@ -98,7 +98,7 @@ class LoginPagina extends Pagina
             $this->toonPrePagina();
             echo '
 <form class="form-horizontal" method="post" action="#">
-<p>Dit is bedoeld voor beheerders om wijzigingen aan de pagina aan te brengen. Als u hier toevallig terecht bent gekomen kunt u hier niets doen. U kunt dan klikken op &eacute;&eacute;n van de onderdelen in het menu.</p>
+<p>Als u inloggegevens hebt gekregen voor deze website, dan kunt u hieronder inloggen.</p>
 <div class="form-group">
     <label for="login_naam" class="control-label col-sm-2">Gebruikersnaam:</label>
     <div class="col-sm-3">
