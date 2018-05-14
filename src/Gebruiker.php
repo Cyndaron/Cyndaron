@@ -15,6 +15,11 @@ class Gebruiker
         }
     }
 
+    public static function isIngelogd()
+    {
+        return (isset($_SESSION['naam']) && $_SESSION['ip'] == $_SERVER['REMOTE_ADDR'] && $_SESSION['niveau'] > 0);
+    }
+
     public static function nieuweMelding(string $tekst)
     {
         $_SESSION['meldingen'][] = $tekst;

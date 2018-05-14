@@ -9,16 +9,27 @@ class LoginPagina extends Pagina
         {
             if (Request::geefPostVeilig('login_naam') && Request::geefPostVeilig('login_wach'))
             {
-                $login['naam'] = Request::geefPostVeilig('login_naam');
-                $gebruikersnaam = Request::geefPostVeilig('login_naam');
+                $identification = Request::geefPostVeilig('login_naam');
                 $wachtwoord = Request::geefPostVeilig('login_wach');
                 $wachtwoord512 = hash('sha512', $wachtwoord);
 
                 $connectie = DBConnection::getPDO();
                 $connObj = DBConnection::getInstance();
 
-                $prep = $connectie->prepare('SELECT * FROM gebruikers WHERE gebruikersnaam=?');
-                $prep->execute([$gebruikersnaam]);
+                if (strpos($identification, '@') !== false)
+                {
+                    $query = 'SELECT * FROM gebruikers WHERE email=?';
+                    $updateQuery = 'UPDATE gebruikers SET wachtwoord=? WHERE email=?';
+                }
+                else
+                {
+                    $query = 'SELECT * FROM gebruikers WHERE gebruikersnaam=?';
+                    $updateQuery = 'UPDATE gebruikers SET wachtwoord=? WHERE gebruikersnaam=?';
+                }
+
+
+                $prep = $connectie->prepare($query);
+                $prep->execute([$identification]);
                 $userdata = $prep->fetch();
 
                 if (!$userdata)
@@ -26,7 +37,7 @@ class LoginPagina extends Pagina
                     parent::__construct('Fout');
                     $this->maakNietDelen(true);
                     $this->toonPrePagina();
-                    echo 'Verkeerde gebruikersnaam.';
+                    echo 'Onbekende gebruikersnaam of e-mailadres.';
                     $this->toonPostPagina();
                 }
                 else
@@ -40,7 +51,7 @@ class LoginPagina extends Pagina
                         if (password_needs_rehash($userdata['wachtwoord'], PASSWORD_DEFAULT))
                         {
                             $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
-                            $connObj->doQuery('UPDATE gebruikers SET wachtwoord=? WHERE gebruikersnaam=?', [$wachtwoord, $gebruikersnaam]);
+                            $connObj->doQuery($updateQuery, [$wachtwoord, $identification]);
                         }
                     }
                     elseif ($userdata['wachtwoord'] == $wachtwoord512)
@@ -48,12 +59,13 @@ class LoginPagina extends Pagina
                         $loginGelukt = true;
 
                         $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
-                        $connObj->doQuery('UPDATE gebruikers SET wachtwoord=? WHERE gebruikersnaam=?', [$wachtwoord, $gebruikersnaam]);
+                        $connObj->doQuery($updateQuery, [$wachtwoord, $identification]);
                     }
 
                     if ($loginGelukt)
                     {
-                        $_SESSION['naam'] = $gebruikersnaam;
+                        $_SESSION['naam'] = $userdata['gebruikersnaam'];
+                        $_SESSION['email'] = $userdata['email'];
                         $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
                         $_SESSION['niveau'] = $userdata['niveau'];
                         Gebruiker::nieuweMelding('U bent ingelogd.');
@@ -83,7 +95,7 @@ class LoginPagina extends Pagina
                 parent::__construct('Fout');
                 $this->maakNietDelen(true);
                 $this->toonPrePagina();
-                echo 'Verkeerde gebruikersnaam.';
+                echo 'Verkeerde gebruikersnaam of e-mailadres.';
                 $this->toonPostPagina();
             }
         }
@@ -100,7 +112,7 @@ class LoginPagina extends Pagina
 <form class="form-horizontal" method="post" action="#">
 <p>Als u inloggegevens hebt gekregen voor deze website, dan kunt u hieronder inloggen.</p>
 <div class="form-group">
-    <label for="login_naam" class="control-label col-sm-2">Gebruikersnaam:</label>
+    <label for="login_naam" class="control-label col-sm-2">Gebruikersnaam of e-mailadres</b>:</label>
     <div class="col-sm-3">
         <input type="text" class="form-control" id="login_naam" name="login_naam"/>
     </div>

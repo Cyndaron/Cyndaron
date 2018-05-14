@@ -231,16 +231,18 @@ class Pagina
 
                         echo '</ul><ul class="nav navbar-nav navbar-right">';
 
-                        if (Gebruiker::isAdmin()): ?>
+                        if (Gebruiker::isIngelogd()): ?>
                             <p class="navbar-text">Ingelogd als <?= $_SESSION['naam']; ?></p>
                             <li><a title="Uitloggen" href="logoff.php"><span class="glyphicon glyphicon-log-out"></span></a>
                             </li>
-                            <li><a title="Instellingen aanpassen" href="configuratie.php"><span
-                                            class="glyphicon glyphicon-cog"></span></a></li>
-                            <li><a title="Paginaoverzicht" href="overzicht.php"><span
-                                            class="glyphicon glyphicon-th-list"></span></a></li>
-                            <li><a title="Nieuwe statische pagina aanmaken" href="editor-statischepagina"><span
-                                            class="glyphicon glyphicon-plus"></span></a></li>
+                            <?php if (Gebruiker::isAdmin()): ?>
+                                <li><a title="Instellingen aanpassen" href="configuratie.php"><span
+                                                class="glyphicon glyphicon-cog"></span></a></li>
+                                <li><a title="Paginaoverzicht" href="overzicht.php"><span
+                                                class="glyphicon glyphicon-th-list"></span></a></li>
+                                <li><a title="Nieuwe statische pagina aanmaken" href="editor-statischepagina"><span
+                                                class="glyphicon glyphicon-plus"></span></a></li>
+                            <?php endif; ?>
                         <?php else: ?>
                             <li><a title="Inloggen" href="login.php"><span class="glyphicon glyphicon-lock"></span></a>
                             </li>
@@ -268,7 +270,7 @@ class Pagina
 
     protected function toonKlassiekMenu()
     {
-        $isadmin = Gebruiker::isAdmin();
+        $isIngelogd = Gebruiker::isIngelogd();
         $ondertitel = Instelling::geefInstelling('ondertitel');
         $donkerClass = (Instelling::geefInstelling('menuthema') == 'donker') ? 'klassiek-menu-donker' : '';
 
@@ -279,18 +281,22 @@ class Pagina
         }
 
         echo '<h1>' . $this->websitenaam . '</h1>' . $ondertitel;
-        if ($ondertitel && $isadmin)
+        if ($ondertitel && $isIngelogd)
         {
             echo ' - ';
         }
-        if (!empty($_SESSION) && !empty($_SESSION['naam']) && $isadmin)
+        if (!empty($_SESSION) && !empty($_SESSION['naam']) && $isIngelogd)
         {
             echo 'Ingelogd als ' . $_SESSION['naam'] . ' ';
             echo '<div class="btn-group">';
             echo new Knop('log-out', 'logoff.php', 'Uitloggen', null, 16);
-            echo new Knop('cog', 'configuratie.php', 'Instellingen aanpassen', null, 16);
-            echo new Knop('list', 'overzicht.php', 'Paginaoverzicht', null, 16);
-            echo new Knop('plus', "editor-statischepagina", 'Nieuwe sub aanmaken', null, 16);
+
+            if (Gebruiker::isAdmin())
+            {
+                echo new Knop('cog', 'configuratie.php', 'Instellingen aanpassen', null, 16);
+                echo new Knop('list', 'overzicht.php', 'Paginaoverzicht', null, 16);
+                echo new Knop('plus', "editor-statischepagina", 'Nieuwe sub aanmaken', null, 16);
+            }
             echo '</div>';
         }
         echo '<div class="dottop"><ul class="menulijst">';
