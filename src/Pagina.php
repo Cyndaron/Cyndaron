@@ -381,8 +381,12 @@ class Pagina
         }
     }
 
-    public function geefMenu()
+    public function geefMenu(): array
     {
+        if (!Gebruiker::hasSufficientReadLevel())
+        {
+            return [];
+        }
         $menu = $this->connectie->prepare('SELECT * FROM menu ORDER BY volgorde ASC;');
         $menu->execute();
         $menuitems = null;

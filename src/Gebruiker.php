@@ -31,4 +31,15 @@ class Gebruiker
         $_SESSION['meldingen'] = null;
         return $return;
     }
+
+    public static function getLevel(): int
+    {
+        return intval(@$_SESSION['niveau']);
+    }
+
+    public static function hasSufficientReadLevel(): bool
+    {
+        $minimumReadLevel = intval(Instelling::geefInstelling('minimum_niveau_lezen'));
+        return (static::getLevel() >= $minimumReadLevel);
+    }
 }

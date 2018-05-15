@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron;
 
-
 /**
  * Zorgt voor correct doorverwijzen van verzoeken.
  * @package Cyndaron
@@ -87,6 +86,25 @@ class Router
 
         header("Content-Security-Policy: $uir script-src $scriptSrc; font-src 'self'; base-uri 'none'; object-src 'none'");
 
+        // session_start() is nodig omdat $_SESSION anders helemaal niet is gedefinieerd.
+        session_start();
+        $userLevel = Gebruiker::getLevel();
+        if (!Gebruiker::hasSufficientReadLevel() && strpos($request, 'login.php') !== 0)
+        {
+            Request::sendDoNotCache();
+            if ($userLevel > 0)
+            {
+                new Error403Pagina();
+                die('Deze pagina mag niet worden opgevraagd.');
+            }
+            else
+            {
+                Gebruiker::nieuweMelding('U moet inloggen om deze site te bekijken');
+                $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
+                header('Location: login.php');
+                die();
+            }
+        }
 
         $hoofdurl = new Url(DBConnection::geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', []));
         if ($hoofdurl->isGelijkAan(new Url($request)))
