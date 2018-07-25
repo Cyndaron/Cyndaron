@@ -86,26 +86,6 @@ class Router
 
         header("Content-Security-Policy: $uir script-src $scriptSrc; font-src 'self'; base-uri 'none'; object-src 'none'");
 
-        // session_start() is nodig omdat $_SESSION anders helemaal niet is gedefinieerd.
-        session_start();
-        $userLevel = Gebruiker::getLevel();
-        if (!Gebruiker::hasSufficientReadLevel() && strpos($request, 'login.php') !== 0)
-        {
-            Request::sendDoNotCache();
-            if ($userLevel > 0)
-            {
-                new Error403Pagina();
-                die('Deze pagina mag niet worden opgevraagd.');
-            }
-            else
-            {
-                Gebruiker::nieuweMelding('U moet inloggen om deze site te bekijken');
-                $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
-                header('Location: login.php');
-                die();
-            }
-        }
-
         $hoofdurl = new Url(DBConnection::geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', []));
         if ($hoofdurl->isGelijkAan(new Url($request)))
         {
@@ -128,18 +108,9 @@ class Router
         {
             $this->verwerkUrl($hoofdurl);
         }
-        //Non-friendly URL
-        //        elseif (strpos($request, '.php'))
-        //        {
-        //            $this->verwerkUrl($request);
-        //        }
-        //        //Normaal bestand
-        //        elseif (@file_exists($request))
-        //        {
-        //            include $request;
-        //        }
         elseif (array_key_exists($request, $this->endpoints))
         {
+            $this->routeFoundNowCheckLogin($request);
             $classname = $this->endpoints[$request];
             $handler = new $classname();
         }
@@ -148,11 +119,6 @@ class Router
         elseif ($url = new Url(DBConnection::geefEen('SELECT doel FROM friendlyurls WHERE naam=?', [$request])))
         {
             $this->verwerkUrl($url);
-        }
-        //Normaal bestand zonder .php
-        elseif (@file_exists($request . '.php'))
-        {
-            include $request . '.php';
         }
         // Oude directe link naar een foto
         elseif ($request === 'toonfoto.php')
@@ -188,6 +154,7 @@ class Router
 
         if (array_key_exists($bestand, $this->endpoints))
         {
+            $this->routeFoundNowCheckLogin($request);
             $classname = $this->endpoints[$bestand];
             new $classname();
         }
@@ -198,6 +165,27 @@ class Router
         else
         {
             new Error404Pagina();
+        }
+    }
+
+    public function routeFoundNowCheckLogin($request)
+    {
+        $userLevel = Gebruiker::getLevel();
+        if (!Gebruiker::hasSufficientReadLevel() && strpos($request, 'login.php') !== 0)
+        {
+            Request::sendDoNotCache();
+            if ($userLevel > 0)
+            {
+                new Error403Pagina();
+                die('Deze pagina mag niet worden opgevraagd.');
+            }
+            else
+            {
+                Gebruiker::nieuweMelding('U moet inloggen om deze site te bekijken');
+                $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
+                header('Location: login.php');
+                die();
+            }
         }
     }
 }
