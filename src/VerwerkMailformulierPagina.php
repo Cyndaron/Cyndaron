@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron;
 
-
 class VerwerkMailformulierPagina extends Pagina
 {
     public function __construct()
@@ -40,14 +39,11 @@ class VerwerkMailformulierPagina extends Pagina
                 $server = str_replace("http://", "", $server);
                 $server = str_replace("https://", "", $server);
                 $server = str_replace("/", "", $server);
+                $extraheaders = 'From: noreply@' . $server;
 
                 if ($afzender)
                 {
-                    $extraheaders = 'From: ' . $afzender;
-                }
-                else
-                {
-                    $extraheaders = 'From: noreply@' . $server;
+                    $extraheaders .= "\r\n" . 'Reply-To: ' . $afzender;
                 }
 
                 if (mail($ontvanger, $onderwerp, $tekst, $extraheaders))
@@ -57,9 +53,10 @@ class VerwerkMailformulierPagina extends Pagina
                     $this->toonPrePagina();
                     echo 'Het versturen is gelukt.';
 
-                    if ($form['stuur_bevestiging'] == true && Request::geefPostVeilig('E-mailadres'))
+                    if ($form['stuur_bevestiging'] == true && $afzender)
                     {
                         $extraheaders = sprintf('From: %s <noreply@%s>', html_entity_decode(Instelling::geefInstelling('websitenaam')), $server);
+                        $extraheaders .= "\r\n" . 'Reply-To: ' . $ontvanger;
                         mail($afzender, 'Ontvangstbevestiging', $form['tekst_bevestiging'], $extraheaders);
                     }
                 }

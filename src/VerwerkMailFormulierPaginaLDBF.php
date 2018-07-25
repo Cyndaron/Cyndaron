@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron;
 
-
 class VerwerkMailformulierPaginaLDBF extends Pagina
 {
     public function __construct()
@@ -134,9 +133,11 @@ class VerwerkMailformulierPaginaLDBF extends Pagina
 
                 $extraheaders = 'From: "Website Leen de Broekert Fonds" <noreply@leendebroekertfonds.nl>' . "\n" .
                     'Content-Type: text/html; charset="UTF-8"';
+                $extraheadersMail1 = $extraheaders . "\n" . 'Reply-To: ' . Request::geefPostVeilig('E-mailadres');
+                $extraheadersMail2 = $extraheaders . "\n" . 'Reply-To: voorzitter@leendebroekertfonds.nl';
 
-                $mail1 = mail('voorzitter@leendebroekertfonds.nl', 'Nieuwe aanvraag', $tekst, $extraheaders);
-                $mail2 = mail(Request::geefPostVeilig('E-mailadres'), 'Kopie aanvraag', $tekst, $extraheaders);
+                $mail1 = mail('voorzitter@leendebroekertfonds.nl', 'Nieuwe aanvraag', $tekst, $extraheadersMail1);
+                $mail2 = mail(Request::geefPostVeilig('E-mailadres'), 'Kopie aanvraag', $tekst, $extraheadersMail2);
 
                 if ($mail1 && $mail2)
                 {
