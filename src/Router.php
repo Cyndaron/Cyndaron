@@ -107,7 +107,7 @@ class Router
         //Hoofdpagina
         if ($request == '/')
         {
-            $this->verwerkUrl($hoofdurl);
+            $this->verwerkUrl($hoofdurl, $request);
         }
         elseif (array_key_exists($request, $this->endpoints))
         {
@@ -119,7 +119,7 @@ class Router
         // Bekende friendly URL
         elseif ($url = new Url(DBConnection::geefEen('SELECT doel FROM friendlyurls WHERE naam=?', [$request])))
         {
-            $this->verwerkUrl($url);
+            $this->verwerkUrl($url, $request);
         }
         // Oude directe link naar een foto
         elseif ($request === 'toonfoto.php')
@@ -134,7 +134,7 @@ class Router
         }
     }
 
-    public function verwerkUrl(Url $url)
+    public function verwerkUrl(Url $url, string $request)
     {
         $ufUrl = $url->geefUnfriendly();
         if (strpos($ufUrl, '?') !== false)

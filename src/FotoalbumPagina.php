@@ -24,7 +24,7 @@ class FotoalbumPagina extends Pagina
         $this->voegScriptToe('sys/js/lightbox.min.js');
         $this->toonPrepagina();
 
-        if ($dirArray = scandir("./fotoalbums/$boekid"))
+        if ($dirArray = @scandir("./fotoalbums/$boekid"))
         {
             $aantal = 0;
 
