@@ -195,9 +195,11 @@ class Pagina
 											SELECT 'sub' AS type, id, naam FROM subs WHERE categorieid=?
 											UNION
 											SELECT 'fotoboek' AS type, id, naam FROM fotoboeken WHERE categorieid=?
+											UNION
+											SELECT 'categorie' AS type, id, naam FROM categorieen WHERE categorieid=?
 										) AS een
 										ORDER BY naam ASC;");
-                                    $paginasInCategorie->execute([$id, $id]);
+                                    $paginasInCategorie->execute([$id, $id, $id]);
 
                                     echo '<li class="dropdown">';
 

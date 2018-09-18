@@ -14,14 +14,15 @@ class BewerkCategorie extends Bewerk
             $titel = Request::geefPostOnveilig('titel');
             $beschrijving = $this->parseTextForInlineImages(Request::geefPostOnveilig('artikel'));
             $alleentitel = Util::parseCheckBoxAlsBool(Request::geefPostOnveilig('alleentitel'));
+            $categorieId = intval(Request::geefPostOnveilig('categorieid'));
 
             if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
             {
-                CategorieModel::wijzigCategorie($this->id, $titel, $alleentitel, $beschrijving);
+                CategorieModel::wijzigCategorie($this->id, $titel, $alleentitel, $beschrijving, $categorieId);
             }
             else
             {
-                $this->id = CategorieModel::nieuweCategorie($titel, $alleentitel, $beschrijving);
+                $this->id = CategorieModel::nieuweCategorie($titel, $alleentitel, $beschrijving, $categorieId);
             }
 
             Gebruiker::nieuweMelding('Categorie bewerkt.');

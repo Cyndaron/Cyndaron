@@ -8,12 +8,12 @@ namespace Cyndaron;
  */
 class CategorieModel
 {
-    public static function nieuweCategorie($naam, $alleentitel = false, $beschrijving = '')
+    public static function nieuweCategorie($naam, bool $alleentitel = false, string $beschrijving = '', $categorieId = null)
     {
-        return DBConnection::maakEen('INSERT INTO categorieen(`naam`,`alleentitel`, `beschrijving`) VALUES (?,?,?);', [$naam, (int)$alleentitel, $beschrijving]);
+        return DBConnection::maakEen('INSERT INTO categorieen(`naam`,`alleentitel`, `beschrijving`, `categorieid`) VALUES (?,?,?,?);', [$naam, (int)$alleentitel, $beschrijving, $categorieId]);
     }
 
-    public static function wijzigCategorie($id, $naam = null, $alleentitel = null, $beschrijving = null)
+    public static function wijzigCategorie($id, $naam = null, $alleentitel = null, $beschrijving = null, $categorieId = null)
     {
         if ($naam !== null)
         {
@@ -27,6 +27,7 @@ class CategorieModel
         {
             DBConnection::geefEen('UPDATE categorieen SET `beschrijving`=? WHERE id=?', [$beschrijving, $id]);
         }
+        DBConnection::geefEen('UPDATE categorieen SET `categorieid`=? WHERE id=?', [$categorieId, $id]);
     }
 
     public static function verwijderCategorie($id)

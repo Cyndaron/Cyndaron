@@ -6,6 +6,7 @@ Versie 5.3 (Lychnidus)
 - Handel redirect naar HTTPS af in PHP
 - Mogelijkheid tot inloggen met e-mailadres
 - Mogelijkheid tot inloggen als niet-beheerder (#28)
+- Mogelijkheid tot nesten van categorieën (#22)
 - Mogelijkheid tot resetten wachtwoord
 - Mogelijkheid tot vereiste inlog
 

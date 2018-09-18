@@ -27,5 +27,6 @@ class EditorCategorie extends EditorPagina
             </div>
         </div>
         <?php
+        $this->showCategoryDropdown();
     }
 }

@@ -121,4 +121,39 @@ abstract class EditorPagina extends Pagina
     abstract protected function prepare();
 
     abstract protected function toonSpecifiekeKnoppen();
+
+    public function showCategoryDropdown()
+    {
+        ?>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="categorieid">Plaats dit artikel in de categorie: </label>
+            <div class="col-sm-5">
+                <select name="categorieid" class="form-control">
+                    <option value="0">&lt;Geen categorie&gt;</option>
+                    <?php
+
+                    if ($this->id)
+                    {
+                        $categorieid = DBConnection::geefEen('SELECT categorieid FROM ' . $this->type . ' WHERE id= ?', [$this->id]);
+                    }
+                    else
+                    {
+                        $categorieid = Instelling::geefInstelling('standaardcategorie');
+                    }
+
+                    $categorieen = $this->connectie->query("SELECT * FROM categorieen ORDER BY naam;");
+                    foreach ($categorieen->fetchAll() as $categorie)
+                    {
+                        if ($this->type == 'categorie' && $categorie['id'] == $this->id)
+                            continue;
+
+                        $selected = ($categorieid == $categorie['id']) ? ' selected="selected"' : '';
+                        printf('<option value="%d" %s>%s</option>', $categorie['id'], $selected, $categorie['naam']);
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+        <?php
+    }
 }
