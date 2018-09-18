@@ -155,7 +155,7 @@ class KaartenBestellenPagina extends Pagina
 
             <div class="form-group">
                 <label class="col-sm-2 control-label" for="e-mailadres">E-mailadres:</label>
-                <div class="col-sm-5"><input id="e-mailadres" name="e-mailadres" class="form-control"/></div>
+                <div class="col-sm-5"><input id="e-mailadres" name="e-mailadres" type="email" class="form-control"/></div>
             </div>
 
 
