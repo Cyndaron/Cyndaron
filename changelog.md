@@ -4,7 +4,7 @@ Versie 5.3 (Lychnidus)
 - Gebruik Reply-To bij versturen e-mail (#53)
 - Handel redirect naar HTTPS af in PHP
 - Mogelijkheid tot inloggen met e-mailadres
-- Mogelijkheid tot inloggen als niet-beheerder
+- Mogelijkheid tot inloggen als niet-beheerder (#28)
 - Mogelijkheid tot resetten wachtwoord
 - Mogelijkheid tot vereiste inlog
 
