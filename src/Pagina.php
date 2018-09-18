@@ -179,8 +179,6 @@ class Pagina
 
                         <?php
                         $menuarray = $this->geefMenu();
-                        // Laat eerste menuonderdeel weg, daar is het logo voor.
-                        array_shift($menuarray);
 
                         if (count($menuarray) > 0)
                         {
