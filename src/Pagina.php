@@ -315,7 +315,7 @@ class Pagina
             }
         }
         echo '</ul></div>';
-        static::toonIndienAanwezigEnGeenAdmin('<div class="klassiek-menu-login-container">' . new Knop('log-in', 'login.php', 'Inloggen', null, 16) . '</div>');
+        static::toonIndienAanwezigEnGeenAdmin('<div class="klassiek-menu-login-container">' . new Knop('lock', 'login.php', 'Inloggen', null, 16) . '</div>');
 
         $meldingen = Gebruiker::geefMeldingen();
         if ($meldingen)
