@@ -1,9 +1,10 @@
 Versie 5.3 (Lychnidus)
-- CSS-fixes voor kaartverkoop (#48 en #49)
 - Gebruik altijd hetzelfde pictogram voor inloggen (#60)
 - Gebruik Reply-To bij versturen e-mail (#53)
 - Gebruik versienummer bij opvragen CSS (#50)
 - Handel redirect naar HTTPS af in PHP
+- Kaartverkoop: CSS-fixes (#48 en #49)
+- Kaartverkoop: mogelijkheid tot verwijderen bestellingen (#52)
 - Mogelijkheid tot inloggen met e-mailadres
 - Mogelijkheid tot inloggen als niet-beheerder (#28)
 - Mogelijkheid tot nesten van categorieën (#22)

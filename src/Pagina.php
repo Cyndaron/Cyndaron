@@ -355,6 +355,23 @@ class Pagina
         ?>
         </div></div></div>
 
+        <div id="confirm-dangerous" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Sluiten"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Weet u het zeker?</h4>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button id="confirm-dangerous-no"  type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button><button id="confirm-dangerous-yes" role="button" class="btn btn-danger">Verwijderen</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
         <script type="text/javascript" src="sys/js/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="sys/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="sys/js/cyndaron.js"></script>

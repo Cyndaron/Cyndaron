@@ -45,3 +45,14 @@ $(document).ready(function ()
 {
     email();
 });
+
+function del(text, link)
+{
+    $('#confirm-dangerous .modal-body').html(text);
+    $('#confirm-dangerous-yes').off();
+    $('#confirm-dangerous-yes').on('click', function()
+    {
+        window.location = link;
+    });
+    $('#confirm-dangerous').modal();
+}

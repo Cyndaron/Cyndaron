@@ -47,6 +47,10 @@ class BestellingUpdate
         {
             DBConnection::maakEen('UPDATE kaartverkoop_bestellingen SET `is_bezorgd`=1 WHERE id=?', [$bestellings_id]);
         }
+        elseif ($actie == 'delete')
+        {
+            DBConnection::maakEen('DELETE FROM kaartverkoop_bestellingen WHERE id=?', [$bestellings_id]);
+        }
 
         header('Location: ' . $referrer);
     }

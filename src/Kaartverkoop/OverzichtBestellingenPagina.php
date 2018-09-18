@@ -45,6 +45,8 @@ class OverzichtBestellingenPagina extends Pagina
         $prep->execute([$concert_id]);
         $concert = $prep->fetch();
 
+        $this->extraScripts[] = 'src/Kaartverkoop/OverzichtBestellingenPagina.js';
+
         parent::__construct('Overzicht bestellingen: ' . $concert['naam']);
         $this->toonPrePagina();
 
@@ -109,8 +111,7 @@ class OverzichtBestellingenPagina extends Pagina
             <th class="rotate">
                 <div><span>Is betaald?</span></div>
             </th>
-            <th></th>
-            <th></th>
+            <th style="min-width: 150px;"></th>
         </tr>
         <?php
         foreach ($bestellingen as $bestelling)
@@ -173,30 +174,23 @@ class OverzichtBestellingenPagina extends Pagina
 
             echo '</td><td>' . Util::boolNaarTekst($bestelling['gereserveerde_plaatsen']);
 
-            $extralinks = "";
+            $extralinks = '<div class="btn-group btn-group-sm">';
             if (!$bestelling['is_betaald'])
             {
-                $extralinks .= '<td><a href="kaarten-update-bestelling?bestellings_id=' . $bestelling['bestellingsnr'] . '&amp;actie=isbetaald">Markeren als betaald</a></td>';
-            }
-            else
-            {
-                $extralinks .= '<td></td>';
+                $extralinks .= '<a title="Markeren als betaald" class="btn btn-sm btn-success" href="kaarten-update-bestelling?bestellings_id=' . $bestelling['bestellingsnr'] . '&amp;actie=isbetaald"><span class="glyphicon glyphicon-eur"></span></a>';
             }
 
             if (($concert['bezorgen_verplicht'] || $bestelling['thuisbezorgen']) && !$bestelling['is_bezorgd'])
             {
-                $extralinks .= '<td><a href="kaarten-update-bestelling?bestellings_id=' . $bestelling['bestellingsnr'] . '&amp;actie=isbezorgd">Markeren als verstuurd</a></td>';
-            }
-            else
-            {
-                $extralinks .= '<td></td>';
+                $extralinks .= '<a title="Markeren als verstuurd" class="btn btn-sm btn-success" href="kaarten-update-bestelling?bestellings_id=' . $bestelling['bestellingsnr'] . '&amp;actie=isbezorgd"><span class="glyphicon glyphicon-envelope"></span></a>';
             }
 
-            echo '</td><td>' . Util::boolNaarTekst($bestelling['is_betaald']) . '</td>' . $extralinks . '</tr>';
+            $extralinks .= '<a data-order-id="' . $bestelling['bestellingsnr'] . '" title="Bestelling verwijderen" class="delete-order btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a></div>';
+
+            echo '</td><td>' . Util::boolNaarTekst($bestelling['is_betaald']) . '</td><td>' . $extralinks . '</td></tr>';
         }
 
         echo '</table>';
-
         $this->toonPostPagina();
     }
 }
