@@ -1,6 +1,7 @@
 Versie 5.3 (Lychnidus)
 - Afbeeldingen in lopende tekst zijn nu automatisch responsief (#57)
 - Fix schuifbalken op inhoud (#58)
+- Fotoalbum: bijschriften zijn nu beter leesbaar (#51)
 - Gebruik altijd hetzelfde pictogram voor inloggen (#60)
 - Gebruik Reply-To bij versturen e-mail (#53)
 - Gebruik versienummer bij opvragen CSS (#50)

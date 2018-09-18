@@ -196,7 +196,7 @@ body.lb-disable-scrolling {
 	/*padding-top: 5px;*/
 }
 
-.lb-data .modal-title
+.lb-data .modal-title, .lb-data .lb-details
 {
 	color: #333;
 }
