@@ -36,6 +36,12 @@ a:hover
     overflow: auto;
 }
 
+.inhoud img:not(.sys)
+{
+    max-width: 100%;
+    height: auto;
+}
+
 .paginatitel
 {
     border-bottom: 1px dotted;
