@@ -35,8 +35,6 @@ class FotoalbumPagina extends Pagina
                 if (substr($dirArray[$index], 0, 1) != ".")
                 {
                     $aantal++;
-//                    $size = getimagesize('fotoalbums/' . $boekid . '/' . $dirArray[$index]);
-//                    $width = $size[0];
 
                     $fotoLink = 'fotoalbums/' . $boekid . '/' . $dirArray[$index];
                     $thumbnailLink = 'fotoalbums/' . $boekid . 'thumbnails/' . $dirArray[$index];
