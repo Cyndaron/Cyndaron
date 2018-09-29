@@ -90,8 +90,19 @@ class Pagina
                 static::toonIndienAanwezig(Instelling::geefInstelling('artikelkleur'), '.inhoud { background-color: ',";}\n");
                 ?>
             </style>
+            <?php
+            if (file_exists(__DIR__ . '/../extra-head.php'))
+            {
+                include __DIR__ . '/../extra-head.php';
+            }
+            ?>
         </head>
         <body class="cyndaron" data-artikelkleur="<?=Instelling::geefInstelling('artikelkleur');?>"><?php
+        if (file_exists(__DIR__ . '/../extra-body-start.php'))
+        {
+            include __DIR__ . '/../extra-body-start.php';
+        }
+
         if ($this->nietDelen == false)
         {
             static::toonIndienAanwezig(Instelling::geefInstelling('extra_bodycode'));
@@ -377,6 +388,10 @@ class Pagina
     foreach ($this->extraScripts as $extraScript)
     {
         printf('<script type="text/javascript" src="%s"></script>', $extraScript);
+    }
+    if (file_exists(__DIR__ . '/../extra-body-end.php'))
+    {
+        include __DIR__ . '/../extra-body-end.php';
     }
     ?>
 

@@ -9,6 +9,7 @@ Versie 5.3 (Lychnidus)
 - Kaartverkoop: CSS-fixes (#48 en #49)
 - Kaartverkoop: gebruik `type="email"` voor e-mailadres op bestelformulier (#44)
 - Kaartverkoop: mogelijkheid tot verwijderen bestellingen (#52)
+- Mogelijkheid tot includen van extra head- en bodycode (#61)
 - Mogelijkheid tot inloggen met e-mailadres
 - Mogelijkheid tot inloggen als niet-beheerder (#28)
 - Mogelijkheid tot nesten van categorieën (#22)
