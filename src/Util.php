@@ -98,14 +98,4 @@ class Util
             return true;
         }
     }
-
-    public static function siteGebruiktTLS(): bool
-    {
-        global $gebruikTLS;
-        if (!empty($gebruikTLS) && $gebruikTLS === true)
-        {
-            return true;
-        }
-        return false;
-    }
 }

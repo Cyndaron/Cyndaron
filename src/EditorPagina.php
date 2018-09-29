@@ -50,7 +50,7 @@ abstract class EditorPagina extends Pagina
         }
 
         $saveUrl = sprintf($this->saveUrl, $this->id ? (string)$this->id : '');
-        $protocol = Util::siteGebruiktTLS() ? 'https://' : 'http://';
+        $protocol = 'https://';
         ?>
 
         <form name="bewerkartikel" method="post" action="<?=$saveUrl;?>" class="form-horizontal">

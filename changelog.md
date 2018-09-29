@@ -15,6 +15,7 @@ Versie 5.3 (Lychnidus)
 - Mogelijkheid tot nesten van categorieën (#22)
 - Mogelijkheid tot resetten wachtwoord
 - Mogelijkheid tot vereiste inlog
+- TLS-verbindingen zijn nu verplicht
 
 Versie 5.2.1
 - Fix "Content-Type"-header in betalingsbevestiging kaartverkoop
