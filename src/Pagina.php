@@ -235,7 +235,14 @@ class Pagina
                                         echo '<li>';
                                     }
 
-                                    echo '<a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . '</a></li>';
+                                    if (strpos($menuitem['naam'], 'img#') === 0)
+                                    {
+                                        echo '<a class="img-in-menuitem" href="' . $menuitem['link'] . '"><img src="' . substr($menuitem['naam'], 4) . '"/></a></li>';
+                                    }
+                                    else
+                                    {
+                                        echo '<a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . '</a></li>';
+                                    }
                                 }
                             }
                         }
