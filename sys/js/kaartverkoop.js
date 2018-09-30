@@ -115,12 +115,17 @@ function berekenTotaalprijs()
     var bezorgen = false;
     var verzendkosten = 0.0;
 
-    if (buitenland) {
+    if (buitenland)
+    {
         document.getElementById('ophalen_door_koorlid').checked = true;
         document.getElementById('ophalen_door_koorlid').disabled = true;
-        document.getElementById('buitenland').value = 1;
 
         $('.postcode-gerelateerd').css({display: 'none'});
+    }
+    else
+    {
+        document.getElementById('ophalen_door_koorlid').disabled = false;
+        $('.postcode-gerelateerd').css({display: 'block'});
     }
 
     if (bezorgenVerplicht) {
@@ -198,7 +203,19 @@ function berekenTotaalprijs()
 $('.aantalKaarten-increase').on('click', function() { increase('kaartsoort-' + $(this).attr('data-kaartsoort')); });
 $('.aantalKaarten-decrease').on('click', function() { decrease('kaartsoort-' + $(this).attr('data-kaartsoort')); });
 $('.berekenTotaalprijsOpnieuw').on('click', function() { berekenTotaalprijs(); });
-$('#buitenland-link').on('click', function() { buitenland = true; });
+$('input[type=radio][name=land]').on('change', function()
+{
+    if (this.value === 'buitenland')
+    {
+        buitenland = true;
+    }
+    else
+    {
+        buitenland = false;
+        document.getElementById('ophalen_door_koorlid').checked = false;
+
+    }
+});
 
 setInterval(blokkeerFormulierBijOngeldigeInvoer, 1000);
 setInterval(berekenTotaalprijs, 1000);

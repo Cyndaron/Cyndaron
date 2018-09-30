@@ -22,7 +22,7 @@ class VerwerkBestellingPagina extends Pagina
         $this->connectie = DBConnection::getPDO();
         $concert_id = Request::geefPostVeilig('concert_id');
         $postcode = Request::geefPostVeilig('postcode');
-        $buitenland = Request::geefPostVeilig('buitenland') ? true : false;
+        $buitenland = (Request::geefPostVeilig('land') === 'buitenland') ? true : false;
         $ophalenDoorKoorlid = Request::geefPostVeilig('ophalen_door_koorlid') ? true : false;
         $ophalenDoorKoorlid = $buitenland ? true : $ophalenDoorKoorlid;
         $naam_koorlid = '';

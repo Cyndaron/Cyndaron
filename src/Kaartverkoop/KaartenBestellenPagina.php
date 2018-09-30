@@ -104,6 +104,7 @@ class KaartenBestellenPagina extends Pagina
             <?php else: ?>
                 <input id="gereserveerde_plaatsen" type="hidden" value="0">
             <?php endif; ?>
+
             <?php if ($concert_info['bezorgen_verplicht']): ?>
                 <br>
                 <h3>Bezorging</h3>
@@ -113,8 +114,23 @@ class KaartenBestellenPagina extends Pagina
                     thuisbezorgen <?= Util::naarEuro($concert_info['verzendkosten']); ?> per kaart.<br>Het is ook
                     mogelijk
                     om uw kaarten te laten ophalen door een koorlid. Dit is gratis.
-                    <a id="buitenland-link">Woont u in het buitenland? Klik dan hier.</a>
                 </p>
+
+                <div class="radio">
+                    <label for="land-nederland">
+                        <input id="land-nederland" name="land" type="radio" value="nederland" checked />
+                        Ik woon in Nederland
+                    </label>
+                </div>
+                <div class="radio">
+                    <label for="land-buitenland">
+                        <input id="land-buitenland" name="land" type="radio" value="buitenland"/>
+                        Ik woon niet in Nederland
+                    </label>
+                </div>
+                <br>
+
+
                 <p class="postcode-gerelateerd">
                     Vul hieronder uw postcode in om de totaalprijs te laten berekenen.
                 </p>
