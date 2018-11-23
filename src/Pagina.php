@@ -254,10 +254,21 @@ class Pagina
                             <li><a title="Uitloggen" href="logoff"><span class="glyphicon glyphicon-log-out"></span></a>
                             </li>
                             <?php if (Gebruiker::isAdmin()): ?>
-                                <li><a title="Instellingen aanpassen" href="configuratie"><span
-                                                class="glyphicon glyphicon-cog"></span></a></li>
-                                <li><a title="Paginaoverzicht" href="overzicht"><span
-                                                class="glyphicon glyphicon-th-list"></span></a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false">
+                                        <span class="glyphicon glyphicon-wrench"></span> <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="configuratie"><span class="glyphicon glyphicon-cog"></span>&nbsp; Configuratie</a>
+                                        </li>
+                                        <li>
+
+                                            <a href="overzicht"><span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht</a>
+                                        </li>
+                                    </ul>
+                                </li>
                                 <li><a title="Nieuwe statische pagina aanmaken" href="editor-statischepagina"><span
                                                 class="glyphicon glyphicon-plus"></span></a></li>
                             <?php endif; ?>
