@@ -72,7 +72,7 @@ class Pagina
             <title><?=$titel;?></title>
             <?php
             printf('<link href="sys/css/normalize.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
-            printf('<link href="sys/css/bootstrap.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
+            printf('<link href="vendor/Bootstrap/css/bootstrap.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="sys/css/lightbox.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="sys/css/cyndaron.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="user.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
@@ -389,7 +389,7 @@ class Pagina
         </div><!-- /.modal -->
 
         <script type="text/javascript" src="vendor/jQuery/jquery-3.2.1.min.js"></script>
-        <script type="text/javascript" src="sys/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="vendor/Bootstrap/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="sys/js/cyndaron.js"></script>
     <?php
     foreach ($this->extraScripts as $extraScript)
