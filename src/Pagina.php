@@ -251,18 +251,18 @@ class Pagina
 
                         if (Gebruiker::isIngelogd()): ?>
                             <p class="navbar-text">Ingelogd als <?= $_SESSION['naam']; ?></p>
-                            <li><a title="Uitloggen" href="logoff.php"><span class="glyphicon glyphicon-log-out"></span></a>
+                            <li><a title="Uitloggen" href="logoff"><span class="glyphicon glyphicon-log-out"></span></a>
                             </li>
                             <?php if (Gebruiker::isAdmin()): ?>
-                                <li><a title="Instellingen aanpassen" href="configuratie.php"><span
+                                <li><a title="Instellingen aanpassen" href="configuratie"><span
                                                 class="glyphicon glyphicon-cog"></span></a></li>
-                                <li><a title="Paginaoverzicht" href="overzicht.php"><span
+                                <li><a title="Paginaoverzicht" href="overzicht"><span
                                                 class="glyphicon glyphicon-th-list"></span></a></li>
                                 <li><a title="Nieuwe statische pagina aanmaken" href="editor-statischepagina"><span
                                                 class="glyphicon glyphicon-plus"></span></a></li>
                             <?php endif; ?>
                         <?php else: ?>
-                            <li><a title="Inloggen" href="login.php"><span class="glyphicon glyphicon-lock"></span></a>
+                            <li><a title="Inloggen" href="login"><span class="glyphicon glyphicon-lock"></span></a>
                             </li>
                         <?php endif; ?>
 
@@ -311,8 +311,8 @@ class Pagina
 
             if (Gebruiker::isAdmin())
             {
-                echo new Knop('cog', 'configuratie.php', 'Instellingen aanpassen', null, 16);
-                echo new Knop('list', 'overzicht.php', 'Paginaoverzicht', null, 16);
+                echo new Knop('cog', 'configuratie', 'Instellingen aanpassen', null, 16);
+                echo new Knop('list', 'overzicht', 'Paginaoverzicht', null, 16);
                 echo new Knop('plus', "editor-statischepagina", 'Nieuwe sub aanmaken', null, 16);
             }
             echo '</div>';
@@ -333,7 +333,7 @@ class Pagina
             }
         }
         echo '</ul></div>';
-        static::toonIndienAanwezigEnGeenAdmin('<div class="klassiek-menu-login-container">' . new Knop('lock', 'login.php', 'Inloggen', null, 16) . '</div>');
+        static::toonIndienAanwezigEnGeenAdmin('<div class="klassiek-menu-login-container">' . new Knop('lock', 'login', 'Inloggen', null, 16) . '</div>');
 
         $meldingen = Gebruiker::geefMeldingen();
         if ($meldingen)

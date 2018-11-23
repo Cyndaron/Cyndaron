@@ -45,7 +45,7 @@ class ConfiguratiePagina extends Pagina
         $this->voegScriptToe('sys/js/test-kleuren.js')
 
         ?>
-        <form method="post" action="configuratie.php" class="form-horizontal">
+        <form method="post" action="configuratie" class="form-horizontal">
             <?php
             $fbselected = (Instelling::geefInstelling('facebook_share') == 1) ? ' checked="checked"' : '';
             $standaardcategorie = Instelling::geefInstelling('standaardcategorie');

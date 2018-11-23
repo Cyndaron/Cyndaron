@@ -33,7 +33,7 @@ class StatischePagina extends Pagina
         }
 
         $controls = sprintf('<a href="editor-statischepagina?id=%d" class="btn btn-default" title="Bewerk deze sub"><span class="glyphicon glyphicon-pencil"></span></a>', $subid);
-        $controls .= sprintf('<a href="overzicht.php?type=sub&amp;actie=verwijderen&amp;id=%d" class="btn btn-default" title="Verwijder deze sub"><span class="glyphicon glyphicon-trash"></span></a>', $subid);
+        $controls .= sprintf('<a href="overzicht?type=sub&amp;actie=verwijderen&amp;id=%d" class="btn btn-default" title="Verwijder deze sub"><span class="glyphicon glyphicon-trash"></span></a>', $subid);
 
         if (DBConnection::geefEen('SELECT * FROM vorigesubs WHERE id= ?', [$subid]))
         {

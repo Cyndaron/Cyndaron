@@ -131,8 +131,8 @@ class OverzichtPagina extends Pagina
             {
                 echo '<tr><td><div class="btn-group">';
                 echo new Knop('bewerken', 'editor-statischepagina?id=' . $subId, 'Bewerk deze sub', null, 16);
-                echo new Knop('verwijderen', 'overzicht.php?type=sub&amp;actie=verwijderen&amp;id=' . $subId, 'Verwijder deze sub', null, 16);
-                echo new Knop('aanmenutoevoegen', 'overzicht.php?type=sub&amp;actie=aanmenutoevoegen&amp;id=' . $subId, 'Voeg deze sub toe aan het menu', null, 16);
+                echo new Knop('verwijderen', 'overzicht?type=sub&amp;actie=verwijderen&amp;id=' . $subId, 'Verwijder deze sub', null, 16);
+                echo new Knop('aanmenutoevoegen', 'overzicht?type=sub&amp;actie=aanmenutoevoegen&amp;id=' . $subId, 'Voeg deze sub toe aan het menu', null, 16);
                 $vvsub = $connectie->prepare('SELECT * FROM vorigesubs WHERE id= ?');
                 $vvsub->execute([$subId]);
 
@@ -153,7 +153,7 @@ class OverzichtPagina extends Pagina
 
         <!-- Categorieën -->
         <h2>Categorieën</h2>
-        <form method="post" action="overzicht.php?type=categorie&amp;actie=nieuw" class="form-inline">
+        <form method="post" action="overzicht?type=categorie&amp;actie=nieuw" class="form-inline">
             <div class="form-group">
                 <label for="naam">Nieuwe categorie:</label> <input class="form-control" id="naam" name="naam"
                                                                    type="text"/>
@@ -172,8 +172,8 @@ class OverzichtPagina extends Pagina
                     <td>
                         <div class="btn-group"><?php
                             echo new Knop('bewerken', 'editor-categorie?id=' . $categorie['id'], 'Deze categorie bewerken', null, 16);
-                            echo new Knop('verwijderen', 'overzicht.php?type=categorie&amp;actie=verwijderen&amp;id=' . $categorie['id'], 'Verwijder deze categorie', null, 16);
-                            echo new Knop('aanmenutoevoegen', 'overzicht.php?type=categorie&amp;actie=aanmenutoevoegen&amp;id=' . $categorie['id'], 'Voeg deze categorie toe aan het menu', null, 16); ?>
+                            echo new Knop('verwijderen', 'overzicht?type=categorie&amp;actie=verwijderen&amp;id=' . $categorie['id'], 'Verwijder deze categorie', null, 16);
+                            echo new Knop('aanmenutoevoegen', 'overzicht?type=categorie&amp;actie=aanmenutoevoegen&amp;id=' . $categorie['id'], 'Voeg deze categorie toe aan het menu', null, 16); ?>
                         </div>
                     </td>
                     <td>
@@ -185,7 +185,7 @@ class OverzichtPagina extends Pagina
 
         <!-- Fotoboeken -->
         <h2>Fotoboeken</h2>
-        <form method="post" action="overzicht.php?type=fotoboek&amp;actie=nieuw" class="form-inline">
+        <form method="post" action="overzicht?type=fotoboek&amp;actie=nieuw" class="form-inline">
             <div class="form-group">
                 <label for="fobonaam">Nieuw fotoboek:</label> <input id="fobonaam" name="naam" type="text"
                                                                      class="form-control"/>
@@ -204,8 +204,8 @@ class OverzichtPagina extends Pagina
                     <td>
                         <div class="btn-group"><?php
                             echo new Knop('bewerken', 'editor-fotoalbum?id=' . $fotoboek['id'], 'Bewerk dit fotoboek', null, 16);
-                            echo new Knop('verwijderen', 'overzicht.php?type=fotoboek&amp;actie=verwijderen&amp;id=' . $fotoboek['id'], 'Verwijder dit fotoboek', null, 16);
-                            echo new Knop('aanmenutoevoegen', 'overzicht.php?type=fotoboek&amp;actie=aanmenutoevoegen&amp;id=' . $fotoboek['id'], 'Voeg dit fotoboek toe aan het menu', null, 16); ?>
+                            echo new Knop('verwijderen', 'overzicht?type=fotoboek&amp;actie=verwijderen&amp;id=' . $fotoboek['id'], 'Verwijder dit fotoboek', null, 16);
+                            echo new Knop('aanmenutoevoegen', 'overzicht?type=fotoboek&amp;actie=aanmenutoevoegen&amp;id=' . $fotoboek['id'], 'Voeg dit fotoboek toe aan het menu', null, 16); ?>
                         </div
                     </td>
                     <td>
@@ -218,7 +218,7 @@ class OverzichtPagina extends Pagina
         <h2>Friendly URL's</h2>
         <br/>
 
-        <form method="post" action="overzicht.php?type=friendlyurl&amp;actie=nieuw" class="form-inline">
+        <form method="post" action="overzicht?type=friendlyurl&amp;actie=nieuw" class="form-inline">
 
             <table class="table table-striped table-bordered table-overzicht">
                 <tr>
@@ -246,8 +246,8 @@ class OverzichtPagina extends Pagina
                 foreach ($friendlyurls as $friendlyurl)
                 {
                     echo '<tr><td><div class="btn-group">';
-                    echo new Knop('verwijderen', 'overzicht.php?type=friendlyurl&amp;actie=verwijderen&amp;naam=' . $friendlyurl['naam'], 'Verwijder deze friendly URL', null, 16);
-                    echo new Knop('aanmenutoevoegen', 'overzicht.php?type=friendlyurl&amp;actie=aanmenutoevoegen&amp;naam=' . $friendlyurl['naam'], 'Voeg deze friendly url toe aan het menu', null, 16);
+                    echo new Knop('verwijderen', 'overzicht?type=friendlyurl&amp;actie=verwijderen&amp;naam=' . $friendlyurl['naam'], 'Verwijder deze friendly URL', null, 16);
+                    echo new Knop('aanmenutoevoegen', 'overzicht?type=friendlyurl&amp;actie=aanmenutoevoegen&amp;naam=' . $friendlyurl['naam'], 'Voeg deze friendly url toe aan het menu', null, 16);
                     echo '</div></td><td><strong>' . $friendlyurl['naam'] . '</strong></td><td>' . $friendlyurl['doel'] . '</td></tr>';
                 }
                 ?>

@@ -15,17 +15,17 @@ class Router
         'bewerk-foto' => '\Cyndaron\BewerkFoto',
         'bewerk-fotoalbum' => '\Cyndaron\BewerkFotoalbum',
         'bewerk-statischepagina' => '\Cyndaron\BewerkStatischePagina',
-        'configuratie.php' => '\Cyndaron\ConfiguratiePagina',
+        'configuratie' => '\Cyndaron\ConfiguratiePagina',
         'editor-categorie' => '\Cyndaron\EditorCategorie',
         'editor-foto' => '\Cyndaron\EditorFoto',
         'editor-fotoalbum' => '\Cyndaron\EditorFotoalbum',
         'editor-statischepagina' => '\Cyndaron\EditorStatischePagina',
-        'login.php' => '\Cyndaron\LoginPagina',
-        'logoff.php' => '\Cyndaron\Loguit',
+        'login' => '\Cyndaron\LoginPagina',
+        'logoff' => '\Cyndaron\Loguit',
         'migreer_naar_v4.php' => '\Cyndaron\MigreerNaar4_0',
         'migreer_naar_v5.php' => '\Cyndaron\MigreerNaar5_0',
         'migreer_naar_v5_3.php' => '\Cyndaron\MigreerNaar5_3',
-        'overzicht.php' => '\Cyndaron\OverzichtPagina',
+        'overzicht' => '\Cyndaron\OverzichtPagina',
         'reset-wachtwoord' => ResetWachtwoordPagina::class,
         'tooncategorie.php' => '\Cyndaron\CategoriePagina',
         'toonfotoboek.php' => '\Cyndaron\FotoalbumPagina',
@@ -170,7 +170,7 @@ class Router
     public function routeFoundNowCheckLogin($request)
     {
         $userLevel = Gebruiker::getLevel();
-        if (!Gebruiker::hasSufficientReadLevel() && strpos($request, 'login.php') !== 0)
+        if (!Gebruiker::hasSufficientReadLevel() && strpos($request, 'login') !== 0)
         {
             Request::sendDoNotCache();
             if ($userLevel > 0)
@@ -182,7 +182,7 @@ class Router
             {
                 Gebruiker::nieuweMelding('U moet inloggen om deze site te bekijken');
                 $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
-                header('Location: login.php');
+                header('Location: login');
                 die();
             }
         }
