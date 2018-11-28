@@ -130,9 +130,9 @@ class OverzichtPagina extends Pagina
             foreach ($subs as $subId => $subNaam)
             {
                 echo '<tr><td><div class="btn-group">';
-                echo new Knop('bewerken', 'editor-statischepagina?id=' . $subId, 'Bewerk deze sub', null, 16);
-                echo new Knop('verwijderen', 'overzicht?type=sub&amp;actie=verwijderen&amp;id=' . $subId, 'Verwijder deze sub', null, 16);
-                echo new Knop('aanmenutoevoegen', 'overzicht?type=sub&amp;actie=aanmenutoevoegen&amp;id=' . $subId, 'Voeg deze sub toe aan het menu', null, 16);
+                echo new Knop('bewerken', 'editor-statischepagina?id=' . $subId, 'Bewerk deze statische pagina', null, 16);
+                echo new Knop('verwijderen', 'overzicht?type=sub&amp;actie=verwijderen&amp;id=' . $subId, 'Verwijder deze statische pagina', null, 16);
+                echo new Knop('aanmenutoevoegen', 'overzicht?type=sub&amp;actie=aanmenutoevoegen&amp;id=' . $subId, 'Voeg deze statische pagina toe aan het menu', null, 16);
                 $vvsub = $connectie->prepare('SELECT * FROM vorigesubs WHERE id= ?');
                 $vvsub->execute([$subId]);
 
