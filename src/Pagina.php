@@ -439,7 +439,7 @@ class Pagina
         }
         $menu = $this->connectie->prepare('SELECT * FROM menu ORDER BY volgorde ASC;');
         $menu->execute();
-        $menuitems = null;
+        $menuitems = [];
         $eersteitem = true;
 
         foreach ($menu->fetchAll() as $menuitem)
