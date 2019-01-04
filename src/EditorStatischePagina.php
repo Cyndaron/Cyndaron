@@ -8,6 +8,7 @@ class EditorStatischePagina extends EditorPagina
     {
         $this->heeftTitel = true;
         $this->type = 'sub';
+        $this->table = 'subs';
         $this->saveUrl = 'bewerk-statischepagina?actie=bewerken&amp;id=%s';
 
         if ($this->id)

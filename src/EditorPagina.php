@@ -12,6 +12,7 @@ abstract class EditorPagina extends Pagina
     protected $content;
     protected $titel;
     protected $type;
+    protected $table;
     protected $saveUrl;
 
     public function __construct()
@@ -134,7 +135,7 @@ abstract class EditorPagina extends Pagina
 
                     if ($this->id)
                     {
-                        $categorieid = DBConnection::geefEen('SELECT categorieid FROM ' . $this->type . ' WHERE id= ?', [$this->id]);
+                        $categorieid = DBConnection::geefEen('SELECT categorieid FROM ' . $this->table . ' WHERE id= ?', [$this->id]);
                     }
                     else
                     {

@@ -7,6 +7,7 @@ class EditorCategorie extends EditorPagina
     {
         $this->heeftTitel = true;
         $this->type = 'categorie';
+        $this->table = 'categorieen';
         $this->saveUrl = 'bewerk-categorie?actie=bewerken&amp;id=%s';
 
         if ($this->id)
