@@ -16,6 +16,7 @@ Versie 5.3 (Lychnidus)
 - Mogelijkheid tot nesten van categorieën (#22)
 - Mogelijkheid tot resetten wachtwoord
 - Mogelijkheid tot vereiste inlog
+- Pagina-overzicht is nu gesplitst op inhoudssoort (#74)
 - TLS-verbindingen zijn nu verplicht
 
 Versie 5.2.1

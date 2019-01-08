@@ -432,3 +432,7 @@ button.aantalKaarten
     padding: 4px;
 }
 /* Einde jumbotron */
+
+.nav-tabs {
+    margin-bottom: 15px;
+}

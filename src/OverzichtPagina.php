@@ -2,6 +2,7 @@
 namespace Cyndaron;
 
 use Cyndaron\Widget\Knop;
+use Cyndaron\Widget\PageTabs;
 
 require_once __DIR__ . '/../check.php';
 
@@ -89,6 +90,7 @@ class OverzichtPagina extends Pagina
         $this->maakNietDelen(true);
         $this->toonPrepagina();
         $connectie = DBConnection::getPDO();
+        $this->connectie = $connectie;
 
         if ($actie == 'verwijderen' && $zeker != 1)
         {
@@ -102,13 +104,42 @@ class OverzichtPagina extends Pagina
         </p></form>';
         }
 
-        /* Subs */
+        $currentPage = Request::geefGetVeilig('type');
+
+        echo new PageTabs([
+            'sub' => 'Statische pagina\'s',
+            'categorie' => 'Categorieën',
+            'fotoboek' => 'Fotoalbums',
+            'friendlyurl' => 'Friendly URL\'s',
+        ], '/overzicht?type=', $currentPage);
+
+        switch ($currentPage)
+        {
+            case 'categorie':
+                $this->showCategories();
+                break;
+            case 'friendlyurl':
+                $this->showFriendlyURLs();
+                break;
+            case 'fotoboek':
+                $this->showPhotoAlbums();
+                break;
+            case 'sub':
+            default:
+                $this->showSubs();
+        }
+
+        $this->toonPostPagina();
+    }
+
+    private function showSubs()
+    {
         echo '<h2>Statische pagina\'s</h2>';
 
         echo new Knop('nieuw', 'editor-statischepagina', 'Nieuwe statische pagina', 'Nieuwe statische pagina');
         echo '<br />';
 
-        $subs = $connectie->prepare('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
+        $subs = $this->connectie->prepare('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
         $subs->execute();
         $subsPerCategorie = [];
 
@@ -133,7 +164,7 @@ class OverzichtPagina extends Pagina
                 echo new Knop('bewerken', 'editor-statischepagina?id=' . $subId, 'Bewerk deze statische pagina', null, 16);
                 echo new Knop('verwijderen', 'overzicht?type=sub&amp;actie=verwijderen&amp;id=' . $subId, 'Verwijder deze statische pagina', null, 16);
                 echo new Knop('aanmenutoevoegen', 'overzicht?type=sub&amp;actie=aanmenutoevoegen&amp;id=' . $subId, 'Voeg deze statische pagina toe aan het menu', null, 16);
-                $vvsub = $connectie->prepare('SELECT * FROM vorigesubs WHERE id= ?');
+                $vvsub = $this->connectie->prepare('SELECT * FROM vorigesubs WHERE id= ?');
                 $vvsub->execute([$subId]);
 
                 if ($vvsub->fetchColumn())
@@ -149,8 +180,11 @@ class OverzichtPagina extends Pagina
 
             echo '</table>';
         }
-        ?>
+    }
 
+    public function showCategories()
+    {
+        ?>
         <!-- Categorieën -->
         <h2>Categorieën</h2>
         <form method="post" action="overzicht?type=categorie&amp;actie=nieuw" class="form-inline">
@@ -163,7 +197,7 @@ class OverzichtPagina extends Pagina
         </form>
         <br/>
         <table class="table table-striped table-bordered table-overzicht"><?php
-            $categorieen = $connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC;');
+            $categorieen = $this->connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC;');
             $categorieen->execute();
             foreach ($categorieen as $categorie)
             {
@@ -182,7 +216,12 @@ class OverzichtPagina extends Pagina
                 </tr>
             <?php } ?>
         </table>
+        <?php
+    }
 
+    public function showPhotoAlbums()
+    {
+        ?>
         <!-- Fotoboeken -->
         <h2>Fotoboeken</h2>
         <form method="post" action="overzicht?type=fotoboek&amp;actie=nieuw" class="form-inline">
@@ -195,7 +234,7 @@ class OverzichtPagina extends Pagina
         </form>
         <br/>
         <table class="table table-striped table-bordered table-overzicht"><?php
-            $fotoboeken = $connectie->prepare('SELECT id,naam FROM fotoboeken ORDER BY id ASC;');
+            $fotoboeken = $this->connectie->prepare('SELECT id,naam FROM fotoboeken ORDER BY id ASC;');
             $fotoboeken->execute();
             foreach ($fotoboeken as $fotoboek)
             {
@@ -215,6 +254,12 @@ class OverzichtPagina extends Pagina
                 </tr>
             <?php } ?>
         </table><br/>
+        <?php
+    }
+
+    public function showFriendlyURLs()
+    {
+        ?>
         <h2>Friendly URL's</h2>
         <br/>
 
@@ -240,7 +285,7 @@ class OverzichtPagina extends Pagina
                     </td>
                 </tr>
                 <?php
-                $friendlyurls = $connectie->prepare('SELECT naam,doel FROM friendlyurls ORDER BY naam ASC;');
+                $friendlyurls = $this->connectie->prepare('SELECT naam,doel FROM friendlyurls ORDER BY naam ASC;');
                 $friendlyurls->execute();
 
                 foreach ($friendlyurls as $friendlyurl)
@@ -254,6 +299,5 @@ class OverzichtPagina extends Pagina
             </table>
         </form>
         <?php
-        $this->toonPostPagina();
     }
 }
