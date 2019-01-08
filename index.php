@@ -3,6 +3,10 @@
 ini_set('session.use_only_cookies', 1);
 // Voorkom dat cookies door Javascript worden ingelezen
 ini_set('session.cookie_httponly', 1);
+// Zorg ervoor dat alle cookies over HTTPS worden verzonden
+ini_set('session.cookie_secure', 1);
+// Voorkom dat gebruikers zelf een sessie-ID kunnen opgeven
+ini_set('session.use_strict_mode', 1);
 
 if (!file_exists(__DIR__ . '/instellingen.php'))
 {
