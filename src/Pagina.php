@@ -195,9 +195,9 @@ class Pagina
                         {
                             foreach ($menuarray as $menuitem)
                             {
-                                if (strpos($menuitem['link'], 'tooncategorie') !== false && strpos($menuitem['link'], '#dd') !== false)
+                                if (strpos($menuitem['link'], 'tooncategorie') !== false && $menuitem['isDropdown'])
                                 {
-                                    $id = intval(str_replace(['tooncategorie.php?id=', '#dd'], '', $menuitem['link']));
+                                    $id = intval(str_replace('tooncategorie.php?id=', '', $menuitem['link']));
                                     $paginasInCategorie = $this->connectie->prepare("
 										SELECT * FROM
 										(
@@ -235,9 +235,9 @@ class Pagina
                                         echo '<li>';
                                     }
 
-                                    if (strpos($menuitem['naam'], 'img#') === 0)
+                                    if ($menuitem['isImage'])
                                     {
-                                        echo '<a class="img-in-menuitem" href="' . $menuitem['link'] . '"><img src="' . substr($menuitem['naam'], 4) . '"/></a></li>';
+                                        printf('<a class="img-in-menuitem" href="%1$s"><img src="%2$s" alt="%1$s"/></a></li>', $menuitem['link'], $menuitem['naam']);
                                     }
                                     else
                                     {
@@ -264,8 +264,10 @@ class Pagina
                                             <a href="configuratie"><span class="glyphicon glyphicon-cog"></span>&nbsp; Configuratie</a>
                                         </li>
                                         <li>
-
                                             <a href="overzicht"><span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht</a>
+                                        </li>
+                                        <li>
+                                            <a href="menu-editor"><span class="glyphicon glyphicon-th-list"></span>&nbsp; Menu bewerken</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -332,8 +334,6 @@ class Pagina
         $menuarray = $this->geefMenu();
         foreach ($menuarray as $menuitem)
         {
-            $menuitem['link'] = str_replace('#dd', '', $menuitem['link']);
-
             if ($this->menuItemIsHuidigePagina($menuitem['link']))
             {
                 echo '<li>' . $menuitem['naam'] . "</li>\n";
@@ -462,7 +462,11 @@ class Pagina
             }
             else
             {
-                $menuitem['link'] = $url->geefFriendly();
+                // For dropdowns, this is not necessary and it makes detection harder down the line.
+                if (!$menuitem['isDropdown'])
+                {
+                    $menuitem['link'] = $url->geefFriendly();
+                }
             }
             $menuitems[] = $menuitem;
             $eersteitem = false;

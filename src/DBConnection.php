@@ -121,7 +121,14 @@ class DBConnection
     {
         static::connect();
         $resultaat = static::$pdo->prepare($query);
-        $resultaat->execute($vars);
-        return static::$pdo->lastInsertId();
+        if ($resultaat->execute($vars))
+        {
+            return static::$pdo->lastInsertId();
+        }
+        else
+        {
+            echo implode(',', $resultaat->errorInfo());
+        }
+
     }
 }

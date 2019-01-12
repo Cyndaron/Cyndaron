@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\Menu\MenuModel;
 use Cyndaron\Widget\Knop;
 use Cyndaron\Widget\PageTabs;
 

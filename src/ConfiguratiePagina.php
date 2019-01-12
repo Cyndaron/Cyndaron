@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\Menu\MenuModel;
+
 require_once __DIR__ . '/../check.php';
 
 class ConfiguratiePagina extends Pagina
@@ -51,8 +53,7 @@ class ConfiguratiePagina extends Pagina
             $standaardcategorie = Instelling::geefInstelling('standaardcategorie');
             $categorieen = $this->connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC');
             $categorieen->execute();
-            $menu = $this->connectie->prepare('SELECT link,alias FROM menu ORDER BY volgorde ASC;');
-            $menu->execute();
+            $menu = MenuModel::get();
             $menustring = $this->menuNaarString($menu);
             $menutype = Instelling::geefInstelling('menutype');
             $modernMenu = ($menutype !== 'klassiek') ? 'selected' : '';

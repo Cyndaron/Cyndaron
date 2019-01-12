@@ -22,6 +22,7 @@ class Router
         'editor-statischepagina' => '\Cyndaron\EditorStatischePagina',
         'login' => '\Cyndaron\LoginPagina',
         'logoff' => '\Cyndaron\Loguit',
+        'menu-editor' => Menu\MenuEditorController::class,
         'migreer_naar_v4.php' => '\Cyndaron\MigreerNaar4_0',
         'migreer_naar_v5.php' => '\Cyndaron\MigreerNaar5_0',
         'migreer_naar_v5_3.php' => '\Cyndaron\MigreerNaar5_3',
