@@ -91,7 +91,7 @@ class FotoalbumPagina extends Pagina
         }
         else
         {
-            echo 'Dit album bestaat niet.<br />';
+            echo 'Dit album is leeg.<br />';
         }
         $this->toonPostPagina();
     }
