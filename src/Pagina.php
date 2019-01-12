@@ -71,7 +71,7 @@ class Pagina
             <meta name="twitter:description" content="Klik hier om verder te lezen..." />
             <title><?=$titel;?></title>
             <?php
-            printf('<link href="vendor/Bootstrap/Normalize/normalize.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
+            printf('<link href="vendor/Normalize/normalize.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="vendor/Bootstrap/css/bootstrap.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="sys/css/lightbox.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="sys/css/cyndaron.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
