@@ -1,3 +1,6 @@
+Versie 6.0 (Trajectum)
+- Verwijderd: klassiek menu (#76)
+
 Versie 5.3 (Lychnidus)
 - Afbeeldingen in lopende tekst zijn nu automatisch responsief (#57)
 - Fix schuifbalken op inhoud (#58)

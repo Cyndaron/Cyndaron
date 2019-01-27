@@ -359,64 +359,6 @@ button.aantalKaarten
     margin: -15px 0;
 }
 
-.klassiek-menu
-{
-    padding: 5px 18px;
-    text-align: center;
-    font-family: Trebuchet MS, Arial, sans-serif;
-    border-radius: 4px;
-    overflow: auto;
-}
-
-.klassiek-menu ul.menulijst
-{
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
-.klassiek-menu ul.menulijst li
-{
-    font-weight: bold;
-    /*display: inline;*/
-    padding-left: 10px;
-    padding-right: 10px;
-
-    background-color: #ECECEC;
-    display: inline-block;
-    overflow: hidden;
-    width: 200px;
-    border-radius: 4px;
-}
-
-.websitelogo-klassiek
-{
-    background-color: #FFFFFF;
-    opacity: 0.96;
-    border-radius: 3px;
-    padding: 0 !important;
-    margin: 3px 6px 3px 0;
-    float: left;
-    height: 120px;
-}
-
-.klassiek-menu-donker
-{
-    color: #DDDDDD;
-}
-
-.klassiek-menu-donker ul.menulijst li
-{
-    color: #333333; /* Standaardkleur Bootstrap */
-}
-
-.klassiek-menu-login-container
-{
-    float: right;
-    position: relative;
-    bottom: 132px;
-    height: 0px;
-}
-
 /* Jumbotron */
 .welkom-jumbo
 {

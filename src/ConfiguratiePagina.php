@@ -22,7 +22,6 @@ class ConfiguratiePagina extends Pagina
             Instelling::maakInstelling('standaardcategorie', Request::geefPostVeilig('standaardcategorie'));
             Instelling::maakInstelling('facebook_share', Request::geefPostVeilig('facebook_share'));
             Instelling::maakInstelling('extra_bodycode', Request::geefPostOnveilig('extra_bodycode'));
-            Instelling::maakInstelling('menutype', Request::geefPostVeilig('menutype'));
             Instelling::maakInstelling('menuthema', Request::geefPostVeilig('menuthema'));
 
             $menu = Request::geefPostVeilig('menu');
@@ -55,9 +54,6 @@ class ConfiguratiePagina extends Pagina
             $categorieen->execute();
             $menu = MenuModel::get();
             $menustring = $this->menuNaarString($menu);
-            $menutype = Instelling::geefInstelling('menutype');
-            $modernMenu = ($menutype !== 'klassiek') ? 'selected' : '';
-            $klassiekMenu = ($menutype === 'klassiek') ? 'selected' : '';
             $menuthema = Instelling::geefInstelling('menuthema');
             $lichtMenu = ($menuthema !== 'donker') ? 'selected' : '';
             $donkerMenu = ($menuthema === 'donker') ? 'selected' : '';
@@ -92,7 +88,6 @@ class ConfiguratiePagina extends Pagina
             echo '<div class="form-group"><label class="col-sm-3 control-label">Menu</label> <div class="col-sm-6">';
             echo '<input class="form-control" type="text" name="menu" value="' . $menustring . '"/></div></div>';
 
-            printf('<div class="form-group"><label class="col-sm-3 control-label">Menutype:</label><div class="col-sm-6"><select id="menutype" name="menutype"><option value="modern" %s>Modern</option><option value="klassiek" %s>Klassiek</option></select></div></div>', $modernMenu, $klassiekMenu);
             printf('<div class="form-group"><label class="col-sm-3 control-label">Menuthema:</label><div class="col-sm-6"><select id="menuthema" name="menuthema"><option value="licht" %s>Licht</option><option value="donker" %s>Donker</option></select></div></div>', $lichtMenu, $donkerMenu);
 
 

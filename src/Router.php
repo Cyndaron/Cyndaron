@@ -26,6 +26,7 @@ class Router
         'migreer_naar_v4.php' => '\Cyndaron\MigreerNaar4_0',
         'migreer_naar_v5.php' => '\Cyndaron\MigreerNaar5_0',
         'migreer_naar_v5_3.php' => '\Cyndaron\MigreerNaar5_3',
+        'migrate-v6_0' => \Cyndaron\Migrate60::class,
         'overzicht' => '\Cyndaron\OverzichtPagina',
         'reset-wachtwoord' => ResetWachtwoordPagina::class,
         'tooncategorie.php' => '\Cyndaron\CategoriePagina',

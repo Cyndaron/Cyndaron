@@ -152,20 +152,6 @@ class Pagina
 
     protected function toonMenu()
     {
-        $menutype = Instelling::geefInstelling('menutype');
-
-        if (!empty($menutype) && $menutype === 'klassiek')
-        {
-            $this->toonKlassiekMenu();
-        }
-        else
-        {
-            $this->toonModernMenu();
-        }
-    }
-
-    protected function toonModernMenu()
-    {
         $websitelogo = Instelling::geefInstelling('websitelogo');
         $inverseClass = (Instelling::geefInstelling('menuthema') == 'donker') ? 'navbar-inverse' : '';
         $navbar = $websitelogo ? sprintf('<img alt="" src="%s"> ', $websitelogo) : $this->websitenaam;
@@ -297,70 +283,6 @@ class Pagina
 
             echo '</ul></div></div>';
         }
-    }
-
-    protected function toonKlassiekMenu()
-    {
-        $isIngelogd = Gebruiker::isIngelogd();
-        $ondertitel = Instelling::geefInstelling('ondertitel');
-        $donkerClass = (Instelling::geefInstelling('menuthema') == 'donker') ? 'klassiek-menu-donker' : '';
-
-        printf('<div class="menu klassiek-menu %s">', $donkerClass);
-        if ($logo = Instelling::geefInstelling('websitelogo'))
-        {
-            echo '<img src="' . $logo . '" alt="" class="websitelogo-klassiek"/>';
-        }
-
-        echo '<h1>' . $this->websitenaam . '</h1>' . $ondertitel;
-        if ($ondertitel && $isIngelogd)
-        {
-            echo ' - ';
-        }
-        if (!empty($_SESSION) && !empty($_SESSION['naam']) && $isIngelogd)
-        {
-            echo 'Ingelogd als ' . $_SESSION['naam'] . ' ';
-            echo '<div class="btn-group">';
-            echo new Knop('log-out', 'logoff.php', 'Uitloggen', null, 16);
-
-            if (Gebruiker::isAdmin())
-            {
-                echo new Knop('cog', 'configuratie', 'Instellingen aanpassen', null, 16);
-                echo new Knop('list', 'overzicht', 'Paginaoverzicht', null, 16);
-                echo new Knop('plus', "editor-statischepagina", 'Nieuwe sub aanmaken', null, 16);
-            }
-            echo '</div>';
-        }
-        echo '<div class="dottop"><ul class="menulijst">';
-        $menuarray = $this->geefMenu();
-        foreach ($menuarray as $menuitem)
-        {
-            if ($this->menuItemIsHuidigePagina($menuitem['link']))
-            {
-                echo '<li>' . $menuitem['naam'] . "</li>\n";
-            }
-            else
-            {
-                echo '<li><a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . "</a></li>\n";
-            }
-        }
-        echo '</ul></div>';
-        static::toonIndienAanwezigEnGeenAdmin('<div class="klassiek-menu-login-container">' . new Knop('lock', 'login', 'Inloggen', null, 16) . '</div>');
-
-        $meldingen = Gebruiker::geefMeldingen();
-        if ($meldingen)
-        {
-            echo '<div class="meldingencontainer">';
-            echo '<div class="meldingen alert alert-info"><ul>';
-
-            foreach ($meldingen as $melding)
-            {
-                echo '<li>' . $melding . '</li>';
-            }
-
-            echo '</ul></div></div>';
-        }
-
-        echo '</div>';
     }
 
     private function menuItemIsHuidigePagina(string $menuItem): bool
