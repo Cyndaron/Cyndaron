@@ -105,7 +105,6 @@ class Pagina
 
         if ($this->nietDelen == false)
         {
-            static::toonIndienAanwezig(Instelling::geefInstelling('extra_bodycode'));
             if (Instelling::geefInstelling('facebook_share') == 1)
             {
                 echo '<div id="fb-root"></div>

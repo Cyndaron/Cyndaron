@@ -21,7 +21,6 @@ class ConfiguratiePagina extends Pagina
             Instelling::maakInstelling('artikelkleur', Request::geefPostVeilig('artikelkleur'));
             Instelling::maakInstelling('standaardcategorie', Request::geefPostVeilig('standaardcategorie'));
             Instelling::maakInstelling('facebook_share', Request::geefPostVeilig('facebook_share'));
-            Instelling::maakInstelling('extra_bodycode', Request::geefPostOnveilig('extra_bodycode'));
             Instelling::maakInstelling('menuthema', Request::geefPostVeilig('menuthema'));
 
             $menu = Request::geefPostVeilig('menu');
@@ -89,9 +88,6 @@ class ConfiguratiePagina extends Pagina
             echo '<input class="form-control" type="text" name="menu" value="' . $menustring . '"/></div></div>';
 
             printf('<div class="form-group"><label class="col-sm-3 control-label">Menuthema:</label><div class="col-sm-6"><select id="menuthema" name="menuthema"><option value="licht" %s>Licht</option><option value="donker" %s>Donker</option></select></div></div>', $lichtMenu, $donkerMenu);
-
-
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Extra bodycode (o.a. Google Analytics)</label> <div class="col-sm-6"><textarea style="height: 75px;" name="extra_bodycode" class="form-control">' . Instelling::geefInstelling('extra_bodycode') . '</textarea></div></div>';
             ?>
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-6">

@@ -1,5 +1,6 @@
 Versie 6.0 (Trajectum)
 - Verwijderd: ideeënbus
+- Verwijderd: instelling voor extra bodycode (kan nu via PHP-includes)
 - Verwijderd: klassiek menu (#76)
 
 Versie 5.3 (Lychnidus)
