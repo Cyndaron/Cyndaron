@@ -10,7 +10,7 @@ class Loguit
         session_destroy();
 
         session_start();
-        Gebruiker::nieuweMelding('U bent afgemeld.');
+        User::addNotification('U bent afgemeld.');
         header('Location: ./');
     }
 }

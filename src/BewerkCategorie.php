@@ -25,7 +25,7 @@ class BewerkCategorie extends Bewerk
                 $this->id = CategorieModel::nieuweCategorie($titel, $alleentitel, $beschrijving, $categorieId);
             }
 
-            Gebruiker::nieuweMelding('Categorie bewerkt.');
+            User::addNotification('Categorie bewerkt.');
             $this->returnUrl = 'tooncategorie.php?id=' . $this->id;
         }
 

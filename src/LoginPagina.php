@@ -68,7 +68,7 @@ class LoginPagina extends Pagina
                         $_SESSION['email'] = $userdata['email'];
                         $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
                         $_SESSION['niveau'] = $userdata['niveau'];
-                        Gebruiker::nieuweMelding('U bent ingelogd.');
+                        User::addNotification('U bent ingelogd.');
                         if ($_SESSION['redirect'])
                         {
                             $_SESSION['request'] = $_SESSION['redirect'];

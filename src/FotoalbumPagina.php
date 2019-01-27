@@ -57,7 +57,7 @@ class FotoalbumPagina extends Pagina
                         $uitvoer .= '/' . $dirArray[$index] . '" style="width:270px; height:200px"';
                     }
                     $uitvoer .= " alt=\"" . $dirArray[$index] . "\" /></a>";
-                    if (Gebruiker::isAdmin())
+                    if (User::isAdmin())
                     {
                         $uitvoer .= '<br>' . new Knop('bewerken', 'editor-foto?id=' . $hash, 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
                     }

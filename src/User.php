@@ -1,9 +1,11 @@
 <?php
+declare(strict_types = 1);
+
 namespace Cyndaron;
 
-class Gebruiker
+class User
 {
-    public static function isAdmin()
+    public static function isAdmin(): bool
     {
         if (!isset($_SESSION['naam']) || $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] || $_SESSION['niveau'] < 4)
         {
@@ -15,17 +17,17 @@ class Gebruiker
         }
     }
 
-    public static function isIngelogd()
+    public static function isLoggedIn(): bool
     {
         return (isset($_SESSION['naam']) && $_SESSION['ip'] == $_SERVER['REMOTE_ADDR'] && $_SESSION['niveau'] > 0);
     }
 
-    public static function nieuweMelding(string $tekst)
+    public static function addNotification(string $content): void
     {
-        $_SESSION['meldingen'][] = $tekst;
+        $_SESSION['meldingen'][] = $content;
     }
 
-    public static function geefMeldingen()
+    public static function getNotifications(): ?array
     {
         $return = @$_SESSION['meldingen'];
         $_SESSION['meldingen'] = null;

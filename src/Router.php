@@ -170,8 +170,8 @@ class Router
 
     public function routeFoundNowCheckLogin($request)
     {
-        $userLevel = Gebruiker::getLevel();
-        if (!Gebruiker::hasSufficientReadLevel() && strpos($request, 'login') !== 0)
+        $userLevel = User::getLevel();
+        if (!User::hasSufficientReadLevel() && strpos($request, 'login') !== 0)
         {
             Request::sendDoNotCache();
             if ($userLevel > 0)
@@ -181,7 +181,7 @@ class Router
             }
             else
             {
-                Gebruiker::nieuweMelding('U moet inloggen om deze site te bekijken');
+                User::addNotification('U moet inloggen om deze site te bekijken');
                 $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
                 header('Location: login');
                 die();

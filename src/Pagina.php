@@ -234,11 +234,11 @@ class Pagina
 
                         echo '</ul><ul class="nav navbar-nav navbar-right">';
 
-                        if (Gebruiker::isIngelogd()): ?>
+                        if (User::isLoggedIn()): ?>
                             <p class="navbar-text">Ingelogd als <?= $_SESSION['naam']; ?></p>
                             <li><a title="Uitloggen" href="logoff"><span class="glyphicon glyphicon-log-out"></span></a>
                             </li>
-                            <?php if (Gebruiker::isAdmin()): ?>
+                            <?php if (User::isAdmin()): ?>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                        aria-haspopup="true" aria-expanded="false">
@@ -269,7 +269,7 @@ class Pagina
             </div><!-- /.container-fluid -->
         </nav>
         <?php
-        $meldingen = Gebruiker::geefMeldingen();
+        $meldingen = User::getNotifications();
         if ($meldingen)
         {
             echo '<div class="meldingencontainer">';
@@ -354,7 +354,7 @@ class Pagina
 
     public function geefMenu(): array
     {
-        if (!Gebruiker::hasSufficientReadLevel())
+        if (!User::hasSufficientReadLevel())
         {
             return [];
         }
@@ -407,7 +407,7 @@ class Pagina
 
     public static function toonIndienAanwezigEnAdmin($string, $voor = null, $na = null)
     {
-        if (Gebruiker::isAdmin() && $string)
+        if (User::isAdmin() && $string)
         {
             echo $voor;
             echo $string;
@@ -417,7 +417,7 @@ class Pagina
 
     public static function toonIndienAanwezigEnGeenAdmin($string, $voor = null, $na = null)
     {
-        if (!Gebruiker::isAdmin() && $string)
+        if (!User::isAdmin() && $string)
         {
             echo $voor;
             echo $string;

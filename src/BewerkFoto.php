@@ -15,7 +15,7 @@ class BewerkFoto extends Bewerk
             $bijschrift = Request::geefPostOnveilig('artikel');
 
             FotoModel::maakBijschrift($hash, $bijschrift);
-            Gebruiker::nieuweMelding('Bijschrift bewerkt.');
+            User::addNotification('Bijschrift bewerkt.');
         }
     }
 }
