@@ -320,7 +320,7 @@ class Pagina
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-        <script type="text/javascript" src="vendor/jQuery/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="vendor/jQuery/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="vendor/Bootstrap/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="sys/js/cyndaron.js"></script>
     <?php

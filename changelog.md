@@ -1,4 +1,5 @@
-Versie 6.0 (Trajectum)
+Versie 6.0 (Trajectum
+- Afhankelijkheden: jQuery geüpdated naar 3.3.1
 - Verwijderd: ideeënbus
 - Verwijderd: instelling voor extra bodycode (kan nu via PHP-includes)
 - Verwijderd: klassiek menu (#76)
