@@ -10,6 +10,7 @@ class Migrate60 extends Pagina
         $connection = DBConnection::getInstance();
         $connection->doQuery('DELETE FROM instellingen WHERE naam = "menutype"');
         $connection->doQuery('DROP TABLE ideeen');
+        $connection->doQuery('ALTER TABLE `mc_leden` ADD `newRenderer` BOOLEAN NOT NULL DEFAULT FALSE AFTER `renderAvatarHaar`;');
 
         parent::__construct('Upgrade naar versie 6.0');
         $this->toonPrepagina();
