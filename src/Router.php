@@ -36,7 +36,6 @@ class Router
         // Standaard-plugins
         'bestandenkast.php' => '\Cyndaron\Bestandenkast\OverzichtPagina',
         'kaartenbestellen.php' => '\Cyndaron\Kaartverkoop\KaartenBestellenPagina',
-        'ideeenbus.php' => '\Cyndaron\Ideeenbus\IdeeenbusPagina',
         'overzicht-bestellingen.php' => '\Cyndaron\Kaartverkoop\OverzichtBestellingenPagina',
         'kaarten-gereserveerde-plaatsen' => '\Cyndaron\Kaartverkoop\GereserveerdePlaatsen',
         'kaarten-verwerk-bestelling' => '\Cyndaron\Kaartverkoop\VerwerkBestellingPagina',

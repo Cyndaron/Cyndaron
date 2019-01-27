@@ -9,11 +9,11 @@ class Migrate60 extends Pagina
     {
         $connection = DBConnection::getInstance();
         $connection->doQuery('DELETE FROM instellingen WHERE naam = "menutype"');
+        $connection->doQuery('DROP TABLE ideeen');
 
         parent::__construct('Upgrade naar versie 6.0');
         $this->toonPrepagina();
         echo 'De upgrade is voltooid.';
         $this->toonPostPagina();
     }
-
 }

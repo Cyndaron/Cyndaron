@@ -1,4 +1,5 @@
 Versie 6.0 (Trajectum)
+- Verwijderd: ideeënbus
 - Verwijderd: klassiek menu (#76)
 
 Versie 5.3 (Lychnidus)
