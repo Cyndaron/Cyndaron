@@ -934,39 +934,37 @@ class SkinRendererHandler
                 }
             }
         }
-        if (!$head_only)
+
+        foreach ($polygons['rightArm'] as $face)
         {
-            foreach ($polygons['rightArm'] as $face)
-            {
-                foreach ($face as $poly)
-                {
-                    /** @var Polygon $poly */
-                    $poly->preProject(-2, 8, 2, $parts_angles['rightArm']['cos_alpha'], $parts_angles['rightArm']['sin_alpha'], $parts_angles['rightArm']['cos_omega'], $parts_angles['rightArm']['sin_omega']);
-                }
-            }
-            foreach ($polygons['leftArm'] as $face)
+            foreach ($face as $poly)
             {
                 /** @var Polygon $poly */
-                foreach ($face as $poly)
-                {
-                    $poly->preProject(10, 8, 2, $parts_angles['leftArm']['cos_alpha'], $parts_angles['leftArm']['sin_alpha'], $parts_angles['leftArm']['cos_omega'], $parts_angles['leftArm']['sin_omega']);
-                }
+                $poly->preProject(-2, 8, 2, $parts_angles['rightArm']['cos_alpha'], $parts_angles['rightArm']['sin_alpha'], $parts_angles['rightArm']['cos_omega'], $parts_angles['rightArm']['sin_omega']);
             }
-            foreach ($polygons['rightLeg'] as $face)
+        }
+        foreach ($polygons['leftArm'] as $face)
+        {
+            /** @var Polygon $poly */
+            foreach ($face as $poly)
             {
-                /** @var Polygon $poly */
-                foreach ($face as $poly)
-                {
-                    $poly->preProject(2, 20, ($parts_angles['rightLeg']['sin_alpha'] < 0 ? 0 : 4), $parts_angles['rightLeg']['cos_alpha'], $parts_angles['rightLeg']['sin_alpha'], $parts_angles['rightLeg']['cos_omega'], $parts_angles['rightLeg']['sin_omega']);
-                }
+                $poly->preProject(10, 8, 2, $parts_angles['leftArm']['cos_alpha'], $parts_angles['leftArm']['sin_alpha'], $parts_angles['leftArm']['cos_omega'], $parts_angles['leftArm']['sin_omega']);
             }
-            foreach ($polygons['leftLeg'] as $face)
+        }
+        foreach ($polygons['rightLeg'] as $face)
+        {
+            /** @var Polygon $poly */
+            foreach ($face as $poly)
             {
-                /** @var Polygon $poly */
-                foreach ($face as $poly)
-                {
-                    $poly->preProject(6, 20, ($parts_angles['leftLeg']['sin_alpha'] < 0 ? 0 : 4), $parts_angles['leftLeg']['cos_alpha'], $parts_angles['leftLeg']['sin_alpha'], $parts_angles['leftLeg']['cos_omega'], $parts_angles['leftLeg']['sin_omega']);
-                }
+                $poly->preProject(2, 20, ($parts_angles['rightLeg']['sin_alpha'] < 0 ? 0 : 4), $parts_angles['rightLeg']['cos_alpha'], $parts_angles['rightLeg']['sin_alpha'], $parts_angles['rightLeg']['cos_omega'], $parts_angles['rightLeg']['sin_omega']);
+            }
+        }
+        foreach ($polygons['leftLeg'] as $face)
+        {
+            /** @var Polygon $poly */
+            foreach ($face as $poly)
+            {
+                $poly->preProject(6, 20, ($parts_angles['leftLeg']['sin_alpha'] < 0 ? 0 : 4), $parts_angles['leftLeg']['cos_alpha'], $parts_angles['leftLeg']['sin_alpha'], $parts_angles['leftLeg']['cos_omega'], $parts_angles['leftLeg']['sin_omega']);
             }
         }
 

@@ -6,13 +6,19 @@ use Cyndaron\Pagina;
 
 class LedenPagina extends Pagina
 {
-    private $niveau = [
+    private $level = [
         "In de Goelag",
         "Aspirant-lid",
         "Lid",
         "Moderator",
         "Medebeheerder",
         "Eeuwige Dictator en Geliefde Leider van TXcraft",
+    ];
+    private $pageLevels = [
+        'In de Goelag',
+        'Aspirant-leden',
+        'Leden',
+        'Politbureau'
     ];
 
     public function __construct()
@@ -25,27 +31,24 @@ class LedenPagina extends Pagina
 
         $tePreloaden = [];
 
-        $laatsteniveau = 0;
+        $lastLevel = 4;
 
         foreach ($spelers as $speler)
         {
-            if ($speler['niveau'] >= 3 && $laatsteniveau == 0)
+            $highestLevel = count($this->pageLevels) - 1;
+            $normalisedPageLevel = min($speler['niveau'], $highestLevel);
+
+            for ($level = $highestLevel; $level >= 0; $level--)
             {
-                echo '<h2>Politbureau</h2>';
+                if ($normalisedPageLevel == min($level, $highestLevel) &&
+                    $lastLevel >= $level + 1)
+                {
+                    printf('<h2>%s</h2>', $this->pageLevels[$level]);
+                    break;
+                }
             }
-            if ($speler['niveau'] == 2 && $laatsteniveau >= 3)
-            {
-                echo '<h2>Leden</h2>';
-            }
-            if ($speler['niveau'] == 1 && $laatsteniveau >= 2)
-            {
-                echo '<h2>Aspirant-leden</h2>';
-            }
-            if ($speler['niveau'] == 0 && $laatsteniveau >= 1)
-            {
-                echo '<h2>In de Goelag</h2>';
-            }
-            $laatsteniveau = $speler['niveau'];
+
+            $lastLevel = $normalisedPageLevel;
 
             $vooraanzicht = "mc-skinrenderer?vr=-10&amp;hr=20&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;user={$speler['mcnaam']}";
             $achteraanzicht = "mc-skinrenderer?vr=-10&amp;hr=200&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;user={$speler['mcnaam']}";
@@ -72,7 +75,7 @@ class LedenPagina extends Pagina
             if ($speler['niveau'] >= 3 && $speler['niveau'] <= 5)
             {
                 echo '<br />Niveau: ';
-                echo $this->niveau[$speler['niveau']];
+                echo $this->level[$speler['niveau']];
             }
 
             echo '</td>';
