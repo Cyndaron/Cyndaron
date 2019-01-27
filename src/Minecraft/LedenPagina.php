@@ -46,11 +46,9 @@ class LedenPagina extends Pagina
                 echo '<h2>In de Goelag</h2>';
             }
             $laatsteniveau = $speler['niveau'];
-            $displayHair = ($speler['renderAvatarHaar'] == 1) ? 'true' : 'false';
-            $newRenderer = ($speler['newRenderer'] == 1) ? 'true' : 'false';
 
-            $vooraanzicht = "mc-skinrenderer?vr=-10&amp;hr=20&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;displayHair={$displayHair}&amp;headOnly=false&amp;newRenderer={$newRenderer}&amp;user={$speler['mcnaam']}";
-            $achteraanzicht = "mc-skinrenderer?vr=-10&amp;hr=200&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;displayHair={$displayHair}&amp;headOnly=false&amp;newRenderer={$newRenderer}&amp;user={$speler['mcnaam']}";
+            $vooraanzicht = "mc-skinrenderer?vr=-10&amp;hr=20&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;user={$speler['mcnaam']}";
+            $achteraanzicht = "mc-skinrenderer?vr=-10&amp;hr=200&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;user={$speler['mcnaam']}";
             $tePreloaden[] = $achteraanzicht;
 
             echo '<div class="spelerswrapper">';
