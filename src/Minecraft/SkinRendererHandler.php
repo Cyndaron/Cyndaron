@@ -1,10 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-require_once __DIR__ . '/../../vendor/MinecraftSkins/MinecraftSkins.php';
-
 use Cyndaron\DBConnection;
-use MinecraftSkins\MinecraftSkins;
 use Cyndaron\Request;
 
 /* ***** MINECRAFT 3D Skin Generator *****
@@ -51,24 +48,11 @@ class SkinRendererHandler
 
         $username = Request::geefGetVeilig('user');
         $userInfo = DBConnection::getInstance()->doQueryAndFetchFirstRow('SELECT  * FROM mc_leden WHERE mcnaam = ?', [$username]);
-        $useNewRenderer = false; //Request::geefGetVeilig('newRenderer');
-
         $img_png = SkinRenderer::getSkinOrFallback($userInfo['skinUrl']);
 
         $width = imagesx($img_png);
         $height = imagesy($img_png);
-        if ($useNewRenderer == 'true')
-        {
-            //render the skin and make it 4 times bigger
-            $result = MinecraftSkins::skin($img_png, 4);
-
-            //this part is for rendering the skin only
-            //tell the browser that we will send the raw image without HTML
-            header('Content-type: image/png');
-            imagepng($result);
-            die();
-        }
-        elseif ($height == $width)
+        if ($height == $width)
         {
             $img_png_old = $img_png;
             $img_png = imagecreatetruecolor($width, $height / 2);
