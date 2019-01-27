@@ -1,8 +1,6 @@
 <?php
 namespace Cyndaron;
 
-use Cyndaron\Menu\MenuModel;
-
 require_once __DIR__ . '/../check.php';
 
 class ConfiguratiePagina extends Pagina
@@ -22,21 +20,6 @@ class ConfiguratiePagina extends Pagina
             Instelling::maakInstelling('standaardcategorie', Request::geefPostVeilig('standaardcategorie'));
             Instelling::maakInstelling('facebook_share', Request::geefPostVeilig('facebook_share'));
             Instelling::maakInstelling('menuthema', Request::geefPostVeilig('menuthema'));
-
-            $menu = Request::geefPostVeilig('menu');
-            $split1 = explode(';', $menu);
-            $nieuwmenu = null;
-
-            foreach ($split1 as $split2)
-            {
-                $menuitem = explode('|', $split2);
-
-                if ($menuitem[0])
-                {
-                    $nieuwmenu[] = ['link' => $menuitem[0], 'alias' => $menuitem[1]];
-                }
-            }
-            MenuModel::vervangMenu($nieuwmenu);
         }
         parent::__construct('Configuratie');
         $this->maakNietDelen(true);
@@ -51,8 +34,6 @@ class ConfiguratiePagina extends Pagina
             $standaardcategorie = Instelling::geefInstelling('standaardcategorie');
             $categorieen = $this->connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC');
             $categorieen->execute();
-            $menu = MenuModel::get();
-            $menustring = $this->menuNaarString($menu);
             $menuthema = Instelling::geefInstelling('menuthema');
             $lichtMenu = ($menuthema !== 'donker') ? 'selected' : '';
             $donkerMenu = ($menuthema === 'donker') ? 'selected' : '';
@@ -84,8 +65,6 @@ class ConfiguratiePagina extends Pagina
                 echo '<option value="' . $categorie['id'] . '"' . $selected . '>' . $categorie['naam'] . '</option>';
             }
             echo '</select></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Menu</label> <div class="col-sm-6">';
-            echo '<input class="form-control" type="text" name="menu" value="' . $menustring . '"/></div></div>';
 
             printf('<div class="form-group"><label class="col-sm-3 control-label">Menuthema:</label><div class="col-sm-6"><select id="menuthema" name="menuthema"><option value="licht" %s>Licht</option><option value="donker" %s>Donker</option></select></div></div>', $lichtMenu, $donkerMenu);
             ?>
@@ -111,18 +90,5 @@ class ConfiguratiePagina extends Pagina
         echo '<li>MinecraftSkinRenderer: BSD-3-licentie (LICENSE.MinecraftSkinRenderer)</li>';
         echo '</ul>';
         $this->toonPostPagina();
-    }
-
-    protected function menuNaarString($menu): string
-    {
-        $return = '';
-        foreach ($menu as $menuitem)
-        {
-            $link = htmlentities($menuitem['link'], null, 'UTF-8');
-            $alias = htmlentities($menuitem['alias'], null, 'UTF-8');
-
-            $return .= $link . '|' . $alias . ';';
-        }
-        return $return;
     }
 }
