@@ -80,7 +80,7 @@ class ConfiguratiePagina extends Pagina
         echo '<h2>Informatie</h2>';
         echo CyndaronInfo::PRODUCT_NAAM . ' ' . CyndaronInfo::PRODUCT_VERSIE . ' (' . CyndaronInfo::PRODUCT_CODENAAM . ')<br />';
         echo 'Engineversie: ' . CyndaronInfo::ENGINE_VERSIE . '<br />';
-        echo '© Michael Steenbeek, 2009-2017<br />';
+        echo '© Michael Steenbeek, 2009-2019<br />';
         echo 'Beschikbaar onder de ISC-licentie (zie het bestand LICENSE), m.u.v. van de volgende onderdelen:<ul>';
         echo '<li>Bootstrap: MIT-licentie (LICENSE.Bootstrap)</li>';
         echo '<li>CKeditor: MPL-, LGPL- en GPL-licenties (ckeditor/LICENSE.md)</li>';
