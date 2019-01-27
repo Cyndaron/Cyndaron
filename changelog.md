@@ -7,6 +7,7 @@ Versie 5.3 (Lychnidus)
 - Gebruik versienummer bij opvragen CSS (#50)
 - Handel redirect naar HTTPS af in PHP
 - Menu kan nu gemakkelijker bewerkt worden (#73, gedeeltelijk)
+- Na het wijzigen van de friendly URL wordt er nu correct doorverwezen (#78)
 - Kaartverkoop: CSS-fixes (#48 en #49)
 - Kaartverkoop: gebruik `type="email"` voor e-mailadres op bestelformulier (#44)
 - Kaartverkoop: mogelijkheid tot verwijderen bestellingen (#52)

@@ -21,8 +21,6 @@ abstract class Bewerk
             $this->id = null;
         }
 
-        $returnUrl = Request::geefGetVeilig('returnUrl');
-
         $this->prepare();
 
         if ($friendlyUrl = Request::geefPostVeilig('friendlyUrl'))
@@ -34,12 +32,11 @@ abstract class Bewerk
             // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast
             DBConnection::geefEen('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oudeFriendlyUrl]);
         }
-        if (!$returnUrl)
+        if (!$this->returnUrl)
         {
-            $returnUrl = $_SESSION['referrer'];
-            $returnUrl = strtr($returnUrl, ['&amp;' => '&']);
+            $this->returnUrl = strtr($_SESSION['referrer'], ['&amp;' => '&']);
         }
-        header('Location: ' . $returnUrl);
+        header('Location: ' . $this->returnUrl);
     }
 
     abstract protected function prepare();
