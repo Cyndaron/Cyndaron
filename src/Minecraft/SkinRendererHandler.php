@@ -23,7 +23,6 @@ use Cyndaron\Request;
  * vrra - Vertical Rotation of the Right Arm.
  *
  * displayHair - Either or not to display hairs. Set to "false" to NOT display hairs.
- * headOnly - Either or not to display the ONLY the head. Set to "true" to display ONLY the head (and the hair, based on displayHair).
  *
  * format - The format in which the image is to be rendered. PNG ("png") is used by default set to "svg" to use a vector version.
  * ratio - The size of the "png" image. The default and minimum value is 2.
@@ -71,8 +70,7 @@ class SkinRendererHandler
 
         $vertical_rotation = Request::geefGetVeilig('vr');
         $horizontal_rotation = Request::geefGetVeilig('hr');
-        $head_only = (Request::geefGetVeilig('headOnly') == 'true');
-        $display_hair = false; //(bool)$userInfo['renderAvatarHaar'];
+        $display_hair = $userInfo['renderAvatarHaar'];
 
         // Rotation variables in radians (3D Rendering)
         $alpha = deg2rad($vertical_rotation); // Vertical rotation on the X axis.
@@ -423,497 +421,495 @@ class SkinRendererHandler
                 }
             }
         }
-        if (!$head_only)
+
+        // TORSO
+        $volume_points = [];
+        for ($i = 0; $i < 9 * $hd_ratio; $i++)
         {
-            // TORSO
-            $volume_points = [];
-            for ($i = 0; $i < 9 * $hd_ratio; $i++)
-            {
-                for ($j = 0; $j < 13 * $hd_ratio; $j++)
-                {
-                    if (!isset($volume_points[$i][$j][0]))
-                    {
-                        $volume_points[$i][$j][0] = new Point(['x' => $i, 'y' => $j + 8 * $hd_ratio, 'z' => 0]);
-                    }
-                    if (!isset($volume_points[$i][$j][4 * $hd_ratio]))
-                    {
-                        $volume_points[$i][$j][4 * $hd_ratio] = new Point(['x' => $i, 'y' => $j + 8 * $hd_ratio, 'z' => 4 * $hd_ratio]);
-                    }
-                }
-            }
             for ($j = 0; $j < 13 * $hd_ratio; $j++)
             {
-                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
+                if (!isset($volume_points[$i][$j][0]))
                 {
-                    if (!isset($volume_points[0][$j][$faceName]))
-                    {
-                        $volume_points[0][$j][$faceName] = new Point(['x' => 0, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
-                    }
-                    if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
-                    {
-                        $volume_points[8 * $hd_ratio][$j][$faceName] = new Point(['x' => 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
-                    }
+                    $volume_points[$i][$j][0] = new Point(['x' => $i, 'y' => $j + 8 * $hd_ratio, 'z' => 0]);
+                }
+                if (!isset($volume_points[$i][$j][4 * $hd_ratio]))
+                {
+                    $volume_points[$i][$j][4 * $hd_ratio] = new Point(['x' => $i, 'y' => $j + 8 * $hd_ratio, 'z' => 4 * $hd_ratio]);
                 }
             }
-            for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        }
+        for ($j = 0; $j < 13 * $hd_ratio; $j++)
+        {
+            for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
             {
-                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
+                if (!isset($volume_points[0][$j][$faceName]))
                 {
-                    if (!isset($volume_points[$i][0][$faceName]))
-                    {
-                        $volume_points[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0 + 8 * $hd_ratio, 'z' => $faceName]);
-                    }
-                    if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
-                    {
-                        $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i, 'y' => 12 * $hd_ratio + 8 * $hd_ratio, 'z' => $faceName]);
-                    }
+                    $volume_points[0][$j][$faceName] = new Point(['x' => 0, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
+                }
+                if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
+                {
+                    $volume_points[8 * $hd_ratio][$j][$faceName] = new Point(['x' => 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
                 }
             }
-            for ($i = 0; $i < 8 * $hd_ratio; $i++)
+        }
+        for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        {
+            for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
             {
-                for ($j = 0; $j < 12 * $hd_ratio; $j++)
+                if (!isset($volume_points[$i][0][$faceName]))
                 {
-                    $polygons['torso']['back'][] = new Polygon([
-                        $volume_points[$i][$j][0],
-                        $volume_points[$i + 1][$j][0],
-                        $volume_points[$i + 1][$j + 1][0],
-                        $volume_points[$i][$j + 1][0],
-                    ], imagecolorat($img_png, (40 * $hd_ratio - 1) - $i, 20 * $hd_ratio + $j));
-                    $polygons['torso']['front'][] = new Polygon([
-                        $volume_points[$i][$j][4 * $hd_ratio],
-                        $volume_points[$i + 1][$j][4 * $hd_ratio],
-                        $volume_points[$i + 1][$j + 1][4 * $hd_ratio],
-                        $volume_points[$i][$j + 1][4 * $hd_ratio],
-                    ], imagecolorat($img_png, 20 * $hd_ratio + $i, 20 * $hd_ratio + $j));
+                    $volume_points[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0 + 8 * $hd_ratio, 'z' => $faceName]);
+                }
+                if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
+                {
+                    $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i, 'y' => 12 * $hd_ratio + 8 * $hd_ratio, 'z' => $faceName]);
                 }
             }
+        }
+        for ($i = 0; $i < 8 * $hd_ratio; $i++)
+        {
             for ($j = 0; $j < 12 * $hd_ratio; $j++)
             {
-                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
-                {
-                    $polygons['torso']['right'][] = new Polygon([
-                        $volume_points[0][$j][$faceName],
-                        $volume_points[0][$j][$faceName + 1],
-                        $volume_points[0][$j + 1][$faceName + 1],
-                        $volume_points[0][$j + 1][$faceName],
-                    ], imagecolorat($img_png, 16 * $hd_ratio + $faceName, 20 * $hd_ratio + $j));
-                    $polygons['torso']['left'][] = new Polygon([
-                        $volume_points[8 * $hd_ratio][$j][$faceName],
-                        $volume_points[8 * $hd_ratio][$j][$faceName + 1],
-                        $volume_points[8 * $hd_ratio][$j + 1][$faceName + 1],
-                        $volume_points[8 * $hd_ratio][$j + 1][$faceName],
-                    ], imagecolorat($img_png, (32 * $hd_ratio - 1) - $faceName, 20 * $hd_ratio + $j));
-                }
+                $polygons['torso']['back'][] = new Polygon([
+                    $volume_points[$i][$j][0],
+                    $volume_points[$i + 1][$j][0],
+                    $volume_points[$i + 1][$j + 1][0],
+                    $volume_points[$i][$j + 1][0],
+                ], imagecolorat($img_png, (40 * $hd_ratio - 1) - $i, 20 * $hd_ratio + $j));
+                $polygons['torso']['front'][] = new Polygon([
+                    $volume_points[$i][$j][4 * $hd_ratio],
+                    $volume_points[$i + 1][$j][4 * $hd_ratio],
+                    $volume_points[$i + 1][$j + 1][4 * $hd_ratio],
+                    $volume_points[$i][$j + 1][4 * $hd_ratio],
+                ], imagecolorat($img_png, 20 * $hd_ratio + $i, 20 * $hd_ratio + $j));
             }
-            for ($i = 0; $i < 8 * $hd_ratio; $i++)
+        }
+        for ($j = 0; $j < 12 * $hd_ratio; $j++)
+        {
+            for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
             {
-                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
-                {
-                    $polygons['torso']['top'][] = new Polygon([
-                        $volume_points[$i][0][$faceName],
-                        $volume_points[$i + 1][0][$faceName],
-                        $volume_points[$i + 1][0][$faceName + 1],
-                        $volume_points[$i][0][$faceName + 1],
-                    ], imagecolorat($img_png, 20 * $hd_ratio + $i, 16 * $hd_ratio + $faceName));
-                    $polygons['torso']['bottom'][] = new Polygon([
-                        $volume_points[$i][12 * $hd_ratio][$faceName],
-                        $volume_points[$i + 1][12 * $hd_ratio][$faceName],
-                        $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
-                        $volume_points[$i][12 * $hd_ratio][$faceName + 1],
-                    ], imagecolorat($img_png, 28 * $hd_ratio + $i, (20 * $hd_ratio - 1) - $faceName));
-                }
+                $polygons['torso']['right'][] = new Polygon([
+                    $volume_points[0][$j][$faceName],
+                    $volume_points[0][$j][$faceName + 1],
+                    $volume_points[0][$j + 1][$faceName + 1],
+                    $volume_points[0][$j + 1][$faceName],
+                ], imagecolorat($img_png, 16 * $hd_ratio + $faceName, 20 * $hd_ratio + $j));
+                $polygons['torso']['left'][] = new Polygon([
+                    $volume_points[8 * $hd_ratio][$j][$faceName],
+                    $volume_points[8 * $hd_ratio][$j][$faceName + 1],
+                    $volume_points[8 * $hd_ratio][$j + 1][$faceName + 1],
+                    $volume_points[8 * $hd_ratio][$j + 1][$faceName],
+                ], imagecolorat($img_png, (32 * $hd_ratio - 1) - $faceName, 20 * $hd_ratio + $j));
             }
-            // RIGHT ARM
-            $volume_points = [];
-            for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        }
+        for ($i = 0; $i < 8 * $hd_ratio; $i++)
+        {
+            for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
             {
-                for ($j = 0; $j < 13 * $hd_ratio; $j++)
-                {
-                    if (!isset($volume_points[$i][$j][0]))
-                    {
-                        $volume_points[$i][$j][0] = new Point(['x' => $i - 4 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => 0]);
-                    }
-                    if (!isset($volume_points[$i][$j][4 * $hd_ratio]))
-                    {
-                        $volume_points[$i][$j][4 * $hd_ratio] = new Point(['x' => $i - 4 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => 4 * $hd_ratio]);
-                    }
-                }
+                $polygons['torso']['top'][] = new Polygon([
+                    $volume_points[$i][0][$faceName],
+                    $volume_points[$i + 1][0][$faceName],
+                    $volume_points[$i + 1][0][$faceName + 1],
+                    $volume_points[$i][0][$faceName + 1],
+                ], imagecolorat($img_png, 20 * $hd_ratio + $i, 16 * $hd_ratio + $faceName));
+                $polygons['torso']['bottom'][] = new Polygon([
+                    $volume_points[$i][12 * $hd_ratio][$faceName],
+                    $volume_points[$i + 1][12 * $hd_ratio][$faceName],
+                    $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
+                    $volume_points[$i][12 * $hd_ratio][$faceName + 1],
+                ], imagecolorat($img_png, 28 * $hd_ratio + $i, (20 * $hd_ratio - 1) - $faceName));
             }
+        }
+        // RIGHT ARM
+        $volume_points = [];
+        for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        {
             for ($j = 0; $j < 13 * $hd_ratio; $j++)
             {
-                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
+                if (!isset($volume_points[$i][$j][0]))
                 {
-                    if (!isset($volume_points[0][$j][$faceName]))
-                    {
-                        $volume_points[0][$j][$faceName] = new Point(['x' => 0 - 4 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
-                    }
-                    if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
-                    {
-                        $volume_points[4 * $hd_ratio][$j][$faceName] = new Point(['x' => 4 * $hd_ratio - 4 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
-                    }
+                    $volume_points[$i][$j][0] = new Point(['x' => $i - 4 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => 0]);
+                }
+                if (!isset($volume_points[$i][$j][4 * $hd_ratio]))
+                {
+                    $volume_points[$i][$j][4 * $hd_ratio] = new Point(['x' => $i - 4 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => 4 * $hd_ratio]);
                 }
             }
-            for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        }
+        for ($j = 0; $j < 13 * $hd_ratio; $j++)
+        {
+            for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
             {
-                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
+                if (!isset($volume_points[0][$j][$faceName]))
                 {
-                    if (!isset($volume_points[$i][0][$faceName]))
-                    {
-                        $volume_points[$i][0][$faceName] = new Point(['x' => $i - 4 * $hd_ratio, 'y' => 0 + 8 * $hd_ratio, 'z' => $faceName]);
-                    }
-                    if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
-                    {
-                        $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i - 4 * $hd_ratio, 'y' => 12 * $hd_ratio + 8 * $hd_ratio, 'z' => $faceName]);
-                    }
+                    $volume_points[0][$j][$faceName] = new Point(['x' => 0 - 4 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
+                }
+                if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
+                {
+                    $volume_points[4 * $hd_ratio][$j][$faceName] = new Point(['x' => 4 * $hd_ratio - 4 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
                 }
             }
-            for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        }
+        for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        {
+            for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
             {
-                for ($j = 0; $j < 12 * $hd_ratio; $j++)
+                if (!isset($volume_points[$i][0][$faceName]))
                 {
-                    $polygons['rightArm']['back'][] = new Polygon([
-                        $volume_points[$i][$j][0],
-                        $volume_points[$i + 1][$j][0],
-                        $volume_points[$i + 1][$j + 1][0],
-                        $volume_points[$i][$j + 1][0],
-                    ], imagecolorat($img_png, (56 * $hd_ratio - 1) - $i, 20 * $hd_ratio + $j));
-                    $polygons['rightArm']['front'][] = new Polygon([
-                        $volume_points[$i][$j][4 * $hd_ratio],
-                        $volume_points[$i + 1][$j][4 * $hd_ratio],
-                        $volume_points[$i + 1][$j + 1][4 * $hd_ratio],
-                        $volume_points[$i][$j + 1][4 * $hd_ratio],
-                    ], imagecolorat($img_png, 44 * $hd_ratio + $i, 20 * $hd_ratio + $j));
+                    $volume_points[$i][0][$faceName] = new Point(['x' => $i - 4 * $hd_ratio, 'y' => 0 + 8 * $hd_ratio, 'z' => $faceName]);
+                }
+                if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
+                {
+                    $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i - 4 * $hd_ratio, 'y' => 12 * $hd_ratio + 8 * $hd_ratio, 'z' => $faceName]);
                 }
             }
+        }
+        for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        {
             for ($j = 0; $j < 12 * $hd_ratio; $j++)
             {
-                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
-                {
-                    $polygons['rightArm']['right'][] = new Polygon([
-                        $volume_points[0][$j][$faceName],
-                        $volume_points[0][$j][$faceName + 1],
-                        $volume_points[0][$j + 1][$faceName + 1],
-                        $volume_points[0][$j + 1][$faceName],
-                    ], imagecolorat($img_png, 40 * $hd_ratio + $faceName, 20 * $hd_ratio + $j));
-                    $polygons['rightArm']['left'][] = new Polygon([
-                        $volume_points[4 * $hd_ratio][$j][$faceName],
-                        $volume_points[4 * $hd_ratio][$j][$faceName + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$faceName + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$faceName],
-                    ], imagecolorat($img_png, (52 * $hd_ratio - 1) - $faceName, 20 * $hd_ratio + $j));
-                }
+                $polygons['rightArm']['back'][] = new Polygon([
+                    $volume_points[$i][$j][0],
+                    $volume_points[$i + 1][$j][0],
+                    $volume_points[$i + 1][$j + 1][0],
+                    $volume_points[$i][$j + 1][0],
+                ], imagecolorat($img_png, (56 * $hd_ratio - 1) - $i, 20 * $hd_ratio + $j));
+                $polygons['rightArm']['front'][] = new Polygon([
+                    $volume_points[$i][$j][4 * $hd_ratio],
+                    $volume_points[$i + 1][$j][4 * $hd_ratio],
+                    $volume_points[$i + 1][$j + 1][4 * $hd_ratio],
+                    $volume_points[$i][$j + 1][4 * $hd_ratio],
+                ], imagecolorat($img_png, 44 * $hd_ratio + $i, 20 * $hd_ratio + $j));
             }
-            for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        }
+        for ($j = 0; $j < 12 * $hd_ratio; $j++)
+        {
+            for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
             {
-                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
-                {
-                    $polygons['rightArm']['top'][] = new Polygon([
-                        $volume_points[$i][0][$faceName],
-                        $volume_points[$i + 1][0][$faceName],
-                        $volume_points[$i + 1][0][$faceName + 1],
-                        $volume_points[$i][0][$faceName + 1],
-                    ], imagecolorat($img_png, 44 * $hd_ratio + $i, 16 * $hd_ratio + $faceName));
-                    $polygons['rightArm']['bottom'][] = new Polygon([
-                        $volume_points[$i][12 * $hd_ratio][$faceName],
-                        $volume_points[$i + 1][12 * $hd_ratio][$faceName],
-                        $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
-                        $volume_points[$i][12 * $hd_ratio][$faceName + 1],
-                    ], imagecolorat($img_png, 48 * $hd_ratio + $i, (20 * $hd_ratio - 1) - $faceName));
-                }
+                $polygons['rightArm']['right'][] = new Polygon([
+                    $volume_points[0][$j][$faceName],
+                    $volume_points[0][$j][$faceName + 1],
+                    $volume_points[0][$j + 1][$faceName + 1],
+                    $volume_points[0][$j + 1][$faceName],
+                ], imagecolorat($img_png, 40 * $hd_ratio + $faceName, 20 * $hd_ratio + $j));
+                $polygons['rightArm']['left'][] = new Polygon([
+                    $volume_points[4 * $hd_ratio][$j][$faceName],
+                    $volume_points[4 * $hd_ratio][$j][$faceName + 1],
+                    $volume_points[4 * $hd_ratio][$j + 1][$faceName + 1],
+                    $volume_points[4 * $hd_ratio][$j + 1][$faceName],
+                ], imagecolorat($img_png, (52 * $hd_ratio - 1) - $faceName, 20 * $hd_ratio + $j));
             }
-            // LEFT ARM
-            $volume_points = [];
-            for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        }
+        for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        {
+            for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
             {
-                for ($j = 0; $j < 13 * $hd_ratio; $j++)
-                {
-                    if (!isset($volume_points[$i][$j][0]))
-                    {
-                        $volume_points[$i][$j][0] = new Point(['x' => $i + 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => 0]);
-                    }
-                    if (!isset($volume_points[$i][$j][4 * $hd_ratio]))
-                    {
-                        $volume_points[$i][$j][4 * $hd_ratio] = new Point(['x' => $i + 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => 4 * $hd_ratio]);
-                    }
-                }
+                $polygons['rightArm']['top'][] = new Polygon([
+                    $volume_points[$i][0][$faceName],
+                    $volume_points[$i + 1][0][$faceName],
+                    $volume_points[$i + 1][0][$faceName + 1],
+                    $volume_points[$i][0][$faceName + 1],
+                ], imagecolorat($img_png, 44 * $hd_ratio + $i, 16 * $hd_ratio + $faceName));
+                $polygons['rightArm']['bottom'][] = new Polygon([
+                    $volume_points[$i][12 * $hd_ratio][$faceName],
+                    $volume_points[$i + 1][12 * $hd_ratio][$faceName],
+                    $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
+                    $volume_points[$i][12 * $hd_ratio][$faceName + 1],
+                ], imagecolorat($img_png, 48 * $hd_ratio + $i, (20 * $hd_ratio - 1) - $faceName));
             }
+        }
+        // LEFT ARM
+        $volume_points = [];
+        for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        {
             for ($j = 0; $j < 13 * $hd_ratio; $j++)
             {
-                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
+                if (!isset($volume_points[$i][$j][0]))
                 {
-                    if (!isset($volume_points[0][$j][$faceName]))
-                    {
-                        $volume_points[0][$j][$faceName] = new Point(['x' => 0 + 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
-                    }
-                    if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
-                    {
-                        $volume_points[4 * $hd_ratio][$j][$faceName] = new Point(['x' => 4 * $hd_ratio + 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
-                    }
+                    $volume_points[$i][$j][0] = new Point(['x' => $i + 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => 0]);
+                }
+                if (!isset($volume_points[$i][$j][4 * $hd_ratio]))
+                {
+                    $volume_points[$i][$j][4 * $hd_ratio] = new Point(['x' => $i + 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => 4 * $hd_ratio]);
                 }
             }
-            for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        }
+        for ($j = 0; $j < 13 * $hd_ratio; $j++)
+        {
+            for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
             {
-                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
+                if (!isset($volume_points[0][$j][$faceName]))
                 {
-                    if (!isset($volume_points[$i][0][$faceName]))
-                    {
-                        $volume_points[$i][0][$faceName] = new Point(['x' => $i + 8 * $hd_ratio, 'y' => 0 + 8 * $hd_ratio, 'z' => $faceName]);
-                    }
-                    if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
-                    {
-                        $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i + 8 * $hd_ratio, 'y' => 12 * $hd_ratio + 8 * $hd_ratio, 'z' => $faceName]);
-                    }
+                    $volume_points[0][$j][$faceName] = new Point(['x' => 0 + 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
+                }
+                if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
+                {
+                    $volume_points[4 * $hd_ratio][$j][$faceName] = new Point(['x' => 4 * $hd_ratio + 8 * $hd_ratio, 'y' => $j + 8 * $hd_ratio, 'z' => $faceName]);
                 }
             }
-            for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        }
+        for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        {
+            for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
             {
-                for ($j = 0; $j < 12 * $hd_ratio; $j++)
+                if (!isset($volume_points[$i][0][$faceName]))
                 {
-                    $polygons['leftArm']['back'][] = new Polygon([
-                        $volume_points[$i][$j][0],
-                        $volume_points[$i + 1][$j][0],
-                        $volume_points[$i + 1][$j + 1][0],
-                        $volume_points[$i][$j + 1][0],
-                    ], imagecolorat($img_png, (56 * $hd_ratio - 1) - ((4 * $hd_ratio - 1) - $i), 20 * $hd_ratio + $j));
-                    $polygons['leftArm']['front'][] = new Polygon([
-                        $volume_points[$i][$j][4 * $hd_ratio],
-                        $volume_points[$i + 1][$j][4 * $hd_ratio],
-                        $volume_points[$i + 1][$j + 1][4 * $hd_ratio],
-                        $volume_points[$i][$j + 1][4 * $hd_ratio],
-                    ], imagecolorat($img_png, 44 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), 20 * $hd_ratio + $j));
+                    $volume_points[$i][0][$faceName] = new Point(['x' => $i + 8 * $hd_ratio, 'y' => 0 + 8 * $hd_ratio, 'z' => $faceName]);
+                }
+                if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
+                {
+                    $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i + 8 * $hd_ratio, 'y' => 12 * $hd_ratio + 8 * $hd_ratio, 'z' => $faceName]);
                 }
             }
+        }
+        for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        {
             for ($j = 0; $j < 12 * $hd_ratio; $j++)
             {
-                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
-                {
-                    $polygons['leftArm']['right'][] = new Polygon([
-                        $volume_points[0][$j][$faceName],
-                        $volume_points[0][$j][$faceName + 1],
-                        $volume_points[0][$j + 1][$faceName + 1],
-                        $volume_points[0][$j + 1][$faceName],
-                    ], imagecolorat($img_png, 40 * $hd_ratio + ((4 * $hd_ratio - 1) - $faceName), 20 * $hd_ratio + $j));
-                    $polygons['leftArm']['left'][] = new Polygon([
-                        $volume_points[4 * $hd_ratio][$j][$faceName],
-                        $volume_points[4 * $hd_ratio][$j][$faceName + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$faceName + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$faceName],
-                    ], imagecolorat($img_png, (52 * $hd_ratio - 1) - ((4 * $hd_ratio - 1) - $faceName), 20 * $hd_ratio + $j));
-                }
+                $polygons['leftArm']['back'][] = new Polygon([
+                    $volume_points[$i][$j][0],
+                    $volume_points[$i + 1][$j][0],
+                    $volume_points[$i + 1][$j + 1][0],
+                    $volume_points[$i][$j + 1][0],
+                ], imagecolorat($img_png, (56 * $hd_ratio - 1) - ((4 * $hd_ratio - 1) - $i), 20 * $hd_ratio + $j));
+                $polygons['leftArm']['front'][] = new Polygon([
+                    $volume_points[$i][$j][4 * $hd_ratio],
+                    $volume_points[$i + 1][$j][4 * $hd_ratio],
+                    $volume_points[$i + 1][$j + 1][4 * $hd_ratio],
+                    $volume_points[$i][$j + 1][4 * $hd_ratio],
+                ], imagecolorat($img_png, 44 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), 20 * $hd_ratio + $j));
             }
-            for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        }
+        for ($j = 0; $j < 12 * $hd_ratio; $j++)
+        {
+            for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
             {
-                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
-                {
-                    $polygons['leftArm']['top'][] = new Polygon([
-                        $volume_points[$i][0][$faceName],
-                        $volume_points[$i + 1][0][$faceName],
-                        $volume_points[$i + 1][0][$faceName + 1],
-                        $volume_points[$i][0][$faceName + 1],
-                    ], imagecolorat($img_png, 44 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), 16 * $hd_ratio + $faceName));
-                    $polygons['leftArm']['bottom'][] = new Polygon([
-                        $volume_points[$i][12 * $hd_ratio][$faceName],
-                        $volume_points[$i + 1][12 * $hd_ratio][$faceName],
-                        $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
-                        $volume_points[$i][12 * $hd_ratio][$faceName + 1],
-                    ], imagecolorat($img_png, 48 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), (20 * $hd_ratio - 1) - $faceName));
-                }
+                $polygons['leftArm']['right'][] = new Polygon([
+                    $volume_points[0][$j][$faceName],
+                    $volume_points[0][$j][$faceName + 1],
+                    $volume_points[0][$j + 1][$faceName + 1],
+                    $volume_points[0][$j + 1][$faceName],
+                ], imagecolorat($img_png, 40 * $hd_ratio + ((4 * $hd_ratio - 1) - $faceName), 20 * $hd_ratio + $j));
+                $polygons['leftArm']['left'][] = new Polygon([
+                    $volume_points[4 * $hd_ratio][$j][$faceName],
+                    $volume_points[4 * $hd_ratio][$j][$faceName + 1],
+                    $volume_points[4 * $hd_ratio][$j + 1][$faceName + 1],
+                    $volume_points[4 * $hd_ratio][$j + 1][$faceName],
+                ], imagecolorat($img_png, (52 * $hd_ratio - 1) - ((4 * $hd_ratio - 1) - $faceName), 20 * $hd_ratio + $j));
             }
-            // RIGHT LEG
-            $volume_points = [];
-            for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        }
+        for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        {
+            for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
             {
-                for ($j = 0; $j < 13 * $hd_ratio; $j++)
-                {
-                    if (!isset($volume_points[$i][$j][0]))
-                    {
-                        $volume_points[$i][$j][0] = new Point(['x' => $i, 'y' => $j + 20 * $hd_ratio, 'z' => 0]);
-                    }
-                    if (!isset($volume_points[$i][$j][4 * $hd_ratio]))
-                    {
-                        $volume_points[$i][$j][4 * $hd_ratio] = new Point(['x' => $i, 'y' => $j + 20 * $hd_ratio, 'z' => 4 * $hd_ratio]);
-                    }
-                }
+                $polygons['leftArm']['top'][] = new Polygon([
+                    $volume_points[$i][0][$faceName],
+                    $volume_points[$i + 1][0][$faceName],
+                    $volume_points[$i + 1][0][$faceName + 1],
+                    $volume_points[$i][0][$faceName + 1],
+                ], imagecolorat($img_png, 44 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), 16 * $hd_ratio + $faceName));
+                $polygons['leftArm']['bottom'][] = new Polygon([
+                    $volume_points[$i][12 * $hd_ratio][$faceName],
+                    $volume_points[$i + 1][12 * $hd_ratio][$faceName],
+                    $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
+                    $volume_points[$i][12 * $hd_ratio][$faceName + 1],
+                ], imagecolorat($img_png, 48 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), (20 * $hd_ratio - 1) - $faceName));
             }
+        }
+        // RIGHT LEG
+        $volume_points = [];
+        for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        {
             for ($j = 0; $j < 13 * $hd_ratio; $j++)
             {
-                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
+                if (!isset($volume_points[$i][$j][0]))
                 {
-                    if (!isset($volume_points[0][$j][$faceName]))
-                    {
-                        $volume_points[0][$j][$faceName] = new Point(['x' => 0, 'y' => $j + 20 * $hd_ratio, 'z' => $faceName]);
-                    }
-                    if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
-                    {
-                        $volume_points[4 * $hd_ratio][$j][$faceName] = new Point(['x' => 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => $faceName]);
-                    }
+                    $volume_points[$i][$j][0] = new Point(['x' => $i, 'y' => $j + 20 * $hd_ratio, 'z' => 0]);
+                }
+                if (!isset($volume_points[$i][$j][4 * $hd_ratio]))
+                {
+                    $volume_points[$i][$j][4 * $hd_ratio] = new Point(['x' => $i, 'y' => $j + 20 * $hd_ratio, 'z' => 4 * $hd_ratio]);
                 }
             }
-            for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        }
+        for ($j = 0; $j < 13 * $hd_ratio; $j++)
+        {
+            for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
             {
-                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
+                if (!isset($volume_points[0][$j][$faceName]))
                 {
-                    if (!isset($volume_points[$i][0][$faceName]))
-                    {
-                        $volume_points[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0 + 20 * $hd_ratio, 'z' => $faceName]);
-                    }
-                    if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
-                    {
-                        $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i, 'y' => 12 * $hd_ratio + 20 * $hd_ratio, 'z' => $faceName]);
-                    }
+                    $volume_points[0][$j][$faceName] = new Point(['x' => 0, 'y' => $j + 20 * $hd_ratio, 'z' => $faceName]);
+                }
+                if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
+                {
+                    $volume_points[4 * $hd_ratio][$j][$faceName] = new Point(['x' => 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => $faceName]);
                 }
             }
-            for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        }
+        for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        {
+            for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
             {
-                for ($j = 0; $j < 12 * $hd_ratio; $j++)
+                if (!isset($volume_points[$i][0][$faceName]))
                 {
-                    $polygons['rightLeg']['back'][] = new Polygon([
-                        $volume_points[$i][$j][0],
-                        $volume_points[$i + 1][$j][0],
-                        $volume_points[$i + 1][$j + 1][0],
-                        $volume_points[$i][$j + 1][0],
-                    ], imagecolorat($img_png, (16 * $hd_ratio - 1) - $i, 20 * $hd_ratio + $j));
-                    $polygons['rightLeg']['front'][] = new Polygon([
-                        $volume_points[$i][$j][4 * $hd_ratio],
-                        $volume_points[$i + 1][$j][4 * $hd_ratio],
-                        $volume_points[$i + 1][$j + 1][4 * $hd_ratio],
-                        $volume_points[$i][$j + 1][4 * $hd_ratio],
-                    ], imagecolorat($img_png, 4 * $hd_ratio + $i, 20 * $hd_ratio + $j));
+                    $volume_points[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0 + 20 * $hd_ratio, 'z' => $faceName]);
+                }
+                if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
+                {
+                    $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i, 'y' => 12 * $hd_ratio + 20 * $hd_ratio, 'z' => $faceName]);
                 }
             }
+        }
+        for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        {
             for ($j = 0; $j < 12 * $hd_ratio; $j++)
             {
-                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
-                {
-                    $polygons['rightLeg']['right'][] = new Polygon([
-                        $volume_points[0][$j][$faceName],
-                        $volume_points[0][$j][$faceName + 1],
-                        $volume_points[0][$j + 1][$faceName + 1],
-                        $volume_points[0][$j + 1][$faceName],
-                    ], imagecolorat($img_png, 0 + $faceName, 20 * $hd_ratio + $j));
-                    $polygons['rightLeg']['left'][] = new Polygon([
-                        $volume_points[4 * $hd_ratio][$j][$faceName],
-                        $volume_points[4 * $hd_ratio][$j][$faceName + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$faceName + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$faceName],
-                    ], imagecolorat($img_png, (12 * $hd_ratio - 1) - $faceName, 20 * $hd_ratio + $j));
-                }
+                $polygons['rightLeg']['back'][] = new Polygon([
+                    $volume_points[$i][$j][0],
+                    $volume_points[$i + 1][$j][0],
+                    $volume_points[$i + 1][$j + 1][0],
+                    $volume_points[$i][$j + 1][0],
+                ], imagecolorat($img_png, (16 * $hd_ratio - 1) - $i, 20 * $hd_ratio + $j));
+                $polygons['rightLeg']['front'][] = new Polygon([
+                    $volume_points[$i][$j][4 * $hd_ratio],
+                    $volume_points[$i + 1][$j][4 * $hd_ratio],
+                    $volume_points[$i + 1][$j + 1][4 * $hd_ratio],
+                    $volume_points[$i][$j + 1][4 * $hd_ratio],
+                ], imagecolorat($img_png, 4 * $hd_ratio + $i, 20 * $hd_ratio + $j));
             }
-            for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        }
+        for ($j = 0; $j < 12 * $hd_ratio; $j++)
+        {
+            for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
             {
-                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
-                {
-                    $polygons['rightLeg']['top'][] = new Polygon([
-                        $volume_points[$i][0][$faceName],
-                        $volume_points[$i + 1][0][$faceName],
-                        $volume_points[$i + 1][0][$faceName + 1],
-                        $volume_points[$i][0][$faceName + 1],
-                    ], imagecolorat($img_png, 4 * $hd_ratio + $i, 16 * $hd_ratio + $faceName));
-                    $polygons['rightLeg']['bottom'][] = new Polygon([
-                        $volume_points[$i][12 * $hd_ratio][$faceName],
-                        $volume_points[$i + 1][12 * $hd_ratio][$faceName],
-                        $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
-                        $volume_points[$i][12 * $hd_ratio][$faceName + 1],
-                    ], imagecolorat($img_png, 8 * $hd_ratio + $i, (20 * $hd_ratio - 1) - $faceName));
-                }
+                $polygons['rightLeg']['right'][] = new Polygon([
+                    $volume_points[0][$j][$faceName],
+                    $volume_points[0][$j][$faceName + 1],
+                    $volume_points[0][$j + 1][$faceName + 1],
+                    $volume_points[0][$j + 1][$faceName],
+                ], imagecolorat($img_png, 0 + $faceName, 20 * $hd_ratio + $j));
+                $polygons['rightLeg']['left'][] = new Polygon([
+                    $volume_points[4 * $hd_ratio][$j][$faceName],
+                    $volume_points[4 * $hd_ratio][$j][$faceName + 1],
+                    $volume_points[4 * $hd_ratio][$j + 1][$faceName + 1],
+                    $volume_points[4 * $hd_ratio][$j + 1][$faceName],
+                ], imagecolorat($img_png, (12 * $hd_ratio - 1) - $faceName, 20 * $hd_ratio + $j));
             }
-            // LEFT LEG
-            $volume_points = [];
-            for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        }
+        for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        {
+            for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
             {
-                for ($j = 0; $j < 13 * $hd_ratio; $j++)
-                {
-                    if (!isset($volume_points[$i][$j][0]))
-                    {
-                        $volume_points[$i][$j][0] = new Point(['x' => $i + 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => 0]);
-                    }
-                    if (!isset($volume_points[$i][$j][4 * $hd_ratio]))
-                    {
-                        $volume_points[$i][$j][4 * $hd_ratio] = new Point(['x' => $i + 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => 4 * $hd_ratio]);
-                    }
-                }
+                $polygons['rightLeg']['top'][] = new Polygon([
+                    $volume_points[$i][0][$faceName],
+                    $volume_points[$i + 1][0][$faceName],
+                    $volume_points[$i + 1][0][$faceName + 1],
+                    $volume_points[$i][0][$faceName + 1],
+                ], imagecolorat($img_png, 4 * $hd_ratio + $i, 16 * $hd_ratio + $faceName));
+                $polygons['rightLeg']['bottom'][] = new Polygon([
+                    $volume_points[$i][12 * $hd_ratio][$faceName],
+                    $volume_points[$i + 1][12 * $hd_ratio][$faceName],
+                    $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
+                    $volume_points[$i][12 * $hd_ratio][$faceName + 1],
+                ], imagecolorat($img_png, 8 * $hd_ratio + $i, (20 * $hd_ratio - 1) - $faceName));
             }
+        }
+        // LEFT LEG
+        $volume_points = [];
+        for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        {
             for ($j = 0; $j < 13 * $hd_ratio; $j++)
             {
-                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
+                if (!isset($volume_points[$i][$j][0]))
                 {
-                    if (!isset($volume_points[0][$j][$faceName]))
-                    {
-                        $volume_points[0][$j][$faceName] = new Point(['x' => 0 + 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => $faceName]);
-                    }
-                    if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
-                    {
-                        $volume_points[4 * $hd_ratio][$j][$faceName] = new Point(['x' => 4 * $hd_ratio + 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => $faceName]);
-                    }
+                    $volume_points[$i][$j][0] = new Point(['x' => $i + 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => 0]);
+                }
+                if (!isset($volume_points[$i][$j][4 * $hd_ratio]))
+                {
+                    $volume_points[$i][$j][4 * $hd_ratio] = new Point(['x' => $i + 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => 4 * $hd_ratio]);
                 }
             }
-            for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        }
+        for ($j = 0; $j < 13 * $hd_ratio; $j++)
+        {
+            for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
             {
-                for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
+                if (!isset($volume_points[0][$j][$faceName]))
                 {
-                    if (!isset($volume_points[$i][0][$faceName]))
-                    {
-                        $volume_points[$i][0][$faceName] = new Point(['x' => $i + 4 * $hd_ratio, 'y' => 0 + 20 * $hd_ratio, 'z' => $faceName]);
-                    }
-                    if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
-                    {
-                        $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i + 4 * $hd_ratio, 'y' => 12 * $hd_ratio + 20 * $hd_ratio, 'z' => $faceName]);
-                    }
+                    $volume_points[0][$j][$faceName] = new Point(['x' => 0 + 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => $faceName]);
+                }
+                if (!isset($volume_points[8 * $hd_ratio][$j][$faceName]))
+                {
+                    $volume_points[4 * $hd_ratio][$j][$faceName] = new Point(['x' => 4 * $hd_ratio + 4 * $hd_ratio, 'y' => $j + 20 * $hd_ratio, 'z' => $faceName]);
                 }
             }
-            for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        }
+        for ($i = 0; $i < 9 * $hd_ratio; $i++)
+        {
+            for ($faceName = 0; $faceName < 5 * $hd_ratio; $faceName++)
             {
-                for ($j = 0; $j < 12 * $hd_ratio; $j++)
+                if (!isset($volume_points[$i][0][$faceName]))
                 {
-                    $polygons['leftLeg']['back'][] = new Polygon([
-                        $volume_points[$i][$j][0],
-                        $volume_points[$i + 1][$j][0],
-                        $volume_points[$i + 1][$j + 1][0],
-                        $volume_points[$i][$j + 1][0],
-                    ], imagecolorat($img_png, (16 * $hd_ratio - 1) - ((4 * $hd_ratio - 1) - $i), 20 * $hd_ratio + $j));
-                    $polygons['leftLeg']['front'][] = new Polygon([
-                        $volume_points[$i][$j][4 * $hd_ratio],
-                        $volume_points[$i + 1][$j][4 * $hd_ratio],
-                        $volume_points[$i + 1][$j + 1][4 * $hd_ratio],
-                        $volume_points[$i][$j + 1][4 * $hd_ratio],
-                    ], imagecolorat($img_png, 4 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), 20 * $hd_ratio + $j));
+                    $volume_points[$i][0][$faceName] = new Point(['x' => $i + 4 * $hd_ratio, 'y' => 0 + 20 * $hd_ratio, 'z' => $faceName]);
+                }
+                if (!isset($volume_points[$i][12 * $hd_ratio][$faceName]))
+                {
+                    $volume_points[$i][12 * $hd_ratio][$faceName] = new Point(['x' => $i + 4 * $hd_ratio, 'y' => 12 * $hd_ratio + 20 * $hd_ratio, 'z' => $faceName]);
                 }
             }
+        }
+        for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        {
             for ($j = 0; $j < 12 * $hd_ratio; $j++)
             {
-                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
-                {
-                    $polygons['leftLeg']['right'][] = new Polygon([
-                        $volume_points[0][$j][$faceName],
-                        $volume_points[0][$j][$faceName + 1],
-                        $volume_points[0][$j + 1][$faceName + 1],
-                        $volume_points[0][$j + 1][$faceName],
-                    ], imagecolorat($img_png, 0 + ((4 * $hd_ratio - 1) - $faceName), 20 * $hd_ratio + $j));
-                    $polygons['leftLeg']['left'][] = new Polygon([
-                        $volume_points[4 * $hd_ratio][$j][$faceName],
-                        $volume_points[4 * $hd_ratio][$j][$faceName + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$faceName + 1],
-                        $volume_points[4 * $hd_ratio][$j + 1][$faceName],
-                    ], imagecolorat($img_png, (12 * $hd_ratio - 1) - ((4 * $hd_ratio - 1) - $faceName), 20 * $hd_ratio + $j));
-                }
+                $polygons['leftLeg']['back'][] = new Polygon([
+                    $volume_points[$i][$j][0],
+                    $volume_points[$i + 1][$j][0],
+                    $volume_points[$i + 1][$j + 1][0],
+                    $volume_points[$i][$j + 1][0],
+                ], imagecolorat($img_png, (16 * $hd_ratio - 1) - ((4 * $hd_ratio - 1) - $i), 20 * $hd_ratio + $j));
+                $polygons['leftLeg']['front'][] = new Polygon([
+                    $volume_points[$i][$j][4 * $hd_ratio],
+                    $volume_points[$i + 1][$j][4 * $hd_ratio],
+                    $volume_points[$i + 1][$j + 1][4 * $hd_ratio],
+                    $volume_points[$i][$j + 1][4 * $hd_ratio],
+                ], imagecolorat($img_png, 4 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), 20 * $hd_ratio + $j));
             }
-            for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        }
+        for ($j = 0; $j < 12 * $hd_ratio; $j++)
+        {
+            for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
             {
-                for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
-                {
-                    $polygons['leftLeg']['top'][] = new Polygon([
-                        $volume_points[$i][0][$faceName],
-                        $volume_points[$i + 1][0][$faceName],
-                        $volume_points[$i + 1][0][$faceName + 1],
-                        $volume_points[$i][0][$faceName + 1],
-                    ], imagecolorat($img_png, 4 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), 16 * $hd_ratio + $faceName));
-                    $polygons['leftLeg']['bottom'][] = new Polygon([
-                        $volume_points[$i][12 * $hd_ratio][$faceName],
-                        $volume_points[$i + 1][12 * $hd_ratio][$faceName],
-                        $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
-                        $volume_points[$i][12 * $hd_ratio][$faceName + 1],
-                    ], imagecolorat($img_png, 8 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), (20 * $hd_ratio - 1) - $faceName));
-                }
+                $polygons['leftLeg']['right'][] = new Polygon([
+                    $volume_points[0][$j][$faceName],
+                    $volume_points[0][$j][$faceName + 1],
+                    $volume_points[0][$j + 1][$faceName + 1],
+                    $volume_points[0][$j + 1][$faceName],
+                ], imagecolorat($img_png, 0 + ((4 * $hd_ratio - 1) - $faceName), 20 * $hd_ratio + $j));
+                $polygons['leftLeg']['left'][] = new Polygon([
+                    $volume_points[4 * $hd_ratio][$j][$faceName],
+                    $volume_points[4 * $hd_ratio][$j][$faceName + 1],
+                    $volume_points[4 * $hd_ratio][$j + 1][$faceName + 1],
+                    $volume_points[4 * $hd_ratio][$j + 1][$faceName],
+                ], imagecolorat($img_png, (12 * $hd_ratio - 1) - ((4 * $hd_ratio - 1) - $faceName), 20 * $hd_ratio + $j));
+            }
+        }
+        for ($i = 0; $i < 4 * $hd_ratio; $i++)
+        {
+            for ($faceName = 0; $faceName < 4 * $hd_ratio; $faceName++)
+            {
+                $polygons['leftLeg']['top'][] = new Polygon([
+                    $volume_points[$i][0][$faceName],
+                    $volume_points[$i + 1][0][$faceName],
+                    $volume_points[$i + 1][0][$faceName + 1],
+                    $volume_points[$i][0][$faceName + 1],
+                ], imagecolorat($img_png, 4 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), 16 * $hd_ratio + $faceName));
+                $polygons['leftLeg']['bottom'][] = new Polygon([
+                    $volume_points[$i][12 * $hd_ratio][$faceName],
+                    $volume_points[$i + 1][12 * $hd_ratio][$faceName],
+                    $volume_points[$i + 1][12 * $hd_ratio][$faceName + 1],
+                    $volume_points[$i][12 * $hd_ratio][$faceName + 1],
+                ], imagecolorat($img_png, 8 * $hd_ratio + ((4 * $hd_ratio - 1) - $i), (20 * $hd_ratio - 1) - $faceName));
             }
         }
 
