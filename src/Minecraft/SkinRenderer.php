@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron\Minecraft;
 
+use Cyndaron\DBConnection;
+
 /**
  * Class SkinRenderer
  */
@@ -10,25 +12,24 @@ class SkinRenderer
     const FALLBACK_IMAGE = __DIR__ . '/char.png';
 
     /**
-     * @param string $username
+     * @param string $skinUrl
      * @return resource
      */
-    public static function getSkinImageByUsername($username = '')
+    public static function getSkinOrFallback($skinUrl)
     {
-        if (trim($username) == '')
+        if (trim($skinUrl) == '')
         {
             $img_png = imagecreatefrompng(self::FALLBACK_IMAGE);
         }
         else
         {
-            $url = 'https://s3.amazonaws.com/MinecraftSkins/' . $username . '.png';
-            $img_png = @imagecreatefrompng($url);
+            $img_png = imagecreatefrompng($skinUrl);
+            if (!$img_png)
+            {
+                $img_png = imagecreatefrompng(self::FALLBACK_IMAGE);
+            }
         }
 
-        if (!$img_png)
-        {
-            $img_png = imagecreatefrompng(self::FALLBACK_IMAGE);
-        }
         imagealphablending($img_png, true);
         imagesavealpha($img_png, true);
         return $img_png;

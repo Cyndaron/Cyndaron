@@ -2,6 +2,8 @@
 namespace Cyndaron\Minecraft;
 
 require_once __DIR__ . '/../../vendor/MinecraftSkins/MinecraftSkins.php';
+
+use Cyndaron\DBConnection;
 use MinecraftSkins\MinecraftSkins;
 use Cyndaron\Request;
 
@@ -48,9 +50,10 @@ class SkinRendererHandler
         $times[] = ['Start', $this->microtime_float()];
 
         $username = Request::geefGetVeilig('user');
-        $useNewRenderer = Request::geefGetVeilig('newRenderer');
+        $userInfo = DBConnection::getInstance()->doQueryAndFetchFirstRow('SELECT  * FROM mc_leden WHERE mcnaam = ?', [$username]);
+        $useNewRenderer = false; //Request::geefGetVeilig('newRenderer');
 
-        $img_png = SkinRenderer::getSkinImageByUsername($username);
+        $img_png = SkinRenderer::getSkinOrFallback($userInfo['skinUrl']);
 
         $width = imagesx($img_png);
         $height = imagesy($img_png);
@@ -85,7 +88,7 @@ class SkinRendererHandler
         $vertical_rotation = Request::geefGetVeilig('vr');
         $horizontal_rotation = Request::geefGetVeilig('hr');
         $head_only = (Request::geefGetVeilig('headOnly') == 'true');
-        $display_hair = (Request::geefGetVeilig('displayHair') != 'false');
+        $display_hair = false; //(bool)$userInfo['renderAvatarHaar'];
 
         // Rotation variables in radians (3D Rendering)
         $alpha = deg2rad($vertical_rotation); // Vertical rotation on the X axis.
@@ -1034,7 +1037,7 @@ class SkinRendererHandler
         }
         else
         {
-            header('Content-type: image/png');
+            //header('Content-type: image/png');
             $image = imagecreatetruecolor($ratio * $width + 1, $ratio * $height + 1);
             imagesavealpha($image, true);
             $trans_colour = imagecolorallocatealpha($image, 0, 0, 0, 127);

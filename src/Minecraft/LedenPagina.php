@@ -109,7 +109,7 @@ class LedenPagina extends Pagina
 
             .avatarbox
             {
-                width: 100px;
+                width: 150px;
                 padding: 10px 30px 10px 30px;
             }
 
