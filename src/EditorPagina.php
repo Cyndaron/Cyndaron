@@ -103,7 +103,7 @@ abstract class EditorPagina extends Pagina
                         }
                         ?>
                     </select>
-                    <input type="button" id="plaklink" class="btn btn-default" value="Invoegen"/>
+                    <input type="button" id="plaklink" class="btn btn-outline-cyndaron" value="Invoegen"/>
                 </div>
             </div>
 
@@ -111,7 +111,7 @@ abstract class EditorPagina extends Pagina
             $this->toonSpecifiekeKnoppen();
             ?>
             <input type="submit" value="Opslaan" class="btn btn-primary"/>
-            <a role="button" class="btn btn-default" href="<?=$_SESSION['referrer'];?>">Annuleren</a>
+            <a role="button" class="btn btn-outline-cyndaron" href="<?=$_SESSION['referrer'];?>">Annuleren</a>
 
         </form>
         <?php

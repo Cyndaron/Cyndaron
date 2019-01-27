@@ -43,7 +43,7 @@ class StatusPagina extends Pagina
             if ($server->is_online == true)
             {
                 echo '<br />';
-                printf('<h3>Landkaart %s <a href="http://%s:%d" class="btn btn-default" role="button"><span class="glyphicon glyphicon-resize-full"></span> Maximaliseren</a></h3><br>', $server->name, $server->hostname, $server->dynmapPort);
+                printf('<h3>Landkaart %s <a href="http://%s:%d" class="btn btn-outline-cyndaron" role="button"><span class="glyphicon glyphicon-resize-full"></span> Maximaliseren</a></h3><br>', $server->name, $server->hostname, $server->dynmapPort);
                 printf('<iframe src="http://%s:%d/" style="border-radius:7px;" width="800" height="600"></iframe>', $server->hostname, $server->dynmapPort);
                 echo '<br />';
             }

@@ -71,7 +71,7 @@ class ConfiguratiePagina extends Pagina
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-6">
                     <input class="btn btn-primary" type="submit" value="Opslaan"/>
-                    <input class="btn btn-default" type="button" id="testKleuren" value="Kleuren testen"/>
+                    <input class="btn btn-outline-cyndaron" type="button" id="testKleuren" value="Kleuren testen"/>
                 </div>
             </div>
         </form>

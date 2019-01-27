@@ -29,7 +29,7 @@ class CategoriePagina extends Pagina
 
         $naam = DBConnection::geefEen("SELECT naam FROM categorieen WHERE id= ?;", [$id]);
         $alleentitel = DBConnection::geefEen("SELECT alleentitel FROM categorieen WHERE id=?", [$id]);
-        $controls = sprintf('<a href="editor-categorie?id=%d" class="btn btn-default" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
+        $controls = sprintf('<a href="editor-categorie?id=%d" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
 
         parent::__construct($naam);
         $this->maakTitelknoppen($controls);

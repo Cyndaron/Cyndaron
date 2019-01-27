@@ -37,6 +37,6 @@ class Knop extends Widget
 
         $title = $beschrijving ? 'title="' . $beschrijving . '"' : '';
         $tekstNaPictogram = $tekst ? ' ' . $tekst : '';
-        $this->code = sprintf('<a class="btn btn-default %s" href="%s" %s><span class="glyphicon glyphicon-%s"></span>%s</a>', $btnClass, $link, $title, $pictogram, $tekstNaPictogram);
+        $this->code = sprintf('<a class="btn btn-outline-cyndaron %s" href="%s" %s><span class="glyphicon glyphicon-%s"></span>%s</a>', $btnClass, $link, $title, $pictogram, $tekstNaPictogram);
     }
 }

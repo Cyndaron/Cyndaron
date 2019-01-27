@@ -101,7 +101,7 @@ class OverzichtPagina extends Pagina
         <input name="inhoud" value="1" style="display:none;"/>
         </p><p>
         <input type="submit" class="btn btn-primary" value="Ja"/>
-        <a role="button" class="btn btn-default">Nee</a>
+        <a role="button" class="btn btn-outline-cyndaron">Nee</a>
         </p></form>';
         }
 
@@ -113,6 +113,8 @@ class OverzichtPagina extends Pagina
             'fotoboek' => 'Fotoalbums',
             'friendlyurl' => 'Friendly URL\'s',
         ], '/overzicht?type=', $currentPage);
+
+        echo '<div class="container-fluid tab-contents">';
 
         switch ($currentPage)
         {
@@ -129,6 +131,8 @@ class OverzichtPagina extends Pagina
             default:
                 $this->showSubs();
         }
+
+        echo '<div>';
 
         $this->toonPostPagina();
     }
@@ -193,7 +197,7 @@ class OverzichtPagina extends Pagina
                 <label for="naam">Nieuwe categorie:</label> <input class="form-control" id="naam" name="naam"
                                                                    type="text"/>
             </div>
-            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Aanmaken
+            <button type="submit" class="btn btn-outline-cyndaron"><span class="glyphicon glyphicon-plus"></span> Aanmaken
             </button>
         </form>
         <br/>
@@ -229,7 +233,7 @@ class OverzichtPagina extends Pagina
             <div class="form-group">
                 <label for="fobonaam">Nieuw fotoboek:</label> <input id="fobonaam" name="naam" type="text"
                                                                      class="form-control"/>
-                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Aanmaken
+                <button type="submit" class="btn btn-outline-cyndaron"><span class="glyphicon glyphicon-plus"></span> Aanmaken
                 </button>
             </div>
         </form>
@@ -280,7 +284,7 @@ class OverzichtPagina extends Pagina
                     <td>
                         <input id="furl-doel" name="doel" type="text" placeholder="Verwijzingsdoel"
                                class="form-control form-control-inline"/>
-                        <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span>
+                        <button class="btn btn-outline-cyndaron" type="submit"><span class="glyphicon glyphicon-plus"></span>
                             Aanmaken
                         </button>
                     </td>

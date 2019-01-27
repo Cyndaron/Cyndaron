@@ -71,8 +71,8 @@ class KaartenBestellenPagina extends Pagina
                             <td>%2$s</td>
                             <td>
                                 <input class="aantalKaarten form-control form-control-inline" readonly="readonly" size="2" name="kaartsoort-%3$d" id="kaartsoort-%3$d" value="0"/>
-                                <button type="button" class="aantalKaarten btn btn-default aantalKaarten-increase" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-plus"></span></button>
-                                <button type="button" class="aantalKaarten btn btn-default aantalKaarten-decrease" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-minus"></span></button>
+                                <button type="button" class="aantalKaarten btn btn-outline-cyndaron aantalKaarten-increase" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-plus"></span></button>
+                                <button type="button" class="aantalKaarten btn btn-outline-cyndaron aantalKaarten-decrease" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-minus"></span></button>
                             </td>
                         </tr>',
                         $kaartsoort['naam'], Util::naarEuro($kaartsoort['prijs']), $kaartsoort['id']);

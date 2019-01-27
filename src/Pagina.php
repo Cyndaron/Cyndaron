@@ -71,8 +71,8 @@ class Pagina
             <meta name="twitter:description" content="Klik hier om verder te lezen..." />
             <title><?=$titel;?></title>
             <?php
-            printf('<link href="vendor/Normalize/normalize.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="vendor/Bootstrap/css/bootstrap.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
+            printf('<link href="vendor/Glyphicons/css/glyphicons.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="sys/css/lightbox.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="sys/css/cyndaron.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="user.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
@@ -152,122 +152,93 @@ class Pagina
     protected function toonMenu()
     {
         $websitelogo = Setting::get('websitelogo');
-        $inverseClass = (Setting::get('menuthema') == 'donker') ? 'navbar-inverse' : '';
+        $inverseClass = (Setting::get('menuthema') == 'donker') ? 'navbar-dark' : 'navbar-light';
         $navbar = $websitelogo ? sprintf('<img alt="" src="%s"> ', $websitelogo) : $this->websitenaam;
         ?>
-        <nav class="menu navbar <?= $inverseClass; ?>">
-            <div class="container-fluid">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                            data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Navigatie omschakelen</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="./"><?= $navbar; ?></a>
-                </div>
+        <nav class="menu navbar navbar-expand-md <?= $inverseClass; ?>">
+            <a class="navbar-brand" href="./"><?= $navbar; ?></a>
 
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                        <?php
-                        $menuarray = $this->geefMenu();
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
 
-                        if (count($menuarray) > 0)
+                    <?php
+                    $menuarray = $this->geefMenu();
+
+                    if (count($menuarray) > 0)
+                    {
+                        foreach ($menuarray as $menuitem)
                         {
-                            foreach ($menuarray as $menuitem)
+                            if (strpos($menuitem['link'], 'tooncategorie') !== false && $menuitem['isDropdown'])
                             {
-                                if (strpos($menuitem['link'], 'tooncategorie') !== false && $menuitem['isDropdown'])
+                                $this->printCategoryDropdown($menuitem);
+                            }
+                            else
+                            {
+                                if ($this->menuItemIsHuidigePagina($menuitem['link']))
                                 {
-                                    $id = intval(str_replace('tooncategorie.php?id=', '', $menuitem['link']));
-                                    $paginasInCategorie = $this->connectie->prepare("
-										SELECT * FROM
-										(
-											SELECT 'sub' AS type, id, naam FROM subs WHERE categorieid=?
-											UNION
-											SELECT 'fotoboek' AS type, id, naam FROM fotoboeken WHERE categorieid=?
-											UNION
-											SELECT 'categorie' AS type, id, naam FROM categorieen WHERE categorieid=?
-										) AS een
-										ORDER BY naam ASC;");
-                                    $paginasInCategorie->execute([$id, $id, $id]);
-
-                                    echo '<li class="dropdown">';
-
-                                    echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">' . $menuitem['naam'] . ' <span class="caret"></span></a>';
-                                    echo '<ul class="dropdown-menu">';
-
-                                    foreach ($paginasInCategorie->fetchAll() as $pagina)
-                                    {
-                                        $url = new Url(sprintf('toon%s.php?id=%d', $pagina['type'], $pagina['id']));
-                                        $link = $url->geefFriendly();
-                                        printf('<li><a href="%s">%s</a></li>', $link, $pagina['naam']);
-                                    }
-
-                                    echo '</ul></li>';
+                                    echo '<li class="nav-item active">';
                                 }
                                 else
                                 {
-                                    if ($this->menuItemIsHuidigePagina($menuitem['link']))
-                                    {
-                                        echo '<li class="active">';
-                                    }
-                                    else
-                                    {
-                                        echo '<li>';
-                                    }
+                                    echo '<li class="nav-item">';
+                                }
 
-                                    if ($menuitem['isImage'])
-                                    {
-                                        printf('<a class="img-in-menuitem" href="%1$s"><img src="%2$s" alt="%1$s"/></a></li>', $menuitem['link'], $menuitem['naam']);
-                                    }
-                                    else
-                                    {
-                                        echo '<a href="' . $menuitem['link'] . '">' . $menuitem['naam'] . '</a></li>';
-                                    }
+                                if ($menuitem['isImage'])
+                                {
+                                    printf('<a class="nav-link img-in-menuitem" href="%1$s"><img src="%2$s" alt="%1$s"/></a></li>', $menuitem['link'], $menuitem['naam']);
+                                }
+                                else
+                                {
+                                    echo '<a class="nav-link" href="' . $menuitem['link'] . '">' . $menuitem['naam'] . '</a></li>';
                                 }
                             }
                         }
+                    }
+                    ?>
 
-                        echo '</ul><ul class="nav navbar-nav navbar-right">';
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <?php
+                    if (User::isLoggedIn())
+                    {
+                        $this->printMenuDropdown('<span class="glyphicon glyphicon-user"></span>', [
+                            ['link' => '', 'title' => $_SESSION['naam']],
+                            ['link' => 'logoff', 'title' => '<span class="glyphicon glyphicon-log-out"></span> Uitloggen']
+                        ]);
 
-                        if (User::isLoggedIn()): ?>
-                            <p class="navbar-text">Ingelogd als <?= $_SESSION['naam']; ?></p>
-                            <li><a title="Uitloggen" href="logoff"><span class="glyphicon glyphicon-log-out"></span></a>
+                        if (User::isAdmin())
+                        {
+                            $this->printMenuDropdown('<span class="glyphicon glyphicon-wrench"></span>', [
+                                ['link' => 'configuratie', 'title' => '<span class="glyphicon glyphicon-cog"></span>&nbsp; Configuratie'],
+                                ['link' => 'overzicht', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
+                                ['link' => 'menu-editor', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Menu bewerken'],
+                            ]);
+
+                            ?>
+                            <li class="nav-item">
+                                <a class="nav-link" title="Nieuwe statische pagina aanmaken" href="editor-statischepagina"><span
+                                            class="glyphicon glyphicon-plus"></span></a>
                             </li>
-                            <?php if (User::isAdmin()): ?>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                       aria-haspopup="true" aria-expanded="false">
-                                        <span class="glyphicon glyphicon-wrench"></span> <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="configuratie"><span class="glyphicon glyphicon-cog"></span>&nbsp; Configuratie</a>
-                                        </li>
-                                        <li>
-                                            <a href="overzicht"><span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht</a>
-                                        </li>
-                                        <li>
-                                            <a href="menu-editor"><span class="glyphicon glyphicon-th-list"></span>&nbsp; Menu bewerken</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li><a title="Nieuwe statische pagina aanmaken" href="editor-statischepagina"><span
-                                                class="glyphicon glyphicon-plus"></span></a></li>
-                            <?php endif; ?>
-                        <?php else: ?>
-                            <li><a title="Inloggen" href="login"><span class="glyphicon glyphicon-lock"></span></a>
-                            </li>
-                        <?php endif; ?>
-
-                    </ul>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
+                            <?php
+                        }
+                    }
+                    else
+                    {
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" title="Inloggen" href="login"><span class="glyphicon glyphicon-lock"></span></a>
+                        </li>
+                        <?php
+                    }
+                    ?>
+                </ul>
+            </div>
         </nav>
+
         <?php
         $meldingen = User::getNotifications();
         if ($meldingen)
@@ -314,7 +285,7 @@ class Pagina
 
                     </div>
                     <div class="modal-footer">
-                        <button id="confirm-dangerous-no"  type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button><button id="confirm-dangerous-yes" role="button" class="btn btn-danger">Verwijderen</button>
+                        <button id="confirm-dangerous-no"  type="button" class="btn btn-outline-cyndaron" data-dismiss="modal">Annuleren</button><button id="confirm-dangerous-yes" role="button" class="btn btn-danger">Verwijderen</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -423,5 +394,51 @@ class Pagina
             echo $string;
             echo $na;
         }
+    }
+
+    protected function printCategoryDropdown(array $menuitem)
+    {
+        $id = intval(str_replace('tooncategorie.php?id=', '', $menuitem['link']));
+        $pagesInCategory = $this->connectie->prepare("
+            SELECT * FROM
+            (
+                SELECT 'sub' AS type, id, naam FROM subs WHERE categorieid=?
+                UNION
+                SELECT 'fotoboek' AS type, id, naam FROM fotoboeken WHERE categorieid=?
+                UNION
+                SELECT 'categorie' AS type, id, naam FROM categorieen WHERE categorieid=?
+            ) AS een
+            ORDER BY naam ASC;");
+        $pagesInCategory->execute([$id, $id, $id]);
+
+        $items = [];
+        foreach ($pagesInCategory->fetchAll() as $pagina)
+        {
+            $url = new Url(sprintf('toon%s.php?id=%d', $pagina['type'], $pagina['id']));
+            $link = $url->geefFriendly();
+            $items[] = ['link' => $link, 'title' => $pagina['naam']];
+        }
+
+        $this->printMenuDropdown($menuitem['naam'], $items);
+    }
+
+    protected function printMenuDropdown(string $title, array $items)
+    {
+        ?>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?=$title;?>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <?php foreach($items as $item): ?>
+                    <?php if (!empty($item['link'])): ?>
+                        <a class="dropdown-item" href="<?=$item['link'];?>"><?=$item['title'];?></a>
+                    <?php else: ?>
+                        <span class="dropdown-item"><i><?=$item['title'];?></i></span>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        </li>
+        <?php
     }
 }

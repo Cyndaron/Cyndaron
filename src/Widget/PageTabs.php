@@ -9,8 +9,12 @@ class PageTabs extends Widget
 
         foreach($subpages as $link => $title)
         {
-            $class = ($link == $currentPage) ? ' class="active"' : '';
-            $this->code .= '<li role="presentation"' . $class . '><a class="nav-link" href="' . rtrim($urlPrefix . $link, '/') . '">' . $title . '</a></li>';
+            $this->code .= sprintf(
+                '<li role="presentation" class="nav-item"><a class="nav-link %s" href="%s">%s</a></li>',
+                ($link == $currentPage) ? ' active' : '',
+                rtrim($urlPrefix . $link, '/'),
+                $title
+            );
         }
 
         $this->code .= '</ul>';

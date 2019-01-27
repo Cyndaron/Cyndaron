@@ -32,12 +32,12 @@ class StatischePagina extends Pagina
             }
         }
 
-        $controls = sprintf('<a href="editor-statischepagina?id=%d" class="btn btn-default" title="Bewerk deze statische pagina"><span class="glyphicon glyphicon-pencil"></span></a>', $subid);
-        $controls .= sprintf('<a href="overzicht?type=sub&amp;actie=verwijderen&amp;id=%d" class="btn btn-default" title="Verwijder deze statische pagina"><span class="glyphicon glyphicon-trash"></span></a>', $subid);
+        $controls = sprintf('<a href="editor-statischepagina?id=%d" class="btn btn-outline-cyndaron" title="Bewerk deze statische pagina"><span class="glyphicon glyphicon-pencil"></span></a>', $subid);
+        $controls .= sprintf('<a href="overzicht?type=sub&amp;actie=verwijderen&amp;id=%d" class="btn btn-outline-cyndaron" title="Verwijder deze statische pagina"><span class="glyphicon glyphicon-trash"></span></a>', $subid);
 
         if (DBConnection::geefEen('SELECT * FROM vorigesubs WHERE id= ?', [$subid]))
         {
-            $controls .= sprintf('<a href="editor-statischepagina?vorigeversie=1&amp;id=%d" class="btn btn-default" title="Vorige versie"><span class="glyphicon glyphicon-vorige-versie"></span></a>', $subid);
+            $controls .= sprintf('<a href="editor-statischepagina?vorigeversie=1&amp;id=%d" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-vorige-versie"></span></a>', $subid);
         }
         parent::__construct($model->getNaam());
         $this->maakTitelknoppen($controls);
