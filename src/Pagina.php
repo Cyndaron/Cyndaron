@@ -57,7 +57,7 @@ class Pagina
 
     public function toonPrepagina()
     {
-        $this->websitenaam = Instelling::geefInstelling('websitenaam');
+        $this->websitenaam = Setting::get('websitenaam');
         $titel = $this->paginanaam . ' - ' . $this->websitenaam;
 
         ?>
@@ -76,7 +76,7 @@ class Pagina
             printf('<link href="sys/css/lightbox.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="sys/css/cyndaron.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             printf('<link href="user.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
-            if ($favicon = Instelling::geefInstelling('favicon'))
+            if ($favicon = Setting::get('favicon'))
             {
                 $extensie = substr(strrchr($favicon, "."), 1);
                 echo '<link rel="icon" type="image/' . $extensie . '" href="' . $favicon . '">';
@@ -84,10 +84,10 @@ class Pagina
             ?>
             <style type="text/css">
                 <?php
-                static::toonIndienAanwezig(Instelling::geefInstelling('achtergrondkleur'), 'body.cyndaron, .lightboxOverlay { background-color: ',";}\n");
-                static::toonIndienAanwezig(Instelling::geefInstelling('menukleur'), '.menu { background-color: ',";}\n");
-                static::toonIndienAanwezig(Instelling::geefInstelling('menuachtergrond'), '.menu { background-image: url(\'',"');}\n");
-                static::toonIndienAanwezig(Instelling::geefInstelling('artikelkleur'), '.inhoud { background-color: ',";}\n");
+                static::toonIndienAanwezig(Setting::get('achtergrondkleur'), 'body.cyndaron, .lightboxOverlay { background-color: ',";}\n");
+                static::toonIndienAanwezig(Setting::get('menukleur'), '.menu { background-color: ',";}\n");
+                static::toonIndienAanwezig(Setting::get('menuachtergrond'), '.menu { background-image: url(\'',"');}\n");
+                static::toonIndienAanwezig(Setting::get('artikelkleur'), '.inhoud { background-color: ',";}\n");
                 ?>
             </style>
             <?php
@@ -97,7 +97,7 @@ class Pagina
             }
             ?>
         </head>
-        <body class="cyndaron" data-artikelkleur="<?=Instelling::geefInstelling('artikelkleur');?>"><?php
+        <body class="cyndaron" data-artikelkleur="<?=Setting::get('artikelkleur');?>"><?php
         if (file_exists(__DIR__ . '/../extra-body-start.php'))
         {
             include __DIR__ . '/../extra-body-start.php';
@@ -105,7 +105,7 @@ class Pagina
 
         if ($this->nietDelen == false)
         {
-            if (Instelling::geefInstelling('facebook_share') == 1)
+            if (Setting::get('facebook_share') == 1)
             {
                 echo '<div id="fb-root"></div>
                 <script type="text/javascript" src="sys/js/facebook-like.js"></script>';
@@ -120,10 +120,10 @@ class Pagina
 
         echo '</div>';
 
-        if ($this->isVoorPagina() && Instelling::geefInstelling('voorpagina_is_jumbo') && Instelling::geefInstelling('jumbo_inhoud'))
+        if ($this->isVoorPagina() && Setting::get('voorpagina_is_jumbo') && Setting::get('jumbo_inhoud'))
         {
             echo '<div class="welkom-jumbo">';
-            echo Instelling::geefInstelling('jumbo_inhoud');
+            echo Setting::get('jumbo_inhoud');
             echo '</div>';
         }
 
@@ -151,8 +151,8 @@ class Pagina
 
     protected function toonMenu()
     {
-        $websitelogo = Instelling::geefInstelling('websitelogo');
-        $inverseClass = (Instelling::geefInstelling('menuthema') == 'donker') ? 'navbar-inverse' : '';
+        $websitelogo = Setting::get('websitelogo');
+        $inverseClass = (Setting::get('menuthema') == 'donker') ? 'navbar-inverse' : '';
         $navbar = $websitelogo ? sprintf('<img alt="" src="%s"> ', $websitelogo) : $this->websitenaam;
         ?>
         <nav class="menu navbar <?= $inverseClass; ?>">
@@ -346,7 +346,7 @@ class Pagina
 
     private function toonDeelknoppen()
     {
-        if ($this->nietDelen == false && Instelling::geefInstelling('facebook_share') == 1)
+        if ($this->nietDelen == false && Setting::get('facebook_share') == 1)
         {
             echo '<br /><div class="fb-like" data-href="//' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true" data-font="trebuchet ms"></div>';
         }

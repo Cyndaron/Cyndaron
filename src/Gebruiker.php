@@ -39,7 +39,7 @@ class Gebruiker
 
     public static function hasSufficientReadLevel(): bool
     {
-        $minimumReadLevel = intval(Instelling::geefInstelling('minimum_niveau_lezen'));
+        $minimumReadLevel = intval(Setting::get('minimum_niveau_lezen'));
         return (static::getLevel() >= $minimumReadLevel);
     }
 }

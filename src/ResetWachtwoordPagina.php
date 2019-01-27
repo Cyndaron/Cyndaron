@@ -37,7 +37,7 @@ EOT;
             $prep = $pdo->prepare('UPDATE gebruikers SET wachtwoord=? WHERE id =?');
             $prep->execute([$passwordHash, $user['id']]);
 
-            $websiteName = Instelling::geefInstelling('websitenaam');
+            $websiteName = Setting::get('websitenaam');
             $domain = str_replace("www.", "", $_SERVER['HTTP_HOST']);
             $domain = str_replace("http://", "", $domain);
             $domain = str_replace("https://", "", $domain);

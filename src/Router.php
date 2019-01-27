@@ -79,7 +79,7 @@ class Router
             exit();
         }
 
-        if (Instelling::geefInstelling('facebook_share') == 1)
+        if (Setting::get('facebook_share') == 1)
         {
             $scriptSrc .= " connect.facebook.net";
         }

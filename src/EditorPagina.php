@@ -139,7 +139,7 @@ abstract class EditorPagina extends Pagina
                     }
                     else
                     {
-                        $categorieid = Instelling::geefInstelling('standaardcategorie');
+                        $categorieid = Setting::get('standaardcategorie');
                     }
 
                     $categorieen = $this->connectie->query("SELECT * FROM categorieen ORDER BY naam;");

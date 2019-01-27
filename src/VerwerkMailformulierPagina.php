@@ -55,7 +55,7 @@ class VerwerkMailformulierPagina extends Pagina
 
                     if ($form['stuur_bevestiging'] == true && $afzender)
                     {
-                        $extraheaders = sprintf('From: %s <noreply@%s>', html_entity_decode(Instelling::geefInstelling('websitenaam')), $server);
+                        $extraheaders = sprintf('From: %s <noreply@%s>', html_entity_decode(Setting::get('websitenaam')), $server);
                         $extraheaders .= "\r\n" . 'Reply-To: ' . $ontvanger;
                         mail($afzender, 'Ontvangstbevestiging', $form['tekst_bevestiging'], $extraheaders);
                     }
