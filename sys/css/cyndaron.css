@@ -387,6 +387,11 @@ button.aantalKaarten
 .navbar-dark .navbar-nav .nav-link:active {
     color: rgba(255, 255, 255, 0.9);
 }
+
+.navbar-right .dropdown-menu {
+    left: auto;
+    right: 0;
+}
 /* End Navigation */
 
 /* Common controls */

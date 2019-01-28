@@ -205,26 +205,27 @@ class Pagina
                     <?php
                     if (User::isLoggedIn())
                     {
-                        $this->printMenuDropdown('<span class="glyphicon glyphicon-user"></span>', [
-                            ['link' => '', 'title' => $_SESSION['naam']],
-                            ['link' => 'logoff', 'title' => '<span class="glyphicon glyphicon-log-out"></span> Uitloggen']
-                        ]);
-
                         if (User::isAdmin())
                         {
-                            $this->printMenuDropdown('<span class="glyphicon glyphicon-wrench"></span>', [
-                                ['link' => 'configuratie', 'title' => '<span class="glyphicon glyphicon-cog"></span>&nbsp; Configuratie'],
-                                ['link' => 'overzicht', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
-                                ['link' => 'menu-editor', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Menu bewerken'],
-                            ]);
-
                             ?>
                             <li class="nav-item">
                                 <a class="nav-link" title="Nieuwe statische pagina aanmaken" href="editor-statischepagina"><span
                                             class="glyphicon glyphicon-plus"></span></a>
                             </li>
                             <?php
+
+                            $this->printMenuDropdown('<span class="glyphicon glyphicon-wrench"></span>', [
+                                ['link' => 'configuratie', 'title' => '<span class="glyphicon glyphicon-cog"></span>&nbsp; Configuratie'],
+                                ['link' => 'overzicht', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
+                                ['link' => 'menu-editor', 'title' => '<span class="glyphicon glyphicon-menu-hamburger"></span>&nbsp; Menu bewerken'],
+                                ['link' => 'reset-wachtwoord', 'title' => '<span class="glyphicon glyphicon-repeat"></span>&nbsp; Wachtwoorden bewerken'],
+                            ]);
                         }
+
+                        $this->printMenuDropdown('<span class="glyphicon glyphicon-user"></span>', [
+                            ['link' => '', 'title' => $_SESSION['naam']],
+                            ['link' => 'logoff', 'title' => '<span class="glyphicon glyphicon-log-out"></span> Uitloggen']
+                        ]);
                     }
                     else
                     {

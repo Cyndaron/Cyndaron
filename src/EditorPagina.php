@@ -84,7 +84,7 @@ abstract class EditorPagina extends Pagina
             <div class="form-group">
                 <label class="col-sm-2 control-label" for="verwijzing">Interne link maken: </label>
                 <div class="col-sm-5">
-                    <select id="verwijzing" class="form-control form-control-inline">
+                    <select id="verwijzing" class="form-control form-control-inline custom-select">
                         <?php
                         $connectie = DBConnection::getPDO();
                         $sql = "
@@ -129,7 +129,7 @@ abstract class EditorPagina extends Pagina
         <div class="form-group">
             <label class="col-sm-2 control-label" for="categorieid">Plaats dit artikel in de categorie: </label>
             <div class="col-sm-5">
-                <select name="categorieid" class="form-control">
+                <select name="categorieid" class="form-control custom-select">
                     <option value="0">&lt;Geen categorie&gt;</option>
                     <?php
 

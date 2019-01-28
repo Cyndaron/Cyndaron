@@ -20,7 +20,7 @@ EOT;
 
     public function __construct()
     {
-        parent::__construct('Wachtwoord resetten');
+        parent::__construct('Wachtwoorden resetten');
         parent::toonPrepagina();
 
         $pdo = DBConnection::getPdo();
@@ -54,9 +54,9 @@ EOT;
         }
 
         ?>
-        <form method="post">
-            <label for="uid">Gebruiker: </label>
-            <select id="uid" name="uid">
+        <form method="post" class="form-inline">
+            <label for="uid" class="my-1 mr-2">Gebruiker: </label>
+            <select id="uid" name="uid" class="custom-select my-1 mr-sm-2">
                 <?php
                 $users = DBConnection::getInstance()->doQueryAndFetchAll('SELECT * FROM gebruikers ORDER BY gebruikersnaam', []);
                 foreach ($users as $user)
@@ -65,7 +65,7 @@ EOT;
                 }
                 ?>
             </select>
-            <input type="submit" value="Nieuw wachtwoord instellen"/>
+            <input type="submit" value="Nieuw wachtwoord instellen" class="btn btn-primary my-1"/>
         </form>
         <?php
 

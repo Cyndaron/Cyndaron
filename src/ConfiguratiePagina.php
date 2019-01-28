@@ -38,16 +38,29 @@ class ConfiguratiePagina extends Pagina
             $lichtMenu = ($menuthema !== 'donker') ? 'selected' : '';
             $donkerMenu = ($menuthema === 'donker') ? 'selected' : '';
 
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Naam website:</label> <div class="col-sm-6"><input class="form-control" type="text" name="websitenaam" value="' . Setting::get('websitenaam', true) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Websitelogo:</label> <div class="col-sm-6"><input class="form-control" type="text" name="websitelogo" value="' . Setting::get('websitelogo', true) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Ondertitel:</label> <div class="col-sm-6"><input class="form-control" type="text" name="ondertitel" value="' . Setting::get('ondertitel', true) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Websitepictogram:</label> <div class="col-sm-6"><input class="form-control" type="text" name="favicon" value="' . Setting::get('favicon', true) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondkleur hele pagina:</label> <div class="col-sm-6"><input class="form-control" type="text" name="achtergrondkleur" value="' . Setting::get('achtergrondkleur', true) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondkleur menu:</label> <div class="col-sm-6"><input class="form-control" type="text" name="menukleur" value="' . Setting::get('menukleur', true) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondafbeelding menu:</label> <div class="col-sm-6"><input class="form-control" type="text" name="menuachtergrond" value="' . Setting::get('menuachtergrond', true) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Achtergrondkleur artikel:</label> <div class="col-sm-6"><input class="form-control" type="text" name="artikelkleur" value="' . Setting::get('artikelkleur', true) . '" /></div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Facebookintegratie:</label><div class="col-sm-6"><input type="checkbox" name="facebook_share" value="1" ' . $fbselected . ' /> Geactiveerd</div></div>';
-            echo '<div class="form-group"><label class="col-sm-3 control-label">Standaardcategorie:</label> <div class="col-sm-6"><select name="standaardcategorie">';
+            $formItems = [
+                ['name' => 'websitenaam', 'description' => 'Naam website', 'type' => 'text', 'value' => Setting::get('websitenaam', true)],
+                ['name' => 'websitelogo', 'description' => 'Websitelogo', 'type' => 'text', 'value' => Setting::get('websitelogo', true)],
+                ['name' => 'ondertitel', 'description' => 'Ondertitel', 'type' => 'text', 'value' => Setting::get('ondertitel', true)],
+                ['name' => 'favicon', 'description' => 'Websitepictogram', 'type' => 'text', 'value' => Setting::get('favicon', true)],
+                ['name' => 'achtergrondkleur', 'description' => 'Achtergrondkleur hele pagina', 'type' => 'color', 'value' => Setting::get('achtergrondkleur', true)],
+                ['name' => 'menukleur', 'description' => 'Achtergrondkleur menu', 'type' => 'color', 'value' => Setting::get('menukleur', true)],
+                ['name' => 'artikelkleur', 'description' => 'Achtergrondkleur artikel', 'type' => 'color', 'value' => Setting::get('artikelkleur', true)],
+                ['name' => 'menuachtergrond', 'description' => 'Achtergrondafbeelding menu', 'type' => 'text', 'value' => Setting::get('menuachtergrond', true)],
+                //['name' => 'facebook_share', 'description' => 'Facebookintegratie', 'type' => 'checkbox', 'value' => '1', 'extraAttr' => $fbselected],
+            ];
+
+            foreach ($formItems as $formItem): ?>
+                <div class="form-group row">
+                    <label for="<?=$formItem['name']?>" class="col-md-3 col-form-label col-form-label-md"><?=$formItem['description']?>:</label>
+                    <div class="col-md-6">
+                        <input type="<?=$formItem['type']?>" class="form-control form-control-md" id="<?=$formItem['name']?>" name="<?=$formItem['name']?>" value="<?=$formItem['value']?>" <?=$formItem['extraAttr'] ?? ''?>/>
+                    </div>
+                </div>
+            <?php endforeach;
+
+            echo '<div class="form-group row"><label class="col-md-3 col-form-label col-form-label-md">Facebookintegratie:</label><div class="col-md-6"><input type="checkbox" id="fbi" name="facebook_share" class="" value="1" ' . $fbselected . ' /> <label for="fbi" class="">Geactiveerd</label></div></div>';
+            echo '<div class="form-group row"><label class="col-md-3 col-form-label col-form-label-md">Standaardcategorie:</label><div class="col-md-6"><select name="standaardcategorie" class="custom-select">';
             echo '<option value="0"';
             if ($standaardcategorie == 0)
             {
@@ -66,10 +79,11 @@ class ConfiguratiePagina extends Pagina
             }
             echo '</select></div></div>';
 
-            printf('<div class="form-group"><label class="col-sm-3 control-label">Menuthema:</label><div class="col-sm-6"><select id="menuthema" name="menuthema"><option value="licht" %s>Licht</option><option value="donker" %s>Donker</option></select></div></div>', $lichtMenu, $donkerMenu);
+            printf('<div class="form-group row"><label class="col-md-3 col-form-label col-form-label-md">Menuthema:</label><div class="col-md-6"><select id="menuthema" name="menuthema" class="custom-select"><option value="licht" %s>Licht</option><option value="donker" %s>Donker</option></select></div></div>', $lichtMenu, $donkerMenu);
             ?>
-            <div class="form-group">
-                <div class="col-sm-offset-3 col-sm-6">
+            <div class="form-group row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
                     <input class="btn btn-primary" type="submit" value="Opslaan"/>
                     <input class="btn btn-outline-cyndaron" type="button" id="testKleuren" value="Kleuren testen"/>
                 </div>
