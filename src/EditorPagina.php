@@ -38,8 +38,8 @@ abstract class EditorPagina extends Pagina
 
         parent::__construct('Editor');
         $this->maakNietDelen(true);
-        $this->voegScriptToe('ckeditor/ckeditor.js');
-        $this->voegScriptToe('sys/js/editor.js');
+        $this->voegScriptToe('/ckeditor/ckeditor.js');
+        $this->voegScriptToe('/sys/js/editor.js');
         $this->toonPrePagina();
 
         $unfriendlyUrl = new Url('toon' . $this->type . '.php?id=' . $this->id);

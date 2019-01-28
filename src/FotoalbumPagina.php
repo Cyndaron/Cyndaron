@@ -18,10 +18,10 @@ class FotoalbumPagina extends Pagina
         $notities = DBConnection::geefEen('SELECT notities FROM fotoboeken WHERE id=?', [$boekid]);
         $_SESSION['referrer'] = !empty($_SERVER['HTTP_REFERER']) ? htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '';
 
-        $controls = new Knop('bewerken', 'editor-fotoalbum?id=' . $boekid, 'Dit fotoboek bewerken');
+        $controls = new Knop('edit', 'editor-fotoalbum?id=' . $boekid, 'Dit fotoboek bewerken');
         parent::__construct($boeknaam);
         $this->maakTitelknoppen($controls);
-        $this->voegScriptToe('sys/js/lightbox.min.js');
+        $this->voegScriptToe('/sys/js/lightbox.min.js');
         $this->toonPrepagina();
 
         if ($dirArray = @scandir("./fotoalbums/$boekid"))
@@ -59,7 +59,7 @@ class FotoalbumPagina extends Pagina
                     $uitvoer .= " alt=\"" . $dirArray[$index] . "\" /></a>";
                     if (User::isAdmin())
                     {
-                        $uitvoer .= '<br>' . new Knop('bewerken', 'editor-foto?id=' . $hash, 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
+                        $uitvoer .= '<br>' . new Knop('edit', 'editor-foto?id=' . $hash, 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
                     }
                     $uitvoer .= '</div>';
 

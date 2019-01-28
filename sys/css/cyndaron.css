@@ -242,7 +242,7 @@ th.rotate > div > span
     padding-left: 10px;
 }
 
-.glyphicon-vorige-versie
+.glyphicon-lastversion
 {
     -moz-transform: scale(-1, 1);
     -webkit-transform: scale(-1, 1);
@@ -251,7 +251,7 @@ th.rotate > div > span
     transform: scale(-1, 1);
 }
 
-.glyphicon-vorige-versie::before
+.glyphicon-lastversion::before
 {
     content: "\e095";
 }

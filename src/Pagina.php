@@ -71,11 +71,11 @@ class Pagina
             <meta name="twitter:description" content="Klik hier om verder te lezen..." />
             <title><?=$titel;?></title>
             <?php
-            printf('<link href="vendor/Bootstrap/css/bootstrap.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
-            printf('<link href="vendor/Glyphicons/css/glyphicons.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
-            printf('<link href="sys/css/lightbox.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
-            printf('<link href="sys/css/cyndaron.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
-            printf('<link href="user.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
+            printf('<link href="/vendor/Bootstrap/css/bootstrap.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
+            printf('<link href="/vendor/Glyphicons/css/glyphicons.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
+            printf('<link href="/sys/css/lightbox.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
+            printf('<link href="/sys/css/cyndaron.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
+            printf('<link href="/user.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSIE);
             if ($favicon = Setting::get('favicon'))
             {
                 $extensie = substr(strrchr($favicon, "."), 1);
@@ -216,7 +216,7 @@ class Pagina
 
                             $this->printMenuDropdown('<span class="glyphicon glyphicon-wrench"></span>', [
                                 ['link' => 'configuratie', 'title' => '<span class="glyphicon glyphicon-cog"></span>&nbsp; Configuratie'],
-                                ['link' => 'overzicht', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
+                                ['link' => 'allpages', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
                                 ['link' => 'menu-editor', 'title' => '<span class="glyphicon glyphicon-menu-hamburger"></span>&nbsp; Menu bewerken'],
                                 ['link' => 'reset-wachtwoord', 'title' => '<span class="glyphicon glyphicon-repeat"></span>&nbsp; Wachtwoorden bewerken'],
                             ]);
@@ -292,9 +292,9 @@ class Pagina
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-        <script type="text/javascript" src="vendor/jQuery/jquery-3.3.1.min.js"></script>
-        <script type="text/javascript" src="vendor/Bootstrap/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="sys/js/cyndaron.js"></script>
+        <script type="text/javascript" src="/vendor/jQuery/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="/vendor/Bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/sys/js/cyndaron.js"></script>
     <?php
     foreach ($this->extraScripts as $extraScript)
     {

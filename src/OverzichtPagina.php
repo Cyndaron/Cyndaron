@@ -11,58 +11,58 @@ class OverzichtPagina extends Pagina
 {
     public function __construct()
     {
-        $type = Request::geefGetVeilig('type');
-        $actie = Request::geefGetVeilig('actie');
-        $id = Request::geefGetVeilig('id');
-        $zeker = Request::geefGetVeilig('zeker');
-        $naam = Request::geefPostVeilig('naam');
+        $type = Request::getVar(1);
+        $action = Request::getVar(2);
+        $id = intval(Request::getVar(3));
+        $name = Request::getVar(3);
+        $confirm = Request::getVar(4);
 
         if ($type == 'categorie')
         {
-            if ($actie == 'nieuw')
+            if ($action == 'new')
             {
-                CategorieModel::nieuweCategorie($naam);
+                CategorieModel::nieuweCategorie($name);
             }
-            elseif ($actie == 'bewerken')
+            elseif ($action == 'edit')
             {
-                CategorieModel::wijzigCategorie($id, $naam);
+                CategorieModel::wijzigCategorie($id, $name);
             }
-            elseif ($actie == 'verwijderen' && $zeker == 1)
+            elseif ($action == 'delete' && $confirm == 1)
             {
                 CategorieModel::verwijderCategorie($id);
             }
-            elseif ($actie == 'aanmenutoevoegen')
+            elseif ($action == 'addtomenu')
             {
                 MenuModel::voegToeAanMenu('tooncategorie.php?id=' . $id);
             }
         }
-        elseif ($type == 'fotoboek')
+        elseif ($type == 'photoalbum')
         {
-            if ($actie == 'nieuw')
+            if ($action == 'new')
             {
-                FotoalbumModel::nieuwFotoalbum($naam);
+                FotoalbumModel::nieuwFotoalbum($name);
             }
-            elseif ($actie == 'bewerken')
+            elseif ($action == 'bewerken')
             {
-                FotoalbumModel::wijzigFotoalbum($id, $naam);
+                FotoalbumModel::wijzigFotoalbum($id, $name);
             }
-            elseif ($actie == 'verwijderen' && $zeker == 1)
+            elseif ($action == 'delete' && $confirm == 1)
             {
                 FotoalbumModel::verwijderFotoalbum($id);
             }
-            elseif ($actie == 'aanmenutoevoegen')
+            elseif ($action == 'addtomenu')
             {
                 MenuModel::voegToeAanMenu('toonfotoboek.php?id=' . $id);
             }
         }
         elseif ($type == 'sub')
         {
-            if ($actie == 'verwijderen' && $zeker == 1)
+            if ($action == 'delete' && $confirm == 1)
             {
                 $model = new StatischePaginaModel($id);
                 $model->verwijder();
             }
-            elseif ($actie == 'aanmenutoevoegen')
+            elseif ($action == 'addtomenu')
             {
                 MenuModel::voegToeAanMenu('toonsub.php?id=' . $id);
             }
@@ -70,20 +70,20 @@ class OverzichtPagina extends Pagina
         }
         elseif ($type == 'friendlyurl')
         {
-            if ($actie == 'nieuw')
+            if ($action == 'new')
             {
                 $doel = new Url(Request::geefPostVeilig('doel'));
-                $doel->maakFriendly($naam);
+                $doel->maakFriendly($name);
             }
-            elseif ($actie == 'verwijderen' && $zeker == 1)
+            elseif ($action == 'delete' && $confirm == 1)
             {
-                $naam = Request::geefGetVeilig('naam');
-                Url::verwijderFriendlyUrl($naam);
+                $name = Request::geefGetVeilig('naam');
+                Url::verwijderFriendlyUrl($name);
             }
-            elseif ($actie == 'aanmenutoevoegen')
+            elseif ($action == 'addtomenu')
             {
-                $naam = Request::geefGetVeilig('naam');
-                MenuModel::voegToeAanMenu($naam);
+                $name = Request::geefGetVeilig('naam');
+                MenuModel::voegToeAanMenu($name);
             }
         }
 
@@ -93,9 +93,9 @@ class OverzichtPagina extends Pagina
         $connectie = DBConnection::getPDO();
         $this->connectie = $connectie;
 
-        if ($actie == 'verwijderen' && $zeker != 1)
+        if ($action == 'delete' && $confirm != 1)
         {
-            $url = $_SERVER['REQUEST_URI'] . '&amp;zeker=1';
+            $url = $_SERVER['REQUEST_URI'] . '/1';
             echo '  <form method="post" action="' . $url . '">
         <p>Weet u zeker dat u dit item wilt verwijderen?
         <input name="inhoud" value="1" style="display:none;"/>
@@ -105,26 +105,26 @@ class OverzichtPagina extends Pagina
         </p></form>';
         }
 
-        $currentPage = Request::geefGetVeilig('type');
+        $currentPage = Request::getVar(1);
 
         echo new PageTabs([
             'sub' => 'Statische pagina\'s',
-            'categorie' => 'Categorieën',
-            'fotoboek' => 'Fotoalbums',
+            'category' => 'Categorieën',
+            'photoalbum' => 'Fotoalbums',
             'friendlyurl' => 'Friendly URL\'s',
-        ], '/overzicht?type=', $currentPage);
+        ], '/allpages/', $currentPage);
 
         echo '<div class="container-fluid tab-contents">';
 
         switch ($currentPage)
         {
-            case 'categorie':
+            case 'category':
                 $this->showCategories();
                 break;
             case 'friendlyurl':
                 $this->showFriendlyURLs();
                 break;
-            case 'fotoboek':
+            case 'photoalbum':
                 $this->showPhotoAlbums();
                 break;
             case 'sub':
@@ -141,7 +141,7 @@ class OverzichtPagina extends Pagina
     {
         echo '<h2>Statische pagina\'s</h2>';
 
-        echo new Knop('nieuw', 'editor-statischepagina', 'Nieuwe statische pagina', 'Nieuwe statische pagina');
+        echo new Knop('new', 'editor-statischepagina', 'Nieuwe statische pagina', 'Nieuwe statische pagina');
         echo '<br />';
 
         $subs = $this->connectie->prepare('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
@@ -166,15 +166,15 @@ class OverzichtPagina extends Pagina
             foreach ($subs as $subId => $subNaam)
             {
                 echo '<tr><td><div class="btn-group">';
-                echo new Knop('bewerken', 'editor-statischepagina?id=' . $subId, 'Bewerk deze statische pagina', null, 16);
-                echo new Knop('verwijderen', 'overzicht?type=sub&amp;actie=verwijderen&amp;id=' . $subId, 'Verwijder deze statische pagina', null, 16);
-                echo new Knop('aanmenutoevoegen', 'overzicht?type=sub&amp;actie=aanmenutoevoegen&amp;id=' . $subId, 'Voeg deze statische pagina toe aan het menu', null, 16);
+                echo new Knop('edit', 'editor-statischepagina?id=' . $subId, 'Bewerk deze statische pagina', null, 16);
+                echo new Knop('delete', '/allpages/sub/delete/' . $subId, 'Verwijder deze statische pagina', null, 16);
+                echo new Knop('addtomenu', '/allpages/sub/addtomenu/' . $subId, 'Voeg deze statische pagina toe aan het menu', null, 16);
                 $vvsub = $this->connectie->prepare('SELECT * FROM vorigesubs WHERE id= ?');
                 $vvsub->execute([$subId]);
 
                 if ($vvsub->fetchColumn())
                 {
-                    echo new Knop('vorigeversie', 'editor-statischepagina?vorigeversie=1&amp;id=' . $subId, 'Vorige versie terugzetten', null, 16);
+                    echo new Knop('lastversion', 'editor-statischepagina?vorigeversie=1&amp;id=' . $subId, 'Vorige versie terugzetten', null, 16);
                 }
                 echo '</div></td><td>';
                 $subNaam = strtr($subNaam, [' ' => '&nbsp;']);
@@ -192,7 +192,7 @@ class OverzichtPagina extends Pagina
         ?>
         <!-- Categorieën -->
         <h2>Categorieën</h2>
-        <form method="post" action="overzicht?type=categorie&amp;actie=nieuw" class="form-inline">
+        <form method="post" action="/allpages/category/new" class="form-inline">
             <div class="form-group">
                 <label for="naam">Nieuwe categorie:</label> <input class="form-control" id="naam" name="naam"
                                                                    type="text"/>
@@ -202,21 +202,21 @@ class OverzichtPagina extends Pagina
         </form>
         <br/>
         <table class="table table-striped table-bordered table-overzicht"><?php
-            $categorieen = $this->connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC;');
-            $categorieen->execute();
-            foreach ($categorieen as $categorie)
+            $categories = $this->connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC;');
+            $categories->execute();
+            foreach ($categories as $category)
             {
                 ?>
                 <tr>
                     <td>
                         <div class="btn-group"><?php
-                            echo new Knop('bewerken', 'editor-categorie?id=' . $categorie['id'], 'Deze categorie bewerken', null, 16);
-                            echo new Knop('verwijderen', 'overzicht?type=categorie&amp;actie=verwijderen&amp;id=' . $categorie['id'], 'Verwijder deze categorie', null, 16);
-                            echo new Knop('aanmenutoevoegen', 'overzicht?type=categorie&amp;actie=aanmenutoevoegen&amp;id=' . $categorie['id'], 'Voeg deze categorie toe aan het menu', null, 16); ?>
+                            echo new Knop('edit', 'editor-categorie?id=' . $category['id'], 'Deze categorie bewerken', null, 16);
+                            echo new Knop('delete', '/allpages/category/delete/' . $category['id'], 'Verwijder deze categorie', null, 16);
+                            echo new Knop('addtomenu', '/allpages/category/addtomenu/' . $category['id'], 'Voeg deze categorie toe aan het menu', null, 16); ?>
                         </div>
                     </td>
                     <td>
-                        <a href="tooncategorie.php?id=<?php echo $categorie['id']; ?>"><b><?php echo $categorie['naam']; ?></b></a>
+                        <a href="tooncategorie.php?id=<?php echo $category['id']; ?>"><b><?php echo $category['naam']; ?></b></a>
                     </td>
                 </tr>
             <?php } ?>
@@ -229,7 +229,7 @@ class OverzichtPagina extends Pagina
         ?>
         <!-- Fotoboeken -->
         <h2>Fotoboeken</h2>
-        <form method="post" action="overzicht?type=fotoboek&amp;actie=nieuw" class="form-inline">
+        <form method="post" action="/allpages/photoalbum/new" class="form-inline">
             <div class="form-group">
                 <label for="fobonaam">Nieuw fotoboek:</label> <input id="fobonaam" name="naam" type="text"
                                                                      class="form-control"/>
@@ -239,22 +239,22 @@ class OverzichtPagina extends Pagina
         </form>
         <br/>
         <table class="table table-striped table-bordered table-overzicht"><?php
-            $fotoboeken = $this->connectie->prepare('SELECT id,naam FROM fotoboeken ORDER BY id ASC;');
-            $fotoboeken->execute();
-            foreach ($fotoboeken as $fotoboek)
+            $photoalbums = $this->connectie->prepare('SELECT id,naam FROM fotoboeken ORDER BY id ASC;');
+            $photoalbums->execute();
+            foreach ($photoalbums as $photoalbum)
             {
                 ?>
                 <tr>
                     <td>
                         <div class="btn-group"><?php
-                            echo new Knop('bewerken', 'editor-fotoalbum?id=' . $fotoboek['id'], 'Bewerk dit fotoboek', null, 16);
-                            echo new Knop('verwijderen', 'overzicht?type=fotoboek&amp;actie=verwijderen&amp;id=' . $fotoboek['id'], 'Verwijder dit fotoboek', null, 16);
-                            echo new Knop('aanmenutoevoegen', 'overzicht?type=fotoboek&amp;actie=aanmenutoevoegen&amp;id=' . $fotoboek['id'], 'Voeg dit fotoboek toe aan het menu', null, 16); ?>
+                            echo new Knop('edit', 'editor-fotoalbum?id=' . $photoalbum['id'], 'Bewerk dit fotoboek', null, 16);
+                            echo new Knop('delete', '/allpages/photoalbum/delete/' . $photoalbum['id'], 'Verwijder dit fotoboek', null, 16);
+                            echo new Knop('addtomenu', '/allpages/photoalbum/addtomenu/' . $photoalbum['id'], 'Voeg dit fotoboek toe aan het menu', null, 16); ?>
                         </div
                     </td>
                     <td>
-                        <a href="toonfotoboek.php?id=<?php echo $fotoboek['id']; ?>"><b><?php echo $fotoboek['naam']; ?></b></a>
-                        (mapnummer <?php echo $fotoboek['id']; ?>)
+                        <a href="toonfotoboek.php?id=<?php echo $photoalbum['id']; ?>"><b><?php echo $photoalbum['naam']; ?></b></a>
+                        (mapnummer <?php echo $photoalbum['id']; ?>)
                     </td>
                 </tr>
             <?php } ?>
@@ -268,7 +268,7 @@ class OverzichtPagina extends Pagina
         <h2>Friendly URL's</h2>
         <br/>
 
-        <form method="post" action="overzicht?type=friendlyurl&amp;actie=nieuw" class="form-inline">
+        <form method="post" action="/allpages/friendlyurl/new" class="form-inline">
 
             <table class="table table-striped table-bordered table-overzicht">
                 <tr>
@@ -296,8 +296,8 @@ class OverzichtPagina extends Pagina
                 foreach ($friendlyurls as $friendlyurl)
                 {
                     echo '<tr><td><div class="btn-group">';
-                    echo new Knop('verwijderen', 'overzicht?type=friendlyurl&amp;actie=verwijderen&amp;naam=' . $friendlyurl['naam'], 'Verwijder deze friendly URL', null, 16);
-                    echo new Knop('aanmenutoevoegen', 'overzicht?type=friendlyurl&amp;actie=aanmenutoevoegen&amp;naam=' . $friendlyurl['naam'], 'Voeg deze friendly url toe aan het menu', null, 16);
+                    echo new Knop('delete', '/allpages/friendlyurl/delete/' . $friendlyurl['naam'], 'Verwijder deze friendly URL', null, 16);
+                    echo new Knop('addtomenu', '/allpages/friendlyurl/addtomenu/' . $friendlyurl['naam'], 'Voeg deze friendly url toe aan het menu', null, 16);
                     echo '</div></td><td><strong>' . $friendlyurl['naam'] . '</strong></td><td>' . $friendlyurl['doel'] . '</td></tr>';
                 }
                 ?>

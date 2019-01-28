@@ -27,7 +27,7 @@ class Router
         'migreer_naar_v5.php' => '\Cyndaron\MigreerNaar5_0',
         'migreer_naar_v5_3.php' => '\Cyndaron\MigreerNaar5_3',
         'migrate-v6_0' => \Cyndaron\Migrate60::class,
-        'overzicht' => '\Cyndaron\OverzichtPagina',
+        'allpages' => '\Cyndaron\OverzichtPagina',
         'reset-wachtwoord' => ResetWachtwoordPagina::class,
         'tooncategorie.php' => '\Cyndaron\CategoriePagina',
         'toonfotoboek.php' => '\Cyndaron\FotoalbumPagina',
@@ -51,6 +51,8 @@ class Router
     public function __construct()
     {
         $request = Request::geefGetVeilig('pagina') ?: '/';
+        $requestVars = (explode('/', $request));
+        Request::setVars($requestVars);
 
         if ((substr($request, 0, 1) == '.' || substr($request, 0, 1) == '/') && $request != '/')
         {
@@ -102,19 +104,19 @@ class Router
         //Hoofdpagina
         if ($request == '/')
         {
-            $this->verwerkUrl($hoofdurl, $request);
+            $this->verwerkUrl($hoofdurl, '/');
         }
-        elseif (array_key_exists($request, $this->endpoints))
+        elseif (array_key_exists($requestVars[0], $this->endpoints))
         {
-            $this->routeFoundNowCheckLogin($request);
-            $classname = $this->endpoints[$request];
-            $handler = new $classname();
+            $this->routeFoundNowCheckLogin($requestVars[0]);
+            $classname = $this->endpoints[$requestVars[0]];
+            new $classname();
         }
 
         // Bekende friendly URL
-        elseif ($url = new Url(DBConnection::geefEen('SELECT doel FROM friendlyurls WHERE naam=?', [$request])))
+        elseif ($url = new Url(DBConnection::geefEen('SELECT doel FROM friendlyurls WHERE naam=?', [$requestVars[0]])))
         {
-            $this->verwerkUrl($url, $request);
+            $this->verwerkUrl($url, $requestVars[0]);
         }
         // Oude directe link naar een foto
         elseif ($request === 'toonfoto.php')

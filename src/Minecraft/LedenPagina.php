@@ -24,7 +24,7 @@ class LedenPagina extends Pagina
     public function __construct()
     {
         parent::__construct('Spelers');
-        $this->voegScriptToe('sys/js/mc-ledenpagina.js');
+        $this->voegScriptToe('/sys/js/mc-ledenpagina.js');
         $this->toonPrePagina();
 
         $spelers = $this->connectie->query("SELECT * FROM mc_leden ORDER BY niveau DESC, mcnaam ASC");

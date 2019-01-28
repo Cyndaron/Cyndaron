@@ -45,7 +45,7 @@ class OverzichtBestellingenPagina extends Pagina
         $prep->execute([$concert_id]);
         $concert = $prep->fetch();
 
-        $this->extraScripts[] = 'src/Kaartverkoop/OverzichtBestellingenPagina.js';
+        $this->extraScripts[] = '/src/Kaartverkoop/OverzichtBestellingenPagina.js';
 
         parent::__construct('Overzicht bestellingen: ' . $concert['naam']);
         $this->toonPrePagina();

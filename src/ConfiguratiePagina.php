@@ -25,7 +25,7 @@ class ConfiguratiePagina extends Pagina
         $this->maakNietDelen(true);
         $this->toonPrePagina();
         $this->connectie = DBConnection::getPDO();
-        $this->voegScriptToe('sys/js/test-kleuren.js')
+        $this->voegScriptToe('/sys/js/test-kleuren.js')
 
         ?>
         <form method="post" action="configuratie" class="form-horizontal">

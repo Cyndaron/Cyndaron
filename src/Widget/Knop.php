@@ -7,19 +7,19 @@ class Knop extends Widget
     {
         switch ($soort)
         {
-            case 'nieuw':
+            case 'new':
                 $pictogram = 'plus';
                 break;
-            case 'bewerken':
+            case 'edit':
                 $pictogram = 'pencil';
                 break;
-            case 'verwijderen':
+            case 'delete':
                 $pictogram = 'trash';
                 break;
-            case 'vorigeversie':
-                $pictogram = 'vorige-versie';
+            case 'lastversion':
+                $pictogram = 'lastversion';
                 break;
-            case 'aanmenutoevoegen':
+            case 'addtomenu':
                 $pictogram = 'bookmark';
                 break;
             default:

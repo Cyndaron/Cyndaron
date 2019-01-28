@@ -11,7 +11,7 @@ class KaartenBestellenPagina extends Pagina
     public function __construct()
     {
         $this->connectie = DBConnection::getPDO();
-        $this->voegScriptToe('sys/js/kaartverkoop.js');
+        $this->voegScriptToe('/sys/js/kaartverkoop.js');
 
         $concert_id = Request::geefGetVeilig('id');
         $prep = $this->connectie->prepare('SELECT * FROM kaartverkoop_concerten WHERE id=?');

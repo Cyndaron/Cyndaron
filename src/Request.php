@@ -3,6 +3,8 @@ namespace Cyndaron;
 
 class Request
 {
+    protected static $vars = [];
+
     public static function geefPostVeilig($var)
     {
         if (empty($_POST[$var]))
@@ -104,5 +106,22 @@ class Request
         header('Cache-Control: no-cache, no-store, must-revalidate');
         header('Pragma: no-cache');
         header('Expires: 0');
+    }
+
+    public static function setVars(array $vars): void
+    {
+        static::$vars = $vars;
+    }
+
+    public static function getVar(int $varNum): ?string
+    {
+        if ($varNum >= count(static::$vars))
+        {
+            return null;
+        }
+        else
+        {
+            return static::$vars[$varNum];
+        }
     }
 }

@@ -37,7 +37,7 @@ class StatischePagina extends Pagina
 
         if (DBConnection::geefEen('SELECT * FROM vorigesubs WHERE id= ?', [$subid]))
         {
-            $controls .= sprintf('<a href="editor-statischepagina?vorigeversie=1&amp;id=%d" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-vorige-versie"></span></a>', $subid);
+            $controls .= sprintf('<a href="editor-statischepagina?vorigeversie=1&amp;id=%d" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-lastversion"></span></a>', $subid);
         }
         parent::__construct($model->getNaam());
         $this->maakTitelknoppen($controls);
