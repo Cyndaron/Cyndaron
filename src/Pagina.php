@@ -216,7 +216,7 @@ class Pagina
 
                             $this->printMenuDropdown('<span class="glyphicon glyphicon-wrench"></span>', [
                                 ['link' => 'configuratie', 'title' => '<span class="glyphicon glyphicon-cog"></span>&nbsp; Configuratie'],
-                                ['link' => 'allpages', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
+                                ['link' => 'pagemanager', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
                                 ['link' => 'menu-editor', 'title' => '<span class="glyphicon glyphicon-menu-hamburger"></span>&nbsp; Menu bewerken'],
                                 ['link' => 'reset-wachtwoord', 'title' => '<span class="glyphicon glyphicon-repeat"></span>&nbsp; Wachtwoorden bewerken'],
                             ]);
@@ -275,22 +275,25 @@ class Pagina
         ?>
         </div></div></div>
 
-        <div id="confirm-dangerous" class="modal fade" tabindex="-1" role="dialog">
+        <div id="confirm-dangerous" class="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Sluiten"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Weet u het zeker?</h4>
+                        <h5 class="modal-title">Weet u het zeker?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Sluiten">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body">
 
                     </div>
                     <div class="modal-footer">
-                        <button id="confirm-dangerous-no"  type="button" class="btn btn-outline-cyndaron" data-dismiss="modal">Annuleren</button><button id="confirm-dangerous-yes" role="button" class="btn btn-danger">Verwijderen</button>
+                        <button id="confirm-dangerous-no" type="button" class="btn btn-outline-cyndaron" data-dismiss="modal">Annuleren</button>
+                        <button id="confirm-dangerous-yes" type="button" class="btn btn-danger">Verwijderen</button>
                     </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+                </div>
+            </div>
+        </div>
 
         <script type="text/javascript" src="/vendor/jQuery/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="/vendor/Bootstrap/js/bootstrap.min.js"></script>

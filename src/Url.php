@@ -59,9 +59,11 @@ class Url
         return $this->url;
     }
 
-    public function maakFriendly(string $naam)
+    public function maakFriendly(string $name)
     {
-        DBConnection::maakEen('INSERT INTO friendlyurls(naam,doel) VALUES (?,?)', [$naam, $this->url]);
+        if ($name == '' || $this->url == '')
+            throw new \Exception('Cannot create friendly URL with no name or no URL!');
+        DBConnection::maakEen('INSERT INTO friendlyurls(naam,doel) VALUES (?,?)', [$name, $this->url]);
     }
 
     public static function verwijderFriendlyUrl(string $naam)

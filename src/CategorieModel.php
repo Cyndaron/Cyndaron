@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron;
 
+use mysql_xdevapi\Exception;
+
 /**
  * Class CategorieModel
  * @package Cyndaron
@@ -10,6 +12,9 @@ class CategorieModel
 {
     public static function nieuweCategorie($naam, bool $alleentitel = false, string $beschrijving = '', $categorieId = null)
     {
+        if ($naam == '')
+            throw new \Exception('Empty category name!');
+
         return DBConnection::maakEen('INSERT INTO categorieen(`naam`,`alleentitel`, `beschrijving`, `categorieid`) VALUES (?,?,?,?);', [$naam, (int)$alleentitel, $beschrijving, $categorieId]);
     }
 

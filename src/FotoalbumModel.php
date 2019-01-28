@@ -10,6 +10,9 @@ class FotoalbumModel
 {
     public static function nieuwFotoalbum($naam, $notities = "")
     {
+        if ($naam == '')
+            throw new \Exception('Empty photo album name!');
+
         return DBConnection::maakEen('INSERT INTO fotoboeken(`naam`,`notities`) VALUES (?,?);', [$naam, $notities]);
     }
 

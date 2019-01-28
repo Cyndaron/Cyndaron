@@ -16,6 +16,8 @@
 
 "use strict";
 
+let gDefaultAjaxSettings = { method: 'POST', dataType: 'json' };
+
 function email()
 {
     var spantags = document.getElementsByTagName('span');

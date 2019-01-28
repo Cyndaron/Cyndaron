@@ -27,12 +27,13 @@ class Router
         'migreer_naar_v5.php' => '\Cyndaron\MigreerNaar5_0',
         'migreer_naar_v5_3.php' => '\Cyndaron\MigreerNaar5_3',
         'migrate-v6_0' => \Cyndaron\Migrate60::class,
-        'allpages' => '\Cyndaron\OverzichtPagina',
         'reset-wachtwoord' => ResetWachtwoordPagina::class,
         'tooncategorie.php' => '\Cyndaron\CategoriePagina',
         'toonfotoboek.php' => '\Cyndaron\FotoalbumPagina',
         'toonsub.php' => '\Cyndaron\StatischePagina',
         'verwerkmailformulier.php' => '\Cyndaron\VerwerkMailformulierPagina',
+
+        'pagemanager' => \Cyndaron\PageManager\PageManagerController::class,
         // Standaard-plugins
         'bestandenkast.php' => '\Cyndaron\Bestandenkast\OverzichtPagina',
         'kaartenbestellen.php' => '\Cyndaron\Kaartverkoop\KaartenBestellenPagina',
