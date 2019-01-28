@@ -58,7 +58,6 @@ class Router
             die('Deze locatie mag niet worden opgevraagd.');
         }
 
-        $uir = '';
         $scriptSrc = "'self'";
 
         // De CKeditor heeft helaas nog inline scripting nodig. Op deze manier voorkomen we dat de hele site
@@ -67,9 +66,6 @@ class Router
         {
             $scriptSrc .= " 'unsafe-inline'";
         }
-
-        ini_set('session.cookie_secure', 1);
-        $uir = 'upgrade-insecure-requests;';
 
         if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off")
         {
@@ -84,7 +80,7 @@ class Router
             $scriptSrc .= " connect.facebook.net";
         }
 
-        header("Content-Security-Policy: $uir script-src $scriptSrc; font-src 'self'; base-uri 'none'; object-src 'none'");
+        header("Content-Security-Policy: upgrade-insecure-requests; script-src $scriptSrc; font-src 'self'; base-uri 'none'; object-src 'none'");
 
         $hoofdurl = new Url(DBConnection::geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', []));
         if ($hoofdurl->isGelijkAan(new Url($request)))
