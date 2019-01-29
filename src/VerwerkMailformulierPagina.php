@@ -17,7 +17,6 @@ class VerwerkMailformulierPagina extends Pagina
             if ($form['stuur_bevestiging'] == true && empty(Request::geefPostVeilig('E-mailadres')))
             {
                 parent::__construct('Formulier versturen mislukt');
-                $this->maakNietDelen(true);
                 $this->toonPrePagina();
                 echo 'U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.';
                 $this->toonPostPagina();
@@ -49,7 +48,6 @@ class VerwerkMailformulierPagina extends Pagina
                 if (mail($ontvanger, $onderwerp, $tekst, $extraheaders))
                 {
                     parent::__construct('Formulier verstuurd');
-                    $this->maakNietDelen(true);
                     $this->toonPrePagina();
                     echo 'Het versturen is gelukt.';
 
@@ -63,7 +61,6 @@ class VerwerkMailformulierPagina extends Pagina
                 else
                 {
                     parent::__construct('Formulier versturen mislukt');
-                    $this->maakNietDelen(true);
                     $this->toonPrePagina();
                     echo 'Wegens een technisch probleem is het versturen niet gelukt';
                 }
@@ -72,7 +69,6 @@ class VerwerkMailformulierPagina extends Pagina
             else
             {
                 parent::__construct('Formulier versturen mislukt');
-                $this->maakNietDelen(true);
                 $this->toonPrePagina();
                 echo 'U heeft de antispamvraag niet of niet goed ingevuld. Klik op Vorige om het te herstellen.';
                 $this->toonPostPagina();
@@ -81,7 +77,6 @@ class VerwerkMailformulierPagina extends Pagina
         else
         {
             parent::__construct('Formulier versturen mislukt');
-            $this->maakNietDelen(true);
             $this->toonPrePagina();
             echo 'Ongeldig formulier.';
             $this->toonPostPagina();

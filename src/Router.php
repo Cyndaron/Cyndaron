@@ -78,11 +78,6 @@ class Router
             exit();
         }
 
-        if (Setting::get('facebook_share') == 1)
-        {
-            $scriptSrc .= " connect.facebook.net";
-        }
-
         header("Content-Security-Policy: upgrade-insecure-requests; script-src $scriptSrc; font-src 'self'; base-uri 'none'; object-src 'none'");
 
         $hoofdurl = new Url(DBConnection::geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', []));

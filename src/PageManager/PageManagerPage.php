@@ -17,7 +17,6 @@ class PageManagerPage extends Pagina
     {
         $this->voegScriptToe('/src/PageManager/PageManagerPage.js');
         parent::__construct('Paginaoverzicht');
-        $this->maakNietDelen(true);
         $this->toonPrepagina();
         $connectie = DBConnection::getPDO();
         $this->connectie = $connectie;

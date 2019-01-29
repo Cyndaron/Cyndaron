@@ -37,7 +37,6 @@ abstract class EditorPagina extends Pagina
             $dir = '';
 
         parent::__construct('Editor');
-        $this->maakNietDelen(true);
         $this->voegScriptToe('/ckeditor/ckeditor.js');
         $this->voegScriptToe('/sys/js/editor.js');
         $this->toonPrePagina();

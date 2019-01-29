@@ -18,11 +18,9 @@ class ConfiguratiePagina extends Pagina
             Setting::set('menuachtergrond', Request::geefPostOnveilig('menuachtergrond'));
             Setting::set('artikelkleur', Request::geefPostVeilig('artikelkleur'));
             Setting::set('standaardcategorie', Request::geefPostVeilig('standaardcategorie'));
-            Setting::set('facebook_share', Request::geefPostVeilig('facebook_share'));
             Setting::set('menuthema', Request::geefPostVeilig('menuthema'));
         }
         parent::__construct('Configuratie');
-        $this->maakNietDelen(true);
         $this->toonPrePagina();
         $this->connectie = DBConnection::getPDO();
         $this->voegScriptToe('/sys/js/test-kleuren.js')
@@ -30,7 +28,6 @@ class ConfiguratiePagina extends Pagina
         ?>
         <form method="post" action="configuratie" class="form-horizontal">
             <?php
-            $fbselected = (Setting::get('facebook_share') == 1) ? ' checked="checked"' : '';
             $standaardcategorie = Setting::get('standaardcategorie');
             $categorieen = $this->connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC');
             $categorieen->execute();
@@ -47,7 +44,6 @@ class ConfiguratiePagina extends Pagina
                 ['name' => 'menukleur', 'description' => 'Achtergrondkleur menu', 'type' => 'color', 'value' => Setting::get('menukleur', true)],
                 ['name' => 'artikelkleur', 'description' => 'Achtergrondkleur artikel', 'type' => 'color', 'value' => Setting::get('artikelkleur', true)],
                 ['name' => 'menuachtergrond', 'description' => 'Achtergrondafbeelding menu', 'type' => 'text', 'value' => Setting::get('menuachtergrond', true)],
-                //['name' => 'facebook_share', 'description' => 'Facebookintegratie', 'type' => 'checkbox', 'value' => '1', 'extraAttr' => $fbselected],
             ];
 
             foreach ($formItems as $formItem): ?>
@@ -59,7 +55,6 @@ class ConfiguratiePagina extends Pagina
                 </div>
             <?php endforeach;
 
-            echo '<div class="form-group row"><label class="col-md-3 col-form-label col-form-label-md">Facebookintegratie:</label><div class="col-md-6"><input type="checkbox" id="fbi" name="facebook_share" class="" value="1" ' . $fbselected . ' /> <label for="fbi" class="">Geactiveerd</label></div></div>';
             echo '<div class="form-group row"><label class="col-md-3 col-form-label col-form-label-md">Standaardcategorie:</label><div class="col-md-6"><select name="standaardcategorie" class="custom-select">';
             echo '<option value="0"';
             if ($standaardcategorie == 0)

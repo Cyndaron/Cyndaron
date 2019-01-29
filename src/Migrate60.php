@@ -8,7 +8,7 @@ class Migrate60 extends Pagina
     public function __construct()
     {
         $connection = DBConnection::getInstance();
-        $connection->doQuery('DELETE FROM instellingen WHERE naam = "menutype"');
+        $connection->doQuery('DELETE FROM instellingen WHERE naam = "menutype" OR naam = "facebook_share"');
         $connection->doQuery('DROP TABLE ideeen');
         $connection->doQuery('ALTER TABLE `mc_leden` ADD `newRenderer` BOOLEAN NOT NULL DEFAULT FALSE AFTER `renderAvatarHaar`;');
         $connection->doQuery('ALTER TABLE `mc_leden` ADD `uuid` CHAR(32) NULL DEFAULT NULL AFTER `mcnaam`;');

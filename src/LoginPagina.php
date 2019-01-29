@@ -35,7 +35,6 @@ class LoginPagina extends Pagina
                 if (!$userdata)
                 {
                     parent::__construct('Fout');
-                    $this->maakNietDelen(true);
                     $this->toonPrePagina();
                     echo 'Onbekende gebruikersnaam of e-mailadres.';
                     $this->toonPostPagina();
@@ -83,7 +82,6 @@ class LoginPagina extends Pagina
                     else
                     {
                         parent::__construct('Fout');
-                        $this->maakNietDelen(true);
                         $this->toonPrePagina();
                         echo 'Verkeerd wachtwoord.';
                         $this->toonPostPagina();
@@ -93,7 +91,6 @@ class LoginPagina extends Pagina
             else
             {
                 parent::__construct('Fout');
-                $this->maakNietDelen(true);
                 $this->toonPrePagina();
                 echo 'Verkeerde gebruikersnaam of e-mailadres.';
                 $this->toonPostPagina();
@@ -106,7 +103,6 @@ class LoginPagina extends Pagina
                 $_SESSION['redirect'] = Request::geefReferrerVeilig();
             }
             parent::__construct('Inloggen');
-            $this->maakNietDelen(true);
             $this->toonPrePagina();
             echo '
 <form class="form-horizontal" method="post" action="#">

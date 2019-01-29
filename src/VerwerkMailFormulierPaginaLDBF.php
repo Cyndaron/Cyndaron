@@ -10,7 +10,6 @@ class VerwerkMailformulierPaginaLDBF extends Pagina
             if (empty(Request::geefPostVeilig('E-mailadres')))
             {
                 parent::__construct('Formulier versturen mislukt');
-                $this->maakNietDelen(true);
                 $this->toonPrePagina();
                 echo 'U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.';
                 $this->toonPostPagina();
@@ -142,14 +141,12 @@ class VerwerkMailformulierPaginaLDBF extends Pagina
                 if ($mail1 && $mail2)
                 {
                     parent::__construct('Formulier verstuurd');
-                    $this->maakNietDelen(true);
                     $this->toonPrePagina();
                     echo 'Het versturen is gelukt.';
                 }
                 else
                 {
                     parent::__construct('Formulier versturen mislukt');
-                    $this->maakNietDelen(true);
                     $this->toonPrePagina();
                     echo 'Wegens een technisch probleem is het versturen niet gelukt';
                 }
@@ -159,7 +156,6 @@ class VerwerkMailformulierPaginaLDBF extends Pagina
         else
         {
             parent::__construct('Formulier versturen mislukt');
-            $this->maakNietDelen(true);
             $this->toonPrePagina();
             echo 'Ongeldig formulier.';
             $this->toonPostPagina();

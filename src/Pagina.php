@@ -26,7 +26,6 @@ class Pagina
     protected $paginanaam = "";
     protected $titelknoppen = null;
     protected $connectie = null;
-    protected $nietDelen = false;
     protected $extraScripts = [];
     protected $websitenaam = '';
 
@@ -43,11 +42,6 @@ class Pagina
     public function maakExtraMeta(string $extraMeta)
     {
         $this->extraMeta = $extraMeta;
-    }
-
-    public function maaknietDelen(bool $bool)
-    {
-        $this->nietDelen = $bool;
     }
 
     public function maakTitelknoppen(string $titelknoppen)
@@ -101,15 +95,6 @@ class Pagina
         if (file_exists(__DIR__ . '/../extra-body-start.php'))
         {
             include __DIR__ . '/../extra-body-start.php';
-        }
-
-        if ($this->nietDelen == false)
-        {
-            if (Setting::get('facebook_share') == 1)
-            {
-                echo '<div id="fb-root"></div>
-                <script type="text/javascript" src="sys/js/facebook-like.js"></script>';
-            }
         }
 
         echo '
@@ -269,8 +254,6 @@ class Pagina
 
     public function toonPostPagina()
     {
-        $this->toonDeelknoppen();
-
         // Eerste div: inhoud. Tweede div: inhoudcontainer. Derde div: paginacontainer
         ?>
         </div></div></div>
@@ -317,14 +300,6 @@ class Pagina
     public function voegScriptToe($scriptnaam)
     {
         $this->extraScripts[] = $scriptnaam;
-    }
-
-    private function toonDeelknoppen()
-    {
-        if ($this->nietDelen == false && Setting::get('facebook_share') == 1)
-        {
-            echo '<br /><div class="fb-like" data-href="//' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true" data-font="trebuchet ms"></div>';
-        }
     }
 
     public function geefMenu(): array
