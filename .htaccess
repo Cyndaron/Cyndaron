@@ -4,8 +4,8 @@ Header set X-XSS-Protection "1; mode=block"
 Header set X-Content-Type-Options "nosniff"
 Header set Referrer-Policy "no-referrer-when-downgrade"
 
-# Voorkomt indexeren van mappen
-Options -Indexes
+# Voorkomt indexeren van mappen; schakel MultiViews uit (zorgt voor rare effecten met bestanden vinden)
+Options -Indexes -MultiViews
 
 # Scherm .htaccess af
 <Files .htaccess>
