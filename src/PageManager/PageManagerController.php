@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Cyndaron\PageManager;
 
 use Cyndaron\CategorieModel;
+use Cyndaron\Controller;
 use Cyndaron\FotoalbumModel;
 use Cyndaron\Menu\MenuModel;
 use Cyndaron\Request;
@@ -12,7 +13,7 @@ use Cyndaron\Url;
 
 require_once __DIR__ . '/../../check.php';
 
-class PageManagerController
+class PageManagerController extends Controller
 {
     public function __construct()
     {
@@ -115,10 +116,7 @@ class PageManagerController
         }
         catch (\Exception $e)
         {
-            header('HTTP/1.1 500 Internal Server Error');
-            echo json_encode([
-                'error' => $e->getMessage()
-            ]);
+            $this->send500($e->getMessage());
         }
     }
 }

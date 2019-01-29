@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\User\User;
+
 /**
  * Zorgt voor correct doorverwijzen van verzoeken.
  * @package Cyndaron
@@ -27,7 +29,8 @@ class Router
         'migreer_naar_v5.php' => '\Cyndaron\MigreerNaar5_0',
         'migreer_naar_v5_3.php' => '\Cyndaron\MigreerNaar5_3',
         'migrate-v6_0' => \Cyndaron\Migrate60::class,
-        'reset-wachtwoord' => ResetWachtwoordPagina::class,
+        'user' => \Cyndaron\User\UserController::class,
+        'usermanager' => \Cyndaron\User\UserManagerPage::class,
         'tooncategorie.php' => '\Cyndaron\CategoriePagina',
         'toonfotoboek.php' => '\Cyndaron\FotoalbumPagina',
         'toonsub.php' => '\Cyndaron\StatischePagina',

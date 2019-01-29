@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\User\User;
+
 class LoginPagina extends Pagina
 {
     public function __construct()

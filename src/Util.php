@@ -98,4 +98,19 @@ class Util
             return true;
         }
     }
+
+    public static function generatePassword(): string
+    {
+        $gencode = '';
+        $letters = ['a', 'c', 'd', 'e', 'f', 'h', 'j', 'm', 'n', 'q', 'r', 't',
+            'A', 'C', 'D', 'E', 'F', 'H', 'J', 'L', 'M', 'N', 'Q', 'R', 'T',
+            '3', '4', '7', '8'];
+
+        for ($c = 0; $c < 10; $c++)
+        {
+            $gencode .= $letters[rand(0, count($letters))];
+        }
+
+        return $gencode;
+    }
 }

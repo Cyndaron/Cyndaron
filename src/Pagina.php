@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\User\User;
 use Cyndaron\Widget\Knop;
 
 /*
@@ -200,10 +201,10 @@ class Pagina
                             <?php
 
                             $this->printMenuDropdown('<span class="glyphicon glyphicon-wrench"></span>', [
-                                ['link' => 'configuratie', 'title' => '<span class="glyphicon glyphicon-cog"></span>&nbsp; Configuratie'],
-                                ['link' => 'pagemanager', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
-                                ['link' => 'menu-editor', 'title' => '<span class="glyphicon glyphicon-menu-hamburger"></span>&nbsp; Menu bewerken'],
-                                ['link' => 'reset-wachtwoord', 'title' => '<span class="glyphicon glyphicon-repeat"></span>&nbsp; Wachtwoorden bewerken'],
+                                ['link' => '/configuratie', 'title' => '<span class="glyphicon glyphicon-cog"></span>&nbsp; Configuratie'],
+                                ['link' => '/pagemanager', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
+                                ['link' => '/menu-editor', 'title' => '<span class="glyphicon glyphicon-menu-hamburger"></span>&nbsp; Menu bewerken'],
+                                ['link' => '/usermanager', 'title' => '<span class="glyphicon glyphicon-user"></span>&nbsp; Gebruikersbeheer'],
                             ]);
                         }
 
