@@ -271,12 +271,24 @@ th.rotate > div > span
     width: auto;
 }
 
-.table-overzicht td:first-child
+/* ID */
+.pm-table th:first-child, .pm-table td:first-child
+{
+    text-align: center;
+}
+
+.pm-table td:first-child
+{
+    width: 50px;
+}
+
+/* Actions */
+.pm-table td:last-child
 {
     width: 150px;
 }
 
-.table-overzicht > tbody > tr > td
+.pm-table > tbody > tr > td
 {
     vertical-align: middle;
 }
