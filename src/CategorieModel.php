@@ -1,8 +1,6 @@
 <?php
 namespace Cyndaron;
 
-use mysql_xdevapi\Exception;
-
 /**
  * Class CategorieModel
  * @package Cyndaron

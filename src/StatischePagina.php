@@ -15,7 +15,11 @@ class StatischePagina extends Pagina
         }
 
         $model = new StatischePaginaModel($subid);
-        $model->laden();
+        if (!$model->laden())
+        {
+            header('Location: 404.php');
+            die('Pagina bestaat niet.');
+        }
 
         $reactiesAan = $model->getReactiesAan();
 

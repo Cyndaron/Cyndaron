@@ -1,6 +1,9 @@
 <?php
+declare(strict_types = 1);
+
 namespace Cyndaron;
 
+use Cyndaron\User\User;
 
 class Loguit
 {

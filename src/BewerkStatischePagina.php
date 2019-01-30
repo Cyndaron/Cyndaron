@@ -2,6 +2,8 @@
 namespace Cyndaron;
 
 
+use Cyndaron\User\User;
+
 class BewerkStatischePagina extends Bewerk
 {
     protected function prepare()

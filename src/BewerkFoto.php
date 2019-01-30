@@ -2,6 +2,8 @@
 namespace Cyndaron;
 
 
+use Cyndaron\User\User;
+
 class BewerkFoto extends Bewerk
 {
     protected function prepare()

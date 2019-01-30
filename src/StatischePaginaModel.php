@@ -99,6 +99,11 @@ class StatischePaginaModel
         $prep->execute([$this->id]);
         $record = $prep->fetch();
 
+        if ($record === false)
+        {
+            return false;
+        }
+
         $this->naam = $record['naam'];
         $this->tekst = $record['tekst'];
         $this->reactiesAan = $record['reacties_aan'] == 1 ? true : false;
