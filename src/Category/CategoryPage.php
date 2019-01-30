@@ -1,8 +1,14 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\Category;
 
 
-class CategoriePagina extends Pagina
+use Cyndaron\DBConnection;
+use Cyndaron\Pagina;
+use Cyndaron\Request;
+use Cyndaron\Url;
+use Cyndaron\Util;
+
+class CategoryPage extends Pagina
 {
     public function __construct()
     {

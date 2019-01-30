@@ -2,6 +2,9 @@
 namespace Cyndaron;
 
 
+use Cyndaron\Category\CategoryModel;
+use Cyndaron\User\User;
+
 class BewerkCategorie extends Bewerk
 {
     protected function prepare()
@@ -18,11 +21,11 @@ class BewerkCategorie extends Bewerk
 
             if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
             {
-                CategorieModel::wijzigCategorie($this->id, $titel, $alleentitel, $beschrijving, $categorieId);
+                CategoryModel::wijzigCategorie($this->id, $titel, $alleentitel, $beschrijving, $categorieId);
             }
             else
             {
-                $this->id = CategorieModel::nieuweCategorie($titel, $alleentitel, $beschrijving, $categorieId);
+                $this->id = CategoryModel::nieuweCategorie($titel, $alleentitel, $beschrijving, $categorieId);
             }
 
             User::addNotification('Categorie bewerkt.');

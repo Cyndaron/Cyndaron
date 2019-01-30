@@ -10,7 +10,7 @@ $(document).ready(function () {
         $('#confirm-dangerous-yes').off();
         $('#confirm-dangerous-yes').on('click', function()
         {
-            $.ajax('/pagemanager/' + type + '/delete/' + id, gDefaultAjaxSettings).done(function() {
+            $.ajax('/' + type + '/delete/' + id, gDefaultAjaxSettings).done(function() {
                 $('#pm-row-' + type + '-' + id).remove();
                 $('#confirm-dangerous').modal('hide');
             });
@@ -21,7 +21,7 @@ $(document).ready(function () {
         let id = $(this).data('id');
         let type = $(this).data('type');
 
-        $.ajax('/pagemanager/' + type + '/addtomenu/' + id, gDefaultAjaxSettings).done(function() {
+        $.ajax('/' + type + '/addtomenu/' + id, gDefaultAjaxSettings).done(function() {
             location.reload();
         });
     });
@@ -29,7 +29,7 @@ $(document).ready(function () {
     $('#pm-create-category').on('click', function () {
         let settings = gDefaultAjaxSettings;
         settings.data = { name: $('#pm-category-new-name').val() };
-        $.ajax('/pagemanager/category/new', settings).done(function() {
+        $.ajax('/category/new', settings).done(function() {
             location.reload();
         });
     });
@@ -37,7 +37,7 @@ $(document).ready(function () {
     $('#pm-create-photoalbum').on('click', function () {
         let settings = gDefaultAjaxSettings;
         settings.data = { name: $('#pm-photoalbum-new-name').val() };
-        $.ajax('/pagemanager/photoalbum/new', settings).done(function() {
+        $.ajax('/photoalbum/new', settings).done(function() {
             location.reload();
         });
     });
@@ -48,7 +48,7 @@ $(document).ready(function () {
             name: $('#pm-friendlyurl-new-name').val(),
             target:   $('#pm-friendlyurl-new-target').val()
         };
-        $.ajax('/pagemanager/friendlyurl/new', settings).done(function() {
+        $.ajax('/friendlyurl/new', settings).done(function() {
             location.reload();
         });
     });

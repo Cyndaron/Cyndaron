@@ -151,7 +151,7 @@ class PageManagerPage extends Pagina
         ?>
         <!-- Fotoboeken -->
         <h2>Fotoboeken</h2>
-        <form method="post" action="/pagemanager/photoalbum/new" class="form-inline">
+        <form method="post" action="/photoalbum/new" class="form-inline">
             <div class="form-group">
                 <label for="pm-photoalbum-new-name">Nieuw fotoboek:</label>
                 <input id="pm-photoalbum-new-name" type="text" class="form-control"/>

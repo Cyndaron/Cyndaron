@@ -1,12 +1,14 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\Category;
+
+use Cyndaron\DBConnection;
+use Cyndaron\Util;
 
 /**
- * Class CategorieModel
- * @package Cyndaron
+ * Class CategoryModel
  * @todo: Omvormen tot echt model.
  */
-class CategorieModel
+class CategoryModel
 {
     public static function nieuweCategorie($naam, bool $alleentitel = false, string $beschrijving = '', $categorieId = null)
     {

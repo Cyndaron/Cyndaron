@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Cyndaron\PageManager;
 
-use Cyndaron\CategorieModel;
+use Cyndaron\Category\CategoryModel;
 use Cyndaron\Controller;
 use Cyndaron\FotoalbumModel;
 use Cyndaron\Menu\MenuModel;
@@ -38,28 +38,7 @@ class PageManagerController extends Controller
             $action = Request::getVar(2);
             $id = intval(Request::getVar(3));
 
-            if ($type == 'category')
-            {
-                if ($action == 'new')
-                {
-                    $name = Request::geefPostVeilig('name');
-                    CategorieModel::nieuweCategorie($name);
-                }
-                elseif ($action == 'edit')
-                {
-                    $name = Request::geefPostVeilig('name');
-                    CategorieModel::wijzigCategorie($id, $name);
-                }
-                elseif ($action == 'delete')
-                {
-                    CategorieModel::verwijderCategorie($id);
-                }
-                elseif ($action == 'addtomenu')
-                {
-                    MenuModel::voegToeAanMenu('tooncategorie.php?id=' . $id);
-                }
-            }
-            elseif ($type == 'photoalbum')
+            if ($type == 'photoalbum')
             {
                 if ($action == 'new')
                 {
