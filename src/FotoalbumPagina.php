@@ -11,7 +11,7 @@ class FotoalbumPagina extends Pagina
         $boekid = Request::geefGetVeilig('id');
         if (!is_numeric($boekid) || $boekid < 1)
         {
-            header("Location: 404.php");
+            header("Location: /404.php");
             die('Incorrecte parameter ontvangen.');
         }
         $boeknaam = DBConnection::geefEen('SELECT naam FROM fotoboeken WHERE id=?', [$boekid]);

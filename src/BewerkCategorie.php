@@ -29,7 +29,7 @@ class BewerkCategorie extends Bewerk
             }
 
             User::addNotification('Categorie bewerkt.');
-            $this->returnUrl = 'tooncategorie.php?id=' . $this->id;
+            $this->returnUrl = '/tooncategorie.php?id=' . $this->id;
         }
 
     }

@@ -181,7 +181,7 @@ class Router
             {
                 User::addNotification('U moet inloggen om deze site te bekijken');
                 $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
-                header('Location: login');
+                header('Location: /login');
                 die();
             }
         }

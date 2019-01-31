@@ -10,14 +10,14 @@ class StatischePagina extends Pagina
         $subid = intval(Request::geefGetVeilig('id'));
         if (!is_numeric($subid) || $subid <= 0)
         {
-            header('Location: 404.php');
+            header('Location: /404.php');
             die('Incorrecte parameter ontvangen.');
         }
 
         $model = new StatischePaginaModel($subid);
         if (!$model->laden())
         {
-            header('Location: 404.php');
+            header('Location: /404.php');
             die('Pagina bestaat niet.');
         }
 

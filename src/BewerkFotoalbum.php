@@ -26,7 +26,7 @@ class BewerkFotoalbum extends Bewerk
             }
 
             User::addNotification('Fotoboek bewerkt.');
-            $this->returnUrl = 'toonfotoboek.php?id=' . $this->id;
+            $this->returnUrl = '/toonfotoboek.php?id=' . $this->id;
         }
     }
 }
