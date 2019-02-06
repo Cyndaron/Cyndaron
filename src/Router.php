@@ -110,7 +110,18 @@ class Router
         {
             $this->routeFoundNowCheckLogin($requestVars[0]);
             $classname = $this->endpoints[$requestVars[0]];
-            new $classname();
+            if (is_subclass_of($classname, Controller::class))
+            {
+                /** @var Controller $route */
+                $route = new $classname($requestVars[0], $requestVars[1] ?? '');
+                $token = Request::geefPostVeilig('csrfToken');
+                $route->checkCSRFToken($token);
+                $route->route();
+            }
+            else
+            {
+                new $classname();
+            }
         }
 
         // Bekende friendly URL

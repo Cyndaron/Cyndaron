@@ -6,7 +6,7 @@ namespace Cyndaron\PageManager;
 use Cyndaron\DBConnection;
 use Cyndaron\Pagina;
 use Cyndaron\Request;
-use Cyndaron\Widget\Knop;
+use Cyndaron\User\User;use Cyndaron\Widget\Knop;
 use Cyndaron\Widget\PageTabs;
 
 require_once __DIR__ . '/../../check.php';
@@ -129,7 +129,7 @@ class PageManagerPage extends Pagina
         <div class="form-inline">
             <label for="pm-category-new-name" class="mb-2 mr-sm-2">Nieuwe categorie:</label>
             <input class="form-control mb-2 mr-sm-2" id="pm-category-new-name" type="text"/>
-            <button id="pm-create-category" class="btn btn-success mb-2 "><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+            <button id="pm-create-category" data-csrf-token="<?=User::getCSRFToken('category', 'add')?>" class="btn btn-success mb-2 "><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
         </div>
 
         <table class="table table-striped table-bordered pm-table">

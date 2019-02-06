@@ -10,7 +10,7 @@ use Cyndaron\User\User;
 
 class CategoryController extends Controller
 {
-    public function __construct()
+    public function route()
     {
         if (!User::isAdmin())
         {
@@ -23,7 +23,7 @@ class CategoryController extends Controller
             $action = Request::getVar(1);
             $id = intval(Request::getVar(2));
 
-            if ($action == 'new')
+            if ($action == 'add')
             {
                 $name = Request::geefPostVeilig('name');
                 CategoryModel::nieuweCategorie($name);

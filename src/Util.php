@@ -113,4 +113,9 @@ class Util
 
         return $gencode;
     }
+
+    public static function generateToken(int $length): string
+    {
+        return bin2hex(random_bytes($length));
+    }
 }

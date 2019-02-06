@@ -15,7 +15,7 @@ require_once __DIR__ . '/../../check.php';
 
 class PageManagerController extends Controller
 {
-    public function __construct()
+    public function route()
     {
         $action = Request::getVar(2);
 
@@ -40,7 +40,7 @@ class PageManagerController extends Controller
 
             if ($type == 'photoalbum')
             {
-                if ($action == 'new')
+                if ($action == 'add')
                 {
                     $name = Request::geefPostVeilig('name');
                     FotoalbumModel::nieuwFotoalbum($name);
@@ -74,7 +74,7 @@ class PageManagerController extends Controller
             }
             elseif ($type == 'friendlyurl')
             {
-                if ($action == 'new')
+                if ($action == 'add')
                 {
                     $name = Request::geefPostVeilig('name');
                     $target = new Url(Request::geefPostVeilig('target'));
