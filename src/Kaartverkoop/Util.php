@@ -1,34 +1,15 @@
 <?php
 namespace Cyndaron\Kaartverkoop;
 
-class Util
+class Util extends \Cyndaron\Util
 {
-    const STOELEN_PER_RIJ = 330;
+    const SEATS_PER_ROW = 330;
 
-    public static function postcodeLigtInWalcheren($postcode)
+    public static function postcodeIsWithinWalcheren(int $postcode)
     {
-        $postcode = intval($postcode);
-
         if ($postcode >= 4330 && $postcode <= 4399)
             return true;
         else
             return false;
-    }
-
-    public static function naarEuro($bedrag)
-    {
-        return '&euro;&nbsp;'.number_format($bedrag, 2, ',', '.');
-    }
-
-    public static function naarEuroPlain($bedrag)
-    {
-        return '€ '.number_format($bedrag, 2, ',', '.');
-    }
-
-    public static function boolNaarTekst($bool)
-    {
-        if ($bool == true)
-            return 'Ja';
-        return 'Nee';
     }
 }

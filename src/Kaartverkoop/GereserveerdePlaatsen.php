@@ -34,7 +34,7 @@ class GereserveerdePlaatsen
         #$rijen = range('A', 'P');
         #$stoelen_per_rij = range(1, 15);
         $rijen = ['A'];
-        $stoelen_per_rij = range(1, Util::STOELEN_PER_RIJ);
+        $stoelen_per_rij = range(1, Util::SEATS_PER_ROW);
 
 //        echo '<table><thead><tr><th>&nbsp;</th>';
 //        foreach ($stoelen_per_rij as $stoel)

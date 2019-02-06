@@ -58,7 +58,7 @@ class VerwerkBestellingPagina extends Pagina
 
         if ($concert['bezorgen_verplicht'])
         {
-            $woontInWalcheren = ($buitenland) ? false : Util::postcodeLigtInWalcheren($postcode);
+            $woontInWalcheren = ($buitenland) ? false : Util::postcodeIsWithinWalcheren($postcode);
 
             if ($woontInWalcheren)
             {
@@ -179,7 +179,7 @@ Content-Type: text/plain; charset="UTF-8"';
             //    {
             $rij = 'A';
             $vrije_plaatsen_naast_elkaar = 0;
-            for ($stoel = 1; $stoel <= Util::STOELEN_PER_RIJ; $stoel++)
+            for ($stoel = 1; $stoel <= Util::SEATS_PER_ROW; $stoel++)
             {
                 if (isset($bezette_plaatsen_per_rij[$rij][$stoel]) && $bezette_plaatsen_per_rij[$rij][$stoel] == true)
                 {
@@ -224,7 +224,7 @@ Na betaling zullen uw kaarten ' . $opstuurtekst . '.' . $voor_u_reserveerde_plaa
 
 Gebruik bij het betalen de volgende gegevens:
    Rekeningnummer: NL06INGB0000545925 t.n.v. Vlissingse Oratorium Vereniging
-   Bedrag: ' . Util::naarEuroPlain($totaalprijs) . '
+   Bedrag: ' . Util::formatEuroPlainText($totaalprijs) . '
    Onder vermelding van: bestellingsnummer ' . $bestellingsnummer . '
 
 
@@ -239,7 +239,7 @@ Kaartsoorten:
         {
             if ($bestelling_kaartsoorten[$kaartsoort['id']] > 0)
             {
-                $tekst .= '   ' . $kaartsoort['naam'] . ': ' . $bestelling_kaartsoorten[$kaartsoort['id']] . ' à ' . Util::naarEuroPlain($kaartsoort['prijs']) . PHP_EOL;
+                $tekst .= '   ' . $kaartsoort['naam'] . ': ' . $bestelling_kaartsoorten[$kaartsoort['id']] . ' à ' . Util::formatEuroPlainText($kaartsoort['prijs']) . PHP_EOL;
             }
         }
         if (!$concert['bezorgen_verplicht'])
@@ -247,7 +247,7 @@ Kaartsoorten:
             $tekst .= "\nKaarten bezorgen: " . ($bezorgen ? 'Ja' : 'Nee');
         }
         $tekst .= "\nGereserveerde plaatsen: " . ($gereserveerde_plaatsen ? 'Ja' : 'Nee') . PHP_EOL;
-        $tekst .= 'Totaalbedrag: ' . Util::naarEuroPlain($totaalprijs) . '
+        $tekst .= 'Totaalbedrag: ' . Util::formatEuroPlainText($totaalprijs) . '
 
 Achternaam: ' . $achternaam . '
 Voorletters: ' . $voorletters . "\n\n";

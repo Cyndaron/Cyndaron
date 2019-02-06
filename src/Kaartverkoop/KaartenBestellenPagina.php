@@ -43,7 +43,7 @@ class KaartenBestellenPagina extends Pagina
 
         <h3>Vrije plaatsen en gereserveerde plaatsen</h3>
         <p>Alle plaatsen in het middenschip van de kerk verkopen wij met een stoelnummer; d.w.z. al deze plaatsen worden
-            verkocht als gereserveerde plaats. De stoelnummers lopen van 1 t/m circa <?=Util::STOELEN_PER_RIJ;?>. Het is een doorlopende reeks,
+            verkocht als gereserveerde plaats. De stoelnummers lopen van 1 t/m circa <?=Util::SEATS_PER_ROW;?>. Het is een doorlopende reeks,
             dus dit keer geen rijnummer. Aan het einde van een rij verspringt het stoelnummer naar de stoel daarachter.
             De nummers vormen een soort heen en weer gaande slinger door het hele middenschip heen. Het kan dus gebeuren
             dat u een paar kaarten koopt, waarbij de nummering verspringt naar de rij daarachter. Maar wel zo dat de
@@ -75,7 +75,7 @@ class KaartenBestellenPagina extends Pagina
                                 <button type="button" class="aantalKaarten btn btn-outline-cyndaron aantalKaarten-decrease" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-minus"></span></button>
                             </td>
                         </tr>',
-                        $kaartsoort['naam'], Util::naarEuro($kaartsoort['prijs']), $kaartsoort['id']);
+                        $kaartsoort['naam'], Util::formatEuro($kaartsoort['prijs']), $kaartsoort['id']);
                 }
                 ?>
             </table>
@@ -83,7 +83,7 @@ class KaartenBestellenPagina extends Pagina
                 <input id="bezorgen" name="bezorgen" type="checkbox" value="1" class="berekenTotaalprijsOpnieuw">
                 <label for="bezorgen">
                     Bezorg mijn kaarten thuis (meerprijs
-                    van <?php echo Util::naarEuro($concert_info['verzendkosten']); ?> per kaart)
+                    van <?php echo Util::formatEuro($concert_info['verzendkosten']); ?> per kaart)
                 </label>
             </div>
 
@@ -97,7 +97,7 @@ class KaartenBestellenPagina extends Pagina
                            type="checkbox" value="1"/>
                     <label for="gereserveerde_plaatsen">
                         Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs
-                        van <?php echo Util::naarEuro($concert_info['toeslag_gereserveerde_plaats']); ?> per kaart)
+                        van <?php echo Util::formatEuro($concert_info['toeslag_gereserveerde_plaats']); ?> per kaart)
                     </label>
                 <?php endif; ?>
                 <br/>
@@ -111,7 +111,7 @@ class KaartenBestellenPagina extends Pagina
                 <p>
                     Bij dit concert is het alleen mogelijk om uw kaarten te laten thuisbezorgen. Als u op Walcheren
                     woont is dit gratis. Woont u buiten Walcheren, dan kost het
-                    thuisbezorgen <?= Util::naarEuro($concert_info['verzendkosten']); ?> per kaart.<br>Het is ook
+                    thuisbezorgen <?= Util::formatEuro($concert_info['verzendkosten']); ?> per kaart.<br>Het is ook
                     mogelijk
                     om uw kaarten te laten ophalen door een koorlid. Dit is gratis.
                 </p>

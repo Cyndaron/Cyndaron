@@ -142,11 +142,11 @@ class OverzichtBestellingenPagina extends Pagina
                 echo '</td>';
             }
 
-            echo '<td>' . Util::naarEuro($totaalbedrag) . '</td>';
+            echo '<td>' . Util::formatEuro($totaalbedrag) . '</td>';
 
             if (!$concert['bezorgen_verplicht'])
             {
-                echo '<td>' . Util::boolNaarTekst($bestelling['thuisbezorgen']) . '</td>';
+                echo '<td>' . Util::boolToText($bestelling['thuisbezorgen']) . '</td>';
             }
             else
             {
@@ -165,14 +165,14 @@ class OverzichtBestellingenPagina extends Pagina
             echo '<td>';
             if ($bestelling['thuisbezorgen'] || $concert['bezorgen_verplicht'])
             {
-                echo Util::boolNaarTekst($bestelling['is_bezorgd']);
+                echo Util::boolToText($bestelling['is_bezorgd']);
             }
             else
             {
                 echo '&nbsp;';
             }
 
-            echo '</td><td>' . Util::boolNaarTekst($bestelling['gereserveerde_plaatsen']);
+            echo '</td><td>' . Util::boolToText($bestelling['gereserveerde_plaatsen']);
 
             $extralinks = '<div class="btn-group btn-group-sm">';
             if (!$bestelling['is_betaald'])
@@ -187,7 +187,7 @@ class OverzichtBestellingenPagina extends Pagina
 
             $extralinks .= '<a data-order-id="' . $bestelling['bestellingsnr'] . '" title="Bestelling verwijderen" class="delete-order btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></a></div>';
 
-            echo '</td><td>' . Util::boolNaarTekst($bestelling['is_betaald']) . '</td><td>' . $extralinks . '</td></tr>';
+            echo '</td><td>' . Util::boolToText($bestelling['is_betaald']) . '</td><td>' . $extralinks . '</td></tr>';
         }
 
         echo '</table>';
