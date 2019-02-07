@@ -245,7 +245,7 @@ class Pagina
     private function menuItemIsHuidigePagina(string $menuItem): bool
     {
         // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
-        if ($menuItem == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuItem == './' && substr($_SERVER['REQUEST_URI'], -1) == '/'))
+        if ($menuItem == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuItem == '/' && $_SERVER['REQUEST_URI'] === '/'))
         {
             return true;
         }
@@ -330,7 +330,7 @@ class Pagina
             if ($eersteitem)
             {
                 // De . is nodig omdat het menu anders niet goed werkt in subdirectories.
-                $menuitem['link'] = './';
+                $menuitem['link'] = '/';
             }
             else
             {
