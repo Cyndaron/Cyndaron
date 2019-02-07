@@ -10,27 +10,19 @@ use Cyndaron\Menu\MenuModel;
 use Cyndaron\Request;
 use Cyndaron\StatischePaginaModel;
 use Cyndaron\Url;
-
-require_once __DIR__ . '/../../check.php';
+use Cyndaron\User\UserLevel;
 
 class PageManagerController extends Controller
 {
-    public function route()
+    protected $minLevelGet = UserLevel::ADMIN;
+    protected $minLevelPost = UserLevel::ADMIN;
+
+    public function routeGet()
     {
-        $action = Request::getVar(2);
-
-        if ($action !== null)
-        {
-            $this->handlePost();
-        }
-        else
-        {
-            new PageManagerPage();
-
-        }
+        new PageManagerPage();
     }
 
-    private function handlePost()
+    public function routePost()
     {
         try
         {

@@ -4,11 +4,15 @@ declare(strict_types = 1);
 namespace Cyndaron;
 
 use Cyndaron\User\User;
+use Cyndaron\User\UserLevel;
 
-abstract class Controller
+class Controller
 {
     protected $module = null;
     protected $action = null;
+
+    protected $minLevelGet = UserLevel::ANONYMOUS;
+    protected $minLevelPost = UserLevel::ANONYMOUS;
 
     public function __construct(string $module, string $action)
     {
@@ -28,7 +32,24 @@ abstract class Controller
         }
     }
 
-    public abstract function route();
+    public function route()
+    {
+        switch($_SERVER['REQUEST_METHOD'])
+        {
+            case 'GET':
+                $this->checkUserLevelOrDie($this->minLevelGet);
+                $this->routeGet();
+                break;
+            case 'POST':
+                $this->checkUserLevelOrDie($this->minLevelPost);
+                $this->routePost();
+                break;
+        }
+    }
+
+    public function routeGet() {}
+
+    public function routePost() {}
 
     public function sendErrorMessage(string $message): void
     {
@@ -53,5 +74,23 @@ abstract class Controller
     {
         header('HTTP/1.1 500 Internal Server Error');
         $this->sendErrorMessage($message);
+    }
+
+    public function checkUserLevelOrDie(int $requiredLevel): void
+    {
+        if (!User::isLoggedIn())
+        {
+            session_destroy();
+            session_start();
+            User::addNotification('U moet inloggen om deze pagina te bekijken');
+            $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
+            header('Location: /login');
+            die();
+        }
+        else if (User::getLevel() < $requiredLevel)
+        {
+            $this->send403('Insufficient user rights!');
+            die();
+        }
     }
 }

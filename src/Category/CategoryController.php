@@ -10,7 +10,7 @@ use Cyndaron\User\User;
 
 class CategoryController extends Controller
 {
-    public function route()
+    public function routePost()
     {
         if (!User::isAdmin())
         {

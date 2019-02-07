@@ -8,7 +8,7 @@ use Cyndaron\Request;
 
 class UserController extends Controller
 {
-    public function route()
+    public function routePost()
     {
         $action = Request::getVar(1);
 
