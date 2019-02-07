@@ -210,7 +210,7 @@ class Pagina
 
                         $this->printMenuDropdown('<span class="glyphicon glyphicon-user"></span>', [
                             ['link' => '', 'title' => $_SESSION['naam']],
-                            ['link' => 'logoff', 'title' => '<span class="glyphicon glyphicon-log-out"></span> Uitloggen']
+                            ['link' => '/logoff', 'title' => '<span class="glyphicon glyphicon-log-out"></span> Uitloggen']
                         ]);
                     }
                     else
