@@ -15,6 +15,15 @@ class MinecraftController extends Controller
             case 'dynmapproxy':
                 new DynmapProxy();
                 break;
+            case 'members':
+                new LedenPagina();
+                break;
+            case 'skin':
+                new SkinRendererHandler();
+                break;
+            case 'status':
+                new StatusPagina();
+                break;
         }
     }
 }
