@@ -18,7 +18,9 @@ class StatusPagina extends Pagina
         foreach ($serverData as $server)
         {
             $serverObj = new Server($server['naam'], $server['hostname'], $server['port'], $server['dynmapPort']);
-            $servers[] = $serverObj->retrieve();
+            $serverRet = $serverObj->retrieve();
+            $serverRet->id = $server['id'];
+            $servers[] = $serverRet;
         }
 
         foreach ($servers as $server)
@@ -44,7 +46,7 @@ class StatusPagina extends Pagina
             {
                 echo '<br />';
                 printf('<h3>Landkaart %s <a href="http://%s:%d" class="btn btn-outline-cyndaron" role="button"><span class="glyphicon glyphicon-resize-full"></span> Maximaliseren</a></h3><br>', $server->name, $server->hostname, $server->dynmapPort);
-                printf('<iframe src="http://%s:%d/" style="border-radius:7px;" width="800" height="600"></iframe>', $server->hostname, $server->dynmapPort);
+                printf('<iframe src="/minecraft/dynmapproxy/%d/" style="border-radius:7px;" width="800" height="600"></iframe>', $server->id);
                 echo '<br />';
             }
         }

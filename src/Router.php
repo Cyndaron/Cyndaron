@@ -49,6 +49,7 @@ class Router
         'mc-leden' => '\Cyndaron\Minecraft\LedenPagina',
         'mc-skinrenderer' => '\Cyndaron\Minecraft\SkinRendererHandler',
         'mc-status' => '\Cyndaron\Minecraft\StatusPagina',
+        'minecraft' => \Cyndaron\Minecraft\MinecraftController::class,
         'wieiswie' => '\Cyndaron\WieIsWie\OverzichtPagina',
         'verwerkmailformulier-ldbf' => '\Cyndaron\VerwerkMailformulierPaginaLDBF',
     ];
