@@ -128,7 +128,7 @@ class Pagina
 
     public function isVoorPagina(): bool
     {
-        if (substr($_SERVER['REQUEST_URI'], -1) == '/')
+        if ($_SERVER['REQUEST_URI'] === '/')
         {
             return true;
         }
