@@ -15,7 +15,6 @@ use Cyndaron\User\UserLevel;
 class PageManagerController extends Controller
 {
     protected $minLevelGet = UserLevel::ADMIN;
-    protected $minLevelPost = UserLevel::ADMIN;
 
     public function routeGet()
     {

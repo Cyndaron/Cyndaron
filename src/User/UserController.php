@@ -8,6 +8,9 @@ use Cyndaron\Request;
 
 class UserController extends Controller
 {
+    /* In order to allow users to modify their own data. Add the appropriate User::isAdmin() checks where needed. */
+    protected $minLevelPost = UserLevel::LOGGED_IN;
+
     public function routePost()
     {
         $action = Request::getVar(1);

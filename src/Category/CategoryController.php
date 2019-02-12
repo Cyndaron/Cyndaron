@@ -6,18 +6,11 @@ namespace Cyndaron\Category;
 use Cyndaron\Controller;
 use Cyndaron\Menu\MenuModel;
 use Cyndaron\Request;
-use Cyndaron\User\User;
 
 class CategoryController extends Controller
 {
     public function routePost()
     {
-        if (!User::isAdmin())
-        {
-            $this->send401();
-            return;
-        }
-
         try
         {
             $action = Request::getVar(1);

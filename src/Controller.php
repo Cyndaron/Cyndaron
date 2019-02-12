@@ -12,7 +12,7 @@ class Controller
     protected $action = null;
 
     protected $minLevelGet = UserLevel::ANONYMOUS;
-    protected $minLevelPost = UserLevel::ANONYMOUS;
+    protected $minLevelPost = UserLevel::ADMIN;
 
     public function __construct(string $module, string $action)
     {
