@@ -18,7 +18,8 @@ class PageManagerController extends Controller
 
     public function routeGet()
     {
-        new PageManagerPage();
+        $currentPage = Request::getVar(1) ?: 'sub';
+        new PageManagerPage($currentPage);
     }
 
     public function routePost()

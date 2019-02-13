@@ -5,7 +5,6 @@ namespace Cyndaron\PageManager;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Pagina;
-use Cyndaron\Request;
 use Cyndaron\User\User;
 use Cyndaron\Widget\Button;
 use Cyndaron\Widget\PageTabs;
@@ -14,15 +13,13 @@ require_once __DIR__ . '/../../check.php';
 
 class PageManagerPage extends Pagina
 {
-    public function __construct()
+    public function __construct($currentPage)
     {
         $this->voegScriptToe('/src/PageManager/PageManagerPage.js');
         parent::__construct('Paginaoverzicht');
         $this->toonPrepagina();
         $connectie = DBConnection::getPDO();
         $this->connectie = $connectie;
-
-        $currentPage = Request::getVar(1) ?? 'sub';
 
         echo new PageTabs([
             'sub' => 'Statische pagina\'s',
