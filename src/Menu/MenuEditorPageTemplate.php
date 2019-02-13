@@ -23,17 +23,17 @@
             <td>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" class="isDropdown" data-id="<?=$menuItem['volgorde']?>" <?=$menuItem['isDropdown'] ? 'checked' : ''?> /> Dropdown
+                        <input type="checkbox" class="isDropdown" data-id="<?=$menuItem['volgorde']?>" data-csrf-token="<?=Cyndaron\User\User::getCSRFToken('menu', 'setDropdown')?>" <?=$menuItem['isDropdown'] ? 'checked' : ''?> /> Dropdown
                     </label>
                 </div>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" class="isImage" data-id="<?=$menuItem['volgorde']?>" <?=$menuItem['isImage'] ? 'checked' : ''?>/> Afbeelding
+                        <input type="checkbox" class="isImage" data-id="<?=$menuItem['volgorde']?>" data-csrf-token="<?=Cyndaron\User\User::getCSRFToken('menu', 'setImage')?>" <?=$menuItem['isImage'] ? 'checked' : ''?>/> Afbeelding
                     </label>
                 </div>
             </td>
             <td>
-                <button class="removeItem btn btn-danger" data-id="<?=$menuItem['volgorde']?>"><span class="glyphicon glyphicon-trash"></span> Verwijderen</button>
+                <button class="removeItem btn btn-danger" data-id="<?=$menuItem['volgorde']?>" data-csrf-token="<?=Cyndaron\User\User::getCSRFToken('menu', 'removeItem')?>"><span class="glyphicon glyphicon-trash"></span> Verwijderen</button>
             </td>
         </tr>
 <?php endforeach;?>

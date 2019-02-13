@@ -6,18 +6,20 @@ $(document).ready(function ()
     {
         let index = $(this).data('id');
         let isDropdown = $(this).is(':checked');
-        console.log(isDropdown);
-        $.post('menu-editor', { index: index , action: 'setDropdown', isDropdown: isDropdown });
+        let csrfToken = $(this).data('csrf-token');
+        $.post('/menu/setDropdown/' + index, { isDropdown: isDropdown, csrfToken: csrfToken });
     });
     $('.isImage').on('change', function()
     {
         let index = $(this).data('id');
         let isImage = $(this).is(':checked');
-        $.post('menu-editor', { index: index , action: 'setImage', isImage: isImage });
+        let csrfToken = $(this).data('csrf-token');
+        $.post('/menu/setImage/' + index, { isImage: isImage, csrfToken: csrfToken });
     });
     $('.removeItem').on('click', function()
     {
         let index = $(this).data('id');
-        $.post('menu-editor', { index: index , action: 'removeItem' });
+        let csrfToken = $(this).data('csrf-token');
+        $.post('/menu/removeItem/' + index, { csrfToken: csrfToken });
     });
 });
