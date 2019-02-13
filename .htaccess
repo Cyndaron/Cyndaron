@@ -4,33 +4,33 @@ Header set X-XSS-Protection "1; mode=block"
 Header set X-Content-Type-Options "nosniff"
 Header set Referrer-Policy "no-referrer-when-downgrade"
 
-# Voorkomt indexeren van mappen; schakel MultiViews uit (zorgt voor rare effecten met bestanden vinden)
+# Prevent generating folder indexes (for safety reasons); turn off MultiViews (interferes with our own routing)
 Options -Indexes -MultiViews
 
-# Scherm .htaccess af
+# Do not allow viewing .htaccess itself
 <Files .htaccess>
 Order Allow,Deny
 Deny from all
 </Files>
 
-ErrorDocument 403 /403.php
-ErrorDocument 404 /404.php
+ErrorDocument 403 /403
+ErrorDocument 404 /404
 
 RewriteEngine On
 
 RewriteCond %{HTTPS} off
 RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
-RewriteRule ^$ index.php?pagina=/ [QSA,NC,L]
+RewriteRule ^$ index.php?page=/ [QSA,NC,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?pagina=$1 [QSA,NC,L]
+RewriteRule ^(.*)$ index.php?page=$1 [QSA,NC,L]
 
 <ifModule mod_headers.c>
 Header always set Cache-Control "max-age=604800"
 
-# 1 jaar
+# 1 year
 <FilesMatch "\.(ico|gif|jpg|jpeg|png|flv|pdf)$">
   Header always set Cache-Control "max-age=29030400"
 </FilesMatch>
