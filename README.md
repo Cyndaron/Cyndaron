@@ -13,5 +13,6 @@ Code van derden en alle daaraan aangebrachte wijzigingen vallen onder de volgend
 De aan te houden codestijl is [PSR-2](http://www.php-fig.org/psr/psr-2/) met de volgende wijziging:
 - Alle accolades staan op een eigen regel, met uitzondering van die van lege blokken.
 
-Plus de volgende verplichting:
-- Array's gebruiken enkel de korte syntax. 
+Plus de volgende verplichtingen:
+- Array's gebruiken enkel de korte syntax.
+- "declare"-instructies volgen de regels voor variable assignment en if-instructies.
