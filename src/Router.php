@@ -35,6 +35,7 @@ class Router
         'migreer_naar_v5.php' => '\Cyndaron\MigreerNaar5_0',
         'migreer_naar_v5_3.php' => '\Cyndaron\MigreerNaar5_3',
         'migrate-v6_0' => \Cyndaron\Migrate60::class,
+        'pagemanager' => \Cyndaron\PageManager\PageManagerController::class,
         'sub' => \Cyndaron\StaticPage\StaticPageController::class,
         'system' => \Cyndaron\System\SystemController::class,
         'user' => \Cyndaron\User\UserController::class,
@@ -42,8 +43,7 @@ class Router
         'toonfotoboek.php' => '\Cyndaron\FotoalbumPagina',
         'verwerkmailformulier.php' => '\Cyndaron\VerwerkMailformulierPagina',
 
-        'pagemanager' => \Cyndaron\PageManager\PageManagerController::class,
-        // Standaard-plugins
+        // Official plugins
         'bestandenkast.php' => '\Cyndaron\Bestandenkast\OverzichtPagina',
         'kaartenbestellen.php' => '\Cyndaron\Kaartverkoop\KaartenBestellenPagina',
         'overzicht-bestellingen.php' => '\Cyndaron\Kaartverkoop\OverzichtBestellingenPagina',
