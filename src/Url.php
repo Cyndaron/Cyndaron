@@ -45,11 +45,6 @@ class Url
         }
         else
         {
-            /*$hoofdurl = geefUnfriendlyUrl(DBConnection::geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', []));
-            if (($url1 == '/' && $url2 == $hoofdurl) || ($url2 == '/' && $url1 == $hoofdurl))
-            {
-                return true;
-            }*/
             return false;
         }
     }
@@ -92,7 +87,7 @@ class Url
             case 'tooncategorie.php':
                 if ($values['id'] == 'fotoboeken')
                 {
-                    return 'Fotoboeken';
+                    return 'Fotoalbums';
                 }
                 else
                 {
