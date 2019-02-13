@@ -17,10 +17,14 @@ class Migrate60 extends Pagina
         $connection->doQuery("UPDATE `menu` SET link = CONCAT('/', link) WHERE link NOT LIKE 'http%'", []);
         $connection->doQuery("UPDATE `friendlyurls` SET doel = CONCAT('/', doel)", []);
 
-        $connection->doQuery("UPDATE `menu` SET link = REPLACE(link, '/toonsub.php?id=', '/sub/') WHERE link LIKE '/toonsub.php?id=%'", []);
-        $connection->doQuery("UPDATE `menu` SET link = REPLACE(link, '/tooncategorie.php?id=', '/category/') WHERE link LIKE '/tooncategorie.php?id=%'", []);
-        $connection->doQuery("UPDATE `friendlyurls` SET doel = REPLACE(doel, '/toonsub.php?id=', '/sub/') WHERE doel LIKE '/toonsub.php?id=%';", []);
-        $connection->doQuery("UPDATE `friendlyurls` SET doel = REPLACE(doel, '/tooncategorie.php?id=', '/category/') WHERE doel LIKE '/tooncategorie.php?id=%';", []);
+        $connection->doQuery("UPDATE `menu` SET link = REPLACE(link, '/toonsub.php?id=', '/sub/')", []);
+        $connection->doQuery("UPDATE `menu` SET link = REPLACE(link, '/tooncategorie.php?id=', '/category/')", []);
+        $connection->doQuery("UPDATE `menu` SET link = REPLACE(link, '/mc-leden', '/minecraft/members')", []);
+        $connection->doQuery("UPDATE `menu` SET link = REPLACE(link, '/mc-status', '/minecraft/status')", []);
+        $connection->doQuery("UPDATE `friendlyurls` SET doel = REPLACE(doel, '/toonsub.php?id=', '/sub/')", []);
+        $connection->doQuery("UPDATE `friendlyurls` SET doel = REPLACE(doel, '/tooncategorie.php?id=', '/category/')", []);
+        $connection->doQuery("UPDATE `friendlyurls` SET doel = REPLACE(doel, '/mc-leden', '/minecraft/members')", []);
+        $connection->doQuery("UPDATE `friendlyurls` SET doel = REPLACE(doel, '/mc-status', '/minecraft/status')", []);
 
         parent::__construct('Upgrade naar versie 6.0');
         $this->toonPrepagina();
