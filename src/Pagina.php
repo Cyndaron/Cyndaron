@@ -2,7 +2,7 @@
 namespace Cyndaron;
 
 use Cyndaron\User\User;
-use Cyndaron\Widget\Knop;
+use Cyndaron\Widget\Button;
 
 /*
  * Copyright © 2009-2017, Michael Steenbeek
