@@ -16,8 +16,8 @@ class Router
 
     protected $endpoints = [
         // Standaard
-        '403.php' => '\Cyndaron\Error403Pagina',
-        '404.php' => '\Cyndaron\Error404Pagina',
+        '403' => '\Cyndaron\Error403Pagina',
+        '404' => '\Cyndaron\Error404Pagina',
         'bewerk-categorie' => '\Cyndaron\BewerkCategorie',
         'bewerk-foto' => '\Cyndaron\BewerkFoto',
         'bewerk-fotoalbum' => '\Cyndaron\BewerkFotoalbum',
