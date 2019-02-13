@@ -10,10 +10,9 @@ use Cyndaron\Util;
 
 class CategoryPage extends Pagina
 {
-    public function __construct()
+    public function __construct($id)
     {
         $this->connectie = DBConnection::getPDO();
-        $id = Request::geefGetVeilig('id');
 
         if ($id != 'fotoboeken')
         {

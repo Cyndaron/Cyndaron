@@ -68,24 +68,16 @@ class Url
 
     public function geefPaginanaam(): string
     {
-        $link = $this->geefUnfriendly();
-        $pos = strrpos($link, '/', -1);
-        $laatstedeel = substr($link, $pos);
-        $split = explode('?', $laatstedeel);
-        $vars = @explode('&', $split[1]);
-        $values = null;
-        foreach ($vars as $var)
+        $link = trim($this->geefUnfriendly(), '/');
+        $linkParts = explode('/', $link);
+
+        switch ($linkParts[0])
         {
-            $temp = explode('=', $var);
-            $values[$temp[0]] = @$temp[1];
-        }
-        switch ($split[0])
-        {
-            case 'toonsub.php':
+            case 'sub':
                 $sql = 'SELECT naam FROM subs WHERE id=?';
                 break;
-            case 'tooncategorie.php':
-                if ($values['id'] == 'fotoboeken')
+            case 'category':
+                if ($linkParts[1] == 'fotoboeken')
                 {
                     return 'Fotoalbums';
                 }
@@ -94,17 +86,17 @@ class Url
                     $sql = 'SELECT naam FROM categorieen WHERE id=?';
                 }
                 break;
-            case 'toonfotoboek.php':
+            case 'photoalbum':
                 $sql = 'SELECT naam FROM fotoboeken WHERE id=?';
                 break;
             default:
                 return $link;
         }
-        if ($naam = DBConnection::geefEen($sql, [$values['id']]))
+        if ($naam = DBConnection::geefEen($sql, [$linkParts[1]]))
         {
             return $naam;
         }
-        elseif ($naam = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE link=?', [$link]))
+        elseif ($naam = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel=?', [$link]))
         {
             return $naam;
         }

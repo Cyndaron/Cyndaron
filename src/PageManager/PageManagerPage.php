@@ -146,7 +146,7 @@ class PageManagerPage extends Pagina
                 <tr id="pm-row-category-<?=$category['id']?>">
                     <td><?=$category['id']?></td>
                     <td>
-                        <a href="/tooncategorie.php?id=<?php echo $category['id']; ?>"><b><?php echo $category['naam']; ?></b></a>
+                        <a href="/category/<?php echo $category['id']; ?>"><b><?php echo $category['naam']; ?></b></a>
                     </td>
                     <td>
                         <div class="btn-group"><?php

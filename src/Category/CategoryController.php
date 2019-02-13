@@ -9,6 +9,12 @@ use Cyndaron\Request;
 
 class CategoryController extends Controller
 {
+    public function routeGet()
+    {
+        $id = Request::getVar(1);
+        new CategoryPage($id);
+    }
+
     public function routePost()
     {
         try
@@ -32,7 +38,7 @@ class CategoryController extends Controller
             }
             elseif ($action == 'addtomenu')
             {
-                MenuModel::voegToeAanMenu('tooncategorie.php?id=' . $id);
+                MenuModel::voegToeAanMenu('/category/' . $id);
             }
             echo json_encode([]);
         }

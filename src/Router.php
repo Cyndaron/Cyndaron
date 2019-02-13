@@ -38,7 +38,6 @@ class Router
         'system' => \Cyndaron\System\SystemController::class,
         'user' => \Cyndaron\User\UserController::class,
         'usermanager' => \Cyndaron\User\UserManagerPage::class,
-        'tooncategorie.php' => \Cyndaron\Category\CategoryPage::class,
         'toonfotoboek.php' => '\Cyndaron\FotoalbumPagina',
         'toonsub.php' => '\Cyndaron\StatischePagina',
         'verwerkmailformulier.php' => '\Cyndaron\VerwerkMailformulierPagina',
@@ -170,7 +169,13 @@ class Router
         // Redirect if a friendly url exists for the requested unfriendly url
         if ($url = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel LIKE ?', [$_SERVER['REQUEST_URI'] . '%']))
         {
-            header('Location: ' . $url);
+            header('Location: /' . $url);
+            die();
+        }
+        if ($request === 'tooncategorie.php')
+        {
+            $id = Request::geefGetVeilig('id');
+            header('Location: /category/' . $id);
             die();
         }
         // Old link to photo in album (pre-Lightbox)
@@ -221,7 +226,7 @@ class Router
      */
     private function updateRequestVars(string $request): void
     {
-        $this->requestVars = (explode('/', $request));
+        $this->requestVars = explode('/', trim($request, '/'));
         Request::setVars($this->requestVars);
     }
 }

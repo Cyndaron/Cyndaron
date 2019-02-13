@@ -158,7 +158,7 @@ class Pagina
                     {
                         foreach ($menuarray as $menuitem)
                         {
-                            if (strpos($menuitem['link'], 'tooncategorie') !== false && $menuitem['isDropdown'])
+                            if (strpos($menuitem['link'], '/category/') === 0 && $menuitem['isDropdown'])
                             {
                                 $this->printCategoryDropdown($menuitem);
                             }
@@ -378,7 +378,7 @@ class Pagina
 
     protected function printCategoryDropdown(array $menuitem)
     {
-        $id = intval(str_replace('tooncategorie.php?id=', '', $menuitem['link']));
+        $id = intval(str_replace('/category/', '', $menuitem['link']));
         $pagesInCategory = $this->connectie->prepare("
             SELECT * FROM
             (
@@ -386,7 +386,7 @@ class Pagina
                 UNION
                 SELECT 'fotoboek' AS type, id, naam FROM fotoboeken WHERE categorieid=?
                 UNION
-                SELECT 'categorie' AS type, id, naam FROM categorieen WHERE categorieid=?
+                SELECT 'category' AS type, id, naam FROM categorieen WHERE categorieid=?
             ) AS een
             ORDER BY naam ASC;");
         $pagesInCategory->execute([$id, $id, $id]);
@@ -394,7 +394,7 @@ class Pagina
         $items = [];
         foreach ($pagesInCategory->fetchAll() as $pagina)
         {
-            $url = new Url(sprintf('toon%s.php?id=%d', $pagina['type'], $pagina['id']));
+            $url = new Url(sprintf('/%s/%d', $pagina['type'], $pagina['id']));
             $link = $url->geefFriendly();
             $items[] = ['link' => $link, 'title' => $pagina['naam']];
         }

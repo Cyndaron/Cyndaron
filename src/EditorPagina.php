@@ -89,7 +89,7 @@ abstract class EditorPagina extends Pagina
                         $sql = "
     SELECT * FROM (SELECT CONCAT('toonsub.php?id=', id) AS link, CONCAT('Statische pag.: ', naam) AS naam FROM subs ORDER BY naam ASC) AS twee
     UNION
-    SELECT * FROM (SELECT CONCAT('tooncategorie.php?id=', id) AS link, CONCAT('Categorie: ', naam) AS naam FROM categorieen ORDER BY naam ASC) AS drie
+    SELECT * FROM (SELECT CONCAT('/category/', id) AS link, CONCAT('Categorie: ', naam) AS naam FROM categorieen ORDER BY naam ASC) AS drie
     UNION
     SELECT * FROM (SELECT CONCAT('toonfotoalbum.php?id=', id) AS link, CONCAT('Fotoalbum: ', naam) AS naam FROM fotoalbumen ORDER BY naam ASC) AS vijf;";
 
