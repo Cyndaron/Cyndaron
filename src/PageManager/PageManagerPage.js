@@ -5,12 +5,13 @@ $(document).ready(function () {
 
         let id = $(this).data('id');
         let type = $(this).data('type');
+        let csrfToken = $(this).data('csrf-token');
 
         $('#confirm-dangerous .modal-body').html('Weet u zeker dat u dit wilt verwijderen?');
         $('#confirm-dangerous-yes').off();
         $('#confirm-dangerous-yes').on('click', function()
         {
-            $.ajax('/' + type + '/delete/' + id, gDefaultAjaxSettings).done(function() {
+            $.post('/' + type + '/delete/' + id, { csrfToken: csrfToken }).done(function() {
                 $('#pm-row-' + type + '-' + id).remove();
                 $('#confirm-dangerous').modal('hide');
             });
@@ -20,45 +21,43 @@ $(document).ready(function () {
     $('.pm-addtomenu').on('click', function () {
         let id = $(this).data('id');
         let type = $(this).data('type');
+        let csrfToken = $(this).data('csrf-token');
 
-        $.ajax('/' + type + '/addtomenu/' + id, gDefaultAjaxSettings).done(function() {
+        $.post('/' + type + '/addtomenu/' + id, { csrfToken: csrfToken }).done(function() {
             location.reload();
         });
     });
 
     $('#pm-create-category').on('click', function () {
-        let settings = gDefaultAjaxSettings;
         let csrfToken = $(this).data('csrf-token');
-        settings.data = {
+        let data = {
             name: $('#pm-category-new-name').val(),
             csrfToken: csrfToken
         };
-        $.ajax('/category/add', settings).done(function() {
+        $.post('/category/add', data).done(function() {
             location.reload();
         });
     });
 
     $('#pm-create-photoalbum').on('click', function () {
-        let settings = gDefaultAjaxSettings;
         let csrfToken = $(this).data('csrf-token');
-        settings.data = {
+        let data = {
             name: $('#pm-photoalbum-new-name').val(),
             csrfToken: csrfToken
         };
-        $.ajax('/photoalbum/add', settings).done(function() {
+        $.ajax('/photoalbum/add', data).done(function() {
             location.reload();
         });
     });
 
     $('#pm-create-friendlyurl').on('click', function () {
-        let settings = gDefaultAjaxSettings;
         let csrfToken = $(this).data('csrf-token');
-        settings.data = {
+        let data = {
             name: $('#pm-friendlyurl-new-name').val(),
             target:   $('#pm-friendlyurl-new-target').val(),
             csrfToken: csrfToken
         };
-        $.ajax('/friendlyurl/add', settings).done(function() {
+        $.post('/friendlyurl/add', data).done(function() {
             location.reload();
         });
     });

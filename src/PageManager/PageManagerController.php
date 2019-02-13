@@ -51,19 +51,6 @@ class PageManagerController extends Controller
                     MenuModel::voegToeAanMenu('toonfotoboek.php?id=' . $id);
                 }
             }
-            elseif ($type == 'sub')
-            {
-                if ($action == 'delete')
-                {
-                    $model = new StaticPageModel($id);
-                    $model->verwijder();
-                }
-                elseif ($action == 'addtomenu')
-                {
-                    MenuModel::voegToeAanMenu('/sub/' . $id);
-                }
-
-            }
             elseif ($type == 'friendlyurl')
             {
                 if ($action == 'add')
