@@ -25,7 +25,7 @@ class BewerkFotoalbum extends Bewerk
                 $this->id = FotoalbumModel::nieuwFotoalbum($naam, $notities);
             }
 
-            User::addNotification('Fotoboek bewerkt.');
+            User::addNotification('Fotoalbum bewerkt.');
             $this->returnUrl = '/toonfotoboek.php?id=' . $this->id;
         }
     }

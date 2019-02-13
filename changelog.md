@@ -87,12 +87,12 @@ Versie 5.0 (Scupi)
 
 Versie 4.0 (Roma)
 - 'Hoofdstukken' en 'artikelen' vervangen door statische pagina's (subs)
-- Overzichtspagina voor statische pagina's, categorieën, fotoboeken en friendly URL's
+- Overzichtspagina voor statische pagina's, categorieën, fotoalbums en friendly URL's
 
 Versie 3.0 (Athenae)
 - Mysql-extensie vervangen door PDO
 - Editor is nu WYSIWYG (CKeditor)
-- Fotoboeken kunnen nu een beschrijving hebben
+- Fotoalbums kunnen nu een beschrijving hebben
 - Betere HTML: paginalayout werkt met `<div>` in plaats van `<table>`, menu is gecodeerd als een `<ul>`, artikelen staan nu tussen `<p>`-tags in plaats van `<br /><br />`
 - Nieuw pictogrammenthema: monochroom
 

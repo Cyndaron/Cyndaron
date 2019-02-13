@@ -18,7 +18,7 @@ class FotoalbumPagina extends Pagina
         $notities = DBConnection::geefEen('SELECT notities FROM fotoboeken WHERE id=?', [$boekid]);
         $_SESSION['referrer'] = !empty($_SERVER['HTTP_REFERER']) ? htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '';
 
-        $controls = new Button('edit', 'editor-fotoalbum?id=' . $boekid, 'Dit fotoboek bewerken');
+        $controls = new Button('edit', 'editor-fotoalbum?id=' . $boekid, 'Dit fotoalbum bewerken');
         parent::__construct($boeknaam);
         $this->maakTitelknoppen($controls);
         $this->voegScriptToe('/sys/js/lightbox.min.js');

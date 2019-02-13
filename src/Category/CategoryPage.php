@@ -75,7 +75,7 @@ class CategoryPage extends Pagina
 
     private function toonFotoalbumsIndex()
     {
-        parent::__construct('Fotoboeken');
+        parent::__construct('Fotoalbums');
         $this->toonPrePagina();
         $fotoboeken = $this->connectie->prepare('SELECT * FROM fotoboeken ORDER BY id DESC');
         $fotoboeken->execute([]);
