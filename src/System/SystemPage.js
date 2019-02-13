@@ -14,21 +14,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-"use strict";
+'use strict';
 
-function testKleuren()
+$('#testColors').on('click', function ()
 {
-    var body = document.getElementsByTagName('body');
-    var bodyset = document.getElementsByName('achtergrondkleur');
+    let body = document.getElementsByTagName('body');
+    let bodyset = document.getElementsByName('achtergrondkleur');
     body[0].style.backgroundColor = bodyset[0].value;
-    var menu = document.getElementsByClassName('menu');
-    var menuset = document.getElementsByName('menukleur');
-    var menuag = document.getElementsByName('menuachtergrond');
+    let menu = document.getElementsByClassName('menu');
+    let menuset = document.getElementsByName('menukleur');
+    let menubg = document.getElementsByName('menuachtergrond');
     menu[0].style.backgroundColor = menuset[0].value;
-    menu[0].style.backgroundImage = "url('" + menuag[0].value + "')";
-    var artikel = document.getElementsByClassName('inhoud');
-    var artikelset = document.getElementsByName('artikelkleur');
-    artikel[0].style.backgroundColor = artikelset[0].value;
-}
-
-$('#testKleuren').on('click', function() { testKleuren(); });
+    menu[0].style.backgroundImage = "url('" + menubg[0].value + "')";
+    let article = document.getElementsByClassName('inhoud');
+    let articleset = document.getElementsByName('artikelkleur');
+    article[0].style.backgroundColor = articleset[0].value;
+});

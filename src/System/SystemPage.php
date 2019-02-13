@@ -1,32 +1,54 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\System;
 
-require_once __DIR__ . '/../check.php';
+use Cyndaron\CyndaronInfo;
+use Cyndaron\DBConnection;
+use Cyndaron\Pagina;
+use Cyndaron\Setting;
+use Cyndaron\User\User;
+use Cyndaron\Widget\PageTabs;
 
-class ConfiguratiePagina extends Pagina
+class SystemPage extends Pagina
 {
-    public function __construct()
+    public function __construct($currentPage)
     {
-        if (!Request::postIsLeeg())
-        {
-            Setting::set('websitenaam', Request::geefPostVeilig('websitenaam'));
-            Setting::set('websitelogo', Request::geefPostVeilig('websitelogo'));
-            Setting::set('ondertitel', Request::geefPostVeilig('ondertitel'));
-            Setting::set('favicon', Request::geefPostVeilig('favicon'));
-            Setting::set('achtergrondkleur', Request::geefPostVeilig('achtergrondkleur'));
-            Setting::set('menukleur', Request::geefPostVeilig('menukleur'));
-            Setting::set('menuachtergrond', Request::geefPostOnveilig('menuachtergrond'));
-            Setting::set('artikelkleur', Request::geefPostVeilig('artikelkleur'));
-            Setting::set('standaardcategorie', Request::geefPostVeilig('standaardcategorie'));
-            Setting::set('menuthema', Request::geefPostVeilig('menuthema'));
-        }
-        parent::__construct('Configuratie');
+
+        parent::__construct('Systeembeheer');
         $this->toonPrePagina();
         $this->connectie = DBConnection::getPDO();
-        $this->voegScriptToe('/sys/js/test-kleuren.js')
+
+        echo new PageTabs([
+            'config' => 'Configuratie',
+            'phpinfo' => 'PHP-info',
+            'about' => 'Over ' . CyndaronInfo::PRODUCT_NAAM,
+        ], '/system/', $currentPage);
+
+        echo '<div class="container-fluid tab-contents">';
+
+        switch ($currentPage)
+        {
+            case 'about':
+                $this->showAboutProduct();
+                break;
+            case 'phpinfo':
+                $this->showPHPInfo();
+                break;
+            case 'config':
+            default:
+                $this->showConfigPage();
+        }
+
+        echo '<div>';
+
+        $this->toonPostPagina();
+    }
+
+    public function showConfigPage()
+    {
+        $this->voegScriptToe('/src/System/SystemPage.js');
 
         ?>
-        <form method="post" action="configuratie" class="form-horizontal">
+        <form method="post" action="/system/config" class="form-horizontal">
             <?php
             $standaardcategorie = Setting::get('standaardcategorie');
             $categorieen = $this->connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC');
@@ -79,14 +101,41 @@ class ConfiguratiePagina extends Pagina
             <div class="form-group row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
-                    <input class="btn btn-primary" type="submit" value="Opslaan"/>
-                    <input class="btn btn-outline-cyndaron" type="button" id="testKleuren" value="Kleuren testen"/>
+                    <input type="hidden" name="csrfToken" value="<?=User::getCSRFToken('system', 'config')?>"/>
+                    <input class="btn btn-primary" type="submit" id="cm-save" value="Opslaan"/>
+                    <input class="btn btn-outline-cyndaron" type="button" id="testColors" value="Kleuren testen"/>
                 </div>
             </div>
         </form>
 
         <?php
-        echo '<h2>Informatie</h2>';
+    }
+
+    public function showPHPInfo()
+    {
+        // Prevent phpinfo() from writing directly to the screen (we want to change the output first)
+        ob_start();
+        phpinfo();
+        $phpinfo = ob_get_clean();
+
+        // We only want the innerhtml of the body.
+        preg_match("/<body(.*?)>(.*?)<\\/body>/si", $phpinfo, $match);
+        $phpinfo = $match[2];
+        // Remove centering
+        $phpinfo = str_replace('<div class="center"', '<div', $phpinfo);
+        // Enhance table layout
+        $phpinfo = str_replace('<table>', '<table class="table">', $phpinfo);
+        // Strip links (and with it, logos)
+        $phpinfo = preg_replace('/<a href(.*?)>(.*?)<\/a>/', '', $phpinfo);
+        // Old, dirty tags that contain inline style attributes as well (which we don't want).
+        $phpinfo = preg_replace('/<font(.*?)>/', '', $phpinfo);
+        $phpinfo = preg_replace('/<\/font(.*?)>/', '', $phpinfo);
+
+        echo $phpinfo;
+    }
+
+    public function showAboutProduct()
+    {
         echo CyndaronInfo::PRODUCT_NAAM . ' ' . CyndaronInfo::PRODUCT_VERSIE . ' (' . CyndaronInfo::PRODUCT_CODENAAM . ')<br />';
         echo 'Engineversie: ' . CyndaronInfo::ENGINE_VERSIE . '<br />';
         echo '© Michael Steenbeek, 2009-2019<br />';
@@ -98,6 +147,5 @@ class ConfiguratiePagina extends Pagina
         echo '<li>MCServerStats: MIT-licentie (LICENSE.MCServerStats)</li>';
         echo '<li>MinecraftSkinRenderer: BSD-3-licentie (LICENSE.MinecraftSkinRenderer)</li>';
         echo '</ul>';
-        $this->toonPostPagina();
     }
 }

@@ -201,7 +201,7 @@ class Pagina
                             <?php
 
                             $this->printMenuDropdown('<span class="glyphicon glyphicon-wrench"></span>', [
-                                ['link' => '/configuratie', 'title' => '<span class="glyphicon glyphicon-cog"></span>&nbsp; Configuratie'],
+                                ['link' => '/system', 'title' => '<span class="glyphicon glyphicon-cog"></span>&nbsp; Systeembeheer'],
                                 ['link' => '/pagemanager', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
                                 ['link' => '/menu-editor', 'title' => '<span class="glyphicon glyphicon-menu-hamburger"></span>&nbsp; Menu bewerken'],
                                 ['link' => '/usermanager', 'title' => '<span class="glyphicon glyphicon-user"></span>&nbsp; Gebruikersbeheer'],
