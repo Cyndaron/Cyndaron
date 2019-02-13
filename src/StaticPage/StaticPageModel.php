@@ -1,16 +1,17 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\StaticPage;
 
-class StatischePaginaModel
+use Cyndaron\DBConnection;
+
+class StaticPageModel
 {
     protected $id = null;
-    protected $naam = '';
-    protected $tekst = '';
-    protected $reactiesAan = false;
-    protected $categorieId;
+    protected $name = '';
+    protected $text = '';
+    protected $enableComments = false;
+    protected $categoryId;
 
-
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -18,65 +19,65 @@ class StatischePaginaModel
     /**
      * @return string
      */
-    public function getNaam(): string
+    public function getName(): string
     {
-        return $this->naam;
+        return $this->name;
     }
 
     /**
-     * @param string $naam
+     * @param string $name
      */
-    public function setNaam(string $naam)
+    public function setName(string $name)
     {
-        $this->naam = $naam;
+        $this->name = $name;
     }
 
     /**
      * @return string
      */
-    public function getTekst(): string
+    public function getText(): string
     {
-        return $this->tekst;
+        return $this->text;
     }
 
     /**
-     * @param mixed $tekst
+     * @param mixed $text
      */
-    public function setTekst(string $tekst)
+    public function setText(string $text)
     {
-        $this->tekst = $tekst;
+        $this->text = $text;
     }
 
     /**
      * @return bool
      */
-    public function getReactiesAan(): bool
+    public function getEnableComments(): bool
     {
-        return $this->reactiesAan;
+        return $this->enableComments;
     }
 
     /**
-     * @param mixed $reactiesAan
+     * @param mixed $enableComments
      */
-    public function setReactiesAan(bool $reactiesAan)
+    public function setEnableComments(bool $enableComments)
     {
-        $this->reactiesAan = $reactiesAan;
+        $this->enableComments = $enableComments;
     }
 
     /**
      * @return mixed
      */
-    public function getCategorieId(): int
+    public function getCategoryId(): int
     {
-        return $this->categorieId;
+        return $this->categoryId;
     }
 
     /**
-     * @param mixed $categorieId
+     * @param mixed $categoryId
      */
-    public function setCategorieId(int $categorieId)
+    public function setCategoryId(int $categoryId)
     {
-        $this->categorieId = $categorieId;
+        $this->categoryId = $categoryId;
     }
 
     public function __construct(int $id = null)
@@ -104,10 +105,10 @@ class StatischePaginaModel
             return false;
         }
 
-        $this->naam = $record['naam'];
-        $this->tekst = $record['tekst'];
-        $this->reactiesAan = $record['reacties_aan'] == 1 ? true : false;
-        $this->categorieId = $record['categorieid'];
+        $this->name = $record['naam'];
+        $this->text = $record['tekst'];
+        $this->enableComments = $record['reacties_aan'] == 1 ? true : false;
+        $this->categoryId = $record['categorieid'];
         return true;
     }
 
@@ -120,7 +121,7 @@ class StatischePaginaModel
     {
         if ($this->id === null)
         {
-            if (!$this->reactiesAan)
+            if (!$this->enableComments)
             {
                 $reacties_aan = '0';
             }
@@ -131,13 +132,13 @@ class StatischePaginaModel
 
             $connectie = DBConnection::getPDO();
             $prep = $connectie->prepare('INSERT INTO subs(naam, tekst, reacties_aan, categorieid) VALUES ( ?, ?, ?, ?)');
-            $prep->execute([$this->naam, $this->tekst, $reacties_aan, $this->categorieId]);
+            $prep->execute([$this->name, $this->text, $reacties_aan, $this->categoryId]);
             $this->id = $connectie->lastInsertId();
             return $this->id;
         }
         else
         {
-            $reacties_aan = Util::parseCheckboxAlsInt($this->reactiesAan);
+            $reacties_aan = Util::parseCheckboxAlsInt($this->enableComments);
             $connectie = DBConnection::getPDO();
             if (!DBConnection::geefEen('SELECT * FROM vorigesubs WHERE id=?', [$this->id]))
             {
@@ -150,7 +151,7 @@ class StatischePaginaModel
             $prep->execute([$this->id, $this->id]);
 
             $prep = $connectie->prepare('UPDATE subs SET tekst= ?, naam= ?, reacties_aan=?, categorieid= ? WHERE id= ?');
-            $prep->execute([$this->tekst, $this->naam, $reacties_aan, $this->categorieId, $this->id]);
+            $prep->execute([$this->text, $this->name, $reacties_aan, $this->categoryId, $this->id]);
             return $this->id;
         }
     }

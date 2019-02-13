@@ -27,7 +27,7 @@ class MigreerNaar4_0 extends Pagina
             }
 
             $id = $this->nieuweSub($hoofdstuk['naam'], $inhoud, 0, 0);
-            MenuModel::voegToeAanMenu('toonsub.php?id=' . $id, "");
+            MenuModel::voegToeAanMenu('/sub/' . $id, "");
 
             $vorigeinhoud = "";
             $vorigeartikelen = $connectie->prepare('SELECT tekst FROM vorigeartikelen WHERE hid=? ORDER BY id ASC;');

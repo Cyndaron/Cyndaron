@@ -14,7 +14,7 @@ class Url
     {
         if ($friendly = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel=?', [$this->url]))
         {
-            return $friendly;
+            return '/' . $friendly;
         }
         else
         {

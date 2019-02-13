@@ -27,7 +27,7 @@ class BewerkStatischePagina extends Bewerk
             $this->id = $model->getId();
 
             User::addNotification('Pagina bewerkt.');
-            $this->returnUrl = '/toonsub.php?id=' . $this->id;
+            $this->returnUrl = '/sub/' . $this->id;
         }
     }
 }

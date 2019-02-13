@@ -8,7 +8,7 @@ use Cyndaron\Controller;
 use Cyndaron\FotoalbumModel;
 use Cyndaron\Menu\MenuModel;
 use Cyndaron\Request;
-use Cyndaron\StatischePaginaModel;
+use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url;
 use Cyndaron\User\UserLevel;
 
@@ -55,12 +55,12 @@ class PageManagerController extends Controller
             {
                 if ($action == 'delete')
                 {
-                    $model = new StatischePaginaModel($id);
+                    $model = new StaticPageModel($id);
                     $model->verwijder();
                 }
                 elseif ($action == 'addtomenu')
                 {
-                    MenuModel::voegToeAanMenu('toonsub.php?id=' . $id);
+                    MenuModel::voegToeAanMenu('/sub/' . $id);
                 }
 
             }

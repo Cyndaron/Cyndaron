@@ -1,27 +1,29 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\StaticPage;
 
+use Cyndaron\DBConnection;
+use Cyndaron\Pagina;
+use Cyndaron\Request;
 
-class StatischePagina extends Pagina
+class StaticPage extends Pagina
 {
-    public function __construct()
+    public function __construct(int $id)
     {
         $connectie = DBConnection::getPDO();
-        $subid = intval(Request::geefGetVeilig('id'));
-        if (!is_numeric($subid) || $subid <= 0)
+        if ($id <= 0)
         {
             header('Location: /404.php');
             die('Incorrecte parameter ontvangen.');
         }
 
-        $model = new StatischePaginaModel($subid);
+        $model = new StaticPageModel($id);
         if (!$model->laden())
         {
             header('Location: /404.php');
             die('Pagina bestaat niet.');
         }
 
-        $reactiesAan = $model->getReactiesAan();
+        $reactiesAan = $model->getEnableComments();
 
         if ($reactiesAan && !Request::postIsLeeg())
         {
@@ -32,25 +34,25 @@ class StatischePagina extends Pagina
             {
                 $datum = date('Y-m-d H:i:s');
                 $prep = $connectie->prepare('INSERT INTO reacties(subid, auteur, tekst, datum) VALUES (?, ?, ?, ?)');
-                $prep->execute([$subid, $auteur, $reactie, $datum]);
+                $prep->execute([$id, $auteur, $reactie, $datum]);
             }
         }
 
-        $controls = sprintf('<a href="editor-statischepagina?id=%d" class="btn btn-outline-cyndaron" title="Bewerk deze statische pagina"><span class="glyphicon glyphicon-pencil"></span></a>', $subid);
-        $controls .= sprintf('<a href="overzicht?type=sub&amp;actie=verwijderen&amp;id=%d" class="btn btn-outline-cyndaron" title="Verwijder deze statische pagina"><span class="glyphicon glyphicon-trash"></span></a>', $subid);
+        $controls = sprintf('<a href="editor-statischepagina?id=%d" class="btn btn-outline-cyndaron" title="Bewerk deze statische pagina"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
+        $controls .= sprintf('<a href="overzicht?type=sub&amp;actie=verwijderen&amp;id=%d" class="btn btn-outline-cyndaron" title="Verwijder deze statische pagina"><span class="glyphicon glyphicon-trash"></span></a>', $id);
 
-        if (DBConnection::geefEen('SELECT * FROM vorigesubs WHERE id= ?', [$subid]))
+        if (DBConnection::geefEen('SELECT * FROM vorigesubs WHERE id= ?', [$id]))
         {
-            $controls .= sprintf('<a href="editor-statischepagina?vorigeversie=1&amp;id=%d" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-lastversion"></span></a>', $subid);
+            $controls .= sprintf('<a href="editor-statischepagina?vorigeversie=1&amp;id=%d" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-lastversion"></span></a>', $id);
         }
-        parent::__construct($model->getNaam());
+        parent::__construct($model->getName());
         $this->maakTitelknoppen($controls);
         $this->toonPrePagina();
 
-        echo $model->getTekst();
+        echo $model->getText();
 
         $prep = $connectie->prepare("SELECT *,DATE_FORMAT(datum, '%d-%m-%Y') AS rdatum,DATE_FORMAT(datum, '%H:%i') AS rtijd FROM reacties WHERE subid=? ORDER BY datum ASC");
-        $prep->execute([$subid]);
+        $prep->execute([$id]);
         $reacties = $prep->fetchAll();
         $reactiesaanwezig = false;
 
@@ -81,7 +83,7 @@ class StatischePagina extends Pagina
         if ($reactiesAan):
             ?>
             <h3>Reageren:</h3>
-            <form name="reactie" method="post" action="toonsub.php?id=<?= $subid; ?>" class="form-horizontal">
+            <form name="reactie" method="post" action="/sub/<?= $id; ?>" class="form-horizontal">
                 <div class="form-group">
                     <label for="auteur" class="col-sm-1 control-label">Naam: </label>
                     <div class="col-sm-4">

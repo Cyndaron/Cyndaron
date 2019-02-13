@@ -1,10 +1,8 @@
 <?php
 namespace Cyndaron\Category;
 
-
 use Cyndaron\DBConnection;
 use Cyndaron\Pagina;
-use Cyndaron\Request;
 use Cyndaron\Url;
 use Cyndaron\Util;
 
@@ -52,7 +50,7 @@ class CategoryPage extends Pagina
 
         foreach ($paginas->fetchAll() as $pagina)
         {
-            $url = new Url('toonsub.php?id=' . $pagina['id']);
+            $url = new Url('/sub/' . $pagina['id']);
             $link = $url->geefFriendly();
             if ($alleentitel)
             {

@@ -35,11 +35,11 @@ class Router
         'migreer_naar_v5.php' => '\Cyndaron\MigreerNaar5_0',
         'migreer_naar_v5_3.php' => '\Cyndaron\MigreerNaar5_3',
         'migrate-v6_0' => \Cyndaron\Migrate60::class,
+        'sub' => \Cyndaron\StaticPage\StaticPageController::class,
         'system' => \Cyndaron\System\SystemController::class,
         'user' => \Cyndaron\User\UserController::class,
         'usermanager' => \Cyndaron\User\UserManagerPage::class,
         'toonfotoboek.php' => '\Cyndaron\FotoalbumPagina',
-        'toonsub.php' => '\Cyndaron\StatischePagina',
         'verwerkmailformulier.php' => '\Cyndaron\VerwerkMailformulierPagina',
 
         'pagemanager' => \Cyndaron\PageManager\PageManagerController::class,
@@ -167,9 +167,15 @@ class Router
             die();
         }
         // Redirect if a friendly url exists for the requested unfriendly url
-        if ($url = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel LIKE ?', [$_SERVER['REQUEST_URI'] . '%']))
+        if ($_SERVER['REQUEST_URI'] != '/' && $url = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel LIKE ?', [$_SERVER['REQUEST_URI'] . '%']))
         {
             header('Location: /' . $url);
+            die();
+        }
+        if ($request === 'toonsub.php')
+        {
+            $id = Request::geefGetVeilig('id');
+            header('Location: /sub/' . $id);
             die();
         }
         if ($request === 'tooncategorie.php')

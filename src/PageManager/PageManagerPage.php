@@ -97,7 +97,7 @@ class PageManagerPage extends Pagina
                         <td><?=$id?></td>
                         <td>
                             <span style="font-size: 15px;">
-                                <a href="/toonsub.php?id=<?=$id?>"><b><?=$name?></b></a>
+                                <a href="/sub/<?=$id?>"><b><?=$name?></b></a>
                             </span>
                         </td>
                         <td>
