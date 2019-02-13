@@ -48,22 +48,22 @@ class Util
     /**
      * Beperkt een string tot het opgegeven aantal woorden.
      *
-     * @param string $string De string die ingekort moet worden
-     * @param int $lengte Het maximumaantal woorden
-     * @param string $ellips Wat er als weglatingsteken moet worden gebruikt
+     * @param string $text De string die ingekort moet worden
+     * @param int $length Het maximumaantal woorden
+     * @param string $ellipsis Wat er als weglatingsteken moet worden gebruikt
      * @return string De ingekorte string, of de originele string als deze korter was dan het maximum
      */
-    public static function woordlimiet(string $string, int $lengte = 50, string $ellips = "..."): string
+    public static function wordlimit(string $text, int $length = 50, string $ellipsis = '…'): string
     {
-        $string = strip_tags($string);
-        $words = explode(' ', $string);
-        if (count($words) > $lengte)
+        $text = strip_tags($text);
+        $words = explode(' ', $text);
+        if (count($words) > $length)
         {
-            return implode(' ', array_slice($words, 0, $lengte)) . $ellips;
+            return implode(' ', array_slice($words, 0, $length)) . $ellipsis;
         }
         else
         {
-            return $string;
+            return $text;
         }
     }
 
@@ -99,14 +99,14 @@ class Util
         }
     }
 
-    public static function generatePassword(): string
+    public static function generatePassword($length = 10): string
     {
         $gencode = '';
         $letters = ['a', 'c', 'd', 'e', 'f', 'h', 'j', 'm', 'n', 'q', 'r', 't',
             'A', 'C', 'D', 'E', 'F', 'H', 'J', 'L', 'M', 'N', 'Q', 'R', 'T',
             '3', '4', '7', '8'];
 
-        for ($c = 0; $c < 10; $c++)
+        for ($c = 0; $c < $length; $c++)
         {
             $gencode .= $letters[rand(0, count($letters))];
         }
@@ -121,12 +121,12 @@ class Util
 
     public static function formatEuro(float $amount): string
     {
-        return '&euro;&nbsp;'.number_format($amount, 2, ',', '.');
+        return '&euro;&nbsp;' . number_format($amount, 2, ',', '.');
     }
 
     public static function formatEuroPlainText(float $amount): string
     {
-        return '€ '.number_format($amount, 2, ',', '.');
+        return '€ ' . number_format($amount, 2, ',', '.');
     }
 
     public static function boolToText(bool $bool): string

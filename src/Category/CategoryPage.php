@@ -59,7 +59,7 @@ class CategoryPage extends Pagina
             else
             {
                 echo "\n<p><h3><a href=\"" . $link . '">' . $pagina['naam'] . "</a></h3>\n";
-                echo Util::woordlimiet(trim($pagina['tekst']), 30, "...") . '<a href="' . $link . '"><br /><i>Meer lezen...</i></a></p>';
+                echo Util::wordlimit(trim($pagina['tekst']), 30, "...") . '<a href="' . $link . '"><br /><i>Meer lezen...</i></a></p>';
             }
         }
         if ($alleentitel)
