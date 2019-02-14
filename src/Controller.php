@@ -78,7 +78,7 @@ class Controller
 
     public function checkUserLevelOrDie(int $requiredLevel): void
     {
-        if (!User::isLoggedIn())
+        if ($requiredLevel > 0 && !User::isLoggedIn())
         {
             session_destroy();
             session_start();
