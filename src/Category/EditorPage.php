@@ -1,15 +1,17 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\Category;
 
-class EditorCategorie extends EditorPagina
+use Cyndaron\DBConnection;
+
+class EditorPage extends \Cyndaron\EditorPage
 {
+    protected $heeftTitel = true;
+    protected $type = 'categorie';
+    protected $table = 'categorieen';
+    protected $saveUrl = '/editor/category/%s';
+
     protected function prepare()
     {
-        $this->heeftTitel = true;
-        $this->type = 'categorie';
-        $this->table = 'categorieen';
-        $this->saveUrl = 'bewerk-categorie?actie=bewerken&amp;id=%s';
-
         if ($this->id)
         {
             $this->content = DBConnection::geefEen('SELECT beschrijving FROM categorieen WHERE id=?', [$this->id]);

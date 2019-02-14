@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\User\User;
 use Cyndaron\Widget\Button;
 
 
@@ -18,7 +19,7 @@ class FotoalbumPagina extends Pagina
         $notities = DBConnection::geefEen('SELECT notities FROM fotoboeken WHERE id=?', [$boekid]);
         $_SESSION['referrer'] = !empty($_SERVER['HTTP_REFERER']) ? htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '';
 
-        $controls = new Button('edit', 'editor-fotoalbum?id=' . $boekid, 'Dit fotoalbum bewerken');
+        $controls = new Button('edit', '/editor/photoalbum/' . $boekid, 'Dit fotoalbum bewerken');
         parent::__construct($boeknaam);
         $this->maakTitelknoppen($controls);
         $this->voegScriptToe('/sys/js/lightbox.min.js');
@@ -59,7 +60,7 @@ class FotoalbumPagina extends Pagina
                     $uitvoer .= " alt=\"" . $dirArray[$index] . "\" /></a>";
                     if (User::isAdmin())
                     {
-                        $uitvoer .= '<br>' . new Button('edit', 'editor-foto?id=' . $hash, 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
+                        $uitvoer .= '<br>' . new Button('edit', '/editor/photo/' . $hash, 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
                     }
                     $uitvoer .= '</div>';
 

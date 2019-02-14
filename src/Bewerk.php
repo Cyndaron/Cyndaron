@@ -11,7 +11,7 @@ abstract class Bewerk
 
     public function __construct()
     {
-        $id = Request::geefGetVeilig('id');
+        $id = Request::getVar(2);
         if ($id)
         {
             $this->id = intval($id);
@@ -25,7 +25,7 @@ abstract class Bewerk
 
         if ($friendlyUrl = Request::geefPostVeilig('friendlyUrl'))
         {
-            $unfriendlyUrl = new Url('toon' . $this->type . '.php?id=' . $this->id);
+            $unfriendlyUrl = new Url('/' . $this->type . '/' . $this->id);
             $oudeFriendlyUrl = $unfriendlyUrl->geefFriendly();
             Url::verwijderFriendlyUrl($oudeFriendlyUrl);
             $unfriendlyUrl->maakFriendly($friendlyUrl);

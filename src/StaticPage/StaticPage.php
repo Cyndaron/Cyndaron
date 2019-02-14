@@ -38,12 +38,12 @@ class StaticPage extends Pagina
             }
         }
 
-        $controls = sprintf('<a href="editor-statischepagina?id=%d" class="btn btn-outline-cyndaron" title="Bewerk deze statische pagina"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
+        $controls = sprintf('<a href="/editor/sub/%d" class="btn btn-outline-cyndaron" title="Bewerk deze statische pagina"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
         $controls .= sprintf('<a href="overzicht?type=sub&amp;actie=verwijderen&amp;id=%d" class="btn btn-outline-cyndaron" title="Verwijder deze statische pagina"><span class="glyphicon glyphicon-trash"></span></a>', $id);
 
         if (DBConnection::geefEen('SELECT * FROM vorigesubs WHERE id= ?', [$id]))
         {
-            $controls .= sprintf('<a href="editor-statischepagina?vorigeversie=1&amp;id=%d" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-lastversion"></span></a>', $id);
+            $controls .= sprintf('<a href="/editor/sub/%d/previous" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-lastversion"></span></a>', $id);
         }
         parent::__construct($model->getName());
         $this->maakTitelknoppen($controls);

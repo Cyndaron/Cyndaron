@@ -1,14 +1,14 @@
 <?php
 namespace Cyndaron;
 
-class EditorFotoalbum extends EditorPagina
+class EditorFotoalbum extends EditorPage
 {
     protected function prepare()
     {
         $this->heeftTitel = true;
-        $this->type = 'fotoboek';
+        $this->type = 'photoalbum';
         $this->table = 'fotoboeken';
-        $this->saveUrl = 'bewerk-fotoalbum?actie=bewerken&amp;id=%s';
+        $this->saveUrl = '/editor/photoalbum/%s';
 
         if ($this->id)
         {

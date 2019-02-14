@@ -195,7 +195,7 @@ class Pagina
                         {
                             ?>
                             <li class="nav-item">
-                                <a class="nav-link" title="Nieuwe statische pagina aanmaken" href="editor-statischepagina"><span
+                                <a class="nav-link" title="Nieuwe statische pagina aanmaken" href="/editor/sub"><span
                                             class="glyphicon glyphicon-plus"></span></a>
                             </li>
                             <?php

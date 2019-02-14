@@ -1,13 +1,15 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\User\User;
+
 require_once __DIR__ . '/../check.php';
 
-abstract class EditorPagina extends Pagina
+abstract class EditorPage extends Pagina
 {
     protected $id = null;
     protected $heeftTitel = true;
-    protected $vorigeversie = null;
+    protected $vorigeversie = false;
     protected $vvstring = '';
     protected $content;
     protected $titel;
@@ -17,8 +19,8 @@ abstract class EditorPagina extends Pagina
 
     public function __construct()
     {
-        $this->id = Request::geefGetVeilig('id');
-        $this->vorigeversie = Request::geefGetVeilig('vorigeversie');
+        $this->id = Request::getVar(2);
+        $this->vorigeversie = Request::getVar(3) === 'previous';
         $this->vvstring = $this->vorigeversie ? 'vorige' : '';
         $this->connectie = DBConnection::getPDO();
 
@@ -41,7 +43,7 @@ abstract class EditorPagina extends Pagina
         $this->voegScriptToe('/sys/js/editor.js');
         $this->toonPrePagina();
 
-        $unfriendlyUrl = new Url('toon' . $this->type . '.php?id=' . $this->id);
+        $unfriendlyUrl = new Url('/' . $this->type . '/' . $this->id);
         $friendlyUrl = new Url($unfriendlyUrl->geefFriendly());
 
         if ($unfriendlyUrl == $friendlyUrl)
@@ -72,7 +74,7 @@ abstract class EditorPagina extends Pagina
                 <div class="col-sm-5">
                     <div class="input-group">
                         <span class="input-group-addon"><?=$protocol . $_SERVER['HTTP_HOST'] . $dir;?>/</span>
-                        <input type="text" class="form-control" id="friendlyUrl" name="friendlyUrl" value="<?=$friendlyUrl;?>" />
+                        <input type="text" class="form-control" id="friendlyUrl" name="friendlyUrl" value="<?=trim($friendlyUrl,'/');?>" />
                     </div>
 
                 </div>
@@ -91,7 +93,7 @@ abstract class EditorPagina extends Pagina
     UNION
     SELECT * FROM (SELECT CONCAT('/category/', id) AS link, CONCAT('Categorie: ', naam) AS naam FROM categorieen ORDER BY naam ASC) AS drie
     UNION
-    SELECT * FROM (SELECT CONCAT('toonfotoalbum.php?id=', id) AS link, CONCAT('Fotoalbum: ', naam) AS naam FROM fotoalbumen ORDER BY naam ASC) AS vijf;";
+    SELECT * FROM (SELECT CONCAT('toonfotoalbum.php?id=', id) AS link, CONCAT('Fotoalbum: ', naam) AS naam FROM fotoboeken ORDER BY naam ASC) AS vijf;";
 
                         $links = $connectie->prepare($sql);
                         $links->execute();
@@ -109,6 +111,7 @@ abstract class EditorPagina extends Pagina
             <?php
             $this->toonSpecifiekeKnoppen();
             ?>
+            <input type="hidden" name="csrfToken" value="<?=User::getCSRFToken('editor', $this->type);?>"/>
             <input type="submit" value="Opslaan" class="btn btn-primary"/>
             <a role="button" class="btn btn-outline-cyndaron" href="<?=$_SESSION['referrer'];?>">Annuleren</a>
 
@@ -144,7 +147,7 @@ abstract class EditorPagina extends Pagina
                     $categorieen = $this->connectie->query("SELECT * FROM categorieen ORDER BY naam;");
                     foreach ($categorieen->fetchAll() as $categorie)
                     {
-                        if ($this->type == 'categorie' && $categorie['id'] == $this->id)
+                        if ($this->type == 'category' && $categorie['id'] == $this->id)
                             continue;
 
                         $selected = ($categorieid == $categorie['id']) ? ' selected="selected"' : '';

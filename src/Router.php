@@ -18,15 +18,8 @@ class Router
         // Standaard
         '403' => '\Cyndaron\Error403Pagina',
         '404' => '\Cyndaron\Error404Pagina',
-        'bewerk-categorie' => '\Cyndaron\BewerkCategorie',
-        'bewerk-foto' => '\Cyndaron\BewerkFoto',
-        'bewerk-fotoalbum' => '\Cyndaron\BewerkFotoalbum',
-        'bewerk-statischepagina' => '\Cyndaron\BewerkStatischePagina',
         'category' => \Cyndaron\Category\CategoryController::class,
-        'editor-categorie' => '\Cyndaron\EditorCategorie',
-        'editor-foto' => '\Cyndaron\EditorFoto',
-        'editor-fotoalbum' => '\Cyndaron\EditorFotoalbum',
-        'editor-statischepagina' => '\Cyndaron\EditorStatischePagina',
+        'editor' => \Cyndaron\Editor\EditorController::class,
         'login' => '\Cyndaron\LoginPagina',
         'logoff' => '\Cyndaron\Loguit',
         'menu' => Menu\MenuController::class,
@@ -208,7 +201,7 @@ class Router
 
         // Unfortunately, CKeditor still needs inline scripting. Only allow this on editor pages,
         // in order to prevent degrading the security of the rest of the system.
-        if (strpos($this->requestVars[0], 'editor-') === 0)
+        if ($this->requestVars[0] == 'editor')
         {
             $scriptSrc .= " 'unsafe-inline'";
         }

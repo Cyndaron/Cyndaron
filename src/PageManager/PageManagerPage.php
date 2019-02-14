@@ -55,7 +55,7 @@ class PageManagerPage extends Pagina
     {
         echo '<h2>Statische pagina\'s</h2>';
 
-        echo new Button('new', '/editor-statischepagina', 'Nieuwe statische pagina', 'Nieuwe statische pagina');
+        echo new Button('new', '/editor/sub', 'Nieuwe statische pagina', 'Nieuwe statische pagina');
         echo '<br />';
 
         $subs = $this->connectie->prepare('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
@@ -102,12 +102,12 @@ class PageManagerPage extends Pagina
                         </td>
                         <td>
                             <div class="btn-group">
-                                <?= new Button('edit', '/editor-statischepagina?id=' . $id, 'Bewerk deze statische pagina', null, 16);?>
+                                <?= new Button('edit', '/editor/sub' . $id, 'Bewerk deze statische pagina', null, 16);?>
                                 <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="sub" data-id="<?=$id;?>" data-csrf-token="<?=User::getCSRFToken('sub', 'delete')?>"><span class="glyphicon glyphicon-trash"></span></button>
                                 <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="sub" data-id="<?=$id;?>" data-csrf-token="<?=User::getCSRFToken('sub', 'addtomenu')?>"><span class="glyphicon glyphicon-bookmark"></span></button>
                                 <?php if ($hasLastVersion)
                                 {
-                                    echo new Button('lastversion', '/editor-statischepagina?vorigeversie=1&amp;id=' . $id, 'Vorige versie terugzetten', null, 16);
+                                    echo new Button('lastversion', "/editor/sub/$id/previous", 'Vorige versie terugzetten', null, 16);
                                 }
                                 ?>
                             </div>
@@ -150,7 +150,7 @@ class PageManagerPage extends Pagina
                     </td>
                     <td>
                         <div class="btn-group"><?php
-                            echo new Button('edit', '/editor-categorie?id=' . $category['id'], 'Deze categorie bewerken', null, 16);?>
+                            echo new Button('edit', '/editor/category/' . $category['id'], 'Deze categorie bewerken', null, 16);?>
                             <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="category" data-id="<?=$category['id'];?>" data-csrf-token="<?=User::getCSRFToken('category', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder deze categorie"></span></button>
                             <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="category" data-id="<?=$category['id'];?>" data-csrf-token="<?=User::getCSRFToken('category', 'addtomenu')?>"><span class="glyphicon glyphicon-bookmark" title="Voeg deze categorie toe aan het menu"></span></button>
                         </div>
@@ -193,7 +193,7 @@ class PageManagerPage extends Pagina
                     </td>
                     <td>
                         <div class="btn-group"><?php
-                            echo new Button('edit', '/editor-fotoalbum?id=' . $photoalbum['id'], 'Bewerk dit fotoalbum', null, 16); ?>
+                            echo new Button('edit', '/editor/photoalbum/' . $photoalbum['id'], 'Bewerk dit fotoalbum', null, 16); ?>
                             <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="photoalbum" data-id="<?=$photoalbum['id'];?>" data-csrf-token="<?=User::getCSRFToken('photoalbum', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit fotoalbum"></span></button>
                             <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="photoalbum" data-id="<?=$photoalbum['id'];?>" data-csrf-token="<?=User::getCSRFToken('photoalbum', 'addtomenu')?>"><span class="glyphicon glyphicon-bookmark" title="Voeg dit fotoalbum toe aan het menu"></span></button>
                         </div

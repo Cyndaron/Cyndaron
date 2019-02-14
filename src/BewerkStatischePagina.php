@@ -1,33 +1,29 @@
 <?php
 namespace Cyndaron;
 
-
+use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\User\User;
 
 class BewerkStatischePagina extends Bewerk
 {
+    protected $type = 'sub';
+
     protected function prepare()
     {
-        $this->type = 'sub';
-        $actie = Request::geefGetVeilig('actie');
+        $titel = Request::geefPostOnveilig('titel');
+        $tekst = $this->parseTextForInlineImages(Request::geefPostOnveilig('artikel'));
+        $reacties_aan = Request::geefPostVeilig('reacties_aan');
+        $categorieid = intval(Request::geefPostVeilig('categorieid'));
 
-        if ($actie == 'bewerken')
-        {
-            $titel = Request::geefPostOnveilig('titel');
-            $tekst = $this->parseTextForInlineImages(Request::geefPostOnveilig('artikel'));
-            $reacties_aan = Request::geefPostOnveilig('reacties_aan');
-            $categorieid = intval(Request::geefPostOnveilig('categorieid'));
+        $model = new StaticPageModel($this->id);
+        $model->setName($titel);
+        $model->setText($tekst);
+        $model->setEnableComments($reacties_aan);
+        $model->setCategoryId($categorieid);
+        $model->opslaan();
+        $this->id = $model->getId();
 
-            $model = new StatischePaginaModel($this->id);
-            $model->setNaam($titel);
-            $model->setTekst($tekst);
-            $model->setReactiesAan($reacties_aan);
-            $model->setCategorieId($categorieid);
-            $model->opslaan();
-            $this->id = $model->getId();
-
-            User::addNotification('Pagina bewerkt.');
-            $this->returnUrl = '/sub/' . $this->id;
-        }
+        User::addNotification('Pagina bewerkt.');
+        $this->returnUrl = '/sub/' . $this->id;
     }
 }

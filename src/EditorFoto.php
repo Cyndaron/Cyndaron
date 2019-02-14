@@ -1,15 +1,15 @@
 <?php
 namespace Cyndaron;
 
-class EditorFoto extends EditorPagina
+class EditorFoto extends EditorPage
 {
+    protected $heeftTitel = false;
+    protected $type = 'photo';
+    protected $table = 'bijschiften';
+    protected $saveUrl = '/editor/photo/0/%s';
+
     protected function prepare()
     {
-        $this->heeftTitel = false;
-        $this->type = 'foto';
-        $this->table = 'bijschiften';
-        $this->saveUrl = 'bewerk-foto?actie=bewerken&amp;id=0&amp;hash=%s';
-
         if ($this->id)
         {
             $this->content = DBConnection::geefEen('SELECT bijschrift FROM bijschriften WHERE hash=?', [$this->id]);

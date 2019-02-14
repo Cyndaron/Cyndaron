@@ -1,22 +1,22 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\StaticPage;
 
-class EditorStatischePagina extends EditorPagina
+use Cyndaron\DBConnection;
+
+class EditorPage extends \Cyndaron\EditorPage
 {
+    protected $heeftTitel = true;
+    protected $type = 'sub';
+    protected $table = 'subs';
+    protected $saveUrl = '/editor/sub/%s';
 
     protected function prepare()
     {
-        $this->heeftTitel = true;
-        $this->type = 'sub';
-        $this->table = 'subs';
-        $this->saveUrl = 'bewerk-statischepagina?actie=bewerken&amp;id=%s';
-
         if ($this->id)
         {
             $this->content = DBConnection::geefEen('SELECT tekst FROM ' . $this->vvstring . 'subs WHERE id=?', [$this->id]);
             $this->titel = DBConnection::geefEen('SELECT naam FROM ' . $this->vvstring . 'subs WHERE id=?', [$this->id]);
         }
-
     }
 
     protected function toonSpecifiekeKnoppen()
