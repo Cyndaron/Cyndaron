@@ -15,7 +15,7 @@ class Router
     private $requestVars = [''];
 
     protected $endpoints = [
-        // Standaard
+        // Default endpoints
         '403' => '\Cyndaron\Error403Pagina',
         '404' => '\Cyndaron\Error404Pagina',
         'category' => \Cyndaron\Category\CategoryController::class,
@@ -29,11 +29,11 @@ class Router
         'migreer_naar_v5_3.php' => '\Cyndaron\MigreerNaar5_3',
         'migrate-v6_0' => \Cyndaron\Migrate60::class,
         'pagemanager' => \Cyndaron\PageManager\PageManagerController::class,
+        'photoalbum' => \Cyndaron\Photoalbum\PhotoalbumController::class,
         'sub' => \Cyndaron\StaticPage\StaticPageController::class,
         'system' => \Cyndaron\System\SystemController::class,
         'user' => \Cyndaron\User\UserController::class,
         'usermanager' => \Cyndaron\User\UserManagerPage::class,
-        'toonfotoboek.php' => '\Cyndaron\FotoalbumPagina',
         'verwerkmailformulier.php' => '\Cyndaron\VerwerkMailformulierPagina',
 
         // Official plugins
@@ -160,7 +160,7 @@ class Router
             die();
         }
         // Redirect if a friendly url exists for the requested unfriendly url
-        if ($_SERVER['REQUEST_URI'] != '/' && $url = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel LIKE ?', [$_SERVER['REQUEST_URI'] . '%']))
+        if ($_SERVER['REQUEST_URI'] != '/' && $url = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel = ?', [$_SERVER['REQUEST_URI']]))
         {
             header('Location: /' . $url);
             die();
@@ -172,6 +172,12 @@ class Router
             die();
         }
         if ($request === 'tooncategorie.php')
+        {
+            $id = Request::geefGetVeilig('id');
+            header('Location: /category/' . $id);
+            die();
+        }
+        if ($request === 'toonfotoboek.php')
         {
             $id = Request::geefGetVeilig('id');
             header('Location: /category/' . $id);

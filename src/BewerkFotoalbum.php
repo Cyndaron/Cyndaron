@@ -14,14 +14,14 @@ class BewerkFotoalbum extends Bewerk
 
         if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
         {
-            FotoalbumModel::wijzigFotoalbum($this->id, $naam, $notities);
+            PhotoalbumModel::wijzigFotoalbum($this->id, $naam, $notities);
         }
         else
         {
-            $this->id = FotoalbumModel::nieuwFotoalbum($naam, $notities);
+            $this->id = PhotoalbumModel::nieuwFotoalbum($naam, $notities);
         }
 
         User::addNotification('Fotoalbum bewerkt.');
-        $this->returnUrl = '/toonfotoboek.php?id=' . $this->id;
+        $this->returnUrl = '/photoalbum/' . $this->id;
     }
 }

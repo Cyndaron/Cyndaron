@@ -5,7 +5,7 @@ namespace Cyndaron\PageManager;
 
 use Cyndaron\Category\CategoryModel;
 use Cyndaron\Controller;
-use Cyndaron\FotoalbumModel;
+use Cyndaron\PhotoalbumModel;
 use Cyndaron\Menu\MenuModel;
 use Cyndaron\Request;
 use Cyndaron\StaticPage\StaticPageModel;
@@ -28,30 +28,8 @@ class PageManagerController extends Controller
         {
             $type = Request::getVar(1);
             $action = Request::getVar(2);
-            $id = intval(Request::getVar(3));
 
-            if ($type == 'photoalbum')
-            {
-                if ($action == 'add')
-                {
-                    $name = Request::geefPostVeilig('name');
-                    FotoalbumModel::nieuwFotoalbum($name);
-                }
-                elseif ($action == 'edit')
-                {
-                    $name = Request::geefPostVeilig('name');
-                    FotoalbumModel::wijzigFotoalbum($id, $name);
-                }
-                elseif ($action == 'delete')
-                {
-                    FotoalbumModel::verwijderFotoalbum($id);
-                }
-                elseif ($action == 'addtomenu')
-                {
-                    MenuModel::voegToeAanMenu('toonfotoboek.php?id=' . $id);
-                }
-            }
-            elseif ($type == 'friendlyurl')
+            if ($type == 'friendlyurl')
             {
                 if ($action == 'add')
                 {
@@ -67,7 +45,7 @@ class PageManagerController extends Controller
                 elseif ($action == 'addtomenu')
                 {
                     $name = Request::getVar(3);
-                    MenuModel::voegToeAanMenu($name);
+                    MenuModel::voegToeAanMenu('/' . $name);
                 }
             }
             echo json_encode([]);

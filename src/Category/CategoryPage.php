@@ -80,7 +80,7 @@ class CategoryPage extends Pagina
         echo '<ul class="zonderbullets">';
         foreach ($fotoboeken->fetchAll() as $fotoboek)
         {
-            $url = new Url('toonfotoboek.php?id=' . $fotoboek['id']);
+            $url = new Url('/photoalbum/' . $fotoboek['id']);
             $link = $url->geefFriendly();
             echo '<li><h3><a href="' . $link . '">' . $fotoboek['naam'] . '</a></h3></li>';
         }

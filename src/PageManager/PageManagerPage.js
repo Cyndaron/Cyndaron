@@ -45,7 +45,7 @@ $(document).ready(function () {
             name: $('#pm-photoalbum-new-name').val(),
             csrfToken: csrfToken
         };
-        $.ajax('/photoalbum/add', data).done(function() {
+        $.post('/photoalbum/add', data).done(function() {
             location.reload();
         });
     });

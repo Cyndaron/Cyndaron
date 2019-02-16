@@ -1,12 +1,16 @@
 <?php
-namespace Cyndaron;
+declare (strict_types = 1);
+
+namespace Cyndaron\Photoalbum;
+
+use Cyndaron\DBConnection;
 
 /**
  * Class FotoalbumModel
  * @package Cyndaron
  * @todo: Omvormen tot echt model.
  */
-class FotoalbumModel
+class PhotoalbumModel
 {
     public static function nieuwFotoalbum($naam, $notities = "")
     {
