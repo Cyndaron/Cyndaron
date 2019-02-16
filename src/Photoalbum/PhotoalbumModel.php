@@ -17,7 +17,14 @@ class PhotoalbumModel
         if ($naam == '')
             throw new \Exception('Empty photo album name!');
 
-        return DBConnection::maakEen('INSERT INTO fotoboeken(`naam`,`notities`) VALUES (?,?);', [$naam, $notities]);
+        $id = DBConnection::maakEen('INSERT INTO fotoboeken(`naam`,`notities`) VALUES (?,?);', [$naam, $notities]);
+        if ($id !== false)
+        {
+            mkdir(__DIR__ . "/../../fotoalbums/${id}", 0777, true);
+            mkdir(__DIR__ . "/../../fotoalbums/${id}thumbnails", 0777, true);
+        }
+
+        return $id;
     }
 
     public static function wijzigFotoalbum($id, $naam = null, $notities = null)

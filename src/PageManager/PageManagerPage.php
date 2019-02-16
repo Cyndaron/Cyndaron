@@ -196,7 +196,7 @@ class PageManagerPage extends Pagina
                             echo new Button('edit', '/editor/photoalbum/' . $photoalbum['id'], 'Bewerk dit fotoalbum', null, 16); ?>
                             <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="photoalbum" data-id="<?=$photoalbum['id'];?>" data-csrf-token="<?=User::getCSRFToken('photoalbum', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit fotoalbum"></span></button>
                             <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="photoalbum" data-id="<?=$photoalbum['id'];?>" data-csrf-token="<?=User::getCSRFToken('photoalbum', 'addtomenu')?>"><span class="glyphicon glyphicon-bookmark" title="Voeg dit fotoalbum toe aan het menu"></span></button>
-                        </div
+                        </div>
                     </td>
                 </tr>
             <?php endforeach; ?>
