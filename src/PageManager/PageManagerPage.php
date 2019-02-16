@@ -170,7 +170,7 @@ class PageManagerPage extends Pagina
         <div class="form-inline">
             <label for="pm-photoalbum-new-name" class="mb-2 mr-sm-2">Nieuw fotoalbum:</label>
             <input class="form-control mb-2 mr-sm-2" id="pm-photoalbum-new-name" type="text"/>
-            <button id="pm-create-photoalbum" data-csrf-token="<?=User::getCSRFToken('photoalbum', 'add')?>"class="btn btn-success mb-2"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+            <button id="pm-create-photoalbum" data-csrf-token="<?=User::getCSRFToken('photoalbum', 'add')?>" class="btn btn-success mb-2"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
         </div>
 
         <table class="table table-striped table-bordered pm-table">
@@ -231,7 +231,7 @@ class PageManagerPage extends Pagina
                                class="form-control form-control-inline"/>
                     </td>
                     <td>
-                        <button id="pm-create-friendlyurl" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span>
+                        <button id="pm-create-friendlyurl" data-csrf-token="<?=User::getCSRFToken('friendlyurl', 'add')?>" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span>
                             Aanmaken
                         </button>
                     </td>
