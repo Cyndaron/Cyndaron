@@ -439,6 +439,12 @@ button.aantalKaarten
 .show > .btn-outline-dark.dropdown-toggle:focus {
     box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
 }
+
+.toolbar {
+    border: 1px solid #dee2e6;
+    background-color: #ffffff;
+    margin-bottom: 1rem;
+}
 /* End common controls */
 
 .tab-contents {

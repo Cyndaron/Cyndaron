@@ -70,6 +70,12 @@ class Controller
         $this->sendErrorMessage($message);
     }
 
+    public function send404(string $message = 'Not found'): void
+    {
+        header('HTTP/1.1 404 Not Found');
+        $this->sendErrorMessage($message);
+    }
+
     public function send500(string $message = 'Internal server error'): void
     {
         header('HTTP/1.1 500 Internal Server Error');

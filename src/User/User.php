@@ -12,7 +12,7 @@ class User
     public $id = null;
     public $record = null;
 
-    const MAIL_TEXT =
+    const RESET_PASSWORD_MAIL_TEXT =
         '<p>U vroeg om een nieuw wachtwoord voor %s.</p>
 
 <p>Uw nieuwe wachtwoord is: %s</p>';
@@ -101,7 +101,7 @@ EOT;
         mail(
             $this->record['email'],
             'Nieuw wachtwoord ingesteld',
-            sprintf(self::MAIL_TEXT, $websiteName, $newPassword),
+            sprintf(self::RESET_PASSWORD_MAIL_TEXT, $websiteName, $newPassword),
             sprintf(self::MAIL_HEADERS, $websiteName, $domain)
         );
     }
@@ -136,8 +136,38 @@ EOT;
         return false;
     }
 
-    public static function checkTokenOrDie($module, $action, $token)
+    public function updateFromArray($newArray)
     {
+        $this->record = array_merge($this->record, $newArray);
+    }
 
+    public function save(): bool
+    {
+        if ($this->id !== null)
+        {
+            $result = DBConnection::getInstance()->doQuery('UPDATE gebruikers SET gebruikersnaam=?, wachtwoord=?, email=?, niveau=? WHERE id=?', [
+                $this->record['gebruikersnaam'], $this->record['wachtwoord'], $this->record['email'], $this->record['niveau'], $this->id
+            ]);
+            // Above will result either false (failure) or "0" (success)
+            return $result === false ? false : true;
+        }
+        return false;
+    }
+
+    public function delete()
+    {
+        if (!$this->id)
+        {
+            throw new \Exception('No ID!');
+        }
+
+        DBConnection::getInstance()->doQuery('DELETE FROM gebruikers WHERE id = ?', [$this->id]);
+    }
+
+    public static function create(string $username, string $email, string $password, int $level = UserLevel::LOGGED_IN): ?int
+    {
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        $return = DBConnection::getInstance()->doQuery('INSERT INTO gebruikers(gebruikersnaam, wachtwoord, email, niveau) VALUES (?,?,?,?)', [$username, $passwordHash, $email, $level]);
+        return $return ? intval($return) : null;
     }
 }
