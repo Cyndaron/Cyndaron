@@ -22,7 +22,7 @@ class FriendlyUrlController extends Controller
                     $target->maakFriendly($name);
                     break;
                 case 'delete':
-                    $name = Request::getVar(3);
+                    $name = Request::getVar(2);
                     Url::verwijderFriendlyUrl($name);
                     break;
                 case 'addtomenu':

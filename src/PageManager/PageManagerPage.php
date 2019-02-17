@@ -8,6 +8,7 @@ use Cyndaron\Pagina;
 use Cyndaron\User\User;
 use Cyndaron\Widget\Button;
 use Cyndaron\Widget\PageTabs;
+use Cyndaron\Widget\Toolbar;
 
 require_once __DIR__ . '/../../check.php';
 
@@ -53,10 +54,7 @@ class PageManagerPage extends Pagina
 
     private function showSubs()
     {
-        echo '<h2>Statische pagina\'s</h2>';
-
-        echo new Button('new', '/editor/sub', 'Nieuwe statische pagina', 'Nieuwe statische pagina');
-        echo '<br />';
+        echo new Toolbar('', '', (string)new Button('new', '/editor/sub', 'Nieuwe statische pagina', 'Nieuwe statische pagina'));
 
         $subs = $this->connectie->prepare('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
         $subs->execute();
@@ -121,15 +119,12 @@ class PageManagerPage extends Pagina
 
     public function showCategories()
     {
+        echo new Toolbar('', '', '
+            <label for="pm-category-new-name" class="mr-sm-2">Nieuwe categorie:</label>
+            <input class="form-control mr-sm-2" id="pm-category-new-name" type="text"/>
+            <button id="pm-create-category" data-csrf-token="' . User::getCSRFToken('category', 'add') . '" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+        ');
         ?>
-        <h2>Categorieën</h2>
-
-        <div class="form-inline">
-            <label for="pm-category-new-name" class="mb-2 mr-sm-2">Nieuwe categorie:</label>
-            <input class="form-control mb-2 mr-sm-2" id="pm-category-new-name" type="text"/>
-            <button id="pm-create-category" data-csrf-token="<?=User::getCSRFToken('category', 'add')?>" class="btn btn-success mb-2 "><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
-        </div>
-
         <table class="table table-striped table-bordered pm-table">
             <thead>
                 <tr>
@@ -164,15 +159,12 @@ class PageManagerPage extends Pagina
 
     public function showPhotoAlbums()
     {
+        echo new Toolbar('', '', '
+            <label for="pm-photoalbum-new-name" class="mr-sm-2">Nieuw fotoalbum:</label>
+            <input class="form-control mr-sm-2" id="pm-photoalbum-new-name" type="text"/>
+            <button id="pm-create-photoalbum" data-csrf-token="' . User::getCSRFToken('photoalbum', 'add') . '" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+        ');
         ?>
-        <h2>Fotoalbums</h2>
-
-        <div class="form-inline">
-            <label for="pm-photoalbum-new-name" class="mb-2 mr-sm-2">Nieuw fotoalbum:</label>
-            <input class="form-control mb-2 mr-sm-2" id="pm-photoalbum-new-name" type="text"/>
-            <button id="pm-create-photoalbum" data-csrf-token="<?=User::getCSRFToken('photoalbum', 'add')?>" class="btn btn-success mb-2"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
-        </div>
-
         <table class="table table-striped table-bordered pm-table">
             <thead>
             <tr>
@@ -201,15 +193,19 @@ class PageManagerPage extends Pagina
                 </tr>
             <?php endforeach; ?>
             </tbody>
-        </table><br/>
+        </table>
         <?php
     }
 
     public function showFriendlyURLs()
     {
+        echo new Toolbar('', '', '
+            <label for="pm-friendlyurl-new-name" class="mr-sm-2">Nieuwe friendly URL:</label> 
+            <input id="pm-friendlyurl-new-name" type="text" placeholder="URL" class="form-control mr-sm-2"/>
+            <input id="pm-friendlyurl-new-target" type="text" placeholder="Verwijzingsdoel" class="form-control mr-sm-2"/>
+            <button id="pm-create-friendlyurl" data-csrf-token="' . User::getCSRFToken('friendlyurl', 'add') . '" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+        ');
         ?>
-        <h2>Friendly URL's</h2>
-
             <table class="table table-striped table-bordered pm-table">
                 <thead>
                     <tr>
@@ -220,22 +216,6 @@ class PageManagerPage extends Pagina
                     </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td></td>
-                    <td>
-                        Nieuwe friendly URL:
-                        <input id="pm-friendlyurl-new-name" type="text" placeholder="URL"
-                               class="form-control form-control-inline"/></td>
-                    <td>
-                        <input id="pm-friendlyurl-new-target" type="text" placeholder="Verwijzingsdoel"
-                               class="form-control form-control-inline"/>
-                    </td>
-                    <td>
-                        <button id="pm-create-friendlyurl" data-csrf-token="<?=User::getCSRFToken('friendlyurl', 'add')?>" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span>
-                            Aanmaken
-                        </button>
-                    </td>
-                </tr>
                 <?php
                 $friendlyurls = $this->connectie->prepare('SELECT * FROM friendlyurls ORDER BY naam ASC;');
                 $friendlyurls->execute();
@@ -252,8 +232,8 @@ class PageManagerPage extends Pagina
                         </td>
                         <td>
                             <div class="btn-group">
-                                <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="friendlyurl" data-id="<?=$friendlyurl['naam'];?>" ><span class="glyphicon glyphicon-trash" title="Verwijder deze friendly URL"></span></button>
-                                <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="friendlyurl" data-id="<?=$friendlyurl['naam'];?>" ><span class="glyphicon glyphicon-bookmark" title="Voeg deze friendly URL toe aan het menu"></span></button>
+                                <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="friendlyurl" data-id="<?=$friendlyurl['naam'];?>" data-csrf-token="<?=User::getCSRFToken('friendlyurl', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder deze friendly URL"></span></button>
+                                <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="friendlyurl" data-id="<?=$friendlyurl['naam'];?>" data-csrf-token="<?=User::getCSRFToken('friendlyurl', 'addtomenu')?>"><span class="glyphicon glyphicon-bookmark" title="Voeg deze friendly URL toe aan het menu"></span></button>
                             </div>
                         </td>
                     </tr>
