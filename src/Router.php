@@ -11,7 +11,6 @@ use Cyndaron\User\User;
  */
 class Router
 {
-    private $request = '';
     private $requestVars = [''];
 
     protected $endpoints = [
@@ -47,6 +46,13 @@ class Router
         'minecraft' => \Cyndaron\Minecraft\MinecraftController::class,
         'wieiswie' => '\Cyndaron\WieIsWie\OverzichtPagina',
         'verwerkmailformulier-ldbf' => '\Cyndaron\VerwerkMailformulierPaginaLDBF',
+    ];
+
+    const OLD_URLS = [
+        'tooncategorie.php' => ['url' => '/category/', 'id' => 'id'],
+        'toonfoto.php' => ['url' => '/photoalbum/', 'id' => 'boekid'], // Old link to photo in album (pre-Lightbox)
+        'toonfotoboek.php' => ['url' => '/photoalbum/', 'id' => 'id'],
+        'toonsub.php' => ['url' => '/sub/', 'id' => 'id'],
     ];
 
     public function __construct()
@@ -165,29 +171,11 @@ class Router
             header('Location: /' . $url);
             die();
         }
-        if ($request === 'toonsub.php')
+        if (array_key_exists($request, self::OLD_URLS))
         {
-            $id = Request::geefGetVeilig('id');
-            header('Location: /sub/' . $id);
-            die();
-        }
-        if ($request === 'tooncategorie.php')
-        {
-            $id = Request::geefGetVeilig('id');
-            header('Location: /category/' . $id);
-            die();
-        }
-        if ($request === 'toonfotoboek.php')
-        {
-            $id = Request::geefGetVeilig('id');
-            header('Location: /category/' . $id);
-            die();
-        }
-        // Old link to photo in album (pre-Lightbox)
-        if ($request === 'toonfoto.php')
-        {
-            $albumId = Request::geefGetVeilig('boekid');
-            header('Location: /photoalbum/' . $albumId);
+            $url = self::OLD_URLS[$request]['url'];
+            $id = Request::geefGetVeilig(self::OLD_URLS[$request]['id']);
+            header("Location: ${url}${id}");
             die();
         }
     }
