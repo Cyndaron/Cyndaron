@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2017, Michael Steenbeek
+ * Copyright © 2009-2019, Michael Steenbeek
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-"use strict";
+'use strict';
 
 var concertId = $('#concertId').val();
 var kaartsoorten;
@@ -23,7 +23,7 @@ var buitenland = false;
 var standaardVerzendkosten;
 var toeslagGereserveerdePlaats;
 
-$.post('kaarten-ajax-endpoint', {actie: 'geefKaartsoorten', concertId: concertId}).done(function (json)
+$.ajax('/concert/getInfo/' + concertId, {}).done(function (json)
 {
     var data = JSON.parse(json);
     kaartsoorten = data.kaartsoorten;

@@ -46,13 +46,18 @@ $(document).ready(function ()
     email();
 });
 
-function del(text, link)
+function del(text, yesFunc)
 {
     $('#confirm-dangerous .modal-body').html(text);
     $('#confirm-dangerous-yes').off();
-    $('#confirm-dangerous-yes').on('click', function()
+    $('#confirm-dangerous-yes').on('click', yesFunc);
+    $('#confirm-dangerous').modal();
+}
+
+function delLink(text, link)
+{
+    del(text, function()
     {
         window.location = link;
     });
-    $('#confirm-dangerous').modal();
 }

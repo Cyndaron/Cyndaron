@@ -4,30 +4,26 @@ namespace Cyndaron\Kaartverkoop;
 use Cyndaron\DBConnection;
 use Cyndaron\Pagina;
 use Cyndaron\Request;
+use Cyndaron\User\User;
 
 
 class KaartenBestellenPagina extends Pagina
 {
-    public function __construct()
+    public function __construct(int $concert_id)
     {
-        $this->connectie = DBConnection::getPDO();
-        $this->voegScriptToe('/sys/js/kaartverkoop.js');
+        $this->voegScriptToe('/src/Kaartverkoop/KaartenBestellenPagina.js');
 
-        $concert_id = Request::geefGetVeilig('id');
-        $prep = $this->connectie->prepare('SELECT * FROM kaartverkoop_concerten WHERE id=?');
-        $prep->execute([$concert_id]);
-        $concert_info = $prep->fetch();
+        $concert = Concert::loadFromDatabase($concert_id)->asArray();
+        $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC', [$concert_id]);
 
-        $concertnaam = $concert_info['naam'];
-
-        parent::__construct('Kaarten bestellen: ' . $concertnaam);
+        parent::__construct('Kaarten bestellen: ' . $concert['naam']);
         $this->toonPrePagina();
 
-        if ($concert_info['open_voor_verkoop'] == false)
+        if ($concert['open_voor_verkoop'] == false)
         {
-            if ($concert_info['beschrijving_indien_gesloten'])
+            if ($concert['beschrijving_indien_gesloten'])
             {
-                echo $concert_info['beschrijving_indien_gesloten'];
+                echo $concert['beschrijving_indien_gesloten'];
             }
             else
             {
@@ -38,12 +34,12 @@ class KaartenBestellenPagina extends Pagina
             die();
         }
 
-        echo '<p>' . $concert_info['beschrijving'] . '</p>';
+        echo '<p>' . $concert['beschrijving'] . '</p>';
         ?>
 
         <h3>Vrije plaatsen en gereserveerde plaatsen</h3>
         <p>Alle plaatsen in het middenschip van de kerk verkopen wij met een stoelnummer; d.w.z. al deze plaatsen worden
-            verkocht als gereserveerde plaats. De stoelnummers lopen van 1 t/m circa <?=Util::SEATS_PER_ROW;?>. Het is een doorlopende reeks,
+            verkocht als gereserveerde plaats. De stoelnummers lopen van 1 t/m circa <?=Util::MAX_RESERVED_SEATS;?>. Het is een doorlopende reeks,
             dus dit keer geen rijnummer. Aan het einde van een rij verspringt het stoelnummer naar de stoel daarachter.
             De nummers vormen een soort heen en weer gaande slinger door het hele middenschip heen. Het kan dus gebeuren
             dat u een paar kaarten koopt, waarbij de nummering verspringt naar de rij daarachter. Maar wel zo dat de
@@ -51,7 +47,8 @@ class KaartenBestellenPagina extends Pagina
             Vrije plaatsen zijn: de zijvakken en de balkons.</p>
 
         <br/>
-        <form method="post" action="kaarten-verwerk-bestelling" class="form-horizontal" id="kaartenbestellen">
+        <form method="post" action="/concert-order/add" class="form-horizontal" id="kaartenbestellen">
+            <input type="hidden" name="csrfToken" value="<?=User::getCSRFToken('concert-order', 'add')?>"/>
             <h3>Kaartsoorten:</h3>
             <input type="hidden" id="concertId" name="concert_id" value="<?php echo $concert_id; ?>"/>
             <table class="kaartverkoop table table-striped">
@@ -61,9 +58,7 @@ class KaartenBestellenPagina extends Pagina
                     <th>Aantal:</th>
                 </tr>
                 <?php
-                $prep = $this->connectie->prepare('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC');
-                $prep->execute([$concert_id]);
-                foreach ($prep->fetchAll() as $kaartsoort)
+                foreach ($ticketTypes as $kaartsoort)
                 {
                     printf('
                         <tr>
@@ -79,16 +74,16 @@ class KaartenBestellenPagina extends Pagina
                 }
                 ?>
             </table>
-            <div <?= $concert_info['bezorgen_verplicht'] ? 'style="display:none"' : ''; ?>>
+            <div <?= $concert['bezorgen_verplicht'] ? 'style="display:none"' : ''; ?>>
                 <input id="bezorgen" name="bezorgen" type="checkbox" value="1" class="berekenTotaalprijsOpnieuw">
                 <label for="bezorgen">
                     Bezorg mijn kaarten thuis (meerprijs
-                    van <?php echo Util::formatEuro($concert_info['verzendkosten']); ?> per kaart)
+                    van <?php echo Util::formatEuro($concert['verzendkosten']); ?> per kaart)
                 </label>
             </div>
 
-            <?php if ($concert_info['heeft_gereserveerde_plaatsen']): ?>
-                <?php if ($concert_info['gereserveerde_plaatsen_uitverkocht']): ?>
+            <?php if ($concert['heeft_gereserveerde_plaatsen']): ?>
+                <?php if ($concert['gereserveerde_plaatsen_uitverkocht']): ?>
                     <input id="gereserveerde_plaatsen" name="gereserveerde_plaatsen" style="display:none;"
                            type="checkbox" value="1"/>
                     U kunt voor dit concert nog kaarten voor vrije plaatsen kopen. <b>De gereserveerde plaatsen zijn inmiddels uitverkocht.</b>
@@ -97,7 +92,7 @@ class KaartenBestellenPagina extends Pagina
                            type="checkbox" value="1"/>
                     <label for="gereserveerde_plaatsen">
                         Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs
-                        van <?php echo Util::formatEuro($concert_info['toeslag_gereserveerde_plaats']); ?> per kaart)
+                        van <?php echo Util::formatEuro($concert['toeslag_gereserveerde_plaats']); ?> per kaart)
                     </label>
                 <?php endif; ?>
                 <br/>
@@ -105,13 +100,13 @@ class KaartenBestellenPagina extends Pagina
                 <input id="gereserveerde_plaatsen" type="hidden" value="0">
             <?php endif; ?>
 
-            <?php if ($concert_info['bezorgen_verplicht']): ?>
+            <?php if ($concert['bezorgen_verplicht']): ?>
                 <br>
                 <h3>Bezorging</h3>
                 <p>
                     Bij dit concert is het alleen mogelijk om uw kaarten te laten thuisbezorgen. Als u op Walcheren
                     woont is dit gratis. Woont u buiten Walcheren, dan kost het
-                    thuisbezorgen <?= Util::formatEuro($concert_info['verzendkosten']); ?> per kaart.<br>Het is ook
+                    thuisbezorgen <?= Util::formatEuro($concert['verzendkosten']); ?> per kaart.<br>Het is ook
                     mogelijk
                     om uw kaarten te laten ophalen door een koorlid. Dit is gratis.
                 </p>
@@ -183,7 +178,7 @@ class KaartenBestellenPagina extends Pagina
                                              class="form-control"/></div>
             </div>
 
-            <?php if (!$concert_info['bezorgen_verplicht']): ?>
+            <?php if (!$concert['bezorgen_verplicht']): ?>
                 <div class="form-group">
                     <label class="col-sm-2 control-label" for="postcode">Postcode:</label>
                     <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control"/></div>

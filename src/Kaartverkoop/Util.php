@@ -1,9 +1,11 @@
 <?php
 namespace Cyndaron\Kaartverkoop;
 
+use Cyndaron\DBConnection;
+
 class Util extends \Cyndaron\Util
 {
-    const SEATS_PER_ROW = 330;
+    const MAX_RESERVED_SEATS = 330;
 
     public static function postcodeIsWithinWalcheren(int $postcode)
     {
@@ -11,5 +13,10 @@ class Util extends \Cyndaron\Util
             return true;
         else
             return false;
+    }
+
+    public static function getLatestConcertId(): ?int
+    {
+        return DBConnection::doQueryAndFetchOne('SELECT MAX(id) FROM kaartverkoop_concerten');
     }
 }

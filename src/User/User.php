@@ -4,13 +4,13 @@ declare (strict_types = 1);
 namespace Cyndaron\User;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Model;
 use Cyndaron\Setting;
 use Cyndaron\Util;
 
-class User
+class User extends Model
 {
-    public $id = null;
-    public $record = null;
+    protected static $table = 'gebruikers';
 
     const RESET_PASSWORD_MAIL_TEXT =
         '<p>U vroeg om een nieuw wachtwoord voor %s.</p>
@@ -22,11 +22,6 @@ MIME-Version: 1.0
 Content-type: text/html; charset=utf-8
 From: %s <noreply@%s>
 EOT;
-
-    public function __construct(?int $id)
-    {
-        $this->id = $id;
-    }
 
     public static function isAdmin(): bool
     {
@@ -136,11 +131,6 @@ EOT;
         return false;
     }
 
-    public function updateFromArray($newArray)
-    {
-        $this->record = array_merge($this->record, $newArray);
-    }
-
     public function save(): bool
     {
         if ($this->id !== null)
@@ -152,16 +142,6 @@ EOT;
             return $result === false ? false : true;
         }
         return false;
-    }
-
-    public function delete()
-    {
-        if (!$this->id)
-        {
-            throw new \Exception('No ID!');
-        }
-
-        DBConnection::doQuery('DELETE FROM gebruikers WHERE id = ?', [$this->id]);
     }
 
     public static function create(string $username, string $email, string $password, int $level = UserLevel::LOGGED_IN): ?int

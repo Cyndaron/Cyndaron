@@ -37,12 +37,8 @@ class Router
 
         // Official plugins
         'bestandenkast.php' => '\Cyndaron\Bestandenkast\OverzichtPagina',
-        'kaartenbestellen.php' => '\Cyndaron\Kaartverkoop\KaartenBestellenPagina',
-        'overzicht-bestellingen.php' => '\Cyndaron\Kaartverkoop\OverzichtBestellingenPagina',
-        'kaarten-gereserveerde-plaatsen' => '\Cyndaron\Kaartverkoop\GereserveerdePlaatsen',
-        'kaarten-verwerk-bestelling' => '\Cyndaron\Kaartverkoop\VerwerkBestellingPagina',
-        'kaarten-ajax-endpoint' => '\Cyndaron\Kaartverkoop\AjaxEndpoint',
-        'kaarten-update-bestelling' => '\Cyndaron\Kaartverkoop\BestellingUpdate',
+        'concert' => \Cyndaron\Kaartverkoop\ConcertController::class,
+        'concert-order' => \Cyndaron\Kaartverkoop\OrderController::class,
         'minecraft' => \Cyndaron\Minecraft\MinecraftController::class,
         'wieiswie' => '\Cyndaron\WieIsWie\OverzichtPagina',
         'verwerkmailformulier-ldbf' => '\Cyndaron\VerwerkMailformulierPaginaLDBF',

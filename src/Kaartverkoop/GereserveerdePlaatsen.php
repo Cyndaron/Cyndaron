@@ -2,16 +2,12 @@
 namespace Cyndaron\Kaartverkoop;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Request;
-
-require_once __DIR__ . '/../../check.php';
 
 class GereserveerdePlaatsen
 {
-    public function __construct()
+    public function __construct(int $concert_id)
     {
         $connectie = DBConnection::getPDO();
-        $concert_id = intval(Request::geefGetVeilig('id'));
 
         $bezette_plaatsen_per_rij = [];
 
@@ -34,7 +30,7 @@ class GereserveerdePlaatsen
         #$rijen = range('A', 'P');
         #$stoelen_per_rij = range(1, 15);
         $rijen = ['A'];
-        $stoelen_per_rij = range(1, Util::SEATS_PER_ROW);
+        $stoelen_per_rij = range(1, Util::MAX_RESERVED_SEATS);
 
 //        echo '<table><thead><tr><th>&nbsp;</th>';
 //        foreach ($stoelen_per_rij as $stoel)
