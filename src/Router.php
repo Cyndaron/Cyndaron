@@ -72,7 +72,7 @@ class Router
             $this->updateRequestVars((string)$frontpage);
         }
         // Known friendly URL
-        elseif ($url = DBConnection::geefEen('SELECT doel FROM friendlyurls WHERE naam=?', [$this->requestVars[0]]))
+        elseif ($url = DBConnection::doQueryAndFetchOne('SELECT doel FROM friendlyurls WHERE naam=?', [$this->requestVars[0]]))
         {
             $this->updateRequestVars($this->rewriteFriendlyUrl(new Url($url)));
         }
@@ -160,7 +160,7 @@ class Router
             die();
         }
         // Redirect if a friendly url exists for the requested unfriendly url
-        if ($_SERVER['REQUEST_URI'] != '/' && $url = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel = ?', [$_SERVER['REQUEST_URI']]))
+        if ($_SERVER['REQUEST_URI'] != '/' && $url = DBConnection::doQueryAndFetchOne('SELECT naam FROM friendlyurls WHERE doel = ?', [$_SERVER['REQUEST_URI']]))
         {
             header('Location: /' . $url);
             die();
@@ -197,7 +197,7 @@ class Router
      */
     private function getFrontpageUrl(): Url
     {
-        $frontPage = new Url(DBConnection::geefEen('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', []));
+        $frontPage = new Url(DBConnection::doQueryAndFetchOne('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', []));
         return $frontPage;
     }
 

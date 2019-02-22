@@ -137,7 +137,7 @@ abstract class EditorPage extends Pagina
 
                     if ($this->id)
                     {
-                        $categorieid = DBConnection::geefEen('SELECT categorieid FROM ' . $this->table . ' WHERE id= ?', [$this->id]);
+                        $categorieid = DBConnection::doQueryAndFetchOne('SELECT categorieid FROM ' . $this->table . ' WHERE id= ?', [$this->id]);
                     }
                     else
                     {

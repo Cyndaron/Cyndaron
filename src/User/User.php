@@ -75,7 +75,7 @@ EOT;
             throw new \Exception('ID is leeg!');
         }
 
-        $this->record = DBConnection::getInstance()->doQueryAndFetchFirstRow('SELECT * FROM gebruikers WHERE id = ?', [$this->id]);
+        $this->record = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM gebruikers WHERE id = ?', [$this->id]);
     }
 
     public function sendNewPassword()
@@ -145,7 +145,7 @@ EOT;
     {
         if ($this->id !== null)
         {
-            $result = DBConnection::getInstance()->doQuery('UPDATE gebruikers SET gebruikersnaam=?, wachtwoord=?, email=?, niveau=? WHERE id=?', [
+            $result = DBConnection::doQuery('UPDATE gebruikers SET gebruikersnaam=?, wachtwoord=?, email=?, niveau=? WHERE id=?', [
                 $this->record['gebruikersnaam'], $this->record['wachtwoord'], $this->record['email'], $this->record['niveau'], $this->id
             ]);
             // Above will result either false (failure) or "0" (success)
@@ -161,13 +161,13 @@ EOT;
             throw new \Exception('No ID!');
         }
 
-        DBConnection::getInstance()->doQuery('DELETE FROM gebruikers WHERE id = ?', [$this->id]);
+        DBConnection::doQuery('DELETE FROM gebruikers WHERE id = ?', [$this->id]);
     }
 
     public static function create(string $username, string $email, string $password, int $level = UserLevel::LOGGED_IN): ?int
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $return = DBConnection::getInstance()->doQuery('INSERT INTO gebruikers(gebruikersnaam, wachtwoord, email, niveau) VALUES (?,?,?,?)', [$username, $passwordHash, $email, $level]);
+        $return = DBConnection::doQuery('INSERT INTO gebruikers(gebruikersnaam, wachtwoord, email, niveau) VALUES (?,?,?,?)', [$username, $passwordHash, $email, $level]);
         return $return ? intval($return) : null;
     }
 }

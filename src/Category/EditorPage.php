@@ -14,14 +14,14 @@ class EditorPage extends \Cyndaron\EditorPage
     {
         if ($this->id)
         {
-            $this->content = DBConnection::geefEen('SELECT beschrijving FROM categorieen WHERE id=?', [$this->id]);
-            $this->titel = DBConnection::geefEen('SELECT naam FROM categorieen WHERE id=?', [$this->id]);
+            $this->content = DBConnection::doQueryAndFetchOne('SELECT beschrijving FROM categorieen WHERE id=?', [$this->id]);
+            $this->titel = DBConnection::doQueryAndFetchOne('SELECT naam FROM categorieen WHERE id=?', [$this->id]);
         }
     }
 
     protected function toonSpecifiekeKnoppen()
     {
-        $checked = DBConnection::geefEen('SELECT alleentitel FROM categorieen WHERE id=?', [$this->id]) ? 'checked="checked"' : '';
+        $checked = DBConnection::doQueryAndFetchOne('SELECT alleentitel FROM categorieen WHERE id=?', [$this->id]) ? 'checked="checked"' : '';
         ?>
         <div class="form-group">
             <label class="col-sm-2 control-label" for="alleentitel">Toon alleen titels: </label>

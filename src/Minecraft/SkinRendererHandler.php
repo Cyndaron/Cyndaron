@@ -46,7 +46,7 @@ class SkinRendererHandler
         $times[] = ['Start', $this->microtime_float()];
 
         $username = Request::geefGetVeilig('user');
-        $userInfo = DBConnection::getInstance()->doQueryAndFetchFirstRow('SELECT  * FROM mc_leden WHERE mcnaam = ?', [$username]);
+        $userInfo = DBConnection::doQueryAndFetchFirstRow('SELECT  * FROM mc_leden WHERE mcnaam = ?', [$username]);
         $img_png = SkinRenderer::getSkinOrFallback($userInfo['skinUrl']);
 
         $width = imagesx($img_png);

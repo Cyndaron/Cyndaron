@@ -12,7 +12,7 @@ class Url
 
     public function geefFriendly(): string
     {
-        if ($friendly = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel=?', [$this->url]))
+        if ($friendly = DBConnection::doQueryAndFetchOne('SELECT naam FROM friendlyurls WHERE doel=?', [$this->url]))
         {
             return '/' . $friendly;
         }
@@ -24,7 +24,7 @@ class Url
 
     public function geefUnfriendly(): string
     {
-        if ($unfriendly = DBConnection::geefEen('SELECT doel FROM friendlyurls WHERE naam=?', [$this->url]))
+        if ($unfriendly = DBConnection::doQueryAndFetchOne('SELECT doel FROM friendlyurls WHERE naam=?', [$this->url]))
         {
             return $unfriendly;
         }
@@ -58,12 +58,12 @@ class Url
     {
         if ($name == '' || $this->url == '')
             throw new \Exception('Cannot create friendly URL with no name or no URL!');
-        DBConnection::maakEen('INSERT INTO friendlyurls(naam,doel) VALUES (?,?)', [$name, $this->url]);
+        DBConnection::doQuery('INSERT INTO friendlyurls(naam,doel) VALUES (?,?)', [$name, $this->url]);
     }
 
     public static function verwijderFriendlyUrl(string $naam)
     {
-        DBConnection::maakEen('DELETE FROM friendlyurls WHERE naam=?', [$naam]);
+        DBConnection::doQuery('DELETE FROM friendlyurls WHERE naam=?', [$naam]);
     }
 
     public function geefPaginanaam(): string
@@ -92,11 +92,11 @@ class Url
             default:
                 return $link;
         }
-        if ($naam = DBConnection::geefEen($sql, [$linkParts[1]]))
+        if ($naam = DBConnection::doQueryAndFetchOne($sql, [$linkParts[1]]))
         {
             return $naam;
         }
-        elseif ($naam = DBConnection::geefEen('SELECT naam FROM friendlyurls WHERE doel=?', [$link]))
+        elseif ($naam = DBConnection::doQueryAndFetchOne('SELECT naam FROM friendlyurls WHERE doel=?', [$link]))
         {
             return $naam;
         }

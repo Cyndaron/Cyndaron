@@ -12,8 +12,8 @@ class EditorFotoalbum extends EditorPage
 
         if ($this->id)
         {
-            $this->content = DBConnection::geefEen('SELECT notities FROM fotoboeken WHERE id=?', [$this->id]);
-            $this->titel = DBConnection::geefEen('SELECT naam FROM fotoboeken WHERE id=?', [$this->id]);
+            $this->content = DBConnection::doQueryAndFetchOne('SELECT notities FROM fotoboeken WHERE id=?', [$this->id]);
+            $this->titel = DBConnection::doQueryAndFetchOne('SELECT naam FROM fotoboeken WHERE id=?', [$this->id]);
         }
     }
 

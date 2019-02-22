@@ -14,14 +14,14 @@ class EditorPage extends \Cyndaron\EditorPage
     {
         if ($this->id)
         {
-            $this->content = DBConnection::geefEen('SELECT tekst FROM ' . $this->vvstring . 'subs WHERE id=?', [$this->id]);
-            $this->titel = DBConnection::geefEen('SELECT naam FROM ' . $this->vvstring . 'subs WHERE id=?', [$this->id]);
+            $this->content = DBConnection::doQueryAndFetchOne('SELECT tekst FROM ' . $this->vvstring . 'subs WHERE id=?', [$this->id]);
+            $this->titel = DBConnection::doQueryAndFetchOne('SELECT naam FROM ' . $this->vvstring . 'subs WHERE id=?', [$this->id]);
         }
     }
 
     protected function toonSpecifiekeKnoppen()
     {
-        $checked = DBConnection::geefEen('SELECT reacties_aan FROM subs WHERE id=?', [$this->id]) ? ' checked="checked"' : '';
+        $checked = DBConnection::doQueryAndFetchOne('SELECT reacties_aan FROM subs WHERE id=?', [$this->id]) ? ' checked="checked"' : '';
         ?>
         <div class="form-group">
             <label class="col-sm-2 control-label" for="reacties_aan">Reacties aan: </label>

@@ -12,7 +12,7 @@ class EditorFoto extends EditorPage
     {
         if ($this->id)
         {
-            $this->content = DBConnection::geefEen('SELECT bijschrift FROM bijschriften WHERE hash=?', [$this->id]);
+            $this->content = DBConnection::doQueryAndFetchOne('SELECT bijschrift FROM bijschriften WHERE hash=?', [$this->id]);
         }
     }
 

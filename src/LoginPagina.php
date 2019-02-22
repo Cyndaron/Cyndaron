@@ -16,7 +16,6 @@ class LoginPagina extends Pagina
                 $wachtwoord512 = hash('sha512', $wachtwoord);
 
                 $connectie = DBConnection::getPDO();
-                $connObj = DBConnection::getInstance();
 
                 if (strpos($identification, '@') !== false)
                 {
@@ -52,7 +51,7 @@ class LoginPagina extends Pagina
                         if (password_needs_rehash($userdata['wachtwoord'], PASSWORD_DEFAULT))
                         {
                             $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
-                            $connObj->doQuery($updateQuery, [$wachtwoord, $identification]);
+                            DBConnection::doQuery($updateQuery, [$wachtwoord, $identification]);
                         }
                     }
                     elseif ($userdata['wachtwoord'] == $wachtwoord512)
@@ -60,7 +59,7 @@ class LoginPagina extends Pagina
                         $loginGelukt = true;
 
                         $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
-                        $connObj->doQuery($updateQuery, [$wachtwoord, $identification]);
+                        DBConnection::doQuery($updateQuery, [$wachtwoord, $identification]);
                     }
 
                     if ($loginGelukt)

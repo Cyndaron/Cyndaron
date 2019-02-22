@@ -17,7 +17,7 @@ class PhotoalbumPage extends Pagina
             header("Location: /404");
             die('Incorrecte parameter ontvangen.');
         }
-        $album = DBConnection::getInstance()->doQueryAndFetchFirstRow('SELECT * FROM fotoboeken WHERE id=?', [$id]);
+        $album = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM fotoboeken WHERE id=?', [$id]);
         $_SESSION['referrer'] = !empty($_SERVER['HTTP_REFERER']) ? htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '';
 
         $controls = new Button('edit', '/editor/photoalbum/' . $id, 'Dit fotoalbum bewerken');
@@ -42,7 +42,7 @@ class PhotoalbumPage extends Pagina
                     $thumbnailLink = 'fotoalbums/' . $id . 'thumbnails/' . $dirArray[$index];
                     $hash = md5_file($fotoLink);
                     $dataTitleTag = '';
-                    if ($caption = DBConnection::geefEen('SELECT bijschrift FROM bijschriften WHERE hash=?', [$hash]))
+                    if ($caption = DBConnection::doQueryAndFetchOne('SELECT bijschrift FROM bijschriften WHERE hash=?', [$hash]))
                     {
                         // Vervangen van aanhalingstekens is nodig omdat er links in de beschrijving kunnen zitten.
                         $dataTitleTag = 'data-title="' . str_replace('"', '&quot;', $caption) . '"';

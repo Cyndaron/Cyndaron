@@ -30,15 +30,15 @@ class CategoryPage extends Pagina
             die('Incorrecte parameter ontvangen.');
         }
 
-        $naam = DBConnection::geefEen("SELECT naam FROM categorieen WHERE id= ?;", [$id]);
-        $alleentitel = DBConnection::geefEen("SELECT alleentitel FROM categorieen WHERE id=?", [$id]);
+        $naam = DBConnection::doQueryAndFetchOne("SELECT naam FROM categorieen WHERE id= ?;", [$id]);
+        $alleentitel = DBConnection::doQueryAndFetchOne("SELECT alleentitel FROM categorieen WHERE id=?", [$id]);
         $controls = sprintf('<a href="/editor/category/%d" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
 
         parent::__construct($naam);
         $this->maakTitelknoppen($controls);
         $this->toonPrePagina();
 
-        $beschrijving = DBConnection::geefEen('SELECT beschrijving FROM categorieen WHERE id= ?', [$id]);
+        $beschrijving = DBConnection::doQueryAndFetchOne('SELECT beschrijving FROM categorieen WHERE id= ?', [$id]);
         echo $beschrijving;
         $paginas = $this->connectie->prepare('SELECT * FROM subs WHERE categorieid= ? ORDER BY id DESC');
         $paginas->execute([$id]);

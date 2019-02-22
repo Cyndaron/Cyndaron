@@ -7,6 +7,9 @@ ini_set('session.cookie_httponly', 1);
 ini_set('session.cookie_secure', 1);
 // Voorkom dat gebruikers zelf een sessie-ID kunnen opgeven
 ini_set('session.use_strict_mode', 1);
+// Moved from DBConnection. TODO: check if really needed.
+ini_set('memory_limit', '96M');
+
 
 if (!file_exists(__DIR__ . '/instellingen.php'))
 {
@@ -70,4 +73,5 @@ spl_autoload_register(function ($class)
     }
 });
 
+\Cyndaron\DBConnection::connect();
 $router = new \Cyndaron\Router();

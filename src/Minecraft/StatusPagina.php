@@ -11,8 +11,7 @@ class StatusPagina extends Pagina
         parent::__construct('Status en landkaart');
         parent::toonPrePagina();
 
-        $connectie = DBConnection::getInstance();
-        $serverData = $connectie->doQueryAndFetchAll('SELECT * FROM mc_servers ORDER BY naam');
+        $serverData = DBConnection::doQueryAndFetchAll('SELECT * FROM mc_servers ORDER BY naam');
         $servers = [];
 
         foreach ($serverData as $server)

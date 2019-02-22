@@ -140,7 +140,7 @@ class StaticPageModel
         {
             $reacties_aan = Util::parseCheckboxAlsInt($this->enableComments);
             $connectie = DBConnection::getPDO();
-            if (!DBConnection::geefEen('SELECT * FROM vorigesubs WHERE id=?', [$this->id]))
+            if (!DBConnection::doQueryAndFetchOne('SELECT * FROM vorigesubs WHERE id=?', [$this->id]))
             {
                 $prep = $connectie->prepare('INSERT INTO vorigesubs VALUES (?, \'\', \'\')');
                 $prep->execute([$this->id]);
@@ -160,8 +160,8 @@ class StaticPageModel
     {
         if ($this->id != null)
         {
-            DBConnection::maakEen('DELETE FROM subs WHERE id=?;', [$this->id]);
-            DBConnection::maakEen('DELETE FROM vorigesubs WHERE id=?;', [$this->id]);
+            DBConnection::doQuery('DELETE FROM subs WHERE id=?;', [$this->id]);
+            DBConnection::doQuery('DELETE FROM vorigesubs WHERE id=?;', [$this->id]);
         }
     }
 }

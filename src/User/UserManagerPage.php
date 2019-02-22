@@ -25,7 +25,7 @@ class UserManagerPage extends Pagina
         $this->voegScriptToe('/src/User/UserManagerPage.js');
         parent::toonPrepagina();
 
-        $users = DBConnection::getInstance()->doQueryAndFetchAll('SELECT * FROM gebruikers ORDER BY gebruikersnaam', []);
+        $users = DBConnection::doQueryAndFetchAll('SELECT * FROM gebruikers ORDER BY gebruikersnaam', []);
 
         echo new Toolbar('', '', '
         <button id="um-create-user"
