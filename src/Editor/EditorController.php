@@ -13,6 +13,7 @@ class EditorController extends Controller
 
     protected $editorPages = [
         'category' => \Cyndaron\Category\EditorPage::class,
+        'mailform' => \Cyndaron\Mailform\EditorPage::class,
         'photo' => \Cyndaron\EditorFoto::class,
         'photoalbum' => \Cyndaron\EditorFotoalbum::class,
         'sub' => \Cyndaron\StaticPage\EditorPage::class,

@@ -29,8 +29,9 @@ class Pagina
     protected $connectie = null;
     protected $extraScripts = [];
     protected $websitenaam = '';
+    protected $body = '';
 
-    public function __construct($paginanaam)
+    public function __construct($paginanaam, string $body = '')
     {
         if ($this->connectie == null)
         {
@@ -38,6 +39,7 @@ class Pagina
         }
 
         $this->paginanaam = $paginanaam;
+        $this->body = $body;
     }
 
     public function maakExtraMeta(string $extraMeta)
@@ -420,5 +422,10 @@ class Pagina
             </div>
         </li>
         <?php
+    }
+
+    public function showBody(): void
+    {
+        echo $this->body;
     }
 }

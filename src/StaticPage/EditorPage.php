@@ -5,7 +5,6 @@ use Cyndaron\DBConnection;
 
 class EditorPage extends \Cyndaron\EditorPage
 {
-    protected $heeftTitel = true;
     protected $type = 'sub';
     protected $table = 'subs';
     protected $saveUrl = '/editor/sub/%s';

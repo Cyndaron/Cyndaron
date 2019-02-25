@@ -3,7 +3,7 @@ namespace Cyndaron;
 
 class EditorFoto extends EditorPage
 {
-    protected $heeftTitel = false;
+    protected $hasTitle = false;
     protected $type = 'photo';
     protected $table = 'bijschiften';
     protected $saveUrl = '/editor/photo/0/%s';

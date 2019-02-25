@@ -8,7 +8,7 @@ require_once __DIR__ . '/../check.php';
 abstract class EditorPage extends Pagina
 {
     protected $id = null;
-    protected $heeftTitel = true;
+    protected $hasTitle = true;
     protected $vorigeversie = false;
     protected $vvstring = '';
     protected $content;
@@ -58,7 +58,7 @@ abstract class EditorPage extends Pagina
         <form name="bewerkartikel" method="post" action="<?=$saveUrl;?>" class="form-horizontal">
 
             <?php
-            if ($this->heeftTitel === true):
+            if ($this->hasTitle === true):
                 ?>
                 <div class="form-group">
                     <label class="col-sm-2 control-label" for="titel">Titel: </label>

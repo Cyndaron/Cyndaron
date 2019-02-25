@@ -5,8 +5,7 @@ use Cyndaron\DBConnection;
 
 class EditorPage extends \Cyndaron\EditorPage
 {
-    protected $heeftTitel = true;
-    protected $type = 'categorie';
+    protected $type = 'category';
     protected $table = 'categorieen';
     protected $saveUrl = '/editor/category/%s';
 
