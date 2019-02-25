@@ -27,7 +27,7 @@ class ConcertController extends Controller
             switch ($this->action)
             {
                 case 'viewOrders':
-                    new OverzichtBestellingenPagina($id);
+                    new ConcertOrderOverviewPage($id);
                     break;
                 case 'viewReservedSeats':
                     new GereserveerdePlaatsen($id);

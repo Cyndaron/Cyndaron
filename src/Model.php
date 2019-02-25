@@ -28,6 +28,11 @@ class Model
         return $object;
     }
 
+    public static function fetchAll()
+    {
+        return DBConnection::doQueryAndFetchAll('SELECT * FROM ' . static::$table);
+    }
+
     public function asArray(): array
     {
         return $this->record;

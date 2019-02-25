@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\PageManager;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Pagina;
+use Cyndaron\Kaartverkoop\Concert;use Cyndaron\Pagina;
 use Cyndaron\User\User;
 use Cyndaron\Widget\Button;
 use Cyndaron\Widget\PageTabs;
@@ -27,6 +27,7 @@ class PageManagerPage extends Pagina
             'category' => 'Categorieën',
             'photoalbum' => 'Fotoalbums',
             'friendlyurl' => 'Friendly URL\'s',
+            'concert' => 'Concerten'
         ], '/pagemanager/', $currentPage);
 
         echo '<div class="container-fluid tab-contents">';
@@ -41,6 +42,9 @@ class PageManagerPage extends Pagina
                 break;
             case 'photoalbum':
                 $this->showPhotoAlbums();
+                break;
+            case 'concert':
+                $this->showConcerts();
                 break;
             case 'sub':
             default:
@@ -241,6 +245,36 @@ class PageManagerPage extends Pagina
                 </tbody>
             </table>
         </form>
+        <?php
+    }
+
+    public function showConcerts()
+    {
+        $concerts = Concert::fetchAll();
+        ?>
+        <table class="table table-striped table-bordered pm-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Naam</th>
+                    <th>Acties</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($concerts as $concert):?>
+                <tr>
+                    <td><?=$concert['id']?></td>
+                    <td><a href="/concert/viewOrders/<?=$concert['id']?>"><?=$concert['naam']?></a></td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-danger btn-sm pm-delete" data-type="concert" data-id="<?=$concert['id'];?>" data-csrf-token="<?=User::getCSRFToken('concert', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit concert"></span></button>
+                        </div>
+
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
         <?php
     }
 }

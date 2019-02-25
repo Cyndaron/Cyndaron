@@ -4,8 +4,9 @@ namespace Cyndaron\Kaartverkoop;
 use Cyndaron\DBConnection;
 use Cyndaron\Pagina;
 use Cyndaron\User\User;
+use Cyndaron\Widget\Toolbar;
 
-class OverzichtBestellingenPagina extends Pagina
+class ConcertOrderOverviewPage extends Pagina
 {
     public function __construct(int $concert_id)
     {
@@ -28,7 +29,7 @@ class OverzichtBestellingenPagina extends Pagina
                     FROM     `kaartverkoop_bestellingen_kaartsoorten`";
         $boughtTicketTypes = DBConnection::doQueryAndFetchAll($boughtTicketTypesQuery, [$concert_id]);
 
-        $this->extraScripts[] = '/src/Kaartverkoop/OverzichtBestellingenPagina.js';
+        $this->extraScripts[] = '/src/Kaartverkoop/ConcertOrderOverviewPage.js';
 
         parent::__construct('Overzicht bestellingen: ' . $concert['naam']);
         $this->toonPrePagina();
@@ -44,8 +45,12 @@ class OverzichtBestellingenPagina extends Pagina
 
             $ticketTypesByOrder[$orderId][$ticketTypeId] = $boughtTicketType['aantal'];
         }
+        echo new Toolbar(
+                '<a class="btn btn-outline-cyndaron" href="/pagemanager/concert">&laquo; Terug naar overzicht concerten</a>',
+                '',
+                '<a class="btn btn-outline-cyndaron" href="/concert/viewReservedSeats/' . $concert_id . '">Overzicht gereserveerde plaatsen</a>'
+            );
         ?>
-        <a href="/concert/viewReservedSeats/<?=$concert_id;?>">Overzicht gereserveerde plaatsen</a>
 
         <table class="overzichtBestellingen table table-striped">
         <tr class="rotate">
