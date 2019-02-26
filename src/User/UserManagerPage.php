@@ -22,8 +22,8 @@ class UserManagerPage extends Pagina
     public function __construct()
     {
         parent::__construct('Gebruikersbeheer');
-        $this->voegScriptToe('/src/User/UserManagerPage.js');
-        parent::toonPrepagina();
+        $this->addScript('/src/User/UserManagerPage.js');
+        parent::showPrePage();
 
         $users = DBConnection::doQueryAndFetchAll('SELECT * FROM gebruikers ORDER BY gebruikersnaam', []);
 
@@ -126,6 +126,6 @@ class UserManagerPage extends Pagina
         </div>
 
         <?php
-        parent::toonPostPagina();
+        parent::showPostPage();
     }
 }

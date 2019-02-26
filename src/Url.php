@@ -10,7 +10,7 @@ class Url
         $this->url = $url;
     }
 
-    public function geefFriendly(): string
+    public function getFriendly(): string
     {
         if ($friendly = DBConnection::doQueryAndFetchOne('SELECT naam FROM friendlyurls WHERE doel=?', [$this->url]))
         {
@@ -22,7 +22,7 @@ class Url
         }
     }
 
-    public function geefUnfriendly(): string
+    public function getUnfriendly(): string
     {
         if ($unfriendly = DBConnection::doQueryAndFetchOne('SELECT doel FROM friendlyurls WHERE naam=?', [$this->url]))
         {
@@ -34,10 +34,10 @@ class Url
         }
     }
 
-    public function isGelijkAan(Url $andereUrl): bool
+    public function equals(Url $otherUrl): bool
     {
-        $url1 = $this->geefUnfriendly();
-        $url2 = $andereUrl->geefUnfriendly();
+        $url1 = $this->getUnfriendly();
+        $url2 = $otherUrl->getUnfriendly();
 
         if ($url1 == $url2)
         {
@@ -54,21 +54,21 @@ class Url
         return $this->url;
     }
 
-    public function maakFriendly(string $name)
+    public function createFriendly(string $name)
     {
         if ($name == '' || $this->url == '')
             throw new \Exception('Cannot create friendly URL with no name or no URL!');
         DBConnection::doQuery('INSERT INTO friendlyurls(naam,doel) VALUES (?,?)', [$name, $this->url]);
     }
 
-    public static function verwijderFriendlyUrl(string $naam)
+    public static function deleteFriendlyUrl(string $naam)
     {
         DBConnection::doQuery('DELETE FROM friendlyurls WHERE naam=?', [$naam]);
     }
 
-    public function geefPaginanaam(): string
+    public function getPageTitle(): string
     {
-        $link = trim($this->geefUnfriendly(), '/');
+        $link = trim($this->getUnfriendly(), '/');
         $linkParts = explode('/', $link);
 
         switch ($linkParts[0])
@@ -92,13 +92,13 @@ class Url
             default:
                 return $link;
         }
-        if ($naam = DBConnection::doQueryAndFetchOne($sql, [$linkParts[1]]))
+        if ($name = DBConnection::doQueryAndFetchOne($sql, [$linkParts[1]]))
         {
-            return $naam;
+            return $name;
         }
-        elseif ($naam = DBConnection::doQueryAndFetchOne('SELECT naam FROM friendlyurls WHERE doel=?', [$link]))
+        elseif ($name = DBConnection::doQueryAndFetchOne('SELECT naam FROM friendlyurls WHERE doel=?', [$link]))
         {
-            return $naam;
+            return $name;
         }
         else
         {

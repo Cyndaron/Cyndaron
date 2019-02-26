@@ -16,11 +16,10 @@ class PageManagerPage extends Pagina
 {
     public function __construct($currentPage)
     {
-        $this->voegScriptToe('/src/PageManager/PageManagerPage.js');
+        $this->addScript('/src/PageManager/PageManagerPage.js');
         parent::__construct('Paginaoverzicht');
-        $this->toonPrepagina();
-        $connectie = DBConnection::getPDO();
-        $this->connectie = $connectie;
+        $this->showPrePage();
+        $this->connection = DBConnection::getPDO();
 
         echo new PageTabs([
             'sub' => 'Statische pagina\'s',
@@ -53,14 +52,14 @@ class PageManagerPage extends Pagina
 
         echo '<div>';
 
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 
     private function showSubs()
     {
         echo new Toolbar('', '', (string)new Button('new', '/editor/sub', 'Nieuwe statische pagina', 'Nieuwe statische pagina'));
 
-        $subs = $this->connectie->prepare('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
+        $subs = $this->connection->prepare('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
         $subs->execute();
         $subsPerCategorie = [];
 
@@ -90,7 +89,7 @@ class PageManagerPage extends Pagina
                 <?php
                 foreach ($subs as $id => $name):
 
-                    $vvsub = $this->connectie->prepare('SELECT * FROM vorigesubs WHERE id= ?');
+                    $vvsub = $this->connection->prepare('SELECT * FROM vorigesubs WHERE id= ?');
                     $vvsub->execute([$id]);
                     $hasLastVersion = boolval($vvsub->fetchColumn());
                     $name = strtr($name, [' ' => '&nbsp;']);
@@ -139,7 +138,7 @@ class PageManagerPage extends Pagina
             </thead>
             <tbody>
             <?php
-            $categories = $this->connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC;');
+            $categories = $this->connection->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC;');
             $categories->execute();
             foreach ($categories as $category): ?>
                 <tr id="pm-row-category-<?=$category['id']?>">
@@ -179,7 +178,7 @@ class PageManagerPage extends Pagina
             </thead>
             <tbody>
             <?php
-            $photoalbums = $this->connectie->prepare('SELECT id,naam FROM fotoboeken ORDER BY id ASC;');
+            $photoalbums = $this->connection->prepare('SELECT id,naam FROM fotoboeken ORDER BY id ASC;');
             $photoalbums->execute();
             foreach ($photoalbums as $photoalbum): ?>
                 <tr id="pm-row-photoalbum-<?=$photoalbum['id']?>">
@@ -221,7 +220,7 @@ class PageManagerPage extends Pagina
                 </thead>
                 <tbody>
                 <?php
-                $friendlyurls = $this->connectie->prepare('SELECT * FROM friendlyurls ORDER BY naam ASC;');
+                $friendlyurls = $this->connection->prepare('SELECT * FROM friendlyurls ORDER BY naam ASC;');
                 $friendlyurls->execute();
                 $counter = 1;
 

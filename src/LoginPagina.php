@@ -9,13 +9,11 @@ class LoginPagina extends Pagina
     {
         if (!Request::postIsLeeg())
         {
-            if (Request::geefPostVeilig('login_naam') && Request::geefPostVeilig('login_wach'))
+            if (Request::geefPostVeilig('login_user') && Request::geefPostVeilig('login_pass'))
             {
-                $identification = Request::geefPostVeilig('login_naam');
-                $wachtwoord = Request::geefPostVeilig('login_wach');
-                $wachtwoord512 = hash('sha512', $wachtwoord);
-
-                $connectie = DBConnection::getPDO();
+                $identification = Request::geefPostVeilig('login_user');
+                $password = Request::geefPostVeilig('login_pass');
+                $password512 = hash('sha512', $password);
 
                 if (strpos($identification, '@') !== false)
                 {
@@ -28,41 +26,38 @@ class LoginPagina extends Pagina
                     $updateQuery = 'UPDATE gebruikers SET wachtwoord=? WHERE gebruikersnaam=?';
                 }
 
-
-                $prep = $connectie->prepare($query);
-                $prep->execute([$identification]);
-                $userdata = $prep->fetch();
+                $userdata = DBConnection::doQueryAndFetchFirstRow($query, [$identification]);
 
                 if (!$userdata)
                 {
                     parent::__construct('Fout');
-                    $this->toonPrePagina();
+                    $this->showPrePage();
                     echo 'Onbekende gebruikersnaam of e-mailadres.';
-                    $this->toonPostPagina();
+                    $this->showPostPage();
                 }
                 else
                 {
-                    $loginGelukt = false;
+                    $loginSucceeded = false;
 
-                    if (password_verify($wachtwoord, $userdata['wachtwoord']))
+                    if (password_verify($password, $userdata['wachtwoord']))
                     {
-                        $loginGelukt = true;
+                        $loginSucceeded = true;
 
                         if (password_needs_rehash($userdata['wachtwoord'], PASSWORD_DEFAULT))
                         {
-                            $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
-                            DBConnection::doQuery($updateQuery, [$wachtwoord, $identification]);
+                            $password = password_hash($password, PASSWORD_DEFAULT);
+                            DBConnection::doQuery($updateQuery, [$password, $identification]);
                         }
                     }
-                    elseif ($userdata['wachtwoord'] == $wachtwoord512)
+                    elseif ($userdata['wachtwoord'] == $password512)
                     {
-                        $loginGelukt = true;
+                        $loginSucceeded = true;
 
-                        $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
-                        DBConnection::doQuery($updateQuery, [$wachtwoord, $identification]);
+                        $password = password_hash($password, PASSWORD_DEFAULT);
+                        DBConnection::doQuery($updateQuery, [$password, $identification]);
                     }
 
-                    if ($loginGelukt)
+                    if ($loginSucceeded)
                     {
                         $_SESSION['naam'] = $userdata['gebruikersnaam'];
                         $_SESSION['email'] = $userdata['email'];
@@ -83,18 +78,18 @@ class LoginPagina extends Pagina
                     else
                     {
                         parent::__construct('Fout');
-                        $this->toonPrePagina();
+                        $this->showPrePage();
                         echo 'Verkeerd wachtwoord.';
-                        $this->toonPostPagina();
+                        $this->showPostPage();
                     }
                 }
             }
             else
             {
                 parent::__construct('Fout');
-                $this->toonPrePagina();
+                $this->showPrePage();
                 echo 'Verkeerde gebruikersnaam of e-mailadres.';
-                $this->toonPostPagina();
+                $this->showPostPage();
             }
         }
         else
@@ -104,26 +99,26 @@ class LoginPagina extends Pagina
                 $_SESSION['redirect'] = Request::geefReferrerVeilig();
             }
             parent::__construct('Inloggen');
-            $this->toonPrePagina();
+            $this->showPrePage();
             echo '
 <form class="form-horizontal" method="post" action="#">
 <p>Als u inloggegevens hebt gekregen voor deze website, dan kunt u hieronder inloggen.</p>
 <div class="form-group">
-    <label for="login_naam" class="control-label col-sm-2">Gebruikersnaam of e-mailadres</b>:</label>
+    <label for="login_user" class="control-label col-sm-2">Gebruikersnaam of e-mailadres</b>:</label>
     <div class="col-sm-3">
-        <input type="text" class="form-control" id="login_naam" name="login_naam"/>
+        <input type="text" class="form-control" id="login_user" name="login_user"/>
     </div>
 </div>
 <div class="form-group">
-    <label for="login_wach" class="control-label col-sm-2">Wachtwoord:</label>
+    <label for="login_pass" class="control-label col-sm-2">Wachtwoord:</label>
     <div class="col-sm-3">
-        <input type="password" class="form-control" id="login_wach" name="login_wach"/>
+        <input type="password" class="form-control" id="login_pass" name="login_pass"/>
     </div>
 </div>
 <input type="submit" class="btn btn-primary" name="submit" value="Inloggen" />
 </form>
 ';
-            $this->toonPostPagina();
+            $this->showPostPage();
         }
     }
 }

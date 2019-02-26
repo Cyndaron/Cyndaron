@@ -131,7 +131,7 @@ class Router
      */
     private function rewriteFriendlyUrl(Url $url): string
     {
-        $ufUrl = $url->geefUnfriendly();
+        $ufUrl = $url->getUnfriendly();
         if (strpos($ufUrl, '?') !== false)
         {
             list($bestand, $rest) = explode('?', $ufUrl, 2);
@@ -156,7 +156,7 @@ class Router
     private function redirectOldUrls(string $request): void
     {
         $frontPage = $this->getFrontpageUrl();
-        if ($frontPage->isGelijkAan(new Url($_SERVER['REQUEST_URI'])))
+        if ($frontPage->equals(new Url($_SERVER['REQUEST_URI'])))
         {
             header('Location: /');
             die();

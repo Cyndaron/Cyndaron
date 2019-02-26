@@ -11,13 +11,13 @@ class KaartenBestellenPagina extends Pagina
 {
     public function __construct(int $concert_id)
     {
-        $this->voegScriptToe('/src/Kaartverkoop/KaartenBestellenPagina.js');
+        $this->addScript('/src/Kaartverkoop/KaartenBestellenPagina.js');
 
         $concert = Concert::loadFromDatabase($concert_id)->asArray();
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC', [$concert_id]);
 
         parent::__construct('Kaarten bestellen: ' . $concert['naam']);
-        $this->toonPrePagina();
+        $this->showPrePage();
 
         if ($concert['open_voor_verkoop'] == false)
         {
@@ -30,7 +30,7 @@ class KaartenBestellenPagina extends Pagina
                 echo 'Voor dit concert kunt u kaarten kopen aan de kassa in de St. Jacobskerk voor aanvang van het concert. Bestellen via de website is voor dit concert niet meer mogelijk.';
             }
 
-            $this->toonPostPagina();
+            $this->showPostPage();
             die();
         }
 
@@ -215,6 +215,6 @@ class KaartenBestellenPagina extends Pagina
             <input type="hidden" id="buitenland" name="buitenland" value="0"/>
         </form>
         <?php
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 }

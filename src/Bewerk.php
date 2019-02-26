@@ -26,9 +26,9 @@ abstract class Bewerk
         if ($friendlyUrl = Request::geefPostVeilig('friendlyUrl'))
         {
             $unfriendlyUrl = new Url('/' . $this->type . '/' . $this->id);
-            $oudeFriendlyUrl = $unfriendlyUrl->geefFriendly();
-            Url::verwijderFriendlyUrl($oudeFriendlyUrl);
-            $unfriendlyUrl->maakFriendly($friendlyUrl);
+            $oudeFriendlyUrl = $unfriendlyUrl->getFriendly();
+            Url::deleteFriendlyUrl($oudeFriendlyUrl);
+            $unfriendlyUrl->createFriendly($friendlyUrl);
             // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast
             DBConnection::doQueryAndFetchOne('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oudeFriendlyUrl]);
         }

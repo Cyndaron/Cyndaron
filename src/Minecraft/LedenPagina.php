@@ -24,10 +24,10 @@ class LedenPagina extends Pagina
     public function __construct()
     {
         parent::__construct('Spelers');
-        $this->voegScriptToe('/sys/js/mc-ledenpagina.js');
-        $this->toonPrePagina();
+        $this->addScript('/sys/js/mc-ledenpagina.js');
+        $this->showPrePage();
 
-        $spelers = $this->connectie->query("SELECT * FROM mc_leden ORDER BY niveau DESC, mcnaam ASC");
+        $spelers = $this->connection->query("SELECT * FROM mc_leden ORDER BY niveau DESC, mcnaam ASC");
 
         $tePreloaden = [];
 
@@ -135,6 +135,6 @@ class LedenPagina extends Pagina
         </style>
         <?php
 
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 }

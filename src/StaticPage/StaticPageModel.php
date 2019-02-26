@@ -95,8 +95,8 @@ class StaticPageModel
             return false;
         }
 
-        $connectie = DBConnection::getPDO();
-        $prep = $connectie->prepare('SELECT * FROM subs WHERE id=?');
+        $connection = DBConnection::getPDO();
+        $prep = $connection->prepare('SELECT * FROM subs WHERE id=?');
         $prep->execute([$this->id]);
         $record = $prep->fetch();
 
@@ -130,27 +130,27 @@ class StaticPageModel
                 $reacties_aan = '1';
             }
 
-            $connectie = DBConnection::getPDO();
-            $prep = $connectie->prepare('INSERT INTO subs(naam, tekst, reacties_aan, categorieid) VALUES ( ?, ?, ?, ?)');
+            $connection = DBConnection::getPDO();
+            $prep = $connection->prepare('INSERT INTO subs(naam, tekst, reacties_aan, categorieid) VALUES ( ?, ?, ?, ?)');
             $prep->execute([$this->name, $this->text, $reacties_aan, $this->categoryId]);
-            $this->id = $connectie->lastInsertId();
+            $this->id = $connection->lastInsertId();
             return $this->id;
         }
         else
         {
             $reacties_aan = Util::parseCheckboxAlsInt($this->enableComments);
-            $connectie = DBConnection::getPDO();
+            $connection = DBConnection::getPDO();
             if (!DBConnection::doQueryAndFetchOne('SELECT * FROM vorigesubs WHERE id=?', [$this->id]))
             {
-                $prep = $connectie->prepare('INSERT INTO vorigesubs VALUES (?, \'\', \'\')');
+                $prep = $connection->prepare('INSERT INTO vorigesubs VALUES (?, \'\', \'\')');
                 $prep->execute([$this->id]);
             }
-            $prep = $connectie->prepare('UPDATE vorigesubs SET tekst=( SELECT tekst FROM subs WHERE id=? ) WHERE id=?');
+            $prep = $connection->prepare('UPDATE vorigesubs SET tekst=( SELECT tekst FROM subs WHERE id=? ) WHERE id=?');
             $prep->execute([$this->id, $this->id]);
-            $prep = $connectie->prepare('UPDATE vorigesubs SET naam=( SELECT naam FROM subs WHERE id=? ) WHERE id=?');
+            $prep = $connection->prepare('UPDATE vorigesubs SET naam=( SELECT naam FROM subs WHERE id=? ) WHERE id=?');
             $prep->execute([$this->id, $this->id]);
 
-            $prep = $connectie->prepare('UPDATE subs SET tekst= ?, naam= ?, reacties_aan=?, categorieid= ? WHERE id= ?');
+            $prep = $connection->prepare('UPDATE subs SET tekst= ?, naam= ?, reacties_aan=?, categorieid= ? WHERE id= ?');
             $prep->execute([$this->text, $this->name, $reacties_aan, $this->categoryId, $this->id]);
             return $this->id;
         }

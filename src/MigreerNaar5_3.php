@@ -20,9 +20,9 @@ class MigreerNaar5_3 extends Pagina
 
 
         parent::__construct('Upgrade naar versie 5.3');
-        $this->toonPrepagina();
+        $this->showPrePage();
         echo 'De upgrade is voltooid.';
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 
 }

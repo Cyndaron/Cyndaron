@@ -28,8 +28,8 @@ class Migrate60 extends Pagina
         DBConnection::doQuery("UPDATE `friendlyurls` SET doel = REPLACE(doel, '/mc-status', '/minecraft/status')", []);
 
         parent::__construct('Upgrade naar versie 6.0');
-        $this->toonPrepagina();
+        $this->showPrePage();
         echo 'De upgrade is voltooid.';
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 }

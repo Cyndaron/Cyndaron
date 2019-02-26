@@ -8,9 +8,9 @@ class Error404Pagina extends Pagina
         header('HTTP/1.0 404 Not Found');
 
         parent::__construct('404: Not Found');
-        $this->toonPrePagina();
+        $this->showPrePage();
         echo 'U heeft geprobeerd een pagina op te vragen die niet kon worden gevonden.';
-        $this->toonPostPagina();
+        $this->showPostPage();
 
     }
 }

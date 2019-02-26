@@ -15,9 +15,9 @@ class MigreerNaar5_0 extends Pagina
         DBConnection::doQuery('ALTER TABLE `mailformulieren` ADD `stuur_bevestiging` TINYINT(1) NOT NULL DEFAULT \'0\' AFTER `antispamantwoord`, ADD `tekst_bevestiging` TEXT NULL DEFAULT NULL AFTER `stuur_bevestiging`; ');
 
         parent::__construct('Upgrade naar versie 5.0');
-        $this->toonPrepagina();
+        $this->showPrePage();
         echo 'De upgrade is voltooid.';
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 
 }

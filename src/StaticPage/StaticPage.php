@@ -9,7 +9,7 @@ class StaticPage extends Pagina
 {
     public function __construct(int $id)
     {
-        $connectie = DBConnection::getPDO();
+        $connection = DBConnection::getPDO();
         if ($id <= 0)
         {
             header('Location: /404');
@@ -33,7 +33,7 @@ class StaticPage extends Pagina
             if ($auteur && $reactie && ($antispam == 'acht' || $antispam == '8'))
             {
                 $datum = date('Y-m-d H:i:s');
-                $prep = $connectie->prepare('INSERT INTO reacties(subid, auteur, tekst, datum) VALUES (?, ?, ?, ?)');
+                $prep = $connection->prepare('INSERT INTO reacties(subid, auteur, tekst, datum) VALUES (?, ?, ?, ?)');
                 $prep->execute([$id, $auteur, $reactie, $datum]);
             }
         }
@@ -46,12 +46,12 @@ class StaticPage extends Pagina
             $controls .= sprintf('<a href="/editor/sub/%d/previous" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-lastversion"></span></a>', $id);
         }
         parent::__construct($model->getName());
-        $this->maakTitelknoppen($controls);
-        $this->toonPrePagina();
+        $this->setTitleButtons($controls);
+        $this->showPrePage();
 
         echo $model->getText();
 
-        $prep = $connectie->prepare("SELECT *,DATE_FORMAT(datum, '%d-%m-%Y') AS rdatum,DATE_FORMAT(datum, '%H:%i') AS rtijd FROM reacties WHERE subid=? ORDER BY datum ASC");
+        $prep = $connection->prepare("SELECT *,DATE_FORMAT(datum, '%d-%m-%Y') AS rdatum,DATE_FORMAT(datum, '%H:%i') AS rtijd FROM reacties WHERE subid=? ORDER BY datum ASC");
         $prep->execute([$id]);
         $reacties = $prep->fetchAll();
         $reactiesaanwezig = false;
@@ -116,6 +116,6 @@ class StaticPage extends Pagina
             echo '</div>';
         }
 
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 }

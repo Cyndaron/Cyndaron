@@ -23,14 +23,14 @@ class MailformController extends Controller
         catch (\Exception $e)
         {
             $page = new VerwerkMailformulierPagina('Formulier versturen mislukt', $e->getMessage());
-            $page->toonPrepagina();
+            $page->showPrePage();
             $page->showBody();
-            $page->toonPostPagina();
+            $page->showPostPage();
         }
         $page = new VerwerkMailformulierPagina('Formulier verstuurd', 'Het versturen is gelukt.');
-        $page->toonPrepagina();
+        $page->showPrePage();
         $page->showBody();
-        $page->toonPostPagina();
+        $page->showPostPage();
 
     }
 

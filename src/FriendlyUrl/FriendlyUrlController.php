@@ -19,11 +19,11 @@ class FriendlyUrlController extends Controller
                 case 'add':
                     $name = Request::geefPostVeilig('name');
                     $target = new Url(Request::geefPostVeilig('target'));
-                    $target->maakFriendly($name);
+                    $target->createFriendly($name);
                     break;
                 case 'delete':
                     $name = Request::getVar(2);
-                    Url::verwijderFriendlyUrl($name);
+                    Url::deleteFriendlyUrl($name);
                     break;
                 case 'addtomenu':
                     $name = Request::getVar(3);

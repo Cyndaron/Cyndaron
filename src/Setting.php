@@ -18,8 +18,8 @@ class Setting
 
     public static function set(string $name, string $value)
     {
-        $connectie = DBConnection::getPDO();
-        $setting = $connectie->prepare('REPLACE INTO instellingen(`naam`, `waarde`) VALUES (?, ?)');
+        $connection = DBConnection::getPDO();
+        $setting = $connection->prepare('REPLACE INTO instellingen(`naam`, `waarde`) VALUES (?, ?)');
         $setting->execute([$name, $value]);
     }
 }

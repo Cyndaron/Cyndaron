@@ -9,10 +9,10 @@ class OverzichtPagina extends Pagina
 {
     public function __construct()
     {
-        $connectie = DBConnection::getPDO();
-        $leden = $connectie->query('SELECT * FROM leden ORDER BY achternaam,tussenvoegsel,voornaam;');
+        $connection = DBConnection::getPDO();
+        $leden = $connection->query('SELECT * FROM leden ORDER BY achternaam,tussenvoegsel,voornaam;');
         parent::__construct('Wie is wie');
-        $this->toonPrePagina();
+        $this->showPrePage();
         echo '<table class="ledenlijst">';
         foreach ($leden as $lid)
         {
@@ -24,10 +24,10 @@ class OverzichtPagina extends Pagina
             echo $lid['achternaam'] . '</span></b><br /><br />';
             echo $lid['functie'];
 
-            static::toonIndienAanwezig($lid['opmerkingen'], '<br />', '');
+            static::showIfSet($lid['opmerkingen'], '<br />', '');
             echo '</td></tr>';
         }
         echo '</table>';
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 }

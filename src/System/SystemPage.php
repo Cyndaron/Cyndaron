@@ -14,8 +14,8 @@ class SystemPage extends Pagina
     {
 
         parent::__construct('Systeembeheer');
-        $this->toonPrePagina();
-        $this->connectie = DBConnection::getPDO();
+        $this->showPrePage();
+        $this->connection = DBConnection::getPDO();
 
         echo new PageTabs([
             'config' => 'Configuratie',
@@ -40,18 +40,18 @@ class SystemPage extends Pagina
 
         echo '<div>';
 
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 
     public function showConfigPage()
     {
-        $this->voegScriptToe('/src/System/SystemPage.js');
+        $this->addScript('/src/System/SystemPage.js');
 
         ?>
         <form method="post" action="/system/config" class="form-horizontal">
             <?php
             $standaardcategorie = Setting::get('standaardcategorie');
-            $categorieen = $this->connectie->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC');
+            $categorieen = $this->connection->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC');
             $categorieen->execute();
             $menuthema = Setting::get('menuthema');
             $lichtMenu = ($menuthema !== 'donker') ? 'selected' : '';

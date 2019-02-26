@@ -22,9 +22,9 @@ class PhotoalbumPage extends Pagina
 
         $controls = new Button('edit', '/editor/photoalbum/' . $id, 'Dit fotoalbum bewerken');
         parent::__construct($album['naam']);
-        $this->maakTitelknoppen((string)$controls);
-        $this->voegScriptToe('/sys/js/lightbox.min.js');
-        $this->toonPrepagina();
+        $this->setTitleButtons((string)$controls);
+        $this->addScript('/sys/js/lightbox.min.js');
+        $this->showPrePage();
 
         if ($dirArray = @scandir("./fotoalbums/$id"))
         {
@@ -69,7 +69,7 @@ class PhotoalbumPage extends Pagina
             }
             $output .= '</div>';
 
-            static::toonIndienAanwezig($album['notities'], '', '');
+            static::showIfSet($album['notities'], '', '');
             if ($numEntries === 1)
             {
                 echo "Dit album bevat 1 foto. Klik op de verkleinde foto om een vergroting te zien.";
@@ -86,6 +86,6 @@ class PhotoalbumPage extends Pagina
         {
             echo 'Dit album is leeg.<br />';
         }
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 }

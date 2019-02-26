@@ -23,39 +23,39 @@ use Cyndaron\Widget\Button;
 
 class Pagina
 {
-    protected $extraMeta = "";
-    protected $paginanaam = "";
-    protected $titelknoppen = null;
-    protected $connectie = null;
+    protected $extraMeta = '';
+    protected $title = '';
+    protected $titleButtons = null;
+    protected $connection = null;
     protected $extraScripts = [];
-    protected $websitenaam = '';
+    protected $websiteName = '';
     protected $body = '';
 
-    public function __construct($paginanaam, string $body = '')
+    public function __construct(string $title, string $body = '')
     {
-        if ($this->connectie == null)
+        if ($this->connection == null)
         {
-            $this->connectie = DBConnection::getPDO();
+            $this->connection = DBConnection::getPDO();
         }
 
-        $this->paginanaam = $paginanaam;
+        $this->title = $title;
         $this->body = $body;
     }
 
-    public function maakExtraMeta(string $extraMeta)
+    public function setExtraMeta(string $extraMeta)
     {
         $this->extraMeta = $extraMeta;
     }
 
-    public function maakTitelknoppen(string $titelknoppen)
+    public function setTitleButtons(string $titleButtons)
     {
-        $this->titelknoppen = $titelknoppen;
+        $this->titleButtons = $titleButtons;
     }
 
-    public function toonPrepagina()
+    public function showPrePage()
     {
-        $this->websitenaam = Setting::get('websitenaam');
-        $titel = $this->paginanaam . ' - ' . $this->websitenaam;
+        $this->websiteName = Setting::get('websitenaam');
+        $titel = $this->title . ' - ' . $this->websiteName;
 
         ?>
         <!DOCTYPE HTML>
@@ -81,10 +81,10 @@ class Pagina
             ?>
             <style type="text/css">
                 <?php
-                static::toonIndienAanwezig(Setting::get('achtergrondkleur'), 'body.cyndaron, .lightboxOverlay { background-color: ',";}\n");
-                static::toonIndienAanwezig(Setting::get('menukleur'), '.menu { background-color: ',";}\n");
-                static::toonIndienAanwezig(Setting::get('menuachtergrond'), '.menu { background-image: url(\'',"');}\n");
-                static::toonIndienAanwezig(Setting::get('artikelkleur'), '.inhoud { background-color: ',";}\n");
+                static::showIfSet(Setting::get('achtergrondkleur'), 'body.cyndaron, .lightboxOverlay { background-color: ',";}\n");
+                static::showIfSet(Setting::get('menukleur'), '.menu { background-color: ',";}\n");
+                static::showIfSet(Setting::get('menuachtergrond'), '.menu { background-image: url(\'',"');}\n");
+                static::showIfSet(Setting::get('artikelkleur'), '.inhoud { background-color: ',";}\n");
                 ?>
             </style>
             <?php
@@ -104,11 +104,11 @@ class Pagina
         <div class="paginacontainer">
         <div class="menucontainer">';
 
-        $this->toonMenu();
+        $this->showMenu();
 
         echo '</div>';
 
-        if ($this->isVoorPagina() && Setting::get('voorpagina_is_jumbo') && Setting::get('jumbo_inhoud'))
+        if ($this->isFrontPage() && Setting::get('voorpagina_is_jumbo') && Setting::get('jumbo_inhoud'))
         {
             echo '<div class="welkom-jumbo">';
             echo Setting::get('jumbo_inhoud');
@@ -118,17 +118,17 @@ class Pagina
         echo '<div class="inhoudcontainer"><div class="inhoud">';
 
         $class = '';
-        if ($this->isVoorPagina())
+        if ($this->isFrontPage())
         {
             $class = 'voorpagina';
         }
 
-        echo '<div class="paginatitel ' . $class . '"><h1 style="display: inline; margin-right:8px;">' . $this->paginanaam . '</h1>';
-        static::toonIndienAanwezigEnAdmin($this->titelknoppen, '<div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">', '</div>');
+        echo '<div class="paginatitel ' . $class . '"><h1 style="display: inline; margin-right:8px;">' . $this->title . '</h1>';
+        static::showIfSetAndAdmin($this->titleButtons, '<div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">', '</div>');
         echo "</div>\n";
     }
 
-    public function isVoorPagina(): bool
+    public function isFrontPage(): bool
     {
         if ($_SERVER['REQUEST_URI'] === '/')
         {
@@ -137,11 +137,11 @@ class Pagina
         return false;
     }
 
-    protected function toonMenu()
+    protected function showMenu()
     {
         $websitelogo = Setting::get('websitelogo');
         $inverseClass = (Setting::get('menuthema') == 'donker') ? 'navbar-dark' : 'navbar-light';
-        $navbar = $websitelogo ? sprintf('<img alt="" src="%s"> ', $websitelogo) : $this->websitenaam;
+        $navbar = $websitelogo ? sprintf('<img alt="" src="%s"> ', $websitelogo) : $this->websiteName;
         ?>
         <nav class="menu navbar navbar-expand-md <?= $inverseClass; ?>">
             <a class="navbar-brand" href="./"><?= $navbar; ?></a>
@@ -154,7 +154,7 @@ class Pagina
                 <ul class="navbar-nav mr-auto">
 
                     <?php
-                    $menuarray = $this->geefMenu();
+                    $menuarray = $this->getMenu();
 
                     if (count($menuarray) > 0)
                     {
@@ -166,7 +166,7 @@ class Pagina
                             }
                             else
                             {
-                                if ($this->menuItemIsHuidigePagina($menuitem['link']))
+                                if ($this->menuItemIsCurrentPage($menuitem['link']))
                                 {
                                     echo '<li class="nav-item active">';
                                 }
@@ -244,7 +244,7 @@ class Pagina
         }
     }
 
-    private function menuItemIsHuidigePagina(string $menuItem): bool
+    private function menuItemIsCurrentPage(string $menuItem): bool
     {
         // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
         if ($menuItem == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuItem == '/' && $_SERVER['REQUEST_URI'] === '/'))
@@ -255,7 +255,7 @@ class Pagina
         return false;
     }
 
-    public function toonPostPagina()
+    public function showPostPage()
     {
         // Eerste div: inhoud. Tweede div: inhoudcontainer. Derde div: paginacontainer
         ?>
@@ -300,21 +300,21 @@ class Pagina
         <?php
     }
 
-    public function voegScriptToe($scriptnaam)
+    public function addScript($script)
     {
-        $this->extraScripts[] = $scriptnaam;
+        $this->extraScripts[] = $script;
     }
 
-    public function geefMenu(): array
+    public function getMenu(): array
     {
         if (!User::hasSufficientReadLevel())
         {
             return [];
         }
-        $menu = $this->connectie->prepare('SELECT * FROM menu ORDER BY volgorde ASC;');
+        $menu = $this->connection->prepare('SELECT * FROM menu ORDER BY volgorde ASC;');
         $menu->execute();
         $menuitems = [];
-        $eersteitem = true;
+        $firstItem = true;
 
         foreach ($menu->fetchAll() as $menuitem)
         {
@@ -326,12 +326,11 @@ class Pagina
             }
             else
             {
-                $menuitem['naam'] = $url->geefPaginanaam();
+                $menuitem['naam'] = $url->getPageTitle();
             }
 
-            if ($eersteitem)
+            if ($firstItem)
             {
-                // De . is nodig omdat het menu anders niet goed werkt in subdirectories.
                 $menuitem['link'] = '/';
             }
             else
@@ -339,49 +338,49 @@ class Pagina
                 // For dropdowns, this is not necessary and it makes detection harder down the line.
                 if (!$menuitem['isDropdown'])
                 {
-                    $menuitem['link'] = $url->geefFriendly();
+                    $menuitem['link'] = $url->getFriendly();
                 }
             }
             $menuitems[] = $menuitem;
-            $eersteitem = false;
+            $firstItem = false;
         }
         return $menuitems;
     }
 
-    public static function toonIndienAanwezig($string, $voor = null, $na = null)
+    public static function showIfSet($string, $before = '', $after = '')
     {
         if ($string)
         {
-            echo $voor;
+            echo $before;
             echo $string;
-            echo $na;
+            echo $after;
         }
     }
 
-    public static function toonIndienAanwezigEnAdmin($string, $voor = null, $na = null)
+    public static function showIfSetAndAdmin($string, $before = '', $after = '')
     {
         if (User::isAdmin() && $string)
         {
-            echo $voor;
+            echo $before;
             echo $string;
-            echo $na;
+            echo $after;
         }
     }
 
-    public static function toonIndienAanwezigEnGeenAdmin($string, $voor = null, $na = null)
+    public static function showIfSetAndNotAdmin($string, $before = '', $after = '')
     {
         if (!User::isAdmin() && $string)
         {
-            echo $voor;
+            echo $before;
             echo $string;
-            echo $na;
+            echo $after;
         }
     }
 
     protected function printCategoryDropdown(array $menuitem)
     {
         $id = intval(str_replace('/category/', '', $menuitem['link']));
-        $pagesInCategory = $this->connectie->prepare("
+        $pagesInCategory = $this->connection->prepare("
             SELECT * FROM
             (
                 SELECT 'sub' AS type, id, naam FROM subs WHERE categorieid=?
@@ -397,7 +396,7 @@ class Pagina
         foreach ($pagesInCategory->fetchAll() as $pagina)
         {
             $url = new Url(sprintf('/%s/%d', $pagina['type'], $pagina['id']));
-            $link = $url->geefFriendly();
+            $link = $url->getFriendly();
             $items[] = ['link' => $link, 'title' => $pagina['naam']];
         }
 

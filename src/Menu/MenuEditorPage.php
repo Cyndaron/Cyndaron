@@ -13,12 +13,12 @@ class MenuEditorPage extends Pagina
     {
         parent::__construct('Menu-editor');
 
-        $this->toonPrepagina();
-        $this->voegScriptToe('/src/Menu/MenuEditorPage.js');
+        $this->showPrePage();
+        $this->addScript('/src/Menu/MenuEditorPage.js');
 
         $menu = MenuModel::get();
         include __DIR__ . '/MenuEditorPageTemplate.php';
 
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 }

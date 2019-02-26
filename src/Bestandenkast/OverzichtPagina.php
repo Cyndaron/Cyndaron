@@ -8,7 +8,7 @@ class OverzichtPagina extends Pagina
     public function __construct()
     {
         parent::__construct('Oefenbestanden');
-        $this->toonPrePagina();
+        $this->showPrePage();
         $includefile = './bestandenkast/include.html';
         if ($handle = @fopen($includefile, 'r'))
         {
@@ -47,6 +47,6 @@ class OverzichtPagina extends Pagina
             }
             echo '</ul>';
         }
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 }

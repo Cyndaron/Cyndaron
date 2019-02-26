@@ -8,8 +8,8 @@ class Error403Pagina extends Pagina
         header('HTTP/1.0 403 Forbidden');
 
         parent::__construct('403: Forbidden');
-        $this->toonPrePagina();
+        $this->showPrePage();
         echo 'U heeft geprobeerd een pagina op te vragen die niet mag worden opgevraagd.';
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 }

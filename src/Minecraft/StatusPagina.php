@@ -9,7 +9,7 @@ class StatusPagina extends Pagina
     public function __construct()
     {
         parent::__construct('Status en landkaart');
-        parent::toonPrePagina();
+        parent::showPrePage();
 
         $serverData = DBConnection::doQueryAndFetchAll('SELECT * FROM mc_servers ORDER BY naam');
         $servers = [];
@@ -50,6 +50,6 @@ class StatusPagina extends Pagina
             }
         }
 
-        parent::toonPostPagina();
+        parent::showPostPage();
     }
 }

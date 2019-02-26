@@ -32,7 +32,7 @@ class ConcertOrderOverviewPage extends Pagina
         $this->extraScripts[] = '/src/Kaartverkoop/ConcertOrderOverviewPage.js';
 
         parent::__construct('Overzicht bestellingen: ' . $concert['naam']);
-        $this->toonPrePagina();
+        $this->showPrePage();
 
         foreach ($boughtTicketTypes as $boughtTicketType)
         {
@@ -181,6 +181,6 @@ class ConcertOrderOverviewPage extends Pagina
         }
 
         echo '</table>';
-        $this->toonPostPagina();
+        $this->showPostPage();
     }
 }

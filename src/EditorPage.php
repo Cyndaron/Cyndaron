@@ -22,7 +22,7 @@ abstract class EditorPage extends Pagina
         $this->id = Request::getVar(2);
         $this->vorigeversie = Request::getVar(3) === 'previous';
         $this->vvstring = $this->vorigeversie ? 'vorige' : '';
-        $this->connectie = DBConnection::getPDO();
+        $this->connection = DBConnection::getPDO();
 
         $this->prepare();
 
@@ -39,12 +39,12 @@ abstract class EditorPage extends Pagina
             $dir = '';
 
         parent::__construct('Editor');
-        $this->voegScriptToe('/ckeditor/ckeditor.js');
-        $this->voegScriptToe('/sys/js/editor.js');
-        $this->toonPrePagina();
+        $this->addScript('/ckeditor/ckeditor.js');
+        $this->addScript('/sys/js/editor.js');
+        $this->showPrePage();
 
         $unfriendlyUrl = new Url('/' . $this->type . '/' . $this->id);
-        $friendlyUrl = new Url($unfriendlyUrl->geefFriendly());
+        $friendlyUrl = new Url($unfriendlyUrl->getFriendly());
 
         if ($unfriendlyUrl == $friendlyUrl)
         {
@@ -87,7 +87,7 @@ abstract class EditorPage extends Pagina
                 <div class="col-sm-5">
                     <select id="verwijzing" class="form-control form-control-inline custom-select">
                         <?php
-                        $connectie = DBConnection::getPDO();
+                        $connection = DBConnection::getPDO();
                         $sql = "
     SELECT * FROM (SELECT CONCAT('/sub/', id) AS link, CONCAT('Statische pag.: ', naam) AS naam FROM subs ORDER BY naam ASC) AS twee
     UNION
@@ -95,7 +95,7 @@ abstract class EditorPage extends Pagina
     UNION
     SELECT * FROM (SELECT CONCAT('/photoalbum/', id) AS link, CONCAT('Fotoalbum: ', naam) AS naam FROM fotoboeken ORDER BY naam ASC) AS vijf;";
 
-                        $links = $connectie->prepare($sql);
+                        $links = $connection->prepare($sql);
                         $links->execute();
 
                         foreach ($links->fetchAll() as $link)
@@ -117,7 +117,7 @@ abstract class EditorPage extends Pagina
 
         </form>
         <?php
-        $this->toonPostPagina();
+        $this->showPostPage();
 
     }
 
@@ -144,7 +144,7 @@ abstract class EditorPage extends Pagina
                         $categorieid = Setting::get('standaardcategorie');
                     }
 
-                    $categorieen = $this->connectie->query("SELECT * FROM categorieen ORDER BY naam;");
+                    $categorieen = $this->connection->query("SELECT * FROM categorieen ORDER BY naam;");
                     foreach ($categorieen->fetchAll() as $categorie)
                     {
                         if ($this->type == 'category' && $categorie['id'] == $this->id)

@@ -7,17 +7,17 @@ class GereserveerdePlaatsen
 {
     public function __construct(int $concert_id)
     {
-        $connectie = DBConnection::getPDO();
+        $connection = DBConnection::getPDO();
 
         $bezette_plaatsen_per_rij = [];
 
-        $prep = $connectie->prepare('SELECT * FROM kaartverkoop_gereserveerde_plaatsen WHERE bestelling_id IN (SELECT id FROM kaartverkoop_bestellingen WHERE concert_id=?)');
+        $prep = $connection->prepare('SELECT * FROM kaartverkoop_gereserveerde_plaatsen WHERE bestelling_id IN (SELECT id FROM kaartverkoop_bestellingen WHERE concert_id=?)');
         $prep->execute([$concert_id]);
         $bezette_plaatsen_rijen = $prep->fetchAll();
 
         foreach ($bezette_plaatsen_rijen as $bezette_plaatsen)
         {
-            $prep = $connectie->prepare('SELECT * FROM kaartverkoop_bestellingen WHERE id=?');
+            $prep = $connection->prepare('SELECT * FROM kaartverkoop_bestellingen WHERE id=?');
             $prep->execute([$bezette_plaatsen['bestelling_id']]);
             $bestelling = $prep->fetch();
 
