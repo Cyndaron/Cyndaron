@@ -1,10 +1,13 @@
 Versie 6.0 (Trajectum
 - Afhankelijkheden: Bootstrap geüpdatet naar 4.2.1 (#75)
 - Afhankelijkheden: jQuery geüpdatet naar 3.3.1
+- Feature: bij aanmaken van een fotoalbum wordt meteen de bijbehorende map aangemaakt (#81)
 - Verwijderd: delen en Facebookintegratie (#80)
 - Verwijderd: ideeënbus
 - Verwijderd: instelling voor extra bodycode (kan nu via PHP-includes)
 - Verwijderd: klassiek menu (#76)
+- Verwijderd: migratiecode voor oude wachtwoorden
+- Verwijderd: migratiecode voor versies ouder dan 5.0
 - Verwijderd: oude menu-editor op configuratiepagina
 
 Versie 5.3 (Lychnidus)
@@ -17,6 +20,7 @@ Versie 5.3 (Lychnidus)
 - Handel redirect naar HTTPS af in PHP
 - Menu kan nu gemakkelijker bewerkt worden (#73, gedeeltelijk)
 - Na het wijzigen van de friendly URL wordt er nu correct doorverwezen (#78)
+- Kaartverkoop: buitenlandlink gebruiksvriendelijker gemaakt (#59)
 - Kaartverkoop: CSS-fixes (#48 en #49)
 - Kaartverkoop: gebruik `type="email"` voor e-mailadres op bestelformulier (#44)
 - Kaartverkoop: mogelijkheid tot verwijderen bestellingen (#52)
