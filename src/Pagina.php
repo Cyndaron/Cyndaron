@@ -144,7 +144,7 @@ class Pagina
         $navbar = $websitelogo ? sprintf('<img alt="" src="%s"> ', $websitelogo) : $this->websiteName;
         ?>
         <nav class="menu navbar navbar-expand-md <?= $inverseClass; ?>">
-            <a class="navbar-brand" href="./"><?= $navbar; ?></a>
+            <a class="navbar-brand" href="/"><?= $navbar; ?></a>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

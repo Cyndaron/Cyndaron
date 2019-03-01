@@ -42,7 +42,7 @@ class OverzichtPagina extends Pagina
             {
                 if ((substr("$dirArray[$index]", 0, 1) != ".") && (substr("$dirArray[$index]", -4) != "html") && (substr("$dirArray[$index]", -3) != "php")) // verberg eventuele verborgen bestanden plus html- en php-bestanden
                 {
-                    echo '<li><a href="./bestandenkast/'.$dirArray[$index].'">'.pathinfo($dirArray[$index], PATHINFO_FILENAME).'</a></li>';
+                    echo '<li><a href="/bestandenkast/'.$dirArray[$index].'">'.pathinfo($dirArray[$index], PATHINFO_FILENAME).'</a></li>';
                 }
             }
             echo '</ul>';
