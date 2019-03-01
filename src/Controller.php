@@ -90,7 +90,7 @@ class Controller
             session_start();
             User::addNotification('U moet inloggen om deze pagina te bekijken');
             $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
-            header('Location: /login');
+            header('Location: /user/login');
             die();
         }
         else if (User::getLevel() < $requiredLevel)

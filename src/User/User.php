@@ -150,4 +150,72 @@ EOT;
         $return = DBConnection::doQuery('INSERT INTO gebruikers(gebruikersnaam, wachtwoord, email, niveau) VALUES (?,?,?,?)', [$username, $passwordHash, $email, $level]);
         return $return ? intval($return) : null;
     }
+
+    public static function login(string $identification, string $password)
+    {
+        if (strpos($identification, '@') !== false)
+        {
+            $query = 'SELECT * FROM gebruikers WHERE email=?';
+            $updateQuery = 'UPDATE gebruikers SET wachtwoord=? WHERE email=?';
+        }
+        else
+        {
+            $query = 'SELECT * FROM gebruikers WHERE gebruikersnaam=?';
+            $updateQuery = 'UPDATE gebruikers SET wachtwoord=? WHERE gebruikersnaam=?';
+        }
+
+        $userdata = DBConnection::doQueryAndFetchFirstRow($query, [$identification]);
+
+        if (!$userdata)
+        {
+            throw new IncorrectCredentials('Onbekende gebruikersnaam of e-mailadres.');
+        }
+        else
+        {
+            $loginSucceeded = false;
+            if (password_verify($password, $userdata['wachtwoord']))
+            {
+                $loginSucceeded = true;
+
+                if (password_needs_rehash($userdata['wachtwoord'], PASSWORD_DEFAULT))
+                {
+                    $password = password_hash($password, PASSWORD_DEFAULT);
+                    DBConnection::doQuery($updateQuery, [$password, $identification]);
+                }
+            }
+
+            if ($loginSucceeded)
+            {
+                $_SESSION['naam'] = $userdata['gebruikersnaam'];
+                $_SESSION['email'] = $userdata['email'];
+                $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+                $_SESSION['niveau'] = $userdata['niveau'];
+                User::addNotification('U bent ingelogd.');
+                if ($_SESSION['redirect'])
+                {
+                    $_SESSION['request'] = $_SESSION['redirect'];
+                    $_SESSION['redirect'] = null;
+                }
+                else
+                {
+                    $_SESSION['request'] = '/';
+                }
+                header('Location: ' . $_SESSION['request']);
+            }
+            else
+            {
+                throw new IncorrectCredentials('Verkeerd wachtwoord.');
+            }
+        }
+    }
+
+    public static function logout()
+    {
+        session_start();
+        session_destroy();
+
+        session_start();
+        User::addNotification('U bent afgemeld.');
+        header('Location: /');
+    }
 }

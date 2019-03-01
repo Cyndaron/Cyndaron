@@ -22,6 +22,6 @@ else if (!isset($_SESSION['naam']) || $_SESSION['ip'] != $_SERVER['REMOTE_ADDR']
     session_start();
     User::addNotification('U moet inloggen om deze pagina te bekijken');
     $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
-    header('Location: /login');
+    header('Location: /user/login');
     die();
 }

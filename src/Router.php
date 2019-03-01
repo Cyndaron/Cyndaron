@@ -20,8 +20,6 @@ class Router
         'category' => \Cyndaron\Category\CategoryController::class,
         'editor' => \Cyndaron\Editor\EditorController::class,
         'friendlyurl' => \Cyndaron\FriendlyUrl\FriendlyUrlController::class,
-        'login' => '\Cyndaron\LoginPagina',
-        'logoff' => '\Cyndaron\Loguit',
         'menu' => Menu\MenuController::class,
         'menu-editor' => Menu\MenuEditorController::class,
         'migreer_naar_v5.php' => '\Cyndaron\MigreerNaar5_0',
@@ -92,7 +90,7 @@ class Router
     private function routeFoundNowCheckLogin()
     {
         $userLevel = User::getLevel();
-        if (!User::hasSufficientReadLevel() && $this->requestVars[0] !== 'login')
+        if (!User::hasSufficientReadLevel() && !($this->requestVars[0] === 'user' && $this->requestVars[1] === 'login'))
         {
             Request::sendDoNotCache();
             if ($userLevel > 0)
@@ -104,7 +102,7 @@ class Router
             {
                 User::addNotification('U moet inloggen om deze site te bekijken');
                 $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
-                header('Location: /login');
+                header('Location: /user/login');
                 die();
             }
         }

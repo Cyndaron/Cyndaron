@@ -4,48 +4,103 @@ declare (strict_types = 1);
 namespace Cyndaron\User;
 
 use Cyndaron\Controller;
-use Cyndaron\DBConnection;
 use Cyndaron\Request;
 use Cyndaron\Util;
 
 class UserController extends Controller
 {
-    /* In order to allow users to modify their own data. Add the appropriate User::isAdmin() checks where needed. */
-    protected $minLevelPost = UserLevel::LOGGED_IN;
+    /* In order to allow users to login and modify their own data. Add the appropriate User::isAdmin() checks where needed. */
+    protected $minLevelPost = UserLevel::ANONYMOUS;
 
-    public function routePost()
+    public function routeGet()
     {
         switch ($this->action)
         {
-            case 'add':
-                $username = Request::geefPostVeilig('username');
-                $email = Request::geefPostVeilig('email');
-                $password = Request::geefPostVeilig('password') ?: Util::generatePassword();
-                $level = intval(Request::geefPostVeilig('level'));
-                $this->create($username, $email, $password, $level);
-                break;
-            case 'edit':
-                $id = Request::getVar(2);
-                if ($id !== null)
+            case 'login':
+                if (empty($_SESSION['redirect']))
                 {
+                    $_SESSION['redirect'] = Request::geefReferrerVeilig();
+                }
+                new LoginPage();
+                break;
+            case 'logout':
+                User::logout();
+                break;
+        }
+    }
+
+    public function routePost()
+    {
+        if (!User::isLoggedIn())
+        {
+            switch ($this->action)
+            {
+                case 'login':
+                    $this->login();
+                    break;
+                default:
+                    $this->send401();
+            }
+        }
+        else
+        {
+            switch ($this->action)
+            {
+                case 'add':
                     $username = Request::geefPostVeilig('username');
                     $email = Request::geefPostVeilig('email');
+                    $password = Request::geefPostVeilig('password') ?: Util::generatePassword();
                     $level = intval(Request::geefPostVeilig('level'));
-                    $this->edit(intval($id), $username, $email, $level);
-                }
-                break;
-            case 'delete':
-                $userId = Request::getVar(2);
-                if ($userId !== null)
-                    $this->delete(intval($userId));
-                break;
-            case 'resetpassword':
-                $userId = Request::getVar(2);
-                if ($userId !== null)
-                    $this->resetPassword(intval($userId));
-                break;
-            default:
-                $this->send404('Action not found!');
+                    $this->create($username, $email, $password, $level);
+                    break;
+                case 'edit':
+                    $id = Request::getVar(2);
+                    if ($id !== null)
+                    {
+                        $username = Request::geefPostVeilig('username');
+                        $email = Request::geefPostVeilig('email');
+                        $level = intval(Request::geefPostVeilig('level'));
+                        $this->edit(intval($id), $username, $email, $level);
+                    }
+                    break;
+                case 'delete':
+                    $userId = Request::getVar(2);
+                    if ($userId !== null)
+                        $this->delete(intval($userId));
+                    break;
+                case 'resetpassword':
+                    $userId = Request::getVar(2);
+                    if ($userId !== null)
+                        $this->resetPassword(intval($userId));
+                    break;
+                default:
+                    $this->send404('Action not found!');
+            }
+        }
+    }
+
+    private function login()
+    {
+        $identification = Request::geefPostVeilig('login_user');
+        $verification = Request::geefPostVeilig('login_pass');
+
+        try
+        {
+            User::login($identification, $verification);
+        }
+        catch (IncorrectCredentials $e)
+        {
+            $page = new \Cyndaron\Pagina('Inloggen mislukt', $e->getMessage());
+            $page->showPrePage();
+            $page->showBody();
+            $page->showPostPage();
+        }
+        catch (\Exception $e)
+        {
+            $page = new \Cyndaron\Pagina('Inloggen mislukt', 'Onbekende fout: ' . $e->getMessage());
+            $page->showPrePage();
+            $page->showBody();
+            $page->showPostPage();
         }
     }
 
