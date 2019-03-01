@@ -10,38 +10,54 @@ class DBConnection
 {
     /** @var PDO $pdo */
     private static $pdo;
+    private static $statementError = [];
 
-    public static function doQuery(string $query, array $vars = [])
+    private static function executeQuery(string $query, array $vars, callable $functionOnSuccess)
     {
         $prep = static::$pdo->prepare($query);
         $result = $prep->execute($vars);
-        return $result == false ? $result : static::$pdo->lastInsertId();
+        if ($result === false)
+        {
+            static::$statementError = $prep->errorInfo();
+            return false;
+        }
+        else
+        {
+            return call_user_func($functionOnSuccess, $prep, $result);
+        }
+    }
+
+    public static function doQuery(string $query, array $vars = [])
+    {
+        return static::executeQuery($query, $vars, function($prep, $result) {
+            return static::$pdo->lastInsertId();
+        });
     }
 
     public static function doQueryAndFetchAll(string $query, array $vars = [])
     {
-        $prep = static::$pdo->prepare($query);
-        $prep->execute($vars);
-        return $prep->fetchAll();
+        return static::executeQuery($query, $vars, function($prep, $result) {
+            return $prep->fetchAll();
+        });
     }
 
     public static function doQueryAndFetchFirstRow(string $query, array $vars = [])
     {
-        $prep = static::$pdo->prepare($query);
-        $prep->execute($vars);
-        return $prep->fetch();
+        return static::executeQuery($query, $vars, function($prep, $result) {
+            return $prep->fetch();
+        });
     }
 
     public static function doQueryAndFetchOne(string $query, array $vars = [])
     {
-        $prep = static::$pdo->prepare($query);
-        $prep->execute($vars);
-        return $prep->fetchColumn();
+        return static::executeQuery($query, $vars, function($prep, $result) {
+            return $prep->fetchColumn();
+        });
     }
 
     public static function errorInfo()
     {
-        return static::$pdo->errorCode();
+        return ['pdo' => static::$pdo->errorInfo(), 'statement' => static::$statementError];
     }
 
     public static function connect()
