@@ -119,14 +119,19 @@ class Util
         return bin2hex(random_bytes($length));
     }
 
+    public static function formatCurrency(float $amount): string
+    {
+        return number_format($amount, 2, ',', '.');
+    }
+
     public static function formatEuro(float $amount): string
     {
-        return '&euro;&nbsp;' . number_format($amount, 2, ',', '.');
+        return '&euro;&nbsp;' . static::formatCurrency($amount);
     }
 
     public static function formatEuroPlainText(float $amount): string
     {
-        return '€ ' . number_format($amount, 2, ',', '.');
+        return '€ ' . static::formatCurrency($amount);
     }
 
     public static function boolToText(bool $bool): string

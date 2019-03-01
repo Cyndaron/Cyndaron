@@ -15,11 +15,11 @@ class EditorPage extends \Cyndaron\EditorPage
         {
             $this->form = Mailform::loadFromDatabase((int)$this->id)->asArray();
             $this->content = $this->form['tekst_bevestiging'];
-            $this->titel = $this->form['naam'];
+            $this->contentTitle = $this->form['naam'];
         }
     }
 
-    protected function toonSpecifiekeKnoppen()
+    protected function showContentSpecificButtons()
     {
         $checked = $this->form['stuur_bevestiging'] ? 'checked="checked"' : '';
         ?>

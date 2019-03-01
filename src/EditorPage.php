@@ -12,10 +12,11 @@ abstract class EditorPage extends Pagina
     protected $vorigeversie = false;
     protected $vvstring = '';
     protected $content;
-    protected $titel;
+    protected $contentTitle;
     protected $type;
     protected $table;
     protected $saveUrl;
+    protected $record = [];
 
     public function __construct()
     {
@@ -31,8 +32,8 @@ abstract class EditorPage extends Pagina
         // Zorgen voor juiste codering
         $this->content = !empty($this->content) ? htmlentities($this->content, ENT_QUOTES, 'UTF-8') : '';
 
-        if (empty($this->titel))
-            $this->titel = '';
+        if (empty($this->contentTitle))
+            $this->contentTitle = '';
 
         $dir = dirname($_SERVER['PHP_SELF']);
         if ($dir == '/')
@@ -63,7 +64,7 @@ abstract class EditorPage extends Pagina
                 <div class="form-group">
                     <label class="col-sm-2 control-label" for="titel">Titel: </label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" id="titel" name="titel" value="<?=$this->titel;?>" />
+                        <input type="text" class="form-control" id="titel" name="titel" value="<?=$this->contentTitle;?>" />
                     </div>
                 </div>
                 <?php
@@ -109,7 +110,7 @@ abstract class EditorPage extends Pagina
             </div>
 
             <?php
-            $this->toonSpecifiekeKnoppen();
+            $this->showContentSpecificButtons();
             ?>
             <input type="hidden" name="csrfToken" value="<?=User::getCSRFToken('editor', $this->type);?>"/>
             <input type="submit" value="Opslaan" class="btn btn-primary"/>
@@ -123,7 +124,7 @@ abstract class EditorPage extends Pagina
 
     abstract protected function prepare();
 
-    abstract protected function toonSpecifiekeKnoppen();
+    abstract protected function showContentSpecificButtons();
 
     public function showCategoryDropdown()
     {
@@ -156,6 +157,16 @@ abstract class EditorPage extends Pagina
                     ?>
                 </select>
             </div>
+        </div>
+        <?php
+    }
+
+    protected function showCheckbox(string $id, string $description, bool $checked)
+    {
+        ?>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="<?=$id?>" name="<?=$id?>" <?=$checked ? 'checked' : ''?> value="1">
+            <label class="form-check-label" for="<?=$id?>"><?=$description?></label>
         </div>
         <?php
     }

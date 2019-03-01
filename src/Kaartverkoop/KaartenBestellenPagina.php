@@ -15,8 +15,11 @@ class KaartenBestellenPagina extends Pagina
 
         $concert = Concert::loadFromDatabase($concert_id)->asArray();
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC', [$concert_id]);
+        $controls = sprintf('<a href="/editor/concert/%d" class="btn btn-outline-cyndaron" title="Dit concert bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $concert_id);
+
 
         parent::__construct('Kaarten bestellen: ' . $concert['naam']);
+        $this->setTitleButtons($controls);
         $this->showPrePage();
 
         if ($concert['open_voor_verkoop'] == false)

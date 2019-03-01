@@ -13,11 +13,11 @@ class EditorFotoalbum extends EditorPage
         if ($this->id)
         {
             $this->content = DBConnection::doQueryAndFetchOne('SELECT notities FROM fotoboeken WHERE id=?', [$this->id]);
-            $this->titel = DBConnection::doQueryAndFetchOne('SELECT naam FROM fotoboeken WHERE id=?', [$this->id]);
+            $this->contentTitle = DBConnection::doQueryAndFetchOne('SELECT naam FROM fotoboeken WHERE id=?', [$this->id]);
         }
     }
 
-    protected function toonSpecifiekeKnoppen()
+    protected function showContentSpecificButtons()
     {
         // Ongebruikt, maar verplicht.
     }

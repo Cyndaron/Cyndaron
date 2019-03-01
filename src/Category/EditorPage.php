@@ -14,11 +14,11 @@ class EditorPage extends \Cyndaron\EditorPage
         if ($this->id)
         {
             $this->content = DBConnection::doQueryAndFetchOne('SELECT beschrijving FROM categorieen WHERE id=?', [$this->id]);
-            $this->titel = DBConnection::doQueryAndFetchOne('SELECT naam FROM categorieen WHERE id=?', [$this->id]);
+            $this->contentTitle = DBConnection::doQueryAndFetchOne('SELECT naam FROM categorieen WHERE id=?', [$this->id]);
         }
     }
 
-    protected function toonSpecifiekeKnoppen()
+    protected function showContentSpecificButtons()
     {
         $checked = DBConnection::doQueryAndFetchOne('SELECT alleentitel FROM categorieen WHERE id=?', [$this->id]) ? 'checked="checked"' : '';
         ?>

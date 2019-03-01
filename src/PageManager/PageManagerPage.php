@@ -249,8 +249,11 @@ class PageManagerPage extends Pagina
 
     public function showConcerts()
     {
+        echo new Toolbar('', '', (string)new Button('new', '/editor/concert', 'Nieuw concert', 'Nieuw concert'));
+
         $concerts = Concert::fetchAll();
         ?>
+
         <table class="table table-striped table-bordered pm-table">
             <thead>
                 <tr>
@@ -263,9 +266,14 @@ class PageManagerPage extends Pagina
                 <?php foreach ($concerts as $concert):?>
                 <tr>
                     <td><?=$concert['id']?></td>
-                    <td><a href="/concert/viewOrders/<?=$concert['id']?>"><?=$concert['naam']?></a></td>
+                    <td>
+                        <?=$concert['naam']?>
+                        (<a href="/concert/order/<?=$concert['id']?>">bestelpagina</a>,
+                        <a href="/concert/viewOrders/<?=$concert['id']?>">overzicht bestellingen</a>)
+                    </td>
                     <td>
                         <div class="btn-group">
+                            <a class="btn btn-outline-cyndaron btn-sm" href="/editor/concert/<?=$concert['id']?>"><span class="glyphicon glyphicon-pencil" title="Bewerk dit concert"></span></a>
                             <button class="btn btn-danger btn-sm pm-delete" data-type="concert" data-id="<?=$concert['id'];?>" data-csrf-token="<?=User::getCSRFToken('concert', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit concert"></span></button>
                         </div>
 

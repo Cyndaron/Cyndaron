@@ -17,12 +17,14 @@ class EditorController extends Controller
         'photo' => \Cyndaron\EditorFoto::class,
         'photoalbum' => \Cyndaron\EditorFotoalbum::class,
         'sub' => \Cyndaron\StaticPage\EditorPage::class,
+        'concert' => \Cyndaron\Kaartverkoop\EditorPage::class,
     ];
     protected $savePages = [
         'category' => \Cyndaron\BewerkCategorie::class,
         'photo' => \Cyndaron\BewerkFoto::class,
         'photoalbum' => \Cyndaron\BewerkFotoalbum::class,
         'sub' => \Cyndaron\BewerkStatischePagina::class,
+        'concert' => \Cyndaron\Kaartverkoop\EditorSavePage::class,
     ];
 
     public function routeGet()

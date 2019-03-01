@@ -16,7 +16,7 @@ class EditorFoto extends EditorPage
         }
     }
 
-    protected function toonSpecifiekeKnoppen()
+    protected function showContentSpecificButtons()
     {
         // Ongebruikt, maar verplicht.
     }

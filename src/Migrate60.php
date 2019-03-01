@@ -27,6 +27,8 @@ class Migrate60 extends Pagina
         DBConnection::doQuery("UPDATE `friendlyurls` SET doel = REPLACE(doel, '/mc-leden', '/minecraft/members')", []);
         DBConnection::doQuery("UPDATE `friendlyurls` SET doel = REPLACE(doel, '/mc-status', '/minecraft/status')", []);
 
+        DBConnection::doQuery("ALTER TABLE `kaartverkoop_concerten` CHANGE `gereserveerde_plaatsen_uitverkocht` `gereserveerde_plaatsen_uitverkocht` TINYINT(1) NOT NULL DEFAULT '0';")
+
         parent::__construct('Upgrade naar versie 6.0');
         $this->showPrePage();
         echo 'De upgrade is voltooid.';
