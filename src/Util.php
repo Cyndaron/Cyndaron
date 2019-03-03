@@ -67,22 +67,6 @@ class Util
         }
     }
 
-    /**
-     * @param string $waarde De waarde van de checkbox
-     * @return int 1 als de checkbox was aangevinkt, 0 als dat niet zo was
-     */
-    public static function parseCheckboxAlsInt(string $waarde): int
-    {
-        if (!$waarde)
-        {
-            return 0;
-        }
-        else
-        {
-            return 1;
-        }
-    }
-
     public static function generatePassword($length = 10): string
     {
         $gencode = '';

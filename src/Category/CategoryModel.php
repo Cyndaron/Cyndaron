@@ -26,7 +26,7 @@ class CategoryModel
         }
         if ($alleentitel !== null)
         {
-            DBConnection::doQueryAndFetchOne('UPDATE categorieen SET `alleentitel`=? WHERE id=?', [Util::parseCheckboxAlsInt($alleentitel), $id]);
+            DBConnection::doQueryAndFetchOne('UPDATE categorieen SET `alleentitel`=? WHERE id=?', [(int)(bool)$alleentitel, $id]);
         }
         if ($beschrijving !== null)
         {

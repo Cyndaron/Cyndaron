@@ -139,7 +139,7 @@ class StaticPageModel
         }
         else
         {
-            $reacties_aan = Util::parseCheckboxAlsInt($this->enableComments);
+            $reacties_aan = (int)(bool)($this->enableComments);
             $connection = DBConnection::getPDO();
             if (!DBConnection::doQueryAndFetchOne('SELECT * FROM vorigesubs WHERE id=?', [$this->id]))
             {
