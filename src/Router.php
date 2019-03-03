@@ -38,7 +38,6 @@ class Router
         'concert' => \Cyndaron\Kaartverkoop\ConcertController::class,
         'concert-order' => \Cyndaron\Kaartverkoop\OrderController::class,
         'minecraft' => \Cyndaron\Minecraft\MinecraftController::class,
-        'wieiswie' => '\Cyndaron\WieIsWie\OverzichtPagina',
         'verwerkmailformulier-ldbf' => '\Cyndaron\VerwerkMailformulierPaginaLDBF',
     ];
 

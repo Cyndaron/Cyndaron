@@ -35,7 +35,12 @@ class UserManagerPage extends Pagina
         </button>
         ')
         ?>
-        <table id="um-usertable" class="table table-bordered table-striped" data-edit-csrf-token="<?=User::getCSRFToken('user', 'edit')?>" data-resetpassword-csrf-token="<?=User::getCSRFToken('user', 'resetpassword')?>">
+        <table
+            id="um-usertable"
+            class="table table-bordered table-striped"
+            data-edit-csrf-token="<?=User::getCSRFToken('user', 'edit')?>"
+            data-resetpassword-csrf-token="<?=User::getCSRFToken('user', 'resetpassword')?>"
+            data-delete-csrf-token="<?=User::getCSRFToken('user', 'delete')?>">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -59,11 +64,21 @@ class UserManagerPage extends Pagina
                                     data-id="<?=$user['id']?>"
                                     data-username="<?=$user['gebruikersnaam']?>"
                                     data-email="<?=$user['email']?>"
-                                    data-level="<?=$user['niveau']?>">
+                                    data-level="<?=$user['niveau']?>"
+                                    data-firstname="<?=$user['firstname']?>"
+                                    data-tussenvoegsel="<?=$user['tussenvoegsel']?>"
+                                    data-lastname="<?=$user['lastname']?>"
+                                    data-role="<?=$user['role']?>"
+                                    data-comments="<?=$user['comments']?>"
+                                    data-avatar="<?=$user['avatar']?>"
+                                    data-hideFromMemberList="<?=$user['hide_from_member_list']?>">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </button>
                             <button class="um-resetpassword btn btn-sm btn-outline-cyndaron" data-id="<?=$user['id']?>">
                                 <span class="glyphicon glyphicon-repeat"></span>
+                            </button>
+                            <button class="um-delete btn btn-sm btn-danger" data-id="<?=$user['id']?>">
+                                <span class="glyphicon glyphicon-trash"></span>
                             </button>
                         </div>
                     </td>
@@ -116,6 +131,56 @@ class UserManagerPage extends Pagina
                                 </select>
                             </div>
                         </div>
+
+                        <div class="form-group row">
+                            <label for="um-firstname" class="col-sm-2 col-form-label">Voornaam:</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="um-firstname">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="um-tussenvoegsel" class="col-sm-2 col-form-label">Tussenvoegsel:</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="um-tussenvoegsel">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="um-lastname" class="col-sm-2 col-form-label">Achternaam:</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="um-lastname">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="um-role" class="col-sm-2 col-form-label">Functie:</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="um-role">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="um-comments" class="col-sm-2 col-form-label">Opmerkingen:</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="um-comments">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="um-avatar" class="col-sm-2 col-form-label">Foto/avatar:</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="um-avatar">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="um-hideFromMemberList" class="col-sm-2 col-form-label">Verbergen op Wie-is-wie:</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="um-hideFromMemberList" type="checkbox" value="1">
+                            </div>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button id="um-edit-user-save" type="button" class="btn btn-primary">Opslaan</button>

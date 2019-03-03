@@ -23,6 +23,8 @@ Content-type: text/html; charset=utf-8
 From: %s <noreply@%s>
 EOT;
 
+    const FIELDS = ['gebruikersnaam', 'wachtwoord', 'email', 'niveau', 'firstname', 'tussenvoegsel', 'lastname', 'role', 'comments', 'avatar', 'hide_from_member_list'];
+
     public static function isAdmin(): bool
     {
         if (!isset($_SESSION['naam']) || $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] || $_SESSION['niveau'] < 4)
@@ -135,20 +137,40 @@ EOT;
     {
         if ($this->id !== null)
         {
-            $result = DBConnection::doQuery('UPDATE gebruikers SET gebruikersnaam=?, wachtwoord=?, email=?, niveau=? WHERE id=?', [
-                $this->record['gebruikersnaam'], $this->record['wachtwoord'], $this->record['email'], $this->record['niveau'], $this->id
-            ]);
+            $fields = implode('=?, ', static::FIELDS) . '=?';
+            $data = [];
+            foreach(static::FIELDS as $fieldname)
+            {
+                $data[] = $this->record[$fieldname];
+            }
+            $data[] = $this->id;
+
+            $result = DBConnection::doQuery('UPDATE gebruikers SET ' . $fields . ' WHERE id=?', $data);
             // Above will result either false (failure) or "0" (success)
             return $result === false ? false : true;
         }
         return false;
     }
 
-    public static function create(string $username, string $email, string $password, int $level = UserLevel::LOGGED_IN): ?int
+    public static function create(string $gebruikersnaam, string $email, string $password, int $niveau, string $firstname, string $tussenvoegsel, string $lastname, string $role, string $comments, string $avatar, bool $hideFromMemberList): ?int
     {
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $return = DBConnection::doQuery('INSERT INTO gebruikers(gebruikersnaam, wachtwoord, email, niveau) VALUES (?,?,?,?)', [$username, $passwordHash, $email, $level]);
-        return $return ? intval($return) : null;
+        /** @noinspection PhpUnusedLocalVariableInspection */
+        $wachtwoord = password_hash($password, PASSWORD_DEFAULT);
+        /** @noinspection PhpUnusedLocalVariableInspection */
+        $hide_from_member_list = intval($hideFromMemberList);
+        $fields = implode(', ', static::FIELDS);
+        $placeholders = implode(', ', array_fill(0, count(static::FIELDS), '?'));
+        $data = [];
+        foreach(static::FIELDS as $fieldname)
+        {
+            $data[] = $$fieldname;
+        }
+
+        $return = DBConnection::doQuery('INSERT INTO gebruikers(' . $fields . ') VALUES (' . $placeholders . ')', $data);
+        if ($return !== false)
+            return intval($return);
+        else
+            throw new \Exception(implode(',', DBConnection::errorInfo()));
     }
 
     public static function login(string $identification, string $password)

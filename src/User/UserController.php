@@ -26,6 +26,8 @@ class UserController extends Controller
             case 'logout':
                 User::logout();
                 break;
+            case 'gallery':
+                new Gallery();
         }
     }
 
@@ -51,7 +53,15 @@ class UserController extends Controller
                     $email = Request::geefPostVeilig('email');
                     $password = Request::geefPostVeilig('password') ?: Util::generatePassword();
                     $level = intval(Request::geefPostVeilig('level'));
-                    $this->create($username, $email, $password, $level);
+                    $firstname = Request::geefPostVeilig('firstname');
+                    $tussenvoegsel = Request::geefPostVeilig('tussenvoegsel');
+                    $lastname = Request::geefPostVeilig('lastname');
+                    $role = Request::geefPostVeilig('role');
+                    $comments = Request::geefPostVeilig('comments');
+                    $avatar = Request::geefPostVeilig('avatar');
+                    $hideFromMemberList = Request::geefPostVeilig('hideFromMemberList') == '1' ? true : false;
+
+                    $this->create($username, $email, $password, $level, $firstname, $tussenvoegsel, $lastname, $role, $comments, $avatar, $hideFromMemberList);
                     break;
                 case 'edit':
                     $id = Request::getVar(2);
@@ -60,7 +70,14 @@ class UserController extends Controller
                         $username = Request::geefPostVeilig('username');
                         $email = Request::geefPostVeilig('email');
                         $level = intval(Request::geefPostVeilig('level'));
-                        $this->edit(intval($id), $username, $email, $level);
+                        $firstname = Request::geefPostVeilig('firstname');
+                        $tussenvoegsel = Request::geefPostVeilig('tussenvoegsel');
+                        $lastname = Request::geefPostVeilig('lastname');
+                        $role = Request::geefPostVeilig('role');
+                        $comments = Request::geefPostVeilig('comments');
+                        $avatar = Request::geefPostVeilig('avatar');
+                        $hideFromMemberList = Request::geefPostVeilig('hideFromMemberList') == '1' ? true : false;
+                        $this->edit(intval($id), $username, $email, $level, $firstname, $tussenvoegsel, $lastname, $role, $comments, $avatar, $hideFromMemberList);
                     }
                     break;
                 case 'delete':
@@ -104,19 +121,19 @@ class UserController extends Controller
         }
     }
 
-    public function create(string $username, string $email, string $password, int $level)
+    public function create(string $username, string $email, string $password, int $level, string $firstname, string $tussenvoegsel, string $lastname, string $role, string $comments, string $avatar, bool $hideFromMemberList)
     {
         if (!User::isAdmin())
         {
             $this->send401();
             return;
         }
-        $userId = User::create($username, $email, $password, $level);
+        $userId = User::create($username, $email, $password, $level, $firstname, $tussenvoegsel, $lastname, $role, $comments, $avatar, $hideFromMemberList);
 
         echo json_encode(['userId' => $userId]);
     }
 
-    public function edit(int $id, string $username, string $email, int $level)
+    public function edit(int $id, string $username, string $email, int $level, string $firstname, string $tussenvoegsel, string $lastname, string $role, string $comments, string $avatar, bool $hideFromMemberList)
     {
         if (!User::isAdmin())
         {
@@ -130,6 +147,13 @@ class UserController extends Controller
             'gebruikersnaam' => $username,
             'email' => $email,
             'niveau' => $level,
+            'firstname' => $firstname,
+            'tussenvoegsel' => $tussenvoegsel,
+            'lastname' => $lastname,
+            'role' => $role,
+            'comments' => $comments,
+            'avatar' => $avatar,
+            'hide_from_member_list' => intval($hideFromMemberList),
         ]);
         $result = $user->save();
         if ($result !== true)

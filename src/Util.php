@@ -108,7 +108,7 @@ class Util
 
         for ($c = 0; $c < $length; $c++)
         {
-            $gencode .= $letters[rand(0, count($letters))];
+            $gencode .= $letters[rand(0, count($letters) - 1)];
         }
 
         return $gencode;
