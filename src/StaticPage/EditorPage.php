@@ -20,15 +20,11 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
 
     protected function showContentSpecificButtons()
     {
-        $checked = DBConnection::doQueryAndFetchOne('SELECT reacties_aan FROM subs WHERE id=?', [$this->id]) ? ' checked="checked"' : '';
-        ?>
-        <div class="form-group">
-            <label class="col-sm-2 control-label" for="reacties_aan">Reacties aan: </label>
-            <div class="col-sm-5">
-                <input id="reacties_aan" name="reacties_aan" type="checkbox" <?= $checked; ?>/>
-            </div>
-        </div>
-        <?php
+        $checked = false;
+        if ($this->id)
+            $checked = (bool)DBConnection::doQueryAndFetchOne('SELECT reacties_aan FROM subs WHERE id=?', [$this->id]);
+        $this->showCheckbox('reacties_aan', 'Reacties toestaan', $checked);
+
         $this->showCategoryDropdown();
     }
 }

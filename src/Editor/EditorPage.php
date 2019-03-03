@@ -66,8 +66,8 @@ abstract class EditorPage extends Page
             <?php
             if ($this->hasTitle === true):
                 ?>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="titel">Titel: </label>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="titel">Titel: </label>
                     <div class="col-sm-5">
                         <input type="text" class="form-control" id="titel" name="titel" value="<?=$this->contentTitle;?>" />
                     </div>
@@ -75,21 +75,23 @@ abstract class EditorPage extends Page
                 <?php
             endif;
             ?>
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="friendlyUrl">Friendly URL: </label>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="friendlyUrl">Friendly URL: </label>
                 <div class="col-sm-5">
                     <div class="input-group">
-                        <span class="input-group-addon"><?=$protocol . $_SERVER['HTTP_HOST'] . $dir;?>/</span>
-                        <input type="text" class="form-control" id="friendlyUrl" name="friendlyUrl" value="<?=trim($friendlyUrl,'/');?>" />
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon3">https://<?=$_SERVER['HTTP_HOST']?>/</span>
+                        </div>
+                        <input type="text" class="form-control" id="friendlyUrl" name="friendlyUrl" aria-describedby="basic-addon3" value="<?=trim($friendlyUrl,'/')?>"/>
                     </div>
-
                 </div>
             </div>
 
             <textarea class="ckeditor" name="artikel" rows="25" cols="125"><?=$this->content; ?></textarea>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="verwijzing">Interne link maken: </label>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="verwijzing">Interne link maken: </label>
                 <div class="col-sm-5">
                     <select id="verwijzing" class="form-control form-control-inline custom-select">
                         <?php
@@ -134,8 +136,8 @@ abstract class EditorPage extends Page
     public function showCategoryDropdown()
     {
         ?>
-        <div class="form-group">
-            <label class="col-sm-2 control-label" for="categorieid">Plaats dit artikel in de categorie: </label>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="categorieid">Plaats dit artikel in de categorie: </label>
             <div class="col-sm-5">
                 <select name="categorieid" class="form-control custom-select">
                     <option value="0">&lt;Geen categorie&gt;</option>

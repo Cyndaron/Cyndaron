@@ -24,14 +24,14 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
         $checked = boolval($this->form['send_confirmation'] ?? false);
         $this->showCheckbox('sendConfirmation', 'Stuur bovenstaande tekst als bevestiging', $checked);
         ?>
-        <div class="form-group">
-            <label class="col-sm-2 control-label" for="email">E-mailadres: </label>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="email">E-mailadres: </label>
             <div class="col-sm-5">
                 <input type="email" class="form-control" id="email" name="email" value="<?=$this->form['mailadres'] ?? '';?>" />
             </div>
         </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label" for="antiSpamAnswer">Antispamantwoord: </label>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="antiSpamAnswer">Antispamantwoord: </label>
             <div class="col-sm-5">
                 <input type="text" class="form-control" id="antiSpamAnswer" name="antiSpamAnswer" value="<?=$this->form['antispamantwoord'] ?? '';?>" />
             </div>
