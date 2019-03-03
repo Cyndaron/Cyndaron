@@ -31,9 +31,9 @@ class Router
         'usermanager' => \Cyndaron\User\UserManagerPage::class,
 
         // Official plugins
-        'bestandenkast.php' => '\Cyndaron\Bestandenkast\OverzichtPagina',
         'concert' => \Cyndaron\Concerts\ConcertController::class,
         'concert-order' => \Cyndaron\Concerts\OrderController::class,
+        'file-cabinet' => \Cyndaron\FileCabinet\FileCabinetController::class,
         'minecraft' => \Cyndaron\Minecraft\MinecraftController::class,
         'verwerkmailformulier-ldbf' => '\Cyndaron\VerwerkMailformulierPaginaLDBF',
     ];
