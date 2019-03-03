@@ -18,8 +18,8 @@ namespace Cyndaron;
 
 class Util
 {
-    private static $maanden = ["", "januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"];
-    private static $weekdagen = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"];
+    private static $months = ["", "januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"];
+    private static $weekDays = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"];
 
     /**
      * Zet een maandnummer om in de naam.
@@ -28,9 +28,9 @@ class Util
      * @param int $maandnummer Het maandnummer, waarbij 1 januari is en 12 december.
      * @return string De naam van de maand, bijvoorbeeld "januari".
      */
-    public static function geefMaand(int $maandnummer): string
+    public static function getMonth(int $maandnummer): string
     {
-        return static::$maanden[$maandnummer];
+        return static::$months[$maandnummer];
     }
 
     /**
@@ -40,9 +40,9 @@ class Util
      * @param int $dagnummer Het dagnummer, waarbij 0 zondag is en 6 zaterdag.
      * @return string De naam van de dag, bijvoorbeeld "zondag".
      */
-    public static function geefDagVanDeWeek(int $dagnummer): string
+    public static function getWeekday(int $dagnummer): string
     {
-        return static::$weekdagen[$dagnummer];
+        return static::$weekDays[$dagnummer];
     }
 
     /**

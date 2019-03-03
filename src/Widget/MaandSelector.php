@@ -11,7 +11,7 @@ class MaandSelector extends Widget
 
         for ($i = 1; $i <= 12; $i++)
         {
-            $label = Util::geefMaand($i);
+            $label = Util::getMonth($i);
             $i = (strlen($i) == 1) ? $i = "0" . $i : $i;
             $sel = ($i == $geselecteerdeMaand) ? "selected" : "";
             $this->code .= "<option value='" . $i . "' $sel>" . $label . "</option>";
