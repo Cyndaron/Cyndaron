@@ -108,7 +108,14 @@ class Router
         $route = new $classname($this->requestVars[0], $this->requestVars[1] ?? '');
         $token = Request::post('csrfToken');
         $route->checkCSRFToken($token);
-        $route->route();
+        try
+        {
+            $route->route();
+        }
+        catch (\Exception $e)
+        {
+            $route->send500();
+        }
     }
 
     /**

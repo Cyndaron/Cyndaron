@@ -15,39 +15,31 @@ class OrderController extends Controller
 
     public function routePost()
     {
-        try
+        if ($this->action === 'add')
         {
-            if ($this->action === 'add')
-            {
-                $concertId = intval(Request::post('concert_id'));
-                $this->addAction($concertId);
-            }
-            else if (User::isAdmin())
-            {
-                $id = intval(Request::getVar(2));
-                /** @var Order $order */
-                $order = Order::loadFromDatabase($id);
+            $concertId = intval(Request::post('concert_id'));
+            $this->addAction($concertId);
+        }
+        else if (User::isAdmin())
+        {
+            $id = intval(Request::getVar(2));
+            /** @var Order $order */
+            $order = Order::loadFromDatabase($id);
 
-                switch ($this->action)
-                {
-                    case 'setIsPaid':
-                        $order->setIsPaid();
-                        break;
-                    case 'setIsSent':
-                        $order->setIsSent();
-                        break;
-                    case 'delete':
-                        $order->delete();
-                        break;
+            switch ($this->action)
+            {
+                case 'setIsPaid':
+                    $order->setIsPaid();
+                    break;
+                case 'setIsSent':
+                    $order->setIsSent();
+                    break;
+                case 'delete':
+                    $order->delete();
+                    break;
 
-                }
             }
         }
-        catch (\Exception $e)
-        {
-            $this->send500($e->getMessage());
-        }
-
     }
 
     private function addAction(int $concertId)
