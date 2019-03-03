@@ -3,7 +3,7 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
 
-class EditorPage extends \Cyndaron\EditorPage
+class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     protected $type = 'sub';
     protected $table = 'subs';

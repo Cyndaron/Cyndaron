@@ -1,10 +1,11 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\Category;
 
-use Cyndaron\Category\CategoryModel;
+use Cyndaron\Request;
 use Cyndaron\User\User;
+use Cyndaron\Util;
 
-class BewerkCategorie extends Bewerk
+class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     protected $type = 'category';
 

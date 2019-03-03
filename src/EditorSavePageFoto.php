@@ -3,7 +3,7 @@ namespace Cyndaron;
 
 use Cyndaron\User\User;
 
-class BewerkFoto extends Bewerk
+class EditorSavePageFoto extends \Cyndaron\Editor\EditorSavePage
 {
     protected $type = 'photo';
 

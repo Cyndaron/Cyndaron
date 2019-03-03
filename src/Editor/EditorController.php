@@ -15,15 +15,17 @@ class EditorController extends Controller
         'category' => \Cyndaron\Category\EditorPage::class,
         'mailform' => \Cyndaron\Mailform\EditorPage::class,
         'photo' => \Cyndaron\EditorFoto::class,
-        'photoalbum' => \Cyndaron\EditorFotoalbum::class,
+        'photoalbum' => \Cyndaron\Photoalbum\EditorPage::class,
         'sub' => \Cyndaron\StaticPage\EditorPage::class,
+        // "Plug-in"
         'concert' => \Cyndaron\Kaartverkoop\EditorPage::class,
     ];
     protected $savePages = [
-        'category' => \Cyndaron\BewerkCategorie::class,
-        'photo' => \Cyndaron\BewerkFoto::class,
-        'photoalbum' => \Cyndaron\BewerkFotoalbum::class,
-        'sub' => \Cyndaron\BewerkStatischePagina::class,
+        'category' => \Cyndaron\Category\EditorSavePage::class,
+        'photo' => \Cyndaron\EditorSavePageFoto::class,
+        'photoalbum' => \Cyndaron\Photoalbum\EditorSavePage::class,
+        'sub' => \Cyndaron\StaticPage\EditorSavePage::class,
+        // "Plug-in"
         'concert' => \Cyndaron\Kaartverkoop\EditorSavePage::class,
     ];
 

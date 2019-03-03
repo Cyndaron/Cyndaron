@@ -1,9 +1,14 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\Editor;
 
+use Cyndaron\DBConnection;
+use Cyndaron\Pagina;
+use Cyndaron\Request;
+use Cyndaron\Setting;
+use Cyndaron\Url;
 use Cyndaron\User\User;
 
-require_once __DIR__ . '/../check.php';
+require_once __DIR__ . '/../../check.php';
 
 abstract class EditorPage extends Pagina
 {

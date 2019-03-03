@@ -1,10 +1,10 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\StaticPage;
 
-use Cyndaron\StaticPage\StaticPageModel;
+use Cyndaron\Request;
 use Cyndaron\User\User;
 
-class BewerkStatischePagina extends Bewerk
+class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     protected $type = 'sub';
 

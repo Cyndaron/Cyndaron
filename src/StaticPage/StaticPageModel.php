@@ -2,6 +2,7 @@
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Util;
 
 class StaticPageModel
 {

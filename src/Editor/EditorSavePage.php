@@ -1,9 +1,13 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\Editor;
 
-require_once __DIR__ . '/../check.php';
+use Cyndaron\DBConnection;
+use Cyndaron\Request;
+use Cyndaron\Url;
 
-abstract class Bewerk
+require_once __DIR__ . '/../../check.php';
+
+abstract class EditorSavePage
 {
     protected $id;
     protected $type = '';

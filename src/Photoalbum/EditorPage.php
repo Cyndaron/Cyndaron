@@ -1,7 +1,9 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\Photoalbum;
 
-class EditorFotoalbum extends EditorPage
+use Cyndaron\DBConnection;
+
+class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     protected $hasTitle = true;
     protected $type = 'photoalbum';
@@ -17,8 +19,6 @@ class EditorFotoalbum extends EditorPage
         }
     }
 
-    protected function showContentSpecificButtons()
-    {
-        // Ongebruikt, maar verplicht.
-    }
+    // Not used, but required.
+    protected function showContentSpecificButtons() {}
 }

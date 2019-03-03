@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace Cyndaron\Kaartverkoop;
 
-class EditorPage extends \Cyndaron\EditorPage
+class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     protected $type = 'concert';
     protected $table = 'kaartverkoop_concerten';

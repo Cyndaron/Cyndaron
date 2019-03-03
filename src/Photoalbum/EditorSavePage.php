@@ -1,9 +1,10 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\Photoalbum;
 
+use Cyndaron\Request;
 use Cyndaron\User\User;
 
-class BewerkFotoalbum extends Bewerk
+class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     protected $type = 'photoalbum';
 
