@@ -125,7 +125,7 @@ function berekenTotaalprijs()
     else
     {
         document.getElementById('ophalen_door_koorlid').disabled = false;
-        $('.postcode-gerelateerd').css({display: 'block'});
+        $('.postcode-gerelateerd').css({display: 'flex'});
     }
 
     if (bezorgenVerplicht) {

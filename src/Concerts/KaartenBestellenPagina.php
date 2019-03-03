@@ -133,8 +133,8 @@ class KaartenBestellenPagina extends Page
                     Vul hieronder uw postcode in om de totaalprijs te laten berekenen.
                 </p>
 
-                <div class="form-group postcode-gerelateerd">
-                    <label class="col-sm-2 control-label" for="postcode">Postcode (verplicht):</label>
+                <div class="form-group row postcode-gerelateerd">
+                    <label class="col-sm-2 col-form-label" for="postcode">Postcode (verplicht):</label>
                     <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control form-control-inline"
                                                  maxlength="7"/></div>
                 </div>
@@ -145,8 +145,8 @@ class KaartenBestellenPagina extends Page
                     <label for="ophalen_door_koorlid">Mijn kaarten laten ophalen door een koorlid</label>
                     <br>
 
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" for="naam_koorlid">Naam koorlid:</label>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="naam_koorlid">Naam koorlid:</label>
                         <div class="col-sm-5"><input id="naam_koorlid" name="naam_koorlid" type="text"
                                                      class="form-control"/></div>
                     </div>
@@ -157,39 +157,39 @@ class KaartenBestellenPagina extends Page
 
             <h3>Uw gegevens (verplicht):</h3>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="achternaam">Achternaam:</label>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="achternaam">Achternaam:</label>
                 <div class="col-sm-5"><input id="achternaam" name="achternaam" class="form-control"/></div>
             </div>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="voorletters">Voorletters:</label>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="voorletters">Voorletters:</label>
                 <div class="col-sm-5"><input id="voorletters" name="voorletters" class="form-control"/></div>
             </div>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="e-mailadres">E-mailadres:</label>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="e-mailadres">E-mailadres:</label>
                 <div class="col-sm-5"><input id="e-mailadres" name="e-mailadres" type="email" class="form-control"/></div>
             </div>
 
 
             <h3 id="adresgegevensKop">Uw adresgegevens (nodig als u de kaarten wilt laten bezorgen):</h3>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="straatnaam_en_huisnummer">Straatnaam en huisnummer:</label>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="straatnaam_en_huisnummer">Straatnaam en huisnummer:</label>
                 <div class="col-sm-5"><input id="straatnaam_en_huisnummer" name="straatnaam_en_huisnummer"
                                              class="form-control"/></div>
             </div>
 
             <?php if (!$concert['bezorgen_verplicht']): ?>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="postcode">Postcode:</label>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="postcode">Postcode:</label>
                     <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control"/></div>
                 </div>
             <?php endif; ?>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="woonplaats">Woonplaats:</label>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="woonplaats">Woonplaats:</label>
                 <div class="col-sm-5"><input id="woonplaats" name="woonplaats" class="form-control"/></div>
             </div>
 
@@ -198,8 +198,8 @@ class KaartenBestellenPagina extends Page
 
             <p>Als u nog opmerkingen heeft kunt u deze hier kwijt.</p>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="opmerkingen">Opmerkingen (niet verplicht):</label>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="opmerkingen">Opmerkingen (niet verplicht):</label>
                 <div class="col-sm-5"><textarea id="opmerkingen" name="opmerkingen" class="form-control"
                                                 rows="4"></textarea></div>
             </div>
@@ -207,8 +207,8 @@ class KaartenBestellenPagina extends Page
             <p>Om te voorkomen dat er spam wordt verstuurd met dit formulier<br/>wordt u verzocht in het onderstaande
                 vak <span style="font-family:monospace;">Vlissingen</span> in te vullen.</p>
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="antispam">Antispam:</label>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="antispam">Antispam:</label>
                 <div class="col-sm-5"><input id="antispam" name="antispam" class="form-control"/></div>
             </div>
 
