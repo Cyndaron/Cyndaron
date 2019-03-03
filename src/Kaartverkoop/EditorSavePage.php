@@ -3,13 +3,11 @@ declare (strict_types = 1);
 
 namespace Cyndaron\Kaartverkoop;
 
-use Cyndaron\EditorSavePage;
 use Cyndaron\DBConnection;
 use Cyndaron\Request;
 use Cyndaron\User\User;
-use mysql_xdevapi\Exception;
 
-class EditorSavePage extends EditorSavePage
+class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     protected function prepare()
     {
