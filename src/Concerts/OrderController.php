@@ -1,7 +1,7 @@
 <?php
 declare (strict_types = 1);
 
-namespace Cyndaron\Kaartverkoop;
+namespace Cyndaron\Concerts;
 
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;

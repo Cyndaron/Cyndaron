@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Kaartverkoop;
+namespace Cyndaron\Concerts;
 
 use Cyndaron\Page;
 

@@ -18,7 +18,7 @@ class EditorController extends Controller
         'photoalbum' => \Cyndaron\Photoalbum\EditorPage::class,
         'sub' => \Cyndaron\StaticPage\EditorPage::class,
         // "Plug-in"
-        'concert' => \Cyndaron\Kaartverkoop\EditorPage::class,
+        'concert' => \Cyndaron\Concerts\EditorPage::class,
     ];
     protected $savePages = [
         'category' => \Cyndaron\Category\EditorSavePage::class,
@@ -27,7 +27,7 @@ class EditorController extends Controller
         'photoalbum' => \Cyndaron\Photoalbum\EditorSavePage::class,
         'sub' => \Cyndaron\StaticPage\EditorSavePage::class,
         // "Plug-in"
-        'concert' => \Cyndaron\Kaartverkoop\EditorSavePage::class,
+        'concert' => \Cyndaron\Concerts\EditorSavePage::class,
     ];
 
     public function routeGet()

@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Kaartverkoop;
+namespace Cyndaron\Concerts;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
@@ -11,7 +11,7 @@ class KaartenBestellenPagina extends Page
 {
     public function __construct(int $concert_id)
     {
-        $this->addScript('/src/Kaartverkoop/KaartenBestellenPagina.js');
+        $this->addScript('/src/Concerts/KaartenBestellenPagina.js');
 
         $concert = Concert::loadFromDatabase($concert_id)->asArray();
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC', [$concert_id]);

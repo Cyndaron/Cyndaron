@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\PageManager;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Kaartverkoop\Concert;
+use Cyndaron\Concerts\Concert;
 use Cyndaron\Mailform\Mailform;
 use Cyndaron\Page;
 use Cyndaron\User\User;

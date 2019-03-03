@@ -32,8 +32,8 @@ class Router
 
         // Official plugins
         'bestandenkast.php' => '\Cyndaron\Bestandenkast\OverzichtPagina',
-        'concert' => \Cyndaron\Kaartverkoop\ConcertController::class,
-        'concert-order' => \Cyndaron\Kaartverkoop\OrderController::class,
+        'concert' => \Cyndaron\Concerts\ConcertController::class,
+        'concert-order' => \Cyndaron\Concerts\OrderController::class,
         'minecraft' => \Cyndaron\Minecraft\MinecraftController::class,
         'verwerkmailformulier-ldbf' => '\Cyndaron\VerwerkMailformulierPaginaLDBF',
     ];

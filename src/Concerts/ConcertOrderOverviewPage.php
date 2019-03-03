@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Kaartverkoop;
+namespace Cyndaron\Concerts;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
@@ -29,7 +29,7 @@ class ConcertOrderOverviewPage extends Page
                     FROM     `kaartverkoop_bestellingen_kaartsoorten`";
         $boughtTicketTypes = DBConnection::doQueryAndFetchAll($boughtTicketTypesQuery, [$concert_id]);
 
-        $this->extraScripts[] = '/src/Kaartverkoop/ConcertOrderOverviewPage.js';
+        $this->extraScripts[] = '/src/Concerts/ConcertOrderOverviewPage.js';
 
         parent::__construct('Overzicht bestellingen: ' . $concert['naam']);
         $this->showPrePage();
