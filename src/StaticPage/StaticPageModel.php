@@ -2,15 +2,15 @@
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Util;
+use Cyndaron\Model;
 
-class StaticPageModel
+class StaticPageModel extends Model
 {
-    protected $id = null;
     protected $name = '';
     protected $text = '';
     protected $enableComments = false;
     protected $categoryId;
+    protected static $table = 'subs';
 
     public function getId(): ?int
     {
@@ -81,14 +81,6 @@ class StaticPageModel
         $this->categoryId = $categoryId;
     }
 
-    public function __construct(int $id = null)
-    {
-        if ($id > 0)
-        {
-            $this->id = $id;
-        }
-    }
-
     public function laden(): bool
     {
         if ($this->id === null)
@@ -157,13 +149,10 @@ class StaticPageModel
         }
     }
 
-    public function verwijder()
+    public function delete(): void
     {
-        if ($this->id != null)
-        {
-            DBConnection::doQuery('DELETE FROM subs WHERE id=?;', [$this->id]);
-            DBConnection::doQuery('DELETE FROM vorigesubs WHERE id=?;', [$this->id]);
-        }
+        parent::delete();
+        DBConnection::doQuery('DELETE FROM vorige' . static::$table . ' WHERE id = ?', [$this->id]);
     }
 
     public function react(string $auteur, string $reactie, string $antispam)

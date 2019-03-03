@@ -36,7 +36,7 @@ class StaticPageController extends Controller
                 break;
             case 'delete':
                 $model = new StaticPageModel($id);
-                $model->verwijder();
+                $model->delete();
                 break;
             case 'addtomenu':
                 MenuModel::voegToeAanMenu('/sub/' . $id);
