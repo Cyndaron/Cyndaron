@@ -4,7 +4,9 @@ declare (strict_types = 1);
 namespace Cyndaron\PageManager;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Kaartverkoop\Concert;use Cyndaron\Page;
+use Cyndaron\Kaartverkoop\Concert;
+use Cyndaron\Mailform\Mailform;
+use Cyndaron\Page;
 use Cyndaron\User\User;
 use Cyndaron\Widget\Button;
 use Cyndaron\Widget\PageTabs;
@@ -26,6 +28,8 @@ class PageManagerPage extends Page
             'category' => 'Categorieën',
             'photoalbum' => 'Fotoalbums',
             'friendlyurl' => 'Friendly URL\'s',
+            'mailform' => 'Mailformulieren',
+            // "Plug-in"
             'concert' => 'Concerten'
         ], '/pagemanager/', $currentPage);
 
@@ -41,6 +45,9 @@ class PageManagerPage extends Page
                 break;
             case 'photoalbum':
                 $this->showPhotoAlbums();
+                break;
+            case 'mailform':
+                $this->showMailforms();
                 break;
             case 'concert':
                 $this->showConcerts();
@@ -244,6 +251,42 @@ class PageManagerPage extends Page
                 </tbody>
             </table>
         </form>
+        <?php
+    }
+
+    public function showMailforms()
+    {
+        echo new Toolbar('', '', (string)new Button('new', '/editor/mailform', 'Nieuw mailformulier', 'Nieuw mailformulier'));
+
+        $mailforms = Mailform::fetchAll();
+        ?>
+
+        <table class="table table-striped table-bordered pm-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Naam</th>
+                <th>Acties</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($mailforms as $mailform):?>
+                <tr>
+                    <td><?=$mailform['id']?></td>
+                    <td>
+                        <?=$mailform['naam']?>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a class="btn btn-outline-cyndaron btn-sm" href="/editor/mailform/<?=$mailform['id']?>"><span class="glyphicon glyphicon-pencil" title="Bewerk dit mailformulier"></span></a>
+                            <button class="btn btn-danger btn-sm pm-delete" data-type="mailform" data-id="<?=$mailform['id'];?>" data-csrf-token="<?=User::getCSRFToken('mailform', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit mailformulier"></span></button>
+                        </div>
+
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
         <?php
     }
 

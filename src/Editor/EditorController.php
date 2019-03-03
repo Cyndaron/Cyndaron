@@ -22,6 +22,7 @@ class EditorController extends Controller
     ];
     protected $savePages = [
         'category' => \Cyndaron\Category\EditorSavePage::class,
+        'mailform' => \Cyndaron\Mailform\EditorSavePage::class,
         'photo' => \Cyndaron\Photoalbum\EditorSavePagePhoto::class,
         'photoalbum' => \Cyndaron\Photoalbum\EditorSavePage::class,
         'sub' => \Cyndaron\StaticPage\EditorSavePage::class,

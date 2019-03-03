@@ -29,7 +29,6 @@ class Router
         'system' => \Cyndaron\System\SystemController::class,
         'user' => \Cyndaron\User\UserController::class,
         'usermanager' => \Cyndaron\User\UserManagerPage::class,
-        'verwerkmailformulier.php' => '\Cyndaron\VerwerkMailformulierPagina',
 
         // Official plugins
         'bestandenkast.php' => '\Cyndaron\Bestandenkast\OverzichtPagina',
@@ -44,6 +43,7 @@ class Router
         'toonfoto.php' => ['url' => '/photoalbum/', 'id' => 'boekid'], // Old link to photo in album (pre-Lightbox)
         'toonfotoboek.php' => ['url' => '/photoalbum/', 'id' => 'id'],
         'toonsub.php' => ['url' => '/sub/', 'id' => 'id'],
+        'verwerkmailformulier.php' => ['url' => '/mailform/process/', 'id' => 'id'],
     ];
 
     public function __construct()

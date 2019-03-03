@@ -4,10 +4,10 @@ declare (strict_types = 1);
 namespace Cyndaron\Mailform;
 
 use Cyndaron\Controller;
+use Cyndaron\Page;
 use Cyndaron\Request;
 use Cyndaron\Setting;
 use Cyndaron\User\UserLevel;
-use Cyndaron\VerwerkMailformulierPagina;
 
 class MailformController extends Controller
 {
@@ -22,12 +22,12 @@ class MailformController extends Controller
         }
         catch (\Exception $e)
         {
-            $page = new VerwerkMailformulierPagina('Formulier versturen mislukt', $e->getMessage());
+            $page = new Page('Formulier versturen mislukt', $e->getMessage());
             $page->showPrePage();
             $page->showBody();
             $page->showPostPage();
         }
-        $page = new VerwerkMailformulierPagina('Formulier verstuurd', 'Het versturen is gelukt.');
+        $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
         $page->showPrePage();
         $page->showBody();
         $page->showPostPage();

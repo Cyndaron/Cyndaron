@@ -43,6 +43,8 @@ class Migrate60 extends Page
         DBConnection::doQuery("ALTER TABLE `users` ADD `firstname` VARCHAR(100) NOT NULL DEFAULT '' AFTER `level`, ADD `tussenvoegsel` VARCHAR(50) NOT NULL DEFAULT '' AFTER `firstname`, ADD `lastname` VARCHAR(200) NOT NULL DEFAULT '' AFTER `tussenvoegsel`, ADD `role` VARCHAR(100) NOT NULL DEFAULT '' AFTER `lastname`, ADD `comments` VARCHAR(500) NOT NULL DEFAULT '' AFTER `role`, ADD `avatar` VARCHAR(250) NOT NULL DEFAULT '' AFTER `comments`;");
         DBConnection::doQuery("ALTER TABLE `users` ADD `hide_from_member_list` TINYINT(1) NOT NULL DEFAULT '0' AFTER `avatar`;");
 
+        DBConnection::doQuery("ALTER TABLE `mailformulieren` ADD `send_confirmation` TINYINT(1) NOT NULL DEFAULT '0' AFTER `antispamantwoord`, ADD `confirmation_text` TEXT NULL DEFAULT NULL AFTER `send_confirmation`; ");
+
         parent::__construct('Upgrade naar versie 6.0');
         $this->showPrePage();
         echo 'De upgrade is voltooid.';
