@@ -83,22 +83,6 @@ class Util
         }
     }
 
-    /**
-     * @param string $waarde De waarde van de checkbox
-     * @return bool true als de checkbox was aangevinkt, false als dat niet zo was
-     */
-    public static function parseCheckBoxAlsBool(string $waarde): bool
-    {
-        if (!$waarde)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
     public static function generatePassword($length = 10): string
     {
         $gencode = '';

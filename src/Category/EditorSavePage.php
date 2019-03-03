@@ -13,7 +13,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
     {
         $titel = Request::unsafePost('titel');
         $beschrijving = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
-        $alleentitel = Util::parseCheckBoxAlsBool(Request::unsafePost('alleentitel'));
+        $alleentitel = (bool)Request::unsafePost('alleentitel');
         $categorieId = intval(Request::post('categorieid'));
 
         if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
