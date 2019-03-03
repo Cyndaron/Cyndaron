@@ -15,11 +15,11 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 
         if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
         {
-            PhotoalbumModel::wijzigFotoalbum($this->id, $naam, $notities);
+            Photoalbum::wijzigFotoalbum($this->id, $naam, $notities);
         }
         else
         {
-            $this->id = PhotoalbumModel::nieuwFotoalbum($naam, $notities);
+            $this->id = Photoalbum::nieuwFotoalbum($naam, $notities);
         }
 
         User::addNotification('Fotoalbum bewerkt.');

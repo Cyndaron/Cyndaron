@@ -23,14 +23,15 @@ class PhotoalbumController extends Controller
         {
             case 'add':
                 $name = Request::post('name');
-                PhotoalbumModel::nieuwFotoalbum($name);
+                Photoalbum::nieuwFotoalbum($name);
                 break;
             case 'edit':
                 $name = Request::post('name');
-                PhotoalbumModel::wijzigFotoalbum($id, $name);
+                Photoalbum::wijzigFotoalbum($id, $name);
                 break;
             case 'delete':
-                PhotoalbumModel::verwijderFotoalbum($id);
+                $obj = new Photoalbum($id);
+                $obj->delete();
                 break;
             case 'addtomenu':
                 MenuModel::voegToeAanMenu('/photoalbum/' . $id);

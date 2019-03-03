@@ -172,7 +172,7 @@ class PageManagerPage extends Page
         echo new Toolbar('', '', '
             <label for="pm-photoalbum-new-name" class="mr-sm-2">Nieuw fotoalbum:</label>
             <input class="form-control mr-sm-2" id="pm-photoalbum-new-name" type="text"/>
-            <button id="pm-create-photoalbum" data-csrf-token="' . User::getCSRFToken('photoalbum', 'add') . '" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+            <button type="button" id="pm-create-photoalbum" data-csrf-token="' . User::getCSRFToken('photoalbum', 'add') . '" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
         ');
         ?>
         <table class="table table-striped table-bordered pm-table">

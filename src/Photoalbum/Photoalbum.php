@@ -4,14 +4,12 @@ declare (strict_types = 1);
 namespace Cyndaron\Photoalbum;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Model;
 
-/**
- * Class FotoalbumModel
- * @package Cyndaron
- * @todo: Omvormen tot echt model.
- */
-class PhotoalbumModel
+class Photoalbum extends Model
 {
+    protected static $table = 'fotoboeken';
+
     public static function nieuwFotoalbum($naam, $notities = "")
     {
         if ($naam == '')
@@ -37,10 +35,5 @@ class PhotoalbumModel
         {
             DBConnection::doQueryAndFetchOne('UPDATE fotoboeken SET `notities`=? WHERE id=?', [$notities, $id]);
         }
-    }
-
-    public static function verwijderFotoalbum($id)
-    {
-        DBConnection::doQueryAndFetchOne('DELETE FROM fotoboeken WHERE id=?;', [$id]);
     }
 }
