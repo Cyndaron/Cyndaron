@@ -35,7 +35,6 @@ class Router
         'concert-order' => \Cyndaron\Concerts\OrderController::class,
         'file-cabinet' => \Cyndaron\FileCabinet\FileCabinetController::class,
         'minecraft' => \Cyndaron\Minecraft\MinecraftController::class,
-        'verwerkmailformulier-ldbf' => '\Cyndaron\VerwerkMailformulierPaginaLDBF',
     ];
 
     const OLD_URLS = [

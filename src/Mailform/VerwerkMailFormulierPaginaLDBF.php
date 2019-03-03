@@ -5,7 +5,7 @@ class VerwerkMailformulierPaginaLDBF extends Page
 {
     public function __construct()
     {
-        if (!Request::postIsEmpty()) //$form['naam'])
+        if (!Request::postIsEmpty())
         {
             if (empty(Request::post('E-mailadres')))
             {

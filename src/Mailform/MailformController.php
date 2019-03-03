@@ -8,6 +8,7 @@ use Cyndaron\Page;
 use Cyndaron\Request;
 use Cyndaron\Setting;
 use Cyndaron\User\UserLevel;
+use Cyndaron\VerwerkMailformulierPaginaLDBF;
 
 class MailformController extends Controller
 {
@@ -18,7 +19,10 @@ class MailformController extends Controller
         $id = (int)Request::getVar(2);
         try
         {
-            $this->process($id);
+            if ($this->action === 'process-ldbf')
+                new VerwerkMailformulierPaginaLDBF();
+            else
+                $this->process($id);
         }
         catch (\Exception $e)
         {
