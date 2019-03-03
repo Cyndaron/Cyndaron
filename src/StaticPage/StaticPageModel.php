@@ -165,4 +165,22 @@ class StaticPageModel
             DBConnection::doQuery('DELETE FROM vorigesubs WHERE id=?;', [$this->id]);
         }
     }
+
+    public function react(string $auteur, string $reactie, string $antispam)
+    {
+        if ($this->id == null)
+        {
+            throw new \Exception('No ID!');
+        }
+        $this->laden();
+        if ($this->getEnableComments())
+        {
+            if ($auteur && $reactie && ($antispam == 'acht' || $antispam == '8'))
+            {
+                $datum = date('Y-m-d H:i:s');
+                $prep = DBConnection::getPdo()->prepare('INSERT INTO reacties(subid, auteur, tekst, datum) VALUES (?, ?, ?, ?)');
+                $prep->execute([$this->id, $auteur, $reactie, $datum]);
+            }
+        }
+    }
 }

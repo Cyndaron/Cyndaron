@@ -4,6 +4,7 @@ namespace Cyndaron\StaticPage;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Request;
+use Cyndaron\User\User;
 
 class StaticPage extends Page
 {
@@ -23,19 +24,11 @@ class StaticPage extends Page
             die('Pagina bestaat niet.');
         }
 
-        $reactiesAan = $model->getEnableComments();
+        $allowReplies = $model->getEnableComments();
 
-        if ($reactiesAan && !Request::postIsEmpty())
+        if ($allowReplies && !Request::postIsEmpty())
         {
-            $auteur = Request::post('auteur');
-            $reactie = Request::post('reactie');
-            $antispam = strtolower(Request::post('antispam'));
-            if ($auteur && $reactie && ($antispam == 'acht' || $antispam == '8'))
-            {
-                $datum = date('Y-m-d H:i:s');
-                $prep = $connection->prepare('INSERT INTO reacties(subid, auteur, tekst, datum) VALUES (?, ?, ?, ?)');
-                $prep->execute([$id, $auteur, $reactie, $datum]);
-            }
+
         }
 
         $controls = sprintf('<a href="/editor/sub/%d" class="btn btn-outline-cyndaron" title="Bewerk deze statische pagina"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
@@ -53,37 +46,31 @@ class StaticPage extends Page
 
         $prep = $connection->prepare("SELECT *,DATE_FORMAT(datum, '%d-%m-%Y') AS rdatum,DATE_FORMAT(datum, '%H:%i') AS rtijd FROM reacties WHERE subid=? ORDER BY datum ASC");
         $prep->execute([$id]);
-        $reacties = $prep->fetchAll();
-        $reactiesaanwezig = false;
+        $replies = $prep->fetchAll();
+        $hasReplies = count($replies) > 0;
 
-        if (count($reacties) > 0)
+        if ($hasReplies)
         {
-            $reactiesaanwezig = true;
-            echo '<hr>';
-
-            foreach ($reacties as $reactie)
-            {
-                echo '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">';
-                printf('Reactie van <strong>%s</strong> op %s om %s:', $reactie['auteur'], $reactie['rdatum'], $reactie['rtijd']);
-                echo '</h3></div><div class="panel-body">';
-                echo $reactie['tekst'];
-                echo '</div></div>';
-            }
+            foreach ($replies as $reactie): ?>
+                <div class="card mb-2">
+                    <div class="card-header">
+                        Reactie van <strong><?=$reactie['auteur']?></strong> op <?=$reactie['rdatum']?> om <?=$reactie['rtijd']?>
+                    </div>
+                    <div class="card-body">
+                        <?=$reactie['tekst']?>
+                    </div>
+                </div>
+            <?php endforeach;
         }
 
-        if ($reactiesaanwezig || $reactiesAan)
-        {
-            echo '<div class="reactiecontainer"><br />';
-        }
-
-        if ($reactiesaanwezig && !$reactiesAan)
+        if ($hasReplies && !$allowReplies)
         {
             echo 'Op dit bericht kan niet (meer) worden gereageerd.<br />';
         }
-        if ($reactiesAan):
+        if ($allowReplies):
             ?>
             <h3>Reageren:</h3>
-            <form name="reactie" method="post" action="/sub/<?= $id; ?>" class="form-horizontal">
+            <form name="reactie" method="post" action="/sub/react/<?= $id; ?>" class="form-horizontal">
                 <div class="form-group">
                     <label for="auteur" class="col-sm-1 control-label">Naam: </label>
                     <div class="col-sm-4">
@@ -107,14 +94,10 @@ class StaticPage extends Page
                         <input type="submit" class="btn btn-primary" value="Versturen"/>
                     </div>
                 </div>
+                <input type="hidden" name="csrfToken" value="<?=User::getCSRFToken('sub', 'react')?>"/>
             </form>
             <?php
         endif;
-
-        if ($reactiesaanwezig || $reactiesAan)
-        {
-            echo '</div>';
-        }
 
         $this->showPostPage();
     }

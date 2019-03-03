@@ -1,13 +1,18 @@
 <?php
 declare (strict_types = 1);
+
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\Controller;
 use Cyndaron\Menu\MenuModel;
 use Cyndaron\Request;
+use Cyndaron\User\User;
+use Cyndaron\User\UserLevel;
 
 class StaticPageController extends Controller
 {
+    protected $minLevelPost = UserLevel::ANONYMOUS;
+
     public function routeGet()
     {
         $id = intval(Request::getVar(1));
@@ -18,8 +23,17 @@ class StaticPageController extends Controller
     {
         $id = intval(Request::getVar(2));
 
+        if ($this->action !== 'react' && !User::isAdmin())
+        {
+            $this->send401();
+            die();
+        }
+
         switch ($this->action)
         {
+            case 'react':
+                $this->react($id);
+                break;
             case 'delete':
                 $model = new StaticPageModel($id);
                 $model->verwijder();
@@ -28,5 +42,22 @@ class StaticPageController extends Controller
                 MenuModel::voegToeAanMenu('/sub/' . $id);
                 break;
         }
+    }
+
+    private function react(int $id)
+    {
+        $model = new StaticPageModel($id);
+        if (!$model->laden())
+        {
+            header('Location: /error/404');
+            die('Pagina bestaat niet.');
+        }
+
+        $auteur = Request::post('auteur');
+        $reactie = Request::post('reactie');
+        $antispam = strtolower(Request::post('antispam'));
+        $model->react($auteur, $reactie, $antispam);
+
+        header('Location: /sub/' . $id);
     }
 }
