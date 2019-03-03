@@ -1,10 +1,10 @@
 <?php
 namespace Cyndaron\User;
 
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 use Cyndaron\Request;
 
-class LoginPage extends Pagina
+class LoginPage extends Page
 {
     public function __construct()
     {

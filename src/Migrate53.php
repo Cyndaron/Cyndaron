@@ -3,7 +3,7 @@ namespace Cyndaron;
 
 require __DIR__ . '/../check.php';
 
-class Migrate53 extends Pagina
+class Migrate53 extends Page
 {
     public function __construct()
     {

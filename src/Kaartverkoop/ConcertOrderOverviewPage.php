@@ -2,11 +2,11 @@
 namespace Cyndaron\Kaartverkoop;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 use Cyndaron\User\User;
 use Cyndaron\Widget\Toolbar;
 
-class ConcertOrderOverviewPage extends Pagina
+class ConcertOrderOverviewPage extends Page
 {
     public function __construct(int $concert_id)
     {

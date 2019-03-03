@@ -107,14 +107,14 @@ class UserController extends Controller
         }
         catch (IncorrectCredentials $e)
         {
-            $page = new \Cyndaron\Pagina('Inloggen mislukt', $e->getMessage());
+            $page = new \Cyndaron\Page('Inloggen mislukt', $e->getMessage());
             $page->showPrePage();
             $page->showBody();
             $page->showPostPage();
         }
         catch (\Exception $e)
         {
-            $page = new \Cyndaron\Pagina('Inloggen mislukt', 'Onbekende fout: ' . $e->getMessage());
+            $page = new \Cyndaron\Page('Inloggen mislukt', 'Onbekende fout: ' . $e->getMessage());
             $page->showPrePage();
             $page->showBody();
             $page->showPostPage();

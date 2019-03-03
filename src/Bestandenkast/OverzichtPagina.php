@@ -1,9 +1,9 @@
 <?php
 namespace Cyndaron\Bestandenkast;
 
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 
-class OverzichtPagina extends Pagina
+class OverzichtPagina extends Page
 {
     public function __construct()
     {

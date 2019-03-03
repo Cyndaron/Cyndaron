@@ -2,12 +2,12 @@
 namespace Cyndaron\Kaartverkoop;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 use Cyndaron\Request;
 use Cyndaron\User\User;
 
 
-class KaartenBestellenPagina extends Pagina
+class KaartenBestellenPagina extends Page
 {
     public function __construct(int $concert_id)
     {

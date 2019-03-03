@@ -2,9 +2,9 @@
 namespace Cyndaron\Minecraft;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 
-class StatusPagina extends Pagina
+class StatusPagina extends Page
 {
     public function __construct()
     {

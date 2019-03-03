@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\PageManager;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Kaartverkoop\Concert;use Cyndaron\Pagina;
+use Cyndaron\Kaartverkoop\Concert;use Cyndaron\Page;
 use Cyndaron\User\User;
 use Cyndaron\Widget\Button;
 use Cyndaron\Widget\PageTabs;
@@ -12,7 +12,7 @@ use Cyndaron\Widget\Toolbar;
 
 require_once __DIR__ . '/../../check.php';
 
-class PageManagerPage extends Pagina
+class PageManagerPage extends Page
 {
     public function __construct($currentPage)
     {

@@ -2,11 +2,11 @@
 namespace Cyndaron\Category;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 use Cyndaron\Url;
 use Cyndaron\Util;
 
-class CategoryPage extends Pagina
+class CategoryPage extends Page
 {
     public function __construct($id)
     {

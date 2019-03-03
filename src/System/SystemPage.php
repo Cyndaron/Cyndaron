@@ -3,12 +3,12 @@ namespace Cyndaron\System;
 
 use Cyndaron\CyndaronInfo;
 use Cyndaron\DBConnection;
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 use Cyndaron\Setting;
 use Cyndaron\User\User;
 use Cyndaron\Widget\PageTabs;
 
-class SystemPage extends Pagina
+class SystemPage extends Page
 {
     public function __construct($currentPage)
     {

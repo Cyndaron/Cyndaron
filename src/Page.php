@@ -21,7 +21,7 @@ use Cyndaron\Widget\Button;
  */
 
 
-class Pagina
+class Page
 {
     protected $extraMeta = '';
     protected $title = '';

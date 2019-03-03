@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Error;
 
 use Cyndaron\Controller;
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 use Cyndaron\Request;
 
 class ErrorController extends Controller
@@ -30,14 +30,14 @@ class ErrorController extends Controller
         {
             $error = static::KNOWN_ERRORS[$this->action];
             header($error['httpStatus']);
-            $page = new Pagina($error['pageTitle'], $error['notification']);
+            $page = new Page($error['pageTitle'], $error['notification']);
             $page->showPrePage();
             $page->showBody();
             $page->showPostPage();
         }
         else
         {
-            $page = new Pagina('Onbekende fout', 'Er is een onbekende foutopgetreden. Code: ' . $this->action);
+            $page = new Page('Onbekende fout', 'Er is een onbekende foutopgetreden. Code: ' . $this->action);
             $page->showPrePage();
             $page->showBody();
             $page->showPostPage();

@@ -1,9 +1,9 @@
 <?php
 namespace Cyndaron\Kaartverkoop;
 
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 
-class VerwerkBestellingPagina extends Pagina
+class VerwerkBestellingPagina extends Page
 {
     public function __construct(string $title, string $message)
     {

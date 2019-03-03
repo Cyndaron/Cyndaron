@@ -1,10 +1,10 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 
 
-class LedenPagina extends Pagina
+class LedenPagina extends Page
 {
     private $level = [
         "In de Goelag",

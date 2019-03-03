@@ -2,7 +2,7 @@
 namespace Cyndaron\Editor;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 use Cyndaron\Request;
 use Cyndaron\Setting;
 use Cyndaron\Url;
@@ -10,7 +10,7 @@ use Cyndaron\User\User;
 
 require_once __DIR__ . '/../../check.php';
 
-abstract class EditorPage extends Pagina
+abstract class EditorPage extends Page
 {
     protected $id = null;
     protected $hasTitle = true;

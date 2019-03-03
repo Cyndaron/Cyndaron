@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron;
 
-class VerwerkMailformulierPagina extends Pagina
+class VerwerkMailformulierPagina extends Page
 {
 
 }

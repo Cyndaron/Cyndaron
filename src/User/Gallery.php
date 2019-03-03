@@ -2,10 +2,10 @@
 namespace Cyndaron\User;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 
 
-class Gallery extends Pagina
+class Gallery extends Page
 {
     const FALLBACK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 

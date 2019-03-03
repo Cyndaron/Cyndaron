@@ -3,11 +3,11 @@ declare (strict_types = 1);
 
 namespace Cyndaron\Menu;
 
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 
 require_once __DIR__ . '/../../check.php';
 
-class MenuEditorPage extends Pagina
+class MenuEditorPage extends Page
 {
     public function __construct()
     {

@@ -3,7 +3,7 @@ namespace Cyndaron;
 
 use Cyndaron\User\User;
 
-class Migrate60 extends Pagina
+class Migrate60 extends Page
 {
     public function __construct()
     {

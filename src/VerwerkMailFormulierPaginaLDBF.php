@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron;
 
-class VerwerkMailformulierPaginaLDBF extends Pagina
+class VerwerkMailformulierPaginaLDBF extends Page
 {
     public function __construct()
     {

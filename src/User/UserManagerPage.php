@@ -4,12 +4,12 @@
 namespace Cyndaron\User;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 use Cyndaron\Widget\Toolbar;
 
 require_once __DIR__ . '/../../check.php';
 
-class UserManagerPage extends Pagina
+class UserManagerPage extends Page
 {
     const USER_LEVEL_DESCRIPTIONS = [
         'Niet ingelogd',

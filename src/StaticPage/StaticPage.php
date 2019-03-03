@@ -2,10 +2,10 @@
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Pagina;
+use Cyndaron\Page;
 use Cyndaron\Request;
 
-class StaticPage extends Pagina
+class StaticPage extends Page
 {
     public function __construct(int $id)
     {
