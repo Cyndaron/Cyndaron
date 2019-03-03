@@ -12,14 +12,14 @@ class StaticPage extends Pagina
         $connection = DBConnection::getPDO();
         if ($id <= 0)
         {
-            header('Location: /404');
+            header('Location: /error/404');
             die('Incorrecte parameter ontvangen.');
         }
 
         $model = new StaticPageModel($id);
         if (!$model->laden())
         {
-            header('Location: /404');
+            header('Location: /error/404');
             die('Pagina bestaat niet.');
         }
 

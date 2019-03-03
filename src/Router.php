@@ -15,10 +15,9 @@ class Router
 
     protected $endpoints = [
         // Default endpoints
-        '403' => '\Cyndaron\Error403Pagina',
-        '404' => '\Cyndaron\Error404Pagina',
         'category' => \Cyndaron\Category\CategoryController::class,
         'editor' => \Cyndaron\Editor\EditorController::class,
+        'error' => \Cyndaron\Error\ErrorController::class,
         'friendlyurl' => \Cyndaron\FriendlyUrl\FriendlyUrlController::class,
         'menu' => Menu\MenuController::class,
         'menu-editor' => Menu\MenuEditorController::class,
@@ -75,14 +74,12 @@ class Router
             $this->updateRequestVars($this->rewriteFriendlyUrl(new Url($url)));
         }
 
-        if (array_key_exists($this->requestVars[0], $this->endpoints))
+        if (!array_key_exists($this->requestVars[0], $this->endpoints))
         {
-            $this->routeEndpoint();
+            $this->updateRequestVars('/error/404');
         }
-        else
-        {
-            new Error404Pagina();
-        }
+
+        $this->routeEndpoint();
     }
 
     private function routeFoundNowCheckLogin()
@@ -93,7 +90,7 @@ class Router
             Request::sendDoNotCache();
             if ($userLevel > 0)
             {
-                new Error403Pagina();
+                header('Location: /error/403');
                 die('Deze pagina mag niet worden opgevraagd.');
             }
             else
@@ -201,7 +198,7 @@ class Router
     private function blockPathTraversal(string $request): void
     {
         if ((substr($request, 0, 1) == '.' || substr($request, 0, 1) == '/') && $request != '/') {
-            new Error403Pagina();
+            header('Location: /error/403');
             die('Deze locatie mag niet worden opgevraagd.');
         }
     }

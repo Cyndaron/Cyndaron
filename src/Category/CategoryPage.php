@@ -26,7 +26,7 @@ class CategoryPage extends Pagina
     {
         if ($id < 0)
         {
-            header("Location: /404");
+            header("Location: /error/404");
             die('Incorrecte parameter ontvangen.');
         }
 

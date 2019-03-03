@@ -14,7 +14,7 @@ class PhotoalbumPage extends Pagina
     {
         if ($id < 1)
         {
-            header("Location: /404");
+            header("Location: /error/404");
             die('Incorrecte parameter ontvangen.');
         }
         $album = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM fotoboeken WHERE id=?', [$id]);
