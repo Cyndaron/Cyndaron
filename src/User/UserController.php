@@ -19,7 +19,7 @@ class UserController extends Controller
             case 'login':
                 if (empty($_SESSION['redirect']))
                 {
-                    $_SESSION['redirect'] = Request::geefReferrerVeilig();
+                    $_SESSION['redirect'] = Request::referrer();
                 }
                 new LoginPage();
                 break;
@@ -49,17 +49,17 @@ class UserController extends Controller
             switch ($this->action)
             {
                 case 'add':
-                    $username = Request::geefPostVeilig('username');
-                    $email = Request::geefPostVeilig('email');
-                    $password = Request::geefPostVeilig('password') ?: Util::generatePassword();
-                    $level = intval(Request::geefPostVeilig('level'));
-                    $firstname = Request::geefPostVeilig('firstname');
-                    $tussenvoegsel = Request::geefPostVeilig('tussenvoegsel');
-                    $lastname = Request::geefPostVeilig('lastname');
-                    $role = Request::geefPostVeilig('role');
-                    $comments = Request::geefPostVeilig('comments');
-                    $avatar = Request::geefPostVeilig('avatar');
-                    $hideFromMemberList = Request::geefPostVeilig('hideFromMemberList') == '1' ? true : false;
+                    $username = Request::post('username');
+                    $email = Request::post('email');
+                    $password = Request::post('password') ?: Util::generatePassword();
+                    $level = intval(Request::post('level'));
+                    $firstname = Request::post('firstname');
+                    $tussenvoegsel = Request::post('tussenvoegsel');
+                    $lastname = Request::post('lastname');
+                    $role = Request::post('role');
+                    $comments = Request::post('comments');
+                    $avatar = Request::post('avatar');
+                    $hideFromMemberList = Request::post('hideFromMemberList') == '1' ? true : false;
 
                     $this->create($username, $email, $password, $level, $firstname, $tussenvoegsel, $lastname, $role, $comments, $avatar, $hideFromMemberList);
                     break;
@@ -67,16 +67,16 @@ class UserController extends Controller
                     $id = Request::getVar(2);
                     if ($id !== null)
                     {
-                        $username = Request::geefPostVeilig('username');
-                        $email = Request::geefPostVeilig('email');
-                        $level = intval(Request::geefPostVeilig('level'));
-                        $firstname = Request::geefPostVeilig('firstname');
-                        $tussenvoegsel = Request::geefPostVeilig('tussenvoegsel');
-                        $lastname = Request::geefPostVeilig('lastname');
-                        $role = Request::geefPostVeilig('role');
-                        $comments = Request::geefPostVeilig('comments');
-                        $avatar = Request::geefPostVeilig('avatar');
-                        $hideFromMemberList = Request::geefPostVeilig('hideFromMemberList') == '1' ? true : false;
+                        $username = Request::post('username');
+                        $email = Request::post('email');
+                        $level = intval(Request::post('level'));
+                        $firstname = Request::post('firstname');
+                        $tussenvoegsel = Request::post('tussenvoegsel');
+                        $lastname = Request::post('lastname');
+                        $role = Request::post('role');
+                        $comments = Request::post('comments');
+                        $avatar = Request::post('avatar');
+                        $hideFromMemberList = Request::post('hideFromMemberList') == '1' ? true : false;
                         $this->edit(intval($id), $username, $email, $level, $firstname, $tussenvoegsel, $lastname, $role, $comments, $avatar, $hideFromMemberList);
                     }
                     break;
@@ -98,8 +98,8 @@ class UserController extends Controller
 
     private function login()
     {
-        $identification = Request::geefPostVeilig('login_user');
-        $verification = Request::geefPostVeilig('login_pass');
+        $identification = Request::post('login_user');
+        $verification = Request::post('login_pass');
 
         try
         {

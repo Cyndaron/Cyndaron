@@ -5,31 +5,34 @@ class Request
 {
     protected static $vars = [];
 
-    public static function geefPostVeilig($var)
+    public static function post($var = null)
     {
+        if ($var === null)
+            return static::postArray();
+
         if (empty($_POST[$var]))
             return '';
 
-        return static::wasVariabele($_POST[$var]);
+        return static::cleanVariable($_POST[$var]);
     }
 
-    public static function geefGetVeilig($var)
+    public static function get($var)
     {
         if (empty($_GET[$var]))
             return '';
 
-        return static::wasVariabele($_GET[$var]);
+        return static::cleanVariable($_GET[$var]);
     }
 
-    public static function geefReferrerVeilig()
+    public static function referrer()
     {
         if (empty($_SERVER['HTTP_REFERER']))
             return '';
 
-        return static::wasVariabele($_SERVER['HTTP_REFERER']);
+        return static::cleanVariable($_SERVER['HTTP_REFERER']);
     }
 
-    public static function geefPostOnveilig($var)
+    public static function unsafePost($var)
     {
         if (empty($_POST[$var]))
             return '';
@@ -37,7 +40,7 @@ class Request
         return $_POST[$var];
     }
 
-    public static function postIsLeeg(): bool
+    public static function postIsEmpty(): bool
     {
         if (empty($_POST))
         {
@@ -47,47 +50,37 @@ class Request
         return false;
     }
 
-    public static function getIsLeeg(): bool
-    {
-        if (empty($_GET))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public static function geefPostArrayVeilig()
+    private static function postArray()
     {
         $ret = [];
 
         foreach ($_POST as $key => $value)
         {
-            $key = self::wasVariabele($key);
-            $ret[$key] = self::wasArray($value);
+            $key = self::cleanVariable($key);
+            $ret[$key] = self::cleanArray($value);
         }
 
         return $ret;
     }
 
-    private static function wasArray($invoer)
+    private static function cleanArray($invoer)
     {
         if (is_array($invoer))
         {
             $tmp = [];
             foreach ($invoer as $key => $value)
             {
-                $tmp[$key] = self::wasArray($value);
+                $tmp[$key] = self::cleanArray($value);
             }
             return $tmp;
         }
         else
         {
-            return self::wasVariabele($invoer);
+            return self::cleanVariable($invoer);
         }
     }
 
-    public static function wasVariabele($var)
+    public static function cleanVariable($var)
     {
         // Dit filtert niet-bestaande en ongewenste UTF-8 tekens uit een string.
         // Line feeds, carriage returns en horizontale tabs zijn toegestaan.

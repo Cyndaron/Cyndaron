@@ -24,11 +24,11 @@ class PhotoalbumController extends Controller
             switch ($this->action)
             {
                 case 'add':
-                    $name = Request::geefPostVeilig('name');
+                    $name = Request::post('name');
                     PhotoalbumModel::nieuwFotoalbum($name);
                     break;
                 case 'edit':
-                    $name = Request::geefPostVeilig('name');
+                    $name = Request::post('name');
                     PhotoalbumModel::wijzigFotoalbum($id, $name);
                     break;
                 case 'delete':

@@ -45,14 +45,14 @@ class MailformController extends Controller
 
         if ($form['naam'])
         {
-            if ($form['stuur_bevestiging'] == true && empty(Request::geefPostVeilig('E-mailadres')))
+            if ($form['stuur_bevestiging'] == true && empty(Request::post('E-mailadres')))
             {
                 throw new \Exception('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
             }
-            elseif (strtolower(Request::geefPostVeilig('antispam')) == strtolower($form['antispamantwoord']))
+            elseif (strtolower(Request::post('antispam')) == strtolower($form['antispamantwoord']))
             {
                 $mailBody = '';
-                foreach (Request::geefPostArrayVeilig() as $question => $answer)
+                foreach (Request::post() as $question => $answer)
                 {
                     if ($question !== 'antispam')
                     {
@@ -61,7 +61,7 @@ class MailformController extends Controller
                 }
                 $recipient = $form['mailadres'];
                 $subject = $form['naam'];
-                $sender = Request::geefPostVeilig('E-mailadres');
+                $sender = Request::post('E-mailadres');
 
                 $server = str_replace("www.", "", $_SERVER['HTTP_HOST']);
                 $server = str_replace("http://", "", $server);

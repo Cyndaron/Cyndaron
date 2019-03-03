@@ -11,15 +11,15 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     protected function prepare()
     {
-        $contentTitle = Request::geefPostOnveilig('titel');
-        $description = $this->parseTextForInlineImages(Request::geefPostOnveilig('artikel'));
-        $closedDescription = Request::geefPostOnveilig('closedDescription');
-        $salesOpen = (bool)Request::geefPostVeilig('salesOpen');
-        $forcedDelivery = (bool)Request::geefPostVeilig('forcedDelivery');
-        $hasReservedSeats = (bool)Request::geefPostVeilig('hasReservedSeats');
-        $reservedSeatsSoldOut = (bool)Request::geefPostVeilig('reservedSeatsSoldOut');
-        $deliveryFee = (float)str_replace(',', '.', Request::geefPostVeilig('deliveryFee'));
-        $reservedSeatFee = (float)str_replace(',', '.', Request::geefPostVeilig('reservedSeatFee'));
+        $contentTitle = Request::unsafePost('titel');
+        $description = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
+        $closedDescription = Request::unsafePost('closedDescription');
+        $salesOpen = (bool)Request::post('salesOpen');
+        $forcedDelivery = (bool)Request::post('forcedDelivery');
+        $hasReservedSeats = (bool)Request::post('hasReservedSeats');
+        $reservedSeatsSoldOut = (bool)Request::post('reservedSeatsSoldOut');
+        $deliveryFee = (float)str_replace(',', '.', Request::post('deliveryFee'));
+        $reservedSeatFee = (float)str_replace(',', '.', Request::post('reservedSeatFee'));
 
         if ($this->id > 0)
         {

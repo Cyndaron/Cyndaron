@@ -24,12 +24,12 @@ class CategoryController extends Controller
 
             if ($action == 'add')
             {
-                $name = Request::geefPostVeilig('name');
+                $name = Request::post('name');
                 CategoryModel::nieuweCategorie($name);
             }
             elseif ($action == 'edit')
             {
-                $name = Request::geefPostVeilig('name');
+                $name = Request::post('name');
                 CategoryModel::wijzigCategorie($id, $name);
             }
             elseif ($action == 'delete')

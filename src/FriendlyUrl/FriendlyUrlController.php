@@ -17,8 +17,8 @@ class FriendlyUrlController extends Controller
             switch ($this->action)
             {
                 case 'add':
-                    $name = Request::geefPostVeilig('name');
-                    $target = new Url(Request::geefPostVeilig('target'));
+                    $name = Request::post('name');
+                    $target = new Url(Request::post('target'));
                     $target->createFriendly($name);
                     break;
                 case 'delete':

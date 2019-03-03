@@ -5,9 +5,9 @@ class VerwerkMailformulierPaginaLDBF extends Page
 {
     public function __construct()
     {
-        if (!Request::postIsLeeg()) //$form['naam'])
+        if (!Request::postIsEmpty()) //$form['naam'])
         {
-            if (empty(Request::geefPostVeilig('E-mailadres')))
+            if (empty(Request::post('E-mailadres')))
             {
                 parent::__construct('Formulier versturen mislukt');
                 $this->showPrePage();
@@ -20,35 +20,35 @@ class VerwerkMailformulierPaginaLDBF extends Page
 	<tbody>
 		<tr>
 			<td>De heer/mevrouw:</td>
-			<td>' . Request::geefPostVeilig("geslacht") . '</td>
+			<td>' . Request::post("geslacht") . '</td>
 		</tr>
 		<tr>
 			<td>Voorletters:</td>
-			<td>' . Request::geefPostVeilig("voorletters") . '</td>
+			<td>' . Request::post("voorletters") . '</td>
 		</tr>
 		<tr>
 			<td>Achternaam:</td>
-			<td>' . Request::geefPostVeilig("achternaam") . '</td>
+			<td>' . Request::post("achternaam") . '</td>
 		</tr>
 		<tr>
 			<td>Adres:</td>
-			<td>' . Request::geefPostVeilig("adres") . '</td>
+			<td>' . Request::post("adres") . '</td>
 		</tr>
 		<tr>
 			<td>Postcode</td>
-			<td>' . Request::geefPostVeilig("postcode") . '</td>
+			<td>' . Request::post("postcode") . '</td>
 		</tr>
 		<tr>
 			<td>Woonplaats</td>
-			<td>' . Request::geefPostVeilig("woonplaats") . '</td>
+			<td>' . Request::post("woonplaats") . '</td>
 		</tr>
 		<tr>
 			<td>Telefoon/GSM:</td>
-			<td>' . Request::geefPostVeilig("telefoon") . '</td>
+			<td>' . Request::post("telefoon") . '</td>
 		</tr>
 		<tr>
 			<td>E-mailadres:</td>
-			<td>' . Request::geefPostVeilig("E-mailadres") . '</td>
+			<td>' . Request::post("E-mailadres") . '</td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
@@ -59,19 +59,19 @@ class VerwerkMailformulierPaginaLDBF extends Page
 		</tr>
 		<tr>
 			<td>Voornamen:</td>
-			<td>' . Request::geefPostVeilig("bvoornamen") . '</td>
+			<td>' . Request::post("bvoornamen") . '</td>
 		</tr>
 		<tr>
 			<td>Achternaam:</td>
-			<td>' . Request::geefPostVeilig("bachternaam") . '</td>
+			<td>' . Request::post("bachternaam") . '</td>
 		</tr>
 		<tr>
 			<td>Woonadres:</td>
-			<td>' . Request::geefPostVeilig("bwoonadres") . '</td>
+			<td>' . Request::post("bwoonadres") . '</td>
 		</tr>
 		<tr>
 			<td>Geboortedatum:</td>
-			<td>' . Request::geefPostVeilig("geboortedag") . '-' . Request::geefPostVeilig("geboortemaand") . '-' . Request::geefPostVeilig("geboortejaar") . '</td>
+			<td>' . Request::post("geboortedag") . '-' . Request::post("geboortemaand") . '-' . Request::post("geboortejaar") . '</td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
@@ -82,34 +82,34 @@ class VerwerkMailformulierPaginaLDBF extends Page
 		</tr>
 		<tr>
 			<td>Instrumentale/Vocale studie:</td>
-			<td>' . Request::geefPostVeilig("studie") . '</td>
+			<td>' . Request::post("studie") . '</td>
 		</tr>
 		<tr>
 			<td>Betrokkene volgde hiervoor:</td>
-			<td>' . Request::geefPostVeilig("lessen") . ' lessen</td>
+			<td>' . Request::post("lessen") . ' lessen</td>
 		</tr>
 		<tr>
 			<td>Eerder werd les gevolgd bij:</td>
-			<td>' . Request::geefPostVeilig("lesdocent") . '</td>
+			<td>' . Request::post("lesdocent") . '</td>
 		</tr>
 		<tr>
 			<td>Aantal gevolgde lesjaren:</td>
-			<td>' . Request::geefPostVeilig("aantal") . '</td>
+			<td>' . Request::post("aantal") . '</td>
 		</tr>
 		<tr>
 			<td>Vervolgstudie bij:</td>
-			<td>' . Request::geefPostVeilig("vervolg") . '</td>
+			<td>' . Request::post("vervolg") . '</td>
 		</tr>
 		<tr>
-			<td colspan="2">' . Request::geefPostVeilig("soort") . '</td>
+			<td colspan="2">' . Request::post("soort") . '</td>
 		</tr>
 		<tr>
 			<td>Huurgebruik / Aanschaf instrument:</td>
-			<td>' . Request::geefPostVeilig("huur") . '</td>
+			<td>' . Request::post("huur") . '</td>
 		</tr>
 		<tr>
 			<td>Anderszins:</td>
-			<td>' . Request::geefPostVeilig("anderszins") . '</td>
+			<td>' . Request::post("anderszins") . '</td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
@@ -117,7 +117,7 @@ class VerwerkMailformulierPaginaLDBF extends Page
 		</tr>
 		<tr>
 			<td>Aanvrager verklaart hierbij dat het bruto gezinsinkomen:</td>
-			<td>&euro; ' . Request::geefPostVeilig("gezinsinkomen") . ' bedraagt.</td>
+			<td>&euro; ' . Request::post("gezinsinkomen") . ' bedraagt.</td>
 		</tr>
 		<tr>
 			<td colspan="2"><b>Aanvraag voor financi&euml;le ondersteuning wordt niet toegekend, indien het gezinsinkomen meer dan 120 % van de toepasselijke bijstandsnorm bedraagt.</b></td>
@@ -125,18 +125,18 @@ class VerwerkMailformulierPaginaLDBF extends Page
 		<tr>
 			<td>Aanvrager meldt hierbij dat er ook een aanvraag is ingediend bij:<br />
 			(indien van toepassing)</td>
-			<td>' . Request::geefPostVeilig("ookaanvraag") . '</td>
+			<td>' . Request::post("ookaanvraag") . '</td>
 		</tr>
 	</tbody>
 </table></body></html>';
 
                 $extraheaders = 'From: "Website Leen de Broekert Fonds" <noreply@leendebroekertfonds.nl>' . "\n" .
                     'Content-Type: text/html; charset="UTF-8"';
-                $extraheadersMail1 = $extraheaders . "\n" . 'Reply-To: ' . Request::geefPostVeilig('E-mailadres');
+                $extraheadersMail1 = $extraheaders . "\n" . 'Reply-To: ' . Request::post('E-mailadres');
                 $extraheadersMail2 = $extraheaders . "\n" . 'Reply-To: voorzitter@leendebroekertfonds.nl';
 
                 $mail1 = mail('voorzitter@leendebroekertfonds.nl', 'Nieuwe aanvraag', $tekst, $extraheadersMail1);
-                $mail2 = mail(Request::geefPostVeilig('E-mailadres'), 'Kopie aanvraag', $tekst, $extraheadersMail2);
+                $mail2 = mail(Request::post('E-mailadres'), 'Kopie aanvraag', $tekst, $extraheadersMail2);
 
                 if ($mail1 && $mail2)
                 {

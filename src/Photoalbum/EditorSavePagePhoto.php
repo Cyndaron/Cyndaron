@@ -11,7 +11,7 @@ class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
     protected function prepare()
     {
         $hash = Request::getVar(3);
-        $caption = Request::geefPostOnveilig('artikel');
+        $caption = Request::unsafePost('artikel');
 
         PhotoModel::addCaption($hash, $caption);
         User::addNotification('Bijschrift bewerkt.');

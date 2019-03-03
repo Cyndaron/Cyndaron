@@ -11,11 +11,11 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     protected function prepare()
     {
-        $title = Request::geefPostOnveilig('titel');
-        $confirmation = $this->parseTextForInlineImages(Request::geefPostOnveilig('artikel'));
-        $sendConfirmation = (int)Request::geefPostOnveilig('sendConfirmation');
-        $email = Request::geefPostOnveilig('email');
-        $antiSpamAnswer = Request::geefPostOnveilig('antiSpamAnswer');
+        $title = Request::unsafePost('titel');
+        $confirmation = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
+        $sendConfirmation = (int)Request::unsafePost('sendConfirmation');
+        $email = Request::unsafePost('email');
+        $antiSpamAnswer = Request::unsafePost('antiSpamAnswer');
 
         if ($this->id > 0) // Existing mail form, edit.
         {

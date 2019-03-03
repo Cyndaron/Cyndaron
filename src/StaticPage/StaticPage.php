@@ -25,11 +25,11 @@ class StaticPage extends Page
 
         $reactiesAan = $model->getEnableComments();
 
-        if ($reactiesAan && !Request::postIsLeeg())
+        if ($reactiesAan && !Request::postIsEmpty())
         {
-            $auteur = Request::geefPostVeilig('auteur');
-            $reactie = Request::geefPostVeilig('reactie');
-            $antispam = strtolower(Request::geefPostVeilig('antispam'));
+            $auteur = Request::post('auteur');
+            $reactie = Request::post('reactie');
+            $antispam = strtolower(Request::post('antispam'));
             if ($auteur && $reactie && ($antispam == 'acht' || $antispam == '8'))
             {
                 $datum = date('Y-m-d H:i:s');

@@ -27,7 +27,7 @@ abstract class EditorSavePage
 
         $this->prepare();
 
-        if ($friendlyUrl = Request::geefPostVeilig('friendlyUrl'))
+        if ($friendlyUrl = Request::post('friendlyUrl'))
         {
             $unfriendlyUrl = new Url('/' . $this->type . '/' . $this->id);
             $oudeFriendlyUrl = $unfriendlyUrl->getFriendly();

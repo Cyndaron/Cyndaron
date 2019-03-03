@@ -10,8 +10,8 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 
     protected function prepare()
     {
-        $naam = Request::geefPostOnveilig('titel');
-        $notities = Request::geefPostOnveilig('artikel');
+        $naam = Request::unsafePost('titel');
+        $notities = Request::unsafePost('artikel');
 
         if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
         {

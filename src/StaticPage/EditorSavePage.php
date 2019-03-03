@@ -10,10 +10,10 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 
     protected function prepare()
     {
-        $titel = Request::geefPostOnveilig('titel');
-        $tekst = $this->parseTextForInlineImages(Request::geefPostOnveilig('artikel'));
-        $reacties_aan = Request::geefPostVeilig('reacties_aan');
-        $categorieid = intval(Request::geefPostVeilig('categorieid'));
+        $titel = Request::unsafePost('titel');
+        $tekst = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
+        $reacties_aan = Request::post('reacties_aan');
+        $categorieid = intval(Request::post('categorieid'));
 
         $model = new StaticPageModel($this->id);
         $model->setName($titel);

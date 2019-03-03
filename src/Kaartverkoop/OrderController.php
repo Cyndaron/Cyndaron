@@ -19,7 +19,7 @@ class OrderController extends Controller
         {
             if ($this->action === 'add')
             {
-                $concertId = intval(Request::geefPostVeilig('concert_id'));
+                $concertId = intval(Request::post('concert_id'));
                 $this->addAction($concertId);
             }
             else if (User::isAdmin())
@@ -73,7 +73,7 @@ class OrderController extends Controller
      */
     private function processOrder($concert_id)
     {
-        if (Request::postIsLeeg())
+        if (Request::postIsEmpty())
         {
             throw new \Exception('De bestellingsgegevens zijn niet goed aangekomen.');
         }
@@ -87,11 +87,11 @@ class OrderController extends Controller
             throw new \Exception('De verkoop voor dit concert is helaas gesloten, u kunt geen kaarten meer bestellen.');
         }
 
-        $postcode = Request::geefPostVeilig('postcode');
-        $buitenland = (Request::geefPostVeilig('land') === 'buitenland') ? true : false;
-        $ophalenDoorKoorlid = Request::geefPostVeilig('ophalen_door_koorlid') ? true : false;
+        $postcode = Request::post('postcode');
+        $buitenland = (Request::post('land') === 'buitenland') ? true : false;
+        $ophalenDoorKoorlid = Request::post('ophalen_door_koorlid') ? true : false;
         $ophalenDoorKoorlid = $buitenland ? true : $ophalenDoorKoorlid;
-        $naam_koorlid = Request::geefPostVeilig('naam_koorlid');
+        $naam_koorlid = Request::post('naam_koorlid');
 
         $incorrecteVelden = $this->checkFormulier($concert['bezorgen_verplicht'], $ophalenDoorKoorlid);
         if (!empty($incorrecteVelden))
@@ -127,16 +127,16 @@ class OrderController extends Controller
         }
         else
         {
-            $payForDelivery = Request::geefPostVeilig('bezorgen') ? true : false;
+            $payForDelivery = Request::post('bezorgen') ? true : false;
         }
         $deliveryPrice = $payForDelivery ? $concert['verzendkosten'] : 0.0;
-        $reserveSeats = Request::geefPostVeilig('gereserveerde_plaatsen') ? 1 : 0;
+        $reserveSeats = Request::post('gereserveerde_plaatsen') ? 1 : 0;
         $toeslag_gereserveerde_plaats = ($reserveSeats == 1) ? $concert['toeslag_gereserveerde_plaats'] : 0;
         $bestelling_kaartsoorten = [];
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC', [$concert_id]);
         foreach ($ticketTypes as $ticketType)
         {
-            $bestelling_kaartsoorten[$ticketType['id']] = intval(Request::geefPostVeilig('kaartsoort-' . $ticketType['id']));
+            $bestelling_kaartsoorten[$ticketType['id']] = intval(Request::post('kaartsoort-' . $ticketType['id']));
             $totaalprijs += $bestelling_kaartsoorten[$ticketType['id']] * ($ticketType['prijs'] + $deliveryPrice + $toeslag_gereserveerde_plaats);
             $totaalAantalKaarten += $bestelling_kaartsoorten[$ticketType['id']];
         }
@@ -146,13 +146,13 @@ class OrderController extends Controller
             throw new \Exception('U heeft een bestelling van 0 kaarten geplaatst of het formulier is niet goed aangekomen.');
         }
 
-        $emailadres = Request::geefPostVeilig('e-mailadres');
-        $achternaam = Request::geefPostVeilig('achternaam');
-        $voorletters = Request::geefPostVeilig('voorletters');
-        $straatnaam_en_huisnummer = Request::geefPostVeilig('straatnaam_en_huisnummer');
-        $postcode = Request::geefPostVeilig('postcode');
-        $woonplaats = Request::geefPostVeilig('woonplaats');
-        $opmerkingen = Request::geefPostVeilig('opmerkingen');
+        $emailadres = Request::post('e-mailadres');
+        $achternaam = Request::post('achternaam');
+        $voorletters = Request::post('voorletters');
+        $straatnaam_en_huisnummer = Request::post('straatnaam_en_huisnummer');
+        $postcode = Request::post('postcode');
+        $woonplaats = Request::post('woonplaats');
+        $opmerkingen = Request::post('opmerkingen');
 
         $orderId = (int)DBConnection::doQuery('INSERT INTO kaartverkoop_bestellingen
             (`concert_id`,  `achternaam`,     `voorletters`,     `e-mailadres`,     `straat_en_huisnummer`, `postcode`, `woonplaats`,     `thuisbezorgen`,         `gereserveerde_plaatsen`,             `ophalen_door_koorlid`,    `naam_koorlid`,    `woont_in_buitenland`,    `opmerkingen`) VALUES
@@ -185,39 +185,39 @@ class OrderController extends Controller
     private function checkFormulier($bezorgenVerplicht = false, $ophalenDoorKoorlid = false)
     {
         $incorrecteVelden = [];
-        if (strtoupper(Request::geefPostVeilig('antispam')) !== 'VLISSINGEN')
+        if (strtoupper(Request::post('antispam')) !== 'VLISSINGEN')
         {
             $incorrecteVelden[] = 'Antispam';
         }
 
-        if (strlen(Request::geefPostVeilig('achternaam')) === 0)
+        if (strlen(Request::post('achternaam')) === 0)
         {
             $incorrecteVelden[] = 'Achternaam';
         }
 
-        if (strlen(Request::geefPostVeilig('voorletters')) === 0)
+        if (strlen(Request::post('voorletters')) === 0)
         {
             $incorrecteVelden[] = 'Voorletters';
         }
 
-        if (strlen(Request::geefPostVeilig('e-mailadres')) === 0)
+        if (strlen(Request::post('e-mailadres')) === 0)
         {
             $incorrecteVelden[] = 'E-mailadres';
         }
 
-        if ((!$bezorgenVerplicht && Request::geefPostVeilig('bezorgen')) || ($bezorgenVerplicht && !$ophalenDoorKoorlid))
+        if ((!$bezorgenVerplicht && Request::post('bezorgen')) || ($bezorgenVerplicht && !$ophalenDoorKoorlid))
         {
-            if (strlen(Request::geefPostVeilig('straatnaam_en_huisnummer')) === 0)
+            if (strlen(Request::post('straatnaam_en_huisnummer')) === 0)
             {
                 $incorrecteVelden[] = 'Straatnaam en huisnummer';
             }
 
-            if (strlen(Request::geefPostVeilig('postcode')) === 0)
+            if (strlen(Request::post('postcode')) === 0)
             {
                 $incorrecteVelden[] = 'Postcode';
             }
 
-            if (strlen(Request::geefPostVeilig('woonplaats')) === 0)
+            if (strlen(Request::post('woonplaats')) === 0)
             {
                 $incorrecteVelden[] = 'Woonplaats';
             }

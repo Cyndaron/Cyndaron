@@ -45,7 +45,7 @@ class SkinRendererHandler
 
         $times[] = ['Start', $this->microtime_float()];
 
-        $username = Request::geefGetVeilig('user');
+        $username = Request::get('user');
         $userInfo = DBConnection::doQueryAndFetchFirstRow('SELECT  * FROM mc_leden WHERE mcnaam = ?', [$username]);
         $img_png = SkinRenderer::getSkinOrFallback($userInfo['skinUrl']);
 
@@ -68,8 +68,8 @@ class SkinRendererHandler
 
         $times[] = ['Download-Image', $this->microtime_float()];
 
-        $vertical_rotation = Request::geefGetVeilig('vr');
-        $horizontal_rotation = Request::geefGetVeilig('hr');
+        $vertical_rotation = Request::get('vr');
+        $horizontal_rotation = Request::get('hr');
         $display_hair = $userInfo['renderAvatarHaar'];
 
         // Rotation variables in radians (3D Rendering)
@@ -91,7 +91,7 @@ class SkinRendererHandler
             'sin_omega' => sin(0),
         ];
         $alpha_head = 0;
-        $omega_head = deg2rad(floatval(Request::geefGetVeilig('hrh')));
+        $omega_head = deg2rad(floatval(Request::get('hrh')));
         $parts_angles['head'] = [
             'cos_alpha' => cos($alpha_head),
             'sin_alpha' => sin($alpha_head),
@@ -104,7 +104,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_head),
             'sin_omega' => sin($omega_head),
         ];
-        $alpha_right_arm = deg2rad(floatval(Request::geefGetVeilig('vrra')));
+        $alpha_right_arm = deg2rad(floatval(Request::get('vrra')));
         $omega_right_arm = 0;
         $parts_angles['rightArm'] = [
             'cos_alpha' => cos($alpha_right_arm),
@@ -112,7 +112,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_right_arm),
             'sin_omega' => sin($omega_right_arm),
         ];
-        $alpha_left_arm = deg2rad(floatval(Request::geefGetVeilig('vrla')));
+        $alpha_left_arm = deg2rad(floatval(Request::get('vrla')));
         $omega_left_arm = 0;
         $parts_angles['leftArm'] = [
             'cos_alpha' => cos($alpha_left_arm),
@@ -120,7 +120,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_left_arm),
             'sin_omega' => sin($omega_left_arm),
         ];
-        $alpha_right_leg = deg2rad(floatval(Request::geefGetVeilig('vrrl')));
+        $alpha_right_leg = deg2rad(floatval(Request::get('vrrl')));
         $omega_right_leg = 0;
         $parts_angles['rightLeg'] = [
             'cos_alpha' => cos($alpha_right_leg),
@@ -128,7 +128,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_right_leg),
             'sin_omega' => sin($omega_right_leg),
         ];
-        $alpha_left_leg = deg2rad(floatval(Request::geefGetVeilig('vrll')));
+        $alpha_left_leg = deg2rad(floatval(Request::get('vrll')));
         $omega_left_leg = 0;
         $parts_angles['leftLeg'] = [
             'cos_alpha' => cos($alpha_left_leg),
@@ -991,7 +991,7 @@ class SkinRendererHandler
 
         // Handle the ratio
         $min_ratio = 2;
-        $ratio = intval(Request::geefGetVeilig('ratio'));
+        $ratio = intval(Request::get('ratio'));
         $ratio = ($ratio < $min_ratio) ? $min_ratio : $ratio;
 
         if (SkinRenderer::SECONDS_TO_CACHE > 0)
@@ -1003,7 +1003,7 @@ class SkinRendererHandler
         }
 
         $image = null;
-        if (Request::geefGetVeilig('format') == 'svg')
+        if (Request::get('format') == 'svg')
         {
             header('Content-Type: image/svg+xml');
             echo '<?xml version="1.0" standalone="no"?>
@@ -1100,7 +1100,7 @@ class SkinRendererHandler
                 {
                     foreach ($polygons[$piece][$face] as $poly)
                     {
-                        if (Request::geefGetVeilig('format') == 'svg')
+                        if (Request::get('format') == 'svg')
                         {
                             echo $poly->getSvgPolygon(1);
                         }
@@ -1115,7 +1115,7 @@ class SkinRendererHandler
 
         $times[] = ['Display-image', $this->microtime_float()];
 
-        if (Request::geefGetVeilig('format') == 'svg')
+        if (Request::get('format') == 'svg')
         {
             echo '</svg>' . "\n";
             for ($i = 1; $i < count($times); $i++)

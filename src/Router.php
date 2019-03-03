@@ -53,7 +53,7 @@ class Router
             session_start();
         }
 
-        $request = Request::geefGetVeilig('page') ?: '/';
+        $request = Request::get('page') ?: '/';
         $this->updateRequestVars($request);
 
         $this->blockPathTraversal($request);
@@ -110,7 +110,7 @@ class Router
         if (is_subclass_of($classname, Controller::class)) {
             /** @var Controller $route */
             $route = new $classname($this->requestVars[0], $this->requestVars[1] ?? '');
-            $token = Request::geefPostVeilig('csrfToken');
+            $token = Request::post('csrfToken');
             $route->checkCSRFToken($token);
             $route->route();
         } else {
@@ -163,7 +163,7 @@ class Router
         if (array_key_exists($request, self::OLD_URLS))
         {
             $url = self::OLD_URLS[$request]['url'];
-            $id = Request::geefGetVeilig(self::OLD_URLS[$request]['id']);
+            $id = Request::get(self::OLD_URLS[$request]['id']);
             header("Location: ${url}${id}");
             die();
         }

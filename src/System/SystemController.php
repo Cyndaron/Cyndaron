@@ -19,16 +19,16 @@ class SystemController extends Controller
 
     public function routePost()
     {
-        Setting::set('websitenaam', Request::geefPostVeilig('websitenaam'));
-        Setting::set('websitelogo', Request::geefPostVeilig('websitelogo'));
-        Setting::set('ondertitel', Request::geefPostVeilig('ondertitel'));
-        Setting::set('favicon', Request::geefPostVeilig('favicon'));
-        Setting::set('achtergrondkleur', Request::geefPostVeilig('achtergrondkleur'));
-        Setting::set('menukleur', Request::geefPostVeilig('menukleur'));
-        Setting::set('menuachtergrond', Request::geefPostOnveilig('menuachtergrond'));
-        Setting::set('artikelkleur', Request::geefPostVeilig('artikelkleur'));
-        Setting::set('standaardcategorie', Request::geefPostVeilig('standaardcategorie'));
-        Setting::set('menuthema', Request::geefPostVeilig('menuthema'));
+        Setting::set('websitenaam', Request::post('websitenaam'));
+        Setting::set('websitelogo', Request::post('websitelogo'));
+        Setting::set('ondertitel', Request::post('ondertitel'));
+        Setting::set('favicon', Request::post('favicon'));
+        Setting::set('achtergrondkleur', Request::post('achtergrondkleur'));
+        Setting::set('menukleur', Request::post('menukleur'));
+        Setting::set('menuachtergrond', Request::unsafePost('menuachtergrond'));
+        Setting::set('artikelkleur', Request::post('artikelkleur'));
+        Setting::set('standaardcategorie', Request::post('standaardcategorie'));
+        Setting::set('menuthema', Request::post('menuthema'));
 
         new SystemPage('config');
     }

@@ -14,17 +14,17 @@ class MenuController extends Controller
         switch ($this->action)
         {
             case 'addItem':
-                $link = Request::geefPostVeilig('link');
+                $link = Request::post('link');
                 MenuModel::voegToeAanMenu($link);
                 break;
             case 'removeItem':
                 MenuModel::removeItem($index);
                 break;
             case 'setDropdown':
-                MenuModel::setProperty($index, 'isDropdown', Request::geefPostVeilig('isDropdown') == 'true' ? 1 : 0);
+                MenuModel::setProperty($index, 'isDropdown', Request::post('isDropdown') == 'true' ? 1 : 0);
                 break;
             case 'setImage':
-                MenuModel::setProperty($index, 'isImage', Request::geefPostVeilig('isImage') == 'true' ? 1 : 0);
+                MenuModel::setProperty($index, 'isImage', Request::post('isImage') == 'true' ? 1 : 0);
                 break;
         }
     }
