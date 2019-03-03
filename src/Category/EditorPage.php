@@ -20,15 +20,11 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
 
     protected function showContentSpecificButtons()
     {
-        $checked = DBConnection::doQueryAndFetchOne('SELECT alleentitel FROM categorieen WHERE id=?', [$this->id]) ? 'checked="checked"' : '';
-        ?>
-        <div class="form-group">
-            <label class="col-sm-2 control-label" for="alleentitel">Toon alleen titels: </label>
-            <div class="col-sm-5">
-                <input id="alleentitel" name="alleentitel" type="checkbox" <?= $checked; ?>/>
-            </div>
-        </div>
-        <?php
+        $checked = false;
+        if ($this->id)
+            $checked = (bool)DBConnection::doQueryAndFetchOne('SELECT alleentitel FROM categorieen WHERE id=?', [$this->id]);
+        $this->showCheckbox('alleentitel', 'Toon alleen titels', $checked);
+
         $this->showCategoryDropdown();
     }
 }
