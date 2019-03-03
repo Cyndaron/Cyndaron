@@ -14,7 +14,7 @@ class EditorController extends Controller
     protected $editorPages = [
         'category' => \Cyndaron\Category\EditorPage::class,
         'mailform' => \Cyndaron\Mailform\EditorPage::class,
-        'photo' => \Cyndaron\EditorFoto::class,
+        'photo' => \Cyndaron\Photoalbum\EditorPagePhoto::class,
         'photoalbum' => \Cyndaron\Photoalbum\EditorPage::class,
         'sub' => \Cyndaron\StaticPage\EditorPage::class,
         // "Plug-in"
@@ -22,7 +22,7 @@ class EditorController extends Controller
     ];
     protected $savePages = [
         'category' => \Cyndaron\Category\EditorSavePage::class,
-        'photo' => \Cyndaron\EditorSavePageFoto::class,
+        'photo' => \Cyndaron\Photoalbum\EditorSavePagePhoto::class,
         'photoalbum' => \Cyndaron\Photoalbum\EditorSavePage::class,
         'sub' => \Cyndaron\StaticPage\EditorSavePage::class,
         // "Plug-in"
