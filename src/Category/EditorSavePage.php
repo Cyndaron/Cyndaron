@@ -18,11 +18,11 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 
         if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
         {
-            CategoryModel::wijzigCategorie($this->id, $titel, $alleentitel, $beschrijving, $categorieId);
+            Category::edit($this->id, $titel, $alleentitel, $beschrijving, $categorieId);
         }
         else
         {
-            $this->id = CategoryModel::nieuweCategorie($titel, $alleentitel, $beschrijving, $categorieId);
+            $this->id = Category::create($titel, $alleentitel, $beschrijving, $categorieId);
         }
 
         User::addNotification('Categorie bewerkt.');

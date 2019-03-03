@@ -2,15 +2,14 @@
 namespace Cyndaron\Category;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Model;
 use Cyndaron\Util;
 
-/**
- * Class CategoryModel
- * @todo: Omvormen tot echt model.
- */
-class CategoryModel
+class Category extends Model
 {
-    public static function nieuweCategorie($naam, bool $alleentitel = false, string $beschrijving = '', $categorieId = null)
+    protected static $table = 'categorieen';
+
+    public static function create($naam, bool $alleentitel = false, string $beschrijving = '', $categorieId = null)
     {
         if ($naam == '')
             throw new \Exception('Empty category name!');
@@ -18,7 +17,7 @@ class CategoryModel
         return DBConnection::doQuery('INSERT INTO categorieen(`naam`,`alleentitel`, `beschrijving`, `categorieid`) VALUES (?,?,?,?);', [$naam, (int)$alleentitel, $beschrijving, $categorieId]);
     }
 
-    public static function wijzigCategorie($id, $naam = null, $alleentitel = null, $beschrijving = null, $categorieId = null)
+    public static function edit($id, $naam = null, $alleentitel = null, $beschrijving = null, $categorieId = null)
     {
         if ($naam !== null)
         {
@@ -33,10 +32,5 @@ class CategoryModel
             DBConnection::doQueryAndFetchOne('UPDATE categorieen SET `beschrijving`=? WHERE id=?', [$beschrijving, $id]);
         }
         DBConnection::doQueryAndFetchOne('UPDATE categorieen SET `categorieid`=? WHERE id=?', [$categorieId, $id]);
-    }
-
-    public static function verwijderCategorie($id)
-    {
-        DBConnection::doQueryAndFetchOne('DELETE FROM categorieen WHERE id=?;', [$id]);
     }
 }

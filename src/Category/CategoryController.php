@@ -19,24 +19,25 @@ class CategoryController extends Controller
     {
         $id = intval(Request::getVar(2));
 
-        if ($this->action == 'add')
+        switch ($this->action)
         {
-            $name = Request::post('name');
-            CategoryModel::nieuweCategorie($name);
+            case 'add':
+                $name = Request::post('name');
+                Category::create($name);
+                break;
+            case 'edit':
+                $name = Request::post('name');
+                Category::edit($id, $name);
+                break;
+            case 'delete':
+                $obj = new Category($id);
+                $obj->delete();
+                break;
+            case 'addtomenu':
+                MenuModel::voegToeAanMenu('/category/' . $id);
+                break;
         }
-        elseif ($this->action == 'edit')
-        {
-            $name = Request::post('name');
-            CategoryModel::wijzigCategorie($id, $name);
-        }
-        elseif ($this->action == 'delete')
-        {
-            CategoryModel::verwijderCategorie($id);
-        }
-        elseif ($this->action == 'addtomenu')
-        {
-            MenuModel::voegToeAanMenu('/category/' . $id);
-        }
+
         echo json_encode([]);
     }
 }
