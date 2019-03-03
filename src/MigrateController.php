@@ -2,16 +2,55 @@
 namespace Cyndaron;
 
 use Cyndaron\User\User;
+use Cyndaron\User\UserLevel;
 
-class Migrate60 extends Page
+class MigrateController extends Controller
 {
-    public function __construct()
+    protected $minLevelGet = UserLevel::ANONYMOUS;
+
+    const VERSIONS = [
+        '5.3' => 'migrate53',
+        '6.0' => 'migrate60',
+    ];
+
+    public function routeGet()
+    {
+        $version = $this->action;
+
+        if (array_key_exists($version, static::VERSIONS))
+        {
+            $method = static::VERSIONS[$version];
+            $this->$method();
+            $page = new Page('Upgrade naar versie ' . $version, 'De upgrade is voltooid.');
+            $page->showPrePage();
+            $page->showBody();
+            $page->showPostPage();
+        }
+    }
+
+    private function migrate53()
+    {
+        if (!User::isAdmin())
+            die();
+
+        DBConnection::doQuery('ALTER TABLE `gebruikers` ADD `email` VARCHAR(255) NULL DEFAULT NULL AFTER `wachtwoord`;');
+        DBConnection::doQuery('ALTER TABLE `gebruikers` ADD UNIQUE( `email`);');
+
+        DBConnection::doQuery('ALTER TABLE `categorieen` ADD `categorieid` INT NULL AFTER `beschrijving`;', []);
+        DBConnection::doQuery('ALTER TABLE `categorieen` ADD FOREIGN KEY (`categorieid`) REFERENCES `categorieen`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;', []);
+
+        DBConnection::doQuery('ALTER TABLE `menu` ADD `isDropdown` BOOLEAN NOT NULL DEFAULT \'0\' AFTER `alias`, ADD `isImage` BOOLEAN NOT NULL DEFAULT \'0\' AFTER `isDropdown`;', []);
+        // Bestaande menu-items porten
+        DBConnection::doQuery('UPDATE `menu` SET link = REPLACE(link, \'#dd\', \'\'), isDropdown=1 WHERE link LIKE \'%#dd\'', []);
+        DBConnection::doQuery('UPDATE `menu` SET alias = REPLACE(alias, \'img#\', \'\'), isImage=1 WHERE alias LIKE \'%img#\'', []);
+    }
+
+    private function migrate60()
     {
         DBConnection::doQuery("RENAME TABLE gebruikers TO users;");
         DBConnection::doQuery("ALTER TABLE `users` CHANGE `gebruikersnaam` `username` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
         DBConnection::doQuery("ALTER TABLE `users` CHANGE `wachtwoord` `password` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
         DBConnection::doQuery("ALTER TABLE `users` CHANGE `niveau` `level` INT(1) NOT NULL;");
-
 
         if (!User::isAdmin())
             die();
@@ -49,10 +88,6 @@ class Migrate60 extends Page
         DBConnection::doQuery("ALTER TABLE `categorieen` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `categorieid`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; ");
         DBConnection::doQuery("ALTER TABLE `fotoboeken` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `categorieid`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; ");
         DBConnection::doQuery("ALTER TABLE `mailformulieren` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `confirmation_text`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; ");
-
-        parent::__construct('Upgrade naar versie 6.0');
-        $this->showPrePage();
-        echo 'De upgrade is voltooid.';
-        $this->showPostPage();
     }
 }
+;

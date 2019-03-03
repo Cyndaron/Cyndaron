@@ -28,6 +28,11 @@ class UserController extends Controller
                 break;
             case 'gallery':
                 new Gallery();
+                break;
+            case 'manager':
+                if (User::isAdmin())
+                    new UserManagerPage();
+                break;
         }
     }
 

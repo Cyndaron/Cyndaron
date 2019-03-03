@@ -21,14 +21,12 @@ class Router
         'friendlyurl' => \Cyndaron\FriendlyUrl\FriendlyUrlController::class,
         'menu' => Menu\MenuController::class,
         'menu-editor' => Menu\MenuEditorController::class,
-        'migrate-v5_3' => \Cyndaron\Migrate53::class,
-        'migrate-v6_0' => \Cyndaron\Migrate60::class,
+        'migrate' => \Cyndaron\MigrateController::class,
         'pagemanager' => \Cyndaron\PageManager\PageManagerController::class,
         'photoalbum' => \Cyndaron\Photoalbum\PhotoalbumController::class,
         'sub' => \Cyndaron\StaticPage\StaticPageController::class,
         'system' => \Cyndaron\System\SystemController::class,
         'user' => \Cyndaron\User\UserController::class,
-        'usermanager' => \Cyndaron\User\UserManagerPage::class,
 
         // Official plugins
         'concert' => \Cyndaron\Concerts\ConcertController::class,
@@ -106,15 +104,11 @@ class Router
     {
         $this->routeFoundNowCheckLogin();
         $classname = $this->endpoints[$this->requestVars[0]];
-        if (is_subclass_of($classname, Controller::class)) {
-            /** @var Controller $route */
-            $route = new $classname($this->requestVars[0], $this->requestVars[1] ?? '');
-            $token = Request::post('csrfToken');
-            $route->checkCSRFToken($token);
-            $route->route();
-        } else {
-            new $classname();
-        }
+        /** @var Controller $route */
+        $route = new $classname($this->requestVars[0], $this->requestVars[1] ?? '');
+        $token = Request::post('csrfToken');
+        $route->checkCSRFToken($token);
+        $route->route();
     }
 
     /**
