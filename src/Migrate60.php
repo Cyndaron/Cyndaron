@@ -45,6 +45,11 @@ class Migrate60 extends Page
 
         DBConnection::doQuery("ALTER TABLE `mailformulieren` ADD `send_confirmation` TINYINT(1) NOT NULL DEFAULT '0' AFTER `antispamantwoord`, ADD `confirmation_text` TEXT NULL DEFAULT NULL AFTER `send_confirmation`; ");
 
+        DBConnection::doQuery("ALTER TABLE `subs` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `categorieid`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; ");
+        DBConnection::doQuery("ALTER TABLE `categorieen` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `categorieid`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; ");
+        DBConnection::doQuery("ALTER TABLE `fotoboeken` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `categorieid`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; ");
+        DBConnection::doQuery("ALTER TABLE `mailformulieren` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `confirmation_text`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; ");
+
         parent::__construct('Upgrade naar versie 6.0');
         $this->showPrePage();
         echo 'De upgrade is voltooid.';
