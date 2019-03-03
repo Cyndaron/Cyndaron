@@ -125,16 +125,10 @@ class Router
     private function rewriteFriendlyUrl(Url $url): string
     {
         $ufUrl = $url->getUnfriendly();
-        if (strpos($ufUrl, '?') !== false)
+        $qmPos = strpos($ufUrl, '?');
+        if ($qmPos !== false)
         {
-            list($bestand, $rest) = explode('?', $ufUrl, 2);
-            $restarray = explode('&', $rest);
-            $_GET = ['friendlyurls' => true];
-            foreach ($restarray as $var)
-            {
-                list($key, $value) = explode('=', $var);
-                $_GET[$key] = $value;
-            }
+            $bestand = substr($ufUrl, 0, $qmPos);
         }
         else
         {
