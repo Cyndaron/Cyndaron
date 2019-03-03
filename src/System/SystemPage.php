@@ -20,7 +20,7 @@ class SystemPage extends Page
         echo new PageTabs([
             'config' => 'Configuratie',
             'phpinfo' => 'PHP-info',
-            'about' => 'Over ' . CyndaronInfo::PRODUCT_NAAM,
+            'about' => 'Over ' . CyndaronInfo::PRODUCT_NAME,
         ], '/system/', $currentPage);
 
         echo '<div class="container-fluid tab-contents">';
@@ -136,8 +136,8 @@ class SystemPage extends Page
 
     public function showAboutProduct()
     {
-        echo CyndaronInfo::PRODUCT_NAAM . ' ' . CyndaronInfo::PRODUCT_VERSIE . ' (' . CyndaronInfo::PRODUCT_CODENAAM . ')<br />';
-        echo 'Engineversie: ' . CyndaronInfo::ENGINE_VERSIE . '<br />';
+        echo CyndaronInfo::PRODUCT_NAME . ' ' . CyndaronInfo::PRODUCT_VERSION . ' (' . CyndaronInfo::PRODUCT_CODENAME . ')<br />';
+        echo 'Engineversie: ' . CyndaronInfo::ENGINE_VERSION . '<br />';
         echo '© Michael Steenbeek, 2009-2019<br />';
         echo 'Beschikbaar onder de ISC-licentie (zie het bestand LICENSE), m.u.v. van de volgende onderdelen:<ul>';
         echo '<li>Bootstrap: MIT-licentie (LICENSE.Bootstrap)</li>';
