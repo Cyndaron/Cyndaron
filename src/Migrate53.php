@@ -3,7 +3,7 @@ namespace Cyndaron;
 
 require __DIR__ . '/../check.php';
 
-class MigreerNaar5_3 extends Pagina
+class Migrate53 extends Pagina
 {
     public function __construct()
     {
@@ -24,5 +24,4 @@ class MigreerNaar5_3 extends Pagina
         echo 'De upgrade is voltooid.';
         $this->showPostPage();
     }
-
 }
