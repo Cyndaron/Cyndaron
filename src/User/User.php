@@ -10,7 +10,7 @@ use Cyndaron\Util;
 
 class User extends Model
 {
-    protected static $table = 'gebruikers';
+    protected static $table = 'users';
 
     const RESET_PASSWORD_MAIL_TEXT =
         '<p>U vroeg om een nieuw wachtwoord voor %s.</p>
@@ -23,11 +23,11 @@ Content-type: text/html; charset=utf-8
 From: %s <noreply@%s>
 EOT;
 
-    const FIELDS = ['gebruikersnaam', 'wachtwoord', 'email', 'niveau', 'firstname', 'tussenvoegsel', 'lastname', 'role', 'comments', 'avatar', 'hide_from_member_list'];
+    const FIELDS = ['username', 'password', 'email', 'level', 'firstname', 'tussenvoegsel', 'lastname', 'role', 'comments', 'avatar', 'hide_from_member_list'];
 
     public static function isAdmin(): bool
     {
-        if (!isset($_SESSION['naam']) || $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] || $_SESSION['niveau'] < 4)
+        if (!isset($_SESSION['naam']) || $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] || $_SESSION['level'] < 4)
         {
             return false;
         }
@@ -39,7 +39,7 @@ EOT;
 
     public static function isLoggedIn(): bool
     {
-        return (isset($_SESSION['naam']) && $_SESSION['ip'] == $_SERVER['REMOTE_ADDR'] && $_SESSION['niveau'] > 0);
+        return (isset($_SESSION['naam']) && $_SESSION['ip'] == $_SERVER['REMOTE_ADDR'] && $_SESSION['level'] > 0);
     }
 
     public static function addNotification(string $content): void
@@ -56,7 +56,7 @@ EOT;
 
     public static function getLevel(): int
     {
-        return intval(@$_SESSION['niveau']);
+        return intval(@$_SESSION['level']);
     }
 
     public static function hasSufficientReadLevel(): bool
@@ -72,7 +72,7 @@ EOT;
             throw new \Exception('ID is leeg!');
         }
 
-        $this->record = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM gebruikers WHERE id = ?', [$this->id]);
+        $this->record = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM users WHERE id = ?', [$this->id]);
     }
 
     public function sendNewPassword()
@@ -86,7 +86,7 @@ EOT;
         $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
 
         $pdo = DBConnection::getPdo();
-        $prep = $pdo->prepare('UPDATE gebruikers SET wachtwoord=? WHERE id =?');
+        $prep = $pdo->prepare('UPDATE users SET password=? WHERE id =?');
         $prep->execute([$passwordHash, $this->id]);
 
         $websiteName = Setting::get('websitenaam');
@@ -145,17 +145,17 @@ EOT;
             }
             $data[] = $this->id;
 
-            $result = DBConnection::doQuery('UPDATE gebruikers SET ' . $fields . ' WHERE id=?', $data);
+            $result = DBConnection::doQuery('UPDATE users SET ' . $fields . ' WHERE id=?', $data);
             // Above will result either false (failure) or "0" (success)
             return $result === false ? false : true;
         }
         return false;
     }
 
-    public static function create(string $gebruikersnaam, string $email, string $password, int $niveau, string $firstname, string $tussenvoegsel, string $lastname, string $role, string $comments, string $avatar, bool $hideFromMemberList): ?int
+    public static function create(string $username, string $email, string $password, int $level, string $firstname, string $tussenvoegsel, string $lastname, string $role, string $comments, string $avatar, bool $hideFromMemberList): ?int
     {
         /** @noinspection PhpUnusedLocalVariableInspection */
-        $wachtwoord = password_hash($password, PASSWORD_DEFAULT);
+        $password = password_hash($password, PASSWORD_DEFAULT);
         /** @noinspection PhpUnusedLocalVariableInspection */
         $hide_from_member_list = intval($hideFromMemberList);
         $fields = implode(', ', static::FIELDS);
@@ -166,7 +166,7 @@ EOT;
             $data[] = $$fieldname;
         }
 
-        $return = DBConnection::doQuery('INSERT INTO gebruikers(' . $fields . ') VALUES (' . $placeholders . ')', $data);
+        $return = DBConnection::doQuery('INSERT INTO users(' . $fields . ') VALUES (' . $placeholders . ')', $data);
         if ($return !== false)
             return intval($return);
         else
@@ -177,13 +177,13 @@ EOT;
     {
         if (strpos($identification, '@') !== false)
         {
-            $query = 'SELECT * FROM gebruikers WHERE email=?';
-            $updateQuery = 'UPDATE gebruikers SET wachtwoord=? WHERE email=?';
+            $query = 'SELECT * FROM users WHERE email=?';
+            $updateQuery = 'UPDATE users SET password=? WHERE email=?';
         }
         else
         {
-            $query = 'SELECT * FROM gebruikers WHERE gebruikersnaam=?';
-            $updateQuery = 'UPDATE gebruikers SET wachtwoord=? WHERE gebruikersnaam=?';
+            $query = 'SELECT * FROM users WHERE username=?';
+            $updateQuery = 'UPDATE users SET password=? WHERE username=?';
         }
 
         $userdata = DBConnection::doQueryAndFetchFirstRow($query, [$identification]);
@@ -195,11 +195,11 @@ EOT;
         else
         {
             $loginSucceeded = false;
-            if (password_verify($password, $userdata['wachtwoord']))
+            if (password_verify($password, $userdata['password']))
             {
                 $loginSucceeded = true;
 
-                if (password_needs_rehash($userdata['wachtwoord'], PASSWORD_DEFAULT))
+                if (password_needs_rehash($userdata['password'], PASSWORD_DEFAULT))
                 {
                     $password = password_hash($password, PASSWORD_DEFAULT);
                     DBConnection::doQuery($updateQuery, [$password, $identification]);
@@ -208,10 +208,10 @@ EOT;
 
             if ($loginSucceeded)
             {
-                $_SESSION['naam'] = $userdata['gebruikersnaam'];
+                $_SESSION['naam'] = $userdata['username'];
                 $_SESSION['email'] = $userdata['email'];
                 $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
-                $_SESSION['niveau'] = $userdata['niveau'];
+                $_SESSION['level'] = $userdata['level'];
                 User::addNotification('U bent ingelogd.');
                 if ($_SESSION['redirect'])
                 {

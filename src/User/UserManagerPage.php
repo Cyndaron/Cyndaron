@@ -25,7 +25,7 @@ class UserManagerPage extends Pagina
         $this->addScript('/src/User/UserManagerPage.js');
         parent::showPrePage();
 
-        $users = DBConnection::doQueryAndFetchAll('SELECT * FROM gebruikers ORDER BY gebruikersnaam', []);
+        $users = DBConnection::doQueryAndFetchAll('SELECT * FROM users ORDER BY username', []);
 
         echo new Toolbar('', '', '
         <button id="um-create-user"
@@ -54,17 +54,17 @@ class UserManagerPage extends Pagina
             <?php foreach ($users as $user): ?>
                 <tr>
                     <td><?=$user['id']?></td>
-                    <td><?=$user['gebruikersnaam']?></td>
+                    <td><?=$user['username']?></td>
                     <td><?=$user['email']?></td>
-                    <td><?=self::USER_LEVEL_DESCRIPTIONS[$user['niveau']]?></td>
+                    <td><?=self::USER_LEVEL_DESCRIPTIONS[$user['level']]?></td>
                     <td>
                         <div class="btn-group">
                             <button class="um-edit-user btn btn-sm btn-outline-cyndaron"
                                     data-toggle="modal" data-target="#um-edit-user-dialog"
                                     data-id="<?=$user['id']?>"
-                                    data-username="<?=$user['gebruikersnaam']?>"
+                                    data-username="<?=$user['username']?>"
                                     data-email="<?=$user['email']?>"
-                                    data-level="<?=$user['niveau']?>"
+                                    data-level="<?=$user['level']?>"
                                     data-firstname="<?=$user['firstname']?>"
                                     data-tussenvoegsel="<?=$user['tussenvoegsel']?>"
                                     data-lastname="<?=$user['lastname']?>"

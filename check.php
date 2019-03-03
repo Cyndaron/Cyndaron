@@ -11,7 +11,7 @@ if (empty($_SESSION))
     session_start();
 }
 
-if (isset($_SESSION['niveau']) && $_SESSION['niveau'] < 4)
+if (isset($_SESSION['level']) && $_SESSION['level'] < 4)
 {
     new \Cyndaron\Error403Pagina();
     die();

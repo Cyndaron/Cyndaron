@@ -11,7 +11,7 @@ class Gallery extends Pagina
 
     public function __construct()
     {
-        $leden = DBConnection::doQueryAndFetchAll('SELECT * FROM gebruikers ORDER BY lastname, tussenvoegsel, firstname;');
+        $leden = DBConnection::doQueryAndFetchAll('SELECT * FROM users ORDER BY lastname, tussenvoegsel, firstname;');
         parent::__construct('Wie is wie');
         $this->showPrePage();
         echo '<table class="ledenlijst">';
@@ -31,7 +31,7 @@ class Gallery extends Pagina
             }
             else
             {
-                echo $lid['gebruikersnaam'];
+                echo $lid['username'];
             }
             echo '</span></b><br /><br />';
             echo $lid['role'];

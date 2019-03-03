@@ -144,9 +144,9 @@ class UserController extends Controller
         $user = new User($id);
         $user->fetchRecord();
         $user->updateFromArray([
-            'gebruikersnaam' => $username,
+            'username' => $username,
             'email' => $email,
-            'niveau' => $level,
+            'level' => $level,
             'firstname' => $firstname,
             'tussenvoegsel' => $tussenvoegsel,
             'lastname' => $lastname,

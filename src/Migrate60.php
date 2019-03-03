@@ -1,12 +1,21 @@
 <?php
 namespace Cyndaron;
 
-require __DIR__ . '/../check.php';
+use Cyndaron\User\User;
 
 class Migrate60 extends Pagina
 {
     public function __construct()
     {
+        DBConnection::doQuery("RENAME TABLE gebruikers TO users;");
+        DBConnection::doQuery("ALTER TABLE `users` CHANGE `gebruikersnaam` `username` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+        DBConnection::doQuery("ALTER TABLE `users` CHANGE `wachtwoord` `password` VARCHAR(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+        DBConnection::doQuery("ALTER TABLE `users` CHANGE `niveau` `level` INT(1) NOT NULL;");
+
+
+        if (!User::isAdmin())
+            die();
+
         DBConnection::doQuery("DELETE FROM instellingen WHERE naam = 'menutype' OR naam = 'facebook_share'");
         DBConnection::doQuery('DROP TABLE ideeen');
         DBConnection::doQuery('ALTER TABLE `mc_leden` ADD `newRenderer` BOOLEAN NOT NULL DEFAULT FALSE AFTER `renderAvatarHaar`;');
@@ -31,8 +40,8 @@ class Migrate60 extends Pagina
 
         DBConnection::doQuery("ALTER TABLE `kaartverkoop_concerten` CHANGE `gereserveerde_plaatsen_uitverkocht` `gereserveerde_plaatsen_uitverkocht` TINYINT(1) NOT NULL DEFAULT '0';");
 
-        DBConnection::doQuery("ALTER TABLE `gebruikers` ADD `firstname` VARCHAR(100) NOT NULL DEFAULT '' AFTER `niveau`, ADD `tussenvoegsel` VARCHAR(50) NOT NULL DEFAULT '' AFTER `firstname`, ADD `lastname` VARCHAR(200) NOT NULL DEFAULT '' AFTER `tussenvoegsel`, ADD `role` VARCHAR(100) NOT NULL DEFAULT '' AFTER `lastname`, ADD `comments` VARCHAR(500) NOT NULL DEFAULT '' AFTER `role`, ADD `avatar` VARCHAR(250) NOT NULL DEFAULT '' AFTER `comments`;");
-        DBConnection::doQuery("ALTER TABLE `gebruikers` ADD `hide_from_member_list` TINYINT(1) NOT NULL DEFAULT '0' AFTER `avatar`;");
+        DBConnection::doQuery("ALTER TABLE `users` ADD `firstname` VARCHAR(100) NOT NULL DEFAULT '' AFTER `level`, ADD `tussenvoegsel` VARCHAR(50) NOT NULL DEFAULT '' AFTER `firstname`, ADD `lastname` VARCHAR(200) NOT NULL DEFAULT '' AFTER `tussenvoegsel`, ADD `role` VARCHAR(100) NOT NULL DEFAULT '' AFTER `lastname`, ADD `comments` VARCHAR(500) NOT NULL DEFAULT '' AFTER `role`, ADD `avatar` VARCHAR(250) NOT NULL DEFAULT '' AFTER `comments`;");
+        DBConnection::doQuery("ALTER TABLE `users` ADD `hide_from_member_list` TINYINT(1) NOT NULL DEFAULT '0' AFTER `avatar`;");
 
         parent::__construct('Upgrade naar versie 6.0');
         $this->showPrePage();
