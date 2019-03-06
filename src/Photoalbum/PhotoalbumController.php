@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Controller;
-use Cyndaron\Menu\MenuModel;
+use Cyndaron\Menu\Menu;
 use Cyndaron\Request;
 
 class PhotoalbumController extends Controller
@@ -34,7 +34,7 @@ class PhotoalbumController extends Controller
                 $obj->delete();
                 break;
             case 'addtomenu':
-                MenuModel::voegToeAanMenu('/photoalbum/' . $id);
+                Menu::addItem('/photoalbum/' . $id);
                 break;
         }
     }

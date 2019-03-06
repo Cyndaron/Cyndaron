@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Category;
 
 use Cyndaron\Controller;
-use Cyndaron\Menu\MenuModel;
+use Cyndaron\Menu\Menu;
 use Cyndaron\Request;
 
 class CategoryController extends Controller
@@ -34,7 +34,7 @@ class CategoryController extends Controller
                 $obj->delete();
                 break;
             case 'addtomenu':
-                MenuModel::voegToeAanMenu('/category/' . $id);
+                Menu::addItem('/category/' . $id);
                 break;
         }
 

@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\FriendlyUrl;
 
 use Cyndaron\Controller;
-use Cyndaron\Menu\MenuModel;
+use Cyndaron\Menu\Menu;
 use Cyndaron\Request;
 use Cyndaron\Url;
 
@@ -25,7 +25,7 @@ class FriendlyUrlController extends Controller
                 break;
             case 'addtomenu':
                 $name = Request::getVar(3);
-                MenuModel::voegToeAanMenu('/' . $name);
+                Menu::addItem('/' . $name);
                 break;
         }
     }

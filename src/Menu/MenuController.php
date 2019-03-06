@@ -15,16 +15,16 @@ class MenuController extends Controller
         {
             case 'addItem':
                 $link = Request::post('link');
-                MenuModel::voegToeAanMenu($link);
+                Menu::addItem($link);
                 break;
             case 'removeItem':
-                MenuModel::removeItem($index);
+                Menu::removeItem($index);
                 break;
             case 'setDropdown':
-                MenuModel::setProperty($index, 'isDropdown', Request::post('isDropdown') == 'true' ? 1 : 0);
+                Menu::setProperty($index, 'isDropdown', Request::post('isDropdown') == 'true' ? 1 : 0);
                 break;
             case 'setImage':
-                MenuModel::setProperty($index, 'isImage', Request::post('isImage') == 'true' ? 1 : 0);
+                Menu::setProperty($index, 'isImage', Request::post('isImage') == 'true' ? 1 : 0);
                 break;
         }
     }

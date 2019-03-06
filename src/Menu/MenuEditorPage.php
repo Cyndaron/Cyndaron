@@ -16,7 +16,7 @@ class MenuEditorPage extends Page
         $this->showPrePage();
         $this->addScript('/src/Menu/MenuEditorPage.js');
 
-        $menu = MenuModel::get();
+        $menu = Menu::get();
         include __DIR__ . '/MenuEditorPageTemplate.php';
 
         $this->showPostPage();

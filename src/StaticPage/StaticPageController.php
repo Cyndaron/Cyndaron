@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\Controller;
-use Cyndaron\Menu\MenuModel;
+use Cyndaron\Menu\Menu;
 use Cyndaron\Request;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
@@ -39,7 +39,7 @@ class StaticPageController extends Controller
                 $model->delete();
                 break;
             case 'addtomenu':
-                MenuModel::voegToeAanMenu('/sub/' . $id);
+                Menu::addItem('/sub/' . $id);
                 break;
         }
     }
