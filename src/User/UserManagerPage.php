@@ -5,7 +5,9 @@ namespace Cyndaron\User;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
+use Cyndaron\Widget\Modal;
 use Cyndaron\Widget\Toolbar;
+use Cyndaron\Widget\Widget;
 
 require_once __DIR__ . '/../../check.php';
 
@@ -87,110 +89,95 @@ class UserManagerPage extends Page
             </tbody>
         </table>
 
-        <div id="um-edit-user-dialog" class="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Gebruiker toevoegen/bewerken</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Sluiten">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
+         <?php
+        echo new Modal('um-edit-user-dialog', 'Gebruiker toevoegen/bewerken',
+            '<input type="hidden" id="um-id" />
+            <input type="hidden" id="um-csrf-token" />
 
-                        <input type="hidden" id="um-id" />
-                        <input type="hidden" id="um-csrf-token" />
-
-                        <div class="form-group row">
-                            <label for="um-username" class="col-sm-2 col-form-label">Gebruikersnaam:</label>
-                            <div class="col-sm-10">
-                                <input class="form-control" id="um-username">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="um-email" class="col-sm-2 col-form-label">E-mailadres:</label>
-                            <div class="col-sm-10">
-                                <input type="email" class="form-control" id="um-email">
-                            </div>
-                        </div>
-
-                        <div class="form-group row" id="um-password-group">
-                            <label for="um-password" class="col-sm-2 col-form-label">Wachtwoord:</label>
-                            <div class="col-sm-10">
-                                <input class="form-control" id="um-password" placeholder="Leeglaten voor een willekeurig wachtwoord">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="um-level" class="col-sm-2 col-form-label">Gebruikersniveau:</label>
-                            <div class="col-sm-10">
-                                <select id="um-level" class="custom-select">
-                                    <option value="1"><?=self::USER_LEVEL_DESCRIPTIONS[1]?></option>
-                                    <option value="4"><?=self::USER_LEVEL_DESCRIPTIONS[4]?></option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="um-firstname" class="col-sm-2 col-form-label">Voornaam:</label>
-                            <div class="col-sm-10">
-                                <input class="form-control" id="um-firstname">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="um-tussenvoegsel" class="col-sm-2 col-form-label">Tussenvoegsel:</label>
-                            <div class="col-sm-10">
-                                <input class="form-control" id="um-tussenvoegsel">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="um-lastname" class="col-sm-2 col-form-label">Achternaam:</label>
-                            <div class="col-sm-10">
-                                <input class="form-control" id="um-lastname">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="um-role" class="col-sm-2 col-form-label">Functie:</label>
-                            <div class="col-sm-10">
-                                <input class="form-control" id="um-role">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="um-comments" class="col-sm-2 col-form-label">Opmerkingen:</label>
-                            <div class="col-sm-10">
-                                <input class="form-control" id="um-comments">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="um-avatar" class="col-sm-2 col-form-label">Foto/avatar:</label>
-                            <div class="col-sm-10">
-                                <input class="form-control" id="um-avatar">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="um-hideFromMemberList" class="col-sm-2 col-form-label">Verbergen op Wie-is-wie:</label>
-                            <div class="col-sm-10">
-                                <input class="form-control" id="um-hideFromMemberList" type="checkbox" value="1">
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button id="um-edit-user-save" type="button" class="btn btn-primary">Opslaan</button>
-                        <button type="button" class="btn btn-outline-cyndaron" data-dismiss="modal">Annuleren</button>
-                    </div>
+            <div class="form-group row">
+                <label for="um-username" class="col-sm-2 col-form-label">Gebruikersnaam:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="um-username">
                 </div>
             </div>
-        </div>
 
-        <?php
+            <div class="form-group row">
+                <label for="um-email" class="col-sm-2 col-form-label">E-mailadres:</label>
+                <div class="col-sm-10">
+                    <input type="email" class="form-control" id="um-email">
+                </div>
+            </div>
+
+            <div class="form-group row" id="um-password-group">
+                <label for="um-password" class="col-sm-2 col-form-label">Wachtwoord:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="um-password" placeholder="Leeglaten voor een willekeurig wachtwoord">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="um-level" class="col-sm-2 col-form-label">Gebruikersniveau:</label>
+                <div class="col-sm-10">
+                    <select id="um-level" class="custom-select">
+                        <option value="1">' . self::USER_LEVEL_DESCRIPTIONS[1] . '</option>
+                        <option value="4">' . self::USER_LEVEL_DESCRIPTIONS[4] . '</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="um-firstname" class="col-sm-2 col-form-label">Voornaam:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="um-firstname">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="um-tussenvoegsel" class="col-sm-2 col-form-label">Tussenvoegsel:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="um-tussenvoegsel">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="um-lastname" class="col-sm-2 col-form-label">Achternaam:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="um-lastname">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="um-role" class="col-sm-2 col-form-label">Functie:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="um-role">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="um-comments" class="col-sm-2 col-form-label">Opmerkingen:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="um-comments">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="um-avatar" class="col-sm-2 col-form-label">Foto/avatar:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="um-avatar">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="um-hideFromMemberList" class="col-sm-2 col-form-label">Verbergen op Wie-is-wie:</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="um-hideFromMemberList" type="checkbox" value="1">
+                </div>
+            </div>',
+            '<button id="um-edit-user-save" type="button" class="btn btn-primary">Opslaan</button>
+             <button type="button" class="btn btn-outline-cyndaron" data-dismiss="modal">Annuleren</button>',
+            'modal-lg'
+        );
+
         parent::showPostPage();
     }
 }
