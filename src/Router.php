@@ -114,7 +114,7 @@ class Router
         }
         catch (\Exception $e)
         {
-            $route->send500();
+            $route->send500($e->getMessage());
         }
     }
 

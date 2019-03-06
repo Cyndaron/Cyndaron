@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Menu;
 
 use Cyndaron\Controller;
+use Cyndaron\DBConnection;
 use Cyndaron\Request;
 
 class MenuController extends Controller
@@ -14,17 +15,30 @@ class MenuController extends Controller
         switch ($this->action)
         {
             case 'addItem':
+                $volgorde = (int)Request::post('volgorde');
                 $link = Request::post('link');
-                Menu::addItem($link);
+                $alias = Request::post('alias');
+                $isDropdown = (bool)Request::post('isDropdown');
+                $isImage = (bool)Request::post('isImage');
+                if (!Menu::addItem($link, $alias, $volgorde, $isDropdown, $isImage))
+                {
+                    var_dump(DBConnection::errorInfo());
+                    throw new \Exception('Cannot add menu item!');
+                }
+
                 break;
-            case 'removeItem':
-                Menu::removeItem($index);
+            case 'editItem':
+                $editArray = [
+                    'volgorde' => Request::post('volgorde'),
+                    'link' => Request::post('link'),
+                    'alias' => Request::post('alias'),
+                    'isDropdown' => (int)Request::post('isDropdown'),
+                    'isImage' => (int)Request::post('isImage'),
+                ];
+                Menu::editItem($index, $editArray);
                 break;
-            case 'setDropdown':
-                Menu::setProperty($index, 'isDropdown', Request::post('isDropdown') == 'true' ? 1 : 0);
-                break;
-            case 'setImage':
-                Menu::setProperty($index, 'isImage', Request::post('isImage') == 'true' ? 1 : 0);
+            case 'deleteItem':
+                Menu::deleteItem($index);
                 break;
         }
     }

@@ -4,9 +4,12 @@ declare (strict_types = 1);
 namespace Cyndaron\Menu;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Model;
 
-class Menu
+class Menu extends Model
 {
+    protected static $table = 'menu';
+
     public static function get()
     {
         $pdo = DBConnection::getPdo();
@@ -15,23 +18,9 @@ class Menu
         return $menu;
     }
 
-    public static function removeItem(int $index): void
+    public static function deleteItem(int $index): void
     {
         DBConnection::doQuery('DELETE FROM menu WHERE volgorde=?', [$index]);
-    }
-
-    public static function setProperty(int $index, string $property, $value): bool
-    {
-        switch ($property)
-        {
-            case 'isDropdown':
-                return (bool)DBConnection::doQuery('UPDATE menu SET isDropdown=? WHERE volgorde=?', [$value, $index]);
-            case 'isImage':
-                return (bool)DBConnection::doQuery('UPDATE menu SET isImage=? WHERE volgorde=?', [$value, $index]);
-            default:
-                return false;
-
-        }
     }
 
     public static function replace(array $newMenu)
@@ -49,9 +38,20 @@ class Menu
         }
     }
 
-    public static function addItem(string $link, string $alias = '')
+    public static function addItem(string $link, string $alias = '', int $order = null, bool $isDropdown = false, bool $isImage = false): bool
     {
-        $order = intval(DBConnection::doQueryAndFetchOne('SELECT MAX(volgorde) FROM menu;')) + 1;
-        DBConnection::doQueryAndFetchOne('INSERT INTO menu(volgorde,link,alias) VALUES(?,?,?);', [$order, $link, $alias]);
+        $order = $order ?: intval(DBConnection::doQueryAndFetchOne('SELECT MAX(volgorde) FROM menu;')) + 1;
+        return (bool)DBConnection::doQuery('INSERT INTO menu(volgorde,link,alias,isDropdown,isImage) VALUES(?,?,?,?,?);',
+            [$order, $link, $alias, $isDropdown, $isDropdown]);
+    }
+
+    public static function editItem(int $id, array $newArray): bool
+    {
+        $record = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM menu WHERE volgorde=?', [$id]);
+        if (empty($record))
+            throw new \Exception('Item bestaat niet!');
+        $record = array_merge($record, $newArray);
+        return (bool)DBConnection::doQuery('UPDATE menu SET volgorde=?, link=?, alias=?, isDropdown=?, isImage=? WHERE volgorde=?',
+            [$record['volgorde'], $record['link'], $record['alias'], $record['isDropdown'], $record['isImage'], $id]);
     }
 }

@@ -1,10 +1,18 @@
-<table class="table table-striped table-bordered">
+<?php
+use Cyndaron\User\User;
+use Cyndaron\Util;
+?>
+<table id="mm-menutable" class="table table-striped table-bordered"
+    data-edit-csrf-token="<?=User::getCSRFToken('menu', 'editItem')?>"
+    data-delete-csrf-token="<?=User::getCSRFToken('menu', 'deleteItem')?>"
+>
     <thead>
         <tr>
             <th>ID</th>
             <th>Link</th>
             <th>Alias</th>
-            <th>Opties</th>
+            <th>Dropdown</th>
+            <th>Afbeelding</th>
             <th>Acties</th>
         </tr>
     </thead>
@@ -21,19 +29,25 @@
                 <?=$menuItem['alias']?>
             </td>
             <td>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" class="isDropdown" data-id="<?=$menuItem['volgorde']?>" data-csrf-token="<?=Cyndaron\User\User::getCSRFToken('menu', 'setDropdown')?>" <?=$menuItem['isDropdown'] ? 'checked' : ''?> /> Dropdown
-                    </label>
-                </div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" class="isImage" data-id="<?=$menuItem['volgorde']?>" data-csrf-token="<?=Cyndaron\User\User::getCSRFToken('menu', 'setImage')?>" <?=$menuItem['isImage'] ? 'checked' : ''?>/> Afbeelding
-                    </label>
-                </div>
+                <?=Util::boolToText($menuItem['isDropdown']);?>
             </td>
             <td>
-                <button class="removeItem btn btn-danger" data-id="<?=$menuItem['volgorde']?>" data-csrf-token="<?=Cyndaron\User\User::getCSRFToken('menu', 'removeItem')?>"><span class="glyphicon glyphicon-trash"></span> Verwijderen</button>
+                <?=Util::boolToText($menuItem['isImage']);?>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <button class="mm-edit-item btn btn-outline-cyndaron"
+                            data-id="<?=$menuItem['volgorde']?>"
+                            data-toggle="modal"
+                            data-target="#mm-edit-item-dialog"
+                            data-volgorde="<?=$menuItem['volgorde']?>"
+                            data-link="<?=$menuItem['link']?>"
+                            data-alias="<?=$menuItem['alias']?>"
+                            data-isDropdown="<?=$menuItem['isDropdown']?>"
+                            data-isImage="<?=$menuItem['isImage']?>"
+                    ><span class="glyphicon glyphicon-pencil"></span></button>
+                    <button class="mm-delete-item btn btn-danger" data-id="<?=$menuItem['volgorde']?>"><span class="glyphicon glyphicon-trash"></span></button>
+                </div>
             </td>
         </tr>
 <?php endforeach;?>
