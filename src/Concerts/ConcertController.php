@@ -20,7 +20,7 @@ class ConcertController extends Controller
         }
         else if ($this->action === 'order')
         {
-            new KaartenBestellenPagina($id);
+            new OrderTicketsPage($id);
         }
         else if (User::isAdmin())
         {

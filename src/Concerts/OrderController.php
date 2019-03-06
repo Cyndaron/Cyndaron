@@ -5,6 +5,7 @@ namespace Cyndaron\Concerts;
 
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
+use Cyndaron\Page;
 use Cyndaron\Request;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
@@ -47,16 +48,22 @@ class OrderController extends Controller
         try
         {
             $this->processOrder($concertId);
+
+            $page = new Page(
+                'Bestelling verwerkt',
+                'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw bestelling en betaalinformatie.'
+            );
+            $page->showPrePage();
+            $page->showBody();
+            $page->showPostPage();
         }
         catch (\Exception $e)
         {
-            new VerwerkBestellingPagina('Fout bij verwerken bestelling', $e->getMessage());
+            $page = new Page('Fout bij verwerken bestelling', $e->getMessage());
+            $page->showPrePage();
+            $page->showBody();
+            $page->showPostPage();
         }
-
-        new VerwerkBestellingPagina(
-            'Bestelling verwerkt',
-            'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw bestelling en betaalinformatie.'
-        );
     }
 
     /**

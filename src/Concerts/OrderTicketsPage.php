@@ -7,11 +7,11 @@ use Cyndaron\Request;
 use Cyndaron\User\User;
 
 
-class KaartenBestellenPagina extends Page
+class OrderTicketsPage extends Page
 {
     public function __construct(int $concert_id)
     {
-        $this->addScript('/src/Concerts/KaartenBestellenPagina.js');
+        $this->addScript('/src/Concerts/OrderTicketsPage.js');
 
         $concert = Concert::loadFromDatabase($concert_id)->asArray();
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC', [$concert_id]);
@@ -91,20 +91,20 @@ class KaartenBestellenPagina extends Page
                            type="checkbox" value="1"/>
                     U kunt voor dit concert nog kaarten voor vrije plaatsen kopen. <b>De gereserveerde plaatsen zijn inmiddels uitverkocht.</b>
                 <?php else: ?>
-                    <input id="gereserveerde_plaatsen" class="berekenTotaalprijsOpnieuw" name="gereserveerde_plaatsen"
-                           type="checkbox" value="1"/>
-                    <label for="gereserveerde_plaatsen">
-                        Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs
-                        van <?php echo Util::formatEuro($concert['toeslag_gereserveerde_plaats']); ?> per kaart)
-                    </label>
+                    <div class="form-group form-check">
+                        <input id="gereserveerde_plaatsen" class="berekenTotaalprijsOpnieuw form-check-input" name="gereserveerde_plaatsen"
+                               type="checkbox" value="1"/>
+                        <label class="form-check-label" for="gereserveerde_plaatsen">
+                            Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs
+                            van <?php echo Util::formatEuro($concert['toeslag_gereserveerde_plaats']); ?> per kaart)
+                        </label>
+                    </div>
                 <?php endif; ?>
-                <br/>
             <?php else: ?>
                 <input id="gereserveerde_plaatsen" type="hidden" value="0">
             <?php endif; ?>
 
             <?php if ($concert['bezorgen_verplicht']): ?>
-                <br>
                 <h3>Bezorging</h3>
                 <p>
                     Bij dit concert is het alleen mogelijk om uw kaarten te laten thuisbezorgen. Als u op Walcheren
@@ -134,7 +134,7 @@ class KaartenBestellenPagina extends Page
                 </p>
 
                 <div class="form-group row postcode-gerelateerd">
-                    <label class="col-sm-2 col-form-label" for="postcode">Postcode (verplicht):</label>
+                    <label class="col-sm-3 col-form-label" for="postcode">Postcode (verplicht):</label>
                     <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control form-control-inline"
                                                  maxlength="7"/></div>
                 </div>
@@ -146,7 +146,7 @@ class KaartenBestellenPagina extends Page
                     <br>
 
                     <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" for="naam_koorlid">Naam koorlid:</label>
+                        <label class="col-sm-3 col-form-label" for="naam_koorlid">Naam koorlid:</label>
                         <div class="col-sm-5"><input id="naam_koorlid" name="naam_koorlid" type="text"
                                                      class="form-control"/></div>
                     </div>
@@ -158,17 +158,17 @@ class KaartenBestellenPagina extends Page
             <h3>Uw gegevens (verplicht):</h3>
 
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label" for="achternaam">Achternaam:</label>
+                <label class="col-sm-3 col-form-label" for="achternaam">Achternaam:</label>
                 <div class="col-sm-5"><input id="achternaam" name="achternaam" class="form-control"/></div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label" for="voorletters">Voorletters:</label>
+                <label class="col-sm-3 col-form-label" for="voorletters">Voorletters:</label>
                 <div class="col-sm-5"><input id="voorletters" name="voorletters" class="form-control"/></div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label" for="e-mailadres">E-mailadres:</label>
+                <label class="col-sm-3 col-form-label" for="e-mailadres">E-mailadres:</label>
                 <div class="col-sm-5"><input id="e-mailadres" name="e-mailadres" type="email" class="form-control"/></div>
             </div>
 
@@ -176,20 +176,20 @@ class KaartenBestellenPagina extends Page
             <h3 id="adresgegevensKop">Uw adresgegevens (nodig als u de kaarten wilt laten bezorgen):</h3>
 
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label" for="straatnaam_en_huisnummer">Straatnaam en huisnummer:</label>
+                <label class="col-sm-3 col-form-label" for="straatnaam_en_huisnummer">Straatnaam en huisnummer:</label>
                 <div class="col-sm-5"><input id="straatnaam_en_huisnummer" name="straatnaam_en_huisnummer"
                                              class="form-control"/></div>
             </div>
 
             <?php if (!$concert['bezorgen_verplicht']): ?>
                 <div class="form-group row">
-                    <label class="col-sm-2 col-form-label" for="postcode">Postcode:</label>
+                    <label class="col-sm-3 col-form-label" for="postcode">Postcode:</label>
                     <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control"/></div>
                 </div>
             <?php endif; ?>
 
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label" for="woonplaats">Woonplaats:</label>
+                <label class="col-sm-3 col-form-label" for="woonplaats">Woonplaats:</label>
                 <div class="col-sm-5"><input id="woonplaats" name="woonplaats" class="form-control"/></div>
             </div>
 
@@ -199,7 +199,7 @@ class KaartenBestellenPagina extends Page
             <p>Als u nog opmerkingen heeft kunt u deze hier kwijt.</p>
 
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label" for="opmerkingen">Opmerkingen (niet verplicht):</label>
+                <label class="col-sm-3 col-form-label" for="opmerkingen">Opmerkingen (niet verplicht):</label>
                 <div class="col-sm-5"><textarea id="opmerkingen" name="opmerkingen" class="form-control"
                                                 rows="4"></textarea></div>
             </div>
@@ -208,7 +208,7 @@ class KaartenBestellenPagina extends Page
                 vak <span style="font-family:monospace;">Vlissingen</span> in te vullen.</p>
 
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label" for="antispam">Antispam:</label>
+                <label class="col-sm-3 col-form-label" for="antispam">Antispam:</label>
                 <div class="col-sm-5"><input id="antispam" name="antispam" class="form-control"/></div>
             </div>
 
