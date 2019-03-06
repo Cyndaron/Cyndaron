@@ -30,7 +30,7 @@ class ConcertController extends Controller
                     new ConcertOrderOverviewPage($id);
                     break;
                 case 'viewReservedSeats':
-                    new GereserveerdePlaatsen($id);
+                    new ShowReservedSeats($id);
                     break;
             }
         }
