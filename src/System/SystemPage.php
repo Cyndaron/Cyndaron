@@ -64,6 +64,7 @@ class SystemPage extends Page
                 ['name' => 'menukleur', 'description' => 'Achtergrondkleur menu', 'type' => 'color', 'value' => Setting::get('menukleur', true)],
                 ['name' => 'artikelkleur', 'description' => 'Achtergrondkleur artikel', 'type' => 'color', 'value' => Setting::get('artikelkleur', true)],
                 ['name' => 'menuachtergrond', 'description' => 'Achtergrondafbeelding menu', 'type' => 'text', 'value' => Setting::get('menuachtergrond', true)],
+                ['name' => 'frontPage', 'description' => 'Voorpagina', 'type' => 'text', 'value' => Setting::get('frontPage', true)],
             ];
 
             foreach ($formItems as $formItem): ?>

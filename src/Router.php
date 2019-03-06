@@ -168,8 +168,7 @@ class Router
      */
     private function getFrontpageUrl(): Url
     {
-        $frontPage = new Url(DBConnection::doQueryAndFetchOne('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)', []));
-        return $frontPage;
+        return new Url(Setting::get('frontPage'));
     }
 
     private function sendCSPHeader(): void

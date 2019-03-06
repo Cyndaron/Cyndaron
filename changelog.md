@@ -3,6 +3,7 @@ Versie 6.0 (Trajectum
 - Afhankelijkheden: jQuery geüpdatet naar 3.3.1
 - Feature: aanmaak- en wijzigingdata worden nu vastgelegd (#85)
 - Feature: bij aanmaken van een fotoalbum wordt meteen de bijbehorende map aangemaakt (#81)
+- Feature: voorpagina hoeft niet meer de eerste pagina in het menu te zijn (#67)
 - Verwijderd: delen en Facebookintegratie (#80)
 - Verwijderd: ideeënbus
 - Verwijderd: instelling voor extra bodycode (kan nu via PHP-includes)

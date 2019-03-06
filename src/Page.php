@@ -307,7 +307,7 @@ class Page
         }
         $menu = DBConnection::doQueryAndFetchAll('SELECT * FROM menu ORDER BY volgorde ASC;');
         $menuitems = [];
-        $firstItem = true;
+        $frontPage = Setting::get('frontPage');
 
         foreach ($menu as $menuitem)
         {
@@ -322,20 +322,16 @@ class Page
                 $menuitem['naam'] = $url->getPageTitle();
             }
 
-            if ($firstItem)
+            if ($menuitem['link'] == $frontPage)
             {
                 $menuitem['link'] = '/';
             }
-            else
+            // For dropdowns, this is not necessary and it makes detection harder down the line.
+            elseif (!$menuitem['isDropdown'])
             {
-                // For dropdowns, this is not necessary and it makes detection harder down the line.
-                if (!$menuitem['isDropdown'])
-                {
-                    $menuitem['link'] = $url->getFriendly();
-                }
+                $menuitem['link'] = $url->getFriendly();
             }
             $menuitems[] = $menuitem;
-            $firstItem = false;
         }
         return $menuitems;
     }

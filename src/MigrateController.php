@@ -88,6 +88,9 @@ class MigrateController extends Controller
         DBConnection::doQuery("ALTER TABLE `categorieen` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `categorieid`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; ");
         DBConnection::doQuery("ALTER TABLE `fotoboeken` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `categorieid`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; ");
         DBConnection::doQuery("ALTER TABLE `mailformulieren` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `confirmation_text`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; ");
+
+        $frontPage = DBConnection::doQueryAndFetchOne('SELECT link FROM menu WHERE volgorde=(SELECT MIN(volgorde) FROM menu)');
+        Setting::set('frontPage', $frontPage);
     }
 }
 ;
