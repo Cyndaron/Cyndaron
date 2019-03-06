@@ -25,7 +25,7 @@ class UserManagerPage extends Page
         $this->addScript('/src/User/UserManagerPage.js');
         parent::showPrePage();
 
-        $users = DBConnection::doQueryAndFetchAll('SELECT * FROM users ORDER BY username', []);
+        $users = DBConnection::doQueryAndFetchAll('SELECT * FROM users ORDER BY username');
 
         echo new Toolbar('', '', '
         <button id="um-create-user"

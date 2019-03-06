@@ -38,7 +38,7 @@ class MenuModel
 
     public static function vervangMenu(array $nieuwmenu)
     {
-        DBConnection::doQueryAndFetchOne('DELETE FROM menu;', []);
+        DBConnection::doQueryAndFetchOne('DELETE FROM menu;');
 
         if (count($nieuwmenu) > 0)
         {
@@ -53,7 +53,7 @@ class MenuModel
 
     public static function voegToeAanMenu(string $link, string $alias = '')
     {
-        $teller = intval(DBConnection::doQueryAndFetchOne('SELECT MAX(volgorde) FROM menu;', [])) + 1;
+        $teller = intval(DBConnection::doQueryAndFetchOne('SELECT MAX(volgorde) FROM menu;')) + 1;
         DBConnection::doQueryAndFetchOne('INSERT INTO menu(volgorde,link,alias) VALUES(?,?,?);', [$teller, $link, $alias]);
     }
 }
