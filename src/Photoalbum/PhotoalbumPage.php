@@ -28,6 +28,8 @@ class PhotoalbumPage extends Page
 
         if ($dirArray = @scandir("./fotoalbums/$id"))
         {
+            natsort($dirArray);
+
             $numEntries = 0;
 
             $output = '<div class="fotoalbum">';

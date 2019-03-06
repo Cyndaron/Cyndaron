@@ -33,7 +33,7 @@ class OverviewPage extends Page
             }
             closedir($bestandendir);
             $indexCount = count($dirArray);
-            sort($dirArray);
+            natsort($dirArray);
 
 
             echo '<ul>';
