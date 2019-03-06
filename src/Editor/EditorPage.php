@@ -28,7 +28,6 @@ abstract class EditorPage extends Page
         $this->id = Request::getVar(2);
         $this->vorigeversie = Request::getVar(3) === 'previous';
         $this->vvstring = $this->vorigeversie ? 'vorige' : '';
-        $this->connection = DBConnection::getPDO();
 
         $this->prepare();
 
@@ -152,8 +151,8 @@ abstract class EditorPage extends Page
                         $categorieid = Setting::get('standaardcategorie');
                     }
 
-                    $categorieen = $this->connection->query("SELECT * FROM categorieen ORDER BY naam;");
-                    foreach ($categorieen->fetchAll() as $categorie)
+                    $categorieen = DBConnection::doQueryAndFetchAll("SELECT * FROM categorieen ORDER BY naam;");
+                    foreach ($categorieen as $categorie)
                     {
                         if ($this->type == 'category' && $categorie['id'] == $this->id)
                             continue;

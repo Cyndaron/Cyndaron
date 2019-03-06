@@ -15,7 +15,6 @@ class SystemPage extends Page
 
         parent::__construct('Systeembeheer');
         $this->showPrePage();
-        $this->connection = DBConnection::getPDO();
 
         echo new PageTabs([
             'config' => 'Configuratie',
@@ -51,8 +50,7 @@ class SystemPage extends Page
         <form method="post" action="/system/config" class="form-horizontal">
             <?php
             $standaardcategorie = Setting::get('standaardcategorie');
-            $categorieen = $this->connection->prepare('SELECT id,naam FROM categorieen ORDER BY id ASC');
-            $categorieen->execute();
+            $categorieen = DBConnection::doQueryAndFetchAll('SELECT id,naam FROM categorieen ORDER BY id ASC');
             $menuthema = Setting::get('menuthema');
             $lichtMenu = ($menuthema !== 'donker') ? 'selected' : '';
             $donkerMenu = ($menuthema === 'donker') ? 'selected' : '';

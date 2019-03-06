@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Page;
 
 
@@ -27,7 +28,7 @@ class LedenPagina extends Page
         $this->addScript('/sys/js/mc-ledenpagina.js');
         $this->showPrePage();
 
-        $spelers = $this->connection->query("SELECT * FROM mc_leden ORDER BY niveau DESC, mcnaam ASC");
+        $spelers = DBConnection::doQueryAndFetchAll('SELECT * FROM mc_leden ORDER BY niveau DESC, mcnaam ASC');
 
         $tePreloaden = [];
 

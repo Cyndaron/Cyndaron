@@ -10,8 +10,6 @@ class CategoryPage extends Page
 {
     public function __construct($id)
     {
-        $this->connection = DBConnection::getPDO();
-
         if ($id != 'fotoboeken')
         {
             $this->toonCategorieIndex(intval($id));
@@ -40,15 +38,14 @@ class CategoryPage extends Page
 
         $beschrijving = DBConnection::doQueryAndFetchOne('SELECT beschrijving FROM categorieen WHERE id= ?', [$id]);
         echo $beschrijving;
-        $paginas = $this->connection->prepare('SELECT * FROM subs WHERE categorieid= ? ORDER BY id DESC');
-        $paginas->execute([$id]);
+        $paginas = DBConnection::doQueryAndFetchAll('SELECT * FROM subs WHERE categorieid= ? ORDER BY id DESC', [$id]);
 
         if ($alleentitel)
         {
             echo '<ul class="zonderbullets">';
         }
 
-        foreach ($paginas->fetchAll() as $pagina)
+        foreach ($paginas as $pagina)
         {
             $url = new Url('/sub/' . $pagina['id']);
             $link = $url->getFriendly();
@@ -74,11 +71,10 @@ class CategoryPage extends Page
     {
         parent::__construct('Fotoalbums');
         $this->showPrePage();
-        $fotoboeken = $this->connection->prepare('SELECT * FROM fotoboeken ORDER BY id DESC');
-        $fotoboeken->execute([]);
+        $fotoboeken = DBConnection::doQueryAndFetchAll('SELECT * FROM fotoboeken ORDER BY id DESC');
 
         echo '<ul class="zonderbullets">';
-        foreach ($fotoboeken->fetchAll() as $fotoboek)
+        foreach ($fotoboeken as $fotoboek)
         {
             $url = new Url('/photoalbum/' . $fotoboek['id']);
             $link = $url->getFriendly();

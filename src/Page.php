@@ -26,18 +26,12 @@ class Page
     protected $extraMeta = '';
     protected $title = '';
     protected $titleButtons = null;
-    protected $connection = null;
     protected $extraScripts = [];
     protected $websiteName = '';
     protected $body = '';
 
     public function __construct(string $title, string $body = '')
     {
-        if ($this->connection == null)
-        {
-            $this->connection = DBConnection::getPDO();
-        }
-
         $this->title = $title;
         $this->body = $body;
     }
@@ -311,12 +305,11 @@ class Page
         {
             return [];
         }
-        $menu = $this->connection->prepare('SELECT * FROM menu ORDER BY volgorde ASC;');
-        $menu->execute();
+        $menu = DBConnection::doQueryAndFetchAll('SELECT * FROM menu ORDER BY volgorde ASC;');
         $menuitems = [];
         $firstItem = true;
 
-        foreach ($menu->fetchAll() as $menuitem)
+        foreach ($menu as $menuitem)
         {
             $url = new Url($menuitem['link']);
 
@@ -380,7 +373,7 @@ class Page
     protected function printCategoryDropdown(array $menuitem)
     {
         $id = intval(str_replace('/category/', '', $menuitem['link']));
-        $pagesInCategory = $this->connection->prepare("
+        $pagesInCategory = DBConnection::doQueryAndFetchAll("
             SELECT * FROM
             (
                 SELECT 'sub' AS type, id, naam FROM subs WHERE categorieid=?
@@ -389,11 +382,11 @@ class Page
                 UNION
                 SELECT 'category' AS type, id, naam FROM categorieen WHERE categorieid=?
             ) AS een
-            ORDER BY naam ASC;");
-        $pagesInCategory->execute([$id, $id, $id]);
+            ORDER BY naam ASC;",
+            [$id, $id, $id]);
 
         $items = [];
-        foreach ($pagesInCategory->fetchAll() as $pagina)
+        foreach ($pagesInCategory as $pagina)
         {
             $url = new Url(sprintf('/%s/%d', $pagina['type'], $pagina['id']));
             $link = $url->getFriendly();
