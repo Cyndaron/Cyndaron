@@ -25,7 +25,6 @@ class ErrorController extends Controller
     // Overridden, since both GET and POST requests may end up here, and checking user rights is not necessary.
     public function route()
     {
-        $errorCode = Request::getVar(1);
         if (array_key_exists($this->action, static::KNOWN_ERRORS))
         {
             $error = static::KNOWN_ERRORS[$this->action];
@@ -37,7 +36,7 @@ class ErrorController extends Controller
         }
         else
         {
-            $page = new Page('Onbekende fout', 'Er is een onbekende foutopgetreden. Code: ' . $this->action);
+            $page = new Page('Onbekende fout', 'Er is een onbekende fout opgetreden. Code: ' . $this->action);
             $page->showPrePage();
             $page->showBody();
             $page->showPostPage();
