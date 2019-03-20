@@ -4,6 +4,7 @@ namespace Cyndaron\Concerts;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Request;
+use Cyndaron\Setting;
 use Cyndaron\User\User;
 
 
@@ -41,13 +42,7 @@ class OrderTicketsPage extends Page
         ?>
 
         <h3>Vrije plaatsen en gereserveerde plaatsen</h3>
-        <p>Alle plaatsen in het middenschip van de kerk verkopen wij met een stoelnummer; d.w.z. al deze plaatsen worden
-            verkocht als gereserveerde plaats. De stoelnummers lopen van 1 t/m circa <?=Util::MAX_RESERVED_SEATS;?>. Het is een doorlopende reeks,
-            dus dit keer geen rijnummer. Aan het einde van een rij verspringt het stoelnummer naar de stoel daarachter.
-            De nummers vormen een soort heen en weer gaande slinger door het hele middenschip heen. Het kan dus gebeuren
-            dat u een paar kaarten koopt, waarbij de nummering verspringt naar de rij daarachter. Maar wel zo dat de
-            stoelen dus direct bij elkaar staan.
-            Vrije plaatsen zijn: de zijvakken en de balkons.</p>
+        <p><?php printf(Setting::get('concerts_reserved_seats_description'), Util::MAX_RESERVED_SEATS)?></p>
 
         <br/>
         <form method="post" action="/concert-order/add" class="form-horizontal" id="kaartenbestellen">
