@@ -6,40 +6,45 @@ namespace Cyndaron\Menu;
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Request;
+use Cyndaron\User\UserLevel;
 
 class MenuController extends Controller
 {
-    protected function routePost()
+    protected $postRoutes = [
+        'addItem' => ['level' => UserLevel::ADMIN, 'function' => 'addItem'],
+        'editItem' => ['level' => UserLevel::ADMIN, 'function' => 'editItem'],
+        'deleteItem' => ['level' => UserLevel::ADMIN, 'function' => 'deleteItem'],
+    ];
+
+    protected function addItem()
+    {
+        $volgorde = (int)Request::post('volgorde');
+        $link = Request::post('link');
+        $alias = Request::post('alias');
+        $isDropdown = (bool)Request::post('isDropdown');
+        $isImage = (bool)Request::post('isImage');
+        if (!Menu::addItem($link, $alias, $volgorde, $isDropdown, $isImage))
+        {
+            throw new \Exception('Cannot add menu item!');
+        }
+    }
+
+    protected function editItem()
     {
         $index = intval(Request::getVar(2));
-        switch ($this->action)
-        {
-            case 'addItem':
-                $volgorde = (int)Request::post('volgorde');
-                $link = Request::post('link');
-                $alias = Request::post('alias');
-                $isDropdown = (bool)Request::post('isDropdown');
-                $isImage = (bool)Request::post('isImage');
-                if (!Menu::addItem($link, $alias, $volgorde, $isDropdown, $isImage))
-                {
-                    var_dump(DBConnection::errorInfo());
-                    throw new \Exception('Cannot add menu item!');
-                }
+        $editArray = [
+            'volgorde' => Request::post('volgorde'),
+            'link' => Request::post('link'),
+            'alias' => Request::post('alias'),
+            'isDropdown' => (int)Request::post('isDropdown'),
+            'isImage' => (int)Request::post('isImage'),
+        ];
+        Menu::editItem($index, $editArray);
+    }
 
-                break;
-            case 'editItem':
-                $editArray = [
-                    'volgorde' => Request::post('volgorde'),
-                    'link' => Request::post('link'),
-                    'alias' => Request::post('alias'),
-                    'isDropdown' => (int)Request::post('isDropdown'),
-                    'isImage' => (int)Request::post('isImage'),
-                ];
-                Menu::editItem($index, $editArray);
-                break;
-            case 'deleteItem':
-                Menu::deleteItem($index);
-                break;
-        }
+    protected function deleteItem()
+    {
+        $index = intval(Request::getVar(2));
+        Menu::deleteItem($index);
     }
 }

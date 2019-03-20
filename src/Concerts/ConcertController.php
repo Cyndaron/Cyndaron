@@ -7,45 +7,20 @@ use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Request;
 use Cyndaron\User\User;
+use Cyndaron\User\UserLevel;
 
 class ConcertController extends Controller
 {
-    protected function routeGet()
-    {
-        $id = intval(Request::getVar(2) ?: Util::getLatestConcertId());
+    protected $getRoutes = [
+        'getInfo' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getConcertInfo'],
+        'order' => ['level' => UserLevel::ANONYMOUS, 'function' => 'order'],
+        'viewOrders' => ['level' => UserLevel::ADMIN, 'function' => 'viewOrders'],
+        'viewReservedSeats' => ['level' => UserLevel::ADMIN, 'function' => 'viewReservedSeats'],
+    ];
 
-        if ($this->action === 'getInfo')
-        {
-            $this->getConcertInfo($id);
-        }
-        else if ($this->action === 'order')
-        {
-            new OrderTicketsPage($id);
-        }
-        else if (User::isAdmin())
-        {
-            switch ($this->action)
-            {
-                case 'viewOrders':
-                    new ConcertOrderOverviewPage($id);
-                    break;
-                case 'viewReservedSeats':
-                    new ShowReservedSeats($id);
-                    break;
-            }
-        }
-    }
-
-    protected function routePost()
+    protected function getConcertInfo()
     {
-        switch ($this->action)
-        {
-            case '';
-        }
-    }
-
-    protected function getConcertInfo(int $concertId)
-    {
+        $concertId = intval(Request::getVar(2));
         $concertInfo = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM kaartverkoop_concerten WHERE id=?', [$concertId]);
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC', [$concertId]);
 
@@ -65,5 +40,23 @@ class ConcertController extends Controller
         }
 
         echo json_encode($answer);
+    }
+
+    protected function order()
+    {
+        $id = intval(Request::getVar(2));
+        new OrderTicketsPage($id);
+    }
+
+    protected function viewOrders()
+    {
+        $id = intval(Request::getVar(2));
+        new ConcertOrderOverviewPage($id);
+    }
+
+    protected function viewReservedSeats()
+    {
+        $id = intval(Request::getVar(2));
+        new ShowReservedSeats($id);
     }
 }

@@ -11,7 +11,11 @@ use Cyndaron\User\UserLevel;
 
 class StaticPageController extends Controller
 {
-    protected $minLevelPost = UserLevel::ANONYMOUS;
+    protected $postRoutes = [
+        'addtomenu' => ['level' => UserLevel::ADMIN, 'addToMenu'],
+        'delete' => ['level' => UserLevel::ADMIN, 'delete'],
+        'react' => ['level' => UserLevel::ANONYMOUS, 'react'],
+    ];
 
     protected function routeGet()
     {
@@ -19,33 +23,22 @@ class StaticPageController extends Controller
         new StaticPage($id);
     }
 
-    protected function routePost()
+    protected function addToMenu()
     {
         $id = intval(Request::getVar(2));
-
-        if ($this->action !== 'react' && !User::isAdmin())
-        {
-            $this->send403();
-            die();
-        }
-
-        switch ($this->action)
-        {
-            case 'react':
-                $this->react($id);
-                break;
-            case 'delete':
-                $model = new StaticPageModel($id);
-                $model->delete();
-                break;
-            case 'addtomenu':
-                Menu::addItem('/sub/' . $id);
-                break;
-        }
+        Menu::addItem('/sub/' . $id);
     }
 
-    private function react(int $id)
+    protected function delete()
     {
+        $id = intval(Request::getVar(2));
+        $model = new StaticPageModel($id);
+        $model->delete();
+    }
+
+    protected function react()
+    {
+        $id = intval(Request::getVar(2));
         $model = new StaticPageModel($id);
         if (!$model->laden())
         {

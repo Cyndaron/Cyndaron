@@ -12,39 +12,34 @@ use Cyndaron\User\UserLevel;
 
 class OrderController extends Controller
 {
-    protected $minLevelPost = UserLevel::ANONYMOUS;
+    protected $postRoutes = [
+        'add' => ['level' => UserLevel::ANONYMOUS, 'function' => 'add'],
+    ];
 
     protected function routePost()
     {
-        if ($this->action === 'add')
-        {
-            $concertId = intval(Request::post('concert_id'));
-            $this->addAction($concertId);
-        }
-        else if (User::isAdmin())
-        {
-            $id = intval(Request::getVar(2));
-            /** @var Order $order */
-            $order = Order::loadFromDatabase($id);
+        $id = intval(Request::getVar(2));
+        /** @var Order $order */
+        $order = Order::loadFromDatabase($id);
 
-            switch ($this->action)
-            {
-                case 'setIsPaid':
-                    $order->setIsPaid();
-                    break;
-                case 'setIsSent':
-                    $order->setIsSent();
-                    break;
-                case 'delete':
-                    $order->delete();
-                    break;
+        switch ($this->action)
+        {
+            case 'setIsPaid':
+                $order->setIsPaid();
+                break;
+            case 'setIsSent':
+                $order->setIsSent();
+                break;
+            case 'delete':
+                $order->delete();
+                break;
 
-            }
         }
     }
 
-    private function addAction(int $concertId)
+    protected function add()
     {
+        $concertId = intval(Request::post('concert_id'));
         try
         {
             $this->processOrder($concertId);
