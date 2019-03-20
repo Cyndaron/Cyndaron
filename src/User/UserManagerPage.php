@@ -166,11 +166,11 @@ class UserManagerPage extends Page
                     <input class="form-control" id="um-avatar">
                 </div>
             </div>
-
+            
             <div class="form-group row">
-                <label for="um-hideFromMemberList" class="col-sm-2 col-form-label">Verbergen op Wie-is-wie:</label>
-                <div class="col-sm-10">
-                    <input class="form-control" id="um-hideFromMemberList" type="checkbox" value="1">
+                <div class="col-sm-12">
+                    <input type="checkbox" class="" id="um-hideFromMemberList" value="1">
+                    <label class="form-check-label" for="um-hideFromMemberList">Verbergen op Wie-is-wie</label>
                 </div>
             </div>',
             '<button id="um-edit-user-save" type="button" class="btn btn-primary">Opslaan</button>

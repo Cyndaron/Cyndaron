@@ -53,16 +53,17 @@ class MenuEditorPage extends Page
                     <input class="form-control" id="mm-volgorde">
                 </div>
             </div>
+            
             <div class="form-group row">
-                <label for="mm-isDropdown" class="col-sm-2 col-form-label">Dropdown:</label>
-                <div class="col-sm-10">
-                    <input class="form-control" id="mm-isDropdown" type="checkbox" value="1">
+                <div class="col-sm-12">
+                    <input type="checkbox" class="" id="mm-isDropdown" value="1">
+                    <label class="form-check-label" for="mm-isDropdown">Dropdown</label>
                 </div>
             </div>
             <div class="form-group row">
-                <label for="mm-isImage" class="col-sm-2 col-form-label">Als afbeelding:</label>
-                <div class="col-sm-10">
-                    <input class="form-control" id="mm-isImage" type="checkbox" value="1">
+                <div class="col-sm-12">
+                    <input type="checkbox" class="" id="mm-isImage" value="1">
+                    <label class="form-check-label" for="mm-isImage">Als afbeelding</label>
                 </div>
             </div>',
             '<button id="mm-edit-item-save" type="button" class="btn btn-primary">Opslaan</button>
