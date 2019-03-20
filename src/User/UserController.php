@@ -9,99 +9,46 @@ use Cyndaron\Util;
 
 class UserController extends Controller
 {
-    /* In order to allow users to login and modify their own data. Add the appropriate User::isAdmin() checks where needed. */
-    protected $minLevelPost = UserLevel::ANONYMOUS;
+    protected $getRoutes = [
+        'gallery' => ['level' => UserLevel::LOGGED_IN, 'function' => 'gallery'],
+        'login' => ['level' => UserLevel::ANONYMOUS, 'function' => 'loginGet'],
+        'logout' => ['level' => UserLevel::LOGGED_IN, 'function' => 'logout'],
+        'manager' => ['level' => UserLevel::ADMIN, 'function' => 'manager'],
+    ];
 
-    protected function routeGet()
+    protected $postRoutes = [
+        'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
+        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
+        'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
+        'login' => ['level' => UserLevel::ANONYMOUS, 'function' => 'loginPost'],
+        'resetpassword' => ['level' => UserLevel::ADMIN, 'function' => 'resetPassword'],
+    ];
+
+    protected function gallery()
     {
-        switch ($this->action)
-        {
-            case 'login':
-                if (empty($_SESSION['redirect']))
-                {
-                    $_SESSION['redirect'] = Request::referrer();
-                }
-                new LoginPage();
-                break;
-            case 'logout':
-                User::logout();
-                break;
-            case 'gallery':
-                new Gallery();
-                break;
-            case 'manager':
-                if (User::isAdmin())
-                    new UserManagerPage();
-                break;
-        }
+        new Gallery();
     }
 
-    protected function routePost()
+    protected function loginGet()
     {
-        if (!User::isLoggedIn())
+        if (empty($_SESSION['redirect']))
         {
-            switch ($this->action)
-            {
-                case 'login':
-                    $this->login();
-                    break;
-                default:
-                    $this->send401();
-            }
+            $_SESSION['redirect'] = Request::referrer();
         }
-        else
-        {
-            switch ($this->action)
-            {
-                case 'add':
-                    $username = Request::post('username');
-                    $email = Request::post('email');
-                    $password = Request::post('password') ?: Util::generatePassword();
-                    $level = intval(Request::post('level'));
-                    $firstname = Request::post('firstname');
-                    $tussenvoegsel = Request::post('tussenvoegsel');
-                    $lastname = Request::post('lastname');
-                    $role = Request::post('role');
-                    $comments = Request::post('comments');
-                    $avatar = Request::post('avatar');
-                    $hideFromMemberList = Request::post('hideFromMemberList') == '1' ? true : false;
-
-                    $this->create($username, $email, $password, $level, $firstname, $tussenvoegsel, $lastname, $role, $comments, $avatar, $hideFromMemberList);
-                    break;
-                case 'edit':
-                    $id = Request::getVar(2);
-                    if ($id !== null)
-                    {
-                        $username = Request::post('username');
-                        $email = Request::post('email');
-                        $level = intval(Request::post('level'));
-                        $firstname = Request::post('firstname');
-                        $tussenvoegsel = Request::post('tussenvoegsel');
-                        $lastname = Request::post('lastname');
-                        $role = Request::post('role');
-                        $comments = Request::post('comments');
-                        $avatar = Request::post('avatar');
-                        $hideFromMemberList = Request::post('hideFromMemberList') == '1' ? true : false;
-                        $this->edit(intval($id), $username, $email, $level, $firstname, $tussenvoegsel, $lastname, $role, $comments, $avatar, $hideFromMemberList);
-                    }
-                    break;
-                case 'delete':
-                    $userId = Request::getVar(2);
-                    if ($userId !== null)
-                        $this->delete(intval($userId));
-                    break;
-                case 'resetpassword':
-                    $userId = Request::getVar(2);
-                    if ($userId !== null)
-                        $this->resetPassword(intval($userId));
-                    break;
-                default:
-                    $this->send404('Action not found!');
-            }
-        }
+        new LoginPage();
     }
 
-    private function login()
+    protected function logout()
+    {
+        User::logout();
+    }
+
+    protected function manager()
+    {
+        new UserManagerPage();
+    }
+
+    protected function loginPost()
     {
         $identification = Request::post('login_user');
         $verification = Request::post('login_pass');
@@ -126,26 +73,49 @@ class UserController extends Controller
         }
     }
 
-    public function create(string $username, string $email, string $password, int $level, string $firstname, string $tussenvoegsel, string $lastname, string $role, string $comments, string $avatar, bool $hideFromMemberList)
+    protected function add()
     {
-        if (!User::isAdmin())
-        {
-            $this->send401();
-            return;
-        }
-        $userId = User::create($username, $email, $password, $level, $firstname, $tussenvoegsel, $lastname, $role, $comments, $avatar, $hideFromMemberList);
+        $username = Request::post('username');
+        $email = Request::post('email');
+        $password = Request::post('password') ?: Util::generatePassword();
+        $level = intval(Request::post('level'));
+        $firstname = Request::post('firstname');
+        $tussenvoegsel = Request::post('tussenvoegsel');
+        $lastname = Request::post('lastname');
+        $role = Request::post('role');
+        $comments = Request::post('comments');
+        $avatar = Request::post('avatar');
+        $hideFromMemberList = Request::post('hideFromMemberList') == '1' ? true : false;
 
+        $userId = User::create($username, $email, $password, $level, $firstname, $tussenvoegsel, $lastname, $role, $comments, $avatar, $hideFromMemberList);
         echo json_encode(['userId' => $userId]);
     }
 
-    public function edit(int $id, string $username, string $email, int $level, string $firstname, string $tussenvoegsel, string $lastname, string $role, string $comments, string $avatar, bool $hideFromMemberList)
+    protected function edit()
     {
-        if (!User::isAdmin())
+        $id = Request::getVar(2);
+        if ($id !== null)
         {
-            $this->send401();
-            return;
+            $username = Request::post('username');
+            $email = Request::post('email');
+            $level = intval(Request::post('level'));
+            $firstname = Request::post('firstname');
+            $tussenvoegsel = Request::post('tussenvoegsel');
+            $lastname = Request::post('lastname');
+            $role = Request::post('role');
+            $comments = Request::post('comments');
+            $avatar = Request::post('avatar');
+            $hideFromMemberList = Request::post('hideFromMemberList') == '1' ? true : false;
+            $this->editHelper(intval($id), $username, $email, $level, $firstname, $tussenvoegsel, $lastname, $role, $comments, $avatar, $hideFromMemberList);
         }
+        else
+        {
+            $this->send400();
+        }
+    }
 
+    private function editHelper(int $id, string $username, string $email, int $level, string $firstname, string $tussenvoegsel, string $lastname, string $role, string $comments, string $avatar, bool $hideFromMemberList)
+    {
         $user = new User($id);
         $user->fetchRecord();
         $user->updateFromArray([
@@ -167,30 +137,36 @@ class UserController extends Controller
         }
     }
 
-    public function delete(int $userId): void
+    protected function delete()
     {
-        if (!User::isAdmin())
+        $userId = Request::getVar(2);
+        if ($userId !== null)
         {
-            $this->send401();
-            return;
-        }
-        $user = new User($userId);
-        $user->delete();
+            $user = new User($userId);
+            $user->delete();
 
-        echo json_encode([]);
+            echo json_encode([]);
+        }
+        else
+        {
+            $this->send400();
+        }
     }
 
-    public function resetPassword(int $userId): void
+    protected function resetPassword()
     {
-        if (!User::isAdmin())
+        $userId = Request::getVar(2);
+        if ($userId !== null)
         {
-            $this->send401();
-            return;
-        }
-        $user = new User($userId);
-        $user->fetchRecord();
-        $user->sendNewPassword();
+            $user = new User($userId);
+            $user->fetchRecord();
+            $user->sendNewPassword();
 
-        echo json_encode([]);
+            echo json_encode([]);
+        }
+        else
+        {
+            $this->send400();
+        }
     }
 }
