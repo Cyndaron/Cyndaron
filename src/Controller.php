@@ -57,7 +57,7 @@ class Controller
         if (array_key_exists($this->action, $routesTable))
         {
             $route = $routesTable[$this->action];
-            $level = $route['minLevel'] ?? UserLevel::ADMIN;
+            $level = $route['level'] ?? UserLevel::ADMIN;
             $this->checkUserLevelOrDie($level);
             $function = $route['function'];
             $this->$function();
