@@ -25,7 +25,7 @@ class StaticPageController extends Controller
 
         if ($this->action !== 'react' && !User::isAdmin())
         {
-            $this->send401();
+            $this->send403();
             die();
         }
 

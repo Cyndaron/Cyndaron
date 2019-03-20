@@ -92,12 +92,6 @@ class Controller
         $this->sendErrorMessage($message);
     }
 
-    public function send401(string $message = 'Not authorised'): void
-    {
-        header('HTTP/1.1 401 Unauthorized');
-        $this->sendErrorMessage($message);
-    }
-
     public function send403(string $message = 'Forbidden'): void
     {
         header('HTTP/1.1 403 Forbidden');
