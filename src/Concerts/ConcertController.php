@@ -10,7 +10,7 @@ use Cyndaron\User\User;
 
 class ConcertController extends Controller
 {
-    public function routeGet()
+    protected function routeGet()
     {
         $id = intval(Request::getVar(2) ?: Util::getLatestConcertId());
 
@@ -36,7 +36,7 @@ class ConcertController extends Controller
         }
     }
 
-    public function routePost()
+    protected function routePost()
     {
         switch ($this->action)
         {

@@ -11,7 +11,7 @@ class PageManagerController extends Controller
 {
     protected $minLevelGet = UserLevel::ADMIN;
 
-    public function routeGet()
+    protected function routeGet()
     {
         $currentPage = Request::getVar(1) ?: 'sub';
         new PageManagerPage($currentPage);

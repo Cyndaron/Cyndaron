@@ -8,7 +8,7 @@ use Cyndaron\Controller;
 
 class FileCabinetController extends Controller
 {
-    public function routeGet()
+    protected function routeGet()
     {
         new OverviewPage();
     }

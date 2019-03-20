@@ -10,7 +10,7 @@ use Cyndaron\Url;
 
 class FriendlyUrlController extends Controller
 {
-    public function routePost()
+    protected function routePost()
     {
         switch ($this->action)
         {

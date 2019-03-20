@@ -14,7 +14,7 @@ class OrderController extends Controller
 {
     protected $minLevelPost = UserLevel::ANONYMOUS;
 
-    public function routePost()
+    protected function routePost()
     {
         if ($this->action === 'add')
         {

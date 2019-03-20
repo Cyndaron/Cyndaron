@@ -10,7 +10,7 @@ class MenuEditorController extends Controller
 {
     protected $minLevelGet = UserLevel::ADMIN;
 
-    public function routeGet()
+    protected function routeGet()
     {
         new MenuEditorPage();
     }

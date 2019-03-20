@@ -11,13 +11,13 @@ class SystemController extends Controller
 {
     protected $minLevelGet = UserLevel::ADMIN;
 
-    public function routeGet()
+    protected function routeGet()
     {
         $currentPage = Request::getVar(1) ?: 'config';
         new SystemPage($currentPage);
     }
 
-    public function routePost()
+    protected function routePost()
     {
         Setting::set('websitenaam', Request::post('websitenaam'));
         Setting::set('websitelogo', Request::post('websitelogo'));

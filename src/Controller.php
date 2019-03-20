@@ -14,6 +14,9 @@ class Controller
     protected $minLevelGet = UserLevel::ANONYMOUS;
     protected $minLevelPost = UserLevel::ADMIN;
 
+    protected $getRoutes = [];
+    protected $postRoutes = [];
+
     public function __construct(string $module, string $action)
     {
         $this->module = $module;
@@ -37,25 +40,56 @@ class Controller
         switch($_SERVER['REQUEST_METHOD'])
         {
             case 'GET':
-                $this->checkUserLevelOrDie($this->minLevelGet);
-                $this->routeGet();
+                $routesTable = $this->getRoutes;
+                $oldRouteFunction = 'routeGet';
+                $oldMinLevel = $this->minLevelGet;
                 break;
             case 'POST':
-                $this->checkUserLevelOrDie($this->minLevelPost);
-                $this->routePost();
+                $routesTable = $this->postRoutes;
+                $oldRouteFunction = 'routePost';
+                $oldMinLevel = $this->minLevelPost;
                 break;
+            default:
+                $this->send400();
+                die();
+        }
+
+        if (array_key_exists($this->action, $routesTable))
+        {
+            $route = $routesTable[$this->action];
+            $level = $route['minLevel'] ?? UserLevel::ADMIN;
+            $this->checkUserLevelOrDie($level);
+            $function = $route['function'];
+            $this->$function();
+        }
+        else
+        {
+            $this->checkUserLevelOrDie($oldMinLevel);
+            $this->$oldRouteFunction();
         }
     }
 
-    public function routeGet() {}
+    protected function routeGet()
+    {
+        $this->send404('Route niet gevonden!');
+    }
 
-    public function routePost() {}
+    protected function routePost()
+    {
+        $this->send404('Route niet gevonden!');
+    }
 
     public function sendErrorMessage(string $message): void
     {
         echo json_encode([
             'error' => $message
         ]);
+    }
+
+    public function send400(string $message = 'Bad request'): void
+    {
+        header('HTTP/1.1 400 Bad Request');
+        $this->sendErrorMessage($message);
     }
 
     public function send401(string $message = 'Not authorised'): void

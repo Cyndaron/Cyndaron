@@ -8,7 +8,7 @@ use Cyndaron\Minecraft\Dynmap\DynmapProxy;
 
 class MinecraftController extends Controller
 {
-    public function routeGet()
+    protected function routeGet()
     {
         switch ($this->action)
         {

@@ -9,13 +9,13 @@ use Cyndaron\Request;
 
 class PhotoalbumController extends Controller
 {
-    public function routeGet()
+    protected function routeGet()
     {
         $id = intval(Request::getVar(1));
         new PhotoalbumPage($id);
     }
 
-    public function routePost()
+    protected function routePost()
     {
         $id = intval(Request::getVar(2));
 

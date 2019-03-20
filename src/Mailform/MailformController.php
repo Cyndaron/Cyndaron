@@ -14,7 +14,7 @@ class MailformController extends Controller
 {
     protected $minLevelPost = UserLevel::ANONYMOUS;
 
-    public function routePost()
+    protected function routePost()
     {
         $id = (int)Request::getVar(2);
         try

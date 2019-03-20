@@ -9,13 +9,13 @@ use Cyndaron\Request;
 
 class CategoryController extends Controller
 {
-    public function routeGet()
+    protected function routeGet()
     {
         $id = Request::getVar(1);
         new CategoryPage($id);
     }
 
-    public function routePost()
+    protected function routePost()
     {
         $id = intval(Request::getVar(2));
 

@@ -13,7 +13,7 @@ class MigrateController extends Controller
         '6.0' => 'migrate60',
     ];
 
-    public function routeGet()
+    protected function routeGet()
     {
         $version = $this->action;
 

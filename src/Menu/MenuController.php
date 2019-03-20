@@ -9,7 +9,7 @@ use Cyndaron\Request;
 
 class MenuController extends Controller
 {
-    public function routePost()
+    protected function routePost()
     {
         $index = intval(Request::getVar(2));
         switch ($this->action)

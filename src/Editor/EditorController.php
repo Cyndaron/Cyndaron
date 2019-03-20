@@ -30,7 +30,7 @@ class EditorController extends Controller
         'concert' => \Cyndaron\Concerts\EditorSavePage::class,
     ];
 
-    public function routeGet()
+    protected function routeGet()
     {
         $type = Request::getVar(1);
         if (array_key_exists($type, $this->editorPages))
@@ -40,7 +40,7 @@ class EditorController extends Controller
         }
     }
 
-    public function routePost()
+    protected function routePost()
     {
         $type = Request::getVar(1);
         if (array_key_exists($type, $this->savePages))

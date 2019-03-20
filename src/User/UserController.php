@@ -12,7 +12,7 @@ class UserController extends Controller
     /* In order to allow users to login and modify their own data. Add the appropriate User::isAdmin() checks where needed. */
     protected $minLevelPost = UserLevel::ANONYMOUS;
 
-    public function routeGet()
+    protected function routeGet()
     {
         switch ($this->action)
         {
@@ -36,7 +36,7 @@ class UserController extends Controller
         }
     }
 
-    public function routePost()
+    protected function routePost()
     {
         if (!User::isLoggedIn())
         {
