@@ -44,7 +44,7 @@ abstract class EditorPage extends Page
             $dir = '';
 
         parent::__construct('Editor');
-        $this->addScript('/ckeditor/ckeditor.js');
+        $this->addScript('/contrib/ckeditor/ckeditor.js');
         $this->addScript('/sys/js/editor.js');
         $this->showPrePage();
 

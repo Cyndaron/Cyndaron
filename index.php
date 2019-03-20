@@ -59,7 +59,7 @@ spl_autoload_register(function ($class)
 spl_autoload_register(function ($class)
 {
     // base directory for the namespace prefix
-    $base_dir = __DIR__ . '/vendor/';
+    $base_dir = __DIR__ . '/contrib/';
 
     // replace the namespace prefix with the base directory, replace namespace
     // separators with directory separators in the relative class name, append

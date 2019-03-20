@@ -62,8 +62,8 @@ class Page
             <meta name="twitter:description" content="Klik hier om verder te lezen..." />
             <title><?=$titel;?></title>
             <?php
-            printf('<link href="/vendor/Bootstrap/css/bootstrap.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSION);
-            printf('<link href="/vendor/Glyphicons/css/glyphicons.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSION);
+            printf('<link href="/contrib/Bootstrap/css/bootstrap.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSION);
+            printf('<link href="/contrib/Glyphicons/css/glyphicons.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSION);
             printf('<link href="/sys/css/lightbox.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSION);
             printf('<link href="/sys/css/cyndaron.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSION);
             printf('<link href="/user.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSION);
@@ -275,8 +275,8 @@ class Page
             </div>
         </div>
 
-        <script type="text/javascript" src="/vendor/jQuery/jquery-3.3.1.min.js"></script>
-        <script type="text/javascript" src="/vendor/Bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/contrib/jQuery/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="/contrib/Bootstrap/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="/sys/js/cyndaron.js"></script>
     <?php
     foreach ($this->extraScripts as $extraScript)
