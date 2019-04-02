@@ -8,6 +8,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     protected $type = 'category';
     protected $table = 'categorieen';
     protected $saveUrl = '/editor/category/%s';
+    const HAS_CATEGORY = true;
 
     protected function prepare()
     {

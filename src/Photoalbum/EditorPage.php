@@ -5,10 +5,10 @@ use Cyndaron\DBConnection;
 
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
-    protected $hasTitle = true;
     protected $type = 'photoalbum';
     protected $table = 'fotoboeken';
     protected $saveUrl = '/editor/photoalbum/%s';
+    const HAS_CATEGORY = true;
 
     protected function prepare()
     {

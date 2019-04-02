@@ -8,6 +8,7 @@ class Model
     protected $id;
     protected $record;
     protected static $table;
+    const HAS_CATEGORY = false;
 
     public function __construct(?int $id)
     {

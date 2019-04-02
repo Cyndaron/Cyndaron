@@ -15,10 +15,11 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $beschrijving = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
         $alleentitel = (bool)Request::unsafePost('alleentitel');
         $categorieId = intval(Request::post('categorieid'));
+        $showBreadcrumbs = (bool)Request::post('showBreadcrumbs');
 
         if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
         {
-            Category::edit($this->id, $titel, $alleentitel, $beschrijving, $categorieId);
+            Category::edit($this->id, $titel, $alleentitel, $beschrijving, $categorieId, $showBreadcrumbs);
         }
         else
         {

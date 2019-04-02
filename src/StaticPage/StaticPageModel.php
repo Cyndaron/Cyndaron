@@ -6,10 +6,13 @@ use Cyndaron\Model;
 
 class StaticPageModel extends Model
 {
+    const HAS_CATEGORY = true;
+
     protected $name = '';
     protected $text = '';
     protected $enableComments = false;
     protected $categoryId;
+    protected $showBreadcrumbs;
     protected static $table = 'subs';
 
     public function getId(): ?int
@@ -65,6 +68,11 @@ class StaticPageModel extends Model
         $this->enableComments = $enableComments;
     }
 
+    public function setShowBreadcrumbs(bool $showBreadcrumbs)
+    {
+        $this->showBreadcrumbs = $showBreadcrumbs;
+    }
+
     /**
      * @return mixed
      */
@@ -98,9 +106,11 @@ class StaticPageModel extends Model
             return false;
         }
 
+        $this->record = $record;
         $this->name = $record['naam'];
         $this->text = $record['tekst'];
         $this->enableComments = $record['reacties_aan'] == 1 ? true : false;
+        $this->showBreadcrumbs = $record['showBreadcrumbs'] == 1 ? true : false;
         $this->categoryId = $record['categorieid'];
         return true;
     }
@@ -124,8 +134,8 @@ class StaticPageModel extends Model
             }
 
             $connection = DBConnection::getPDO();
-            $prep = $connection->prepare('INSERT INTO subs(naam, tekst, reacties_aan, categorieid) VALUES ( ?, ?, ?, ?)');
-            $prep->execute([$this->name, $this->text, $reacties_aan, $this->categoryId]);
+            $prep = $connection->prepare('INSERT INTO subs(naam, tekst, reacties_aan, showBreadcrumbs, categorieid) VALUES ( ?, ?, ?, ?, ?)');
+            $prep->execute([$this->name, $this->text, $reacties_aan, (int)$this->showBreadcrumbs, $this->categoryId]);
             $this->id = $connection->lastInsertId();
             return $this->id;
         }
@@ -143,8 +153,8 @@ class StaticPageModel extends Model
             $prep = $connection->prepare('UPDATE vorigesubs SET naam=( SELECT naam FROM subs WHERE id=? ) WHERE id=?');
             $prep->execute([$this->id, $this->id]);
 
-            $prep = $connection->prepare('UPDATE subs SET tekst= ?, naam= ?, reacties_aan=?, categorieid= ? WHERE id= ?');
-            $prep->execute([$this->text, $this->name, $reacties_aan, $this->categoryId, $this->id]);
+            $prep = $connection->prepare('UPDATE subs SET tekst= ?, naam= ?, reacties_aan=?, showBreadcrumbs=?, categorieid= ? WHERE id= ?');
+            $prep->execute([$this->text, $this->name, $reacties_aan, (int)$this->showBreadcrumbs, $this->categoryId, $this->id]);
             return $this->id;
         }
     }

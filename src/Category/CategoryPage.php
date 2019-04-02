@@ -33,6 +33,7 @@ class CategoryPage extends Page
         $controls = sprintf('<a href="/editor/category/%d" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
 
         parent::__construct($naam);
+        $this->model = Category::loadFromDatabase($id);
         $this->setTitleButtons($controls);
         $this->showPrePage();
 

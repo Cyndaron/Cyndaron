@@ -89,6 +89,10 @@ class MigrateController extends Controller
         DBConnection::doQuery("ALTER TABLE `fotoboeken` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `categorieid`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; ");
         DBConnection::doQuery("ALTER TABLE `mailformulieren` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `confirmation_text`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`; ");
 
+        DBConnection::doQuery("ALTER TABLE `subs` ADD `showBreadcrumbs` TINYINT(1) NOT NULL DEFAULT '0' AFTER `categorieid`; ");
+        DBConnection::doQuery("ALTER TABLE `categorieen` ADD `showBreadcrumbs` TINYINT(1) NOT NULL DEFAULT '0' AFTER `categorieid`; ");
+        DBConnection::doQuery("ALTER TABLE `fotoboeken` ADD `showBreadcrumbs` TINYINT(1) NOT NULL DEFAULT '0' AFTER `categorieid`; ");
+
         Setting::set('concerts_reserved_seats_description',
             'Alle plaatsen in het middenschip van de kerk verkopen wij met een stoelnummer; d.w.z. al deze plaatsen worden
             verkocht als gereserveerde plaats. De stoelnummers lopen van 1 t/m circa %d. Het is een doorlopende reeks,

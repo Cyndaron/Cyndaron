@@ -5,7 +5,7 @@ use Cyndaron\DBConnection;
 
 class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
 {
-    protected $hasTitle = false;
+    const HAS_TTTLE = false;
     protected $type = 'photo';
     protected $table = 'bijschiften';
     protected $saveUrl = '/editor/photo/0/%s';

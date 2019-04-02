@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\Category\Category;
 use Cyndaron\User\User;
 use Cyndaron\Widget\Button;
 
@@ -29,6 +30,8 @@ class Page
     protected $extraScripts = [];
     protected $websiteName = '';
     protected $body = '';
+    /** @var Model $model */
+    protected $model = null;
 
     public function __construct(string $title, string $body = '')
     {
@@ -117,7 +120,9 @@ class Page
             $class = 'voorpagina';
         }
 
-        echo '<div class="paginatitel ' . $class . '"><h1 style="display: inline; margin-right:8px;">' . $this->title . '</h1>';
+        $title = $this->generateBreadcrumbs();
+
+        echo '<div class="paginatitel ' . $class . '"><h1 style="display: inline; margin-right:8px;">' . $title . '</h1>';
         static::showIfSetAndAdmin($this->titleButtons, '<div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">', '</div>');
         echo "</div>\n";
     }
@@ -374,7 +379,7 @@ class Page
             (
                 SELECT 'sub' AS type, id, naam FROM subs WHERE categorieid=?
                 UNION
-                SELECT 'fotoboek' AS type, id, naam FROM fotoboeken WHERE categorieid=?
+                SELECT 'photoalbum' AS type, id, naam FROM fotoboeken WHERE categorieid=?
                 UNION
                 SELECT 'category' AS type, id, naam FROM categorieen WHERE categorieid=?
             ) AS een
@@ -415,5 +420,44 @@ class Page
     public function showBody(): void
     {
         echo $this->body;
+    }
+
+    protected function generateBreadcrumbs(): string
+    {
+        $title = '';
+        $titleParts = [$this->title];
+        if ($this->model !== null && $this->model::HAS_CATEGORY)
+        {
+            $titleParts = [];
+            $modelArray = $this->model->asArray();
+            if ($modelArray['showBreadcrumbs'])
+            {
+                if ($modelArray['categorieid'])
+                {
+                    /** @var Category $category */
+                    $category = Category::loadFromDatabase((int)$modelArray['categorieid']);
+                    $titleParts[] = $category->asArray()['naam'];
+                }
+            }
+            $titleParts[] = $modelArray['naam'];
+        }
+
+        $count = count($titleParts);
+        if ($count === 1)
+        {
+            $title = $titleParts[0];
+        }
+        else
+        {
+            for ($i = 0; $i < $count; $i++)
+            {
+                $class = ($i === 0 && $count > 1) ? 'breadcrumb-main-item' : 'breadcrumb-item';
+                $title .= sprintf('<span class="%s">%s</span>', $class, $titleParts[$i]);
+                if ($i !== $count - 1)
+                    $title .= '<span class="breadcrumb-separator"> // </span>';
+            }
+        }
+
+        return $title;
     }
 }

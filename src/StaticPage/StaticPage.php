@@ -38,7 +38,9 @@ class StaticPage extends Page
         {
             $controls .= sprintf('<a href="/editor/sub/%d/previous" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-lastversion"></span></a>', $id);
         }
+
         parent::__construct($model->getName());
+        $this->model = $model;
         $this->setTitleButtons($controls);
         $this->showPrePage();
 

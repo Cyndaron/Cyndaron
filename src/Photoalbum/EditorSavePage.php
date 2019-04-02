@@ -12,14 +12,15 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
     {
         $naam = Request::unsafePost('titel');
         $notities = Request::unsafePost('artikel');
+        $showBreadcrumbs = (bool)Request::post('showBreadcrumbs');
 
         if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
         {
-            Photoalbum::wijzigFotoalbum($this->id, $naam, $notities);
+            Photoalbum::wijzigFotoalbum($this->id, $naam, $notities, $showBreadcrumbs);
         }
         else
         {
-            $this->id = Photoalbum::nieuwFotoalbum($naam, $notities);
+            $this->id = Photoalbum::nieuwFotoalbum($naam, $notities, $showBreadcrumbs);
         }
 
         User::addNotification('Fotoalbum bewerkt.');

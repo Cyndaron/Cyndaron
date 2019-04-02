@@ -22,6 +22,7 @@ class PhotoalbumPage extends Page
 
         $controls = new Button('edit', '/editor/photoalbum/' . $id, 'Dit fotoalbum bewerken');
         parent::__construct($album['naam']);
+        $this->model = Photoalbum::loadFromDatabase($id);
         $this->setTitleButtons((string)$controls);
         $this->addScript('/sys/js/lightbox.min.js');
         $this->showPrePage();

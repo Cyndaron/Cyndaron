@@ -13,7 +13,8 @@ require_once __DIR__ . '/../../check.php';
 abstract class EditorPage extends Page
 {
     protected $id = null;
-    protected $hasTitle = true;
+    const HAS_TITLE = true;
+    const HAS_CATEGORY = false;
     protected $vorigeversie = false;
     protected $vvstring = '';
     protected $content;
@@ -57,13 +58,11 @@ abstract class EditorPage extends Page
         }
 
         $saveUrl = sprintf($this->saveUrl, $this->id ? (string)$this->id : '');
-        $protocol = 'https://';
         ?>
-
         <form name="bewerkartikel" method="post" action="<?=$saveUrl;?>" class="form-horizontal">
 
             <?php
-            if ($this->hasTitle === true):
+            if (static::HAS_TITLE):
                 ?>
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label" for="titel">Titel: </label>
@@ -72,6 +71,16 @@ abstract class EditorPage extends Page
                     </div>
                 </div>
                 <?php
+                if (static::HAS_CATEGORY)
+                {
+                    $showBreadcrumbs = false;
+                    if ($this->id)
+                    {
+                        $showBreadcrumbs = (bool)DBConnection::doQueryAndFetchOne('SELECT showBreadcrumbs FROM ' . $this->table . ' WHERE id=?', [$this->id]);
+                    }
+
+                    $this->showCheckbox('showBreadcrumbs', 'Titel tonen als breadcrumbs', $showBreadcrumbs);
+                }
             endif;
             ?>
 
