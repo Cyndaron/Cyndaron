@@ -52,7 +52,7 @@ class PhotoalbumPage extends Page
                         $dataTitleTag = 'data-title="' . str_replace('"', '&quot;', $captionObj->caption) . '"';
                     }
 
-                    $output .= sprintf('<div class="fotobadge"><a href="/%s" data-lightbox="%s" %s data-hash="%s"><img class="thumb" src="/fotoalbums/%d', $fotoLink, htmlspecialchars($this->model->name), $dataTitleTag, $hash, $id);
+                    $output .= sprintf('<figure class="fotobadge"><a href="/%s" data-lightbox="%s" %s data-hash="%s"><img class="thumb" src="/fotoalbums/%d', $fotoLink, htmlspecialchars($this->model->name), $dataTitleTag, $hash, $id);
 
                     if (file_exists($thumbnailLink))
                     {
@@ -67,7 +67,7 @@ class PhotoalbumPage extends Page
                     {
                         $output .= '<br>' . new Button('edit', "/editor/photo/$captionId/$hash", 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
                     }
-                    $output .= '</div>';
+                    $output .= '</figure>';
 
                 }
             }

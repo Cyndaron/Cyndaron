@@ -105,11 +105,11 @@ class Page
 
         echo '
         <div class="paginacontainer">
-        <div class="menucontainer">';
+        <header class="menucontainer">';
 
         $this->showMenu();
 
-        echo '</div>';
+        echo '</header>';
 
         if ($this->isFrontPage() && Setting::get('voorpagina_is_jumbo') && Setting::get('jumbo_inhoud'))
         {
@@ -118,7 +118,7 @@ class Page
             echo '</div>';
         }
 
-        echo '<div class="inhoudcontainer"><div class="inhoud">';
+        echo '<main class="inhoudcontainer"><article class="inhoud">';
 
         $class = '';
         if ($this->isFrontPage())
@@ -262,9 +262,9 @@ class Page
 
     public function showPostPage()
     {
-        // Eerste div: inhoud. Tweede div: inhoudcontainer. Derde div: paginacontainer
+        // article: inhoud. main: inhoudcontainer. div: paginacontainer.
         ?>
-        </div></div></div>
+        </article></main></div>
 
         <div id="confirm-dangerous" class="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">

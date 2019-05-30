@@ -47,15 +47,15 @@ class StaticPage extends Page
 
         if ($hasReplies)
         {
-            foreach ($replies as $reactie): ?>
-                <div class="card mb-2">
+            foreach ($replies as $reply): ?>
+                <article class="card mb-2">
                     <div class="card-header">
-                        Reactie van <strong><?=$reactie['author']?></strong> op <?=$reactie['friendlyDate']?> om <?=$reactie['friendlyTime']?>
+                        Reactie van <strong><?=$reply['author']?></strong> op <time datetime="<?=$reply['created']?>"><?=$reply['friendlyDate']?> om <?=$reply['friendlyTime']?></time>
                     </div>
                     <div class="card-body">
-                        <?=$reactie['text']?>
+                        <?=$reply['text']?>
                     </div>
-                </div>
+                </article>
             <?php endforeach;
         }
 
