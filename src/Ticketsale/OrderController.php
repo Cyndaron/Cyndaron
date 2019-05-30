@@ -86,7 +86,7 @@ class OrderController extends Controller
         $deliveryByMember = $addressIsAbroad ? true : $deliveryByMember;
         $deliveryMemberName = Request::post('deliveryMemberName');
 
-        $incorrecteVelden = $this->checkFormulier($concertObj->forcedDelivery, $deliveryByMember);
+        $incorrecteVelden = $this->checkForm($concertObj->forcedDelivery, $deliveryByMember);
         if (!empty($incorrecteVelden))
         {
             $message = 'De volgende velden zijn niet goed ingevuld of niet goed aangekomen: ';
@@ -186,7 +186,7 @@ class OrderController extends Controller
         $this->sendMail($payForDelivery, $concertObj, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats, $totaalprijs, $orderId, $ticketTypes, $order_tickettypes, $lastName, $initials, $street, $postcode, $city, $comments, $email);
     }
 
-    private function checkFormulier($forcedDelivery = false, $ophalenDoorKoorlid = false)
+    private function checkForm($forcedDelivery = false, $memberDelivery = false)
     {
         $incorrecteVelden = [];
         if (strtoupper(Request::post('antispam')) !== 'VLISSINGEN')
@@ -209,7 +209,7 @@ class OrderController extends Controller
             $incorrecteVelden[] = 'E-mailadres';
         }
 
-        if ((!$forcedDelivery && Request::post('delivery')) || ($forcedDelivery && !$ophalenDoorKoorlid))
+        if ((!$forcedDelivery && Request::post('delivery')) || ($forcedDelivery && !$memberDelivery))
         {
             if (strlen(Request::post('street')) === 0)
             {
@@ -230,31 +230,31 @@ class OrderController extends Controller
     }
 
     /**
-     * @param bool $bezorgen
+     * @param bool $delivery
      * @param Concert $concert
-     * @param bool $ophalenDoorKoorlid
+     * @param bool $memberDelivery
      * @param $deliveryMemberName
      * @param int $reserveSeats
      * @param array|null $reservedSeats
-     * @param $totaalprijs
+     * @param $total
      * @param $orderId
      * @param array $ticketTypes
-     * @param array $bestelling_tickettypes
+     * @param array $orderTicketTypes
      * @param $lastName
      * @param $initials
      * @param $street
      * @param $postcode
      * @param $city
      * @param $comments
-     * @param $emailadres
+     * @param $email
      */
-    private function sendMail(bool $bezorgen, Concert $concert, bool $ophalenDoorKoorlid, $deliveryMemberName, int $reserveSeats, ?array $reservedSeats, float $totaalprijs, $orderId, array $ticketTypes, array $bestelling_tickettypes, $lastName, $initials, $street, $postcode, $city, $comments, $emailadres): void
+    private function sendMail(bool $delivery, Concert $concert, bool $memberDelivery, $deliveryMemberName, int $reserveSeats, ?array $reservedSeats, float $total, $orderId, array $ticketTypes, array $orderTicketTypes, $lastName, $initials, $street, $postcode, $city, $comments, $email): void
     {
-        if ($bezorgen || ($concert->forcedDelivery && !$ophalenDoorKoorlid))
+        if ($delivery || ($concert->forcedDelivery && !$memberDelivery))
         {
             $opstuurtekst = 'naar uw adres verstuurd worden';
         }
-        elseif ($concert->forcedDelivery && $ophalenDoorKoorlid)
+        elseif ($concert->forcedDelivery && $memberDelivery)
         {
             $opstuurtekst = 'worden meegegeven aan ' . $deliveryMemberName;
         }
@@ -279,7 +279,7 @@ Na betaling zullen uw kaarten ' . $opstuurtekst . '.' . $voor_u_reserveerde_plaa
 
 Gebruik bij het betalen de volgende gegevens:
    Rekeningnummer: NL06INGB0000545925 t.n.v. Vlissingse Oratorium Vereniging
-   Bedrag: ' . Util::formatEuroPlainText($totaalprijs) . '
+   Bedrag: ' . Util::formatEuroPlainText($total) . '
    Onder vermelding van: bestellingsnummer ' . $orderId . '
 
 
@@ -292,18 +292,18 @@ Kaartsoorten:
 ';
         foreach ($ticketTypes as $ticketType)
         {
-            if ($bestelling_tickettypes[$ticketType['id']] > 0)
+            if ($orderTicketTypes[$ticketType['id']] > 0)
             {
-                $text .= '   ' . $ticketType['name'] . ': ' . $bestelling_tickettypes[$ticketType['id']] . ' à ' . Util::formatEuroPlainText((float)$ticketType['price']) . PHP_EOL;
+                $text .= '   ' . $ticketType['name'] . ': ' . $orderTicketTypes[$ticketType['id']] . ' à ' . Util::formatEuroPlainText((float)$ticketType['price']) . PHP_EOL;
             }
         }
         if (!$concert->forcedDelivery)
         {
-            $text .= PHP_EOL . 'Kaarten bezorgen: ' . Util::boolToText($bezorgen);
+            $text .= PHP_EOL . 'Kaarten bezorgen: ' . Util::boolToText($delivery);
         }
 
         $text .= PHP_EOL . 'Gereserveerde plaatsen: ' . $reserveSeats == 1 ? 'Ja' : 'Nee' . PHP_EOL;
-        $text .= 'Totaalbedrag: ' . Util::formatEuroPlainText($totaalprijs) . '
+        $text .= 'Totaalbedrag: ' . Util::formatEuroPlainText($total) . '
 
 Achternaam: ' . $lastName . '
 Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
@@ -323,6 +323,6 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
             }
         }
 
-        mail($emailadres, 'Bestelling concertkaarten', $text, Order::MAIL_HEADERS);
+        mail($email, 'Bestelling concertkaarten', $text, Order::MAIL_HEADERS);
     }
 }

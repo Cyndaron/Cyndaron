@@ -19,14 +19,14 @@
 $('#testColors').on('click', function ()
 {
     let body = document.getElementsByTagName('body');
-    let bodyset = document.getElementsByName('achtergrondkleur');
+    let bodyset = document.getElementsByName('backgroundColor');
     body[0].style.backgroundColor = bodyset[0].value;
     let menu = document.getElementsByClassName('menu');
-    let menuset = document.getElementsByName('menukleur');
-    let menubg = document.getElementsByName('menuachtergrond');
+    let menuset = document.getElementsByName('menuColor');
+    let menubg = document.getElementsByName('menuBackground');
     menu[0].style.backgroundColor = menuset[0].value;
     menu[0].style.backgroundImage = "url('" + menubg[0].value + "')";
     let article = document.getElementsByClassName('inhoud');
-    let articleset = document.getElementsByName('artikelkleur');
+    let articleset = document.getElementsByName('articleColor');
     article[0].style.backgroundColor = articleset[0].value;
 });

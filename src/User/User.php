@@ -73,7 +73,7 @@ EOT;
 
     public static function hasSufficientReadLevel(): bool
     {
-        $minimumReadLevel = intval(Setting::get('minimum_niveau_lezen'));
+        $minimumReadLevel = intval(Setting::get('minimumReadLevel'));
         return (static::getLevel() >= $minimumReadLevel);
     }
 
@@ -91,7 +91,7 @@ EOT;
         $prep = $pdo->prepare('UPDATE users SET password=? WHERE id =?');
         $prep->execute([$passwordHash, $this->id]);
 
-        $websiteName = Setting::get('websitenaam');
+        $websiteName = Setting::get('siteName');
         $domain = str_replace("www.", "", $_SERVER['HTTP_HOST']);
         $domain = str_replace("http://", "", $domain);
         $domain = str_replace("https://", "", $domain);

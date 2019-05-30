@@ -83,7 +83,7 @@ class MailformController extends Controller
                 {
                     if ($form['stuur_bevestiging'] == true && $sender)
                     {
-                        $extraHeaders = sprintf('From: %s <noreply@%s>', html_entity_decode(Setting::get('websitenaam')), $server);
+                        $extraHeaders = sprintf('From: %s <noreply@%s>', html_entity_decode(Setting::get('siteName')), $server);
                         $extraHeaders .= "\r\n" . 'Reply-To: ' . $recipient;
                         mail($sender, 'Ontvangstbevestiging', $form['tekst_bevestiging'], $extraHeaders);
                     }

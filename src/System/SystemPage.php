@@ -49,22 +49,22 @@ class SystemPage extends Page
         ?>
         <form method="post" action="/system/config" class="form-horizontal">
             <?php
-            $standaardcategorie = Setting::get('standaardcategorie');
+            $defaultCategory = Setting::get('defaultCategory');
             $categorieen = DBConnection::doQueryAndFetchAll('SELECT id,name FROM categories ORDER BY id ASC');
-            $menuthema = Setting::get('menuthema');
-            $lichtMenu = ($menuthema !== 'donker') ? 'selected' : '';
-            $donkerMenu = ($menuthema === 'donker') ? 'selected' : '';
+            $menuTheme = Setting::get('menuTheme');
+            $lightMenu = ($menuTheme !== 'dark') ? 'selected' : '';
+            $darkMenu = ($menuTheme === 'dark') ? 'selected' : '';
 
             $formItems = [
-                ['name' => 'websitenaam', 'description' => 'Naam website', 'type' => 'text', 'value' => Setting::get('websitenaam', true)],
-                ['name' => 'websitelogo', 'description' => 'Websitelogo', 'type' => 'text', 'value' => Setting::get('websitelogo', true)],
-                ['name' => 'ondertitel', 'description' => 'Ondertitel', 'type' => 'text', 'value' => Setting::get('ondertitel', true)],
+                ['name' => 'siteName', 'description' => 'Naam website', 'type' => 'text', 'value' => Setting::get('siteName', true)],
+                ['name' => 'logo', 'description' => 'Websitelogo', 'type' => 'text', 'value' => Setting::get('logo', true)],
+                ['name' => 'subTitle', 'description' => 'Ondertitel', 'type' => 'text', 'value' => Setting::get('subTitle', true)],
                 ['name' => 'favicon', 'description' => 'Websitepictogram', 'type' => 'text', 'value' => Setting::get('favicon', true)],
-                ['name' => 'achtergrondkleur', 'description' => 'Achtergrondkleur hele pagina', 'type' => 'color', 'value' => Setting::get('achtergrondkleur', true)],
-                ['name' => 'menukleur', 'description' => 'Achtergrondkleur menu', 'type' => 'color', 'value' => Setting::get('menukleur', true)],
-                ['name' => 'artikelkleur', 'description' => 'Achtergrondkleur artikel', 'type' => 'color', 'value' => Setting::get('artikelkleur', true)],
+                ['name' => 'backgroundColor', 'description' => 'Achtergrondkleur hele pagina', 'type' => 'color', 'value' => Setting::get('backgroundColor', true)],
+                ['name' => 'menuColor', 'description' => 'Achtergrondkleur menu', 'type' => 'color', 'value' => Setting::get('menuColor', true)],
+                ['name' => 'articleColor', 'description' => 'Achtergrondkleur artikel', 'type' => 'color', 'value' => Setting::get('articleColor', true)],
                 ['name' => 'accentColor', 'description' => 'Accentkleur', 'type' => 'color', 'value' => Setting::get('accentColor', true)],
-                ['name' => 'menuachtergrond', 'description' => 'Achtergrondafbeelding menu', 'type' => 'text', 'value' => Setting::get('menuachtergrond', true)],
+                ['name' => 'menuBackground', 'description' => 'Achtergrondafbeelding menu', 'type' => 'text', 'value' => Setting::get('menuBackground', true)],
                 ['name' => 'frontPage', 'description' => 'Voorpagina', 'type' => 'text', 'value' => Setting::get('frontPage', true)],
             ];
 
@@ -77,9 +77,9 @@ class SystemPage extends Page
                 </div>
             <?php endforeach;
 
-            echo '<div class="form-group row"><label class="col-md-3 col-form-label col-form-label-md">Standaardcategorie:</label><div class="col-md-6"><select name="standaardcategorie" class="custom-select">';
+            echo '<div class="form-group row"><label class="col-md-3 col-form-label col-form-label-md">Standaardcategorie:</label><div class="col-md-6"><select name="defaultCategory" class="custom-select">';
             echo '<option value="0"';
-            if ($standaardcategorie == 0)
+            if ($defaultCategory == 0)
             {
                 echo ' selected="selected"';
             }
@@ -88,7 +88,7 @@ class SystemPage extends Page
             foreach ($categorieen as $categorie)
             {
                 $selected = '';
-                if ($categorie['id'] == $standaardcategorie)
+                if ($categorie['id'] == $defaultCategory)
                 {
                     $selected = ' selected="selected"';
                 }
@@ -96,7 +96,7 @@ class SystemPage extends Page
             }
             echo '</select></div></div>';
 
-            printf('<div class="form-group row"><label class="col-md-3 col-form-label col-form-label-md">Menuthema:</label><div class="col-md-6"><select id="menuthema" name="menuthema" class="custom-select"><option value="licht" %s>Licht</option><option value="donker" %s>Donker</option></select></div></div>', $lichtMenu, $donkerMenu);
+            printf('<div class="form-group row"><label class="col-md-3 col-form-label col-form-label-md">Menuthema:</label><div class="col-md-6"><select id="menuTheme" name="menuTheme" class="custom-select"><option value="light" %s>Licht</option><option value="dark" %s>Donker</option></select></div></div>', $lightMenu, $darkMenu);
             ?>
             <div class="form-group row">
                 <div class="col-md-3"></div>

@@ -19,17 +19,17 @@ class SystemController extends Controller
 
     protected function routePost()
     {
-        Setting::set('websitenaam', Request::post('websitenaam'));
-        Setting::set('websitelogo', Request::post('websitelogo'));
-        Setting::set('ondertitel', Request::post('ondertitel'));
+        Setting::set('siteName', Request::post('siteName'));
+        Setting::set('logo', Request::post('logo'));
+        Setting::set('subTitle', Request::post('subTitle'));
         Setting::set('favicon', Request::post('favicon'));
-        Setting::set('achtergrondkleur', Request::post('achtergrondkleur'));
-        Setting::set('menukleur', Request::post('menukleur'));
-        Setting::set('menuachtergrond', Request::unsafePost('menuachtergrond'));
-        Setting::set('artikelkleur', Request::post('artikelkleur'));
+        Setting::set('backgroundColor', Request::post('backgroundColor'));
+        Setting::set('menuColor', Request::post('menuColor'));
+        Setting::set('menuBackground', Request::unsafePost('menuBackground'));
+        Setting::set('articleColor', Request::post('articleColor'));
         Setting::set('accentColor', Request::post('accentColor'));
-        Setting::set('standaardcategorie', Request::post('standaardcategorie'));
-        Setting::set('menuthema', Request::post('menuthema'));
+        Setting::set('defaultCategory', Request::post('defaultCategory'));
+        Setting::set('menuTheme', Request::post('menuTheme'));
         Setting::set('frontPage', Request::post('frontPage'));
 
         new SystemPage('config');

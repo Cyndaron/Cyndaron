@@ -163,7 +163,7 @@ abstract class EditorPage extends Page
                     }
                     else
                     {
-                        $categoryId = Setting::get('standaardcategorie');
+                        $categoryId = Setting::get('defaultCategory');
                     }
 
                     $categorieen = DBConnection::doQueryAndFetchAll("SELECT * FROM categories ORDER BY name;");

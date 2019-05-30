@@ -26,11 +26,11 @@ class PhotoalbumController extends Controller
         {
             case 'add':
                 $name = Request::post('name');
-                Photoalbum::nieuwFotoalbum($name);
+                Photoalbum::create($name);
                 break;
             case 'edit':
                 $name = Request::post('name');
-                Photoalbum::wijzigFotoalbum($id, $name);
+                Photoalbum::edit($id, $name);
                 break;
             case 'delete':
                 $obj = new Photoalbum($id);

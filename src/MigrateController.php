@@ -63,7 +63,6 @@ class MigrateController extends Controller
             die();
         }
 
-        DBConnection::doQuery("DELETE FROM settings WHERE naam = 'menutype' OR naam = 'facebook_share'");
         DBConnection::doQuery('DROP TABLE `vorigeartikelen`');
         DBConnection::doQuery('DROP TABLE `ideeen`');
 
@@ -154,6 +153,22 @@ class MigrateController extends Controller
         DBConnection::doQuery("ALTER TABLE `settings` CHANGE `waarde` `value` VARCHAR(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;");
         DBConnection::doQuery("ALTER TABLE `settings` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `value`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`;");
 
+        DBConnection::doQuery("DELETE FROM `settings` WHERE `name` IN ('menutype', 'facebook_share', 'extra_bodycode');");
+        DBConnection::doQuery("UPDATE `settings` SET `name` = 'backgroundColor' WHERE `name` = 'achtergrondkleur'");
+        DBConnection::doQuery("UPDATE `settings` SET `name` = 'articleColor' WHERE `name` = 'artikelkleur'");
+        DBConnection::doQuery("UPDATE `settings` SET `name` = 'jumboContents' WHERE `name` = 'jumbo_inhoud'");
+        DBConnection::doQuery("UPDATE `settings` SET `name` = 'menuBackground' WHERE `name` = 'menuachtergrond'");
+        DBConnection::doQuery("UPDATE `settings` SET `name` = 'menuColor' WHERE `name` = 'menukleur'");
+        DBConnection::doQuery("UPDATE `settings` SET `name` = 'menuTheme' WHERE `name` = 'menuthema'");
+        DBConnection::doQuery("UPDATE `settings` SET `value` = 'dark' WHERE `name` = 'menuTheme' AND `value` = 'donker'");
+        DBConnection::doQuery("UPDATE `settings` SET `value` = 'light' WHERE `name` = 'menuTheme' AND `value` = 'licht'");
+        DBConnection::doQuery("UPDATE `settings` SET `name` = 'minimumReadLevel' WHERE `name` = 'minimum_niveau_lezen'");
+        DBConnection::doQuery("UPDATE `settings` SET `name` = 'subTitle' WHERE `name` = 'ondertitel'");
+        DBConnection::doQuery("UPDATE `settings` SET `name` = 'defaultCategory' WHERE `name` = 'standaardcategorie'");
+        DBConnection::doQuery("UPDATE `settings` SET `name` = 'frontPageIsJumbo' WHERE `name` = 'voorpagina_is_jumbo'");
+        DBConnection::doQuery("UPDATE `settings` SET `name` = 'logo' WHERE `name` = 'websitelogo'");
+        DBConnection::doQuery("UPDATE `settings` SET `name` = 'siteName' WHERE `name` = 'websitenaam'");
+
 
         DBConnection::doQuery("RENAME TABLE kaartverkoop_concerten TO ticketsale_concerts;");
         DBConnection::doQuery("ALTER TABLE `ticketsale_concerts` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
@@ -239,7 +254,7 @@ class MigrateController extends Controller
         DBConnection::doQuery("ALTER TABLE `sub_replies` ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`;");
 
 
-        Setting::set('concerts_reserved_seats_description',
+        Setting::set('ticketsale_reservedSeatsDescription',
             'Alle plaatsen in het middenschip van de kerk verkopen wij met een stoelnummer; d.w.z. al deze plaatsen worden
             verkocht als gereserveerde plaats. De stoelnummers lopen van 1 t/m circa %d. Het is een doorlopende reeks,
             dus dit keer geen rijnummer. Aan het einde van een rij verspringt het stoelnummer naar de stoel daarachter.

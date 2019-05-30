@@ -18,7 +18,7 @@ class Photoalbum extends Model
     public $categoryId = null;
     public $showBreadcrumbs = false;
 
-    public static function nieuwFotoalbum(string $naam, string $notities = "", bool $showBreadcrumbs = false)
+    public static function create(string $naam, string $notities = "", bool $showBreadcrumbs = false)
     {
         if ($naam == '')
             throw new Exception('Empty photo album name!');
@@ -33,7 +33,7 @@ class Photoalbum extends Model
         return $id;
     }
 
-    public static function wijzigFotoalbum(int $id, string $naam = null, $notities = null, bool $showBreadcrumbs = null)
+    public static function edit(int $id, string $naam = null, $notities = null, bool $showBreadcrumbs = null)
     {
         if ($naam !== null)
         {

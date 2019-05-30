@@ -25,24 +25,24 @@ class Util
      * Zet een maandnummer om in de naam.
      * Bijvoorbeeld: 1 -> januari.
      *
-     * @param int $maandnummer Het maandnummer, waarbij 1 januari is en 12 december.
+     * @param int $number Het maandnummer, waarbij 1 januari is en 12 december.
      * @return string De naam van de maand, bijvoorbeeld "januari".
      */
-    public static function getMonth(int $maandnummer): string
+    public static function getMonth(int $number): string
     {
-        return static::$months[$maandnummer];
+        return static::$months[$number];
     }
 
     /**
      * Zet een dagnummer om in de naam.
      * Bijvoorbeeld: 0 -> zondag.
      *
-     * @param int $dagnummer Het dagnummer, waarbij 0 zondag is en 6 zaterdag.
+     * @param int $number Het dagnummer, waarbij 0 zondag is en 6 zaterdag.
      * @return string De naam van de dag, bijvoorbeeld "zondag".
      */
-    public static function getWeekday(int $dagnummer): string
+    public static function getWeekday(int $number): string
     {
-        return static::$weekDays[$dagnummer];
+        return static::$weekDays[$number];
     }
 
     /**

@@ -1,11 +1,11 @@
 <?php
 namespace Cyndaron\Widget;
 
-class Paginering extends Widget
+class Pagination extends Widget
 {
-    public function __construct($link, $aantalPaginas, $huidigePagina, $verschuiving = 0)
+    public function __construct($link, $numPages, $currentPage, $offset = 0)
     {
-        if ($aantalPaginas == 1)
+        if ($numPages == 1)
         {
             return;
         }
@@ -13,17 +13,17 @@ class Paginering extends Widget
         $this->code = '<div class="lettermenu"><ul class="pagination">';
         $teTonenPaginas = [
             1, 2, 3,
-            $aantalPaginas, $aantalPaginas - 1, $aantalPaginas - 2,
-            $huidigePagina - 2, $huidigePagina - 1, $huidigePagina, $huidigePagina + 1, $huidigePagina + 2,
+            $numPages, $numPages - 1, $numPages - 2,
+            $currentPage - 2, $currentPage - 1, $currentPage, $currentPage + 1, $currentPage + 2,
         ];
 
-        if ($huidigePagina == 7)
+        if ($currentPage == 7)
         {
             $teTonenPaginas[] = 4;
         }
-        if ($aantalPaginas - $huidigePagina == 6)
+        if ($numPages - $currentPage == 6)
         {
-            $teTonenPaginas[] = $aantalPaginas - 3;
+            $teTonenPaginas[] = $numPages - 3;
         }
 
         $teTonenPaginas = array_unique($teTonenPaginas);
@@ -32,7 +32,7 @@ class Paginering extends Widget
         $vorigePaginanummer = 0;
         foreach ($teTonenPaginas as $i)
         {
-            if ($i > $aantalPaginas)
+            if ($i > $numPages)
             {
                 break;
             }
@@ -48,12 +48,12 @@ class Paginering extends Widget
             }
 
             $class = '';
-            if ($i == $huidigePagina)
+            if ($i == $currentPage)
             {
                 $class = 'class="active"';
             }
 
-            $this->code .= sprintf('<li %s><a href="%s%d">%d</a></li>', $class, $link, ($i + $verschuiving), $i);
+            $this->code .= sprintf('<li %s><a href="%s%d">%d</a></li>', $class, $link, ($i + $offset), $i);
 
             $vorigePaginanummer = $i;
         }

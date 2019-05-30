@@ -42,7 +42,7 @@ class OrderTicketsPage extends Page
         ?>
 
         <h3>Vrije plaatsen en gereserveerde plaatsen</h3>
-        <p><?php printf(Setting::get('concerts_reserved_seats_description'), $concert->numReservedSeats)?></p>
+        <p><?php printf(Setting::get('ticketsale_reservedSeatsDescription'), $concert->numReservedSeats)?></p>
 
         <br/>
         <form method="post" action="/concert-order/add" class="form-horizontal" id="kaartenbestellen">

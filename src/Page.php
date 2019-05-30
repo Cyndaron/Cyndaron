@@ -51,7 +51,7 @@ class Page
 
     public function showPrePage()
     {
-        $this->websiteName = Setting::get('websitenaam');
+        $this->websiteName = Setting::get('siteName');
         $titel = $this->title . ' - ' . $this->websiteName;
 
         ?>
@@ -78,10 +78,10 @@ class Page
             ?>
             <style type="text/css">
                 <?php
-                static::showIfSet(Setting::get('achtergrondkleur'), 'body.cyndaron, .lightboxOverlay { background-color: ',";}\n");
-                static::showIfSet(Setting::get('menukleur'), '.menu { background-color: ',";}\n");
-                static::showIfSet(Setting::get('menuachtergrond'), '.menu { background-image: url(\'',"');}\n");
-                static::showIfSet(Setting::get('artikelkleur'), '.inhoud { background-color: ',";}\n");
+                static::showIfSet(Setting::get('backgroundColor'), 'body.cyndaron, .lightboxOverlay { background-color: ',";}\n");
+                static::showIfSet(Setting::get('menuColor'), '.menu { background-color: ',";}\n");
+                static::showIfSet(Setting::get('menuBackground'), '.menu { background-image: url(\'',"');}\n");
+                static::showIfSet(Setting::get('articleColor'), '.inhoud { background-color: ',";}\n");
                 $accentColor = Setting::get('accentColor');
                 if ($accentColor): ?>
                 a { color: <?=$accentColor?> }
@@ -111,10 +111,10 @@ class Page
 
         echo '</header>';
 
-        if ($this->isFrontPage() && Setting::get('voorpagina_is_jumbo') && Setting::get('jumbo_inhoud'))
+        if ($this->isFrontPage() && Setting::get('frontPageIsJumbo') && Setting::get('jumboContents'))
         {
             echo '<div class="welkom-jumbo">';
-            echo Setting::get('jumbo_inhoud');
+            echo Setting::get('jumboContents');
             echo '</div>';
         }
 
@@ -144,9 +144,9 @@ class Page
 
     protected function showMenu()
     {
-        $websitelogo = Setting::get('websitelogo');
-        $inverseClass = (Setting::get('menuthema') == 'donker') ? 'navbar-dark' : 'navbar-light';
-        $navbar = $websitelogo ? sprintf('<img alt="" src="%s"> ', $websitelogo) : $this->websiteName;
+        $logo = Setting::get('logo');
+        $inverseClass = (Setting::get('menuTheme') == 'dark') ? 'navbar-dark' : 'navbar-light';
+        $navbar = $logo ? sprintf('<img alt="" src="%s"> ', $logo) : $this->websiteName;
         ?>
         <nav class="menu navbar navbar-expand-md <?= $inverseClass; ?>">
             <a class="navbar-brand" href="/"><?= $navbar; ?></a>
