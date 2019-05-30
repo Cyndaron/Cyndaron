@@ -50,7 +50,7 @@ class SystemPage extends Page
         <form method="post" action="/system/config" class="form-horizontal">
             <?php
             $standaardcategorie = Setting::get('standaardcategorie');
-            $categorieen = DBConnection::doQueryAndFetchAll('SELECT id,naam FROM categorieen ORDER BY id ASC');
+            $categorieen = DBConnection::doQueryAndFetchAll('SELECT id,name FROM categories ORDER BY id ASC');
             $menuthema = Setting::get('menuthema');
             $lichtMenu = ($menuthema !== 'donker') ? 'selected' : '';
             $donkerMenu = ($menuthema === 'donker') ? 'selected' : '';
@@ -91,7 +91,7 @@ class SystemPage extends Page
                 {
                     $selected = ' selected="selected"';
                 }
-                echo '<option value="' . $categorie['id'] . '"' . $selected . '>' . $categorie['naam'] . '</option>';
+                echo '<option value="' . $categorie['id'] . '"' . $selected . '>' . $categorie['name'] . '</option>';
             }
             echo '</select></div></div>';
 

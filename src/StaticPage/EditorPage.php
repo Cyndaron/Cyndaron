@@ -5,30 +5,29 @@ use Cyndaron\DBConnection;
 
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
-    protected $type = 'sub';
-    protected $table = 'subs';
-    protected $saveUrl = '/editor/sub/%s';
+    const TYPE = 'sub';
+    const TABLE = 'subs';
+    const SAVE_URL = '/editor/sub/%s';
     const HAS_CATEGORY = true;
 
     protected function prepare()
     {
         if ($this->id)
         {
-            $this->content = DBConnection::doQueryAndFetchOne('SELECT tekst FROM ' . $this->vvstring . 'subs WHERE id=?', [$this->id]);
-            $this->contentTitle = DBConnection::doQueryAndFetchOne('SELECT naam FROM ' . $this->vvstring . 'subs WHERE id=?', [$this->id]);
+            $table = ($this->vvstring) ? 'sub_backups' : self::TABLE;
+            $this->content = DBConnection::doQueryAndFetchOne('SELECT text FROM ' . $table . ' WHERE id=?', [$this->id]);
+            $this->contentTitle = DBConnection::doQueryAndFetchOne('SELECT name FROM ' . $table . ' WHERE id=?', [$this->id]);
         }
     }
 
     protected function showContentSpecificButtons()
     {
-        $repliesOn = false;
+        $enableComments = false;
         if ($this->id)
         {
-            $repliesOn = (bool)DBConnection::doQueryAndFetchOne('SELECT reacties_aan FROM subs WHERE id=?', [$this->id]);
+            $enableComments = (bool)DBConnection::doQueryAndFetchOne('SELECT enableComments FROM subs WHERE id=?', [$this->id]);
         }
 
-        $this->showCheckbox('reacties_aan', 'Reacties toestaan', $repliesOn);
-
-        $this->showCategoryDropdown();
+        $this->showCheckbox('enableComments', 'Reacties toestaan', $enableComments);
     }
 }

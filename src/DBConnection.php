@@ -11,6 +11,7 @@ class DBConnection
     /** @var PDO $pdo */
     private static $pdo;
     private static $statementError = [];
+    private static $errorQuery = '';
 
     private static function executeQuery(string $query, array $vars, callable $functionOnSuccess)
     {
@@ -19,6 +20,7 @@ class DBConnection
         if ($result === false)
         {
             static::$statementError = $prep->errorInfo();
+            static::$errorQuery = $query;
             return false;
         }
         else
@@ -29,35 +31,35 @@ class DBConnection
 
     public static function doQuery(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function($prep, $result) {
+        return static::executeQuery($query, $vars, function(\PDOStatement $prep, $result) {
             return static::$pdo->lastInsertId();
         });
     }
 
     public static function doQueryAndFetchAll(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function($prep, $result) {
+        return static::executeQuery($query, $vars, function(\PDOStatement $prep, $result) {
             return $prep->fetchAll();
         });
     }
 
     public static function doQueryAndFetchFirstRow(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function($prep, $result) {
+        return static::executeQuery($query, $vars, function(\PDOStatement$prep, $result) {
             return $prep->fetch();
         });
     }
 
     public static function doQueryAndFetchOne(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function($prep, $result) {
+        return static::executeQuery($query, $vars, function(\PDOStatement$prep, $result) {
             return $prep->fetchColumn();
         });
     }
 
     public static function errorInfo()
     {
-        return ['pdo' => static::$pdo->errorInfo(), 'statement' => static::$statementError];
+        return ['pdo' => static::$pdo->errorInfo(), 'statement' => static::$statementError, 'query' => static::$errorQuery];
     }
 
     public static function connect()

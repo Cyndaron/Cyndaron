@@ -310,7 +310,7 @@ class Page
         {
             return [];
         }
-        $menu = DBConnection::doQueryAndFetchAll('SELECT * FROM menu ORDER BY volgorde ASC;');
+        $menu = DBConnection::doQueryAndFetchAll('SELECT * FROM menu ORDER BY id ASC;');
         $menuitems = [];
         $frontPage = Setting::get('frontPage');
 
@@ -377,13 +377,13 @@ class Page
         $pagesInCategory = DBConnection::doQueryAndFetchAll("
             SELECT * FROM
             (
-                SELECT 'sub' AS type, id, naam FROM subs WHERE categorieid=?
+                SELECT 'sub' AS type, id, name FROM subs WHERE categoryId=?
                 UNION
-                SELECT 'photoalbum' AS type, id, naam FROM fotoboeken WHERE categorieid=?
+                SELECT 'photoalbum' AS type, id, name FROM photoalbums WHERE categoryId=?
                 UNION
-                SELECT 'category' AS type, id, naam FROM categorieen WHERE categorieid=?
-            ) AS een
-            ORDER BY naam ASC;",
+                SELECT 'category' AS type, id, name FROM categories WHERE categoryId=?
+            ) AS one
+            ORDER BY name ASC;",
             [$id, $id, $id]);
 
         $items = [];
@@ -391,7 +391,7 @@ class Page
         {
             $url = new Url(sprintf('/%s/%d', $pagina['type'], $pagina['id']));
             $link = $url->getFriendly();
-            $items[] = ['link' => $link, 'title' => $pagina['naam']];
+            $items[] = ['link' => $link, 'title' => $pagina['name']];
         }
 
         $this->printMenuDropdown($menuitem['naam'], $items);
@@ -429,17 +429,16 @@ class Page
         if ($this->model !== null && $this->model::HAS_CATEGORY)
         {
             $titleParts = [];
-            $modelArray = $this->model->asArray();
-            if ($modelArray['showBreadcrumbs'])
+            if ($this->model->showBreadcrumbs)
             {
-                if ($modelArray['categorieid'])
+                if ($this->model->categoryId)
                 {
                     /** @var Category $category */
-                    $category = Category::loadFromDatabase((int)$modelArray['categorieid']);
-                    $titleParts[] = $category->asArray()['naam'];
+                    $category = Category::loadFromDatabase((int)$this->model->categoryId);
+                    $titleParts[] = $category->name;
                 }
             }
-            $titleParts[] = $modelArray['naam'];
+            $titleParts[] = $this->model->name;
         }
 
         $count = count($titleParts);

@@ -48,9 +48,9 @@ class MenuEditorPage extends Page
                 </div>
             </div>
             <div class="form-group row">
-                <label for="mm-volgorde" class="col-sm-2 col-form-label">Index:</label>
+                <label for="mm-id" class="col-sm-2 col-form-label">Index:</label>
                 <div class="col-sm-10">
-                    <input class="form-control" id="mm-volgorde">
+                    <input class="form-control" id="mm-id">
                 </div>
             </div>
             

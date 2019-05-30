@@ -3,7 +3,6 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Request;
 use Cyndaron\User\User;
 
 class StaticPage extends Page
@@ -17,36 +16,31 @@ class StaticPage extends Page
             die('Incorrecte parameter ontvangen.');
         }
 
-        $model = new StaticPageModel($id);
-        if (!$model->laden())
+        $this->model = new StaticPageModel($id);
+        $this->model->load();
+        if ($this->model === null)
         {
             header('Location: /error/404');
             die('Pagina bestaat niet.');
         }
 
-        $allowReplies = $model->getEnableComments();
-
-        if ($allowReplies && !Request::postIsEmpty())
-        {
-
-        }
+        $allowReplies = $this->model->enableComments;
 
         $controls = sprintf('<a href="/editor/sub/%d" class="btn btn-outline-cyndaron" title="Bewerk deze statische pagina"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
         $controls .= sprintf('<a href="overzicht?type=sub&amp;actie=verwijderen&amp;id=%d" class="btn btn-outline-cyndaron" title="Verwijder deze statische pagina"><span class="glyphicon glyphicon-trash"></span></a>', $id);
 
-        if (DBConnection::doQueryAndFetchOne('SELECT * FROM vorigesubs WHERE id= ?', [$id]))
+        if ($this->model->hasBackup())
         {
             $controls .= sprintf('<a href="/editor/sub/%d/previous" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-lastversion"></span></a>', $id);
         }
 
-        parent::__construct($model->getName());
-        $this->model = $model;
+        parent::__construct($this->model->name);
         $this->setTitleButtons($controls);
         $this->showPrePage();
 
-        echo $model->getText();
+        echo $this->model->text;
 
-        $prep = $connection->prepare("SELECT *,DATE_FORMAT(datum, '%d-%m-%Y') AS rdatum,DATE_FORMAT(datum, '%H:%i') AS rtijd FROM reacties WHERE subid=? ORDER BY datum ASC");
+        $prep = $connection->prepare("SELECT *,DATE_FORMAT(created, '%d-%m-%Y') AS friendlyDate,DATE_FORMAT(created, '%H:%i') AS friendlyTime FROM sub_replies WHERE subId=? ORDER BY created ASC");
         $prep->execute([$id]);
         $replies = $prep->fetchAll();
         $hasReplies = count($replies) > 0;
@@ -56,10 +50,10 @@ class StaticPage extends Page
             foreach ($replies as $reactie): ?>
                 <div class="card mb-2">
                     <div class="card-header">
-                        Reactie van <strong><?=$reactie['auteur']?></strong> op <?=$reactie['rdatum']?> om <?=$reactie['rtijd']?>
+                        Reactie van <strong><?=$reactie['author']?></strong> op <?=$reactie['friendlyDate']?> om <?=$reactie['friendlyTime']?>
                     </div>
                     <div class="card-body">
-                        <?=$reactie['tekst']?>
+                        <?=$reactie['text']?>
                     </div>
                 </div>
             <?php endforeach;
@@ -74,9 +68,9 @@ class StaticPage extends Page
             <h3>Reageren:</h3>
             <form name="reactie" method="post" action="/sub/react/<?= $id; ?>" class="form-horizontal">
                 <div class="form-group row">
-                    <label for="auteur" class="col-sm-3 col-form-label">Naam: </label>
+                    <label for="author" class="col-sm-3 col-form-label">Naam: </label>
                     <div class="col-sm-9">
-                        <input id="auteur" name="auteur" maxlength="100" class="form-control"/>
+                        <input id="author" name="author" maxlength="100" class="form-control"/>
                     </div>
                 </div>
                 <div class="form-group row">

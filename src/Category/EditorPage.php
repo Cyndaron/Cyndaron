@@ -5,17 +5,17 @@ use Cyndaron\DBConnection;
 
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
-    protected $type = 'category';
-    protected $table = 'categorieen';
-    protected $saveUrl = '/editor/category/%s';
+    const TYPE = 'category';
+    const TABLE = 'categorieen';
     const HAS_CATEGORY = true;
+    const SAVE_URL = '/editor/category/%s';
 
     protected function prepare()
     {
         if ($this->id)
         {
-            $this->content = DBConnection::doQueryAndFetchOne('SELECT beschrijving FROM categorieen WHERE id=?', [$this->id]);
-            $this->contentTitle = DBConnection::doQueryAndFetchOne('SELECT naam FROM categorieen WHERE id=?', [$this->id]);
+            $this->content = DBConnection::doQueryAndFetchOne('SELECT description FROM categories WHERE id=?', [$this->id]);
+            $this->contentTitle = DBConnection::doQueryAndFetchOne('SELECT name FROM categories WHERE id=?', [$this->id]);
         }
     }
 
@@ -23,9 +23,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     {
         $checked = false;
         if ($this->id)
-            $checked = (bool)DBConnection::doQueryAndFetchOne('SELECT alleentitel FROM categorieen WHERE id=?', [$this->id]);
+            $checked = (bool)DBConnection::doQueryAndFetchOne('SELECT onlyShowTitles FROM categories WHERE id=?', [$this->id]);
         $this->showCheckbox('alleentitel', 'Toon alleen titels', $checked);
-
-        $this->showCategoryDropdown();
     }
 }

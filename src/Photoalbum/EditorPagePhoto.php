@@ -5,16 +5,16 @@ use Cyndaron\DBConnection;
 
 class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
 {
-    const HAS_TTTLE = false;
-    protected $type = 'photo';
-    protected $table = 'bijschiften';
-    protected $saveUrl = '/editor/photo/0/%s';
+    const HAS_TITLE = false;
+    const TYPE = 'photo';
+    const TABLE = 'bijschiften';
+    const SAVE_URL = '/editor/photo/0/%s';
 
     protected function prepare()
     {
         if ($this->id)
         {
-            $this->content = DBConnection::doQueryAndFetchOne('SELECT bijschrift FROM bijschriften WHERE hash=?', [$this->id]);
+            $this->content = DBConnection::doQueryAndFetchOne('SELECT caption FROM photoalbum_captions WHERE hash=?', [$this->id]);
         }
     }
 

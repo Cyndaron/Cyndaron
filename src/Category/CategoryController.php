@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Category;
 
 use Cyndaron\Controller;
-use Cyndaron\Menu\Menu;
+use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request;
 
 class CategoryController extends Controller
@@ -22,19 +22,24 @@ class CategoryController extends Controller
         switch ($this->action)
         {
             case 'add':
-                $name = Request::post('name');
-                Category::create($name);
+                $category = new Category(null);
+                $category->name = Request::post('name');
+                $category->save();
                 break;
             case 'edit':
-                $name = Request::post('name');
-                Category::edit($id, $name);
+                $category = new Category($id);
+                $category->load();
+                $category->name = Request::post('name');
+                $category->save();
                 break;
             case 'delete':
-                $obj = new Category($id);
-                $obj->delete();
+                $category = new Category($id);
+                $category->delete();
                 break;
             case 'addtomenu':
-                Menu::addItem('/category/' . $id);
+                $menuItem = new MenuItem();
+                $menuItem->link = '/category/' . $id;
+                $menuItem->save();
                 break;
         }
 

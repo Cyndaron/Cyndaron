@@ -29,8 +29,8 @@ class Router
         'user' => \Cyndaron\User\UserController::class,
 
         // Official plugins
-        'concert' => \Cyndaron\Concerts\ConcertController::class,
-        'concert-order' => \Cyndaron\Concerts\OrderController::class,
+        'concert' => \Cyndaron\Ticketsale\ConcertController::class,
+        'concert-order' => \Cyndaron\Ticketsale\OrderController::class,
         'file-cabinet' => \Cyndaron\FileCabinet\FileCabinetController::class,
         'minecraft' => \Cyndaron\Minecraft\MinecraftController::class,
     ];
@@ -66,7 +66,7 @@ class Router
             $this->updateRequestVars((string)$frontpage);
         }
         // Known friendly URL
-        elseif ($url = DBConnection::doQueryAndFetchOne('SELECT doel FROM friendlyurls WHERE naam=?', [$this->requestVars[0]]))
+        elseif ($url = DBConnection::doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$this->requestVars[0]]))
         {
             $this->updateRequestVars($this->rewriteFriendlyUrl(new Url($url)));
         }
@@ -149,7 +149,7 @@ class Router
             die();
         }
         // Redirect if a friendly url exists for the requested unfriendly url
-        if ($_SERVER['REQUEST_URI'] != '/' && $url = DBConnection::doQueryAndFetchOne('SELECT naam FROM friendlyurls WHERE doel = ?', [$_SERVER['REQUEST_URI']]))
+        if ($_SERVER['REQUEST_URI'] != '/' && $url = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target = ?', [$_SERVER['REQUEST_URI']]))
         {
             header('Location: /' . $url);
             die();

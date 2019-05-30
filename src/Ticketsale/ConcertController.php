@@ -1,12 +1,11 @@
 <?php
 declare (strict_types = 1);
 
-namespace Cyndaron\Concerts;
+namespace Cyndaron\Ticketsale;
 
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Request;
-use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 
 class ConcertController extends Controller
@@ -21,21 +20,22 @@ class ConcertController extends Controller
     protected function getConcertInfo()
     {
         $concertId = intval(Request::getVar(2));
-        $concertInfo = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM kaartverkoop_concerten WHERE id=?', [$concertId]);
-        $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC', [$concertId]);
+        $concert = new Concert($concertId);
+        $concert->load();
+        $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
 
         $answer = [
             'kaartsoorten' => [],
-            'bezorgenVerplicht' => boolval($concertInfo['bezorgen_verplicht']),
-            'standaardVerzendkosten' => $concertInfo['verzendkosten'],
-            'toeslagGereserveerdePlaats' => $concertInfo['toeslag_gereserveerde_plaats']
+            'bezorgenVerplicht' => boolval($concert->forcedDelivery),
+            'standaardVerzendkosten' => $concert->deliveryCost,
+            'toeslagGereserveerdePlaats' => $concert->reservedSeatCharge,
         ];
 
         foreach ($ticketTypes as $kaartsoort)
         {
             $answer['kaartsoorten'][] = [
                 'id' => $kaartsoort['id'],
-                'prijs' => $kaartsoort['prijs']
+                'price' => $kaartsoort['price']
             ];
         }
 

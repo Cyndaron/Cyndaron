@@ -6,24 +6,19 @@ use Cyndaron\User\User;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
-    protected $type = 'photoalbum';
+    const TYPE = 'photoalbum';
 
     protected function prepare()
     {
-        $naam = Request::unsafePost('titel');
-        $notities = Request::unsafePost('artikel');
-        $showBreadcrumbs = (bool)Request::post('showBreadcrumbs');
-
-        if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
-        {
-            Photoalbum::wijzigFotoalbum($this->id, $naam, $notities, $showBreadcrumbs);
-        }
-        else
-        {
-            $this->id = Photoalbum::nieuwFotoalbum($naam, $notities, $showBreadcrumbs);
-        }
+        $photoalbum = new Photoalbum($this->id);
+        $photoalbum->loadIfIdIsSet();
+        $photoalbum->name = Request::unsafePost('titel');
+        $photoalbum->notes = Request::unsafePost('artikel');
+        $photoalbum->categoryId = (int)Request::post('categoryId');
+        $photoalbum->showBreadcrumbs = (bool)Request::post('showBreadcrumbs');
+        $photoalbum->save();
 
         User::addNotification('Fotoalbum bewerkt.');
-        $this->returnUrl = '/photoalbum/' . $this->id;
+        $this->returnUrl = '/photoalbum/' . $photoalbum->id;
     }
 }

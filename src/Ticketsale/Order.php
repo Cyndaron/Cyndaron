@@ -1,7 +1,7 @@
 <?php
 declare (strict_types = 1);
 
-namespace Cyndaron\Concerts;
+namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Model;
@@ -9,30 +9,40 @@ use \Exception;
 
 class Order extends Model
 {
-    protected static $table = 'kaartverkoop_bestellingen';
+    const TABLE = 'ticketsale_orders';
+    const TABLE_FIELDS = ['concert_id', 'delivery', 'deliveryByMember', 'deliveryMemberName', 'email'];
 
     const MAIL_HEADERS = [
         'From' => '"Vlissingse Oratorium Vereniging" <noreply@vlissingse-oratoriumvereniging.nl>',
         'Content-Type' => 'text/plain; charset="UTF-8"',
     ];
 
+    public $concert_id;
+    public $delivery;
+    public $deliveryByMember;
+    public $deliveryMemberName;
+    public $email;
+
     public function setIsPaid()
     {
-        if ($this->id === null || $this->record === null)
+        if ($this->id === null)
         {
             throw new Exception('ID is null!');
         }
 
-        $forcedDelivery = DBConnection::doQueryAndFetchOne('SELECT bezorgen_verplicht FROM kaartverkoop_concerten WHERE id=?', [$this->record['concert_id']]);
+        $concert = new Concert((int)$this->concert_id);
+        $concert->load();
+
+        DBConnection::doQuery('UPDATE ticketsale_orders SET `isPaid`=1 WHERE id=?', [$this->id]);
 
         $text = "Hartelijk dank voor uw bestelling bij de Vlissingse Oratorium Vereniging. Wij hebben uw betaling in goede orde ontvangen.\n";
-        if ($this->record['thuisbezorgen'] || ($forcedDelivery && $this->record['ophalen_door_koorlid'] == 0))
+        if ($this->delivery || ($concert->forcedDelivery && $this->deliveryByMember == 0))
         {
             $text .= 'Uw kaarten zullen zo spoedig mogelijk worden opgestuurd.';
         }
-        elseif ($forcedDelivery && $this->record['ophalen_door_koorlid'] == 1)
+        elseif ($concert->forcedDelivery && $this->deliveryByMember == 1)
         {
-            $text .= 'Uw kaarten zullen worden meegegeven aan ' . $this->record['naam_koorlid'] . '.';
+            $text .= 'Uw kaarten zullen worden meegegeven aan ' . $this->deliveryMemberName . '.';
         }
         else
         {
@@ -41,10 +51,7 @@ class Order extends Model
 
         $extraheaders = 'From: "Vlissingse Oratorium Vereniging" <noreply@vlissingse-oratoriumvereniging.nl>;' . "\n" .
             'Content-Type: text/plain; charset="UTF-8";';
-        mail($this->record['e-mailadres'], 'Betalingsbevestiging', $text, $extraheaders);
-
-
-        DBConnection::doQuery('UPDATE kaartverkoop_bestellingen SET `is_betaald`=1 WHERE id=?', [$this->id]);
+        mail($this->email, 'Betalingsbevestiging', $text, $extraheaders);
     }
 
     public function setIsSent()
@@ -54,6 +61,6 @@ class Order extends Model
             throw new Exception('id is null!');
         }
 
-        DBConnection::doQuery('UPDATE kaartverkoop_bestellingen SET `is_bezorgd`=1 WHERE id=?', [$this->id]);
+        DBConnection::doQuery('UPDATE ticketsale_orders SET `isDelivered`=1 WHERE id=?', [$this->id]);
     }
 }

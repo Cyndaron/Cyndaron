@@ -1,21 +1,22 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\DBConnection;
-
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
-    protected $type = 'photoalbum';
-    protected $table = 'fotoboeken';
-    protected $saveUrl = '/editor/photoalbum/%s';
+    const TYPE = 'photoalbum';
+    const TABLE = 'photoalbums';
     const HAS_CATEGORY = true;
+
+    const SAVE_URL = '/editor/photoalbum/%s';
 
     protected function prepare()
     {
         if ($this->id)
         {
-            $this->content = DBConnection::doQueryAndFetchOne('SELECT notities FROM fotoboeken WHERE id=?', [$this->id]);
-            $this->contentTitle = DBConnection::doQueryAndFetchOne('SELECT naam FROM fotoboeken WHERE id=?', [$this->id]);
+            /** @var Photoalbum $photoalbum */
+            $photoalbum = Photoalbum::loadFromDatabase($this->id);
+            $this->content = $photoalbum->notes;
+            $this->contentTitle = $photoalbum->name;
         }
     }
 

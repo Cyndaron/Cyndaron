@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Concerts;
+namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
 
@@ -17,6 +17,6 @@ class Util extends \Cyndaron\Util
 
     public static function getLatestConcertId(): ?int
     {
-        return DBConnection::doQueryAndFetchOne('SELECT MAX(id) FROM kaartverkoop_concerten');
+        return DBConnection::doQueryAndFetchOne('SELECT MAX(id) FROM ticketsale_concerts');
     }
 }

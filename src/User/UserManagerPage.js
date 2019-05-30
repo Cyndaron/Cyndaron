@@ -1,6 +1,6 @@
 'use strict';
 
-const fields = ['username', 'email', 'password', 'level', 'firstname', 'tussenvoegsel', 'lastname', 'role', 'comments', 'avatar', 'hideFromMemberList'];
+const fields = ['username', 'email', 'password', 'level', 'firstName', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList'];
 
 $(document).ready(function () {
 
@@ -34,7 +34,7 @@ $(document).ready(function () {
             else if (item === 'hideFromMemberList')
                 $('#um-' + item).prop('checked', userItem.data(item.toLowerCase()) === 1);
             else
-                $('#um-' + item).val(userItem.data(item));
+                $('#um-' + item).val(userItem.data(item.toLowerCase()));
         });
 
         $('#um-password-group').css('display', 'none');

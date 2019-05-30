@@ -2,6 +2,7 @@
 namespace Cyndaron\Editor;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Model;
 use Cyndaron\Page;
 use Cyndaron\Request;
 use Cyndaron\Setting;
@@ -12,21 +13,24 @@ require_once __DIR__ . '/../../check.php';
 
 abstract class EditorPage extends Page
 {
-    protected $id = null;
+    const TYPE = null;
+    const TABLE = null;
     const HAS_TITLE = true;
     const HAS_CATEGORY = false;
+    const SAVE_URL = '';
+
+    protected $id = null;
+
     protected $vorigeversie = false;
     protected $vvstring = '';
     protected $content;
     protected $contentTitle;
-    protected $type;
-    protected $table;
-    protected $saveUrl;
-    protected $record = [];
+    /** @var Model */
+    protected $model = null;
 
     public function __construct()
     {
-        $this->id = Request::getVar(2);
+        $this->id = (int)Request::getVar(2);
         $this->vorigeversie = Request::getVar(3) === 'previous';
         $this->vvstring = $this->vorigeversie ? 'vorige' : '';
 
@@ -40,24 +44,20 @@ abstract class EditorPage extends Page
         if (empty($this->contentTitle))
             $this->contentTitle = '';
 
-        $dir = dirname($_SERVER['PHP_SELF']);
-        if ($dir == '/')
-            $dir = '';
-
         parent::__construct('Editor');
         $this->addScript('/contrib/ckeditor/ckeditor.js');
         $this->addScript('/sys/js/editor.js');
         $this->showPrePage();
 
-        $unfriendlyUrl = new Url('/' . $this->type . '/' . $this->id);
+        $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $this->id);
         $friendlyUrl = new Url($unfriendlyUrl->getFriendly());
 
-        if ($unfriendlyUrl == $friendlyUrl)
+        if ($unfriendlyUrl->equals($friendlyUrl))
         {
             $friendlyUrl = "";
         }
 
-        $saveUrl = sprintf($this->saveUrl, $this->id ? (string)$this->id : '');
+        $saveUrl = sprintf(static::SAVE_URL, $this->id ? (string)$this->id : '');
         ?>
         <form name="bewerkartikel" method="post" action="<?=$saveUrl;?>" class="form-horizontal">
 
@@ -76,25 +76,25 @@ abstract class EditorPage extends Page
                     $showBreadcrumbs = false;
                     if ($this->id)
                     {
-                        $showBreadcrumbs = (bool)DBConnection::doQueryAndFetchOne('SELECT showBreadcrumbs FROM ' . $this->table . ' WHERE id=?', [$this->id]);
+                        $showBreadcrumbs = (bool)DBConnection::doQueryAndFetchOne('SELECT showBreadcrumbs FROM ' . static::TABLE . ' WHERE id=?', [$this->id]);
                     }
 
                     $this->showCheckbox('showBreadcrumbs', 'Titel tonen als breadcrumbs', $showBreadcrumbs);
                 }
-            endif;
-            ?>
+                ?>
 
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label" for="friendlyUrl">Friendly URL: </label>
-                <div class="col-sm-5">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3">https://<?=$_SERVER['HTTP_HOST']?>/</span>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="friendlyUrl">Friendly URL: </label>
+                    <div class="col-sm-5">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3">https://<?=$_SERVER['HTTP_HOST']?>/</span>
+                            </div>
+                            <input type="text" class="form-control" id="friendlyUrl" name="friendlyUrl" aria-describedby="basic-addon3" value="<?=trim($friendlyUrl,'/')?>"/>
                         </div>
-                        <input type="text" class="form-control" id="friendlyUrl" name="friendlyUrl" aria-describedby="basic-addon3" value="<?=trim($friendlyUrl,'/')?>"/>
                     </div>
                 </div>
-            </div>
+            <?php endif; ?>
 
             <textarea class="ckeditor" name="artikel" rows="25" cols="125"><?=$this->content; ?></textarea>
 
@@ -105,18 +105,20 @@ abstract class EditorPage extends Page
                         <?php
                         $connection = DBConnection::getPDO();
                         $sql = "
-    SELECT * FROM (SELECT CONCAT('/sub/', id) AS link, CONCAT('Statische pag.: ', naam) AS naam FROM subs ORDER BY naam ASC) AS twee
+    SELECT * FROM (SELECT CONCAT('/sub/', id) AS link, CONCAT('Statische pag.: ', name) AS name FROM subs ORDER BY name ASC) AS twee
     UNION
-    SELECT * FROM (SELECT CONCAT('/category/', id) AS link, CONCAT('Categorie: ', naam) AS naam FROM categorieen ORDER BY naam ASC) AS drie
+    SELECT * FROM (SELECT CONCAT('/category/', id) AS link, CONCAT('Categorie: ', name) AS name FROM categories ORDER BY name ASC) AS drie
     UNION
-    SELECT * FROM (SELECT CONCAT('/photoalbum/', id) AS link, CONCAT('Fotoalbum: ', naam) AS naam FROM fotoboeken ORDER BY naam ASC) AS vijf;";
+    SELECT * FROM (SELECT CONCAT('/photoalbum/', id) AS link, CONCAT('Fotoalbum: ', name) AS name FROM photoalbums ORDER BY name ASC) AS vijf
+    UNION
+    SELECT * FROM (SELECT CONCAT('/concert/order/', id) AS link, CONCAT('Concert: ', name) AS name FROM  ticketsale_concerts ORDER BY name ASC) AS vijf;";
 
                         $links = $connection->prepare($sql);
                         $links->execute();
 
                         foreach ($links->fetchAll() as $link)
                         {
-                            echo '<option value="' . $link['link'] . '">' . $link['naam'] . '</option>';
+                            echo '<option value="' . $link['link'] . '">' . $link['name'] . '</option>';
                         }
                         ?>
                     </select>
@@ -125,9 +127,13 @@ abstract class EditorPage extends Page
             </div>
 
             <?php
+            if (static::HAS_CATEGORY)
+            {
+                $this->showCategoryDropdown();
+            }
             $this->showContentSpecificButtons();
             ?>
-            <input type="hidden" name="csrfToken" value="<?=User::getCSRFToken('editor', $this->type);?>"/>
+            <input type="hidden" name="csrfToken" value="<?=User::getCSRFToken('editor', static::TYPE);?>"/>
             <input type="submit" value="Opslaan" class="btn btn-primary"/>
             <a role="button" class="btn btn-outline-cyndaron" href="<?=$_SESSION['referrer'];?>">Annuleren</a>
 
@@ -141,33 +147,33 @@ abstract class EditorPage extends Page
 
     abstract protected function showContentSpecificButtons();
 
-    public function showCategoryDropdown()
+    private function showCategoryDropdown()
     {
         ?>
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label" for="categorieid">Plaats dit artikel in de categorie: </label>
+            <label class="col-sm-2 col-form-label" for="categoryId">Plaats dit artikel in de categorie: </label>
             <div class="col-sm-5">
-                <select name="categorieid" class="form-control custom-select">
+                <select name="categoryId" class="form-control custom-select">
                     <option value="0">&lt;Geen categorie&gt;</option>
                     <?php
 
                     if ($this->id)
                     {
-                        $categorieid = DBConnection::doQueryAndFetchOne('SELECT categorieid FROM ' . $this->table . ' WHERE id= ?', [$this->id]);
+                        $categoryId = DBConnection::doQueryAndFetchOne('SELECT categoryId FROM ' . static::TABLE . ' WHERE id= ?', [$this->id]);
                     }
                     else
                     {
-                        $categorieid = Setting::get('standaardcategorie');
+                        $categoryId = Setting::get('standaardcategorie');
                     }
 
-                    $categorieen = DBConnection::doQueryAndFetchAll("SELECT * FROM categorieen ORDER BY naam;");
-                    foreach ($categorieen as $categorie)
+                    $categorieen = DBConnection::doQueryAndFetchAll("SELECT * FROM categories ORDER BY name;");
+                    foreach ($categorieen as $category)
                     {
-                        if ($this->type == 'category' && $categorie['id'] == $this->id)
+                        if (static::TYPE == 'category' && $category['id'] == $this->id)
                             continue;
 
-                        $selected = ($categorieid == $categorie['id']) ? ' selected="selected"' : '';
-                        printf('<option value="%d" %s>%s</option>', $categorie['id'], $selected, $categorie['naam']);
+                        $selected = ($categoryId == $category['id']) ? ' selected="selected"' : '';
+                        printf('<option value="%d" %s>%s</option>', $category['id'], $selected, $category['name']);
                     }
                     ?>
                 </select>

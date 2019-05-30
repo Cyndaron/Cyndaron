@@ -9,28 +9,28 @@ use Cyndaron\User\User;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
+    const TYPE = 'mailform';
+
     protected function prepare()
     {
-        $title = Request::unsafePost('titel');
-        $confirmation = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
-        $sendConfirmation = (int)Request::unsafePost('sendConfirmation');
-        $email = Request::unsafePost('email');
-        $antiSpamAnswer = Request::unsafePost('antiSpamAnswer');
+        $mailform = new Mailform($this->id);
+        $mailform->loadIfIdIsSet();
+        $mailform->name = Request::unsafePost('titel');
+        $mailform->email = Request::unsafePost('email');
+        $mailform->antiSpamAnswer = Request::unsafePost('antiSpamAnswer');
+        $mailform->sendConfirmation = (bool)Request::unsafePost('sendConfirmation');;
+        $mailform->confirmationText = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
 
-        if ($this->id > 0) // Existing mail form, edit.
+        if ($mailform->save())
         {
-            DBConnection::doQuery('UPDATE mailformulieren SET naam = ?, mailadres = ?, antispamantwoord = ?, send_confirmation = ?, confirmation_text = ? WHERE id = ?', [
-                $title, $email, $antiSpamAnswer, $sendConfirmation, $confirmation, $this->id
-            ]);
+            User::addNotification('Mailformulier bewerkt.');
         }
         else
         {
-            DBConnection::doQuery('INSERT INTO mailformulieren(naam, mailadres, antispamantwoord, send_confirmation, confirmation_text) VALUES(?, ?, ?, ?, ?)', [
-                $title, $email, $antiSpamAnswer, $sendConfirmation, $confirmation
-            ]);
+            $errorInfo = var_export(DBConnection::errorInfo(), true);
+            User::addNotification('Opslaan mailformulier mislukt: ' . $errorInfo);
         }
 
-        User::addNotification('Mailformulier bewerkt.');
         $this->returnUrl = '/pagemanager/mailform';
     }
 }

@@ -9,8 +9,9 @@ require_once __DIR__ . '/../../check.php';
 
 abstract class EditorSavePage
 {
-    protected $id;
-    protected $type = '';
+    const TYPE = '';
+
+    protected $id = null;
     protected $returnUrl;
 
     public function __construct()
@@ -29,7 +30,7 @@ abstract class EditorSavePage
 
         if ($friendlyUrl = Request::post('friendlyUrl'))
         {
-            $unfriendlyUrl = new Url('/' . $this->type . '/' . $this->id);
+            $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $this->id);
             $oudeFriendlyUrl = $unfriendlyUrl->getFriendly();
             Url::deleteFriendlyUrl($oudeFriendlyUrl);
             $unfriendlyUrl->createFriendly($friendlyUrl);

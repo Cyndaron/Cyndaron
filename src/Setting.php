@@ -6,7 +6,7 @@ class Setting
     public static function get(string $name, bool $escape = false)
     {
         $connection = DBConnection::getPDO();
-        $setting = $connection->prepare('SELECT waarde FROM instellingen WHERE naam= ?');
+        $setting = $connection->prepare('SELECT value FROM settings WHERE name= ?');
         $setting->execute([$name]);
         if (!$escape)
         {
@@ -19,7 +19,7 @@ class Setting
     public static function set(string $name, string $value)
     {
         $connection = DBConnection::getPDO();
-        $setting = $connection->prepare('REPLACE INTO instellingen(`naam`, `waarde`) VALUES (?, ?)');
+        $setting = $connection->prepare('REPLACE INTO settings(`name`, `value`) VALUES (?, ?)');
         $setting->execute([$name, $value]);
     }
 }

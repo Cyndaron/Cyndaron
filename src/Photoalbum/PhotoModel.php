@@ -10,7 +10,7 @@ class PhotoModel
 {
     public static function addCaption(string $hash, string $caption)
     {
-        DBConnection::doQueryAndFetchOne('DELETE FROM bijschriften WHERE hash = ?', [$hash]);
-        DBConnection::doQueryAndFetchOne('INSERT INTO bijschriften(hash,bijschrift) VALUES (?,?)', [$hash, $caption]);
+        DBConnection::doQueryAndFetchOne('DELETE FROM photoalbum_captions WHERE hash = ?', [$hash]);
+        DBConnection::doQueryAndFetchOne('INSERT INTO photoalbum_captions(hash,caption) VALUES (?,?)', [$hash, $caption]);
     }
 }

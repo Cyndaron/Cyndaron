@@ -1,14 +1,27 @@
 <?php
 declare (strict_types = 1);
 
-namespace Cyndaron\Concerts;
+namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Model;
 
 class Concert extends Model
 {
-    protected static $table = 'kaartverkoop_concerten';
+    const TABLE = 'ticketsale_concerts';
+    const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats'];
+
+    public $name = '';
+    public $openForSales = true;
+    public $description = '';
+    public $descriptionWhenClosed = '';
+    public $deliveryCost = 1.50;
+    public $forcedDelivery = true;
+    public $hasReservedSeats = true;
+    public $reservedSeatCharge = 5.00;
+    public $reservedSeatsAreSoldOut = false;
+    public $numFreeSeats = 250;
+    public $numReservedSeats = 270;
 
     /**
      * @param int $numTickets
@@ -26,7 +39,7 @@ class Concert extends Model
         $foundEnoughSeats = false;
         $reservedSeats = [];
 
-        $reservedSeatsPerOrder = DBConnection::doQueryAndFetchAll('SELECT * FROM kaartverkoop_gereserveerde_plaatsen WHERE bestelling_id IN (SELECT id FROM kaartverkoop_bestellingen WHERE concert_id=?)', [$this->id]);
+        $reservedSeatsPerOrder = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$this->id]);
         foreach ($reservedSeatsPerOrder as $reservedSeatsForThisOrder)
         {
             for ($i = $reservedSeatsForThisOrder['eerste_stoel']; $i <= $reservedSeatsForThisOrder['laatste_stoel']; $i++)
@@ -39,7 +52,7 @@ class Concert extends Model
         $lastSeat = 0;
 
         $adjacentFreeSeats = 0;
-        for ($stoel = 1; $stoel <= Util::MAX_RESERVED_SEATS; $stoel++)
+        for ($stoel = 1; $stoel <= $this->numReservedSeats; $stoel++)
         {
             if (isset($reservedSeats[$stoel]) && $reservedSeats[$stoel] == true)
             {
@@ -61,7 +74,7 @@ class Concert extends Model
 
         if ($foundEnoughSeats)
         {
-            DBConnection::doQuery('INSERT INTO kaartverkoop_gereserveerde_plaatsen(`bestelling_id`, `rij`, `eerste_stoel`, `laatste_stoel`) VALUES(?, \'A\', ?, ?)', [$orderId, $firstSeat, $lastSeat]);
+            DBConnection::doQuery('INSERT INTO ticketsale_reservedseats(`orderId`, `rij`, `eerste_stoel`, `laatste_stoel`) VALUES(?, \'A\', ?, ?)', [$orderId, $firstSeat, $lastSeat]);
             return range($firstSeat, $lastSeat);
         }
         else

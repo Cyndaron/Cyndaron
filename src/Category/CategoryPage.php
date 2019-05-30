@@ -12,15 +12,15 @@ class CategoryPage extends Page
     {
         if ($id != 'fotoboeken')
         {
-            $this->toonCategorieIndex(intval($id));
+            $this->showCategoryIndex(intval($id));
         }
         else
         {
-            $this->toonFotoalbumsIndex();
+            $this->showPhotoalbumsIndex();
         }
     }
 
-    private function toonCategorieIndex(int $id)
+    private function showCategoryIndex(int $id)
     {
         if ($id < 0)
         {
@@ -28,39 +28,38 @@ class CategoryPage extends Page
             die('Incorrecte parameter ontvangen.');
         }
 
-        $naam = DBConnection::doQueryAndFetchOne("SELECT naam FROM categorieen WHERE id= ?;", [$id]);
-        $alleentitel = DBConnection::doQueryAndFetchOne("SELECT alleentitel FROM categorieen WHERE id=?", [$id]);
-        $controls = sprintf('<a href="/editor/category/%d" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
+        $this->model = new Category($id);
+        $this->model->load();
 
-        parent::__construct($naam);
-        $this->model = Category::loadFromDatabase($id);
+        $controls = sprintf('<a href="/editor/category/%d" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
+        parent::__construct($this->model->name);
         $this->setTitleButtons($controls);
         $this->showPrePage();
 
-        $beschrijving = DBConnection::doQueryAndFetchOne('SELECT beschrijving FROM categorieen WHERE id= ?', [$id]);
-        echo $beschrijving;
-        $paginas = DBConnection::doQueryAndFetchAll('SELECT * FROM subs WHERE categorieid= ? ORDER BY id DESC', [$id]);
+        echo $this->model->description;
 
-        if ($alleentitel)
+        $onlyShowTitles = (bool)$this->model->onlyShowTitles;
+        if ($onlyShowTitles)
         {
             echo '<ul class="zonderbullets">';
         }
 
+        $paginas = DBConnection::doQueryAndFetchAll('SELECT * FROM subs WHERE categoryId= ? ORDER BY id DESC', [$id]);
         foreach ($paginas as $pagina)
         {
             $url = new Url('/sub/' . $pagina['id']);
             $link = $url->getFriendly();
-            if ($alleentitel)
+            if ($onlyShowTitles)
             {
-                echo '<li><h3><a href="' . $link . '">' . $pagina['naam'] . '</a></h3></li>';
+                echo '<li><h3><a href="' . $link . '">' . $pagina['name'] . '</a></h3></li>';
             }
             else
             {
-                echo "\n<p><h3><a href=\"" . $link . '">' . $pagina['naam'] . "</a></h3>\n";
-                echo Util::wordlimit(trim($pagina['tekst']), 30, "...") . '<a href="' . $link . '"><br /><i>Meer lezen...</i></a></p>';
+                echo "\n<p><h3><a href=\"" . $link . '">' . $pagina['name'] . "</a></h3>\n";
+                echo Util::wordlimit(trim($pagina['text']), 30, "...") . '<a href="' . $link . '"><br /><i>Meer lezen...</i></a></p>';
             }
         }
-        if ($alleentitel)
+        if ($onlyShowTitles)
         {
             echo '</ul>';
         }
@@ -68,18 +67,18 @@ class CategoryPage extends Page
         $this->showPostPage();
     }
 
-    private function toonFotoalbumsIndex()
+    private function showPhotoalbumsIndex()
     {
         parent::__construct('Fotoalbums');
         $this->showPrePage();
-        $fotoboeken = DBConnection::doQueryAndFetchAll('SELECT * FROM fotoboeken ORDER BY id DESC');
+        $fotoboeken = DBConnection::doQueryAndFetchAll('SELECT * FROM photoalbums ORDER BY id DESC');
 
         echo '<ul class="zonderbullets">';
         foreach ($fotoboeken as $fotoboek)
         {
             $url = new Url('/photoalbum/' . $fotoboek['id']);
             $link = $url->getFriendly();
-            echo '<li><h3><a href="' . $link . '">' . $fotoboek['naam'] . '</a></h3></li>';
+            echo '<li><h3><a href="' . $link . '">' . $fotoboek['name'] . '</a></h3></li>';
         }
         echo '</ul>';
 

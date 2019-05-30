@@ -79,15 +79,15 @@ class UserController extends Controller
         $email = Request::post('email');
         $password = Request::post('password') ?: Util::generatePassword();
         $level = intval(Request::post('level'));
-        $firstname = Request::post('firstname');
+        $firstName = Request::post('firstName');
         $tussenvoegsel = Request::post('tussenvoegsel');
-        $lastname = Request::post('lastname');
+        $lastName = Request::post('lastName');
         $role = Request::post('role');
         $comments = Request::post('comments');
         $avatar = Request::post('avatar');
         $hideFromMemberList = Request::post('hideFromMemberList') == '1' ? true : false;
 
-        $userId = User::create($username, $email, $password, $level, $firstname, $tussenvoegsel, $lastname, $role, $comments, $avatar, $hideFromMemberList);
+        $userId = User::create($username, $email, $password, $level, $firstName, $tussenvoegsel, $lastName, $role, $comments, $avatar, $hideFromMemberList);
         echo json_encode(['userId' => $userId]);
     }
 
@@ -99,14 +99,14 @@ class UserController extends Controller
             $username = Request::post('username');
             $email = Request::post('email');
             $level = intval(Request::post('level'));
-            $firstname = Request::post('firstname');
+            $firstName = Request::post('firstName');
             $tussenvoegsel = Request::post('tussenvoegsel');
-            $lastname = Request::post('lastname');
+            $lastName = Request::post('lastName');
             $role = Request::post('role');
             $comments = Request::post('comments');
             $avatar = Request::post('avatar');
             $hideFromMemberList = Request::post('hideFromMemberList') == '1' ? true : false;
-            $this->editHelper(intval($id), $username, $email, $level, $firstname, $tussenvoegsel, $lastname, $role, $comments, $avatar, $hideFromMemberList);
+            $this->editHelper(intval($id), $username, $email, $level, $firstName, $tussenvoegsel, $lastName, $role, $comments, $avatar, $hideFromMemberList);
         }
         else
         {
@@ -114,22 +114,20 @@ class UserController extends Controller
         }
     }
 
-    private function editHelper(int $id, string $username, string $email, int $level, string $firstname, string $tussenvoegsel, string $lastname, string $role, string $comments, string $avatar, bool $hideFromMemberList)
+    private function editHelper(int $id, string $username, string $email, int $level, string $firstName, string $tussenvoegsel, string $lastName, string $role, string $comments, string $avatar, bool $hideFromMemberList)
     {
         $user = new User($id);
-        $user->fetchRecord();
-        $user->updateFromArray([
-            'username' => $username,
-            'email' => $email,
-            'level' => $level,
-            'firstname' => $firstname,
-            'tussenvoegsel' => $tussenvoegsel,
-            'lastname' => $lastname,
-            'role' => $role,
-            'comments' => $comments,
-            'avatar' => $avatar,
-            'hide_from_member_list' => intval($hideFromMemberList),
-        ]);
+        $user->load();
+        $user->username = $username;
+        $user->email = $email;
+        $user->level = $level;
+        $user->firstName = $firstName;
+        $user->tussenvoegsel = $tussenvoegsel;
+        $user->lastName = $lastName;
+        $user->role = $role;
+        $user->comments = $comments;
+        $user->avatar = $avatar;
+        $user->hideFromMemberList = intval($hideFromMemberList);
         $result = $user->save();
         if ($result !== true)
         {
@@ -159,7 +157,7 @@ class UserController extends Controller
         if ($userId !== null)
         {
             $user = new User($userId);
-            $user->fetchRecord();
+            $user->load();
             $user->sendNewPassword();
 
             echo json_encode([]);

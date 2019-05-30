@@ -62,28 +62,28 @@ function checkFormulier()
     if (document.getElementById('prijsvak').innerHTML === "€&nbsp;-")
         return false;
 
-    var achternaam = document.getElementById('achternaam').value;
-    var voorletters = document.getElementById('voorletters').value;
-    var emailadres = document.getElementById('e-mailadres').value;
-    var ophalenDoorKoorlid = document.getElementById('ophalen_door_koorlid').checked;
+    var lastName = document.getElementById('lastName').value;
+    var initials = document.getElementById('initials').value;
+    var email = document.getElementById('email').value;
+    var deliveryByMember = document.getElementById('deliveryByMember').checked;
 
-    if(!(achternaam.length > 0 && voorletters.length > 0 && emailadres.length > 0))
+    if(!(lastName.length > 0 && initials.length > 0 && email.length > 0))
         return false;
 
-    if (document.getElementById('bezorgen').checked || (bezorgenVerplicht && !ophalenDoorKoorlid))
+    if (document.getElementById('bezorgen').checked || (bezorgenVerplicht && !deliveryByMember))
     {
-        var straatnaam_en_huisnummer = document.getElementById('straatnaam_en_huisnummer').value;
+        var street = document.getElementById('street').value;
         var postcode = document.getElementById('postcode').value;
-        var woonplaats = document.getElementById('woonplaats').value;
+        var city = document.getElementById('city').value;
 
-        if(!(straatnaam_en_huisnummer.length > 0 && postcode.length > 0 && woonplaats.length > 0))
+        if(!(street.length > 0 && postcode.length > 0 && city.length > 0))
             return false;
     }
 
-    if (ophalenDoorKoorlid && document.getElementById('naam_koorlid').value.length < 2)
+    if (deliveryByMember && document.getElementById('deliveryMemberName').value.length < 2)
         return false;
 
-    if (buitenland && document.getElementById('naam_koorlid').value.length < 2)
+    if (buitenland && document.getElementById('deliveryMemberName').value.length < 2)
         return false;
 
     return true;
@@ -117,14 +117,14 @@ function berekenTotaalprijs()
 
     if (buitenland)
     {
-        document.getElementById('ophalen_door_koorlid').checked = true;
-        document.getElementById('ophalen_door_koorlid').disabled = true;
+        document.getElementById('deliveryByMember').checked = true;
+        document.getElementById('deliveryByMember').disabled = true;
 
         $('.postcode-gerelateerd').css({display: 'none'});
     }
     else
     {
-        document.getElementById('ophalen_door_koorlid').disabled = false;
+        document.getElementById('deliveryByMember').disabled = false;
         $('.postcode-gerelateerd').css({display: 'flex'});
     }
 
@@ -137,16 +137,16 @@ function berekenTotaalprijs()
         }
 
         var woontOpWalcheren = postcodeLigtInWalcheren(postcode);
-        var ophalenDoorKoorlid = document.getElementById('ophalen_door_koorlid').checked;
+        var deliveryByMember = document.getElementById('deliveryByMember').checked;
 
         if (!woontOpWalcheren) {
-            document.getElementById('ophalen_door_koorlid_div').style.display = "block";
+            document.getElementById('deliveryByMember_div').style.display = "block";
         }
         else {
-            document.getElementById('ophalen_door_koorlid_div').style.display = "none";
+            document.getElementById('deliveryByMember_div').style.display = "none";
         }
 
-        if (!woontOpWalcheren && !ophalenDoorKoorlid) {
+        if (!woontOpWalcheren && !deliveryByMember) {
             bezorgen = true;
         }
         else {
@@ -168,7 +168,7 @@ function berekenTotaalprijs()
             document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
     }
     var toeslag_gereserveerde_plaats = 0.0;
-    if (document.getElementById('gereserveerde_plaatsen').checked) {
+    if (document.getElementById('hasReservedSeats').checked) {
         toeslag_gereserveerde_plaats = toeslagGereserveerdePlaats;
     }
 
@@ -178,16 +178,16 @@ function berekenTotaalprijs()
     else if (!bezorgenVerplicht && !bezorgen) {
         document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
     }
-    else if (bezorgenVerplicht && !ophalenDoorKoorlid && !buitenland) {
+    else if (bezorgenVerplicht && !deliveryByMember && !buitenland) {
         document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
     }
-    else if (bezorgenVerplicht && (ophalenDoorKoorlid || buitenland)) {
+    else if (bezorgenVerplicht && (deliveryByMember || buitenland)) {
         document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
     }
 
     kaartsoorten.forEach(function(item) {
         var aantal = document.getElementById('kaartsoort-' + item.id).value;
-        totaalprijs = totaalprijs + (item.prijs * aantal);
+        totaalprijs = totaalprijs + (item.price * aantal);
         totaalprijs = totaalprijs + (verzendkosten * aantal);
         totaalprijs = totaalprijs + (toeslag_gereserveerde_plaats * aantal);
     });
@@ -212,7 +212,7 @@ $('input[type=radio][name=land]').on('change', function()
     else
     {
         buitenland = false;
-        document.getElementById('ophalen_door_koorlid').checked = false;
+        document.getElementById('deliveryByMember').checked = false;
 
     }
 });

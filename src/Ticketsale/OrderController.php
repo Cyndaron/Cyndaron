@@ -1,7 +1,7 @@
 <?php
 declare (strict_types = 1);
 
-namespace Cyndaron\Concerts;
+namespace Cyndaron\Ticketsale;
 
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
@@ -62,10 +62,10 @@ class OrderController extends Controller
     }
 
     /**
-     * @param $concert_id
+     * @param $concertId
      * @throws \Exception
      */
-    private function processOrder($concert_id)
+    private function processOrder($concertId)
     {
         if (Request::postIsEmpty())
         {
@@ -73,21 +73,20 @@ class OrderController extends Controller
         }
 
         /** @var Concert $concertObj */
-        $concertObj = Concert::loadFromDatabase($concert_id);
-        $concert = $concertObj->asArray();
+        $concertObj = Concert::loadFromDatabase($concertId);
 
-        if ($concert['open_voor_verkoop'] == false)
+        if (!$concertObj->openForSales)
         {
             throw new \Exception('De verkoop voor dit concert is helaas gesloten, u kunt geen kaarten meer bestellen.');
         }
 
         $postcode = Request::post('postcode');
-        $buitenland = (Request::post('land') === 'buitenland') ? true : false;
-        $ophalenDoorKoorlid = Request::post('ophalen_door_koorlid') ? true : false;
-        $ophalenDoorKoorlid = $buitenland ? true : $ophalenDoorKoorlid;
-        $naam_koorlid = Request::post('naam_koorlid');
+        $addressIsAbroad = (Request::post('land') === 'buitenland') ? true : false;
+        $deliveryByMember = Request::post('deliveryByMember') ? true : false;
+        $deliveryByMember = $addressIsAbroad ? true : $deliveryByMember;
+        $deliveryMemberName = Request::post('deliveryMemberName');
 
-        $incorrecteVelden = $this->checkFormulier($concert['bezorgen_verplicht'], $ophalenDoorKoorlid);
+        $incorrecteVelden = $this->checkFormulier($concertObj->forcedDelivery, $deliveryByMember);
         if (!empty($incorrecteVelden))
         {
             $message = 'De volgende velden zijn niet goed ingevuld of niet goed aangekomen: ';
@@ -98,18 +97,18 @@ class OrderController extends Controller
         $totaalprijs = 0.0;
         $totaalAantalKaarten = 0;
 
-        if ($concert['bezorgen_verplicht'])
+        if ($concertObj->forcedDelivery)
         {
-            $woontInWalcheren = ($buitenland) ? false : Util::postcodeIsWithinWalcheren($postcode);
+            $woontInWalcheren = ($addressIsAbroad) ? false : Util::postcodeIsWithinWalcheren(intval($postcode));
 
             if ($woontInWalcheren)
             {
                 $payForDelivery = false;
-                $ophalenDoorKoorlid = false;
+                $deliveryByMember = false;
             }
             else
             {
-                if ($ophalenDoorKoorlid)
+                if ($deliveryByMember)
                 {
                     $payForDelivery = false;
                 }
@@ -123,15 +122,15 @@ class OrderController extends Controller
         {
             $payForDelivery = Request::post('bezorgen') ? true : false;
         }
-        $deliveryPrice = $payForDelivery ? $concert['verzendkosten'] : 0.0;
-        $reserveSeats = Request::post('gereserveerde_plaatsen') ? 1 : 0;
-        $toeslag_gereserveerde_plaats = ($reserveSeats == 1) ? $concert['toeslag_gereserveerde_plaats'] : 0;
+        $deliveryPrice = $payForDelivery ? $concertObj->deliveryCost : 0.0;
+        $reserveSeats = Request::post('hasReservedSeats') ? 1 : 0;
+        $toeslag_gereserveerde_plaats = ($reserveSeats == 1) ? $concertObj->reservedSeatCharge : 0;
         $bestelling_kaartsoorten = [];
-        $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC', [$concert_id]);
+        $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
         foreach ($ticketTypes as $ticketType)
         {
             $bestelling_kaartsoorten[$ticketType['id']] = intval(Request::post('kaartsoort-' . $ticketType['id']));
-            $totaalprijs += $bestelling_kaartsoorten[$ticketType['id']] * ($ticketType['prijs'] + $deliveryPrice + $toeslag_gereserveerde_plaats);
+            $totaalprijs += $bestelling_kaartsoorten[$ticketType['id']] * ($ticketType['price'] + $deliveryPrice + $toeslag_gereserveerde_plaats);
             $totaalAantalKaarten += $bestelling_kaartsoorten[$ticketType['id']];
         }
 
@@ -140,24 +139,24 @@ class OrderController extends Controller
             throw new \Exception('U heeft een bestelling van 0 kaarten geplaatst of het formulier is niet goed aangekomen.');
         }
 
-        $emailadres = Request::post('e-mailadres');
-        $achternaam = Request::post('achternaam');
-        $voorletters = Request::post('voorletters');
-        $straatnaam_en_huisnummer = Request::post('straatnaam_en_huisnummer');
+        $email = Request::post('email');
+        $lastName = Request::post('lastName');
+        $initials = Request::post('initials');
+        $street = Request::post('street');
         $postcode = Request::post('postcode');
-        $woonplaats = Request::post('woonplaats');
-        $opmerkingen = Request::post('opmerkingen');
+        $city = Request::post('city');
+        $comments = Request::post('comments');
 
-        $orderId = (int)DBConnection::doQuery('INSERT INTO kaartverkoop_bestellingen
-            (`concert_id`,  `achternaam`,     `voorletters`,     `e-mailadres`,     `straat_en_huisnummer`, `postcode`, `woonplaats`,     `thuisbezorgen`,         `gereserveerde_plaatsen`,             `ophalen_door_koorlid`,    `naam_koorlid`,    `woont_in_buitenland`,    `opmerkingen`) VALUES
-            (?,             ?,                 ?,                 ?,                 ?,                     ?,          ?,                 ?,                       ?,                                   ?,                         ?,                 ?,                        ?)',
-            [$concert_id, $achternaam, $voorletters, $emailadres, $straatnaam_en_huisnummer, $postcode, $woonplaats, ($payForDelivery ? 1 : 0), $reserveSeats, $ophalenDoorKoorlid, $naam_koorlid, $buitenland, $opmerkingen]);
+        $orderId = (int)DBConnection::doQuery('INSERT INTO ticketsale_orders
+            (`concertId`, `lastName`, `initials`, `email`, `street`,                 `postcode`, `city`, `delivery`,                `hasReservedSeats`, `deliveryByMember`, `deliveryMemberName`, `addressIsAbroad`, `comments`) VALUES
+            (?,           ?,          ?,          ?,       ?,                         ?,          ?,      ?,                         ?,                  ?,                  ?,                    ?,                 ?)',
+            [$concertId,  $lastName,  $initials,  $email,  $street, $postcode,  $city,  ($payForDelivery ? 1 : 0), $reserveSeats,      $deliveryByMember,  $deliveryMemberName,  $addressIsAbroad,  $comments]);
 
         foreach ($ticketTypes as $ticketType)
         {
             if ($bestelling_kaartsoorten[$ticketType['id']] > 0)
             {
-                DBConnection::doQuery('INSERT INTO kaartverkoop_bestellingen_kaartsoorten(`bestelling_id`, `kaartsoort_id`, `aantal`) VALUES(?, ?, ?)', [$orderId, $ticketType['id'], $bestelling_kaartsoorten[$ticketType['id']]]);
+                DBConnection::doQuery('INSERT INTO ticketsale_orders_tickettypes(`orderId`, `tickettypeId`, `amount`) VALUES(?, ?, ?)', [$orderId, $ticketType['id'], $bestelling_kaartsoorten[$ticketType['id']]]);
             }
         }
 
@@ -167,13 +166,13 @@ class OrderController extends Controller
             $reservedSeats = $concertObj->reserveSeats($orderId, $totaalAantalKaarten);
             if ($reservedSeats === null)
             {
-                DBConnection::doQuery('UPDATE kaartverkoop_bestellingen SET gereserveerde_plaatsen = 0 WHERE id=?', [$orderId]);
+                DBConnection::doQuery('UPDATE ticketsale_orders SET hasReservedSeats = 0 WHERE id=?', [$orderId]);
                 $totaalprijs -= $totaalAantalKaarten * $toeslag_gereserveerde_plaats;
                 $reserveSeats = -1;
             }
         }
 
-        $this->sendMail($payForDelivery, $concert, $ophalenDoorKoorlid, $naam_koorlid, $reserveSeats, $reservedSeats, $totaalprijs, $orderId, $ticketTypes, $bestelling_kaartsoorten, $achternaam, $voorletters, $straatnaam_en_huisnummer, $postcode, $woonplaats, $opmerkingen, $emailadres);
+        $this->sendMail($payForDelivery, $concertObj, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats, $totaalprijs, $orderId, $ticketTypes, $bestelling_kaartsoorten, $lastName, $initials, $street, $postcode, $city, $comments, $email);
     }
 
     private function checkFormulier($bezorgenVerplicht = false, $ophalenDoorKoorlid = false)
@@ -184,24 +183,24 @@ class OrderController extends Controller
             $incorrecteVelden[] = 'Antispam';
         }
 
-        if (strlen(Request::post('achternaam')) === 0)
+        if (strlen(Request::post('lastName')) === 0)
         {
             $incorrecteVelden[] = 'Achternaam';
         }
 
-        if (strlen(Request::post('voorletters')) === 0)
+        if (strlen(Request::post('initials')) === 0)
         {
             $incorrecteVelden[] = 'Voorletters';
         }
 
-        if (strlen(Request::post('e-mailadres')) === 0)
+        if (strlen(Request::post('email')) === 0)
         {
             $incorrecteVelden[] = 'E-mailadres';
         }
 
-        if ((!$bezorgenVerplicht && Request::post('bezorgen')) || ($bezorgenVerplicht && !$ophalenDoorKoorlid))
+        if ((!$bezorgenVerplicht && Request::post('delivery')) || ($bezorgenVerplicht && !$ophalenDoorKoorlid))
         {
-            if (strlen(Request::post('straatnaam_en_huisnummer')) === 0)
+            if (strlen(Request::post('street')) === 0)
             {
                 $incorrecteVelden[] = 'Straatnaam en huisnummer';
             }
@@ -211,7 +210,7 @@ class OrderController extends Controller
                 $incorrecteVelden[] = 'Postcode';
             }
 
-            if (strlen(Request::post('woonplaats')) === 0)
+            if (strlen(Request::post('city')) === 0)
             {
                 $incorrecteVelden[] = 'Woonplaats';
             }
@@ -221,32 +220,32 @@ class OrderController extends Controller
 
     /**
      * @param bool $bezorgen
-     * @param array $concert
+     * @param Concert $concert
      * @param bool $ophalenDoorKoorlid
-     * @param $naam_koorlid
+     * @param $deliveryMemberName
      * @param int $reserveSeats
      * @param array|null $reservedSeats
      * @param $totaalprijs
      * @param $orderId
      * @param array $ticketTypes
      * @param array $bestelling_kaartsoorten
-     * @param $achternaam
-     * @param $voorletters
-     * @param $straatnaam_en_huisnummer
+     * @param $lastName
+     * @param $initials
+     * @param $street
      * @param $postcode
-     * @param $woonplaats
-     * @param $opmerkingen
+     * @param $city
+     * @param $comments
      * @param $emailadres
      */
-    private function sendMail(bool $bezorgen, array $concert, bool $ophalenDoorKoorlid, $naam_koorlid, int $reserveSeats, ?array $reservedSeats, float $totaalprijs, $orderId, array $ticketTypes, array $bestelling_kaartsoorten, $achternaam, $voorletters, $straatnaam_en_huisnummer, $postcode, $woonplaats, $opmerkingen, $emailadres): void
+    private function sendMail(bool $bezorgen, Concert $concert, bool $ophalenDoorKoorlid, $deliveryMemberName, int $reserveSeats, ?array $reservedSeats, float $totaalprijs, $orderId, array $ticketTypes, array $bestelling_kaartsoorten, $lastName, $initials, $street, $postcode, $city, $comments, $emailadres): void
     {
-        if ($bezorgen || ($concert['bezorgen_verplicht'] && !$ophalenDoorKoorlid))
+        if ($bezorgen || ($concert->forcedDelivery && !$ophalenDoorKoorlid))
         {
             $opstuurtekst = 'naar uw adres verstuurd worden';
         }
-        elseif ($concert['bezorgen_verplicht'] && $ophalenDoorKoorlid)
+        elseif ($concert->forcedDelivery && $ophalenDoorKoorlid)
         {
-            $opstuurtekst = 'worden meegegeven aan ' . $naam_koorlid;
+            $opstuurtekst = 'worden meegegeven aan ' . $deliveryMemberName;
         }
         else
         {
@@ -284,10 +283,10 @@ Kaartsoorten:
         {
             if ($bestelling_kaartsoorten[$ticketType['id']] > 0)
             {
-                $text .= '   ' . $ticketType['naam'] . ': ' . $bestelling_kaartsoorten[$ticketType['id']] . ' à ' . Util::formatEuroPlainText((float)$ticketType['prijs']) . PHP_EOL;
+                $text .= '   ' . $ticketType['name'] . ': ' . $bestelling_kaartsoorten[$ticketType['id']] . ' à ' . Util::formatEuroPlainText((float)$ticketType['price']) . PHP_EOL;
             }
         }
-        if (!$concert['bezorgen_verplicht'])
+        if (!$concert->forcedDelivery)
         {
             $text .= PHP_EOL . 'Kaarten bezorgen: ' . Util::boolToText($bezorgen);
         }
@@ -295,14 +294,14 @@ Kaartsoorten:
         $text .= PHP_EOL . 'Gereserveerde plaatsen: ' . $reserveSeats == 1 ? 'Ja' : 'Nee' . PHP_EOL;
         $text .= 'Totaalbedrag: ' . Util::formatEuroPlainText($totaalprijs) . '
 
-Achternaam: ' . $achternaam . '
-Voorletters: ' . $voorletters . PHP_EOL . PHP_EOL;
+Achternaam: ' . $lastName . '
+Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
 
         $extraFields = [
-            'Straatnaam en huisnummer' => $straatnaam_en_huisnummer,
+            'Straatnaam en huisnummer' => $street,
             'Postcode' => $postcode,
-            'Woonplaats' => $woonplaats,
-            'Opmerkingen' => $opmerkingen,
+            'Woonplaats' => $city,
+            'Opmerkingen' => $comments,
         ];
 
         foreach ($extraFields as $description => $contents)

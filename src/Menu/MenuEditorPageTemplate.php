@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpUndefinedVariableInspection */
+
 use Cyndaron\User\User;
 use Cyndaron\Util;
 ?>
@@ -20,7 +21,7 @@ use Cyndaron\Util;
 <?php foreach($menu as $menuItem):?>
         <tr>
             <td>
-                <?=$menuItem['volgorde']?>
+                <?=$menuItem['id']?>
             </td>
             <td>
                 <?=$menuItem['link']?>
@@ -37,16 +38,16 @@ use Cyndaron\Util;
             <td>
                 <div class="btn-group">
                     <button class="mm-edit-item btn btn-outline-cyndaron"
-                            data-id="<?=$menuItem['volgorde']?>"
+                            data-id="<?=$menuItem['id']?>"
                             data-toggle="modal"
                             data-target="#mm-edit-item-dialog"
-                            data-volgorde="<?=$menuItem['volgorde']?>"
+                            data-id="<?=$menuItem['id']?>"
                             data-link="<?=$menuItem['link']?>"
                             data-alias="<?=$menuItem['alias']?>"
                             data-isDropdown="<?=$menuItem['isDropdown']?>"
                             data-isImage="<?=$menuItem['isImage']?>"
                     ><span class="glyphicon glyphicon-pencil"></span></button>
-                    <button class="mm-delete-item btn btn-danger" data-id="<?=$menuItem['volgorde']?>"><span class="glyphicon glyphicon-trash"></span></button>
+                    <button class="mm-delete-item btn btn-danger" data-id="<?=$menuItem['id']?>"><span class="glyphicon glyphicon-trash"></span></button>
                 </div>
             </td>
         </tr>

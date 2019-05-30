@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Concerts;
+namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
@@ -10,24 +10,25 @@ use Cyndaron\User\User;
 
 class OrderTicketsPage extends Page
 {
-    public function __construct(int $concert_id)
+    public function __construct(int $concertId)
     {
-        $this->addScript('/src/Concerts/OrderTicketsPage.js');
+        $this->addScript('/src/Ticketsale/OrderTicketsPage.js');
 
-        $concert = Concert::loadFromDatabase($concert_id)->asArray();
-        $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM kaartverkoop_kaartsoorten WHERE concert_id=? ORDER BY prijs DESC', [$concert_id]);
-        $controls = sprintf('<a href="/editor/concert/%d" class="btn btn-outline-cyndaron" title="Dit concert bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $concert_id);
+        $concert = new Concert($concertId);
+        $concert->load();
+        $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
+        $controls = sprintf('<a href="/editor/concert/%d" class="btn btn-outline-cyndaron" title="Dit concert bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $concertId);
 
 
-        parent::__construct('Kaarten bestellen: ' . $concert['naam']);
+        parent::__construct('Kaarten bestellen: ' . $concert->name);
         $this->setTitleButtons($controls);
         $this->showPrePage();
 
-        if ($concert['open_voor_verkoop'] == false)
+        if (!$concert->openForSales)
         {
-            if ($concert['beschrijving_indien_gesloten'])
+            if ($concert->descriptionWhenClosed)
             {
-                echo $concert['beschrijving_indien_gesloten'];
+                echo $concert->descriptionWhenClosed;
             }
             else
             {
@@ -38,17 +39,17 @@ class OrderTicketsPage extends Page
             die();
         }
 
-        echo '<p>' . $concert['beschrijving'] . '</p>';
+        echo '<p>' . $concert->description . '</p>';
         ?>
 
         <h3>Vrije plaatsen en gereserveerde plaatsen</h3>
-        <p><?php printf(Setting::get('concerts_reserved_seats_description'), Util::MAX_RESERVED_SEATS)?></p>
+        <p><?php printf(Setting::get('concerts_reserved_seats_description'), $concert->numReservedSeats)?></p>
 
         <br/>
         <form method="post" action="/concert-order/add" class="form-horizontal" id="kaartenbestellen">
             <input type="hidden" name="csrfToken" value="<?=User::getCSRFToken('concert-order', 'add')?>"/>
             <h3>Kaartsoorten:</h3>
-            <input type="hidden" id="concertId" name="concert_id" value="<?php echo $concert_id; ?>"/>
+            <input type="hidden" id="concertId" name="concert_id" value="<?php echo $concertId; ?>"/>
             <table class="kaartverkoop table table-striped">
                 <tr>
                     <th>Kaartsoort:</th>
@@ -68,43 +69,43 @@ class OrderTicketsPage extends Page
                                 <button type="button" class="aantalKaarten btn btn-outline-cyndaron aantalKaarten-decrease" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-minus"></span></button>
                             </td>
                         </tr>',
-                        $kaartsoort['naam'], Util::formatEuro($kaartsoort['prijs']), $kaartsoort['id']);
+                        $kaartsoort['name'], Util::formatEuro($kaartsoort['price']), $kaartsoort['id']);
                 }
                 ?>
             </table>
-            <div <?= $concert['bezorgen_verplicht'] ? 'style="display:none"' : ''; ?>>
+            <div <?= $concert->forcedDelivery ? 'style="display:none"' : ''; ?>>
                 <input id="bezorgen" name="bezorgen" type="checkbox" value="1" class="berekenTotaalprijsOpnieuw">
                 <label for="bezorgen">
                     Bezorg mijn kaarten thuis (meerprijs
-                    van <?php echo Util::formatEuro($concert['verzendkosten']); ?> per kaart)
+                    van <?php echo Util::formatEuro($concert->deliveryCost); ?> per kaart)
                 </label>
             </div>
 
-            <?php if ($concert['heeft_gereserveerde_plaatsen']): ?>
-                <?php if ($concert['gereserveerde_plaatsen_uitverkocht']): ?>
-                    <input id="gereserveerde_plaatsen" name="gereserveerde_plaatsen" style="display:none;"
+            <?php if ($concert->hasReservedSeats): ?>
+                <?php if ($concert->reservedSeatsAreSoldOut): ?>
+                    <input id="hasReservedSeats" name="hasReservedSeats" style="display:none;"
                            type="checkbox" value="1"/>
                     U kunt voor dit concert nog kaarten voor vrije plaatsen kopen. <b>De gereserveerde plaatsen zijn inmiddels uitverkocht.</b>
                 <?php else: ?>
                     <div class="form-group form-check">
-                        <input id="gereserveerde_plaatsen" class="berekenTotaalprijsOpnieuw form-check-input" name="gereserveerde_plaatsen"
+                        <input id="hasReservedSeats" class="berekenTotaalprijsOpnieuw form-check-input" name="hasReservedSeats"
                                type="checkbox" value="1"/>
-                        <label class="form-check-label" for="gereserveerde_plaatsen">
+                        <label class="form-check-label" for="hasReservedSeats">
                             Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs
-                            van <?php echo Util::formatEuro($concert['toeslag_gereserveerde_plaats']); ?> per kaart)
+                            van <?php echo Util::formatEuro($concert->reservedSeatCharge); ?> per kaart)
                         </label>
                     </div>
                 <?php endif; ?>
             <?php else: ?>
-                <input id="gereserveerde_plaatsen" type="hidden" value="0">
+                <input id="hasReservedSeats" type="hidden" value="0">
             <?php endif; ?>
 
-            <?php if ($concert['bezorgen_verplicht']): ?>
+            <?php if ($concert->forcedDelivery): ?>
                 <h3>Bezorging</h3>
                 <p>
                     Bij dit concert is het alleen mogelijk om uw kaarten te laten thuisbezorgen. Als u op Walcheren
                     woont is dit gratis. Woont u buiten Walcheren, dan kost het
-                    thuisbezorgen <?= Util::formatEuro($concert['verzendkosten']); ?> per kaart.<br>Het is ook
+                    thuisbezorgen <?= Util::formatEuro($concert->deliveryCost); ?> per kaart.<br>Het is ook
                     mogelijk
                     om uw kaarten te laten ophalen door een koorlid. Dit is gratis.
                 </p>
@@ -134,15 +135,15 @@ class OrderTicketsPage extends Page
                                                  maxlength="7"/></div>
                 </div>
 
-                <div id="ophalen_door_koorlid_div" style="display:none;">
-                    <input id="ophalen_door_koorlid" name="ophalen_door_koorlid" type="checkbox" value="1"
+                <div id="deliveryByMember_div" style="display:none;">
+                    <input id="deliveryByMember" name="deliveryByMember" type="checkbox" value="1"
                            class="berekenTotaalprijsOpnieuw">
-                    <label for="ophalen_door_koorlid">Mijn kaarten laten ophalen door een koorlid</label>
+                    <label for="deliveryByMember">Mijn kaarten laten ophalen door een koorlid</label>
                     <br>
 
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" for="naam_koorlid">Naam koorlid:</label>
-                        <div class="col-sm-5"><input id="naam_koorlid" name="naam_koorlid" type="text"
+                        <label class="col-sm-3 col-form-label" for="deliveryMemberName">Naam koorlid:</label>
+                        <div class="col-sm-5"><input id="deliveryMemberName" name="deliveryMemberName" type="text"
                                                      class="form-control"/></div>
                     </div>
                 </div>
@@ -153,30 +154,30 @@ class OrderTicketsPage extends Page
             <h3>Uw gegevens (verplicht):</h3>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="achternaam">Achternaam:</label>
-                <div class="col-sm-5"><input id="achternaam" name="achternaam" class="form-control"/></div>
+                <label class="col-sm-3 col-form-label" for="lastName">Achternaam:</label>
+                <div class="col-sm-5"><input id="lastName" name="lastName" class="form-control"/></div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="voorletters">Voorletters:</label>
-                <div class="col-sm-5"><input id="voorletters" name="voorletters" class="form-control"/></div>
+                <label class="col-sm-3 col-form-label" for="initials">Voorletters:</label>
+                <div class="col-sm-5"><input id="initials" name="initials" class="form-control"/></div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="e-mailadres">E-mailadres:</label>
-                <div class="col-sm-5"><input id="e-mailadres" name="e-mailadres" type="email" class="form-control"/></div>
+                <label class="col-sm-3 col-form-label" for="email">E-mailadres:</label>
+                <div class="col-sm-5"><input id="email" name="email" type="email" class="form-control"/></div>
             </div>
 
 
             <h3 id="adresgegevensKop">Uw adresgegevens (nodig als u de kaarten wilt laten bezorgen):</h3>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="straatnaam_en_huisnummer">Straatnaam en huisnummer:</label>
-                <div class="col-sm-5"><input id="straatnaam_en_huisnummer" name="straatnaam_en_huisnummer"
+                <label class="col-sm-3 col-form-label" for="street">Straatnaam en huisnummer:</label>
+                <div class="col-sm-5"><input id="street" name="street"
                                              class="form-control"/></div>
             </div>
 
-            <?php if (!$concert['bezorgen_verplicht']): ?>
+            <?php if (!$concert->forcedDelivery): ?>
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label" for="postcode">Postcode:</label>
                     <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control"/></div>
@@ -184,8 +185,8 @@ class OrderTicketsPage extends Page
             <?php endif; ?>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="woonplaats">Woonplaats:</label>
-                <div class="col-sm-5"><input id="woonplaats" name="woonplaats" class="form-control"/></div>
+                <label class="col-sm-3 col-form-label" for="city">Woonplaats:</label>
+                <div class="col-sm-5"><input id="city" name="city" class="form-control"/></div>
             </div>
 
 
@@ -194,8 +195,8 @@ class OrderTicketsPage extends Page
             <p>Als u nog opmerkingen heeft kunt u deze hier kwijt.</p>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="opmerkingen">Opmerkingen (niet verplicht):</label>
-                <div class="col-sm-5"><textarea id="opmerkingen" name="opmerkingen" class="form-control"
+                <label class="col-sm-3 col-form-label" for="comments">Opmerkingen (niet verplicht):</label>
+                <div class="col-sm-5"><textarea id="comments" name="comments" class="form-control"
                                                 rows="4"></textarea></div>
             </div>
 

@@ -7,5 +7,12 @@ use Cyndaron\Model;
 
 class Mailform extends Model
 {
-    protected static $table = 'mailformulieren';
+    const TABLE = 'mailforms';
+    const TABLE_FIELDS = ['name', 'email', 'antiSpamAnswer', 'sendConfirmation', 'confirmationText'];
+
+    public $name;
+    public $email;
+    public $antiSpamAnswer;
+    public $sendConfirmation;
+    public $confirmationText;
 }

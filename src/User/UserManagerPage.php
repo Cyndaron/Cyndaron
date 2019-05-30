@@ -67,13 +67,13 @@ class UserManagerPage extends Page
                                     data-username="<?=$user['username']?>"
                                     data-email="<?=$user['email']?>"
                                     data-level="<?=$user['level']?>"
-                                    data-firstname="<?=$user['firstname']?>"
+                                    data-firstName="<?=$user['firstName']?>"
                                     data-tussenvoegsel="<?=$user['tussenvoegsel']?>"
-                                    data-lastname="<?=$user['lastname']?>"
+                                    data-lastName="<?=$user['lastName']?>"
                                     data-role="<?=$user['role']?>"
                                     data-comments="<?=$user['comments']?>"
                                     data-avatar="<?=$user['avatar']?>"
-                                    data-hideFromMemberList="<?=$user['hide_from_member_list']?>">
+                                    data-hideFromMemberList="<?=$user['hideFromMemberList']?>">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </button>
                             <button class="um-resetpassword btn btn-sm btn-outline-cyndaron" data-id="<?=$user['id']?>">
@@ -126,9 +126,9 @@ class UserManagerPage extends Page
             </div>
 
             <div class="form-group row">
-                <label for="um-firstname" class="col-sm-2 col-form-label">Voornaam:</label>
+                <label for="um-firstName" class="col-sm-2 col-form-label">Voornaam:</label>
                 <div class="col-sm-10">
-                    <input class="form-control" id="um-firstname">
+                    <input class="form-control" id="um-firstName">
                 </div>
             </div>
 
@@ -140,9 +140,9 @@ class UserManagerPage extends Page
             </div>
 
             <div class="form-group row">
-                <label for="um-lastname" class="col-sm-2 col-form-label">Achternaam:</label>
+                <label for="um-lastName" class="col-sm-2 col-form-label">Achternaam:</label>
                 <div class="col-sm-10">
-                    <input class="form-control" id="um-lastname">
+                    <input class="form-control" id="um-lastName">
                 </div>
             </div>
 

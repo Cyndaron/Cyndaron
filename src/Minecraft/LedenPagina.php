@@ -28,7 +28,7 @@ class LedenPagina extends Page
         $this->addScript('/sys/js/mc-ledenpagina.js');
         $this->showPrePage();
 
-        $spelers = DBConnection::doQueryAndFetchAll('SELECT * FROM mc_leden ORDER BY niveau DESC, mcnaam ASC');
+        $spelers = DBConnection::doQueryAndFetchAll('SELECT * FROM minecraft_members ORDER BY level DESC, userName ASC');
 
         $tePreloaden = [];
 
@@ -37,7 +37,7 @@ class LedenPagina extends Page
         foreach ($spelers as $speler)
         {
             $highestLevel = count($this->pageLevels) - 1;
-            $normalisedPageLevel = min($speler['niveau'], $highestLevel);
+            $normalisedPageLevel = min($speler['level'], $highestLevel);
 
             for ($level = $highestLevel; $level >= 0; $level--)
             {
@@ -51,32 +51,32 @@ class LedenPagina extends Page
 
             $lastLevel = $normalisedPageLevel;
 
-            $vooraanzicht = "/minecraft/skin?vr=-10&amp;hr=20&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;user={$speler['mcnaam']}";
-            $achteraanzicht = "/minecraft/skin?vr=-10&amp;hr=200&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;user={$speler['mcnaam']}";
+            $vooraanzicht = "/minecraft/skin?vr=-10&amp;hr=20&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;user={$speler['userName']}";
+            $achteraanzicht = "/minecraft/skin?vr=-10&amp;hr=200&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;user={$speler['userName']}";
             $tePreloaden[] = $achteraanzicht;
 
             echo '<div class="spelerswrapper">';
             echo '<table>';
             echo '<tr><td class="avatarbox">';
 
-            echo '<img class="mc-speler-avatar" alt="Avatar van ' . $speler['echtenaam'] . '" title="Avatar van ' . $speler['echtenaam'] . '" src="' . $vooraanzicht . '" data-vooraanzicht="' . $vooraanzicht . '" data-achteraanzicht="' . $achteraanzicht . '" />';
+            echo '<img class="mc-speler-avatar" alt="Avatar van ' . $speler['realName'] . '" title="Avatar van ' . $speler['realName'] . '" src="' . $vooraanzicht . '" data-vooraanzicht="' . $vooraanzicht . '" data-achteraanzicht="' . $achteraanzicht . '" />';
             echo '</td>';
             echo '<td class="spelersinfobox">';
 
-            echo '<span class="spelersnaam">' . $speler['mcnaam'] . '</span>';
+            echo '<span class="spelersnaam">' . $speler['userName'] . '</span>';
 
-            if ($speler['donateur'] == 1)
+            if ($speler['donor'] == 1)
             {
-                echo '<br /><span class="donateur">Donateur</span>';
+                echo '<br /><span class="donor">Donateur</span>';
             }
 
-            echo '<br />Echte naam: ' . $speler['echtenaam'];
+            echo '<br />Echte naam: ' . $speler['realName'];
             echo '<br />Status: ' . $speler['status'];
 
-            if ($speler['niveau'] >= 3 && $speler['niveau'] <= 5)
+            if ($speler['level'] >= 3 && $speler['level'] <= 5)
             {
                 echo '<br />Niveau: ';
-                echo $this->level[$speler['niveau']];
+                echo $this->level[$speler['level']];
             }
 
             echo '</td>';
@@ -122,7 +122,7 @@ class LedenPagina extends Page
                 vertical-align: middle;
             }
 
-            .donateur
+            .donor
             {
                 font-weight: bold;
                 color: #B8860B;

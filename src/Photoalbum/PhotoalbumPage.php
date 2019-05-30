@@ -17,12 +17,14 @@ class PhotoalbumPage extends Page
             header("Location: /error/404");
             die('Incorrecte parameter ontvangen.');
         }
-        $album = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM fotoboeken WHERE id=?', [$id]);
+        $this->model = new Photoalbum($id);
+        $this->model->load();
+
+        // FIXME: Is this necessary, and why specifically here?
         $_SESSION['referrer'] = !empty($_SERVER['HTTP_REFERER']) ? htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '';
 
         $controls = new Button('edit', '/editor/photoalbum/' . $id, 'Dit fotoalbum bewerken');
-        parent::__construct($album['naam']);
-        $this->model = Photoalbum::loadFromDatabase($id);
+        parent::__construct($this->model->name);
         $this->setTitleButtons((string)$controls);
         $this->addScript('/sys/js/lightbox.min.js');
         $this->showPrePage();
@@ -45,13 +47,13 @@ class PhotoalbumPage extends Page
                     $thumbnailLink = 'fotoalbums/' . $id . 'thumbnails/' . $dirArray[$index];
                     $hash = md5_file($fotoLink);
                     $dataTitleTag = '';
-                    if ($caption = DBConnection::doQueryAndFetchOne('SELECT bijschrift FROM bijschriften WHERE hash=?', [$hash]))
+                    if ($caption = DBConnection::doQueryAndFetchOne('SELECT caption FROM photoalbum_captions WHERE hash=?', [$hash]))
                     {
                         // Vervangen van aanhalingstekens is nodig omdat er links in de beschrijving kunnen zitten.
                         $dataTitleTag = 'data-title="' . str_replace('"', '&quot;', $caption) . '"';
                     }
 
-                    $output .= sprintf('<div class="fotobadge"><a href="%s" data-lightbox="%s" %s data-hash="%s"><img class="thumb" src="/fotoalbums/%d', $fotoLink, htmlspecialchars($album['naam']), $dataTitleTag, $hash, $id);
+                    $output .= sprintf('<div class="fotobadge"><a href="/%s" data-lightbox="%s" %s data-hash="%s"><img class="thumb" src="/fotoalbums/%d', $fotoLink, htmlspecialchars($this->model->name), $dataTitleTag, $hash, $id);
 
                     if (file_exists($thumbnailLink))
                     {
@@ -72,7 +74,7 @@ class PhotoalbumPage extends Page
             }
             $output .= '</div>';
 
-            static::showIfSet($album['notities'], '', '');
+            static::showIfSet($this->model->notes);
             if ($numEntries === 1)
             {
                 echo "Dit album bevat 1 foto. Klik op de verkleinde foto om een vergroting te zien.";

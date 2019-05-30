@@ -10,7 +10,20 @@ use Cyndaron\Util;
 
 class User extends Model
 {
-    protected static $table = 'users';
+    const TABLE = 'users';
+    const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList'];
+
+    public $username;
+    public $password;
+    public $email;
+    public $level;
+    public $firstName;
+    public $tussenvoegsel;
+    public $lastName;
+    public $role;
+    public $comments;
+    public $avatar;
+    public $hideFromMemberList;
 
     const RESET_PASSWORD_MAIL_TEXT =
         '<p>U vroeg om een nieuw wachtwoord voor %s.</p>
@@ -22,8 +35,6 @@ MIME-Version: 1.0
 Content-type: text/html; charset=utf-8
 From: %s <noreply@%s>
 EOT;
-
-    const FIELDS = ['username', 'password', 'email', 'level', 'firstname', 'tussenvoegsel', 'lastname', 'role', 'comments', 'avatar', 'hide_from_member_list'];
 
     public static function isAdmin(): bool
     {
@@ -65,16 +76,6 @@ EOT;
         return (static::getLevel() >= $minimumReadLevel);
     }
 
-    public function fetchRecord()
-    {
-        if ($this->id === null)
-        {
-            throw new \Exception('ID is leeg!');
-        }
-
-        $this->record = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM users WHERE id = ?', [$this->id]);
-    }
-
     public function sendNewPassword()
     {
         if ($this->id === null)
@@ -96,7 +97,7 @@ EOT;
         $domain = str_replace("/", "", $domain);
 
         mail(
-            $this->record['email'],
+            $this->email,
             'Nieuw wachtwoord ingesteld',
             sprintf(self::RESET_PASSWORD_MAIL_TEXT, $websiteName, $newPassword),
             sprintf(self::MAIL_HEADERS, $websiteName, $domain)
@@ -133,44 +134,24 @@ EOT;
         return false;
     }
 
-    public function save(): bool
-    {
-        if ($this->id !== null)
-        {
-            $fields = implode('=?, ', static::FIELDS) . '=?';
-            $data = [];
-            foreach(static::FIELDS as $fieldname)
-            {
-                $data[] = $this->record[$fieldname];
-            }
-            $data[] = $this->id;
-
-            $result = DBConnection::doQuery('UPDATE users SET ' . $fields . ' WHERE id=?', $data);
-            // Above will result either false (failure) or "0" (success)
-            return $result === false ? false : true;
-        }
-        return false;
-    }
-
-    public static function create(string $username, string $email, string $password, int $level, string $firstname, string $tussenvoegsel, string $lastname, string $role, string $comments, string $avatar, bool $hideFromMemberList): ?int
+    public static function create(string $username, string $email, string $password, int $level, string $firstName, string $tussenvoegsel, string $lastName, string $role, string $comments, string $avatar, bool $hideFromMemberList): ?int
     {
         /** @noinspection PhpUnusedLocalVariableInspection */
         $password = password_hash($password, PASSWORD_DEFAULT);
-        /** @noinspection PhpUnusedLocalVariableInspection */
-        $hide_from_member_list = intval($hideFromMemberList);
-        $fields = implode(', ', static::FIELDS);
-        $placeholders = implode(', ', array_fill(0, count(static::FIELDS), '?'));
-        $data = [];
-        foreach(static::FIELDS as $fieldname)
-        {
-            $data[] = $$fieldname;
-        }
 
-        $return = DBConnection::doQuery('INSERT INTO users(' . $fields . ') VALUES (' . $placeholders . ')', $data);
-        if ($return !== false)
-            return intval($return);
+        $user = new User(null);
+        foreach(static::TABLE_FIELDS as $fieldname)
+        {
+            $user->$fieldname = $$fieldname;
+        }
+        if ($user->save())
+        {
+            return $user->id;
+        }
         else
+        {
             throw new \Exception(implode(',', DBConnection::errorInfo()));
+        }
     }
 
     public static function login(string $identification, string $password)

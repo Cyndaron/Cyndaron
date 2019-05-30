@@ -46,7 +46,7 @@ class SkinRendererHandler
         $times[] = ['Start', $this->microtime_float()];
 
         $username = Request::get('user');
-        $userInfo = DBConnection::doQueryAndFetchFirstRow('SELECT  * FROM mc_leden WHERE mcnaam = ?', [$username]);
+        $userInfo = DBConnection::doQueryAndFetchFirstRow('SELECT  * FROM minecraft_members WHERE userName = ?', [$username]);
         $img_png = SkinRenderer::getSkinOrFallback($userInfo['skinUrl']);
 
         $width = imagesx($img_png);
@@ -70,7 +70,7 @@ class SkinRendererHandler
 
         $vertical_rotation = Request::get('vr');
         $horizontal_rotation = Request::get('hr');
-        $display_hair = $userInfo['renderAvatarHaar'];
+        $display_hair = $userInfo['renderAvatarHair'];
 
         // Rotation variables in radians (3D Rendering)
         $alpha = deg2rad($vertical_rotation); // Vertical rotation on the X axis.

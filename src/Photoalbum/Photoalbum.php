@@ -8,16 +8,21 @@ use Cyndaron\Model;
 
 class Photoalbum extends Model
 {
+    const TABLE = 'photoalbums';
+    const TABLE_FIELDS = ['name', 'notes', 'categoryId', 'showBreadcrumbs'];
     const HAS_CATEGORY = true;
 
-    protected static $table = 'fotoboeken';
+    public $name = '';
+    public $notes = '';
+    public $categoryId = null;
+    public $showBreadcrumbs = false;
 
     public static function nieuwFotoalbum(string $naam, string $notities = "", bool $showBreadcrumbs = false)
     {
         if ($naam == '')
             throw new \Exception('Empty photo album name!');
 
-        $id = DBConnection::doQuery('INSERT INTO fotoboeken(`naam`,`notities`) VALUES (?,?,?);', [$naam, $notities,(int)$showBreadcrumbs]);
+        $id = DBConnection::doQuery('INSERT INTO photoalbums(`name`,`notes`,`showBreadcrumbs`) VALUES (?,?,?);', [$naam, $notities,(int)$showBreadcrumbs]);
         if ($id !== false)
         {
             mkdir(__DIR__ . "/../../fotoalbums/${id}", 0777, true);
@@ -31,15 +36,15 @@ class Photoalbum extends Model
     {
         if ($naam !== null)
         {
-            DBConnection::doQueryAndFetchOne('UPDATE fotoboeken SET `naam`=? WHERE id=?', [$naam, $id]);
+            DBConnection::doQueryAndFetchOne('UPDATE photoalbums SET `name`=? WHERE id=?', [$naam, $id]);
         }
         if ($notities !== null)
         {
-            DBConnection::doQueryAndFetchOne('UPDATE fotoboeken SET `notities`=? WHERE id=?', [$notities, $id]);
+            DBConnection::doQueryAndFetchOne('UPDATE photoalbums SET `notes`=? WHERE id=?', [$notities, $id]);
         }
         if ($showBreadcrumbs !== null)
         {
-            DBConnection::doQueryAndFetchOne('UPDATE fotoboeken SET `showBreadcrumbs`=? WHERE id=?', [(int)$showBreadcrumbs, $id]);
+            DBConnection::doQueryAndFetchOne('UPDATE photoalbums SET `showBreadcrumbs`=? WHERE id=?', [(int)$showBreadcrumbs, $id]);
         }
     }
 }

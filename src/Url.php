@@ -12,7 +12,7 @@ class Url
 
     public function getFriendly(): string
     {
-        if ($friendly = DBConnection::doQueryAndFetchOne('SELECT naam FROM friendlyurls WHERE doel=?', [$this->url]))
+        if ($friendly = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target=?', [$this->url]))
         {
             return '/' . $friendly;
         }
@@ -24,7 +24,7 @@ class Url
 
     public function getUnfriendly(): string
     {
-        if ($unfriendly = DBConnection::doQueryAndFetchOne('SELECT doel FROM friendlyurls WHERE naam=?', [$this->url]))
+        if ($unfriendly = DBConnection::doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$this->url]))
         {
             return $unfriendly;
         }
@@ -58,12 +58,12 @@ class Url
     {
         if ($name == '' || $this->url == '')
             throw new \Exception('Cannot create friendly URL with no name or no URL!');
-        DBConnection::doQuery('INSERT INTO friendlyurls(naam,doel) VALUES (?,?)', [$name, $this->url]);
+        DBConnection::doQuery('INSERT INTO friendlyurls(name,target) VALUES (?,?)', [$name, $this->url]);
     }
 
     public static function deleteFriendlyUrl(string $naam)
     {
-        DBConnection::doQuery('DELETE FROM friendlyurls WHERE naam=?', [$naam]);
+        DBConnection::doQuery('DELETE FROM friendlyurls WHERE name=?', [$naam]);
     }
 
     public function getPageTitle(): string
@@ -74,7 +74,7 @@ class Url
         switch ($linkParts[0])
         {
             case 'sub':
-                $sql = 'SELECT naam FROM subs WHERE id=?';
+                $sql = 'SELECT name FROM subs WHERE id=?';
                 break;
             case 'category':
                 if ($linkParts[1] == 'fotoboeken')
@@ -83,11 +83,11 @@ class Url
                 }
                 else
                 {
-                    $sql = 'SELECT naam FROM categorieen WHERE id=?';
+                    $sql = 'SELECT name FROM categories WHERE id=?';
                 }
                 break;
             case 'photoalbum':
-                $sql = 'SELECT naam FROM fotoboeken WHERE id=?';
+                $sql = 'SELECT name FROM photoalbums WHERE id=?';
                 break;
             default:
                 return $link;
@@ -96,7 +96,7 @@ class Url
         {
             return $name;
         }
-        elseif ($name = DBConnection::doQueryAndFetchOne('SELECT naam FROM friendlyurls WHERE doel=?', [$link]))
+        elseif ($name = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target=?', [$link]))
         {
             return $name;
         }

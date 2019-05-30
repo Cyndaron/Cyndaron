@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Concerts;
+namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
@@ -8,47 +8,48 @@ use Cyndaron\Widget\Toolbar;
 
 class ConcertOrderOverviewPage extends Page
 {
-    public function __construct(int $concert_id)
+    public function __construct(int $concertId)
     {
         $ticketTypesByOrder = [];
 
-        $concert = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM `kaartverkoop_concerten` WHERE id=?', [$concert_id]);
+        $concert = new Concert($concertId);
+        $concert->load();
 
-        $ticketTypesQuery = "SELECT * FROM `kaartverkoop_kaartsoorten` WHERE concert_id=? ORDER BY prijs DESC";
-        $ticketTypes = DBConnection::doQueryAndFetchAll($ticketTypesQuery, [$concert_id]);
+        $ticketTypesQuery = "SELECT * FROM `ticketsale_tickettypes` WHERE concertId=? ORDER BY price DESC";
+        $ticketTypes = DBConnection::doQueryAndFetchAll($ticketTypesQuery, [$concertId]);
 
-        $ordersQuery = "    SELECT DISTINCT b.id AS bestellingsnr,achternaam,voorletters,`e-mailadres`,straat_en_huisnummer,postcode,woonplaats,thuisbezorgen,is_bezorgd,gereserveerde_plaatsen,is_betaald,opmerkingen,ophalen_door_koorlid,naam_koorlid,woont_in_buitenland
-                    FROM     `kaartverkoop_bestellingen` AS b,
-                            `kaartverkoop_bestellingen_kaartsoorten` AS bk,
-                            `kaartverkoop_kaartsoorten` AS k
-                    WHERE b.id=bk.bestelling_id AND k.id=bk.kaartsoort_id AND k.concert_id=?
+        $ordersQuery = "    SELECT DISTINCT b.id AS bestellingsnr,lastName,initials,`email`,street,houseNumber,houseNumberAddition,postcode,city,delivery,isDelivered,hasReservedSeats,isPaid,comments,deliveryByMember,deliveryMemberName,addressIsAbroad
+                    FROM     `ticketsale_orders` AS b,
+                            `ticketsale_orders_tickettypes` AS bk,
+                            `ticketsale_tickettypes` AS k
+                    WHERE b.id=bk.orderId AND k.id=bk.tickettypeId AND k.concertId=?
                     ORDER BY bestellingsnr;";
-        $orders = DBConnection::doQueryAndFetchAll($ordersQuery, [$concert_id]);
+        $orders = DBConnection::doQueryAndFetchAll($ordersQuery, [$concertId]);
 
-        $boughtTicketTypesQuery = "SELECT bestelling_id,kaartsoort_id,aantal
-                    FROM     `kaartverkoop_bestellingen_kaartsoorten`";
-        $boughtTicketTypes = DBConnection::doQueryAndFetchAll($boughtTicketTypesQuery, [$concert_id]);
+        $boughtTicketTypesQuery = "SELECT orderId,tickettypeId,amount
+                    FROM     `ticketsale_orders_tickettypes`";
+        $boughtTicketTypes = DBConnection::doQueryAndFetchAll($boughtTicketTypesQuery, [$concertId]);
 
-        $this->extraScripts[] = '/src/Concerts/ConcertOrderOverviewPage.js';
+        $this->extraScripts[] = '/src/Ticketsale/ConcertOrderOverviewPage.js';
 
-        parent::__construct('Overzicht bestellingen: ' . $concert['naam']);
+        parent::__construct('Overzicht bestellingen: ' . $concert->name);
         $this->showPrePage();
 
         foreach ($boughtTicketTypes as $boughtTicketType)
         {
-            $orderId = $boughtTicketType['bestelling_id'];
-            $ticketTypeId = $boughtTicketType['kaartsoort_id'];
+            $orderId = $boughtTicketType['orderId'];
+            $ticketTypeId = $boughtTicketType['tickettypeId'];
             if (!array_key_exists($orderId, $ticketTypesByOrder))
             {
                 $ticketTypesByOrder[$orderId] = [];
             }
 
-            $ticketTypesByOrder[$orderId][$ticketTypeId] = $boughtTicketType['aantal'];
+            $ticketTypesByOrder[$orderId][$ticketTypeId] = $boughtTicketType['amount'];
         }
         echo new Toolbar(
                 '<a class="btn btn-outline-cyndaron" href="/pagemanager/concert">&laquo; Terug naar overzicht concerten</a>',
                 '',
-                '<a class="btn btn-outline-cyndaron" href="/concert/viewReservedSeats/' . $concert_id . '">Overzicht gereserveerde plaatsen</a>'
+                '<a class="btn btn-outline-cyndaron" href="/concert/viewReservedSeats/' . $concertId . '">Overzicht gereserveerde plaatsen</a>'
             );
         ?>
 
@@ -75,13 +76,13 @@ class ConcertOrderOverviewPage extends Page
             <?php
             foreach ($ticketTypes as $ticketTypeId)
             {
-                echo '<th class="rotate"><div><span>' . $ticketTypeId['naam'] . '</span></div></th>';
+                echo '<th class="rotate"><div><span>' . $ticketTypeId['name'] . '</span></div></th>';
             }
             ?>
             <th class="rotate">
                 <div><span>Totaal</span></div>
             </th>
-            <?php if (!$concert['bezorgen_verplicht']): ?>
+            <?php if (!$concert->forcedDelivery): ?>
                 <th class="rotate">
                     <div><span>Thuisbezorgen</span></div>
                 </th>
@@ -106,20 +107,20 @@ class ConcertOrderOverviewPage extends Page
         {
             $orderId = $bestelling['bestellingsnr'];
             $totaalbedrag = 0.0;
-            $verzendkosten = $bestelling['thuisbezorgen'] * $concert['verzendkosten'];
-            $toeslag_gereserveerde_plaats = $bestelling['gereserveerde_plaatsen'] * $concert['toeslag_gereserveerde_plaats'];
+            $verzendkosten = $bestelling['delivery'] * $concert->deliveryCost;
+            $toeslag_gereserveerde_plaats = $bestelling['hasReservedSeats'] * $concert->reservedSeatCharge;
             //$class = $bestelling['woont_in_buitenland'] ? 'buitenland' : ($bestelling['ophalen_door_);
 
-            echo '<tr><td>' . $orderId . '</td><td>' . $bestelling['achternaam'] . '</td><td>' . $bestelling['voorletters'] . '</td><td>' . $bestelling['e-mailadres'] . '</td>';
-            echo '<td>' . $bestelling['straat_en_huisnummer'] . '<br />' . $bestelling['postcode'] . '<br />' . $bestelling['woonplaats'] . '</td>';
-            echo '<td>' . $bestelling['opmerkingen'] . '</td>';
+            echo '<tr><td>' . $orderId . '</td><td>' . $bestelling['lastName'] . '</td><td>' . $bestelling['initials'] . '</td><td>' . $bestelling['email'] . '</td>';
+            echo '<td>' . $bestelling['street'] . '<br />' . $bestelling['postcode'] . '<br />' . $bestelling['city'] . '</td>';
+            echo '<td>' . $bestelling['comments'] . '</td>';
             foreach ($ticketTypes as $ticketTypeId)
             {
                 echo '<td>';
                 if (array_key_exists($ticketTypeId['id'], $ticketTypesByOrder[$bestelling['bestellingsnr']]))
                 {
                     printf('<b>%d</b>', $ticketTypesByOrder[$bestelling['bestellingsnr']][$ticketTypeId['id']]);
-                    $totaalbedrag += $ticketTypesByOrder[$orderId][$ticketTypeId['id']] * $ticketTypeId['prijs'];
+                    $totaalbedrag += $ticketTypesByOrder[$orderId][$ticketTypeId['id']] * $ticketTypeId['price'];
                     $totaalbedrag += $ticketTypesByOrder[$orderId][$ticketTypeId['id']] * $verzendkosten;
                     $totaalbedrag += $ticketTypesByOrder[$orderId][$ticketTypeId['id']] * $toeslag_gereserveerde_plaats;
                 }
@@ -133,16 +134,16 @@ class ConcertOrderOverviewPage extends Page
 
             echo '<td>' . Util::formatEuro($totaalbedrag) . '</td>';
 
-            if (!$concert['bezorgen_verplicht'])
+            if (!$concert->forcedDelivery)
             {
-                echo '<td>' . Util::boolToText($bestelling['thuisbezorgen']) . '</td>';
+                echo '<td>' . Util::boolToText($bestelling['delivery']) . '</td>';
             }
             else
             {
                 echo '<td>';
-                if ($bestelling['ophalen_door_koorlid'])
+                if ($bestelling['deliveryByMember'])
                 {
-                    echo $bestelling['naam_koorlid'];
+                    echo $bestelling['deliveryMemberName'];
                 }
                 else
                 {
@@ -152,24 +153,24 @@ class ConcertOrderOverviewPage extends Page
             }
 
             echo '<td>';
-            if ($bestelling['thuisbezorgen'] || $concert['bezorgen_verplicht'])
+            if ($bestelling['delivery'] || $concert->forcedDelivery)
             {
-                echo Util::boolToText($bestelling['is_bezorgd']);
+                echo Util::boolToText($bestelling['isDelivered']);
             }
             else
             {
                 echo '&nbsp;';
             }
 
-            echo '</td><td>' . Util::boolToText($bestelling['gereserveerde_plaatsen']);
+            echo '</td><td>' . Util::boolToText($bestelling['hasReservedSeats']);
 
             $extralinks = '<div class="btn-group btn-group-sm">';
-            if (!$bestelling['is_betaald'])
+            if (!$bestelling['isPaid'])
             {
                 $extralinks .= '<button data-order-id="' . $orderId . '" data-csrf-token-set-is-paid="' . User::getCSRFToken('concert-order', 'setIsPaid') . '" title="Markeren als betaald" class="com-order-set-paid btn btn-sm btn-success"><span class="glyphicon glyphicon-eur"></span></button>';
             }
 
-            if (($concert['bezorgen_verplicht'] || $bestelling['thuisbezorgen']) && !$bestelling['is_bezorgd'])
+            if (($concert->forcedDelivery || $bestelling['delivery']) && !$bestelling['isDelivered'])
             {
                 $extralinks .= '<button data-order-id="' . $orderId . '" data-csrf-token-set-is-sent="' . User::getCSRFToken('concert-order', 'setIsSent') . '" title="Markeren als verstuurd" class="com-order-set-sent btn btn-sm btn-success"><span class="glyphicon glyphicon-envelope"></span></button>';
             }
@@ -177,7 +178,7 @@ class ConcertOrderOverviewPage extends Page
             $extralinks .= '<button data-order-id="' . $orderId . '" data-csrf-token-delete="' . User::getCSRFToken('concert-order', 'delete') . '" title="Bestelling verwijderen" class="com-order-delete btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>';
             $extralinks .= '</div>';
 
-            echo '</td><td>' . Util::boolToText($bestelling['is_betaald']) . '</td><td>' . $extralinks . '</td></tr>';
+            echo '</td><td>' . Util::boolToText($bestelling['isPaid']) . '</td><td>' . $extralinks . '</td></tr>';
         }
 
         echo '</table>';

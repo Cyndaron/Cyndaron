@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\Controller;
-use Cyndaron\Menu\Menu;
+use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
@@ -26,7 +26,9 @@ class StaticPageController extends Controller
     protected function addToMenu()
     {
         $id = intval(Request::getVar(2));
-        Menu::addItem('/sub/' . $id);
+        $menuItem = new MenuItem();
+        $menuItem->link = '/sub/' . $id;
+        $menuItem->save();
     }
 
     protected function delete()
@@ -40,16 +42,16 @@ class StaticPageController extends Controller
     {
         $id = intval(Request::getVar(2));
         $model = new StaticPageModel($id);
-        if (!$model->laden())
+        if (!$model->load())
         {
             header('Location: /error/404');
             die('Pagina bestaat niet.');
         }
 
-        $auteur = Request::post('auteur');
+        $author = Request::post('author');
         $reactie = Request::post('reactie');
         $antispam = strtolower(Request::post('antispam'));
-        $model->react($auteur, $reactie, $antispam);
+        $model->react($author, $reactie, $antispam);
 
         header('Location: /sub/' . $id);
     }

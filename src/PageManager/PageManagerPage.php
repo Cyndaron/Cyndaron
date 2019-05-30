@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\PageManager;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Concerts\Concert;
+use Cyndaron\Ticketsale\Concert;
 use Cyndaron\Mailform\Mailform;
 use Cyndaron\Page;
 use Cyndaron\User\User;
@@ -65,23 +65,23 @@ class PageManagerPage extends Page
     {
         echo new Toolbar('', '', (string)new Button('new', '/editor/sub', 'Nieuwe statische pagina', 'Nieuwe statische pagina'));
 
-        $subs = DBConnection::doQueryAndFetchAll('SELECT id, naam, "Zonder categorie" AS categorie FROM subs WHERE categorieid NOT IN (SELECT id FROM categorieen) UNION (SELECT s.id AS id, s.naam AS naam, c.naam AS categorie FROM subs AS s,categorieen AS c WHERE s.categorieid=c.id ORDER BY categorie, naam, id ASC);');
-        $subsPerCategorie = [];
+        $subs = DBConnection::doQueryAndFetchAll('SELECT id, name, "Zonder categorie" AS category FROM subs WHERE categoryId NOT IN (SELECT id FROM categories) UNION (SELECT s.id AS id, s.name AS name, c.name AS category FROM subs AS s,categories AS c WHERE s.categoryId=c.id ORDER BY category, name, id ASC);');
+        $subsPerCategory = [];
 
         foreach ($subs as $sub)
         {
-            if (empty($subsPerCategorie[$sub['categorie']]))
+            if (empty($subsPerCategory[$sub['category']]))
             {
-                $subsPerCategorie[$sub['categorie']] = [];
+                $subsPerCategory[$sub['category']] = [];
             }
 
-            $subsPerCategorie[$sub['categorie']][$sub['id']] = $sub['naam'];
+            $subsPerCategory[$sub['category']][$sub['id']] = $sub['name'];
         }
 
-        foreach ($subsPerCategorie as $categorie => $subs)
+        foreach ($subsPerCategory as $category => $subs)
         {
             ?>
-            <h3 class="text-italic"><?=$categorie?></h3>
+            <h3 class="text-italic"><?=$category?></h3>
             <table class="table table-striped table-bordered pm-table">
                 <thead>
                     <tr>
@@ -94,7 +94,7 @@ class PageManagerPage extends Page
                 <?php
                 foreach ($subs as $id => $name):
 
-                    $vvsub = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM vorigesubs WHERE id= ?', [$id]);
+                    $vvsub = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM sub_backups WHERE id= ?', [$id]);
                     $hasLastVersion = !empty($vvsub);
                     $name = strtr($name, [' ' => '&nbsp;']);
                     ?>
@@ -142,12 +142,12 @@ class PageManagerPage extends Page
             </thead>
             <tbody>
             <?php
-            $categories = DBConnection::doQueryAndFetchAll('SELECT id,naam FROM categorieen ORDER BY id ASC;');
+            $categories = DBConnection::doQueryAndFetchAll('SELECT id,name FROM categories ORDER BY id ASC;');
             foreach ($categories as $category): ?>
                 <tr id="pm-row-category-<?=$category['id']?>">
                     <td><?=$category['id']?></td>
                     <td>
-                        <a href="/category/<?php echo $category['id']; ?>"><b><?php echo $category['naam']; ?></b></a>
+                        <a href="/category/<?php echo $category['id']; ?>"><b><?php echo $category['name']; ?></b></a>
                     </td>
                     <td>
                         <div class="btn-group"><?php
@@ -181,12 +181,12 @@ class PageManagerPage extends Page
             </thead>
             <tbody>
             <?php
-            $photoalbums = DBConnection::doQueryAndFetchAll('SELECT id,naam FROM fotoboeken ORDER BY id ASC;');
+            $photoalbums = DBConnection::doQueryAndFetchAll('SELECT id,name FROM photoalbums ORDER BY id ASC;');
             foreach ($photoalbums as $photoalbum): ?>
                 <tr id="pm-row-photoalbum-<?=$photoalbum['id']?>">
                     <td><?=$photoalbum['id']?></td>
                     <td>
-                        <a href="/photoalbum/<?php echo $photoalbum['id']; ?>"><b><?php echo $photoalbum['naam']; ?></b></a>
+                        <a href="/photoalbum/<?php echo $photoalbum['id']; ?>"><b><?php echo $photoalbum['name']; ?></b></a>
                     </td>
                     <td>
                         <div class="btn-group"><?php
@@ -222,22 +222,22 @@ class PageManagerPage extends Page
                 </thead>
                 <tbody>
                 <?php
-                $friendlyurls = DBConnection::doQueryAndFetchAll('SELECT * FROM friendlyurls ORDER BY naam ASC;');
+                $friendlyurls = DBConnection::doQueryAndFetchAll('SELECT * FROM friendlyurls ORDER BY name ASC;');
                 $counter = 1;
 
                 foreach ($friendlyurls as $friendlyurl): ?>
-                    <tr id="pm-row-friendlyurl-<?=$friendlyurl['naam'];?>">
+                    <tr id="pm-row-friendlyurl-<?=$friendlyurl['name'];?>">
                         <td><?=$counter++;?></td>
                         <td>
-                            <strong><?=$friendlyurl['naam'];?></strong>
+                            <strong><?=$friendlyurl['name'];?></strong>
                         </td>
                         <td>
-                            <?=$friendlyurl['doel']?>
+                            <?=$friendlyurl['target']?>
                         </td>
                         <td>
                             <div class="btn-group">
-                                <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="friendlyurl" data-id="<?=$friendlyurl['naam'];?>" data-csrf-token="<?=User::getCSRFToken('friendlyurl', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder deze friendly URL"></span></button>
-                                <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="friendlyurl" data-id="<?=$friendlyurl['naam'];?>" data-csrf-token="<?=User::getCSRFToken('friendlyurl', 'addtomenu')?>"><span class="glyphicon glyphicon-bookmark" title="Voeg deze friendly URL toe aan het menu"></span></button>
+                                <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="friendlyurl" data-id="<?=$friendlyurl['name'];?>" data-csrf-token="<?=User::getCSRFToken('friendlyurl', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder deze friendly URL"></span></button>
+                                <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="friendlyurl" data-id="<?=$friendlyurl['name'];?>" data-csrf-token="<?=User::getCSRFToken('friendlyurl', 'addtomenu')?>"><span class="glyphicon glyphicon-bookmark" title="Voeg deze friendly URL toe aan het menu"></span></button>
                             </div>
                         </td>
                     </tr>
@@ -268,7 +268,7 @@ class PageManagerPage extends Page
                 <tr>
                     <td><?=$mailform['id']?></td>
                     <td>
-                        <?=$mailform['naam']?>
+                        <?=$mailform['name']?>
                     </td>
                     <td>
                         <div class="btn-group">
@@ -304,7 +304,7 @@ class PageManagerPage extends Page
                 <tr>
                     <td><?=$concert['id']?></td>
                     <td>
-                        <?=$concert['naam']?>
+                        <?=$concert['name']?>
                         (<a href="/concert/order/<?=$concert['id']?>">bestelpagina</a>,
                         <a href="/concert/viewOrders/<?=$concert['id']?>">overzicht bestellingen</a>)
                     </td>

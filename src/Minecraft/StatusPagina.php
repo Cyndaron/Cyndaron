@@ -11,12 +11,12 @@ class StatusPagina extends Page
         parent::__construct('Status en landkaart');
         parent::showPrePage();
 
-        $serverData = DBConnection::doQueryAndFetchAll('SELECT * FROM mc_servers ORDER BY naam');
+        $serverData = DBConnection::doQueryAndFetchAll('SELECT * FROM minecraft_servers ORDER BY name');
         $servers = [];
 
         foreach ($serverData as $server)
         {
-            $serverObj = new Server($server['naam'], $server['hostname'], $server['port'], $server['dynmapPort']);
+            $serverObj = new Server($server['name'], $server['hostname'], $server['port'], $server['dynmapPort']);
             $serverRet = $serverObj->retrieve();
             $serverRet->id = $server['id'];
             $servers[] = $serverRet;

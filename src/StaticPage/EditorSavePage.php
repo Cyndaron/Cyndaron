@@ -1,31 +1,41 @@
 <?php
 namespace Cyndaron\StaticPage;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Request;
 use Cyndaron\User\User;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
-    protected $type = 'sub';
+    const TYPE = 'sub';
 
     protected function prepare()
     {
         $titel = Request::unsafePost('titel');
-        $tekst = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
-        $reacties_aan = Request::post('reacties_aan');
-        $showBreadcrumbs = Request::post('showBreadcrumbs');
-        $categorieid = intval(Request::post('categorieid'));
+        $text = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
+        $enableComments = (bool)Request::post('enableComments');
+        $showBreadcrumbs = (bool)Request::post('showBreadcrumbs');
+        $categoryId = intval(Request::post('categoryId'));
 
         $model = new StaticPageModel($this->id);
-        $model->setName($titel);
-        $model->setText($tekst);
-        $model->setEnableComments($reacties_aan);
-        $model->setShowBreadcrumbs($showBreadcrumbs);
-        $model->setCategoryId($categorieid);
-        $model->opslaan();
-        $this->id = $model->getId();
+        $model->loadIfIdIsSet();
+        $model->name = $titel;
+        $model->text = $text;
+        $model->enableComments = $enableComments;
+        $model->showBreadcrumbs = $showBreadcrumbs;
+        $model->categoryId = $categoryId;
 
-        User::addNotification('Pagina bewerkt.');
-        $this->returnUrl = '/sub/' . $this->id;
+        if ($model->save())
+        {
+            $this->id = $model->id;
+
+            User::addNotification('Pagina bewerkt.');
+            $this->returnUrl = '/sub/' . $this->id;
+        }
+        else
+        {
+            $error = var_export(DBConnection::errorInfo(), true);
+            User::addNotification('Pagine opslaan mislukt: ' . $error);
+        }
     }
 }

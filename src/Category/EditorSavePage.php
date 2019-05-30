@@ -3,28 +3,21 @@ namespace Cyndaron\Category;
 
 use Cyndaron\Request;
 use Cyndaron\User\User;
-use Cyndaron\Util;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
-    protected $type = 'category';
+    const TYPE = 'category';
 
     protected function prepare()
     {
-        $titel = Request::unsafePost('titel');
-        $beschrijving = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
-        $alleentitel = (bool)Request::unsafePost('alleentitel');
-        $categorieId = intval(Request::post('categorieid'));
-        $showBreadcrumbs = (bool)Request::post('showBreadcrumbs');
-
-        if ($this->id > 0) // Als het id is meegegeven bestond de categorie al.
-        {
-            Category::edit($this->id, $titel, $alleentitel, $beschrijving, $categorieId, $showBreadcrumbs);
-        }
-        else
-        {
-            $this->id = Category::create($titel, $alleentitel, $beschrijving, $categorieId);
-        }
+        $category = new Category($this->id);
+        $category->loadIfIdIsSet();
+        $category->name = Request::unsafePost('titel');
+        $category->description = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
+        $category->onlyShowTitles = (bool)Request::unsafePost('alleentitel');
+        $category->categoryId = intval(Request::post('categoryId'));
+        $category->showBreadcrumbs = (bool)Request::post('showBreadcrumbs');
+        $category->save();
 
         User::addNotification('Categorie bewerkt.');
         $this->returnUrl = '/category/' . $this->id;

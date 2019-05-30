@@ -5,35 +5,39 @@ namespace Cyndaron\Mailform;
 
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
-    protected $type = 'mailform';
-    protected $table = 'mailformulieren';
-    protected $saveUrl = '/editor/mailform/%s';
+    const TYPE = 'mailform';
+    const TABLE = 'mailformulieren';
+    const SAVE_URL = '/editor/mailform/%s';
+
+    /** @var Mailform|null  */
+    protected $model = null;
 
     protected function prepare()
     {
         if ($this->id)
         {
-            $this->form = Mailform::loadFromDatabase((int)$this->id)->asArray();
-            $this->content = $this->form['confirmation_text'];
-            $this->contentTitle = $this->form['naam'];
+            $this->model = new Mailform((int)$this->id);
+            $this->model->load();
+            $this->content = $this->model->confirmationText;
+            $this->contentTitle = $this->model->name;
         }
     }
 
     protected function showContentSpecificButtons()
     {
-        $checked = boolval($this->form['send_confirmation'] ?? false);
+        $checked = boolval($this->model->sendConfirmation ?? false);
         $this->showCheckbox('sendConfirmation', 'Stuur bovenstaande tekst als bevestiging', $checked);
         ?>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="email">E-mailadres: </label>
             <div class="col-sm-5">
-                <input type="email" class="form-control" id="email" name="email" value="<?=$this->form['mailadres'] ?? '';?>" />
+                <input type="email" class="form-control" id="email" name="email" value="<?=$this->model->email ?? '';?>" />
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="antiSpamAnswer">Antispamantwoord: </label>
             <div class="col-sm-5">
-                <input type="text" class="form-control" id="antiSpamAnswer" name="antiSpamAnswer" value="<?=$this->form['antispamantwoord'] ?? '';?>" />
+                <input type="text" class="form-control" id="antiSpamAnswer" name="antiSpamAnswer" value="<?=$this->model->antiSpamAnswer ?? '';?>" />
             </div>
         </div>
         <?php

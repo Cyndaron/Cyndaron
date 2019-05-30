@@ -18,7 +18,7 @@ class DynmapProxy
     public function __construct()
     {
         $serverId = Request::getVar(2);
-        $server = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM mc_servers WHERE id = ?', [$serverId]);
+        $server = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM minecraft_servers WHERE id = ?', [$serverId]);
         if (!$server)
         {
             die('');
