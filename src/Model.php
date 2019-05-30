@@ -3,6 +3,8 @@ declare (strict_types = 1);
 
 namespace Cyndaron;
 
+use Exception;
+
 class Model
 {
     const TABLE = null;
@@ -55,7 +57,7 @@ class Model
     {
         if ($this->id === null)
         {
-            throw new \Exception('');
+            throw new Exception('');
         }
 
         /** @noinspection SqlResolve */
@@ -99,7 +101,7 @@ class Model
     {
         if (!$this->id)
         {
-            throw new \Exception('No ID!');
+            throw new Exception('No ID!');
         }
 
         /** @noinspection SqlResolve */
@@ -110,11 +112,11 @@ class Model
     {
         if (empty(static::TABLE))
         {
-            throw new \Exception('TABLE not properly set!');
+            throw new Exception('TABLE not properly set!');
         }
         if (empty(static::TABLE_FIELDS))
         {
-            throw new \Exception('TABLE_FIELDS not properly set!');
+            throw new Exception('TABLE_FIELDS not properly set!');
         }
 
         // Create new

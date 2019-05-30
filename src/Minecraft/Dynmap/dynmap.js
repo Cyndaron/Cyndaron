@@ -1,21 +1,21 @@
 'use strict';
 
-var dynmapversion = "1.9.1-1832-Dev";
+let dynmapversion = "1.9.1-1832-Dev";
 
 function createMinecraftHead(player,size,completed,failed) {
-    var faceImage = new Image();
+    let faceImage = new Image();
     faceImage.onload = function() {
         completed(faceImage);
     };
     faceImage.onerror = function() {
         failed();
     };
-    var faceimg;
+    let faceimg;
     if(size == 'body')
         faceimg = 'faces/body/' + player + '.png';
     else
         faceimg = 'faces/' + size + 'x' + size + '/' + player + '.png';
-    var url = dynmap.options.url.markers;
+    let url = dynmap.options.url.markers;
     if(url.indexOf('?') >= 0)
         faceImage.src = url + escape(faceimg);
     else
@@ -31,7 +31,7 @@ function getMinecraftHead(player,size,completed) {
 
 function getMinecraftTime(servertime) {
     servertime = parseInt(servertime);
-    var day = servertime >= 0 && servertime < 13700;
+    let day = servertime >= 0 && servertime < 13700;
     return {
         servertime: servertime,
         days: parseInt((servertime+8000) / 24000),
@@ -49,11 +49,11 @@ function getMinecraftTime(servertime) {
 function chat_encoder(message) {
     if (dynmap.options.cyrillic) {
         if(message.source === 'player') {
-            var utftext = "";
-            for (var n = 0; n < message.text.length; n++) {
-                var c = message.text.charCodeAt(n);
+            let utftext = "";
+            for (let n = 0; n < message.text.length; n++) {
+                let c = message.text.charCodeAt(n);
                 if (c >= 192) {
-                    var c = message.text.charCodeAt(n);
+                    c = message.text.charCodeAt(n);
                     utftext += String.fromCharCode(c+848);
                 }
                 else if (c == 184) { utftext += String.fromCharCode(1105); }
@@ -67,9 +67,9 @@ function chat_encoder(message) {
     return message.text;
 }
 
-var componentconstructors = {};
-var maptypes = {};
-var map = null;	// Leaflet assumes top-level 'map'...
+let componentconstructors = {};
+let maptypes = {};
+let map = null;	// Leaflet assumes top-level 'map'...
 
 componentconstructors['testcomponent'] = function(dynmap, configuration) {
     console.log('initialize');
@@ -87,7 +87,7 @@ componentconstructors['testcomponent'] = function(dynmap, configuration) {
 };
 
 function DynMap(options) {
-    var me = this;
+    let me = this;
     if(me.checkForSavedURL())
         return;
     me.options = options;
@@ -126,23 +126,23 @@ DynMap.prototype = {
     layercontrol: undefined,
     nogui: false,
     formatUrl: function(name, options) {
-        var url = this.options.url[name];
+        let url = this.options.url[name];
         $.each(options, function(n,v) {
             url = url.replace("{" + n + "}", v);
         });
         return url;
     },
     configure: function(configuration) {
-        var me = this;
+        let me = this;
         $.extend(me.options, configuration);
 
         $.each(me.options.worlds, function(index, worldentry) {
-            var world = me.worlds[worldentry.name] = $.extend({}, worldentry, {
+            let world = me.worlds[worldentry.name] = $.extend({}, worldentry, {
                 maps: {}
             });
 
             $.each(worldentry.maps, function(index, mapentry) {
-                var map = $.extend({}, mapentry, {
+                let map = $.extend({}, mapentry, {
                     world: world,
                     dynmap: me
                 });
@@ -153,7 +153,7 @@ DynMap.prototype = {
             });
             me.defaultworld = me.defaultworld || world;
         });
-        var urlarg = me.getParameterByName('worldname');
+        let urlarg = me.getParameterByName('worldname');
         if(urlarg == "")
             urlarg = me.options.defaultworld || "";
         if(urlarg != "") {
@@ -178,16 +178,16 @@ DynMap.prototype = {
         }
     },
     initialize: function() {
-        var me = this;
+        let me = this;
 
         // Get a handle to the DOM element which acts as the overall container and apply a class of
         // "dynmap" to it.
-        var container = $(me.options.container);
+        let container = $(me.options.container);
         container.addClass('dynmap');
 
         // Create a new container within the main container which actually holds the map. It needs a
         // class of "map".
-        var mapContainer;
+        let mapContainer;
         (mapContainer = $('<div/>'))
             .addClass('map')
             .appendTo(container);
@@ -197,13 +197,13 @@ DynMap.prototype = {
             document.title = me.options.title;
 
         // Try to set the default zoom level based on the URL parameter.
-        var urlzoom = me.getIntParameterByName('zoom');
+        let urlzoom = me.getIntParameterByName('zoom');
         if(urlzoom != null)
             me.options.defaultzoom = urlzoom;
 
         // Decide whether or not the layer control will be visible based on the URL parameter or
         // or fallback to the options
-        var showlayerctl = me.getParameterByName('showlayercontrol');
+        let showlayerctl = me.getParameterByName('showlayercontrol');
         if(showlayerctl != "")
             me.options.showlayercontrol = showlayerctl;
 
@@ -212,16 +212,16 @@ DynMap.prototype = {
             me.options.defaultzoom = 1;
 
         // Decide whether we should be following a given player or not based solely on URL parameter.
-        var initfollowplayer = me.getParameterByName('playername');
+        let initfollowplayer = me.getParameterByName('playername');
         if(initfollowplayer != "")
             me.initfollow = initfollowplayer;
 
         // Derive the state of the sidebar based on the URL parameter.
-        var sidebaropen = me.getParameterByName('sidebaropened');
+        let sidebaropen = me.getParameterByName('sidebaropened');
         if(sidebaropen == 'false' || sidebaropen == 'true' || sidebaropen == 'pinned')
             me.options.sidebaropened = sidebaropen;
 
-        var map = this.map = new L.Map(mapContainer.get(0), {
+        let map = this.map = new L.Map(mapContainer.get(0), {
             zoom: me.options.defaultzoom,
             center: new L.LatLng(0, 0),
             zoomAnimation: true,
@@ -263,13 +263,13 @@ DynMap.prototype = {
         });*/
 
         // Sidebar
-        var panel;
-        var sidebar;
-        var pinbutton;
-        var nopanel = (me.getParameterByName('nopanel') == 'true') || me.nogui;
+        let panel;
+        let sidebar;
+        let pinbutton;
+        let nopanel = (me.getParameterByName('nopanel') == 'true') || me.nogui;
 
         if(me.options.sidebaropened != 'true') { // false or pinned
-            var pincls = 'pinned'
+            let pincls = 'pinned';
             if(me.options.sidebaropened == 'false')
                 pincls = '';
 
@@ -300,7 +300,7 @@ DynMap.prototype = {
             sidebar.appendTo(container);
 
         // World scrollbuttons
-        var upbtn_world = $('<div/>')
+        let upbtn_world = $('<div/>')
             .addClass('scrollup')
             .bind('mousedown mouseup touchstart touchend', function(event){
                 if(event.type == 'mousedown' || event.type == 'touchstart'){
@@ -309,7 +309,7 @@ DynMap.prototype = {
                     worldlist.stop();
                 }
             });
-        var downbtn_world = $('<div/>')
+        let downbtn_world = $('<div/>')
             .addClass('scrolldown')
             .bind('mousedown mouseup touchstart touchend', function(event){
                 if(event.type == 'mousedown' || event.type == 'touchstart'){
@@ -320,7 +320,7 @@ DynMap.prototype = {
             });
 
         // Worlds
-        var worldlist;
+        let worldlist;
         $('<fieldset/>')
             .append($('<legend/>').text(me.options['msg-maptypes']))
             .append(upbtn_world)
@@ -333,10 +333,10 @@ DynMap.prototype = {
             .append(downbtn_world)
             .appendTo(panel);
 
-        var maplists = {};
-        var worldsadded = {};
+        let maplists = {};
+        let worldsadded = {};
         $.each(me.worlds, function(index, world) {
-            var maplist;
+            let maplist;
             world.element = $('<li/>')
                 .addClass('world')
                 .text(world.title)
@@ -348,15 +348,15 @@ DynMap.prototype = {
         });
 
         $.each(me.worlds, function(index, world) {
-            var maplist = maplists[world.name];
+            let maplist = maplists[world.name];
 
             $.each(world.maps, function(mapindex, map) {
                 //me.map.mapTypes.set(map.world.name + '.' + map.name, map);
-                var wname = world.name;
+                let wname = world.name;
                 if(map.options.append_to_world) {
                     wname = map.options.append_to_world;
                 }
-                var mlist = maplists[wname];
+                let mlist = maplists[wname];
                 if(!mlist) {
                     mlist = maplist;
                     wname = world.name;
@@ -388,7 +388,7 @@ DynMap.prototype = {
 
         // The scrollbuttons
         // we need to show/hide them depending: if (me.playerlist.scrollHeight() > me.playerlist.innerHeight()) or something.
-        var upbtn = $('<div/>')
+        let upbtn = $('<div/>')
             .addClass('scrollup')
             .bind('mousedown mouseup touchstart touchend', function(event){
                 if(event.type == 'mousedown' || event.type == 'touchstart'){
@@ -397,7 +397,7 @@ DynMap.prototype = {
                     playerlist.stop();
                 }
             });
-        var downbtn = $('<div/>')
+        let downbtn = $('<div/>')
             .addClass('scrolldown')
             .bind('mousedown mouseup touchstart touchend', function(event){
                 if(event.type == 'mousedown' || event.type == 'touchstart'){
@@ -408,7 +408,7 @@ DynMap.prototype = {
             });
 
         // The Player List
-        var playerlist;
+        let playerlist;
         $('<fieldset/>')
             .append(me.playerfield = $('<legend/>').text(me.options['msg-players']))
             .append(upbtn)
@@ -421,7 +421,7 @@ DynMap.prototype = {
             .append(downbtn)
             .appendTo(panel);
 
-        var updateHeight = function() {
+        let updateHeight = function() {
             if(sidebar.innerHeight() > (2*worldlist.scrollHeight())) { /* Big enough */
                 worldlist.height(worldlist.scrollHeight());
                 upbtn_world.toggle(false);
@@ -433,7 +433,7 @@ DynMap.prototype = {
                 downbtn_world.toggle(true);
             }
             playerlist.height(sidebar.innerHeight() - (playerlist.offset().top - worldlist.offset().top) - 64); // here we need a fix to avoid the static value, but it works fine this way :P
-            var scrollable = playerlist.scrollHeight() > playerlist.height();
+            let scrollable = playerlist.scrollHeight() > playerlist.height();
             upbtn.toggle(scrollable);
             downbtn.toggle(scrollable);
         };
@@ -446,7 +446,7 @@ DynMap.prototype = {
             updateHeight();
         });
         // The Compass
-        var compass = $('<div/>').
+        let compass = $('<div/>').
         addClass('compass');
         if(L.Browser.mobile)
             compass.addClass('mobilecompass');
@@ -455,7 +455,7 @@ DynMap.prototype = {
         }
 
         if(me.options.sidebaropened != 'true') {
-            var hitbar = $('<div/>')
+            $('<div/>')
                 .addClass('hitbar')
                 .click(function() {
                     sidebar.toggleClass('pinned');
@@ -463,7 +463,7 @@ DynMap.prototype = {
                 .appendTo(panel);
         }
 
-        var alertbox = me.alertbox = $('<div/>')
+        me.alertbox = $('<div/>')
             .addClass('alertbox')
             .hide()
             .appendTo(container);
@@ -479,8 +479,8 @@ DynMap.prototype = {
 
         me.selectMap(me.defaultworld.defaultmap);
 
-        var componentstoload = 0;
-        var configset = { };
+        let componentstoload = 0;
+        let configset = { };
         if (!me.nogui) {
             $.each(me.options.components, function(index, configuration) {
                 if(!configset[configuration.type]) {
@@ -491,11 +491,11 @@ DynMap.prototype = {
             });
         }
 
-        var tobeloaded = {};
+        let tobeloaded = {};
         $.each(configset, function(type, configlist) {
             tobeloaded[type] = true;
             loadjs('js/' + type + '.js', function() {
-                var componentconstructor = componentconstructors[type];
+                let componentconstructor = componentconstructors[type];
                 if (componentconstructor) {
                     $.each(configlist, function(idx, configuration) {
                         me.components.push(new componentconstructor(me, configuration));
@@ -531,25 +531,25 @@ DynMap.prototype = {
     getProjection: function() { return this.maptype.getProjection(); },
     selectMapAndPan: function(map, location, completed) {
         if (!map) { throw "Cannot select map " + map; }
-        var me = this;
+        let me = this;
 
         if (me.maptype === map) {
             return;
         }
         $(me).trigger('mapchanging');
-        var mapWorld = map.options.world;
+        let mapWorld = map.options.world;
         if (me.maptype) {
             $('.compass').removeClass('compass_' + me.maptype.options.compassview);
             $('.compass').removeClass('compass_' + me.maptype.options.name);
         }
         $('.compass').addClass('compass_' + map.options.compassview);
         $('.compass').addClass('compass_' + map.options.name);
-        var worldChanged = me.world !== map.options.world;
-        var projectionChanged = (me.maptype && me.maptype.getProjection()) !== (map && map.projection);
+        let worldChanged = me.world !== map.options.world;
+        let projectionChanged = (me.maptype && me.maptype.getProjection()) !== (map && map.projection);
 
-        var prevzoom = me.map.getZoom();
+        let prevzoom = me.map.getZoom();
 
-        var prevworld = me.world;
+        let prevworld = me.world;
 
         if(worldChanged) {	// World changed - purge URL cache (tile updates unreported for other worlds)
             me.registeredTiles = [];
@@ -564,7 +564,7 @@ DynMap.prototype = {
             me.map.removeLayer(me.maptype);
         }
 
-        var prevmap = me.maptype;
+        let prevmap = me.maptype;
 
         me.world = mapWorld;
         me.maptype = map;
@@ -575,12 +575,12 @@ DynMap.prototype = {
         me.map.options.minZoom = me.maptype.options.minZoom;
 
         if (projectionChanged || worldChanged || location) {
-            var centerPoint;
+            let centerPoint;
             if(location) {
                 centerPoint = me.getProjection().fromLocationToLatLng(location);
             }
             else if(worldChanged) {
-                var centerLocation;
+                let centerLocation;
                 if(mapWorld.lastcenter)
                     centerLocation = mapWorld.lastcenter;
                 else
@@ -588,7 +588,7 @@ DynMap.prototype = {
                 centerPoint = me.getProjection().fromLocationToLatLng(centerLocation);
             }
             else {
-                var prevloc = null;
+                let prevloc = null;
                 if(prevmap != null)
                     prevloc = prevmap.getProjection().fromLatLngToLocation(me.map.getCenter(), 64);
                 if(prevloc != null)
@@ -621,11 +621,11 @@ DynMap.prototype = {
         this.selectMapAndPan(map, null, completed);
     },
     selectWorldAndPan: function(world, location, completed) {
-        var me = this;
+        let me = this;
         if (typeof(world) === 'String') { world = me.worlds[world]; }
         if (me.world === world) {
             if(location) {
-                var latlng = me.maptype.getProjection().fromLocationToLatLng(location);
+                let latlng = me.maptype.getProjection().fromLocationToLatLng(location);
                 me.panToLatLng(latlng, completed);
             }
             else {
@@ -639,20 +639,20 @@ DynMap.prototype = {
         this.selectWorldAndPan(world, null, completed);
     },
     panToLocation: function(location, completed) {
-        var me = this;
+        let me = this;
 
         if (location.world) {
             me.selectWorldAndPan(location.world, location, function() {
                 if(completed) completed();
             });
         } else {
-            var latlng = me.maptype.getProjection().fromLocationToLatLng(location);
+            let latlng = me.maptype.getProjection().fromLocationToLatLng(location);
             me.panToLatLng(latlng, completed);
         }
     },
     panToLayerPoint: function(point, completed) {
-        var me = this;
-        var latlng = me.map.layerPointToLatLng(point);
+        let me = this;
+        let latlng = me.map.layerPointToLatLng(point);
         me.map.panToLatLng(latlng);
         if (completed) {
             completed();
@@ -665,7 +665,7 @@ DynMap.prototype = {
         }
     },
     update: function() {
-        var me = this;
+        let me = this;
 
         $(me).trigger('worldupdating');
         $.getJSON(me.formatUrl('update', { world: me.world.name, timestamp: me.lasttimestamp, reqid: me.reqid }), function(update) {
@@ -701,7 +701,7 @@ DynMap.prototype = {
                 me.playerfield.text(me.options['msg-players'] + " [" + update.currentcount + "/" + me.options.maxcount + "]");
 
                 me.servertime = update.servertime;
-                var newserverday = (me.servertime > 23100 || me.servertime < 12900);
+                let newserverday = (me.servertime > 23100 || me.servertime < 12900);
                 if(me.serverday != newserverday) {
                     me.serverday = newserverday;
 
@@ -713,10 +713,10 @@ DynMap.prototype = {
                     }
                 }
 
-                var newplayers = {};
+                let newplayers = {};
                 $.each(update.players, function(index, playerUpdate) {
-                    var acct = playerUpdate.account;
-                    var player = me.players[acct];
+                    let acct = playerUpdate.account;
+                    let player = me.players[acct];
                     if (player) {
                         me.updatePlayer(player, playerUpdate);
                     } else {
@@ -728,9 +728,9 @@ DynMap.prototype = {
                     }
                     newplayers[acct] = player;
                 });
-                var acct;
+                let acct;
                 for(acct in me.players) {
-                    var player = me.players[acct];
+                    let player = me.players[acct];
                     if(!(acct in newplayers)) {
                         me.removePlayer(player);
                     }
@@ -757,8 +757,8 @@ DynMap.prototype = {
                         });
                     }
                     /* remove older messages from chat*/
-                    //var timestamp = event.timeStamp;
-                    //var divs = $('div[rel]');
+                    //let timestamp = event.timeStamp;
+                    //let divs = $('div[rel]');
                     //divs.filter(function(i){return parseInt(divs[i].attr('rel')) > timestamp+me.options.messagettl;}).remove();
                 });
 
@@ -781,11 +781,11 @@ DynMap.prototype = {
         );
     },
     getTileUrl: function(tileName, always) {
-        var me = this;
-        var tile = me.registeredTiles[tileName];
+        let me = this;
+        let tile = me.registeredTiles[tileName];
 
         if(tile == null) {
-            var url = me.options.url.tiles;
+            let url = me.options.url.tiles;
             if(url.indexOf('?') > 0)
                 tile = this.registeredTiles[tileName] = url + escape(me.world.name + '/' + tileName) + '&ts=' + me.inittime;
             else
@@ -794,8 +794,8 @@ DynMap.prototype = {
         return tile;
     },
     onTileUpdated: function(tileName,timestamp) {
-        var me = this;
-        var url = me.options.url.tiles;
+        let me = this;
+        let url = me.options.url.tiles;
         if(url.indexOf('?') > 0)
             this.registeredTiles[tileName] = url + escape(me.world.name + '/' + tileName) + '&ts=' + timestamp;
         else
@@ -803,8 +803,8 @@ DynMap.prototype = {
         me.maptype.updateNamedTile(tileName);
     },
     addPlayer: function(update) {
-        var me = this;
-        var player = me.players[update.account] = {
+        let me = this;
+        let player = me.players[update.account] = {
             name: update.name,
             location: new Location(me.worlds[update.world], parseFloat(update.x), parseFloat(update.y), parseFloat(update.z)),
             health: update.health,
@@ -816,15 +816,15 @@ DynMap.prototype = {
         $(me).trigger('playeradded', [ player ]);
 
         // Create the player-menu-item.
-        var playerIconContainer;
-        var menuitem = player.menuitem = $('<li/>')
+        let playerIconContainer;
+        let menuitem = player.menuitem = $('<li/>')
             .addClass('player')
             .append(playerIconContainer = $('<span/>')
                 .addClass('playerIcon')
                 .append($('<img/>').attr({ src: 'images/player_face.png' }))
                 .attr({ title: 'Follow player' })
                 .click(function() {
-                    var follow = player !== me.followingPlayer;
+                    let follow = player !== me.followingPlayer;
                     me.followPlayer(follow ? player : null);
                 })
             )
@@ -844,9 +844,9 @@ DynMap.prototype = {
             });
         player.menuname.data('sort', player.sort);
         // Inject into playerlist alphabetically
-        var firstNodeAfter = me.playerlist.children().filter(function() {
-            var itm = $('a', this);
-            var sort = itm.data('sort');
+        let firstNodeAfter = me.playerlist.children().filter(function() {
+            let itm = $('a', this);
+            let sort = itm.data('sort');
             if (sort > player.sort) return true;
             if (sort < player.sort) return false;
             return (itm.text().toLowerCase() > player.menuname.text().toLowerCase());
@@ -864,8 +864,8 @@ DynMap.prototype = {
         }
     },
     updatePlayer: function(player, update) {
-        var me = this;
-        var location = player.location = new Location(me.worlds[update.world], parseFloat(update.x), parseFloat(update.y), parseFloat(update.z));
+        let me = this;
+        let location = player.location = new Location(me.worlds[update.world], parseFloat(update.x), parseFloat(update.y), parseFloat(update.z));
         player.health = update.health;
         player.armor = update.armor;
         player.name = update.name;
@@ -886,7 +886,7 @@ DynMap.prototype = {
         }
     },
     removePlayer: function(player) {
-        var me = this;
+        let me = this;
 
         delete me.players[player.account];
 
@@ -896,7 +896,7 @@ DynMap.prototype = {
         player.menuitem.remove();
     },
     followPlayer: function(player) {
-        var me = this;
+        let me = this;
         $('.following', me.playerlist).removeClass('following');
 
         if(player) {
@@ -905,7 +905,7 @@ DynMap.prototype = {
             $(player.menuitem).addClass('following');
             me.panToLocation(player.location, function() {
                 if(me.options.followmap && me.world) {
-                    var pmap = me.world.maps[me.options.followmap];
+                    let pmap = me.world.maps[me.options.followmap];
                     if(pmap)
                         me.selectMapAndPan(pmap);
                 }
@@ -916,8 +916,8 @@ DynMap.prototype = {
         this.followingPlayer = player;
     },
     updateBackground: function() {
-        var me = this;
-        var col = "#000000";
+        let me = this;
+        let col = "#000000";
         if(me.serverday) {
             if(me.maptype.options.backgroundday)
                 col = me.maptype.options.backgroundday;
@@ -935,26 +935,26 @@ DynMap.prototype = {
     },
     getParameterByName: function(name) {
         name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
-        var regexS = "[\\?&]"+name+"=([^&#]*)";
-        var regex = new RegExp( regexS );
-        var results = regex.exec( window.location.href );
+        let regexS = "[\\?&]"+name+"=([^&#]*)";
+        let regex = new RegExp( regexS );
+        let results = regex.exec( window.location.href );
         if( results == null )
             return "";
         else
             return decodeURIComponent(results[1].replace(/\+/g, " "));
     },
     getIntParameterByName: function(name) {
-        var v = this.getParameterByName(name);
+        let v = this.getParameterByName(name);
         if(v != "") {
             v = parseInt(v, 10);
-            if(v != NaN) {
+            if(!isNaN(v)) {
                 return v;
             }
         }
         return null;
     },
     getBoolParameterByName: function(name) {
-        var v = this.getParameterByName(name);
+        let v = this.getParameterByName(name);
         if(v != "") {
             if(v == "true")
                 return true;
@@ -967,7 +967,7 @@ DynMap.prototype = {
     layersetlist: [],
 
     addToLayerSelector: function(layer, name, priority) {
-        var me = this;
+        let me = this;
 
         if(me.options.showlayercontrol != "false" && (!me.layercontrol)) {
             me.layercontrol = new DynmapLayerControl();
@@ -976,7 +976,7 @@ DynMap.prototype = {
             map.addControl(me.layercontrol);
         }
 
-        var i;
+        let i;
         for(i = 0; i < me.layersetlist.length; i++) {
             if(me.layersetlist[i].layer === layer) {
                 me.layersetlist[i].priority = priority;
@@ -1003,8 +1003,8 @@ DynMap.prototype = {
         }
     },
     removeFromLayerSelector: function(layer) {
-        var me = this;
-        var i;
+        let me = this;
+        let i;
         for(i = 0; i < me.layersetlist.length; i++) {
             if(me.layersetlist[i].layer === layer) {
                 me.layersetlist.splice(i, 1);
@@ -1015,19 +1015,19 @@ DynMap.prototype = {
         }
     },
     getLink: function() {
-        var me = this;
-        var url = window.location.pathname;
-        var center = me.maptype.getProjection().fromLatLngToLocation(me.map.getCenter(), 64);
+        let me = this;
+        let url = window.location.pathname;
+        let center = me.maptype.getProjection().fromLatLngToLocation(me.map.getCenter(), 64);
         url = url + "?worldname=" + me.world.name + "&mapname=" + me.maptype.options.name + "&zoom=" + me.map.getZoom() + "&x=" + center.x + "&y=" +
             center.y + "&z=" + center.z;
         return url;
     },
     initLogin: function() {
-        var me = this;
+        let me = this;
         if(!me.options['login-enabled'])
             return;
 
-        var login = L.Control.extend({
+        let login = L.Control.extend({
             onAdd: function(map) {
                 this._container = L.DomUtil.create('div', 'logincontainer');
                 this._map = map;
@@ -1042,8 +1042,8 @@ DynMap.prototype = {
             },
             _update: function() {
                 if (!this._map) return;
-                var c = this._container;
-                var cls = 'loginbutton';
+                let c = this._container;
+                let cls = 'loginbutton';
                 if(me.options.sidebaropened != 'false') {
                     cls = 'loginbutton pinnedloginbutton';
                 }
@@ -1067,7 +1067,7 @@ DynMap.prototype = {
                 }
             }
         });
-        var l = new login();
+        let l = new login();
         me.map.addControl(l);
     },
     saveURL : function() {
@@ -1076,13 +1076,13 @@ DynMap.prototype = {
         }
     },
     checkForSavedURL : function() {
-        var i,x,y,ourcookies=document.cookie.split(";");
+        let i,x,y,ourcookies=document.cookie.split(";");
         for (i=0;i<ourcookies.length;i++) {
             x=ourcookies[i].substr(0,ourcookies[i].indexOf("="));
             y=ourcookies[i].substr(ourcookies[i].indexOf("=")+1);
             x=x.replace(/^\s+|\s+$/g,"");
             if (x == "dynmapurl") {
-                var v = unescape(y);
+                let v = unescape(y);
                 document.cookie='dynmapurl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
                 if((v.indexOf('?') >= 0) && (v != window.location)) {
                     window.location = v;
@@ -1095,28 +1095,28 @@ DynMap.prototype = {
 };
 
 
-var HDProjection = DynmapProjection.extend({
+let HDProjection = DynmapProjection.extend({
     fromLocationToLatLng: function(location) {
-        var wtp = this.options.worldtomap;
-        var xx = wtp[0]*location.x + wtp[1]*location.y + wtp[2]*location.z;
-        var yy = wtp[3]*location.x + wtp[4]*location.y + wtp[5]*location.z;
+        let wtp = this.options.worldtomap;
+        let xx = wtp[0]*location.x + wtp[1]*location.y + wtp[2]*location.z;
+        let yy = wtp[3]*location.x + wtp[4]*location.y + wtp[5]*location.z;
         return new L.LatLng(
             xx       / (1 << this.options.mapzoomout)
             , (128-yy) / (1 << this.options.mapzoomout)
             , true);
     },
     fromLatLngToLocation: function(latlon, y) {
-        var ptw = this.options.maptoworld;
-        var lat = latlon.lat * (1 << this.options.mapzoomout);
-        var lon = 128 - latlon.lng * (1 << this.options.mapzoomout);
-        var x = ptw[0]*lat + ptw[1]*lon + ptw[2]*y;
-        var z = ptw[6]*lat + ptw[7]*lon + ptw[8]*y;
+        let ptw = this.options.maptoworld;
+        let lat = latlon.lat * (1 << this.options.mapzoomout);
+        let lon = 128 - latlon.lng * (1 << this.options.mapzoomout);
+        let x = ptw[0]*lat + ptw[1]*lon + ptw[2]*y;
+        let z = ptw[6]*lat + ptw[7]*lon + ptw[8]*y;
         return { x: x, y: y, z: z };
     }
 
 });
 
-var HDMapType = DynmapTileLayer.extend({
+let HDMapType = DynmapTileLayer.extend({
     projection: undefined,
     options: {
         minZoom: 0,
@@ -1130,7 +1130,7 @@ var HDMapType = DynmapTileLayer.extend({
         this.projection = new HDProjection($.extend({map: this}, options));
     },
     getTileName: function(tilePoint, zoom) {
-        var info = this.getTileInfo(tilePoint, zoom);
+        let info = this.getTileInfo(tilePoint, zoom);
         // Y is inverted for HD-map.
         info.y = -info.y;
         info.scaledy = info.y >> 5;
@@ -1146,31 +1146,31 @@ var HDMapType = DynmapTileLayer.extend({
 
 maptypes.HDMapType = function(options) { return new HDMapType(options); };
 
-var KzedProjection = DynmapProjection.extend({
+let KzedProjection = DynmapProjection.extend({
     fromLocationToLatLng: function(location) {
-        var dx = location.x;
-        var dy = location.y - 127;
-        var dz = location.z;
-        var px = dx + dz;
-        var py = dx - dz - dy;
-        var scale = 1 << this.options.mapzoomout;
+        let dx = location.x;
+        let dy = location.y - 127;
+        let dz = location.z;
+        let px = dx + dz;
+        let py = dx - dz - dy;
+        let scale = 1 << this.options.mapzoomout;
 
-        var xx = (128 - px) / scale;
-        var yy = py / scale;
+        let xx = (128 - px) / scale;
+        let yy = py / scale;
         return new L.LatLng(xx, yy, true);
     },
     fromLatLngToLocation: function(latlon, y) {
-        var scale = 1 << this.options.mapzoomout;
-        var px = 128 - (latlon.lat * scale);
-        var py = latlon.lng * scale;
-        var x = (px + py + (y-127))/2;
-        var z = (px - x);
+        let scale = 1 << this.options.mapzoomout;
+        let px = 128 - (latlon.lat * scale);
+        let py = latlon.lng * scale;
+        let x = (px + py + (y-127))/2;
+        let z = (px - x);
         return { x: x, y: y, z: z };
     }
 
 });
 
-var KzedMapType = DynmapTileLayer.extend({
+let KzedMapType = DynmapTileLayer.extend({
     options: {
         minZoom: 0,
         maxZoom: 4,
@@ -1183,7 +1183,7 @@ var KzedMapType = DynmapTileLayer.extend({
         this.projection = new KzedProjection({mapzoomout: this.options.mapzoomout});
     },
     getTileName: function(tilePoint, zoom) {
-        var info = this.getTileInfo(tilePoint, zoom);
+        let info = this.getTileInfo(tilePoint, zoom);
         return namedReplace(this.options.bigmap
             ? '{zprefix}{nightday}/{scaledx}_{scaledy}/{zoomprefix}{x}_{y}.png'
             : '{zoom}{prefix}{nightday}_{x}_{y}.png'
@@ -1191,11 +1191,11 @@ var KzedMapType = DynmapTileLayer.extend({
     },
     getTileInfo: function(tilePoint, zoom) {
         // Custom tile-info-calculation for KzedMap: *128 and >>12
-        var izoom = this.options.maxZoom - zoom;
-        var zoomoutlevel = Math.max(0, izoom - this.options.mapzoomin);
-        var scale = 1 << zoomoutlevel;
-        var x = -scale*tilePoint.x*128;
-        var y = scale*tilePoint.y*128;
+        let izoom = this.options.maxZoom - zoom;
+        let zoomoutlevel = Math.max(0, izoom - this.options.mapzoomin);
+        let scale = 1 << zoomoutlevel;
+        let x = -scale*tilePoint.x*128;
+        let y = scale*tilePoint.y*128;
         return {
             prefix: this.options.prefix,
             nightday: (this.options.nightandday && this.options.dynmap.serverday) ? '_day' : '',
@@ -1212,7 +1212,7 @@ var KzedMapType = DynmapTileLayer.extend({
 
 maptypes.KzedMapType = function(configuration) { return new KzedMapType(configuration); };
 
-var FlatProjection = DynmapProjection.extend({
+let FlatProjection = DynmapProjection.extend({
     fromLocationToLatLng: function(location) {
         return new L.LatLng(
             -location.z / (1 << this.options.mapzoomout),
@@ -1220,14 +1220,14 @@ var FlatProjection = DynmapProjection.extend({
             true);
     },
     fromLatLngToLocation: function(latlon, y) {
-        var z = -latlon.lat * (1 << this.options.mapzoomout);
-        var x = latlon.lng * (1 << this.options.mapzoomout);
+        let z = -latlon.lat * (1 << this.options.mapzoomout);
+        let x = latlon.lng * (1 << this.options.mapzoomout);
         return { x: x, y: y, z: z };
     }
 
 });
 
-var FlatMapType = DynmapTileLayer.extend({
+let FlatMapType = DynmapTileLayer.extend({
     options: {
         minZoom: 0,
         maxZoom: 4,
@@ -1249,7 +1249,7 @@ var FlatMapType = DynmapTileLayer.extend({
 
 maptypes.FlatMapType = function(options) { return new FlatMapType(options); };
 
-var config = {
+let config = {
     url : {
         configuration: 'up/configuration',
         update: 'up/world/{world}/{timestamp}',

@@ -1,8 +1,6 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-use Cyndaron\DBConnection;
-
 /**
  * Class SkinRenderer
  */

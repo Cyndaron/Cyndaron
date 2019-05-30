@@ -3,7 +3,6 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Request;
 use Cyndaron\Setting;
 use Cyndaron\User\User;
 

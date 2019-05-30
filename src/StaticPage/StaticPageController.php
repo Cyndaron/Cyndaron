@@ -6,7 +6,6 @@ namespace Cyndaron\StaticPage;
 use Cyndaron\Controller;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request;
-use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 
 class StaticPageController extends Controller

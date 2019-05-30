@@ -5,7 +5,6 @@ namespace Cyndaron\Error;
 
 use Cyndaron\Controller;
 use Cyndaron\Page;
-use Cyndaron\Request;
 
 class ErrorController extends Controller
 {

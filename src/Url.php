@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron;
 
+use Exception;
+
 class Url
 {
     private $url;
@@ -57,7 +59,7 @@ class Url
     public function createFriendly(string $name)
     {
         if ($name == '' || $this->url == '')
-            throw new \Exception('Cannot create friendly URL with no name or no URL!');
+            throw new Exception('Cannot create friendly URL with no name or no URL!');
         DBConnection::doQuery('INSERT INTO friendlyurls(name,target) VALUES (?,?)', [$name, $this->url]);
     }
 

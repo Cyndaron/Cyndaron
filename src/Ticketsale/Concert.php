@@ -5,6 +5,7 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Model;
+use Exception;
 
 class Concert extends Model
 {
@@ -27,13 +28,13 @@ class Concert extends Model
      * @param int $numTickets
      * @param $orderId
      * @return array|null Which seats were reserved, if there were enough, null otherwise
-     * @throws \Exception
+     * @throws Exception
      */
     public function reserveSeats(int $orderId, int $numTickets): ?array
     {
         if (!$this->id)
         {
-            throw new \Exception('No ID!');
+            throw new Exception('No ID!');
         }
 
         $foundEnoughSeats = false;

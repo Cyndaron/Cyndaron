@@ -16,25 +16,25 @@
 
 'use strict';
 
-var concertId = $('#concertId').val();
-var kaartsoorten;
-var bezorgenVerplicht;
-var buitenland = false;
-var standaardVerzendkosten;
-var toeslagGereserveerdePlaats;
+const concertId = $('#concertId').val();
+let tickettypes;
+let forcedDelivery;
+let buitenland = false;
+let standaardVerzendkosten;
+let toeslagGereserveerdePlaats;
 
 $.ajax('/concert/getInfo/' + concertId, {}).done(function (json)
 {
-    var data = JSON.parse(json);
-    kaartsoorten = data.kaartsoorten;
-    bezorgenVerplicht = data.bezorgenVerplicht;
+    let data = JSON.parse(json);
+    tickettypes = data.tickettypes;
+    forcedDelivery = data.forcedDelivery;
     standaardVerzendkosten = data.standaardVerzendkosten;
     toeslagGereserveerdePlaats = data.toeslagGereserveerdePlaats;
 });
 
 function increase(vak)
 {
-    var element = document.getElementById(vak);
+    let element = document.getElementById(vak);
     if (element.value < 100)
     {
         element.value++;
@@ -43,7 +43,7 @@ function increase(vak)
 }
 function decrease(vak)
 {
-    var element = document.getElementById(vak);
+    let element = document.getElementById(vak);
     if (element.value > 0)
     {
         element.value--;
@@ -62,19 +62,19 @@ function checkFormulier()
     if (document.getElementById('prijsvak').innerHTML === "€&nbsp;-")
         return false;
 
-    var lastName = document.getElementById('lastName').value;
-    var initials = document.getElementById('initials').value;
-    var email = document.getElementById('email').value;
-    var deliveryByMember = document.getElementById('deliveryByMember').checked;
+    let lastName = document.getElementById('lastName').value;
+    let initials = document.getElementById('initials').value;
+    let email = document.getElementById('email').value;
+    let deliveryByMember = document.getElementById('deliveryByMember').checked;
 
     if(!(lastName.length > 0 && initials.length > 0 && email.length > 0))
         return false;
 
-    if (document.getElementById('bezorgen').checked || (bezorgenVerplicht && !deliveryByMember))
+    if (document.getElementById('bezorgen').checked || (forcedDelivery && !deliveryByMember))
     {
-        var street = document.getElementById('street').value;
-        var postcode = document.getElementById('postcode').value;
-        var city = document.getElementById('city').value;
+        let street = document.getElementById('street').value;
+        let postcode = document.getElementById('postcode').value;
+        let city = document.getElementById('city').value;
 
         if(!(street.length > 0 && postcode.length > 0 && city.length > 0))
             return false;
@@ -91,7 +91,7 @@ function checkFormulier()
 
 function blokkeerFormulierBijOngeldigeInvoer()
 {
-    var invoerIsCorrect = checkFormulier();
+    let invoerIsCorrect = checkFormulier();
 
     document.getElementById('verzendknop').disabled = !invoerIsCorrect;
 }
@@ -111,9 +111,9 @@ function postcodeLigtInWalcheren(postcode)
 
 function berekenTotaalprijs()
 {
-    var totaalprijs = 0.0;
-    var bezorgen = false;
-    var verzendkosten = 0.0;
+    let totaalprijs = 0.0;
+    let bezorgen = false;
+    let verzendkosten = 0.0;
 
     if (buitenland)
     {
@@ -128,16 +128,17 @@ function berekenTotaalprijs()
         $('.postcode-gerelateerd').css({display: 'flex'});
     }
 
-    if (bezorgenVerplicht) {
-        var postcode = document.getElementById('postcode').value;
+    let deliveryByMember = false;
+    if (forcedDelivery) {
+        let postcode = document.getElementById('postcode').value;
 
         if (postcode.length < 6 && !buitenland) {
             document.getElementById('prijsvak').innerHTML = "€&nbsp;-";
             return;
         }
 
-        var woontOpWalcheren = postcodeLigtInWalcheren(postcode);
-        var deliveryByMember = document.getElementById('deliveryByMember').checked;
+        let woontOpWalcheren = postcodeLigtInWalcheren(postcode);
+        deliveryByMember = document.getElementById('deliveryByMember').checked;
 
         if (!woontOpWalcheren) {
             document.getElementById('deliveryByMember_div').style.display = "block";
@@ -164,35 +165,35 @@ function berekenTotaalprijs()
     }
     else {
         verzendkosten = 0.0;
-        if (!bezorgenVerplicht)
+        if (!forcedDelivery)
             document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
     }
-    var toeslag_gereserveerde_plaats = 0.0;
+    let toeslag_gereserveerde_plaats = 0.0;
     if (document.getElementById('hasReservedSeats').checked) {
         toeslag_gereserveerde_plaats = toeslagGereserveerdePlaats;
     }
 
-    if (!bezorgenVerplicht && bezorgen) {
+    if (!forcedDelivery && bezorgen) {
         document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
     }
-    else if (!bezorgenVerplicht && !bezorgen) {
+    else if (!forcedDelivery && !bezorgen) {
         document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
     }
-    else if (bezorgenVerplicht && !deliveryByMember && !buitenland) {
+    else if (forcedDelivery && !deliveryByMember && !buitenland) {
         document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
     }
-    else if (bezorgenVerplicht && (deliveryByMember || buitenland)) {
+    else if (forcedDelivery && (deliveryByMember || buitenland)) {
         document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
     }
 
-    kaartsoorten.forEach(function(item) {
-        var aantal = document.getElementById('kaartsoort-' + item.id).value;
+    tickettypes.forEach(function(item) {
+        let aantal = document.getElementById('kaartsoort-' + item.id).value;
         totaalprijs = totaalprijs + (item.price * aantal);
         totaalprijs = totaalprijs + (verzendkosten * aantal);
         totaalprijs = totaalprijs + (toeslag_gereserveerde_plaats * aantal);
     });
 
-    var totaalprijs_text = totaalprijs.toLocaleString("nl-NL", {
+    let totaalprijs_text = totaalprijs.toLocaleString("nl-NL", {
         style: "currency",
         currency: "EUR",
         minimumFractionDigits: 2

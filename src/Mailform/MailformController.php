@@ -9,6 +9,7 @@ use Cyndaron\Request;
 use Cyndaron\Setting;
 use Cyndaron\User\UserLevel;
 use Cyndaron\VerwerkMailformulierPaginaLDBF;
+use Exception;
 
 class MailformController extends Controller
 {
@@ -24,7 +25,7 @@ class MailformController extends Controller
             else
                 $this->process($id);
         }
-        catch (\Exception $e)
+        catch (Exception $e)
         {
             $page = new Page('Formulier versturen mislukt', $e->getMessage());
             $page->showPrePage();
@@ -41,7 +42,7 @@ class MailformController extends Controller
     /**
      * @param int $id
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     private function process(int $id)
     {
@@ -51,7 +52,7 @@ class MailformController extends Controller
         {
             if ($form['stuur_bevestiging'] == true && empty(Request::post('E-mailadres')))
             {
-                throw new \Exception('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
+                throw new Exception('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
             }
             elseif (strtolower(Request::post('antispam')) == strtolower($form['antispamantwoord']))
             {
@@ -90,17 +91,17 @@ class MailformController extends Controller
                 }
                 else
                 {
-                    throw new \Exception('Wegens een technisch probleem is het versturen niet gelukt.');
+                    throw new Exception('Wegens een technisch probleem is het versturen niet gelukt.');
                 }
             }
             else
             {
-                throw new \Exception('U heeft de antispamvraag niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
+                throw new Exception('U heeft de antispamvraag niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
             }
         }
         else
         {
-            throw new \Exception('Ongeldig formulier.');
+            throw new Exception('Ongeldig formulier.');
         }
     }
 }

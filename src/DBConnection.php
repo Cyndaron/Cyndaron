@@ -1,8 +1,11 @@
-<?php
+<?php /** @noinspection PhpUnusedParameterInspection */
+
 namespace Cyndaron;
 
 use PDO;
 use PDOException;
+use PDOStatement;
+
 /**
  * Zorgt voor verbinding met de database.
  */
@@ -31,28 +34,28 @@ class DBConnection
 
     public static function doQuery(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function(\PDOStatement $prep, $result) {
+        return static::executeQuery($query, $vars, function(PDOStatement $prep, $result) {
             return static::$pdo->lastInsertId();
         });
     }
 
     public static function doQueryAndFetchAll(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function(\PDOStatement $prep, $result) {
+        return static::executeQuery($query, $vars, function(PDOStatement $prep, $result) {
             return $prep->fetchAll();
         });
     }
 
     public static function doQueryAndFetchFirstRow(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function(\PDOStatement$prep, $result) {
+        return static::executeQuery($query, $vars, function(PDOStatement$prep, $result) {
             return $prep->fetch();
         });
     }
 
     public static function doQueryAndFetchOne(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function(\PDOStatement$prep, $result) {
+        return static::executeQuery($query, $vars, function(PDOStatement$prep, $result) {
             return $prep->fetchColumn();
         });
     }

@@ -5,6 +5,7 @@ namespace Cyndaron\Photoalbum;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Model;
+use Exception;
 
 class Photoalbum extends Model
 {
@@ -20,7 +21,7 @@ class Photoalbum extends Model
     public static function nieuwFotoalbum(string $naam, string $notities = "", bool $showBreadcrumbs = false)
     {
         if ($naam == '')
-            throw new \Exception('Empty photo album name!');
+            throw new Exception('Empty photo album name!');
 
         $id = DBConnection::doQuery('INSERT INTO photoalbums(`name`,`notes`,`showBreadcrumbs`) VALUES (?,?,?);', [$naam, $notities,(int)$showBreadcrumbs]);
         if ($id !== false)

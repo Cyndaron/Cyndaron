@@ -4,9 +4,9 @@ declare (strict_types = 1);
 namespace Cyndaron\Menu;
 
 use Cyndaron\Controller;
-use Cyndaron\DBConnection;
 use Cyndaron\Request;
 use Cyndaron\User\UserLevel;
+use Exception;
 
 class MenuController extends Controller
 {
@@ -26,7 +26,7 @@ class MenuController extends Controller
 
         if (!$menuItem->save())
         {
-            throw new \Exception('Cannot add menu item!');
+            throw new Exception('Cannot add menu item!');
         }
     }
 

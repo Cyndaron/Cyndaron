@@ -11,6 +11,8 @@
  */
 namespace Cyndaron\Minecraft;
 
+use stdClass;
+
 class Server
 {
     protected $name;
@@ -54,11 +56,11 @@ class Server
         }
     }
 
-    function retrieve(): \stdClass
+    function retrieve(): stdClass
     {
         $socket = @stream_socket_client(sprintf('tcp://%s:%u', $this->hostname, $this->port), $errno, $errstr, 1);
 
-        $stats = new \stdClass;
+        $stats = new stdClass;
         $stats->hostname = $this->hostname;
         $stats->port = $this->port;
         $stats->dynmapPort = $this->dynmapPort;

@@ -2,7 +2,6 @@
 namespace Cyndaron\User;
 
 use Cyndaron\Page;
-use Cyndaron\Request;
 
 class LoginPage extends Page
 {

@@ -3,6 +3,7 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Model;
+use Exception;
 
 class StaticPageModel extends Model
 {
@@ -31,7 +32,7 @@ class StaticPageModel extends Model
     {
         if ($this->id == null)
         {
-            throw new \Exception('No ID!');
+            throw new Exception('No ID!');
         }
         if ($this->load() && $this->enableComments)
         {

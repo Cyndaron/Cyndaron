@@ -1,9 +1,9 @@
-<?php
+<?php /** @noinspection PhpIncludeInspection */
+
 namespace Cyndaron;
 
 use Cyndaron\Category\Category;
 use Cyndaron\User\User;
-use Cyndaron\Widget\Button;
 
 /*
  * Copyright © 2009-2017, Michael Steenbeek

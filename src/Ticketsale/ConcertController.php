@@ -25,15 +25,15 @@ class ConcertController extends Controller
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
 
         $answer = [
-            'kaartsoorten' => [],
-            'bezorgenVerplicht' => boolval($concert->forcedDelivery),
+            'tickettypes' => [],
+            'forcedDelivery' => boolval($concert->forcedDelivery),
             'standaardVerzendkosten' => $concert->deliveryCost,
             'toeslagGereserveerdePlaats' => $concert->reservedSeatCharge,
         ];
 
         foreach ($ticketTypes as $kaartsoort)
         {
-            $answer['kaartsoorten'][] = [
+            $answer['tickettypes'][] = [
                 'id' => $kaartsoort['id'],
                 'price' => $kaartsoort['price']
             ];

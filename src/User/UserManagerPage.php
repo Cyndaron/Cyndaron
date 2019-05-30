@@ -7,7 +7,6 @@ use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Widget\Modal;
 use Cyndaron\Widget\Toolbar;
-use Cyndaron\Widget\Widget;
 
 require_once __DIR__ . '/../../check.php';
 

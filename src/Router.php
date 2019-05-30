@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
 declare (strict_types = 1);
 
 namespace Cyndaron;
@@ -15,24 +16,24 @@ class Router
 
     protected $endpoints = [
         // Default endpoints
-        'category' => \Cyndaron\Category\CategoryController::class,
-        'editor' => \Cyndaron\Editor\EditorController::class,
-        'error' => \Cyndaron\Error\ErrorController::class,
-        'friendlyurl' => \Cyndaron\FriendlyUrl\FriendlyUrlController::class,
+        'category' =>  Category\CategoryController::class,
+        'editor' =>  Editor\EditorController::class,
+        'error' =>  Error\ErrorController::class,
+        'friendlyurl' =>  FriendlyUrl\FriendlyUrlController::class,
         'menu' => Menu\MenuController::class,
         'menu-editor' => Menu\MenuEditorController::class,
-        'migrate' => \Cyndaron\MigrateController::class,
-        'pagemanager' => \Cyndaron\PageManager\PageManagerController::class,
-        'photoalbum' => \Cyndaron\Photoalbum\PhotoalbumController::class,
-        'sub' => \Cyndaron\StaticPage\StaticPageController::class,
-        'system' => \Cyndaron\System\SystemController::class,
-        'user' => \Cyndaron\User\UserController::class,
+        'migrate' =>  MigrateController::class,
+        'pagemanager' =>  PageManager\PageManagerController::class,
+        'photoalbum' =>  Photoalbum\PhotoalbumController::class,
+        'sub' =>  StaticPage\StaticPageController::class,
+        'system' =>  System\SystemController::class,
+        'user' =>  \Cyndaron\User\UserController::class,
 
         // Official plugins
-        'concert' => \Cyndaron\Ticketsale\ConcertController::class,
-        'concert-order' => \Cyndaron\Ticketsale\OrderController::class,
-        'file-cabinet' => \Cyndaron\FileCabinet\FileCabinetController::class,
-        'minecraft' => \Cyndaron\Minecraft\MinecraftController::class,
+        'concert' =>  Ticketsale\ConcertController::class,
+        'concert-order' =>  Ticketsale\OrderController::class,
+        'file-cabinet' =>  FileCabinet\FileCabinetController::class,
+        'minecraft' =>  Minecraft\MinecraftController::class,
     ];
 
     const OLD_URLS = [
@@ -68,6 +69,7 @@ class Router
         // Known friendly URL
         elseif ($url = DBConnection::doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$this->requestVars[0]]))
         {
+            /** @noinspection PhpStrictTypeCheckingInspection */
             $this->updateRequestVars($this->rewriteFriendlyUrl(new Url($url)));
         }
 

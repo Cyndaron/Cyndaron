@@ -5,7 +5,6 @@ namespace Cyndaron\Minecraft\Dynmap;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Request;
-use finfo;
 
 class DynmapProxy
 {

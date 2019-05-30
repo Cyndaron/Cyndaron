@@ -7,8 +7,8 @@ use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Request;
-use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Exception;
 
 class OrderController extends Controller
 {
@@ -52,7 +52,7 @@ class OrderController extends Controller
             $page->showBody();
             $page->showPostPage();
         }
-        catch (\Exception $e)
+        catch (Exception $e)
         {
             $page = new Page('Fout bij verwerken bestelling', $e->getMessage());
             $page->showPrePage();
@@ -63,13 +63,13 @@ class OrderController extends Controller
 
     /**
      * @param $concertId
-     * @throws \Exception
+     * @throws Exception
      */
     private function processOrder($concertId)
     {
         if (Request::postIsEmpty())
         {
-            throw new \Exception('De bestellingsgegevens zijn niet goed aangekomen.');
+            throw new Exception('De bestellingsgegevens zijn niet goed aangekomen.');
         }
 
         /** @var Concert $concertObj */
@@ -77,7 +77,7 @@ class OrderController extends Controller
 
         if (!$concertObj->openForSales)
         {
-            throw new \Exception('De verkoop voor dit concert is helaas gesloten, u kunt geen kaarten meer bestellen.');
+            throw new Exception('De verkoop voor dit concert is helaas gesloten, u kunt geen kaarten meer bestellen.');
         }
 
         $postcode = Request::post('postcode');
@@ -91,7 +91,7 @@ class OrderController extends Controller
         {
             $message = 'De volgende velden zijn niet goed ingevuld of niet goed aangekomen: ';
             $message .= implode(', ', $incorrecteVelden) . '.';
-            throw new \Exception($message);
+            throw new Exception($message);
         }
 
         $totaalprijs = 0.0;
@@ -125,18 +125,18 @@ class OrderController extends Controller
         $deliveryPrice = $payForDelivery ? $concertObj->deliveryCost : 0.0;
         $reserveSeats = Request::post('hasReservedSeats') ? 1 : 0;
         $toeslag_gereserveerde_plaats = ($reserveSeats == 1) ? $concertObj->reservedSeatCharge : 0;
-        $bestelling_kaartsoorten = [];
+        $bestelling_tickettypes = [];
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
         foreach ($ticketTypes as $ticketType)
         {
-            $bestelling_kaartsoorten[$ticketType['id']] = intval(Request::post('kaartsoort-' . $ticketType['id']));
-            $totaalprijs += $bestelling_kaartsoorten[$ticketType['id']] * ($ticketType['price'] + $deliveryPrice + $toeslag_gereserveerde_plaats);
-            $totaalAantalKaarten += $bestelling_kaartsoorten[$ticketType['id']];
+            $bestelling_tickettypes[$ticketType['id']] = intval(Request::post('kaartsoort-' . $ticketType['id']));
+            $totaalprijs += $bestelling_tickettypes[$ticketType['id']] * ($ticketType['price'] + $deliveryPrice + $toeslag_gereserveerde_plaats);
+            $totaalAantalKaarten += $bestelling_tickettypes[$ticketType['id']];
         }
 
         if ($totaalprijs <= 0)
         {
-            throw new \Exception('U heeft een bestelling van 0 kaarten geplaatst of het formulier is niet goed aangekomen.');
+            throw new Exception('U heeft een bestelling van 0 kaarten geplaatst of het formulier is niet goed aangekomen.');
         }
 
         $email = Request::post('email');
@@ -154,9 +154,9 @@ class OrderController extends Controller
 
         foreach ($ticketTypes as $ticketType)
         {
-            if ($bestelling_kaartsoorten[$ticketType['id']] > 0)
+            if ($bestelling_tickettypes[$ticketType['id']] > 0)
             {
-                DBConnection::doQuery('INSERT INTO ticketsale_orders_tickettypes(`orderId`, `tickettypeId`, `amount`) VALUES(?, ?, ?)', [$orderId, $ticketType['id'], $bestelling_kaartsoorten[$ticketType['id']]]);
+                DBConnection::doQuery('INSERT INTO ticketsale_orders_tickettypes(`orderId`, `tickettypeId`, `amount`) VALUES(?, ?, ?)', [$orderId, $ticketType['id'], $bestelling_tickettypes[$ticketType['id']]]);
             }
         }
 
@@ -172,10 +172,10 @@ class OrderController extends Controller
             }
         }
 
-        $this->sendMail($payForDelivery, $concertObj, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats, $totaalprijs, $orderId, $ticketTypes, $bestelling_kaartsoorten, $lastName, $initials, $street, $postcode, $city, $comments, $email);
+        $this->sendMail($payForDelivery, $concertObj, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats, $totaalprijs, $orderId, $ticketTypes, $bestelling_tickettypes, $lastName, $initials, $street, $postcode, $city, $comments, $email);
     }
 
-    private function checkFormulier($bezorgenVerplicht = false, $ophalenDoorKoorlid = false)
+    private function checkFormulier($forcedDelivery = false, $ophalenDoorKoorlid = false)
     {
         $incorrecteVelden = [];
         if (strtoupper(Request::post('antispam')) !== 'VLISSINGEN')
@@ -198,7 +198,7 @@ class OrderController extends Controller
             $incorrecteVelden[] = 'E-mailadres';
         }
 
-        if ((!$bezorgenVerplicht && Request::post('delivery')) || ($bezorgenVerplicht && !$ophalenDoorKoorlid))
+        if ((!$forcedDelivery && Request::post('delivery')) || ($forcedDelivery && !$ophalenDoorKoorlid))
         {
             if (strlen(Request::post('street')) === 0)
             {
@@ -228,7 +228,7 @@ class OrderController extends Controller
      * @param $totaalprijs
      * @param $orderId
      * @param array $ticketTypes
-     * @param array $bestelling_kaartsoorten
+     * @param array $bestelling_tickettypes
      * @param $lastName
      * @param $initials
      * @param $street
@@ -237,7 +237,7 @@ class OrderController extends Controller
      * @param $comments
      * @param $emailadres
      */
-    private function sendMail(bool $bezorgen, Concert $concert, bool $ophalenDoorKoorlid, $deliveryMemberName, int $reserveSeats, ?array $reservedSeats, float $totaalprijs, $orderId, array $ticketTypes, array $bestelling_kaartsoorten, $lastName, $initials, $street, $postcode, $city, $comments, $emailadres): void
+    private function sendMail(bool $bezorgen, Concert $concert, bool $ophalenDoorKoorlid, $deliveryMemberName, int $reserveSeats, ?array $reservedSeats, float $totaalprijs, $orderId, array $ticketTypes, array $bestelling_tickettypes, $lastName, $initials, $street, $postcode, $city, $comments, $emailadres): void
     {
         if ($bezorgen || ($concert->forcedDelivery && !$ophalenDoorKoorlid))
         {
@@ -281,9 +281,9 @@ Kaartsoorten:
 ';
         foreach ($ticketTypes as $ticketType)
         {
-            if ($bestelling_kaartsoorten[$ticketType['id']] > 0)
+            if ($bestelling_tickettypes[$ticketType['id']] > 0)
             {
-                $text .= '   ' . $ticketType['name'] . ': ' . $bestelling_kaartsoorten[$ticketType['id']] . ' à ' . Util::formatEuroPlainText((float)$ticketType['price']) . PHP_EOL;
+                $text .= '   ' . $ticketType['name'] . ': ' . $bestelling_tickettypes[$ticketType['id']] . ' à ' . Util::formatEuroPlainText((float)$ticketType['price']) . PHP_EOL;
             }
         }
         if (!$concert->forcedDelivery)

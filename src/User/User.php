@@ -7,6 +7,7 @@ use Cyndaron\DBConnection;
 use Cyndaron\Model;
 use Cyndaron\Setting;
 use Cyndaron\Util;
+use Exception;
 
 class User extends Model
 {
@@ -80,7 +81,7 @@ EOT;
     {
         if ($this->id === null)
         {
-            throw new \Exception('ID is leeg!');
+            throw new Exception('ID is leeg!');
         }
 
         $newPassword = Util::generatePassword();
@@ -150,7 +151,7 @@ EOT;
         }
         else
         {
-            throw new \Exception(implode(',', DBConnection::errorInfo()));
+            throw new Exception(implode(',', DBConnection::errorInfo()));
         }
     }
 

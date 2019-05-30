@@ -4,8 +4,10 @@ declare (strict_types = 1);
 namespace Cyndaron\User;
 
 use Cyndaron\Controller;
+use Cyndaron\Page;
 use Cyndaron\Request;
 use Cyndaron\Util;
+use Exception;
 
 class UserController extends Controller
 {
@@ -59,14 +61,14 @@ class UserController extends Controller
         }
         catch (IncorrectCredentials $e)
         {
-            $page = new \Cyndaron\Page('Inloggen mislukt', $e->getMessage());
+            $page = new Page('Inloggen mislukt', $e->getMessage());
             $page->showPrePage();
             $page->showBody();
             $page->showPostPage();
         }
-        catch (\Exception $e)
+        catch (Exception $e)
         {
-            $page = new \Cyndaron\Page('Inloggen mislukt', 'Onbekende fout: ' . $e->getMessage());
+            $page = new Page('Inloggen mislukt', 'Onbekende fout: ' . $e->getMessage());
             $page->showPrePage();
             $page->showBody();
             $page->showPostPage();

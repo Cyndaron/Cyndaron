@@ -28,6 +28,7 @@ class MenuEditorPage extends Page
             </button>'
         );
 
+        /** @noinspection PhpUnusedLocalVariableInspection */
         $menu = Menu::get();
         include __DIR__ . '/MenuEditorPageTemplate.php';
 

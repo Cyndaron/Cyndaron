@@ -65,6 +65,7 @@ class PageManagerPage extends Page
     {
         echo new Toolbar('', '', (string)new Button('new', '/editor/sub', 'Nieuwe statische pagina', 'Nieuwe statische pagina'));
 
+        /** @noinspection SqlResolve */
         $subs = DBConnection::doQueryAndFetchAll('SELECT id, name, "Zonder categorie" AS category FROM subs WHERE categoryId NOT IN (SELECT id FROM categories) UNION (SELECT s.id AS id, s.name AS name, c.name AS category FROM subs AS s,categories AS c WHERE s.categoryId=c.id ORDER BY category, name, id ASC);');
         $subsPerCategory = [];
 
@@ -244,7 +245,6 @@ class PageManagerPage extends Page
                 <?php endforeach;?>
                 </tbody>
             </table>
-        </form>
         <?php
     }
 
