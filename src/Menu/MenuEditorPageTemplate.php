@@ -14,6 +14,7 @@ use Cyndaron\Util;
             <th>Alias</th>
             <th>Dropdown</th>
             <th>Afbeelding</th>
+            <th>Prioriteit</th>
             <th>Acties</th>
         </tr>
     </thead>
@@ -36,12 +37,15 @@ use Cyndaron\Util;
                 <?=Util::boolToText($menuItem['isImage']);?>
             </td>
             <td>
+                <?=$menuItem['priority']?>
+            </td>
+            <td>
                 <div class="btn-group">
                     <button class="mm-edit-item btn btn-outline-cyndaron"
                             data-id="<?=$menuItem['id']?>"
                             data-toggle="modal"
                             data-target="#mm-edit-item-dialog"
-                            data-id="<?=$menuItem['id']?>"
+                            data-priority="<?=$menuItem['priority']?>"
                             data-link="<?=$menuItem['link']?>"
                             data-alias="<?=$menuItem['alias']?>"
                             data-isDropdown="<?=$menuItem['isDropdown']?>"

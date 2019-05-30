@@ -23,6 +23,7 @@ class MenuController extends Controller
         $menuItem->alias = Request::post('alias');
         $menuItem->isDropdown = (bool)Request::post('isDropdown');
         $menuItem->isImage = (bool)Request::post('isImage');
+        $menuItem->priority = Request::post('priority');
 
         if (!$menuItem->save())
         {
@@ -39,7 +40,12 @@ class MenuController extends Controller
         $menuItem->alias = Request::post('alias');
         $menuItem->isDropdown = (int)Request::post('isDropdown');
         $menuItem->isImage = (int)Request::post('isImage');
-        $menuItem->save();
+        $menuItem->priority = Request::post('priority');
+
+        if (!$menuItem->save())
+        {
+            throw new Exception('Could not edit menu item!');
+        }
     }
 
     protected function deleteItem()

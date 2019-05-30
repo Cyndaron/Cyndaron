@@ -1,6 +1,6 @@
 'use strict';
 
-const mmFields = ['id', 'link', 'alias', 'isDropdown', 'isImage'];
+const mmFields = ['id', 'link', 'alias', 'isDropdown', 'isImage', 'priority'];
 
 $(document).ready(function ()
 {

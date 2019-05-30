@@ -316,7 +316,7 @@ class Page
         {
             return [];
         }
-        $menu = DBConnection::doQueryAndFetchAll('SELECT * FROM menu ORDER BY id ASC;');
+        $menu = DBConnection::doQueryAndFetchAll('SELECT * FROM menu ORDER BY priority, id;');
         $menuitems = [];
         $frontPage = Setting::get('frontPage');
 

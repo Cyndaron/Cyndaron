@@ -121,6 +121,7 @@ class MigrateController extends Controller
         DBConnection::doQuery("ALTER TABLE `menu` CHANGE `volgorde` `id` INT(11) NOT NULL AUTO_INCREMENT;");
         DBConnection::doQuery("ALTER TABLE `menu` CHANGE `link` `link` VARCHAR(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL; ");
         DBConnection::doQuery("ALTER TABLE `menu` CHANGE `alias` `alias` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL; ");
+        DBConnection::doQuery("ALTER TABLE `menu` ADD `priority` INT NULL DEFAULT '0' AFTER `isImage`; ");
 
         DBConnection::doQuery("ALTER TABLE `friendlyurls` CONVERT TO CHARACTER SET utf8mb4  COLLATE utf8mb4_unicode_ci;");
         DBConnection::doQuery("ALTER TABLE `friendlyurls` DROP INDEX `doel`;");

@@ -5,6 +5,7 @@ Versie 6.0 (Trajectum
 - Feature: accentkleur voor knoppen en links
 - Feature: bij aanmaken van een fotoalbum wordt meteen de bijbehorende map aangemaakt (#81)
 - Feature: broodkruimel (#15)
+- Feautre: volledige menu-editor (#73)
 - Feature: tekst gereserveerde plaatsen bij kaartverkoop in database (#46)
 - Feature: voorpagina hoeft niet meer de eerste pagina in het menu te zijn (#67)
 - Verwijderd: delen en Facebookintegratie (#80)
