@@ -3,7 +3,6 @@ declare (strict_types = 1);
 
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\User\User;
 use Cyndaron\Widget\Button;

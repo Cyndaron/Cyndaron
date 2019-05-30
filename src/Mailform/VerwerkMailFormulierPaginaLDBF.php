@@ -16,7 +16,7 @@ class VerwerkMailformulierPaginaLDBF extends Page
             }
             else
             {
-                $tekst = '<!DOCTYPE html><html><head><title>Aanvraag</title><body><table>
+                $tekst = '<!DOCTYPE html><html lang="nl"><head><title>Aanvraag</title><body><table>
 	<tbody>
 		<tr>
 			<td>De heer/mevrouw:</td>

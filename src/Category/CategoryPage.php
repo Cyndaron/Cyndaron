@@ -8,6 +8,7 @@ use Cyndaron\Util;
 
 class CategoryPage extends Page
 {
+    /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct($id)
     {
         if ($id != 'fotoboeken')

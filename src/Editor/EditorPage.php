@@ -151,7 +151,7 @@ abstract class EditorPage extends Page
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="categoryId">Plaats dit artikel in de categorie: </label>
             <div class="col-sm-5">
-                <select name="categoryId" class="form-control custom-select">
+                <select id="categoryId" name="categoryId" class="form-control custom-select">
                     <option value="0">&lt;Geen categorie&gt;</option>
                     <?php
 

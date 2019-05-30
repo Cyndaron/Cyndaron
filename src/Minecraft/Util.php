@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpMissingBreakStatementInspection */
+
 namespace Cyndaron\Minecraft;
 
 class Util
