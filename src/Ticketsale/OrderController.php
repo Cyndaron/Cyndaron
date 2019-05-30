@@ -81,7 +81,7 @@ class OrderController extends Controller
         }
 
         $postcode = Request::post('postcode');
-        $addressIsAbroad = (Request::post('land') === 'buitenland') ? true : false;
+        $addressIsAbroad = (Request::post('country') === 'abroad') ? true : false;
         $deliveryByMember = Request::post('deliveryByMember') ? true : false;
         $deliveryByMember = $addressIsAbroad ? true : $deliveryByMember;
         $deliveryMemberName = Request::post('deliveryMemberName');
@@ -99,9 +99,9 @@ class OrderController extends Controller
 
         if ($concertObj->forcedDelivery)
         {
-            $woontInWalcheren = ($addressIsAbroad) ? false : Util::postcodeIsWithinWalcheren(intval($postcode));
+            $qualifiesForFreeDelivery = ($addressIsAbroad) ? false : Util::postcodeQualifiesForFreeDelivery(intval($postcode));
 
-            if ($woontInWalcheren)
+            if ($qualifiesForFreeDelivery)
             {
                 $payForDelivery = false;
                 $deliveryByMember = false;
@@ -125,13 +125,13 @@ class OrderController extends Controller
         $deliveryPrice = $payForDelivery ? $concertObj->deliveryCost : 0.0;
         $reserveSeats = Request::post('hasReservedSeats') ? 1 : 0;
         $toeslag_gereserveerde_plaats = ($reserveSeats == 1) ? $concertObj->reservedSeatCharge : 0;
-        $bestelling_tickettypes = [];
+        $order_tickettypes = [];
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
         foreach ($ticketTypes as $ticketType)
         {
-            $bestelling_tickettypes[$ticketType['id']] = intval(Request::post('kaartsoort-' . $ticketType['id']));
-            $totaalprijs += $bestelling_tickettypes[$ticketType['id']] * ($ticketType['price'] + $deliveryPrice + $toeslag_gereserveerde_plaats);
-            $totaalAantalKaarten += $bestelling_tickettypes[$ticketType['id']];
+            $order_tickettypes[$ticketType['id']] = intval(Request::post('tickettype-' . $ticketType['id']));
+            $totaalprijs += $order_tickettypes[$ticketType['id']] * ($ticketType['price'] + $deliveryPrice + $toeslag_gereserveerde_plaats);
+            $totaalAantalKaarten += $order_tickettypes[$ticketType['id']];
         }
 
         if ($totaalprijs <= 0)
@@ -147,16 +147,27 @@ class OrderController extends Controller
         $city = Request::post('city');
         $comments = Request::post('comments');
 
-        $orderId = (int)DBConnection::doQuery('INSERT INTO ticketsale_orders
-            (`concertId`, `lastName`, `initials`, `email`, `street`,                 `postcode`, `city`, `delivery`,                `hasReservedSeats`, `deliveryByMember`, `deliveryMemberName`, `addressIsAbroad`, `comments`) VALUES
-            (?,           ?,          ?,          ?,       ?,                         ?,          ?,      ?,                         ?,                  ?,                  ?,                    ?,                 ?)',
-            [$concertId,  $lastName,  $initials,  $email,  $street, $postcode,  $city,  ($payForDelivery ? 1 : 0), $reserveSeats,      $deliveryByMember,  $deliveryMemberName,  $addressIsAbroad,  $comments]);
+        $result = DBConnection::doQuery('INSERT INTO ticketsale_orders
+            (`concertId`, `lastName`, `initials`, `email`, `street`, `postcode`, `city`, `delivery`,               `hasReservedSeats`, `deliveryByMember`, `deliveryMemberName`, `addressIsAbroad`, `comments`) VALUES
+            (?,           ?,          ?,          ?,       ?,        ?,          ?,      ?,                        ?,                  ?,                  ?,                    ?,                 ?)',
+            [$concertId,  $lastName,  $initials,  $email,  $street,  $postcode,  $city, ($payForDelivery ? 1 : 0), $reserveSeats,      $deliveryByMember,  $deliveryMemberName,  $addressIsAbroad,  $comments]);
+        if ($result === false)
+        {
+            throw new Exception('Opslaan bestelling mislukt!');
+        }
+        $orderId = (int)$result;
 
         foreach ($ticketTypes as $ticketType)
         {
-            if ($bestelling_tickettypes[$ticketType['id']] > 0)
+            if ($order_tickettypes[$ticketType['id']] > 0)
             {
-                DBConnection::doQuery('INSERT INTO ticketsale_orders_tickettypes(`orderId`, `tickettypeId`, `amount`) VALUES(?, ?, ?)', [$orderId, $ticketType['id'], $bestelling_tickettypes[$ticketType['id']]]);
+                $result = DBConnection::doQuery(
+                    'INSERT INTO ticketsale_orders_tickettypes(`orderId`, `tickettypeId`, `amount`) VALUES(?, ?, ?)',
+                    [$orderId, $ticketType['id'], $order_tickettypes[$ticketType['id']]]);
+                if ($result === false)
+                {
+                    throw new Exception('Opslaan kaarttypen mislukt!');
+                }
             }
         }
 
@@ -172,7 +183,7 @@ class OrderController extends Controller
             }
         }
 
-        $this->sendMail($payForDelivery, $concertObj, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats, $totaalprijs, $orderId, $ticketTypes, $bestelling_tickettypes, $lastName, $initials, $street, $postcode, $city, $comments, $email);
+        $this->sendMail($payForDelivery, $concertObj, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats, $totaalprijs, $orderId, $ticketTypes, $order_tickettypes, $lastName, $initials, $street, $postcode, $city, $comments, $email);
     }
 
     private function checkFormulier($forcedDelivery = false, $ophalenDoorKoorlid = false)

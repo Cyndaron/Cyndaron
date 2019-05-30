@@ -109,7 +109,6 @@ class ConcertOrderOverviewPage extends Page
             $totaalbedrag = 0.0;
             $verzendkosten = $bestelling['delivery'] * $concert->deliveryCost;
             $toeslag_gereserveerde_plaats = $bestelling['hasReservedSeats'] * $concert->reservedSeatCharge;
-            //$class = $bestelling['woont_in_buitenland'] ? 'buitenland' : ($bestelling['ophalen_door_);
 
             echo '<tr><td>' . $orderId . '</td><td>' . $bestelling['lastName'] . '</td><td>' . $bestelling['initials'] . '</td><td>' . $bestelling['email'] . '</td>';
             echo '<td>' . $bestelling['street'] . '<br />' . $bestelling['postcode'] . '<br />' . $bestelling['city'] . '</td>';

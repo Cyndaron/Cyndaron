@@ -177,7 +177,7 @@ class MigrateController extends Controller
         DBConnection::doQuery("ALTER TABLE `ticketsale_orders` CHANGE `e-mailadres` `email` VARCHAR(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;");
         DBConnection::doQuery("ALTER TABLE `ticketsale_orders` CHANGE `straat_en_huisnummer` `street` VARCHAR(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL; ");
         DBConnection::doQuery("ALTER TABLE `ticketsale_orders` ADD `houseNumber` INT NOT NULL DEFAULT '0' AFTER `street`; ");
-        DBConnection::doQuery("ALTER TABLE `ticketsale_orders` ADD `houseNumberAddition` VARCHAR(10) NOT NULL AFTER `houseNumber`; ");
+        DBConnection::doQuery("ALTER TABLE `ticketsale_orders` ADD `houseNumberAddition` VARCHAR(10) NOT NULL DEFAULT '' AFTER `houseNumber`; ");
         DBConnection::doQuery("ALTER TABLE `ticketsale_orders` CHANGE `postcode` `postcode` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;");
         DBConnection::doQuery("ALTER TABLE `ticketsale_orders` CHANGE `woonplaats` `city` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL; ");
         DBConnection::doQuery("ALTER TABLE `ticketsale_orders` CHANGE `thuisbezorgen` `delivery` INT(1) NOT NULL DEFAULT '0'; ");

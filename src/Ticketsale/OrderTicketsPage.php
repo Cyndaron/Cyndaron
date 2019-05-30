@@ -63,9 +63,9 @@ class OrderTicketsPage extends Page
                             <td>%1$s</td>
                             <td>%2$s</td>
                             <td>
-                                <input class="aantalKaarten form-control form-control-inline" readonly="readonly" size="2" name="kaartsoort-%3$d" id="kaartsoort-%3$d" value="0"/>
-                                <button type="button" class="aantalKaarten btn btn-outline-cyndaron aantalKaarten-increase" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-plus"></span></button>
-                                <button type="button" class="aantalKaarten btn btn-outline-cyndaron aantalKaarten-decrease" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-minus"></span></button>
+                                <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-%3$d" id="tickettype-%3$d" value="0"/>
+                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-plus"></span></button>
+                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="%3$d"><span class="glyphicon glyphicon-minus"></span></button>
                             </td>
                         </tr>',
                         $kaartsoort['name'], Util::formatEuro($kaartsoort['price']), $kaartsoort['id']);
@@ -73,7 +73,7 @@ class OrderTicketsPage extends Page
                 ?>
             </table>
             <div <?= $concert->forcedDelivery ? 'style="display:none"' : ''; ?>>
-                <input id="bezorgen" name="bezorgen" type="checkbox" value="1" class="berekenTotaalprijsOpnieuw">
+                <input id="bezorgen" name="bezorgen" type="checkbox" value="1" class="recalculateTotal">
                 <label for="bezorgen">
                     Bezorg mijn kaarten thuis (meerprijs
                     van <?php echo Util::formatEuro($concert->deliveryCost); ?> per kaart)
@@ -87,7 +87,7 @@ class OrderTicketsPage extends Page
                     U kunt voor dit concert nog kaarten voor vrije plaatsen kopen. <b>De gereserveerde plaatsen zijn inmiddels uitverkocht.</b>
                 <?php else: ?>
                     <div class="form-group form-check">
-                        <input id="hasReservedSeats" class="berekenTotaalprijsOpnieuw form-check-input" name="hasReservedSeats"
+                        <input id="hasReservedSeats" class="recalculateTotal form-check-input" name="hasReservedSeats"
                                type="checkbox" value="1"/>
                         <label class="form-check-label" for="hasReservedSeats">
                             Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs
@@ -110,25 +110,25 @@ class OrderTicketsPage extends Page
                 </p>
 
                 <div class="radio">
-                    <label for="land-nederland">
-                        <input id="land-nederland" name="land" type="radio" value="nederland" checked />
+                    <label for="country-nederland">
+                        <input id="country-nederland" name="country" type="radio" value="nederland" checked />
                         Ik woon in Nederland
                     </label>
                 </div>
                 <div class="radio">
-                    <label for="land-buitenland">
-                        <input id="land-buitenland" name="land" type="radio" value="buitenland"/>
+                    <label for="country-abroad">
+                        <input id="country-abroad" name="country" type="radio" value="abroad"/>
                         Ik woon niet in Nederland
                     </label>
                 </div>
                 <br>
 
 
-                <p class="postcode-gerelateerd">
+                <p class="postcode-related">
                     Vul hieronder uw postcode in om de totaalprijs te laten berekenen.
                 </p>
 
-                <div class="form-group row postcode-gerelateerd">
+                <div class="form-group row postcode-related">
                     <label class="col-sm-3 col-form-label" for="postcode">Postcode (verplicht):</label>
                     <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control form-control-inline"
                                                  maxlength="7"/></div>
@@ -136,7 +136,7 @@ class OrderTicketsPage extends Page
 
                 <div id="deliveryByMember_div" style="display:none;">
                     <input id="deliveryByMember" name="deliveryByMember" type="checkbox" value="1"
-                           class="berekenTotaalprijsOpnieuw">
+                           class="recalculateTotal">
                     <label for="deliveryByMember">Mijn kaarten laten ophalen door een koorlid</label>
                     <br>
 
@@ -209,8 +209,6 @@ class OrderTicketsPage extends Page
 
             <div class="col-sm-offset-2"><input id="verzendknop" class="btn btn-primary" type="submit"
                                                 value="Bestellen"/></div>
-
-            <input type="hidden" id="buitenland" name="buitenland" value="0"/>
         </form>
         <?php
         $this->showPostPage();

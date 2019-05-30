@@ -7,7 +7,7 @@ class Util extends \Cyndaron\Util
 {
     const MAX_RESERVED_SEATS = 330;
 
-    public static function postcodeIsWithinWalcheren(int $postcode)
+    public static function postcodeQualifiesForFreeDelivery(int $postcode)
     {
         if ($postcode >= 4330 && $postcode <= 4399)
             return true;

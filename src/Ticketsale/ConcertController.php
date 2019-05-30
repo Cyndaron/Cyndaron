@@ -27,8 +27,8 @@ class ConcertController extends Controller
         $answer = [
             'tickettypes' => [],
             'forcedDelivery' => boolval($concert->forcedDelivery),
-            'standaardVerzendkosten' => $concert->deliveryCost,
-            'toeslagGereserveerdePlaats' => $concert->reservedSeatCharge,
+            'defaultDeliveryCost' => $concert->deliveryCost,
+            'reservedSeatCharge' => $concert->reservedSeatCharge,
         ];
 
         foreach ($ticketTypes as $kaartsoort)
