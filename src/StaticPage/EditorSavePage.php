@@ -16,6 +16,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $enableComments = (bool)Request::post('enableComments');
         $showBreadcrumbs = (bool)Request::post('showBreadcrumbs');
         $categoryId = intval(Request::post('categoryId'));
+        $tags = trim(Request::post('tags'), "; \t\n\r\0\x0B");
 
         $model = new StaticPageModel($this->id);
         $model->loadIfIdIsSet();
@@ -24,6 +25,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $model->enableComments = $enableComments;
         $model->showBreadcrumbs = $showBreadcrumbs;
         $model->categoryId = $categoryId;
+        $model->tags = $tags;
 
         if ($model->save())
         {
@@ -35,7 +37,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         else
         {
             $error = var_export(DBConnection::errorInfo(), true);
-            User::addNotification('Pagine opslaan mislukt: ' . $error);
+            User::addNotification('Pagina opslaan mislukt: ' . $error);
         }
     }
 }

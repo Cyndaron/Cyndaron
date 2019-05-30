@@ -8,7 +8,7 @@ use Exception;
 class StaticPageModel extends Model
 {
     const TABLE = 'subs';
-    const TABLE_FIELDS = ['name', 'text', 'enableComments', 'categoryId', 'showBreadcrumbs'];
+    const TABLE_FIELDS = ['name', 'text', 'enableComments', 'categoryId', 'showBreadcrumbs', 'tags'];
     const HAS_CATEGORY = true;
 
     public $name = '';
@@ -16,6 +16,7 @@ class StaticPageModel extends Model
     public $enableComments = false;
     public $categoryId = null;
     public $showBreadcrumbs = false;
+    public $tags = '';
 
     public function delete(): void
     {
@@ -44,5 +45,15 @@ class StaticPageModel extends Model
             }
         }
         return false;
+    }
+
+    public function getTagList(): array
+    {
+        return explode(';', $this->tags);
+    }
+
+    public function setTagList(array $tags)
+    {
+        $this->tags = implode(';', $tags);
     }
 }

@@ -23,11 +23,22 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     protected function showContentSpecificButtons()
     {
         $enableComments = false;
+        $tags = '';
         if ($this->id)
         {
-            $enableComments = (bool)DBConnection::doQueryAndFetchOne('SELECT enableComments FROM subs WHERE id=?', [$this->id]);
+            $sub = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM subs WHERE id=?', [$this->id]);
+            $enableComments = (bool)$sub['enableComments'];
+            $tags = $sub['tags'];
         }
 
         $this->showCheckbox('enableComments', 'Reacties toestaan', $enableComments);
+        ?>
+        <div class="form-group row">
+            <label for="tags" class="col-sm-2 col-form-label">Tags</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="tags" name="tags" value="<?=$tags?>">
+            </div>
+        </div>
+        <?php
     }
 }

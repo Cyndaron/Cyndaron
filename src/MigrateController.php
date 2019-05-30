@@ -93,6 +93,8 @@ class MigrateController extends Controller
         DBConnection::doQuery("ALTER TABLE `subs` CHANGE `reacties_aan` `enableComments` INT(1) NOT NULL DEFAULT '0';");
         DBConnection::doQuery("ALTER TABLE `subs` CHANGE `categorieid` `categoryId` INT(11) NOT NULL;");
         DBConnection::doQuery("ALTER TABLE `subs` ADD `showBreadcrumbs` TINYINT(1) NOT NULL DEFAULT '0' AFTER `categoryId`;");
+        DBConnection::doQuery("ALTER TABLE `subs` ADD `tags` VARCHAR(750) NOT NULL DEFAULT ''  AFTER `showBreadcrumbs`;");
+        DBConnection::doQuery("ALTER TABLE `subs` ADD INDEX( `tags`); ");
 
         DBConnection::doQuery("RENAME TABLE vorigesubs TO sub_backups;");
         DBConnection::doQuery("ALTER TABLE `sub_backups` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
