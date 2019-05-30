@@ -63,6 +63,7 @@ class SystemPage extends Page
                 ['name' => 'achtergrondkleur', 'description' => 'Achtergrondkleur hele pagina', 'type' => 'color', 'value' => Setting::get('achtergrondkleur', true)],
                 ['name' => 'menukleur', 'description' => 'Achtergrondkleur menu', 'type' => 'color', 'value' => Setting::get('menukleur', true)],
                 ['name' => 'artikelkleur', 'description' => 'Achtergrondkleur artikel', 'type' => 'color', 'value' => Setting::get('artikelkleur', true)],
+                ['name' => 'accentColor', 'description' => 'Accentkleur', 'type' => 'color', 'value' => Setting::get('accentColor', true)],
                 ['name' => 'menuachtergrond', 'description' => 'Achtergrondafbeelding menu', 'type' => 'text', 'value' => Setting::get('menuachtergrond', true)],
                 ['name' => 'frontPage', 'description' => 'Voorpagina', 'type' => 'text', 'value' => Setting::get('frontPage', true)],
             ];

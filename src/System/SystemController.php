@@ -27,6 +27,7 @@ class SystemController extends Controller
         Setting::set('menukleur', Request::post('menukleur'));
         Setting::set('menuachtergrond', Request::unsafePost('menuachtergrond'));
         Setting::set('artikelkleur', Request::post('artikelkleur'));
+        Setting::set('accentColor', Request::post('accentColor'));
         Setting::set('standaardcategorie', Request::post('standaardcategorie'));
         Setting::set('menuthema', Request::post('menuthema'));
         Setting::set('frontPage', Request::post('frontPage'));

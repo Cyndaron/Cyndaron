@@ -82,7 +82,13 @@ class Page
                 static::showIfSet(Setting::get('menukleur'), '.menu { background-color: ',";}\n");
                 static::showIfSet(Setting::get('menuachtergrond'), '.menu { background-image: url(\'',"');}\n");
                 static::showIfSet(Setting::get('artikelkleur'), '.inhoud { background-color: ',";}\n");
-                ?>
+                $accentColor = Setting::get('accentColor');
+                if ($accentColor): ?>
+                a { color: <?=$accentColor?> }
+                .btn-primary { background-color: <?=$accentColor?>; border-color: <?=$accentColor?> ;}
+                .dropdown-item.active, .dropdown-item:active { background-color: <?=$accentColor?>; }
+
+                <?php endif; ?>
             </style>
             <?php
             if (file_exists(__DIR__ . '/../extra-head.php'))

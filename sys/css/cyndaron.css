@@ -9,6 +9,11 @@ a:hover
     text-decoration: underline;
 }
 
+.btn-primary.disabled, .btn-primary:disabled {
+    background-color: #999999;
+    border-color: #999999;
+}
+
 .paginacontainer
 {
     border: 0;
