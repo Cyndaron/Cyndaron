@@ -8,8 +8,6 @@ use Cyndaron\Page;
 use Cyndaron\Widget\Modal;
 use Cyndaron\Widget\Toolbar;
 
-require_once __DIR__ . '/../../check.php';
-
 class UserManagerPage extends Page
 {
     const USER_LEVEL_DESCRIPTIONS = [

@@ -5,8 +5,6 @@ use Cyndaron\DBConnection;
 use Cyndaron\Request;
 use Cyndaron\Url;
 
-require_once __DIR__ . '/../../check.php';
-
 abstract class EditorSavePage
 {
     const TYPE = '';

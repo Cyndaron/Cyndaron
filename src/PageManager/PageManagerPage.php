@@ -12,8 +12,6 @@ use Cyndaron\Widget\Button;
 use Cyndaron\Widget\PageTabs;
 use Cyndaron\Widget\Toolbar;
 
-require_once __DIR__ . '/../../check.php';
-
 class PageManagerPage extends Page
 {
     public function __construct($currentPage)

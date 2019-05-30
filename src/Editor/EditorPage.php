@@ -9,8 +9,6 @@ use Cyndaron\Setting;
 use Cyndaron\Url;
 use Cyndaron\User\User;
 
-require_once __DIR__ . '/../../check.php';
-
 abstract class EditorPage extends Page
 {
     const TYPE = null;

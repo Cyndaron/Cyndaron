@@ -8,8 +8,6 @@ use Cyndaron\User\User;
 use Cyndaron\Widget\Modal;
 use Cyndaron\Widget\Toolbar;
 
-require_once __DIR__ . '/../../check.php';
-
 class MenuEditorPage extends Page
 {
     public function __construct()
