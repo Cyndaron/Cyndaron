@@ -1,7 +1,8 @@
-Versie 6.0 (Trajectum
+Versie 6.0 (Trajectum)
 - Afhankelijkheden: Bootstrap geüpdatet naar 4.2.1 (#75)
 - Afhankelijkheden: jQuery geüpdatet naar 3.3.1
 - Feature: aanmaak- en wijzigingdata worden nu vastgelegd (#85)
+- Feature: aantal vrije en gereserveerde plaatsen is nu in te stellen (#45)
 - Feature: accentkleur voor knoppen en links
 - Feature: bij aanmaken van een fotoalbum wordt meteen de bijbehorende map aangemaakt (#81)
 - Feature: broodkruimel (#15)

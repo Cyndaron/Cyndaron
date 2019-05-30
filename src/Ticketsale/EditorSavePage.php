@@ -13,15 +13,17 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
     {
         $concert = new Concert($this->id);
         $concert->loadIfIdIsSet();
-        $concert->name = Request::unsafePost('titel');;
-        $concert->description = $this->parseTextForInlineImages(Request::unsafePost('artikel'));;
-        $concert->descriptionWhenClosed = Request::unsafePost('descriptionWhenClosed');;
-        $concert->openForSales = (bool)Request::post('openForSales');;
-        $concert->forcedDelivery = (bool)Request::post('forcedDelivery');;
-        $concert->deliveryCost = (float)str_replace(',', '.', Request::post('deliveryCost'));;
-        $concert->hasReservedSeats = (bool)Request::post('hasReservedSeats');;
-        $concert->reservedSeatCharge = (float)str_replace(',', '.', Request::post('reservedSeatCharge'));;
-        $concert->reservedSeatsAreSoldOut = (bool)Request::post('reservedSeatsAreSoldOut');;
+        $concert->name = Request::unsafePost('titel');
+        $concert->description = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
+        $concert->descriptionWhenClosed = Request::unsafePost('descriptionWhenClosed');
+        $concert->openForSales = (bool)Request::post('openForSales');
+        $concert->forcedDelivery = (bool)Request::post('forcedDelivery');
+        $concert->deliveryCost = (float)str_replace(',', '.', Request::post('deliveryCost'));
+        $concert->hasReservedSeats = (bool)Request::post('hasReservedSeats');
+        $concert->reservedSeatCharge = (float)str_replace(',', '.', Request::post('reservedSeatCharge'));
+        $concert->reservedSeatsAreSoldOut = (bool)Request::post('reservedSeatsAreSoldOut');
+        $concert->numFreeSeats = (int)Request::post('numFreeSeats');
+        $concert->numReservedSeats = (int)Request::post('numReservedSeats');
 
         if ($concert->save())
         {

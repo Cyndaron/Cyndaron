@@ -27,6 +27,8 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     {
         $deliveryCost = Util::formatCurrency((float)($this->model->deliveryCost ?? 1.5));
         $reservedSeatCharge = Util::formatCurrency((float)($this->model->reservedSeatCharge ?? 5.0));
+        $numFreeSeats = $this->model->numFreeSeats ?? 250;
+        $numReservedSeats = $this->model->numReservedSeats ?? 270;
         $descriptionWhenClosed = $this->model->descriptionWhenClosed ?? '';
         ?>
         <div class="form-group">
@@ -55,6 +57,18 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
                     <span class="input-group-text">€</span>
                 </div>
                 <input type="text" class="form-control" id="reservedSeatCharge" name="reservedSeatCharge" value="<?=$reservedSeatCharge?>">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="numFreeSeats" class="col-sm-2 col-form-label">Aantal vrije plaatsen</label>
+            <div class="col-sm-1">
+                <input type="number" class="form-control" id="numFreeSeats" name="numFreeSeats" value="<?=$numFreeSeats?>">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="numReservedSeats" class="col-sm-2 col-form-label">Aantal gereserveerde plaatsen</label>
+            <div class="col-sm-1">
+                <input type="number" class="form-control" id="numReservedSeats" name="numReservedSeats" value="<?=$numReservedSeats?>">
             </div>
         </div>
         <?php
