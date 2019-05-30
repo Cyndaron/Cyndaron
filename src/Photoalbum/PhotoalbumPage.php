@@ -20,14 +20,10 @@ class PhotoalbumPage extends Page
         $this->model = new Photoalbum($id);
         $this->model->load();
 
-        // FIXME: Is this necessary, and why specifically here?
-        $_SESSION['referrer'] = !empty($_SERVER['HTTP_REFERER']) ? htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '';
-
         $controls = new Button('edit', '/editor/photoalbum/' . $id, 'Dit fotoalbum bewerken');
         parent::__construct($this->model->name);
         $this->setTitleButtons((string)$controls);
         $this->addScript('/sys/js/lightbox.min.js');
-        $this->showPrePage();
 
         if ($dirArray = @scandir("./fotoalbums/$id"))
         {
@@ -47,10 +43,13 @@ class PhotoalbumPage extends Page
                     $thumbnailLink = 'fotoalbums/' . $id . 'thumbnails/' . $dirArray[$index];
                     $hash = md5_file($fotoLink);
                     $dataTitleTag = '';
-                    if ($caption = DBConnection::doQueryAndFetchOne('SELECT caption FROM photoalbum_captions WHERE hash=?', [$hash]))
+                    $captionObj = PhotoalbumCaption::loadByHash($hash);
+                    $captionId = $captionObj ? $captionObj->id : 0;
+
+                    if ($captionObj->caption)
                     {
                         // Vervangen van aanhalingstekens is nodig omdat er links in de beschrijving kunnen zitten.
-                        $dataTitleTag = 'data-title="' . str_replace('"', '&quot;', $caption) . '"';
+                        $dataTitleTag = 'data-title="' . str_replace('"', '&quot;', $captionObj->caption) . '"';
                     }
 
                     $output .= sprintf('<div class="fotobadge"><a href="/%s" data-lightbox="%s" %s data-hash="%s"><img class="thumb" src="/fotoalbums/%d', $fotoLink, htmlspecialchars($this->model->name), $dataTitleTag, $hash, $id);
@@ -66,7 +65,7 @@ class PhotoalbumPage extends Page
                     $output .= ' alt="' . $dirArray[$index] . '" /></a>';
                     if (User::isAdmin())
                     {
-                        $output .= '<br>' . new Button('edit', '/editor/photo/' . $hash, 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
+                        $output .= '<br>' . new Button('edit', "/editor/photo/$captionId/$hash", 'Bijschrift bewerken', 'Bijschrift bewerken', 16);
                     }
                     $output .= '</div>';
 
@@ -74,23 +73,22 @@ class PhotoalbumPage extends Page
             }
             $output .= '</div>';
 
-            static::showIfSet($this->model->notes);
+            $preamble = $this->model->notes;
             if ($numEntries === 1)
             {
-                echo "Dit album bevat 1 foto. Klik op de verkleinde foto om een vergroting te zien.";
+                $preamble .= "Dit album bevat 1 foto. Klik op de verkleinde foto om een vergroting te zien.";
             }
             else
             {
-                echo "Dit album bevat $numEntries foto's. Klik op de verkleinde foto's om een vergroting te zien.";
+                $preamble .= "Dit album bevat $numEntries foto's. Klik op de verkleinde foto's om een vergroting te zien.";
             }
 
-            echo '<br /><br />';
-            echo $output;
+            $preamble .= '<br /><br />';
+            $this->body = $preamble . $output;
         }
         else
         {
-            echo 'Dit album is leeg.<br />';
+            $this->body = 'Dit album is leeg.<br />';
         }
-        $this->showPostPage();
     }
 }

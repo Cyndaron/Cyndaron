@@ -1,23 +1,29 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\DBConnection;
+use Cyndaron\Request;
 
 class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
 {
     const HAS_TITLE = false;
     const TYPE = 'photo';
     const TABLE = 'bijschiften';
-    const SAVE_URL = '/editor/photo/0/%s';
+    const SAVE_URL = '/editor/photo/%s';
+
+    protected $hash;
 
     protected function prepare()
     {
+        $this->hash = Request::getVar(3);
         if ($this->id)
         {
-            $this->content = DBConnection::doQueryAndFetchOne('SELECT caption FROM photoalbum_captions WHERE hash=?', [$this->id]);
+            $this->model = PhotoalbumCaption::loadFromDatabase($this->id);
+            $this->content = $this->model->caption;
         }
     }
 
-    // Not used, but required.
-    protected function showContentSpecificButtons() {}
+    protected function showContentSpecificButtons()
+    {
+        echo '<input type="hidden" name="hash" value="' . $this->hash . '"/>';
+    }
 }

@@ -10,10 +10,10 @@ class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
 
     protected function prepare()
     {
-        $hash = Request::getVar(3);
+        $hash = Request::post('hash');
         $caption = Request::unsafePost('artikel');
 
-        PhotoModel::addCaption($hash, $caption);
+        PhotoalbumCaption::create($hash, $caption);
         User::addNotification('Bijschrift bewerkt.');
     }
 }

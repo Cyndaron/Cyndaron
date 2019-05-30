@@ -12,7 +12,10 @@ class PhotoalbumController extends Controller
     protected function routeGet()
     {
         $id = intval(Request::getVar(1));
-        new PhotoalbumPage($id);
+        $page = new PhotoalbumPage($id);
+        $page->showPrePage();
+        $page->showBody();
+        $page->showPostPage();
     }
 
     protected function routePost()
