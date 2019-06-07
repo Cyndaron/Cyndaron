@@ -13,6 +13,7 @@ use Cyndaron\User\User;
 class Router
 {
     private $requestVars = [''];
+    private $isApiCall = false;
 
     protected $endpoints = [
         // Default endpoints
@@ -203,7 +204,13 @@ class Router
      */
     private function updateRequestVars(string $request): void
     {
-        $this->requestVars = explode('/', trim($request, '/'));
+        $vars = explode('/', trim($request, '/'));
+        if ($vars[0] === 'api')
+        {
+            array_shift($vars);
+            $this->isApiCall = true;
+        }
+        $this->requestVars = $vars;
         Request::setVars($this->requestVars);
     }
 }
