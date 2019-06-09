@@ -1,6 +1,4 @@
 Versie 6.0 (Trajectum)
-- Afhankelijkheden: Bootstrap geüpdatet naar 4.2.1 (#75)
-- Afhankelijkheden: jQuery geüpdatet naar 3.3.1
 - Feature: aanmaak- en wijzigingdata worden nu vastgelegd (#85)
 - Feature: aantal vrije en gereserveerde plaatsen is nu in te stellen (#45)
 - Feature: accentkleur voor knoppen en links
@@ -9,6 +7,9 @@ Versie 6.0 (Trajectum)
 - Feautre: volledige menu-editor (#73)
 - Feature: tekst gereserveerde plaatsen bij kaartverkoop in database (#46)
 - Feature: voorpagina hoeft niet meer de eerste pagina in het menu te zijn (#67)
+- Technisch: Bootstrap geüpdatet naar 4.2.1 (#75)
+- Technisch: gebruik van Twig-templates (#10)
+- Technisch: jQuery geüpdatet naar 3.3.1
 - Verwijderd: delen en Facebookintegratie (#80)
 - Verwijderd: ideeënbus
 - Verwijderd: instelling voor extra bodycode (kan nu via PHP-includes)
