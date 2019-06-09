@@ -26,18 +26,19 @@ class LedenPagina extends Page
     {
         parent::__construct('Spelers');
         $this->addScript('/sys/js/mc-ledenpagina.js');
+        $this->addCss('/sys/css/minecraft-members.min.css');
         $this->showPrePage();
 
-        $spelers = DBConnection::doQueryAndFetchAll('SELECT * FROM minecraft_members ORDER BY level DESC, userName ASC');
+        $members = DBConnection::doQueryAndFetchAll('SELECT * FROM minecraft_members ORDER BY level DESC, userName ASC');
 
         $tePreloaden = [];
 
         $lastLevel = 4;
 
-        foreach ($spelers as $speler)
+        foreach ($members as $member)
         {
             $highestLevel = count($this->pageLevels) - 1;
-            $normalisedPageLevel = min($speler['level'], $highestLevel);
+            $normalisedPageLevel = min($member['level'], $highestLevel);
 
             for ($level = $highestLevel; $level >= 0; $level--)
             {
@@ -51,32 +52,32 @@ class LedenPagina extends Page
 
             $lastLevel = $normalisedPageLevel;
 
-            $vooraanzicht = "/minecraft/skin?vr=-10&amp;hr=20&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;user={$speler['userName']}";
-            $achteraanzicht = "/minecraft/skin?vr=-10&amp;hr=200&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;user={$speler['userName']}";
-            $tePreloaden[] = $achteraanzicht;
+            $frontView = "/minecraft/skin?vr=-10&amp;hr=20&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;user={$member['userName']}";
+            $backView = "/minecraft/skin?vr=-10&amp;hr=200&amp;hrh=0&amp;vrla=-20&amp;vrra=20&amp;vrll=15&amp;vrrl=-10&amp;ratio=4&amp;format=png&amp;user={$member['userName']}";
+            $tePreloaden[] = $backView;
 
             echo '<div class="spelerswrapper">';
             echo '<table>';
             echo '<tr><td class="avatarbox">';
 
-            echo '<img class="mc-speler-avatar" alt="Avatar van ' . $speler['realName'] . '" title="Avatar van ' . $speler['realName'] . '" src="' . $vooraanzicht . '" data-vooraanzicht="' . $vooraanzicht . '" data-achteraanzicht="' . $achteraanzicht . '" />';
+            echo '<img class="mc-speler-avatar" alt="Avatar van ' . $member['realName'] . '" title="Avatar van ' . $member['realName'] . '" src="' . $frontView . '" data-vooraanzicht="' . $frontView . '" data-achteraanzicht="' . $backView . '" />';
             echo '</td>';
             echo '<td class="spelersinfobox">';
 
-            echo '<span class="spelersnaam">' . $speler['userName'] . '</span>';
+            echo '<span class="spelersnaam">' . $member['userName'] . '</span>';
 
-            if ($speler['donor'] == 1)
+            if ($member['donor'] == 1)
             {
                 echo '<br /><span class="donor">Donateur</span>';
             }
 
-            echo '<br />Echte naam: ' . $speler['realName'];
-            echo '<br />Status: ' . $speler['status'];
+            echo '<br />Echte naam: ' . $member['realName'];
+            echo '<br />Status: ' . $member['status'];
 
-            if ($speler['level'] >= 3 && $speler['level'] <= 5)
+            if ($member['level'] >= 3 && $member['level'] <= 5)
             {
                 echo '<br />Niveau: ';
-                echo $this->level[$speler['level']];
+                echo $this->level[$member['level']];
             }
 
             echo '</td>';
@@ -86,45 +87,6 @@ class LedenPagina extends Page
         }
 
         $this->twigVars['preloadLinks'] = $tePreloaden;
-        ?>
-        <style type="text/css">
-            h2
-            {
-                border-bottom: 1px dotted;
-            }
-
-            .spelerswrapper
-            {
-                display: inline-block;
-                overflow: hidden;
-            }
-
-            .spelersnaam
-            {
-                font-family: "Trebuchet MS", Arial, sans-serif;
-                font-size: 40px;
-            }
-
-            .avatarbox
-            {
-                width: 150px;
-                padding: 10px 30px 10px 30px;
-            }
-
-            .spelersinfobox
-            {
-                width: 350px;
-                padding: 10px 10px 10px 10px;
-                vertical-align: middle;
-            }
-
-            .donor
-            {
-                font-weight: bold;
-                color: #B8860B;
-            }
-        </style>
-        <?php
 
         $this->showPostPage();
     }

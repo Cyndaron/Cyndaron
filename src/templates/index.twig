@@ -15,6 +15,9 @@
     <link href="/sys/css/lightbox.min.css?r={{ version }}" type="text/css" rel="stylesheet" />
     <link href="/sys/css/cyndaron.min.css?r={{ version }}" type="text/css" rel="stylesheet" />
     <link href="/user.css?r={{ version }}" type="text/css" rel="stylesheet" />
+    {% for extraCssScript in extraCss %}
+        <link href="{{ extraCssScript }}?r={{ version }}" type="text/css" rel="stylesheet" />
+    {% endfor %}
     {% if favicon %}
         <link rel="icon" type="{{ faviconType }}" href="{{ favicon }}">
     {% endif %}

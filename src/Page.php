@@ -28,6 +28,7 @@ class Page
     protected $title = '';
     protected $titleButtons = null;
     protected $extraScripts = [];
+    protected $extraCss = [];
     protected $websiteName = '';
     protected $body = '';
     /** @var Model $model */
@@ -117,6 +118,7 @@ class Page
         $this->twigVars['titleButtons'] = $this->titleButtons;
 
         $this->twigVars['extraScripts'] = $this->extraScripts;
+        $this->twigVars['extraCss'] = $this->extraCss;
 
         $this->twigVars['extraHead'] = '';
         if (file_exists(__DIR__ . '/../extra-head.php'))
@@ -158,8 +160,6 @@ class Page
 
     public function showPrePage()
     {
-
-
         ob_start();
     }
 
@@ -229,6 +229,11 @@ class Page
     public function addScript($script)
     {
         $this->extraScripts[] = $script;
+    }
+
+    public function addCss($script)
+    {
+        $this->extraCss[] = $script;
     }
 
     public function getMenu(): array
