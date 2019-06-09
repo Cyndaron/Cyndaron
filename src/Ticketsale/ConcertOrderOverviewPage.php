@@ -30,7 +30,7 @@ class ConcertOrderOverviewPage extends Page
                     FROM     `ticketsale_orders_tickettypes`";
         $boughtTicketTypes = DBConnection::doQueryAndFetchAll($boughtTicketTypesQuery, [$concertId]);
 
-        $this->extraScripts[] = '/src/Ticketsale/ConcertOrderOverviewPage.js';
+        $this->addScript('/src/Ticketsale/ConcertOrderOverviewPage.js');
 
         parent::__construct('Overzicht bestellingen: ' . $concert->name);
         $this->showPrePage();

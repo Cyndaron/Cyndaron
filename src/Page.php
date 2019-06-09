@@ -33,10 +33,117 @@ class Page
     /** @var Model $model */
     protected $model = null;
 
+    protected $template = 'index.twig';
+    const MAIN_TEMPLATE_DIR = __DIR__ . '/templates';
+    protected $templateDir = '';
+    protected $twig = null;
+    protected $twigVars = [];
+
     public function __construct(string $title, string $body = '')
     {
         $this->title = $title;
         $this->body = $body;
+
+        $this->setupTwig();
+    }
+
+    protected function setupTwig()
+    {
+        $this->updateTemplate();
+        $templatePaths = [self::MAIN_TEMPLATE_DIR];
+        if (file_exists($this->templateDir)) {
+            $templatePaths[] = $this->templateDir;
+        }
+        $loader = new \Twig\Loader\FilesystemLoader($templatePaths);
+        $this->twig = new \Twig\Environment($loader, [
+            'auto_reload' => true,
+            'cache' => __DIR__ . '/../cache/twig',
+        ]);
+        $ext = new TwigHelper();
+        foreach ($ext->getFunctions() as $function)
+        {
+            $this->twig->addFunction($function);
+        }
+        foreach ($ext->getFilters() as $filter)
+        {
+            $this->twig->addFilter($filter);
+        }
+    }
+
+    protected function updateTemplate()
+    {
+        $rc = new \ReflectionClass(get_called_class());
+        $this->templateDir = dirname($rc->getFileName()) . '/templates';
+        $file = str_replace('.php', '.twig', basename($rc->getFileName()));
+        if (file_exists($this->templateDir . '/' . $file)) {
+            $this->template = $file;
+        }
+    }
+
+    protected function renderSkeleton()
+    {
+        $this->websiteName = Setting::get('siteName');
+        $this->twigVars['isAdmin'] = User::isAdmin();
+        $this->twigVars['websiteName'] = $this->websiteName;
+        $this->twigVars['title'] = $this->title;
+
+        $this->twigVars['version'] = CyndaronInfo::ENGINE_VERSION;
+        if ($favicon = Setting::get('favicon'))
+        {
+            $extension = substr(strrchr($favicon, "."), 1);
+            $this->twigVars['favicon'] = $favicon;
+            $this->twigVars['faviconType'] = "image/$extension";
+        }
+        $this->twigVars['backgroundColor'] = Setting::get('backgroundColor');
+        $this->twigVars['menuColor'] = Setting::get('menuColor');
+        $this->twigVars['articleColor'] = Setting::get('articleColor');
+        $this->twigVars['accentColor'] = Setting::get('accentColor');
+
+
+
+        $this->twigVars['menu'] = $this->renderMenu();
+
+        $jumboContents = Setting::get('jumboContents');
+        $this->twigVars['showJumbo'] = $this->isFrontPage() && Setting::get('frontPageIsJumbo') && $jumboContents;
+        $this->twigVars['jumboContents'] = $jumboContents;
+
+        $this->twigVars['pageCaptionClasses'] = '';
+        if ($this->isFrontPage())
+        {
+            $this->twigVars['pageCaptionClasses'] = 'voorpagina';
+        }
+
+        $this->twigVars['pageCaption'] = $this->generateBreadcrumbs();
+        $this->twigVars['titleButtons'] = $this->titleButtons;
+
+        $this->twigVars['extraScripts'] = $this->extraScripts;
+
+        $this->twigVars['extraHead'] = '';
+        if (file_exists(__DIR__ . '/../extra-head.php'))
+        {
+            ob_start();
+            include __DIR__ . '/../extra-head.php';
+            $this->twigVars['extraHead'] = ob_get_contents();
+            ob_end_clean();
+        }
+
+        $this->twigVars['extraBodyStart'] = '';
+        if (file_exists(__DIR__ . '/../extra-body-start.php'))
+        {
+            ob_start();
+            include __DIR__ . '/../extra-body-start.php';
+            $this->twigVars['extraBodyStart'] = ob_get_contents();
+            ob_end_clean();
+        }
+
+        $this->twigVars['extraBodyEnd'] = '';
+        if (file_exists(__DIR__ . '/../extra-body-end.php'))
+        {
+            ob_start();
+            include __DIR__ . '/../extra-body-end.php';
+            $this->twigVars['extraBodyEnd'] = ob_get_contents();
+            ob_end_clean();
+        }
     }
 
     public function setExtraMeta(string $extraMeta)
@@ -51,86 +158,9 @@ class Page
 
     public function showPrePage()
     {
-        $this->websiteName = Setting::get('siteName');
-        $titel = $this->title . ' - ' . $this->websiteName;
 
-        ?>
-        <!DOCTYPE HTML>
-        <html lang="nl">
-        <head>
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <meta name="twitter:card" content="summary" />
-            <meta name="twitter:title" content="<?=$titel;?>" />
-            <meta name="twitter:description" content="Klik hier om verder te lezen..." />
-            <title><?=$titel;?></title>
-            <?php
-            printf('<link href="/contrib/Bootstrap/css/bootstrap.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSION);
-            printf('<link href="/contrib/Glyphicons/css/glyphicons.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSION);
-            printf('<link href="/sys/css/lightbox.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSION);
-            printf('<link href="/sys/css/cyndaron.min.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSION);
-            printf('<link href="/user.css?r=%s" type="text/css" rel="stylesheet" />', CyndaronInfo::ENGINE_VERSION);
-            if ($favicon = Setting::get('favicon'))
-            {
-                $extensie = substr(strrchr($favicon, "."), 1);
-                echo '<link rel="icon" type="image/' . $extensie . '" href="' . $favicon . '">';
-            }
-            ?>
-            <style type="text/css">
-                <?php
-                static::showIfSet(Setting::get('backgroundColor'), 'body.cyndaron, .lightboxOverlay { background-color: ',";}\n");
-                static::showIfSet(Setting::get('menuColor'), '.menu { background-color: ',";}\n");
-                static::showIfSet(Setting::get('menuBackground'), '.menu { background-image: url(\'',"');}\n");
-                static::showIfSet(Setting::get('articleColor'), '.inhoud { background-color: ',";}\n");
-                $accentColor = Setting::get('accentColor');
-                if ($accentColor): ?>
-                a { color: <?=$accentColor?> }
-                .btn-primary { background-color: <?=$accentColor?>; border-color: <?=$accentColor?> ;}
-                .dropdown-item.active, .dropdown-item:active { background-color: <?=$accentColor?>; }
 
-                <?php endif; ?>
-            </style>
-            <?php
-            if (file_exists(__DIR__ . '/../extra-head.php'))
-            {
-                include __DIR__ . '/../extra-head.php';
-            }
-            ?>
-        </head>
-        <body class="cyndaron" data-artikelkleur="<?=Setting::get('artikelkleur');?>"><?php
-        if (file_exists(__DIR__ . '/../extra-body-start.php'))
-        {
-            include __DIR__ . '/../extra-body-start.php';
-        }
-
-        echo '
-        <div class="paginacontainer">
-        <header class="menucontainer">';
-
-        $this->showMenu();
-
-        echo '</header>';
-
-        if ($this->isFrontPage() && Setting::get('frontPageIsJumbo') && Setting::get('jumboContents'))
-        {
-            echo '<div class="welkom-jumbo">';
-            echo Setting::get('jumboContents');
-            echo '</div>';
-        }
-
-        echo '<main class="inhoudcontainer"><article class="inhoud">';
-
-        $class = '';
-        if ($this->isFrontPage())
-        {
-            $class = 'voorpagina';
-        }
-
-        $title = $this->generateBreadcrumbs();
-
-        echo '<div class="paginatitel ' . $class . '"><h1 style="display: inline; margin-right:8px;">' . $title . '</h1>';
-        static::showIfSetAndAdmin($this->titleButtons, '<div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">', '</div>');
-        echo "</div>\n";
+        ob_start();
     }
 
     public function isFrontPage(): bool
@@ -142,111 +172,32 @@ class Page
         return false;
     }
 
-    protected function showMenu()
+    protected function renderMenu()
     {
         $logo = Setting::get('logo');
-        $inverseClass = (Setting::get('menuTheme') == 'dark') ? 'navbar-dark' : 'navbar-light';
-        $navbar = $logo ? sprintf('<img alt="" src="%s"> ', $logo) : $this->websiteName;
-        ?>
-        <nav class="menu navbar navbar-expand-md <?= $inverseClass; ?>">
-            <a class="navbar-brand" href="/"><?= $navbar; ?></a>
+        $twigVars = [
+            'isLoggedIn' => User::isLoggedIn(),
+            'isAdmin' => User::isAdmin(),
+            'inverseClass' => (Setting::get('menuTheme') == 'dark') ? 'navbar-dark' : 'navbar-light',
+            'navbar' => $logo ? sprintf('<img alt="" src="%s"> ', $logo) : $this->websiteName,
+        ];
 
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        $twigVars['menuItems'] = $this->getMenu();
+        $twigVars['configMenu'] = $this->renderMenuDropdown('<span class="glyphicon glyphicon-wrench"></span>', [
+            ['link' => '/system', 'title' => '<span class="glyphicon glyphicon-cog"></span>&nbsp; Systeembeheer'],
+            ['link' => '/pagemanager', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
+            ['link' => '/menu-editor', 'title' => '<span class="glyphicon glyphicon-menu-hamburger"></span>&nbsp; Menu bewerken'],
+            ['link' => '/user/manager', 'title' => '<span class="glyphicon glyphicon-user"></span>&nbsp; Gebruikersbeheer'],
+        ]);
+        $twigVars['userMenu'] = $this->renderMenuDropdown('<span class="glyphicon glyphicon-user"></span>', [
+            ['link' => '', 'title' => $_SESSION['naam'] ?? ''],
+            ['link' => '/user/logout', 'title' => '<span class="glyphicon glyphicon-log-out"></span> Uitloggen']
+        ]);
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
+        $twigVars['notifications'] = User::getNotifications();
 
-                    <?php
-                    $menuarray = $this->getMenu();
+        return $this->twig->render('menu.twig', $twigVars);
 
-                    if (count($menuarray) > 0)
-                    {
-                        foreach ($menuarray as $menuitem)
-                        {
-                            if (strpos($menuitem['link'], '/category/') === 0 && $menuitem['isDropdown'])
-                            {
-                                $this->printCategoryDropdown($menuitem);
-                            }
-                            else
-                            {
-                                if ($this->menuItemIsCurrentPage($menuitem['link']))
-                                {
-                                    echo '<li class="nav-item active">';
-                                }
-                                else
-                                {
-                                    echo '<li class="nav-item">';
-                                }
-
-                                if ($menuitem['isImage'])
-                                {
-                                    printf('<a class="nav-link img-in-menuitem" href="%1$s"><img src="%2$s" alt="%1$s"/></a></li>', $menuitem['link'], $menuitem['naam']);
-                                }
-                                else
-                                {
-                                    echo '<a class="nav-link" href="' . $menuitem['link'] . '">' . $menuitem['naam'] . '</a></li>';
-                                }
-                            }
-                        }
-                    }
-                    ?>
-
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <?php
-                    if (User::isLoggedIn())
-                    {
-                        if (User::isAdmin())
-                        {
-                            ?>
-                            <li class="nav-item">
-                                <a class="nav-link" title="Nieuwe statische pagina aanmaken" href="/editor/sub"><span
-                                            class="glyphicon glyphicon-plus"></span></a>
-                            </li>
-                            <?php
-
-                            $this->printMenuDropdown('<span class="glyphicon glyphicon-wrench"></span>', [
-                                ['link' => '/system', 'title' => '<span class="glyphicon glyphicon-cog"></span>&nbsp; Systeembeheer'],
-                                ['link' => '/pagemanager', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
-                                ['link' => '/menu-editor', 'title' => '<span class="glyphicon glyphicon-menu-hamburger"></span>&nbsp; Menu bewerken'],
-                                ['link' => '/user/manager', 'title' => '<span class="glyphicon glyphicon-user"></span>&nbsp; Gebruikersbeheer'],
-                            ]);
-                        }
-
-                        $this->printMenuDropdown('<span class="glyphicon glyphicon-user"></span>', [
-                            ['link' => '', 'title' => $_SESSION['naam']],
-                            ['link' => '/user/logout', 'title' => '<span class="glyphicon glyphicon-log-out"></span> Uitloggen']
-                        ]);
-                    }
-                    else
-                    {
-                        ?>
-                        <li class="nav-item">
-                            <a class="nav-link" title="Inloggen" href="/user/login"><span class="glyphicon glyphicon-lock"></span></a>
-                        </li>
-                        <?php
-                    }
-                    ?>
-                </ul>
-            </div>
-        </nav>
-
-        <?php
-        $meldingen = User::getNotifications();
-        if ($meldingen)
-        {
-            echo '<div class="meldingencontainer">';
-            echo '<div class="meldingen alert alert-info"><ul>';
-
-            foreach ($meldingen as $melding)
-            {
-                echo '<li>' . $melding . '</li>';
-            }
-
-            echo '</ul></div></div>';
-        }
     }
 
     private function menuItemIsCurrentPage(string $menuItem): bool
@@ -262,47 +213,17 @@ class Page
 
     public function showPostPage()
     {
-        // article: inhoud. main: inhoudcontainer. div: paginacontainer.
-        ?>
-        </article></main></div>
+        $this->twigVars['contents'] = ob_get_contents();
+        ob_end_clean();
 
-        <div id="confirm-dangerous" class="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Weet u het zeker?</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Sluiten">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
+        $this->renderSkeleton();
 
-                    </div>
-                    <div class="modal-footer">
-                        <button id="confirm-dangerous-no" type="button" class="btn btn-outline-cyndaron" data-dismiss="modal">Annuleren</button>
-                        <button id="confirm-dangerous-yes" type="button" class="btn btn-danger">Verwijderen</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script type="text/javascript" src="/contrib/jQuery/jquery-3.3.1.min.js"></script>
-        <script type="text/javascript" src="/contrib/Bootstrap/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="/sys/js/cyndaron.js"></script>
-    <?php
-    foreach ($this->extraScripts as $extraScript)
-    {
-        printf('<script type="text/javascript" src="%s"></script>', $extraScript);
+        echo $this->twig->render($this->template, $this->twigVars);
     }
-    if (file_exists(__DIR__ . '/../extra-body-end.php'))
-    {
-        include __DIR__ . '/../extra-body-end.php';
-    }
-    ?>
 
-        </body>
-        </html>
-        <?php
+    public function render()
+    {
+
     }
 
     public function addScript($script)
@@ -326,11 +247,11 @@ class Page
 
             if ($menuitem['alias'])
             {
-                $menuitem['naam'] = strtr($menuitem['alias'], [' ' => '&nbsp;']);
+                $menuitem['name'] = strtr($menuitem['alias'], [' ' => '&nbsp;']);
             }
             else
             {
-                $menuitem['naam'] = $url->getPageTitle();
+                $menuitem['name'] = $url->getPageTitle();
             }
 
             if ($menuitem['link'] == $frontPage)
@@ -341,6 +262,12 @@ class Page
             elseif (!$menuitem['isDropdown'])
             {
                 $menuitem['link'] = $url->getFriendly();
+            }
+            $menuitem['isCurrent'] = $this->menuItemIsCurrentPage($menuitem['link']);
+            $menuitem['isCategoryDropdown'] = strpos($menuitem['link'], '/category/') === 0 && $menuitem['isDropdown'];
+            if ($menuitem['isCategoryDropdown'])
+            {
+                $menuitem['categoryDropdown'] = $this->renderCategoryDropdown($menuitem);
             }
             $menuitems[] = $menuitem;
         }
@@ -377,7 +304,7 @@ class Page
         }
     }
 
-    protected function printCategoryDropdown(array $menuitem)
+    protected function renderCategoryDropdown(array $menuitem)
     {
         $id = intval(str_replace('/category/', '', $menuitem['link']));
         $pagesInCategory = DBConnection::doQueryAndFetchAll("
@@ -400,27 +327,12 @@ class Page
             $items[] = ['link' => $link, 'title' => $pagina['name']];
         }
 
-        $this->printMenuDropdown($menuitem['naam'], $items);
+        return $this->renderMenuDropdown($menuitem['name'], $items);
     }
 
-    protected function printMenuDropdown(string $title, array $items)
+    protected function renderMenuDropdown(string $title, array $items)
     {
-        ?>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?=$title;?>
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <?php foreach($items as $item): ?>
-                    <?php if (!empty($item['link'])): ?>
-                        <a class="dropdown-item" href="<?=$item['link'];?>"><?=$item['title'];?></a>
-                    <?php else: ?>
-                        <span class="dropdown-item"><i><?=$item['title'];?></i></span>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </div>
-        </li>
-        <?php
+        return $this->twig->render('menuDropdown.twig', ['dropdownTitle' => $title, 'items' => $items]);
     }
 
     public function showBody(): void

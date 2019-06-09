@@ -1,0 +1,36 @@
+{% extends "index.twig" %}
+
+{% block contents %}
+    {% if numEntries == 0 %}
+        <div class="alert alert-info">Dit album is leeg.</div>
+    {% else %}
+        {{ model.notes|raw }}
+
+        {% if numEntries == 1 %}
+            <p>Dit album bevat 1 foto. Klik op de verkleinde foto om een vergroting te zien.</p>
+        {% else %}
+            <p>Dit album bevat {{ numEntries }} foto's. Klik op de verkleinde foto's om een vergroting te zien.</p>
+        {% endif %}
+
+        <div class="fotoalbum">
+            {% for photo in photos %}
+            <figure class="fotobadge">
+
+                <a href="/{{ photo.link }}" data-lightbox="{{ model.name }}" {{ photo.dataTitleTag|raw }} data-hash="{{ photo.hash }}">
+                    {% if file_exists(photo.thumbnailLink) %}
+                        <img class="thumb" alt="{{ photo.filename }}" src="/fotoalbums/{{ albumId }}thumbnails/{{ photo.filename }}"/>
+                    {% else %}
+                        <img class="thumb" alt="{{ photo.filename }}" src="/fotoalbums/{{ albumId }}/{{ photo.filename }}" style="width:270px; height:200px"/>
+                    {% endif %}
+                </a>
+
+                {% if isAdmin %}
+                    <br/>
+                    {{ button('edit', "/editor/photo/#{photo.captionId}/#{photo.hash}", 'Bijschrift bewerken', 'Bijschrift bewerken', 16)|raw }}
+                {% endif %}
+            </figure>
+            {% endfor %}
+        </div>
+
+    {% endif %}
+{% endblock %}

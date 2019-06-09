@@ -7,6 +7,7 @@ class Modal extends Widget
 {
     public function __construct(string $id, string $title, $body, $footer, string $sizeClass = '')
     {
+        ob_start();
         ?>
         <div id="<?=$id?>" class="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog <?=$sizeClass?>" role="document">
@@ -27,5 +28,7 @@ class Modal extends Widget
             </div>
         </div>
         <?php
+        $this->code = ob_get_contents();
+        ob_end_clean();
     }
 }

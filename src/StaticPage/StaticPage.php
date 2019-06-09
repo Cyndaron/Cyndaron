@@ -7,6 +7,8 @@ use Cyndaron\User\User;
 
 class StaticPage extends Page
 {
+    protected $template = 'StaticPage.twig';
+
     public function __construct(int $id)
     {
         $connection = DBConnection::getPDO();
@@ -34,66 +36,17 @@ class StaticPage extends Page
             $controls .= sprintf('<a href="/editor/sub/%d/previous" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-lastversion"></span></a>', $id);
         }
 
+        $replies = DBConnection::doQueryAndFetchAll(
+            "SELECT *,DATE_FORMAT(created, '%d-%m-%Y') AS friendlyDate,DATE_FORMAT(created, '%H:%i') AS friendlyTime FROM sub_replies WHERE subId=? ORDER BY created ASC",
+            [$id]);
+
         parent::__construct($this->model->name);
         $this->setTitleButtons($controls);
         $this->showPrePage();
 
-        echo $this->model->text;
-
-        $prep = $connection->prepare("SELECT *,DATE_FORMAT(created, '%d-%m-%Y') AS friendlyDate,DATE_FORMAT(created, '%H:%i') AS friendlyTime FROM sub_replies WHERE subId=? ORDER BY created ASC");
-        $prep->execute([$id]);
-        $replies = $prep->fetchAll();
-        $hasReplies = count($replies) > 0;
-
-        if ($hasReplies)
-        {
-            foreach ($replies as $reply): ?>
-                <article class="card mb-2">
-                    <div class="card-header">
-                        Reactie van <strong><?=$reply['author']?></strong> op <time datetime="<?=$reply['created']?>"><?=$reply['friendlyDate']?> om <?=$reply['friendlyTime']?></time>
-                    </div>
-                    <div class="card-body">
-                        <?=$reply['text']?>
-                    </div>
-                </article>
-            <?php endforeach;
-        }
-
-        if ($hasReplies && !$allowReplies)
-        {
-            echo 'Op dit bericht kan niet (meer) worden gereageerd.<br />';
-        }
-        if ($allowReplies):
-            ?>
-            <h3>Reageren:</h3>
-            <form name="reactie" method="post" action="/sub/react/<?= $id; ?>" class="form-horizontal">
-                <div class="form-group row">
-                    <label for="author" class="col-sm-3 col-form-label">Naam: </label>
-                    <div class="col-sm-9">
-                        <input id="author" name="author" maxlength="100" class="form-control"/>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="reactie" class="col-sm-3 col-form-label">Reactie: </label>
-                    <div class="col-sm-9">
-                        <textarea style="height: 100px;" id="reactie" name="reactie" class="form-control"></textarea>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="antispam" class="col-sm-3 col-form-label">Hoeveel is de wortel uit 64?: </label>
-                    <div class="col-sm-9">
-                        <input id="antispam" name="antispam" class="form-control"/>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-sm-offset-1 col-sm-9">
-                        <input type="submit" class="btn btn-primary" value="Versturen"/>
-                    </div>
-                </div>
-                <input type="hidden" name="csrfToken" value="<?=User::getCSRFToken('sub', 'react')?>"/>
-            </form>
-            <?php
-        endif;
+        $this->twigVars['text'] = $this->model->text;
+        $this->twigVars['replies'] = $replies;
+        $this->twigVars['allowReplies'] = $allowReplies;
 
         $this->showPostPage();
     }

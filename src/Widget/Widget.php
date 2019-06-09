@@ -14,4 +14,11 @@ class Widget
 
         return '';
     }
+
+    public static function create()
+    {
+        $arguments = func_get_args();
+        $class = get_called_class();
+        return new $class(...$arguments);
+    }
 }
