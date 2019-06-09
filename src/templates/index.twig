@@ -34,6 +34,9 @@
             .dropdown-item.active, .dropdown-item:active { background-color: {{ accentColor }}; }
         {% endif %}
     </style>
+    {% for preloadLink in preloadLinks %}
+        <link rel="prefetch" href="{{ preloadLink|raw }}"/>
+    {% endfor %}
     {{ extraHead|raw }}
 </head>
 <body class="cyndaron" data-articleColor="{{ articleColor }}">

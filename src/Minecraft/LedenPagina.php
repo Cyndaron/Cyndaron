@@ -84,12 +84,8 @@ class LedenPagina extends Page
             echo '</table>';
             echo '</div>';
         }
-        $preloadUrls = '';
 
-        foreach ($tePreloaden as $image)
-        {
-            $preloadUrls .= sprintf('url(%s) ', str_replace('&amp;', '&', $image));
-        }
+        $this->twigVars['preloadLinks'] = $tePreloaden;
         ?>
         <style type="text/css">
             h2
@@ -126,12 +122,6 @@ class LedenPagina extends Page
             {
                 font-weight: bold;
                 color: #B8860B;
-            }
-
-            body:after
-            {
-                content: <?=$preloadUrls;?>;
-                display: none;
             }
         </style>
         <?php
