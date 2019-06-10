@@ -3,6 +3,7 @@ namespace Cyndaron\Category;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
+use Cyndaron\Request;
 use Cyndaron\Url;
 use Cyndaron\Util;
 
@@ -11,24 +12,30 @@ class CategoryPage extends Page
     /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct($id)
     {
-        if ($id != 'fotoboeken')
+        if ($id === '0' || $id == 'fotoboeken')
         {
-            $this->showCategoryIndex(intval($id));
+            $this->twigVars['type'] = 'photoalbums';
+            $this->showPhotoalbumsIndex();
+        }
+        elseif ($id == 'tag')
+        {
+            $this->twigVars['type'] = 'tag';
+            $this->showTagIndex(Request::getVar(2));
         }
         else
         {
-            $this->showPhotoalbumsIndex();
+            if ($id < 0)
+            {
+                header("Location: /error/404");
+                die('Incorrecte parameter ontvangen.');
+            }
+            $this->twigVars['type'] = 'subs';
+            $this->showCategoryIndex(intval($id));
         }
     }
 
     private function showCategoryIndex(int $id)
     {
-        if ($id < 0)
-        {
-            header("Location: /error/404");
-            die('Incorrecte parameter ontvangen.');
-        }
-
         $this->model = new Category($id);
         $this->model->load();
 
@@ -37,33 +44,26 @@ class CategoryPage extends Page
         $this->setTitleButtons($controls);
         $this->showPrePage();
 
-        echo $this->model->description;
+        $this->twigVars['model'] = $this->model;
 
-        $onlyShowTitles = (bool)$this->model->onlyShowTitles;
-        if ($onlyShowTitles)
+        $tags = [];
+        $pages = DBConnection::doQueryAndFetchAll('SELECT * FROM subs WHERE categoryId= ? ORDER BY id DESC', [$id]);
+        foreach ($pages as &$page)
         {
-            echo '<ul class="zonderbullets">';
-        }
+            $url = new Url('/sub/' . $page['id']);
+            $page['link'] = $url->getFriendly();
+            $page['blurb'] = html_entity_decode(Util::wordlimit(trim($page['text']), 30));
 
-        $paginas = DBConnection::doQueryAndFetchAll('SELECT * FROM subs WHERE categoryId= ? ORDER BY id DESC', [$id]);
-        foreach ($paginas as $pagina)
-        {
-            $url = new Url('/sub/' . $pagina['id']);
-            $link = $url->getFriendly();
-            if ($onlyShowTitles)
+            preg_match("/<img.*?src=\"(.*?)\".*?>/si", $page['text'], $match);
+            $page['image'] = $match[1] ?? '';
+            if ($page['tags'])
             {
-                echo '<li><h3><a href="' . $link . '">' . $pagina['name'] . '</a></h3></li>';
-            }
-            else
-            {
-                echo "\n<p><h3><a href=\"" . $link . '">' . $pagina['name'] . "</a></h3>\n";
-                echo Util::wordlimit(trim($pagina['text']), 30, "...") . '<a href="' . $link . '"><br /><i>Meer lezen...</i></a></p>';
+                $tags += explode(';', strtolower($page['tags']));
             }
         }
-        if ($onlyShowTitles)
-        {
-            echo '</ul>';
-        }
+        $this->twigVars['pages'] = $pages;
+        $this->twigVars['viewMode'] = $this->model->viewMode;
+        $this->twigVars['tags'] = $tags;
 
         $this->showPostPage();
     }
@@ -72,16 +72,48 @@ class CategoryPage extends Page
     {
         parent::__construct('Fotoalbums');
         $this->showPrePage();
-        $fotoboeken = DBConnection::doQueryAndFetchAll('SELECT * FROM photoalbums ORDER BY id DESC');
+        $photoalbums = DBConnection::doQueryAndFetchAll('SELECT * FROM photoalbums ORDER BY id DESC');
 
-        echo '<ul class="zonderbullets">';
-        foreach ($fotoboeken as $fotoboek)
+        foreach ($photoalbums as &$photoalbum)
         {
-            $url = new Url('/photoalbum/' . $fotoboek['id']);
-            $link = $url->getFriendly();
-            echo '<li><h3><a href="' . $link . '">' . $fotoboek['name'] . '</a></h3></li>';
+            $url = new Url('/photoalbum/' . $photoalbum['id']);
+            $photoalbum['link'] = $url->getFriendly();
         }
-        echo '</ul>';
+
+        $this->twigVars['pages'] = $photoalbums;
+        $this->twigVars['viewMode'] = 1;
+
+        $this->showPostPage();
+    }
+
+    private function showTagIndex($tag)
+    {
+        parent::__construct(ucfirst($tag));
+        $this->showPrePage();
+
+        $tags = [];
+        $pages = [];
+        $subs = DBConnection::doQueryAndFetchAll('SELECT * FROM subs ORDER BY id DESC');
+        foreach ($subs as $page)
+        {
+            if ($page['tags'])
+            {
+                $tagsArr = explode(';', strtolower($page['tags']));
+                $tags += $tagsArr;
+                if (in_array(strtolower($tag), $tagsArr))
+                {
+                    $url = new Url('/sub/' . $page['id']);
+                    $page['link'] = $url->getFriendly();
+                    $page['blurb'] = html_entity_decode(Util::wordlimit(trim($page['text']), 30));
+                    preg_match("/<img.*?src=\"(.*?)\".*?>/si", $page['text'], $match);
+                    $page['image'] = $match[1] ?? '';
+                    $pages[] = $page;
+                }
+            }
+        }
+        $this->twigVars['pages'] = $pages;
+        $this->twigVars['tags'] = $tags;
+        $this->twigVars['viewMode'] = 2;
 
         $this->showPostPage();
     }

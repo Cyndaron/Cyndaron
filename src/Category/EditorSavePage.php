@@ -14,7 +14,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $category->loadIfIdIsSet();
         $category->name = Request::unsafePost('titel');
         $category->description = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
-        $category->onlyShowTitles = (bool)Request::unsafePost('alleentitel');
+        $category->viewMode = Request::unsafePost('alleentitel');
         $category->categoryId = intval(Request::post('categoryId'));
         $category->showBreadcrumbs = (bool)Request::post('showBreadcrumbs');
         $category->save();

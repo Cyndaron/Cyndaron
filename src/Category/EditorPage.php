@@ -23,7 +23,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     {
         $checked = false;
         if ($this->id)
-            $checked = (bool)DBConnection::doQueryAndFetchOne('SELECT onlyShowTitles FROM categories WHERE id=?', [$this->id]);
+            $checked = (bool)DBConnection::doQueryAndFetchOne('SELECT viewMode FROM categories WHERE id=?', [$this->id]);
         $this->showCheckbox('alleentitel', 'Toon alleen titels', $checked);
     }
 }

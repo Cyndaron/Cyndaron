@@ -106,7 +106,7 @@ class MigrateController extends Controller
         DBConnection::doQuery("ALTER TABLE `categories` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `categorieid`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`;");
         DBConnection::doQuery("ALTER TABLE `categories` CHANGE `naam` `name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;");
         DBConnection::doQuery("ALTER TABLE `categories` CHANGE `categorieid` `categoryId` INT(11) NULL DEFAULT NULL;");
-        DBConnection::doQuery("ALTER TABLE `categories` CHANGE `alleentitel` `onlyShowTitles` TINYINT(1) NOT NULL DEFAULT '0';");
+        DBConnection::doQuery("ALTER TABLE `categories` CHANGE `alleentitel` `viewMode` TINYINT(1) NOT NULL DEFAULT '0';");
         DBConnection::doQuery("ALTER TABLE `categories` CHANGE `beschrijving` `description` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;");
         DBConnection::doQuery("ALTER TABLE `categories` ADD `showBreadcrumbs` TINYINT(1) NOT NULL DEFAULT '0' AFTER `categoryId`;");
 
@@ -121,7 +121,7 @@ class MigrateController extends Controller
         DBConnection::doQuery("ALTER TABLE `menu` CONVERT TO CHARACTER SET utf8mb4  COLLATE utf8mb4_unicode_ci;");
         DBConnection::doQuery("ALTER TABLE `menu` CHANGE `volgorde` `id` INT(11) NOT NULL AUTO_INCREMENT;");
         DBConnection::doQuery("ALTER TABLE `menu` CHANGE `link` `link` VARCHAR(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL; ");
-        DBConnection::doQuery("ALTER TABLE `menu` CHANGE `alias` `alias` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL; ");
+        DBConnection::doQuery("ALTER TABLE `menu` CHANGE `alias` `alias` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL; ");
         DBConnection::doQuery("ALTER TABLE `menu` ADD `priority` INT NULL DEFAULT '0' AFTER `isImage`; ");
 
         DBConnection::doQuery("ALTER TABLE `friendlyurls` CONVERT TO CHARACTER SET utf8mb4  COLLATE utf8mb4_unicode_ci;");

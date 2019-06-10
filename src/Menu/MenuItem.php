@@ -12,9 +12,9 @@ class MenuItem extends Model
     const TABLE_FIELDS = ['link', 'alias', 'isDropdown', 'isImage', 'priority'];
 
     public $link;
-    public $alias;
-    public $isDropdown;
-    public $isImage;
+    public $alias = null;
+    public $isDropdown = false;
+    public $isImage = false;
     public $priority;
 
     public function save(): bool

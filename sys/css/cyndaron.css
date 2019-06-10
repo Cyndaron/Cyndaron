@@ -54,6 +54,12 @@ a:hover
     margin-bottom: 10px;
 }
 
+.paginatitel h1
+{
+    display: inline;
+    margin-right:8px;
+}
+
 h1, h2, h3, h4, h5, h6
 {
     font-family: "Trebuchet MS", Arial, sans-serif;
@@ -461,3 +467,42 @@ button.aantalKaarten
     border-right: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6;
 }
+
+.category-blockview
+{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.category-block
+{
+    width: 320px;
+    margin: 10px;
+}
+
+.category-block a
+{
+    color: black;
+}
+
+.category-block h3
+{
+    margin-top: 15px;
+}
+
+#category-container
+{
+    display: flex;
+}
+
+#category-main
+{
+    flex-grow: 1;
+}
+
+#category-tags
+{
+    width: 250px;
+    margin-left: 15px;
+}
+

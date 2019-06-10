@@ -44,7 +44,11 @@ class CategoryController extends Controller
             case 'addtomenu':
                 $menuItem = new MenuItem();
                 $menuItem->link = '/category/' . $id;
-                $menuItem->save();
+                $result = $menuItem->save();
+                if ($result === false)
+                {
+                    $return = DBConnection::errorInfo();
+                }
                 break;
         }
 

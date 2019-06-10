@@ -73,12 +73,12 @@ abstract class EditorSavePage
 
         $image = str_replace('base64', '', $image);
         $image = base64_decode(str_replace(' ', '+', $image));
-        $uploadDir = './afb/via-editor/';
+        $uploadDir = 'afb/via-editor/';
         $destinationFilename = $uploadDir . date('c') . '-' . md5($image) . '.' . $extensie;
         @mkdir($uploadDir, 0777, true);
         file_put_contents($destinationFilename, $image);
 
-        return 'src="' . $destinationFilename . '"';
+        return 'src="/' . $destinationFilename . '"';
     }
 }
 
