@@ -152,8 +152,11 @@ class Model
         return ($result === false) ? false : true;
     }
 
-    private function mangleVar($var): string
+    private function mangleVar($var): ?string
     {
+        if ($var === null)
+            return null;
+
         if (is_bool($var))
             $var = (int)$var;
         return (string)$var;

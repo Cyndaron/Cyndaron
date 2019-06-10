@@ -68,7 +68,7 @@ class Router
             $this->updateRequestVars((string)$frontpage);
         }
         // Known friendly URL
-        elseif ($url = DBConnection::doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$this->requestVars[0]]))
+        elseif ($url = DBConnection::doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$request]))
         {
             /** @noinspection PhpStrictTypeCheckingInspection */
             $this->updateRequestVars($this->rewriteFriendlyUrl(new Url($url)));
@@ -131,13 +131,13 @@ class Router
         $qmPos = strpos($ufUrl, '?');
         if ($qmPos !== false)
         {
-            $bestand = substr($ufUrl, 0, $qmPos);
+            $file = substr($ufUrl, 0, $qmPos);
         }
         else
         {
-            $bestand = $ufUrl;
+            $file = $ufUrl;
         }
-        return $bestand;
+        return $file;
     }
 
     /**

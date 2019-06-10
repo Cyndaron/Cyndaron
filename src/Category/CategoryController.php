@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Category;
 
 use Cyndaron\Controller;
+use Cyndaron\DBConnection;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request;
 
@@ -18,13 +19,17 @@ class CategoryController extends Controller
     protected function routePost()
     {
         $id = intval(Request::getVar(2));
+        $return = [];
 
         switch ($this->action)
         {
             case 'add':
                 $category = new Category(null);
                 $category->name = Request::post('name');
-                $category->save();
+                $result = $category->save();
+                if ($result === false) {
+                    $return = DBConnection::errorInfo();
+                }
                 break;
             case 'edit':
                 $category = new Category($id);
@@ -43,6 +48,6 @@ class CategoryController extends Controller
                 break;
         }
 
-        echo json_encode([]);
+        echo json_encode($return);
     }
 }
