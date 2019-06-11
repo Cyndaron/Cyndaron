@@ -264,14 +264,14 @@ class PageManagerPage extends Page
             <tbody>
             <?php foreach ($mailforms as $mailform):?>
                 <tr>
-                    <td><?=$mailform['id']?></td>
+                    <td><?=$mailform->id?></td>
                     <td>
-                        <?=$mailform['name']?>
+                        <?=$mailform->name?>
                     </td>
                     <td>
                         <div class="btn-group">
-                            <a class="btn btn-outline-cyndaron btn-sm" href="/editor/mailform/<?=$mailform['id']?>"><span class="glyphicon glyphicon-pencil" title="Bewerk dit mailformulier"></span></a>
-                            <button class="btn btn-danger btn-sm pm-delete" data-type="mailform" data-id="<?=$mailform['id'];?>" data-csrf-token="<?=User::getCSRFToken('mailform', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit mailformulier"></span></button>
+                            <a class="btn btn-outline-cyndaron btn-sm" href="/editor/mailform/<?=$mailform->id?>"><span class="glyphicon glyphicon-pencil" title="Bewerk dit mailformulier"></span></a>
+                            <button class="btn btn-danger btn-sm pm-delete" data-type="mailform" data-id="<?=$mailform->id;?>" data-csrf-token="<?=User::getCSRFToken('mailform', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit mailformulier"></span></button>
                         </div>
 
                     </td>
@@ -300,16 +300,16 @@ class PageManagerPage extends Page
             <tbody>
                 <?php foreach ($concerts as $concert):?>
                 <tr>
-                    <td><?=$concert['id']?></td>
+                    <td><?=$concert->id?></td>
                     <td>
-                        <?=$concert['name']?>
-                        (<a href="/concert/order/<?=$concert['id']?>">bestelpagina</a>,
-                        <a href="/concert/viewOrders/<?=$concert['id']?>">overzicht bestellingen</a>)
+                        <?=$concert->name?>
+                        (<a href="/concert/order/<?=$concert->id?>">bestelpagina</a>,
+                        <a href="/concert/viewOrders/<?=$concert->id?>">overzicht bestellingen</a>)
                     </td>
                     <td>
                         <div class="btn-group">
-                            <a class="btn btn-outline-cyndaron btn-sm" href="/editor/concert/<?=$concert['id']?>"><span class="glyphicon glyphicon-pencil" title="Bewerk dit concert"></span></a>
-                            <button class="btn btn-danger btn-sm pm-delete" data-type="concert" data-id="<?=$concert['id'];?>" data-csrf-token="<?=User::getCSRFToken('concert', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit concert"></span></button>
+                            <a class="btn btn-outline-cyndaron btn-sm" href="/editor/concert/<?=$concert->id?>"><span class="glyphicon glyphicon-pencil" title="Bewerk dit concert"></span></a>
+                            <button class="btn btn-danger btn-sm pm-delete" data-type="concert" data-id="<?=$concert->id;?>" data-csrf-token="<?=User::getCSRFToken('concert', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit concert"></span></button>
                         </div>
 
                     </td>

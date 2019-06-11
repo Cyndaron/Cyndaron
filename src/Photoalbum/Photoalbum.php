@@ -5,6 +5,7 @@ namespace Cyndaron\Photoalbum;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Model;
+use Cyndaron\Url;
 use Exception;
 
 class Photoalbum extends Model
@@ -47,5 +48,11 @@ class Photoalbum extends Model
         {
             DBConnection::doQueryAndFetchOne('UPDATE photoalbums SET `showBreadcrumbs`=? WHERE id=?', [(int)$showBreadcrumbs, $id]);
         }
+    }
+
+    public function getFriendlyUrl()
+    {
+        $url = new Url('/photoalbum/' . $this->id);
+        return $url->getFriendly();
     }
 }

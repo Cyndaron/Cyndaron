@@ -3,6 +3,8 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Model;
+use Cyndaron\Url;
+use Cyndaron\Util;
 use Exception;
 
 class StaticPageModel extends Model
@@ -49,11 +51,31 @@ class StaticPageModel extends Model
 
     public function getTagList(): array
     {
-        return explode(';', $this->tags);
+        if (empty($this->tags))
+            return [];
+
+        return explode(';', strtolower($this->tags));
     }
 
-    public function setTagList(array $tags)
+    public function setTagList(array $tags): void
     {
         $this->tags = implode(';', $tags);
+    }
+
+    public function getFriendlyUrl(): string
+    {
+        $url = new Url('/sub/' . $this->id);
+        return $url->getFriendly();
+    }
+
+    public function getBlurb(): string
+    {
+        return html_entity_decode(Util::wordlimit(trim($this->text), 30));
+    }
+
+    public function getImage(): string
+    {
+        preg_match("/<img.*?src=\"(.*?)\".*?>/si", $this->text, $match);
+        return $page['image'] = $match[1] ?? '';
     }
 }

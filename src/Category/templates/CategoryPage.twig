@@ -9,26 +9,26 @@
         <div class="category-listview">
         {% for page in pages %}
             <div>
-                <h3><a href="{{ page.link }}">{{ page.name }}</a></h3>
-                {{ page.blurb }} <a href="{{ page.link }}"><br /><i>Meer lezen…</i></a>
+                <h3><a href="{{ page.getFriendlyUrl() }}">{{ page.name }}</a></h3>
+                {{ page.getBlurb() }} <a href="{{ page.getFriendlyUrl() }}"><br /><i>Meer lezen…</i></a>
             </div>
         {% endfor %}
         </div>
     {% elseif viewMode == 1 %}
     <ul class="zonderbullets">
         {% for page in pages %}
-            <li><h3><a href="{{ page.link }}">{{ page.name }}</a></h3></li>
+            <li><h3><a href="{{ page.getFriendlyUrl() }}">{{ page.name }}</a></h3></li>
         {% endfor %}
     </ul>
     {% else %}
         <div class="category-blockview">
             {% for page in pages %}
                 <div class="category-block">
-                    <a href="{{ page.link }}">
-                        <img src="{{ page.image }}" alt=""/>
+                    <a href="{{ page.getFriendlyUrl() }}">
+                        <img src="{{ page.getImage() }}" alt=""/>
                     </a>
-                    <h3><a href="{{ page.link }}">{{ page.name }}</a></h3>
-                    <a href="{{ page.link }}">{{ page.blurb }}</a>
+                    <h3><a href="{{ page.getFriendlyUrl() }}">{{ page.name }}</a></h3>
+                    <a href="{{ page.getFriendlyUrl() }}">{{ page.getBlurb() }}</a>
                 </div>
             {% endfor %}
         </div>

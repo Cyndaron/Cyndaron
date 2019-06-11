@@ -3,7 +3,9 @@ namespace Cyndaron\Category;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
+use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request;
+use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url;
 use Cyndaron\Util;
 
@@ -47,21 +49,16 @@ class CategoryPage extends Page
         $this->twigVars['model'] = $this->model;
 
         $tags = [];
-        $pages = DBConnection::doQueryAndFetchAll('SELECT * FROM subs WHERE categoryId= ? ORDER BY id DESC', [$id]);
-        foreach ($pages as &$page)
+        $subs = StaticPageModel::fetchAll(['categoryId= ?'], [$id], 'ORDER BY id DESC');
+        foreach ($subs as $sub)
         {
-            $url = new Url('/sub/' . $page['id']);
-            $page['link'] = $url->getFriendly();
-            $page['blurb'] = html_entity_decode(Util::wordlimit(trim($page['text']), 30));
-
-            preg_match("/<img.*?src=\"(.*?)\".*?>/si", $page['text'], $match);
-            $page['image'] = $match[1] ?? '';
-            if ($page['tags'])
+            $tagList = $sub->getTagList();
+            if (count($tagList) > 0)
             {
-                $tags += explode(';', strtolower($page['tags']));
+                $tags += $tagList;
             }
         }
-        $this->twigVars['pages'] = $pages;
+        $this->twigVars['pages'] = $subs;
         $this->twigVars['viewMode'] = $this->model->viewMode;
         $this->twigVars['tags'] = $tags;
 
@@ -72,14 +69,7 @@ class CategoryPage extends Page
     {
         parent::__construct('Fotoalbums');
         $this->showPrePage();
-        $photoalbums = DBConnection::doQueryAndFetchAll('SELECT * FROM photoalbums ORDER BY id DESC');
-
-        foreach ($photoalbums as &$photoalbum)
-        {
-            $url = new Url('/photoalbum/' . $photoalbum['id']);
-            $photoalbum['link'] = $url->getFriendly();
-        }
-
+        $photoalbums = Photoalbum::fetchAll([], [], 'ORDER BY id DESC');
         $this->twigVars['pages'] = $photoalbums;
         $this->twigVars['viewMode'] = 1;
 
@@ -93,21 +83,16 @@ class CategoryPage extends Page
 
         $tags = [];
         $pages = [];
-        $subs = DBConnection::doQueryAndFetchAll('SELECT * FROM subs ORDER BY id DESC');
-        foreach ($subs as $page)
+        $subs = StaticPageModel::fetchAll([], [], 'ORDER BY id DESC');
+        foreach ($subs as $sub)
         {
-            if ($page['tags'])
+            $tagList = $sub->getTagList();
+            if ($tagList)
             {
-                $tagsArr = explode(';', strtolower($page['tags']));
-                $tags += $tagsArr;
-                if (in_array(strtolower($tag), $tagsArr))
+                $tags += $tagList;
+                if (in_array(strtolower($tag), $tagList))
                 {
-                    $url = new Url('/sub/' . $page['id']);
-                    $page['link'] = $url->getFriendly();
-                    $page['blurb'] = html_entity_decode(Util::wordlimit(trim($page['text']), 30));
-                    preg_match("/<img.*?src=\"(.*?)\".*?>/si", $page['text'], $match);
-                    $page['image'] = $match[1] ?? '';
-                    $pages[] = $page;
+                    $pages[] = $sub;
                 }
             }
         }

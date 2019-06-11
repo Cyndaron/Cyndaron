@@ -73,9 +73,28 @@ class Model
         return true;
     }
 
-    public static function fetchAll()
+    /**
+     * @param array $where
+     * @param array $args
+     * @param string $afterWhere
+     * @return static[]
+     */
+    public static function fetchAll(array $where = [], array $args = [], string $afterWhere = '')
     {
-        return DBConnection::doQueryAndFetchAll('SELECT * FROM ' . static::TABLE);
+        $whereString = '';
+        if (count($where) > 0)
+        {
+            $whereString = 'WHERE ' . implode(' AND ', $where);
+        }
+        $results = DBConnection::doQueryAndFetchAll('SELECT * FROM ' . static::TABLE . ' ' . $whereString . ' ' . $afterWhere, $args);
+        $ret = [];
+        foreach ($results as $result)
+        {
+            $obj = new static((int)$result['id']);
+            $obj->updateFromArray($result);
+            $ret[] = $obj;
+        }
+        return $ret;
     }
 
     public function asArray(): array
