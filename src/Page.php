@@ -81,7 +81,7 @@ class Page
         $rc = new \ReflectionClass(get_called_class());
         $this->templateDir = dirname($rc->getFileName()) . '/templates';
         $file = str_replace('.php', '.twig', basename($rc->getFileName()));
-        if (file_exists($this->templateDir . '/' . $file)) {
+        if (empty($this->template) && file_exists($this->templateDir . '/' . $file)) {
             $this->template = $file;
         }
     }

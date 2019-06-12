@@ -1,0 +1,10 @@
+{% extends "index.twig" %}
+{% from "widget.twig" import pageTabs %}
+
+{% block contents %}
+    {{ pageTabs(pageTabs, '/system/', currentPage) }}
+
+    <div class="container-fluid tab-contents">
+        {{ phpinfo|raw }}
+    </div>
+{% endblock %}

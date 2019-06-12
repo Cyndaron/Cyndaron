@@ -14,6 +14,8 @@ class TwigHelper extends AbstractExtension
             new TwigFunction('getSetting', [\Cyndaron\Setting::class, 'get']),
             new TwigFunction('button', [\Cyndaron\Widget\Button::class, 'create']),
             new TwigFunction('file_exists', 'file_exists'),
+            new TwigFunction('ltrim', 'ltrim'),
+            new TwigFunction('rtrim', 'rtrim'),
         ];
     }
 

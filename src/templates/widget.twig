@@ -18,3 +18,13 @@
         </div>
     </div>
 {% endmacro %}
+
+{% macro pageTabs(subPages, urlPrefix = '', currentPage = '') %}
+    <ul class="nav nav-tabs">
+        {% for link, title in subPages %}
+        <li role="presentation" class="nav-item">
+            <a class="nav-link {% if link == currentPage %}active{% endif %}" href="{{ urlPrefix }}{{ rtrim(link, '/') }}">{{ title }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
