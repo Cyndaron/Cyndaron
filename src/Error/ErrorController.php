@@ -29,16 +29,12 @@ class ErrorController extends Controller
             $error = static::KNOWN_ERRORS[$this->action];
             header($error['httpStatus']);
             $page = new Page($error['pageTitle'], $error['notification']);
-            $page->showPrePage();
-            $page->showBody();
-            $page->showPostPage();
+            $page->render();
         }
         else
         {
             $page = new Page('Onbekende fout', 'Er is een onbekende fout opgetreden. Code: ' . $this->action);
-            $page->showPrePage();
-            $page->showBody();
-            $page->showPostPage();
+            $page->render();
         }
     }
 }

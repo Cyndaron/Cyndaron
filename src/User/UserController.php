@@ -62,16 +62,12 @@ class UserController extends Controller
         catch (IncorrectCredentials $e)
         {
             $page = new Page('Inloggen mislukt', $e->getMessage());
-            $page->showPrePage();
-            $page->showBody();
-            $page->showPostPage();
+            $page->render();
         }
         catch (Exception $e)
         {
             $page = new Page('Inloggen mislukt', 'Onbekende fout: ' . $e->getMessage());
-            $page->showPrePage();
-            $page->showBody();
-            $page->showPostPage();
+            $page->render();
         }
     }
 

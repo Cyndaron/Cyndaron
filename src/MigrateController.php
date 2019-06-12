@@ -25,9 +25,7 @@ class MigrateController extends Controller
             $method = static::VERSIONS[$version];
             $this->$method();
             $page = new Page('Upgrade naar versie ' . $version, 'De upgrade is voltooid.');
-            $page->showPrePage();
-            $page->showBody();
-            $page->showPostPage();
+            $page->render();
         }
     }
 

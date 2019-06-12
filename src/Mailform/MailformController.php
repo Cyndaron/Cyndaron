@@ -28,14 +28,10 @@ class MailformController extends Controller
         catch (Exception $e)
         {
             $page = new Page('Formulier versturen mislukt', $e->getMessage());
-            $page->showPrePage();
-            $page->showBody();
-            $page->showPostPage();
+            $page->render();
         }
         $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
-        $page->showPrePage();
-        $page->showBody();
-        $page->showPostPage();
+        $page->render();
 
     }
 

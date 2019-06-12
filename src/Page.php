@@ -3,7 +3,11 @@
 namespace Cyndaron;
 
 use Cyndaron\Category\Category;
+use Cyndaron\Menu\Menu;
+use Cyndaron\Menu\MenuItem;
 use Cyndaron\User\User;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 /*
  * Copyright © 2009-2017, Michael Steenbeek
@@ -37,6 +41,7 @@ class Page
     protected $template = 'index.twig';
     const MAIN_TEMPLATE_DIR = __DIR__ . '/templates';
     protected $templateDir = '';
+    /** @var $twig Environment */
     protected $twig = null;
     protected $twigVars = [];
 
@@ -55,8 +60,8 @@ class Page
         if (file_exists($this->templateDir)) {
             $templatePaths[] = $this->templateDir;
         }
-        $loader = new \Twig\Loader\FilesystemLoader($templatePaths);
-        $this->twig = new \Twig\Environment($loader, [
+        $loader = new FilesystemLoader($templatePaths);
+        $this->twig = new Environment($loader, [
             'auto_reload' => true,
             'cache' => __DIR__ . '/../cache/twig',
         ]);
@@ -99,8 +104,6 @@ class Page
         $this->twigVars['menuColor'] = Setting::get('menuColor');
         $this->twigVars['articleColor'] = Setting::get('articleColor');
         $this->twigVars['accentColor'] = Setting::get('accentColor');
-
-
 
         $this->twigVars['menu'] = $this->renderMenu();
 
@@ -183,32 +186,21 @@ class Page
         ];
 
         $twigVars['menuItems'] = $this->getMenu();
-        $twigVars['configMenu'] = $this->renderMenuDropdown('<span class="glyphicon glyphicon-wrench"></span>', [
-            ['link' => '/system', 'title' => '<span class="glyphicon glyphicon-cog"></span>&nbsp; Systeembeheer'],
-            ['link' => '/pagemanager', 'title' => '<span class="glyphicon glyphicon-th-list"></span>&nbsp; Pagina-overzicht'],
-            ['link' => '/menu-editor', 'title' => '<span class="glyphicon glyphicon-menu-hamburger"></span>&nbsp; Menu bewerken'],
-            ['link' => '/user/manager', 'title' => '<span class="glyphicon glyphicon-user"></span>&nbsp; Gebruikersbeheer'],
-        ]);
-        $twigVars['userMenu'] = $this->renderMenuDropdown('<span class="glyphicon glyphicon-user"></span>', [
+        $twigVars['configMenuItems'] = [
+            ['link' => '/system', 'title' => 'Systeembeheer', 'icon' => 'cog'],
+            ['link' => '/pagemanager', 'title' => 'Pagina-overzicht', 'icon' => 'th-list'],
+            ['link' => '/menu-editor', 'title' => 'Menu bewerken', 'icon' => 'menu-hamburger'],
+            ['link' => '/user/manager', 'title' => 'Gebruikersbeheer', 'icon' => 'user'],
+        ];
+        $twigVars['userMenuItems'] = [
             ['link' => '', 'title' => $_SESSION['naam'] ?? ''],
-            ['link' => '/user/logout', 'title' => '<span class="glyphicon glyphicon-log-out"></span> Uitloggen']
-        ]);
+            ['link' => '/user/logout', 'title' => 'Uitloggen', 'icon' => 'log-out']
+        ];
 
         $twigVars['notifications'] = User::getNotifications();
 
         return $this->twig->render('menu.twig', $twigVars);
 
-    }
-
-    private function menuItemIsCurrentPage(string $menuItem): bool
-    {
-        // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
-        if ($menuItem == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($menuItem == '/' && $_SERVER['REQUEST_URI'] === '/'))
-        {
-            return true;
-        }
-
-        return false;
     }
 
     public function showPostPage()
@@ -223,7 +215,9 @@ class Page
 
     public function render()
     {
-
+        $this->showPrePage();
+        $this->showBody();
+        $this->showPostPage();
     }
 
     public function addScript($script)
@@ -242,41 +236,7 @@ class Page
         {
             return [];
         }
-        $menu = DBConnection::doQueryAndFetchAll('SELECT * FROM menu ORDER BY priority, id;');
-        $menuitems = [];
-        $frontPage = Setting::get('frontPage');
-
-        foreach ($menu as $menuitem)
-        {
-            $url = new Url($menuitem['link']);
-
-            if ($menuitem['alias'])
-            {
-                $menuitem['name'] = strtr($menuitem['alias'], [' ' => '&nbsp;']);
-            }
-            else
-            {
-                $menuitem['name'] = $url->getPageTitle();
-            }
-
-            if ($menuitem['link'] == $frontPage)
-            {
-                $menuitem['link'] = '/';
-            }
-            // For dropdowns, this is not necessary and it makes detection harder down the line.
-            elseif (!$menuitem['isDropdown'])
-            {
-                $menuitem['link'] = $url->getFriendly();
-            }
-            $menuitem['isCurrent'] = $this->menuItemIsCurrentPage($menuitem['link']);
-            $menuitem['isCategoryDropdown'] = strpos($menuitem['link'], '/category/') === 0 && $menuitem['isDropdown'];
-            if ($menuitem['isCategoryDropdown'])
-            {
-                $menuitem['categoryDropdown'] = $this->renderCategoryDropdown($menuitem);
-            }
-            $menuitems[] = $menuitem;
-        }
-        return $menuitems;
+        return MenuItem::fetchAll([], [], 'ORDER BY priority, id');
     }
 
     public static function showIfSet($string, $before = '', $after = '')
@@ -307,37 +267,6 @@ class Page
             echo $string;
             echo $after;
         }
-    }
-
-    protected function renderCategoryDropdown(array $menuitem)
-    {
-        $id = intval(str_replace('/category/', '', $menuitem['link']));
-        $pagesInCategory = DBConnection::doQueryAndFetchAll("
-            SELECT * FROM
-            (
-                SELECT 'sub' AS type, id, name FROM subs WHERE categoryId=?
-                UNION
-                SELECT 'photoalbum' AS type, id, name FROM photoalbums WHERE categoryId=?
-                UNION
-                SELECT 'category' AS type, id, name FROM categories WHERE categoryId=?
-            ) AS one
-            ORDER BY name ASC;",
-            [$id, $id, $id]);
-
-        $items = [];
-        foreach ($pagesInCategory as $pagina)
-        {
-            $url = new Url(sprintf('/%s/%d', $pagina['type'], $pagina['id']));
-            $link = $url->getFriendly();
-            $items[] = ['link' => $link, 'title' => $pagina['name']];
-        }
-
-        return $this->renderMenuDropdown($menuitem['name'], $items);
-    }
-
-    protected function renderMenuDropdown(string $title, array $items)
-    {
-        return $this->twig->render('menuDropdown.twig', ['dropdownTitle' => $title, 'items' => $items]);
     }
 
     public function showBody(): void

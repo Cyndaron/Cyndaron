@@ -1,3 +1,24 @@
+{% macro menuDropdown(title, icon, items) %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {% if icon %}<span class="glyphicon glyphicon-{{ icon }}"></span>{% endif %}{{ title }}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {% for item in items %}
+                {% if item.link %}
+                    <a class="dropdown-item" href="{{ item.link }}">
+                        {% if item.icon %}<span class="glyphicon glyphicon-{{ item.icon }}"></span>&nbsp; {% endif %}{{ item.title }}
+                    </a>
+                {% else %}
+                    <span class="dropdown-item">
+                        {% if item.icon %}<span class="glyphicon glyphicon-{{ item.icon }}"></span>&nbsp; {% endif %}<i>{{ item.title }}</i>
+                    </span>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </li>
+{% endmacro %}
+
 <nav class="menu navbar navbar-expand-md {{ inverseClass }}">
     <a class="navbar-brand" href="/">{{ navbar|raw }}</a>
 
@@ -8,14 +29,14 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             {% for menuitem in menuItems %}
-                {% if menuitem.isCategoryDropdown %}
-                    {{ menuitem.categoryDropdown|raw }}
+                {% if menuitem.isCategoryDropdown() %}
+                    {{ _self.menuDropdown(menuitem.getTitle(), '', menuitem.getSubmenu() ) }}
                 {% else %}
                     <li class="nav-item {% if menuitem.isCurrent %}active{% endif %}">
                         {% if menuitem.isImage %}
-                            <a class="nav-link img-in-menuitem" href="{{ menuitem.link }}"><img src="{{ menuitem.name }}" alt="{{ menuitem.link }}"/></a>
+                            <a class="nav-link img-in-menuitem" href="{{ menuitem.getLink() }}"><img src="{{ menuitem.getTitle() }}" alt="{{ menuitem.getLink() }}"/></a>
                         {% else %}
-                            <a class="nav-link" href="{{ menuitem.link }}">{{ menuitem.name }}</a>
+                            <a class="nav-link" href="{{ menuitem.getLink() }}">{{ menuitem.getTitle() }}</a>
                         {% endif %}
                     </li>
                 {% endif %}
@@ -28,9 +49,9 @@
                         <a class="nav-link" title="Nieuwe statische pagina aanmaken" href="/editor/sub"><span
                                     class="glyphicon glyphicon-plus"></span></a>
                     </li>
-                    {{ configMenu|raw }}
+                    {{ _self.menuDropdown('', 'wrench', configMenuItems) }}
                 {% endif %}
-                {{ userMenu|raw }}
+                {{ _self.menuDropdown('', 'user', userMenuItems) }}
             {% else %}
                 <li class="nav-item">
                     <a class="nav-link" title="Inloggen" href="/user/login"><span class="glyphicon glyphicon-lock"></span></a>

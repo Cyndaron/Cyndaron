@@ -48,16 +48,12 @@ class OrderController extends Controller
                 'Bestelling verwerkt',
                 'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw bestelling en betaalinformatie.'
             );
-            $page->showPrePage();
-            $page->showBody();
-            $page->showPostPage();
+            $page->render();
         }
         catch (Exception $e)
         {
             $page = new Page('Fout bij verwerken bestelling', $e->getMessage());
-            $page->showPrePage();
-            $page->showBody();
-            $page->showPostPage();
+            $page->render();
         }
     }
 
