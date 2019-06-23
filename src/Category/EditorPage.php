@@ -21,9 +21,26 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
 
     protected function showContentSpecificButtons()
     {
-        $checked = false;
+        $viewMode = 0;
         if ($this->id)
-            $checked = (bool)DBConnection::doQueryAndFetchOne('SELECT viewMode FROM categories WHERE id=?', [$this->id]);
-        $this->showCheckbox('alleentitel', 'Toon alleen titels', $checked);
+            $viewMode = (int)DBConnection::doQueryAndFetchOne('SELECT viewMode FROM categories WHERE id=?', [$this->id]);
+
+        $id = 'viewMode';
+        $label = 'Weergave';
+        $options = [0 => 'Samenvatting', 1 => 'Alleen titels', 2 => 'Blog', 3 => 'Portfolio'];
+        $selected = $viewMode;
+
+        ?>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="<?=$id?>"><?=$label?>: </label>
+            <div class="col-sm-5">
+                <select id="<?=$id?>" name="<?=$id?>" class="form-control custom-select">
+                    <?php foreach ($options as $value => $description): ?>
+                    <option value="<?=$value?>" <?php if ($value == $selected):?>selected<?php endif;?>><?=$description?></option>
+                    <?php endforeach;?>
+                </select>
+            </div>
+        </div>
+        <?php
     }
 }

@@ -28,3 +28,18 @@
         {% endfor %}
     </ul>
 {% endmacro %}
+
+{% macro editorDropdown(id, label, options, selected) %}
+    ?>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" for="{{ id }}">{{ label }}: </label>
+        <div class="col-sm-5">
+            <select id="{{ id }}" name="{{ id }}" class="form-control custom-select">
+                {% for value, description in options %}
+                    <option value="{{ value }}" {% if (value == selected) %}selected{% endif %}>{{ description }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <?php
+{% endmacro %}
