@@ -7,11 +7,8 @@ use Cyndaron\User\User;
 
 class StaticPage extends Page
 {
-    protected $template = 'StaticPage.twig';
-
     public function __construct(int $id)
     {
-        $connection = DBConnection::getPDO();
         if ($id <= 0)
         {
             header('Location: /error/404');

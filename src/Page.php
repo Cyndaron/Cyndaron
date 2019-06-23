@@ -38,7 +38,7 @@ class Page
     /** @var Model $model */
     protected $model = null;
 
-    protected $template = 'index.twig';
+    protected $template = '';
     const MAIN_TEMPLATE_DIR = __DIR__ . '/templates';
     protected $templateDir = '';
     /** @var $twig Environment */
@@ -80,9 +80,17 @@ class Page
     {
         $rc = new \ReflectionClass(get_called_class());
         $this->templateDir = dirname($rc->getFileName()) . '/templates';
-        $file = str_replace('.php', '.twig', basename($rc->getFileName()));
-        if (empty($this->template) && file_exists($this->templateDir . '/' . $file)) {
-            $this->template = $file;
+        if (empty($this->template))
+        {
+            $file = str_replace('.php', '.twig', basename($rc->getFileName()));
+            if (file_exists($this->templateDir . '/' . $file))
+            {
+                $this->template = $file;
+            }
+            else
+            {
+                $this->template = 'index.twig';
+            }
         }
     }
 
