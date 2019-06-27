@@ -42,12 +42,6 @@ a:hover
     overflow: hidden;
 }
 
-.inhoud img:not(.sys)
-{
-    max-width: 100%;
-    height: auto;
-}
-
 .paginatitel
 {
     border-bottom: 1px dotted;
@@ -506,3 +500,10 @@ button.aantalKaarten
     margin-left: 15px;
 }
 
+/* Check the float bug */
+.inhoud img:not(.sys)
+{
+    max-width: 100%;
+    height: auto;
+}
+/* */
