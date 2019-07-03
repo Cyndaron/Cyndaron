@@ -41,6 +41,7 @@ class Page
     protected $template = '';
     const MAIN_TEMPLATE_DIR = __DIR__ . '/templates';
     protected $templateDir = '';
+    private $templateDirs = [self::MAIN_TEMPLATE_DIR];
     /** @var $twig Environment */
     protected $twig = null;
     protected $twigVars = [];
@@ -56,11 +57,8 @@ class Page
     protected function setupTwig()
     {
         $this->updateTemplate();
-        $templatePaths = [self::MAIN_TEMPLATE_DIR];
-        if (file_exists($this->templateDir)) {
-            $templatePaths[] = $this->templateDir;
-        }
-        $loader = new FilesystemLoader($templatePaths);
+        $this->addTemplateDir($this->templateDir);
+        $loader = new FilesystemLoader(array_unique($this->templateDirs));
         $this->twig = new Environment($loader, [
             'auto_reload' => true,
             'cache' => __DIR__ . '/../cache/twig',
@@ -79,7 +77,10 @@ class Page
     protected function updateTemplate()
     {
         $rc = new \ReflectionClass(get_called_class());
-        $this->templateDir = dirname($rc->getFileName()) . '/templates';
+        if (empty ($this->templateDir))
+        {
+            $this->templateDir = dirname($rc->getFileName()) . '/templates';
+        }
         if (empty($this->template))
         {
             $file = str_replace('.php', '.twig', basename($rc->getFileName()));
@@ -94,12 +95,19 @@ class Page
         }
     }
 
+    protected function addTemplateDir($dir)
+    {
+        if (file_exists($dir))
+            $this->templateDirs[] = $dir;
+    }
+
     protected function renderSkeleton()
     {
         $this->websiteName = Setting::get('siteName');
         $this->twigVars['isAdmin'] = User::isAdmin();
         $this->twigVars['websiteName'] = $this->websiteName;
         $this->twigVars['title'] = $this->title;
+        $this->twigVars['referrer'] = $_SESSION['referrer'];
 
         $this->twigVars['version'] = CyndaronInfo::ENGINE_VERSION;
         if ($favicon = Setting::get('favicon'))

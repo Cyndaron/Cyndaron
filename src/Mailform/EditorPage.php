@@ -26,7 +26,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     protected function showContentSpecificButtons()
     {
         $checked = boolval($this->model->sendConfirmation ?? false);
-        $this->showCheckbox('sendConfirmation', 'Stuur bovenstaande tekst als bevestiging', $checked);
+        echo $this->showCheckbox('sendConfirmation', 'Stuur bovenstaande tekst als bevestiging', $checked);
         ?>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="email">E-mailadres: </label>

@@ -36,10 +36,10 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
             <textarea class="form-control" id="descriptionWhenClosed" name="descriptionWhenClosed" rows="3"><?=$descriptionWhenClosed?></textarea>
         </div>
         <?php
-        $this->showCheckbox('openForSales', 'Open voor verkoop', (bool)($this->model->openForSales ?? false));
-        $this->showCheckbox('forcedDelivery', 'Bezorgen verplicht', (bool)($this->model->forcedDelivery ?? false));
-        $this->showCheckbox('hasReservedSeats', 'Heeft gereserveerde plaatsen', (bool)($this->model->hasReservedSeats ?? false));
-        $this->showCheckbox('reservedSeatsAreSoldOut', 'Gereserveerde plaatsen zijn uitverkocht', (bool)($this->model->reservedSeatsAreSoldOut ?? false));
+        echo $this->showCheckbox('openForSales', 'Open voor verkoop', (bool)($this->model->openForSales ?? false));
+        echo $this->showCheckbox('forcedDelivery', 'Bezorgen verplicht', (bool)($this->model->forcedDelivery ?? false));
+        echo $this->showCheckbox('hasReservedSeats', 'Heeft gereserveerde plaatsen', (bool)($this->model->hasReservedSeats ?? false));
+        echo $this->showCheckbox('reservedSeatsAreSoldOut', 'Gereserveerde plaatsen zijn uitverkocht', (bool)($this->model->reservedSeatsAreSoldOut ?? false));
         ?>
         <div class="form-group row">
             <label for="deliveryCost" class="col-sm-2 col-form-label">Verzendkosten</label>

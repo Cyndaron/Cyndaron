@@ -30,7 +30,6 @@
 {% endmacro %}
 
 {% macro editorDropdown(id, label, options, selected) %}
-    ?>
     <div class="form-group row">
         <label class="col-sm-2 col-form-label" for="{{ id }}">{{ label }}: </label>
         <div class="col-sm-5">
@@ -41,5 +40,11 @@
             </select>
         </div>
     </div>
-    <?php
+{% endmacro %}
+
+{% macro editorCheckbox(id, description, checked) %}
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="{{ id }}" name="{{ id }}" {% if checked %}checked{% endif %} value="1">
+        <label class="form-check-label" for="{{ id }}">{{ description }}</label>
+    </div>
 {% endmacro %}
