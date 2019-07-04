@@ -107,7 +107,7 @@ class Page
         $this->twigVars['isAdmin'] = User::isAdmin();
         $this->twigVars['websiteName'] = $this->websiteName;
         $this->twigVars['title'] = $this->title;
-        $this->twigVars['referrer'] = $_SESSION['referrer'];
+        $this->twigVars['referrer'] = $_SESSION['referrer'] ?? '';
 
         $this->twigVars['version'] = CyndaronInfo::ENGINE_VERSION;
         if ($favicon = Setting::get('favicon'))
