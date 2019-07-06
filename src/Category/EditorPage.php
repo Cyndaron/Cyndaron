@@ -6,7 +6,7 @@ use Cyndaron\DBConnection;
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     const TYPE = 'category';
-    const TABLE = 'categorieen';
+    const TABLE = 'categories';
     const HAS_CATEGORY = true;
     const SAVE_URL = '/editor/category/%s';
 

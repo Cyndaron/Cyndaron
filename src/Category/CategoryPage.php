@@ -62,6 +62,18 @@ class CategoryPage extends Page
         $this->twigVars['viewMode'] = $this->model->viewMode;
         $this->twigVars['tags'] = $tags;
 
+        if ($this->model->viewMode == Category::VIEWMODE_PORTFOLIO)
+        {
+            $portfolioContent = [];
+            $subCategories = Category::fetchAll(['categoryId = ?'], [$id]);
+            foreach ($subCategories as $subCategory)
+            {
+                $subs = StaticPageModel::fetchAll(['categoryId = ?'], [$subCategory->id], 'ORDER BY id DESC');
+                $portfolioContent[$subCategory->name] = $subs;
+            }
+            $this->twigVars['portfolioContent'] = $portfolioContent;
+        }
+
         $this->showPostPage();
     }
 

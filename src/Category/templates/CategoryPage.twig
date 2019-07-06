@@ -20,7 +20,7 @@
             <li><h3><a href="{{ page.getFriendlyUrl() }}">{{ page.name }}</a></h3></li>
         {% endfor %}
     </ul>
-    {% else %}
+    {% elseif viewMode == 2 %}
         <div class="category-blockview">
             {% for page in pages %}
                 <div class="category-block">
@@ -32,6 +32,19 @@
                 </div>
             {% endfor %}
         </div>
+    {% elseif viewMode == 3 %}
+        {% for albumname, albumcontent in portfolioContent %}
+            <h2>{{ albumname }}</h2>
+            {% for page in albumcontent %}
+                <div class="category-block">
+                    <a href="{{ page.getFriendlyUrl() }}">
+                        <img src="{{ page.getImage() }}" alt=""/>
+                    </a>
+                    <h3><a href="{{ page.getFriendlyUrl() }}">{{ page.name }}</a></h3>
+                    <a href="{{ page.getFriendlyUrl() }}">{{ page.getBlurb() }}</a>
+                </div>
+            {% endfor %}
+        {% endfor %}
     {% endif %}
 
     {{ contents|raw }}
