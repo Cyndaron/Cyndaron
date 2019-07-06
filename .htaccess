@@ -1,4 +1,4 @@
-Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" "expr=%{HTTPS} == 'on'"
 Header set X-Frame-Options "SAMEORIGIN"
 Header set X-XSS-Protection "1; mode=block"
 Header set X-Content-Type-Options "nosniff"
