@@ -229,8 +229,9 @@ class Page
         echo $this->twig->render($this->template, $this->twigVars);
     }
 
-    public function render()
+    public function render(array $vars = [])
     {
+        $this->twigVars = array_merge($this->twigVars, $vars);
         $this->showPrePage();
         $this->showBody();
         $this->showPostPage();
@@ -326,5 +327,10 @@ class Page
         }
 
         return $title;
+    }
+
+    public function setVar(string $varName, $value)
+    {
+        $this->twigVars[$varName] = $value;
     }
 }

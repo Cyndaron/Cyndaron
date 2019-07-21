@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\PageManager;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Registration\Event;
 use Cyndaron\Ticketsale\Concert;
 use Cyndaron\Mailform\Mailform;
 use Cyndaron\Page;
@@ -27,7 +28,8 @@ class PageManagerPage extends Page
             'friendlyurl' => 'Friendly URL\'s',
             'mailform' => 'Mailformulieren',
             // "Plug-in"
-            'concert' => 'Concerten'
+            'concert' => 'Concerten',
+            'event' => 'Evenementen',
         ], '/pagemanager/', $currentPage);
 
         echo '<div class="container-fluid tab-contents">';
@@ -48,6 +50,9 @@ class PageManagerPage extends Page
                 break;
             case 'concert':
                 $this->showConcerts();
+                break;
+            case 'event':
+                $this->showEvents();
                 break;
             case 'sub':
             default:
@@ -315,6 +320,44 @@ class PageManagerPage extends Page
                     </td>
                 </tr>
                 <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php
+    }
+
+    public function showEvents()
+    {
+        echo new Toolbar('', '', (string)new Button('new', '/editor/event', 'Nieuw evenement', 'Nieuw evenement'));
+
+        $events = Event::fetchAll();
+        ?>
+
+        <table class="table table-striped table-bordered pm-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Naam</th>
+                <th>Acties</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($events as $event):?>
+                <tr>
+                    <td><?=$event->id?></td>
+                    <td>
+                        <?=$event->name?>
+                        (<a href="/event/order/<?=$event->id?>">inschrijfpagina</a>,
+                        <a href="/event/viewOrders/<?=$event->id?>">overzicht inschrijvingen</a>)
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a class="btn btn-outline-cyndaron btn-sm" href="/editor/event/<?=$event->id?>"><span class="glyphicon glyphicon-pencil" title="Bewerk dit evenement"></span></a>
+                            <button class="btn btn-danger btn-sm pm-delete" data-type="event" data-id="<?=$event->id;?>" data-csrf-token="<?=User::getCSRFToken('event', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit evenement"></span></button>
+                        </div>
+
+                    </td>
+                </tr>
+            <?php endforeach; ?>
             </tbody>
         </table>
         <?php

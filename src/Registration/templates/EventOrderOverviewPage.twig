@@ -1,0 +1,90 @@
+{% extends "index.twig" %}
+{% import "widget.twig" as widget %}
+
+{% block contents %}
+    {{ widget.toolbar('<a class="btn btn-outline-cyndaron" href="/pagemanager/event">&laquo; Terug naar overzicht evenementen</a>', '', '') }}
+
+    <table class="overzichtInschrijvingen table table-striped">
+        <thead>
+            <tr class="rotate">
+                <th class="rotate">
+                    <div><span>Inschrijvingsnummer</span></div>
+                </th>
+                <th class="rotate">
+                    <div><span>Achternaam</span></div>
+                </th>
+                <th class="rotate">
+                    <div><span>Voorletters</span></div>
+                </th>
+                <th class="rotate">
+                    <div><span>Zangstem</span></div>
+                </th>
+                <th class="rotate">
+                    <div><span>E-mailadres</span></div>
+                </th>
+                <th class="rotate">
+                    <div><span>Adres</span></div>
+                </th>
+                <th class="rotate">
+                    <div><span>Opmerkingen</span></div>
+                </th>
+                {% for ticketType in ticketTypes %}
+                <th class="rotate">
+                    <div><span>{{ ticketType.name }}</span></div>
+                </th>
+                {% endfor %}
+                <th class="rotate">
+                    <div><span>Lunch?</span></div>
+                </th>
+                <th class="rotate">
+                    <div><span>Totaal</span></div>
+                </th>
+                <th class="rotate">
+                    <div><span>Is betaald?</span></div>
+                </th>
+                <th style="min-width: 150px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for registration in registrations %}
+            {% set orderId = registration.orderId %}
+            {% set orderTotal = event.registrationCost %}
+            <tr>
+                <td>{{ registration.orderId }}</td>
+                <td>{{ registration.lastName }}</td>
+                <td>{{ registration.initials }}</td>
+                <td>{{ registration.vocalRange }}</td>
+                <td>{{ registration.email }}</td>
+                <td>
+                    {{ registration.street }}<br>
+                    {{ registration.postcode }} {{ registration.city }}
+                </td>
+                <td>{{ registration.comments }}</td>
+                {% for ticketType in ticketTypes %}
+                {% set ticketTypeId = ticketType.id %}
+                    <td>
+                        {% if (ticketTypesByOrder[orderId][ticketTypeId] > 0) %}
+                            <b>{{ ticketTypesByOrder[orderId][ticketTypeId] }}</b>
+                            {% set orderTotal = orderTotal + (ticketTypesByOrder[orderId][ticketTypeId] * ticketType.price) %}
+                        {% else %}
+                            &nbsp;
+                        {% endif %}
+
+                    </td>
+                {% endfor %}
+                <td>{{ registration.lunch|boolToText }}</td>
+                <td>{{ orderTotal|formatEuro }}</td>
+                <td>{{ registration.isPaid|boolToText }}</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        {% if registration.isPaid == false %}
+                            <button data-order-id="{{ orderId }}" data-csrf-token-set-is-paid="{{ getCSRFToken('event-order', 'setIsPaid') }}" title="Markeren als betaald" class="eom-order-set-paid btn btn-sm btn-success"><span class="glyphicon glyphicon-eur"></span></button>
+                        {% endif %}
+                        <button data-order-id="{{ orderId }}" data-csrf-token-delete="{{ getCSRFToken('event-order', 'delete') }}" title="Inschrijving verwijderen" class="eom-order-delete btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "index.twig" %}
+
+{% block titleControls %}
+    <a href="/editor/event/{{ event.id }}" class="btn btn-outline-cyndaron" title="Dit evenement bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
+{% endblock %}
+
+{% block contents %}
+    {% if event.openForRegistration == false %}
+        {{ event.descriptionWhenClosed|raw|default('Voor dit evenement kunt u zich helaas niet meer inschrijven.') }}
+    {% else %}
+        {{ event.description|raw }}
+
+        <form method="post" action="/event-order/add" class="form-horizontal" id="kaartenbestellen">
+            <input type="hidden" name="csrfToken" value="{{ getCSRFToken('event-order', 'add') }}"/>
+            <h3>Kaarten voor vrienden/familie:</h3>
+            <input type="hidden" id="eventId" name="event_id" value="{{ event.id }}"/>
+            <table class="kaartverkoop table table-striped">
+                <thead>
+                <tr>
+                    <th>Kaartsoort:</th>
+                    <th>Prijs per stuk:</th>
+                    <th>Aantal:</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for ticketType in ticketTypes %}
+                    <tr>
+                        <td>{{ ticketType.name }}</td>
+                        <td>{{ ticketType.price|formatEuro }}</td>
+                        <td>
+                            <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ ticketType.id }}" id="tickettype-{{ ticketType.id }}" value="0"/>
+                            <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ ticketType.id }}"><span class="glyphicon glyphicon-plus"></span></button>
+                            <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ ticketType.id }}"><span class="glyphicon glyphicon-minus"></span></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="well"><b>Totaalprijs:</b> <span id="prijsvak">€&nbsp;0,00</span></div>
+
+            <h3>Uw gegevens (verplicht):</h3>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="lastName">Achternaam:</label>
+                <div class="col-sm-5"><input id="lastName" name="lastName" required class="form-control"/></div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="initials">Voorletters:</label>
+                <div class="col-sm-5"><input id="initials" name="initials" required class="form-control"/></div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="vocalRange">Stemsoort:</label>
+                <div class="col-sm-5">
+                    <select id="vocalRange" name="vocalRange" required class="form-control">
+                        <option value="">Kies een zangstem</option>
+                        <option>Sopraan</option>
+                        <option>Alt</option>
+                        <option>Tenor</option>
+                        <option>Bas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="email">E-mailadres:</label>
+                <div class="col-sm-5"><input id="email" name="email" type="email" required class="form-control"/></div>
+            </div>
+
+            <input id="lunch" name="lunch" type="checkbox" value="1" class="recalculateTotal">
+            <label for="lunch">Ik wil graag gebruik maken van de lunch</label>
+
+            <h3 id="adresgegevensKop">Uw adresgegevens (niet verplicht):</h3>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="street">Straatnaam en huisnummer:</label>
+                <div class="col-sm-5"><input id="street" name="street"
+                                             class="form-control"/></div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="postcode">Postcode:</label>
+                <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control"/></div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="city">Woonplaats:</label>
+                <div class="col-sm-5"><input id="city" name="city" class="form-control"/></div>
+            </div>
+
+
+            <h3>Verzenden:</h3>
+
+            <p>Als u nog opmerkingen heeft kunt u deze hier kwijt.</p>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="comments">Opmerkingen (niet verplicht):</label>
+                <div class="col-sm-5"><textarea id="comments" name="comments" class="form-control"
+                                                rows="4"></textarea></div>
+            </div>
+
+            <p>Om te voorkomen dat er spam wordt verstuurd met dit formulier<br/>wordt u verzocht in het onderstaande
+                vak <span style="font-family:monospace;">{{ event.getAntiSpam() }}</span> in te vullen.</p>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="antispam">Antispam:</label>
+                <div class="col-sm-5"><input id="antispam" name="antispam" required class="form-control"/></div>
+            </div>
+
+            <div class="col-sm-offset-2"><input id="verzendknop" class="btn btn-primary" type="submit"
+                                                value="Bestellen"/></div>
+        </form>
+    {% endif %}
+{% endblock %}

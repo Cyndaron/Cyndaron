@@ -62,7 +62,9 @@
                     <h1>{{ pageCaption|raw }}</h1>
                     {% if isAdmin %}
                         <div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">
-                            {{ titleButtons|raw }}
+                            {% block titleControls %}
+                                {{ titleButtons|raw }}
+                            {% endblock %}
                         </div>
                     {% endif %}
                 </div>

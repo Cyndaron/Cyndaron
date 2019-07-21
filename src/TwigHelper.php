@@ -23,6 +23,7 @@ class TwigHelper extends AbstractExtension
     {
         return [
             new TwigFilter('boolToText', [\Cyndaron\Util::class, 'boolToText']),
+            new TwigFilter('formatEuro', [\Cyndaron\Util::class, 'formatEuro']),
             new TwigFilter('var_dump', 'var_dump'),
         ];
     }

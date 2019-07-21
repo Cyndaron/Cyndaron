@@ -35,6 +35,8 @@ class Router
         'concert-order' =>  Ticketsale\OrderController::class,
         'file-cabinet' =>  FileCabinet\FileCabinetController::class,
         'minecraft' =>  Minecraft\MinecraftController::class,
+        'event' =>  Registration\EventController::class,
+        'event-order' =>  Registration\OrderController::class,
     ];
 
     const OLD_URLS = [

@@ -54,10 +54,11 @@ function del(text, yesFunc)
     $('#confirm-dangerous').modal();
 }
 
-function delLink(text, link)
+function formatEuro(amount)
 {
-    del(text, function()
-    {
-        window.location = link;
+    return amount.toLocaleString('nl-NL', {
+        style: 'currency',
+        currency: 'EUR',
+        minimumFractionDigits: 2
     });
 }

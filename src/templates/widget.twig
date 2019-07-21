@@ -48,3 +48,17 @@
         <label class="form-check-label" for="{{ id }}">{{ description }}</label>
     </div>
 {% endmacro %}
+
+{% macro toolbar(left, middle, right) %}
+    <nav class="navbar toolbar">
+        <form class="form-inline">
+            {{ left|raw }}
+        </form>
+        <form class="form-inline">
+            {{ middle|raw }}
+        </form>
+        <form class="form-inline">
+            {{ right|raw }}
+        </form>
+    </nav>
+{% endmacro %}

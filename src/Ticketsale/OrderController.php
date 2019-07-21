@@ -275,7 +275,7 @@ Na betaling zullen uw kaarten ' . $opstuurtekst . '.' . $voor_u_reserveerde_plaa
 
 Gebruik bij het betalen de volgende gegevens:
    Rekeningnummer: NL06INGB0000545925 t.n.v. Vlissingse Oratorium Vereniging
-   Bedrag: ' . Util::formatEuroPlainText($total) . '
+   Bedrag: ' . Util::formatEuro($total) . '
    Onder vermelding van: bestellingsnummer ' . $orderId . '
 
 
@@ -290,7 +290,7 @@ Kaartsoorten:
         {
             if ($orderTicketTypes[$ticketType['id']] > 0)
             {
-                $text .= '   ' . $ticketType['name'] . ': ' . $orderTicketTypes[$ticketType['id']] . ' à ' . Util::formatEuroPlainText((float)$ticketType['price']) . PHP_EOL;
+                $text .= '   ' . $ticketType['name'] . ': ' . $orderTicketTypes[$ticketType['id']] . ' à ' . Util::formatEuro((float)$ticketType['price']) . PHP_EOL;
             }
         }
         if (!$concert->forcedDelivery)
@@ -299,7 +299,7 @@ Kaartsoorten:
         }
 
         $text .= PHP_EOL . 'Gereserveerde plaatsen: ' . $reserveSeats == 1 ? 'Ja' : 'Nee' . PHP_EOL;
-        $text .= 'Totaalbedrag: ' . Util::formatEuroPlainText($total) . '
+        $text .= 'Totaalbedrag: ' . Util::formatEuro($total) . '
 
 Achternaam: ' . $lastName . '
 Voorletters: ' . $initials . PHP_EOL . PHP_EOL;

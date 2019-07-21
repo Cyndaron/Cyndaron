@@ -94,11 +94,6 @@ class Util
 
     public static function formatEuro(float $amount): string
     {
-        return '&euro;&nbsp;' . static::formatCurrency($amount);
-    }
-
-    public static function formatEuroPlainText(float $amount): string
-    {
         return '€ ' . static::formatCurrency($amount);
     }
 
