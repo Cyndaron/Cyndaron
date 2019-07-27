@@ -468,20 +468,46 @@ button.aantalKaarten
     flex-wrap: wrap;
 }
 
-.category-block
+.category-blockview .category-block
 {
     width: 320px;
     margin: 10px;
 }
 
+.category-blockview .category-block h3
+{
+    margin-top: 15px;
+}
+
+.category-horizontalview .category-block
+{
+    display: flex;
+}
+
+.category-horizontalview .category-block + .category-block
+{
+    margin-top: 15px;
+}
+
+.category-horizontalview .category-block .category-block-left
+{
+    flex-grow: 1;
+}
+
+.category-horizontalview .category-block .category-block-right
+{
+    width: 22.5%;
+}
+
+.category-horizontalview .category-block .category-block-right img
+{
+    display: block;
+    width: 100%;
+}
+
 .category-block a
 {
     color: black;
-}
-
-.category-block h3
-{
-    margin-top: 15px;
 }
 
 #category-container

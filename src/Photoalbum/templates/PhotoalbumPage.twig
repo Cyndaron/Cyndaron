@@ -1,6 +1,7 @@
 {% extends "index.twig" %}
 
 {% block contents %}
+    {% set numEntries = photos|length %}
     {% if numEntries == 0 %}
         <div class="alert alert-info">Dit album is leeg.</div>
     {% else %}
@@ -16,17 +17,19 @@
             {% for photo in photos %}
             <figure class="fotobadge">
 
-                <a href="/{{ photo.link }}" data-lightbox="{{ model.name }}" {{ photo.dataTitleTag|raw }} data-hash="{{ photo.hash }}">
-                    {% if file_exists(photo.thumbnailLink) %}
-                        <img class="thumb" alt="{{ photo.filename }}" src="/fotoalbums/{{ albumId }}thumbnails/{{ photo.filename }}"/>
+                <a href="/{{ photo.getFullPath() }}" data-lightbox="{{ model.name }}" data-hash="{{ photo.hash }}"
+                    {% if photo.caption %} data-title="{{ photo.caption.caption }}" {% endif %}>
+                    {% if file_exists(photo.getThumbnailPath()) %}
+                        <img class="thumb" alt="{{ photo.filename }}" src="/fotoalbums/{{ model.id }}thumbnails/{{ photo.filename }}"/>
                     {% else %}
-                        <img class="thumb" alt="{{ photo.filename }}" src="/fotoalbums/{{ albumId }}/{{ photo.filename }}" style="width:270px; height:200px"/>
+                        <img class="thumb" alt="{{ photo.filename }}" src="/fotoalbums/{{ model.id }}/{{ photo.filename }}" style="width:270px; height:200px"/>
                     {% endif %}
                 </a>
 
                 {% if isAdmin %}
                     <br/>
-                    {{ button('edit', "/editor/photo/#{photo.captionId}/#{photo.hash}", 'Bijschrift bewerken', 'Bijschrift bewerken', 16)|raw }}
+                    {% set captionId = photo.caption.id ?? 0 %}
+                    {{ button('edit', "/editor/photo/#{captionId}/#{photo.hash}", 'Bijschrift bewerken', 'Bijschrift bewerken', 16)|raw }}
                 {% endif %}
             </figure>
             {% endfor %}

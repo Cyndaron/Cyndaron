@@ -52,6 +52,7 @@ ALTER TABLE `photoalbums` CHANGE `naam` `name` VARCHAR(100) CHARACTER SET utf8mb
 ALTER TABLE `photoalbums` CHANGE `categorieid` `categoryId` INT(11) NULL DEFAULT NULL;
 ALTER TABLE `photoalbums` CHANGE `notities` `notes` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
 ALTER TABLE `photoalbums` ADD `showBreadcrumbs` TINYINT(1) NOT NULL DEFAULT '0' AFTER `categoryId`;
+ALTER TABLE `photoalbums` ADD `hideFromOverview` TINYINT(1) NOT NULL DEFAULT '0' AFTER `showBreadcrumbs`, ADD `viewMode` TINYINT(1) NOT NULL DEFAULT '0' AFTER `hideFromOverview`;
 
 ALTER TABLE `menu` CONVERT TO CHARACTER SET utf8mb4  COLLATE utf8mb4_unicode_ci;
 ALTER TABLE `menu` CHANGE `volgorde` `id` INT(11) NOT NULL AUTO_INCREMENT;

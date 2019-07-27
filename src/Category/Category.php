@@ -13,6 +13,15 @@ class Category extends Model
     const VIEWMODE_TITLES = 1;
     const VIEWMODE_BLOG = 2;
     const VIEWMODE_PORTFOLIO = 3;
+    const VIEWMODE_HORIZONTAL = 4;
+
+    const VIEWMODE_DESCRIPTIONS = [
+        self::VIEWMODE_REGULAR => 'Samenvatting',
+        self::VIEWMODE_TITLES => 'Alleen titels',
+        self::VIEWMODE_BLOG => 'Blog',
+        self::VIEWMODE_PORTFOLIO => 'Portfolio',
+        self::VIEWMODE_HORIZONTAL => 'Horizontaal',
+    ];
 
     public $name = '';
     public $description = '';

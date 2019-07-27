@@ -60,6 +60,7 @@ abstract class EditorPage extends Page
         $this->twigVars['friendlyUrl'] = trim($friendlyUrl, '/');
         $this->twigVars['friendlyUrlPrefix'] = "https://{$_SERVER['HTTP_HOST']}/";
         $this->twigVars['article'] = $this->content;
+        $this->twigVars['model'] = $this->model;
 
         $sql = "SELECT * FROM (
             SELECT * FROM (SELECT CONCAT('/sub/', id) AS link, CONCAT('Statische pag.: ', name) AS name FROM subs) AS one

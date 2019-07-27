@@ -24,7 +24,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
 
         $id = 'viewMode';
         $label = 'Weergave';
-        $options = [0 => 'Samenvatting', 1 => 'Alleen titels', 2 => 'Blog', 3 => 'Portfolio'];
+        $options = Category::VIEWMODE_DESCRIPTIONS;
         $selected = $viewMode;
 
         $this->twigVars = array_merge($this->twigVars, compact('id', 'label', 'options', 'selected'));

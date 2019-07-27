@@ -20,6 +20,7 @@ class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
             $this->model = PhotoalbumCaption::loadFromDatabase($this->id);
             $this->content = $this->model->caption;
         }
+        $_SESSION['referrer'] = Request::referrer();
     }
 
     protected function showContentSpecificButtons()

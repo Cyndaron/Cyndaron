@@ -11,13 +11,23 @@ use Exception;
 class Photoalbum extends Model
 {
     const TABLE = 'photoalbums';
-    const TABLE_FIELDS = ['name', 'notes', 'categoryId', 'showBreadcrumbs'];
+    const TABLE_FIELDS = ['name', 'notes', 'categoryId', 'showBreadcrumbs', 'hideFromOverview', 'viewMode'];
     const HAS_CATEGORY = true;
+
+    const VIEWMODE_REGULAR = 0;
+    const VIEWMODE_PORTFOLIO = 1;
+
+    const VIEWMODE_DESCRIPTIONS = [
+        self::VIEWMODE_REGULAR => 'Fotoalbum',
+        self::VIEWMODE_PORTFOLIO => 'Portfolio',
+    ];
 
     public $name = '';
     public $notes = '';
     public $categoryId = null;
     public $showBreadcrumbs = false;
+    public $hideFromOverview = false;
+    public $viewMode = self::VIEWMODE_REGULAR;
 
     public static function create(string $naam, string $notities = "", bool $showBreadcrumbs = false)
     {
@@ -54,5 +64,30 @@ class Photoalbum extends Model
     {
         $url = new Url('/photoalbum/' . $this->id);
         return $url->getFriendly();
+    }
+
+    public function getPhotos(): array
+    {
+        $ret = [];
+
+        if ($dirArray = @scandir("./fotoalbums/$this->id"))
+        {
+            natsort($dirArray);
+            $ret = array_values(array_filter($dirArray, function($value) {
+                return substr($value, 0, 1) != '.';
+            }));
+        }
+
+        return $ret;
+    }
+
+    public function getLinkPrefix()
+    {
+        return 'fotoalbums/' . $this->id . '/';
+    }
+
+    public function getThumbnailPrefix()
+    {
+        return 'fotoalbums/' . $this->id . 'thumbnails/';
     }
 }

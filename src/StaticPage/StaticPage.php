@@ -3,6 +3,9 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
+use Cyndaron\Photoalbum\Photoalbum;
+use Cyndaron\Photoalbum\PhotoalbumCaption;
+use Cyndaron\Photoalbum\PhotoalbumPage;
 use Cyndaron\User\User;
 
 class StaticPage extends Page
@@ -41,7 +44,12 @@ class StaticPage extends Page
         $this->setTitleButtons($controls);
         $this->showPrePage();
 
-        $this->twigVars['text'] = $this->model->text;
+        $this->twigVars['text'] = preg_replace_callback('/%slider\|([0-9]+)%/', function($matches) {
+            $album = Photoalbum::loadFromDatabase($matches[1]);
+            $page = new PhotoalbumPage($album, 1);
+            return $page->drawSlider($album);
+            //return PhotoalbumPage::drawSlider($album);
+        }, $this->model->text);
         $this->twigVars['replies'] = $replies;
         $this->twigVars['allowReplies'] = $allowReplies;
 

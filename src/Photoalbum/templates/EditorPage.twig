@@ -1,0 +1,7 @@
+{% extends "EditorPageBase.twig" %}
+{% import "widget.twig" as widget %}
+
+{% block contentSpecificButtons %}
+    {{ widget.editorCheckbox('hideFromOverview', 'Niet tonen in overzicht fotoalbums', model.hideFromOverview) }}
+    {{ widget.editorDropdown('viewMode', 'Weergavemodus', viewModeOptions, model.viewMode) }}
+{% endblock %}

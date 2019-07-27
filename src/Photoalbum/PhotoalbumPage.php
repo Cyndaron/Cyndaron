@@ -4,60 +4,32 @@ declare (strict_types = 1);
 namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Page;
-use Cyndaron\User\User;
 use Cyndaron\Widget\Button;
 
 class PhotoalbumPage extends Page
 {
-    public function __construct(int $id)
+    public function __construct(Photoalbum $album, $viewMode = 0)
     {
-        if ($id < 1)
-        {
-            header('Location: /error/404');
-            die('Incorrecte parameter ontvangen.');
-        }
-        $this->model = new Photoalbum($id);
+        $id = $album->id;
+        $this->model = $album;
         $this->model->load();
-
-        $controls = new Button('edit', '/editor/photoalbum/' . $id, 'Dit fotoalbum bewerken');
         parent::__construct($this->model->name);
-        $this->setTitleButtons((string)$controls);
-        $this->addScript('/sys/js/lightbox.min.js');
-        $numEntries = 0;
-        $photos = [];
 
-        if ($dirArray = @scandir("./fotoalbums/$id"))
+        if ($viewMode == 0)
         {
-            natsort($dirArray);
+            $controls = new Button('edit', '/editor/photoalbum/' . $id, 'Dit fotoalbum bewerken');
+            $this->setTitleButtons((string)$controls);
+            $this->addScript('/sys/js/lightbox.min.js');
 
-            for ($index = 0; $index < count($dirArray); $index++)
-            {
-                if (substr($dirArray[$index], 0, 1) != ".")
-                {
-                    $numEntries++;
-
-                    $link = 'fotoalbums/' . $id . '/' . $dirArray[$index];
-                    $thumbnailLink = 'fotoalbums/' . $id . 'thumbnails/' . $dirArray[$index];
-                    $hash = md5_file($link);
-                    $dataTitleTag = '';
-                    $captionObj = PhotoalbumCaption::loadByHash($hash);
-                    $captionId = $captionObj ? $captionObj->id : 0;
-
-                    if ($captionObj !== null && $captionObj->caption)
-                    {
-                        // Vervangen van aanhalingstekens is nodig omdat er links in de beschrijving kunnen zitten.
-                        $dataTitleTag = 'data-title="' . str_replace('"', '&quot;', $captionObj->caption) . '"';
-                    }
-
-                    $photos[] = compact( 'link', 'thumbnailLink', 'hash', 'dataTitleTag', 'captionObj', 'captionId') + ['filename' => $dirArray[$index]];
-
-                }
-            }
+            $photos = Photo::fetchAllByAlbum($this->model);
+            $this->twigVars['model'] = $this->model;
+            $this->twigVars['photos'] = $photos;
         }
+    }
 
-        $this->twigVars['albumId'] = $id;
-        $this->twigVars['numEntries'] = $numEntries;
-        $this->twigVars['model'] = $this->model;
-        $this->twigVars['photos'] = $photos;
+    public function drawSlider(Photoalbum $album)
+    {
+        $photos = Photo::fetchAllByAlbum($album);
+        return $this->twig->render('Photoslider.twig', compact('album', 'photos'));
     }
 }

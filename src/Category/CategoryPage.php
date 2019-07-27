@@ -81,7 +81,7 @@ class CategoryPage extends Page
     {
         parent::__construct('Fotoalbums');
         $this->showPrePage();
-        $photoalbums = Photoalbum::fetchAll([], [], 'ORDER BY id DESC');
+        $photoalbums = Photoalbum::fetchAll(['hideFromOverview = 0'], [], 'ORDER BY id DESC');
         $this->twigVars['pages'] = $photoalbums;
         $this->twigVars['viewMode'] = 1;
 

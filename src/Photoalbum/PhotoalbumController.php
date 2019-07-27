@@ -12,7 +12,13 @@ class PhotoalbumController extends Controller
     protected function routeGet()
     {
         $id = intval(Request::getVar(1));
-        $page = new PhotoalbumPage($id);
+        if ($id < 1)
+        {
+            header('Location: /error/404');
+            die('Incorrecte parameter ontvangen.');
+        }
+        $album = Photoalbum::loadFromDatabase($id);
+        $page = new PhotoalbumPage($album);
         $page->render();
     }
 

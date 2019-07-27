@@ -15,5 +15,6 @@ class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
 
         PhotoalbumCaption::create($hash, $caption);
         User::addNotification('Bijschrift bewerkt.');
+        $this->returnUrl = $_SESSION['referrer'];
     }
 }

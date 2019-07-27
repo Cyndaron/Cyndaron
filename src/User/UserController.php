@@ -138,7 +138,7 @@ class UserController extends Controller
         $userId = Request::getVar(2);
         if ($userId !== null)
         {
-            $user = new User($userId);
+            $user = new User((int)$userId);
             $user->delete();
 
             echo json_encode([]);
@@ -154,7 +154,7 @@ class UserController extends Controller
         $userId = Request::getVar(2);
         if ($userId !== null)
         {
-            $user = new User($userId);
+            $user = new User((int)$userId);
             $user->load();
             $user->sendNewPassword();
 

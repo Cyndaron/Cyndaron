@@ -16,6 +16,8 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $photoalbum->notes = Request::unsafePost('artikel');
         $photoalbum->categoryId = (int)Request::post('categoryId');
         $photoalbum->showBreadcrumbs = (bool)Request::post('showBreadcrumbs');
+        $photoalbum->hideFromOverview = (bool)Request::post('hideFromOverview');
+        $photoalbum->viewMode = (int)Request::post('viewMode');
         $photoalbum->save();
 
         User::addNotification('Fotoalbum bewerkt.');
