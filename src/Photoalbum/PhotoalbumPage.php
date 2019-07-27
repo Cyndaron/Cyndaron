@@ -43,7 +43,7 @@ class PhotoalbumPage extends Page
                     $captionObj = PhotoalbumCaption::loadByHash($hash);
                     $captionId = $captionObj ? $captionObj->id : 0;
 
-                    if ($captionObj->caption)
+                    if ($captionObj !== null && $captionObj->caption)
                     {
                         // Vervangen van aanhalingstekens is nodig omdat er links in de beschrijving kunnen zitten.
                         $dataTitleTag = 'data-title="' . str_replace('"', '&quot;', $captionObj->caption) . '"';
