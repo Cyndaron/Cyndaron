@@ -6,7 +6,6 @@
 
     <div class="container-fluid tab-contents">
         <form method="post" action="/system/config" class="form-horizontal">
-
             {% for formItem in formItems %}
             <div class="form-group row">
                 <label for="{{ formItem.name }}" class="col-md-3 col-form-label col-form-label-md">{{ formItem.description }}:</label>
@@ -45,7 +44,7 @@
             <div class="form-group row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
-                    <input type="hidden" name="csrfToken" value="<?=User::getCSRFToken('system', 'config')?>"/>
+                    <input type="hidden" name="csrfToken" value="{{ getCSRFToken('system', 'config') }}"/>
                     <input class="btn btn-primary" type="submit" id="cm-save" value="Opslaan"/>
                     <input class="btn btn-outline-cyndaron" type="button" id="testColors" value="Kleuren testen"/>
                 </div>
