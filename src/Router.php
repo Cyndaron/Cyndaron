@@ -173,7 +173,7 @@ class Router
      */
     private function getFrontpageUrl(): Url
     {
-        return new Url(Setting::get('frontPage'));
+        return new Url(Setting::get('frontPage') ?: '');
     }
 
     private function sendCSPHeader(): void
