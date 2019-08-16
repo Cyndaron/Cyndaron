@@ -6,11 +6,12 @@ use Cyndaron\Model;
 class EventTicketType extends Model
 {
     const TABLE = 'registration_tickettypes';
-    const TABLE_FIELDS = ['eventId', 'name', 'price'];
+    const TABLE_FIELDS = ['eventId', 'name', 'price', 'discountPer4'];
 
     public $eventId;
     public $name;
     public $price;
+    public $discountPer4 = false;
 
     /**
      * @param Event $event

@@ -17,7 +17,8 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $event->description = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
         $event->descriptionWhenClosed = Request::unsafePost('descriptionWhenClosed');
         $event->openForRegistration = (bool)Request::post('openForRegistration');
-        $event->registrationCost = (float)str_replace(',', '.', Request::post('registrationCost'));
+        $event->registrationCost0 = (float)str_replace(',', '.', Request::post('registrationCost0'));
+        $event->registrationCost1 = (float)str_replace(',', '.', Request::post('registrationCost1'));
         $event->maxRegistrations = (int)Request::post('maxRegistrations');
         $event->numSeats = (int)Request::post('numSeats');
 

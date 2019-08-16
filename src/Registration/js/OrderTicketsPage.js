@@ -18,13 +18,17 @@
 
 const eventId = $('#eventId').val();
 let tickettypes;
-let registrationCost = NaN;
+let registrationCost0 = NaN;
+let registrationCost1 = NaN;
+let lunchCost = NaN;
 
 $.ajax('/event/getInfo/' + eventId, {}).done(function (json)
 {
     let data = JSON.parse(json);
     tickettypes = data.tickettypes;
-    registrationCost = parseFloat(data.registrationCost);
+    registrationCost0 = parseFloat(data.registrationCost0);
+    registrationCost1 = parseFloat(data.registrationCost1);
+    lunchCost = parseFloat(data.lunchCost);
 });
 
 function increase(vak)
@@ -66,10 +70,20 @@ function blockFormOnInvalidInput()
 
 function calculateTotal()
 {
-    let total = registrationCost;
+    let total = 0;
+    if ($('[name=registrationGroup]:checked').val() == 1)
+        total += registrationCost1;
+    else
+        total += registrationCost0;
 
-    tickettypes.forEach(function(item) {
+    if ($('#lunch').is(':checked'))
+        total += lunchCost;
+
+    tickettypes.forEach(function(item)
+    {
         let aantal = document.getElementById('tickettype-' + item.id).value;
+        if (item.discountPer4)
+            aantal -= Math.floor(aantal / 4);
         total = total + (item.price * aantal);
     });
 
@@ -80,6 +94,14 @@ function calculateTotal()
 $('.numTickets-increase').on('click', function() { increase('tickettype-' + $(this).attr('data-kaartsoort')); });
 $('.numTickets-decrease').on('click', function() { decrease('tickettype-' + $(this).attr('data-kaartsoort')); });
 $('.recalculateTotal').on('click', function() { calculateTotal(); });
+$('#kleinkoor').on('change', function()
+{
+    let explanationWrapper = $('#kleinkoorExplanationWrapper');
+    if ($(this).is(':checked'))
+        explanationWrapper.css('display', 'block');
+    else
+        explanationWrapper.css('display', 'none');
+});
 
 setInterval(blockFormOnInvalidInput, 1000);
 setInterval(calculateTotal, 1000);

@@ -24,17 +24,11 @@ class EventController extends Controller
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM registration_tickettypes WHERE eventId=? ORDER BY price DESC', [$eventId]);
 
         $answer = [
-            'registrationCost' => $event->registrationCost,
-            'tickettypes' => [],
+            'registrationCost0' => $event->registrationCost0,
+            'registrationCost1' => $event->registrationCost1,
+            'lunchCost' => $event->lunchCost,
+            'tickettypes' => $ticketTypes,
         ];
-
-        foreach ($ticketTypes as $kaartsoort)
-        {
-            $answer['tickettypes'][] = [
-                'id' => $kaartsoort['id'],
-                'price' => $kaartsoort['price']
-            ];
-        }
 
         echo json_encode($answer);
     }

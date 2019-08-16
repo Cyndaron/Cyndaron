@@ -11,18 +11,10 @@ class EventOrderOverviewPage extends Page
         $ticketTypesByOrder = [];
 
         $ticketTypes = EventTicketType::loadByEvent($event);
+        $registrations = Order::loadByEvent($event);
+        $boughtTicketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM `registration_orders_tickettypes`');
 
-        $ordersQuery = "SELECT DISTINCT ro.id AS orderId,lastName,initials,vocalRange,`email`,street,houseNumber,houseNumberAddition,postcode,city,isPaid,lunch,comments
-                    FROM     `registration_orders` AS ro
-                    WHERE  ro.eventId=?
-                    ORDER BY orderId;";
-        $registrations = DBConnection::doQueryAndFetchAll($ordersQuery, [$event->id]);
-
-        $boughtTicketTypesQuery = "SELECT orderId,tickettypeId,amount
-                    FROM     `registration_orders_tickettypes`";
-        $boughtTicketTypes = DBConnection::doQueryAndFetchAll($boughtTicketTypesQuery, [$event->id]);
-
-        $this->addScript('/src/Registration/EventOrderOverviewPage.js');
+        $this->addScript('/src/Registration/js/EventOrderOverviewPage.js');
 
         parent::__construct('Overzicht inschrijvingen: ' . $event->name);
 

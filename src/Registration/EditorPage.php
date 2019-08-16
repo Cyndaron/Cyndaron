@@ -27,7 +27,9 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
 
 //        $maxRegistrations = $this->model->maxRegistrations ?? 300;
 //        $numSeats = $this->model->numSeats ?? 300;
-        $this->twigVars['registrationCost'] = Util::formatCurrency((float)($this->model->registrationCost ?? 15.0));
+        $this->twigVars['registrationCost0'] = Util::formatCurrency((float)($this->model->registrationCost0 ?? 15.0));
+        $this->twigVars['registrationCost1'] = Util::formatCurrency((float)($this->model->registrationCost1 ?? 15.0));
+        $this->twigVars['lunchCost'] = Util::formatCurrency((float)($this->model->lunchCost ?? 15.0));
     }
 
     protected function showContentSpecificButtons()

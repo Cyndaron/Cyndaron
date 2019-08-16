@@ -81,19 +81,11 @@ class OrderController extends Controller
             throw new Exception($message);
         }
 
-        $orderTotal = $eventObj->registrationCost;
-
         $orderTicketTypes = [];
         $ticketTypes = EventTicketType::loadByEvent($eventObj);
         foreach ($ticketTypes as $ticketType)
         {
             $orderTicketTypes[$ticketType->id] = intval(Request::post('tickettype-' . $ticketType->id));
-            $orderTotal += $orderTicketTypes[$ticketType->id] * ($ticketType->price);
-        }
-
-        if ($orderTotal <= 0)
-        {
-            throw new Exception('Het formulier is niet goed aangekomen.');
         }
 
         $order = new Order();
@@ -101,17 +93,32 @@ class OrderController extends Controller
         $order->lastName = Request::post('lastName');
         $order->initials = Request::post('initials');
         $order->vocalRange = Request::post('vocalRange');
+        $order->registrationGroup = (int)Request::post('registrationGroup');
+        $order->birthYear = (int)Request::post('birthYear') ?: null;
         $order->lunch = (bool)filter_input(INPUT_POST, 'lunch', FILTER_VALIDATE_BOOLEAN);
+        $order->bhv = (bool)filter_input(INPUT_POST, 'bhv', FILTER_VALIDATE_BOOLEAN);
+        $order->kleinkoor = (bool)filter_input(INPUT_POST, 'kleinkoor', FILTER_VALIDATE_BOOLEAN);
+        $order->kleinkoorExplanation = Request::post('kleinkoorExplanation');
+        $order->numPosters = (int)Request::post('numPosters');
         $order->email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
         $order->street = Request::post('street');
+        $order->houseNumber = (int)Request::post('houseNumber');
+        $order->houseNumberAddition = Request::post('houseNumberAddition');
         $order->postcode = Request::post('postcode');
         $order->city = Request::post('city');
         $order->comments = Request::post('comments');
 
+        $orderTotal = $order->calculateTotal($orderTicketTypes);
+        if ($orderTotal <= 0)
+        {
+            throw new Exception('Het formulier is niet goed aangekomen.');
+        }
+
         $result = $order->save();
         if ($result === false)
         {
-            throw new Exception('Opslaan inschrijving mislukt!');
+            $msg = var_export(DBConnection::errorInfo(), true);
+            throw new Exception($msg . 'Opslaan inschrijving mislukt!');
         }
 
         foreach ($ticketTypes as $ticketType)

@@ -12,34 +12,18 @@
 
         <form method="post" action="/event-order/add" class="form-horizontal" id="kaartenbestellen">
             <input type="hidden" name="csrfToken" value="{{ getCSRFToken('event-order', 'add') }}"/>
-            <h3>Kaarten voor vrienden/familie:</h3>
-            <input type="hidden" id="eventId" name="event_id" value="{{ event.id }}"/>
-            <table class="kaartverkoop table table-striped">
-                <thead>
-                <tr>
-                    <th>Kaartsoort:</th>
-                    <th>Prijs per stuk:</th>
-                    <th>Aantal:</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for ticketType in ticketTypes %}
-                    <tr>
-                        <td>{{ ticketType.name }}</td>
-                        <td>{{ ticketType.price|formatEuro }}</td>
-                        <td>
-                            <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ ticketType.id }}" id="tickettype-{{ ticketType.id }}" value="0"/>
-                            <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ ticketType.id }}"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ ticketType.id }}"><span class="glyphicon glyphicon-minus"></span></button>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-
-            <div class="well"><b>Totaalprijs:</b> <span id="prijsvak">€&nbsp;0,00</span></div>
 
             <h3>Uw gegevens (verplicht):</h3>
+
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <input type="radio" id="registrationGroup-0" name="registrationGroup" value="0" checked />
+                    <label for="registrationGroup-0">Ik ben volwassene</label>
+                    <br>
+                    <input type="radio" id="registrationGroup-1" name="registrationGroup" value="1"/>
+                    <label for="registrationGroup-1">Ik ben jonger dan 20 jaar of student</label>
+                </div>
+            </div>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="lastName">Achternaam:</label>
@@ -69,14 +53,86 @@
                 <div class="col-sm-5"><input id="email" name="email" type="email" required class="form-control"/></div>
             </div>
 
-            <input id="lunch" name="lunch" type="checkbox" value="1" class="recalculateTotal">
-            <label for="lunch">Ik wil graag gebruik maken van de lunch</label>
-
-            <h3 id="adresgegevensKop">Uw adresgegevens (niet verplicht):</h3>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <input id="lunch" name="lunch" type="checkbox" value="1" class="recalculateTotal">
+                    <label for="lunch">Ik wil graag gebruik maken van de lunch</label>
+                </div>
+            </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="street">Straatnaam en huisnummer:</label>
+                <div class="col-sm-12">
+                    <input id="bhv" name="bhv" type="checkbox" value="1">
+                    <label for="bhv">Ik ben arts of in het bezit van een BHV- of AED-certificaat</label>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <input id="kleinkoor" name="kleinkoor" type="checkbox" value="1">
+                    <label for="kleinkoor">Ik wil graag meezingen in het kleinkoor</label>
+                </div>
+            </div>
+
+            <div id="kleinkoorExplanationWrapper">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="kleinkoorExplanation">Mijn zangervaring/huidige koor:</label>
+                    <div class="col-sm-5">
+                        <textarea id="kleinkoorExplanation" name="kleinkoorExplanation"
+                                  class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Kaarten voor vrienden/familie:</h3>
+            <input type="hidden" id="eventId" name="event_id" value="{{ event.id }}"/>
+            <table class="kaartverkoop table table-striped">
+                <thead>
+                    <tr>
+                        <th>Kaartsoort:</th>
+                        <th>Prijs per stuk:</th>
+                        <th>Aantal:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticketType in ticketTypes %}
+                        <tr>
+                            <td>{{ ticketType.name }}</td>
+                            <td>{{ ticketType.price|formatEuro }}{% if ticketType.discountPer4 %} (4 halen, 3 betalen){% endif %}</td>
+                            <td>
+                                <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ ticketType.id }}" id="tickettype-{{ ticketType.id }}" value="0"/>
+                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ ticketType.id }}"><span class="glyphicon glyphicon-plus"></span></button>
+                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ ticketType.id }}"><span class="glyphicon glyphicon-minus"></span></button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div><b>Totaalprijs:</b> <span id="prijsvak">€&nbsp;0,00</span></div>
+
+            <h3 id="adresgegevensKop">Overige gegevens (niet verplicht):</h3>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="birthYear">Uw geboortejaar:</label>
+                <div class="col-sm-1"><input id="birthYear" name="birthYear" type="number" min="1900" max="2019" step="1" pattern="[0-9]{4}" class="form-control"/></div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="street">Straatnaam:</label>
                 <div class="col-sm-5"><input id="street" name="street"
+                                             class="form-control"/></div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="houseNumber">Huisnummer:</label>
+                <div class="col-sm-5"><input id="houseNumber" name="houseNumber" type="number"
+                                             class="form-control"/></div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="houseNumberAddition">Huisnummertoevoeging:</label>
+                <div class="col-sm-5"><input id="houseNumberAddition" name="houseNumberAddition"
                                              class="form-control"/></div>
             </div>
 
@@ -88,6 +144,13 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="city">Woonplaats:</label>
                 <div class="col-sm-5"><input id="city" name="city" class="form-control"/></div>
+            </div>
+
+            <p>Hoeveel raamposters kunt u kwijt om ons concert te promoten? U krijgt op termijn bericht hoe deze posters te verkrijgen zijn.</p>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="numPosters">Aantal raamposters:</label>
+                <div class="col-sm-1"><input id="numPosters" name="numPosters" type="number" min="0" max="9" step="1" pattern="[0-9]{1}" value="0" class="form-control"/></div>
             </div>
 
 

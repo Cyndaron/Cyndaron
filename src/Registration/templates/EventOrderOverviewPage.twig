@@ -11,31 +11,28 @@
                     <div><span>Inschrijvingsnummer</span></div>
                 </th>
                 <th class="rotate">
-                    <div><span>Achternaam</span></div>
+                    <div><span>Persoonsgegevens</span></div>
                 </th>
                 <th class="rotate">
-                    <div><span>Voorletters</span></div>
+                    <div><span>Zanggegevens</span></div>
                 </th>
                 <th class="rotate">
-                    <div><span>Zangstem</span></div>
+                    <div><span>Adresgegevens</span></div>
                 </th>
                 <th class="rotate">
-                    <div><span>E-mailadres</span></div>
-                </th>
-                <th class="rotate">
-                    <div><span>Adres</span></div>
+                    <div><span>Inschrijfdatum</span></div>
                 </th>
                 <th class="rotate">
                     <div><span>Opmerkingen</span></div>
                 </th>
-                {% for ticketType in ticketTypes %}
-                <th class="rotate">
-                    <div><span>{{ ticketType.name }}</span></div>
-                </th>
-                {% endfor %}
                 <th class="rotate">
                     <div><span>Lunch?</span></div>
                 </th>
+                {% for ticketType in ticketTypes %}
+                <th class="rotate">
+                    <div><span><abbr title="Extra kaarten">EK:</abbr> {{ ticketType.name }}</span></div>
+                </th>
+                {% endfor %}
                 <th class="rotate">
                     <div><span>Totaal</span></div>
                 </th>
@@ -47,33 +44,53 @@
         </thead>
         <tbody>
             {% for registration in registrations %}
-            {% set orderId = registration.orderId %}
-            {% set orderTotal = event.registrationCost %}
+            {% set orderId = registration.id %}
             <tr>
-                <td>{{ registration.orderId }}</td>
-                <td>{{ registration.lastName }}</td>
-                <td>{{ registration.initials }}</td>
-                <td>{{ registration.vocalRange }}</td>
-                <td>{{ registration.email }}</td>
+                <td>{{ orderId }}</td>
                 <td>
-                    {{ registration.street }}<br>
+                    {{ registration.initials }} {{ registration.lastName }}<br>
+                    {% if (registration.registrationGroup == 1) %}Student / jongere{% else %}Volwassene{% endif %}
+                    {% if (registration.birthYear) %}
+                        <br>Geboortejaar: {{ registration.birthYear }}
+                    {% endif %}
+                    {% if (registration.bhv) %}
+                        <br>Is arts of BHV'er
+                    {% endif %}
+                </td>
+                <td>
+                    {{ registration.vocalRange }}
+                    {% if (registration.kleinkoor) %}
+                        <br><b>Wil meezingen in kleinkoor</b><br>
+                        {{ registration.kleinkoorExplanation }}
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="mailto:{{ registration.email }}">{{ registration.email }}</a><br>
+                    {{ registration.street }} {% if registration.houseNumber > 0 %}{{ registration.houseNumber }} {{ registration.houseNumberAddition }}{% endif %}<br>
                     {{ registration.postcode }} {{ registration.city }}
                 </td>
-                <td>{{ registration.comments }}</td>
+                <td>
+                    {{ registration.created|date('d-m-Y') }}
+                </td>
+                <td>
+                    {{ registration.comments }}
+                    {% if registration.numPosters > 0 %}<br>Wil <b>{{ registration.numPosters }}</b> raamposters{% endif %}
+                </td>
+                <td>{{ registration.lunch|boolToText }}</td>
+
                 {% for ticketType in ticketTypes %}
                 {% set ticketTypeId = ticketType.id %}
                     <td>
                         {% if (ticketTypesByOrder[orderId][ticketTypeId] > 0) %}
                             <b>{{ ticketTypesByOrder[orderId][ticketTypeId] }}</b>
-                            {% set orderTotal = orderTotal + (ticketTypesByOrder[orderId][ticketTypeId] * ticketType.price) %}
                         {% else %}
                             &nbsp;
                         {% endif %}
 
                     </td>
                 {% endfor %}
-                <td>{{ registration.lunch|boolToText }}</td>
-                <td>{{ orderTotal|formatEuro }}</td>
+                {% set orderTicketTypes = ticketTypesByOrder[orderId] ?: [] %}
+                <td>{{ registration.calculateTotal(orderTicketTypes)|formatEuro }}</td>
                 <td>{{ registration.isPaid|boolToText }}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
