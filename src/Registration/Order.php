@@ -84,7 +84,7 @@ Meezingen in kleinkoor: ' . Util::boolToText($this->kleinkoor) . PHP_EOL . PHP_E
 
         foreach ($extraFields as $description => $contents)
         {
-            if (!empty(trim($contents)))
+            if (!empty(trim((string)$contents)))
             {
                 $text .= $description . ': ' . $contents . PHP_EOL;
             }
