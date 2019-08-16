@@ -33,6 +33,6 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
             User::addNotification('Fout bij opslaan evenement: ' . $errorInfo);
         }
 
-        $this->returnUrl = '/event/order/' . $this->id;
+        $this->returnUrl = '/event/order/' . $event->id;
     }
 }
