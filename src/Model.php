@@ -28,9 +28,7 @@ class Model
     public static function loadFromDatabase(int $id)
     {
         // Needed to make sure an object of the derived class is returned, not one of the base class.
-        $class = get_called_class();
-        /** @var static $object */
-        $object = new $class($id);
+        $object = new static($id);
         if ($object->load())
         {
             return $object;
@@ -39,6 +37,14 @@ class Model
         {
             return null;
         }
+    }
+
+    /**
+     * @return array
+     */
+    public static function getExtendedTableFields(): array
+    {
+        return array_merge(static::TABLE_FIELDS, ['created', 'modified']);
     }
 
     public function loadIfIdIsSet(): bool
@@ -66,7 +72,7 @@ class Model
         {
             return false;
         }
-        foreach (static::TABLE_FIELDS as $tableField)
+        foreach (self::getExtendedTableFields() as $tableField)
         {
             $this->$tableField = $record[$tableField];
         }
@@ -100,7 +106,7 @@ class Model
     public function asArray(): array
     {
         $return = [];
-        foreach (static::TABLE_FIELDS as $tableField)
+        foreach (self::getExtendedTableFields() as $tableField)
         {
             $return[$tableField] = $this->$tableField;
         }
@@ -109,7 +115,7 @@ class Model
 
     public function updateFromArray($newArray)
     {
-        foreach (static::TABLE_FIELDS as $tableField)
+        foreach (self::getExtendedTableFields() as $tableField)
         {
             if (array_key_exists($tableField, $newArray))
                 $this->$tableField = $newArray[$tableField];

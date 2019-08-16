@@ -42,14 +42,14 @@ class DBConnection
     public static function doQueryAndFetchAll(string $query, array $vars = [])
     {
         return static::executeQuery($query, $vars, function(PDOStatement $prep, $result) {
-            return $prep->fetchAll();
+            return $prep->fetchAll(PDO::FETCH_ASSOC);
         });
     }
 
     public static function doQueryAndFetchFirstRow(string $query, array $vars = [])
     {
         return static::executeQuery($query, $vars, function(PDOStatement$prep, $result) {
-            return $prep->fetch();
+            return $prep->fetch(PDO::FETCH_ASSOC);
         });
     }
 
