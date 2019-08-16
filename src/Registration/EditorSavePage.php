@@ -19,6 +19,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $event->openForRegistration = (bool)Request::post('openForRegistration');
         $event->registrationCost0 = (float)str_replace(',', '.', Request::post('registrationCost0'));
         $event->registrationCost1 = (float)str_replace(',', '.', Request::post('registrationCost1'));
+        $event->lunchCost = (float)str_replace(',', '.', Request::post('lunchCost'));
         $event->maxRegistrations = (int)Request::post('maxRegistrations');
         $event->numSeats = (int)Request::post('numSeats');
 
