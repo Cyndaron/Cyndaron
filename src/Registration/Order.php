@@ -72,7 +72,8 @@ Achternaam: ' . $this->lastName . '
 Voorletters: ' . $this->initials . '
 Stemsoort: ' . $this->vocalRange . '
 Arts / BHV / AED: ' . Util::boolToText($this->bhv) . '
-Meezingen in kleinkoor: ' . Util::boolToText($this->kleinkoor) . PHP_EOL . PHP_EOL;
+Meezingen in kleinkoor: ' . Util::boolToText($this->kleinkoor) . '
+Lunch: ' . Util::boolToText($this->lunch) . PHP_EOL . PHP_EOL;
 
         $extraFields = [
             'Geboortejaar' => $this->birthYear,
