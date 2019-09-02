@@ -156,7 +156,7 @@ class Model
 
             $result = DBConnection::doQuery('INSERT INTO ' . static::TABLE . ' (' . implode(',', static::TABLE_FIELDS) .  ') VALUES (' . $placeholders . ')', $arguments);
             if ($result !== false)
-                $this->id = $result;
+                $this->id = (int)$result;
         }
         // Modify existing entry
         else
