@@ -270,7 +270,7 @@ CREATE TABLE `registration_tickettypes` (
                                             `eventId` int(11) NOT NULL,
                                             `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
                                             `price` double NOT NULL,
-                                            `discountPer4` tinyint(1) NOT NULL DEFAULT '0'
+                                            `discountPer5` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --

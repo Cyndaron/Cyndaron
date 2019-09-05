@@ -141,8 +141,8 @@ Lunch: ' . Util::boolToText($this->lunch) . PHP_EOL . PHP_EOL;
         foreach ($ticketTypes as $ticketType)
         {
             $num = $orderTicketTypes[$ticketType->id] ?? 0;
-            if ($ticketType->discountPer4)
-                $num -= floor($num / 4);
+            if ($ticketType->discountPer5)
+                $num -= floor($num / 5);
 
             $orderTotal +=  $num * $ticketType->price;
         }

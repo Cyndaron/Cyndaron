@@ -82,8 +82,8 @@ function calculateTotal()
     tickettypes.forEach(function(item)
     {
         let aantal = document.getElementById('tickettype-' + item.id).value;
-        if (parseInt(item.discountPer4) === 1)
-            aantal -= Math.floor(aantal / 4);
+        if (parseInt(item.discountPer5) === 1)
+            aantal -= Math.floor(aantal / 5);
         total = total + (item.price * aantal);
     });
 
