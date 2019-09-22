@@ -94,7 +94,7 @@ class Util
 
     public static function formatEuro(float $amount): string
     {
-        return '€ ' . static::formatCurrency($amount);
+        return '€ ' . static::formatCurrency($amount);
     }
 
     public static function boolToText(bool $bool): string
