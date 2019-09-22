@@ -13,6 +13,14 @@ class EventOrderOverviewPage extends Page
         $ticketTypes = EventTicketType::loadByEvent($event);
         $registrations = Order::loadByEvent($event);
         $boughtTicketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM `registration_orders_tickettypes`');
+        $defData = [0 => ['amount' => 0, 'num' => 0], 1 => ['amount' => 0, 'num' => 0]];
+        $totals = [
+            'Alt' => $defData,
+            'Bas' => $defData,
+            'Sopraan' => $defData,
+            'Tenor' => $defData,
+            'Totaal' => $defData,
+        ];
 
         $this->addScript('/src/Registration/js/EventOrderOverviewPage.js');
 
@@ -29,12 +37,22 @@ class EventOrderOverviewPage extends Page
 
             $ticketTypesByOrder[$orderId][$ticketType] = $boughtTicketType['amount'];
         }
+        foreach ($registrations as $registration)
+        {
+            if ($registration->vocalRange)
+            {
+                $totals[$registration->vocalRange][$registration->isPaid]['num']++;
+                $totals[$registration->vocalRange][$registration->isPaid]['amount'] += $registration->calculateTotal($ticketTypesByOrder[$registration->id] ?? []);
+            }
+        }
+        foreach (['Alt', 'Bas', 'Sopraan', 'Tenor'] as $vocalRange)
+        {
+            $totals['Totaal'][0]['num'] += $totals[$vocalRange][0]['num'];
+            $totals['Totaal'][0]['amount'] += $totals[$vocalRange][0]['amount'];
+            $totals['Totaal'][1]['num'] += $totals[$vocalRange][1]['num'];
+            $totals['Totaal'][1]['amount'] += $totals[$vocalRange][1]['amount'];
+        }
 
-        $this->render([
-            'event' => $event,
-            'ticketTypes' => $ticketTypes,
-            'ticketTypesByOrder' => $ticketTypesByOrder,
-            'registrations' => $registrations,
-        ]);
+        $this->render(compact('event', 'ticketTypes', 'ticketTypesByOrder', 'registrations', 'totals'));
     }
 }

@@ -104,4 +104,31 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Zangstem</th>
+                <th>Aantal niet betaald</th>
+                <th>Aantal wel betaald</th>
+                <th>Aantal totaal</th>
+                <th>Bedrag niet betaald</th>
+                <th>Bedrag wel betaald</th>
+                <th>Bedrag totaal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vocalRange, counts in totals %}
+                <tr>
+                    <td>{% if vocalRange == 'Totaal' %}<b>{{ vocalRange }}</b>{% else %}{{ vocalRange }}{% endif %}</td>
+                    <td>{{ counts.0.num }}</td>
+                    <td>{{ counts.1.num }}</td>
+                    <td>{{ counts.0.num + counts.1.num }}</td>
+                    <td>{{ counts.0.amount|formatEuro }}</td>
+                    <td>{{ counts.1.amount|formatEuro }}</td>
+                    <td>{{ (counts.0.amount + counts.1.amount)|formatEuro }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
