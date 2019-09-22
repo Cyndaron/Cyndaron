@@ -61,7 +61,7 @@ $(document).ready(function () {
             target:   $('#pm-friendlyurl-new-target').val(),
             csrfToken: csrfToken
         };
-        $.post('/friendlyurl/add', data).done(function() {
+        $.post('/api/friendlyurl/add', data).done(function() {
             location.reload();
         });
     });
