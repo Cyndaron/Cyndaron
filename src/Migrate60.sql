@@ -238,6 +238,7 @@ CREATE TABLE `registration_orders` (
                                        `city` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
                                        `isPaid` int(1) NOT NULL DEFAULT '0',
                                        `lunch` tinyint(1) NOT NULL DEFAULT '0',
+                                       `lunchType` varchar(200) NOT NULL DEFAULT '',
                                        `bhv` tinyint(1) NOT NULL DEFAULT '0',
                                        `kleinkoor` tinyint(1) NOT NULL DEFAULT '0',
                                        `kleinkoorExplanation` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',

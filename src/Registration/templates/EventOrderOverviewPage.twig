@@ -76,7 +76,7 @@
                     {{ registration.comments }}
                     {% if registration.numPosters > 0 %}<br>Wil <b>{{ registration.numPosters }}</b> raamposters{% endif %}
                 </td>
-                <td>{{ registration.lunch|boolToText }}</td>
+                <td>{% if registration.lunch %}{{ registration.lunchType }}{% else %}Nee{% endif %}</td>
 
                 {% for ticketType in ticketTypes %}
                 {% set ticketTypeId = ticketType.id %}

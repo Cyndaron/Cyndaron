@@ -9,7 +9,7 @@ use \Exception;
 class Order extends Model
 {
     const TABLE = 'registration_orders';
-    const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid'];
+    const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid'];
 
     const MAIL_HEADERS = [
         'From' => '"Scratch Messiah Zeeland" <noreply@scratchzeeland.nl>',
@@ -23,6 +23,7 @@ class Order extends Model
     public $vocalRange;
     public $birthYear = null;
     public $lunch = false;
+    public $lunchType = '';
     public $bhv = false;
     public $kleinkoor = false;
     public $kleinkoorExplanation = '';
@@ -55,6 +56,8 @@ class Order extends Model
     {
         $event = $this->getEvent();
         $ticketTypes = EventTicketType::loadByEvent($event);
+        $lunchText = ($this->lunch) ? $this->lunchType : 'Geen';
+
         $text = 'Hartelijk dank voor uw inschrijving bij de Scratch Messiah Zeeland.
 Na betaling is uw inschrijving definitief. Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaargelegd worden bij de ingang van de kerk.
 
@@ -73,7 +76,7 @@ Voorletters: ' . $this->initials . '
 Stemsoort: ' . $this->vocalRange . '
 Arts / BHV / AED: ' . Util::boolToText($this->bhv) . '
 Meezingen in kleinkoor: ' . Util::boolToText($this->kleinkoor) . '
-Lunch: ' . Util::boolToText($this->lunch) . PHP_EOL . PHP_EOL;
+Lunch: ' . $lunchText . PHP_EOL . PHP_EOL;
 
         $extraFields = [
             'Geboortejaar' => $this->birthYear,

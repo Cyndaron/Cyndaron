@@ -102,6 +102,14 @@ $('#kleinkoor').on('change', function()
     else
         explanationWrapper.css('display', 'none');
 });
+$('#lunch').on('change', function()
+{
+    let lunchTypeWrapper = $('#lunchTypeWrapper');
+    if ($(this).is(':checked'))
+        lunchTypeWrapper.css('display', 'block');
+    else
+        lunchTypeWrapper.css('display', 'none');
+});
 
 setInterval(blockFormOnInvalidInput, 1000);
 setInterval(calculateTotal, 1000);

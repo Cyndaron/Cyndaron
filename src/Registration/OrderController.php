@@ -96,6 +96,10 @@ class OrderController extends Controller
         $order->registrationGroup = (int)Request::post('registrationGroup');
         $order->birthYear = (int)Request::post('birthYear') ?: null;
         $order->lunch = (bool)filter_input(INPUT_POST, 'lunch', FILTER_VALIDATE_BOOLEAN);
+        if ($order->lunch)
+        {
+            $order->lunchType = filter_input(INPUT_POST, 'lunchType', FILTER_SANITIZE_STRING);
+        }
         $order->bhv = (bool)filter_input(INPUT_POST, 'bhv', FILTER_VALIDATE_BOOLEAN);
         $order->kleinkoor = (bool)filter_input(INPUT_POST, 'kleinkoor', FILTER_VALIDATE_BOOLEAN);
         $order->kleinkoorExplanation = Request::post('kleinkoorExplanation');
