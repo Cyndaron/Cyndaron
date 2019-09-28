@@ -243,8 +243,9 @@ class OrderController extends Controller
      * @param $city
      * @param $comments
      * @param $email
+     * @return bool
      */
-    private function sendMail(bool $delivery, Concert $concert, bool $memberDelivery, $deliveryMemberName, int $reserveSeats, ?array $reservedSeats, float $total, $orderId, array $ticketTypes, array $orderTicketTypes, $lastName, $initials, $street, $postcode, $city, $comments, $email): void
+    private function sendMail(bool $delivery, Concert $concert, bool $memberDelivery, $deliveryMemberName, int $reserveSeats, ?array $reservedSeats, float $total, $orderId, array $ticketTypes, array $orderTicketTypes, $lastName, $initials, $street, $postcode, $city, $comments, $email): bool
     {
         if ($delivery || ($concert->forcedDelivery && !$memberDelivery))
         {
@@ -319,6 +320,11 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
             }
         }
 
-        mail($email, 'Bestelling concertkaarten', $text, Order::MAIL_HEADERS);
+        return Util::mail(
+            $email,
+            'Bestelling concertkaarten',
+            $text,
+            'noreply@vlissingse-oratoriumvereniging.nl',
+            'Vlissingse Oratorium Vereniging');
     }
 }

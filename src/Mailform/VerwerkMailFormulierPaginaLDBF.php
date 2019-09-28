@@ -135,8 +135,8 @@ class VerwerkMailformulierPaginaLDBF extends Page
                 $extraheadersMail1 = $extraheaders . "\n" . 'Reply-To: ' . Request::post('E-mailadres');
                 $extraheadersMail2 = $extraheaders . "\n" . 'Reply-To: voorzitter@leendebroekertfonds.nl';
 
-                $mail1 = mail('voorzitter@leendebroekertfonds.nl', 'Nieuwe aanvraag', $tekst, $extraheadersMail1);
-                $mail2 = mail(Request::post('E-mailadres'), 'Kopie aanvraag', $tekst, $extraheadersMail2);
+                $mail1 = mail('voorzitter@leendebroekertfonds.nl', 'Nieuwe aanvraag', $tekst, $extraheadersMail1, "-fnoreply@leendebroekertfonds.nl");
+                $mail2 = mail(Request::post('E-mailadres'), 'Kopie aanvraag', $tekst, $extraheadersMail2, "-fnoreply@leendebroekertfonds.nl");
 
                 if ($mail1 && $mail2)
                 {

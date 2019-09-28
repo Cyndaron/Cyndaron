@@ -68,20 +68,22 @@ class MailformController extends Controller
                 $server = str_replace("http://", "", $server);
                 $server = str_replace("https://", "", $server);
                 $server = str_replace("/", "", $server);
-                $extraHeaders = 'From: noreply@' . $server;
+                $fromAddress = "noreply@$server";
+                $fromName = html_entity_decode(Setting::get('siteName'));
+                $extraHeaders = 'From: ' . $fromAddress;
 
                 if ($sender)
                 {
                     $extraHeaders .= "\r\n" . 'Reply-To: ' . $sender;
                 }
 
-                if (mail($recipient, $subject, $mailBody, $extraHeaders))
+                if (mail($recipient, $subject, $mailBody, $extraHeaders, "-f$fromAddress"))
                 {
                     if ($form['stuur_bevestiging'] == true && $sender)
                     {
-                        $extraHeaders = sprintf('From: %s <noreply@%s>', html_entity_decode(Setting::get('siteName')), $server);
+                        $extraHeaders = sprintf('From: %s <%s>', $fromName, $fromAddress);
                         $extraHeaders .= "\r\n" . 'Reply-To: ' . $recipient;
-                        mail($sender, 'Ontvangstbevestiging', $form['tekst_bevestiging'], $extraHeaders);
+                        mail($sender, 'Ontvangstbevestiging', $form['tekst_bevestiging'], $extraHeaders, "-f$fromAddress");
                     }
                     return true;
                 }

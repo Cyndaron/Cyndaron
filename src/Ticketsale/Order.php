@@ -12,11 +12,6 @@ class Order extends Model
     const TABLE = 'ticketsale_orders';
     const TABLE_FIELDS = ['concert_id', 'delivery', 'deliveryByMember', 'deliveryMemberName', 'email'];
 
-    const MAIL_HEADERS = [
-        'From' => '"Vlissingse Oratorium Vereniging" <noreply@vlissingse-oratoriumvereniging.nl>',
-        'Content-Type' => 'text/plain; charset="UTF-8"',
-    ];
-
     public $concert_id;
     public $delivery;
     public $deliveryByMember;
@@ -49,9 +44,12 @@ class Order extends Model
             $text .= 'Uw kaarten zullen op de avond van het concert voor u klaarliggen bij de kassa.';
         }
 
-        $extraheaders = 'From: "Vlissingse Oratorium Vereniging" <noreply@vlissingse-oratoriumvereniging.nl>;' . "\n" .
-            'Content-Type: text/plain; charset="UTF-8";';
-        mail($this->email, 'Betalingsbevestiging', $text, $extraheaders);
+        return Util::mail(
+            $this->email,
+            'Betalingsbevestiging',
+            $text,
+            'noreply@vlissingse-oratoriumvereniging.nl',
+            'Vlissingse Oratorium Vereniging');
     }
 
     public function setIsSent()

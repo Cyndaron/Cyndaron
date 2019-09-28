@@ -101,7 +101,8 @@ EOT;
             $this->email,
             'Nieuw wachtwoord ingesteld',
             sprintf(self::RESET_PASSWORD_MAIL_TEXT, $websiteName, $newPassword),
-            sprintf(self::MAIL_HEADERS, $websiteName, $domain)
+            sprintf(self::MAIL_HEADERS, $websiteName, $domain),
+            "-fnoreply@$domain"
         );
     }
 
