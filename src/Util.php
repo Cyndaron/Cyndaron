@@ -103,4 +103,16 @@ class Util
             return 'Ja';
         return 'Nee';
     }
+
+    public static function mail(string $to, string $subject, string $message, string $fromAddress, string $fromName): bool
+    {
+        $additionalHeaders = [
+            'From' => "\"$fromName\" <$fromAddress>",
+            'Content-Type' => 'text/plain; charset="UTF-8"',
+        ];
+        // Set the envelope sender. This is often needed to make DMARC checks pass if multiple domains send mail from the same server.
+        $additionalParameters = "-f$fromAddress";
+
+        return mail($to, $subject, $message, $additionalHeaders, $additionalParameters);
+    }
 }

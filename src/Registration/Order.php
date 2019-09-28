@@ -11,10 +11,8 @@ class Order extends Model
     const TABLE = 'registration_orders';
     const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid'];
 
-    const MAIL_HEADERS = [
-        'From' => '"Scratch Messiah Zeeland" <noreply@scratchzeeland.nl>',
-        'Content-Type' => 'text/plain; charset="UTF-8"',
-    ];
+    const FROM_ADDRESS = 'noreply@scratchzeeland.nl';
+    const FROM_NAME = 'Scratch Messiah Zeeland';
 
     public $eventId;
     public $lastName;
@@ -107,7 +105,7 @@ Lunch: ' . $lunchText . PHP_EOL . PHP_EOL;
         }
         $text.= PHP_EOL . 'Totaalbedrag: ' . Util::formatEuro($orderTotal);
 
-        return mail($this->email, 'Inschrijving ' . $event->name, $text, Order::MAIL_HEADERS);
+        return Util::mail($this->email, 'Inschrijving ' . $event->name, $text, self::FROM_ADDRESS, self::FROM_NAME);
     }
 
     public function setIsPaid()
@@ -123,7 +121,7 @@ Lunch: ' . $lunchText . PHP_EOL . PHP_EOL;
         $text = "Hartelijk dank voor uw inschrijving bij de Scratch Messiah Zeeland. Wij hebben uw betaling in goede orde ontvangen.\n"
               . 'Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaarliggen bij de kassa.';
 
-        mail($this->email, 'Betalingsbevestiging', $text, static::MAIL_HEADERS);
+        return Util::mail($this->email, 'Betalingsbevestiging', $text, self::FROM_ADDRESS, self::FROM_NAME);
     }
 
     public function calculateTotal(array $orderTicketTypes): float
