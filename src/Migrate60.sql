@@ -242,6 +242,7 @@ CREATE TABLE `registration_orders` (
                                        `bhv` tinyint(1) NOT NULL DEFAULT '0',
                                        `kleinkoor` tinyint(1) NOT NULL DEFAULT '0',
                                        `kleinkoorExplanation` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                                       `participatedBefore` tinyint(1) NOT NULL DEFAULT '0',
                                        `numPosters` int(2) NOT NULL DEFAULT '0',
                                        `comments` varchar(400) COLLATE utf8mb4_unicode_ci NOT NULL,
                                        `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

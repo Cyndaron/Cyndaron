@@ -9,7 +9,7 @@ use \Exception;
 class Order extends Model
 {
     const TABLE = 'registration_orders';
-    const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid'];
+    const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'participatedBefore', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid'];
 
     const FROM_ADDRESS = 'noreply@scratchzeeland.nl';
     const FROM_NAME = 'Scratch Messiah Zeeland';
@@ -25,6 +25,7 @@ class Order extends Model
     public $bhv = false;
     public $kleinkoor = false;
     public $kleinkoorExplanation = '';
+    public $participatedBefore = false;
     public $numPosters = 0;
     public $email;
     public $street;

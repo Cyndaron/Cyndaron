@@ -59,6 +59,9 @@
                 </td>
                 <td>
                     {{ registration.vocalRange }}
+                    {% if (registration.participatedBefore) %}
+                        <br>Deed eerder mee
+                    {% endif %}
                     {% if (registration.kleinkoor) %}
                         <br><b>Wil meezingen in kleinkoor</b><br>
                         {{ registration.kleinkoorExplanation }}

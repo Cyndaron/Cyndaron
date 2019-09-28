@@ -103,6 +103,7 @@ class OrderController extends Controller
         $order->bhv = (bool)filter_input(INPUT_POST, 'bhv', FILTER_VALIDATE_BOOLEAN);
         $order->kleinkoor = (bool)filter_input(INPUT_POST, 'kleinkoor', FILTER_VALIDATE_BOOLEAN);
         $order->kleinkoorExplanation = Request::post('kleinkoorExplanation');
+        $order->participatedBefore = (bool)filter_input(INPUT_POST, 'participatedBefore', FILTER_VALIDATE_BOOLEAN);
         $order->numPosters = (int)Request::post('numPosters');
         $order->email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
         $order->street = Request::post('street');
