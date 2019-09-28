@@ -97,33 +97,6 @@
                 </div>
             </div>
 
-            <h3>Kaarten voor vrienden/familie:</h3>
-            <input type="hidden" id="eventId" name="event_id" value="{{ event.id }}"/>
-            <table class="kaartverkoop table table-striped">
-                <thead>
-                    <tr>
-                        <th>Kaartsoort:</th>
-                        <th>Prijs per stuk:</th>
-                        <th>Aantal:</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ticketType in ticketTypes %}
-                        <tr>
-                            <td>{{ ticketType.name }}</td>
-                            <td>{{ ticketType.price|formatEuro }}{% if ticketType.discountPer5 %} (5 halen, 4 betalen){% endif %}</td>
-                            <td>
-                                <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ ticketType.id }}" id="tickettype-{{ ticketType.id }}" value="0"/>
-                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ ticketType.id }}"><span class="glyphicon glyphicon-plus"></span></button>
-                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ ticketType.id }}"><span class="glyphicon glyphicon-minus"></span></button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            <div><b>Totaalprijs:</b> <span id="prijsvak">€&nbsp;0,00</span></div>
-
             <h3 id="adresgegevensKop">Overige gegevens (niet verplicht):</h3>
 
             <div class="form-group row">
@@ -166,6 +139,33 @@
                 <div class="col-sm-1"><input id="numPosters" name="numPosters" type="number" min="0" max="9" step="1" pattern="[0-9]{1}" value="0" class="form-control"/></div>
             </div>
 
+            <h3>Kaarten voor vrienden/familie:</h3>
+            <input type="hidden" id="eventId" name="event_id" value="{{ event.id }}"/>
+            <table class="kaartverkoop table table-striped">
+                <thead>
+                    <tr>
+                        <th>Kaartsoort:</th>
+                        <th>Prijs per stuk:</th>
+                        <th>Aantal:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticketType in ticketTypes %}
+                        <tr>
+                            <td>{{ ticketType.name }}</td>
+                            <td>{{ ticketType.price|formatEuro }}{% if ticketType.discountPer5 %} (5 halen, 4 betalen){% endif %}</td>
+                            <td>
+                                <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ ticketType.id }}" id="tickettype-{{ ticketType.id }}" value="0"/>
+                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ ticketType.id }}"><span class="glyphicon glyphicon-plus"></span></button>
+                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ ticketType.id }}"><span class="glyphicon glyphicon-minus"></span></button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div><b>Totaalprijs:</b> <span id="prijsvak">€&nbsp;0,00</span></div>
+
 
             <h3>Verzenden:</h3>
 
@@ -184,6 +184,8 @@
                 <label class="col-sm-3 col-form-label" for="antispam">Antispam:</label>
                 <div class="col-sm-5"><input id="antispam" name="antispam" required class="form-control"/></div>
             </div>
+
+            <p>Uw gegevens zullen worden verwerkt zoals beschreven in onze <a href="/privacyverklaring">privacyverklaring</a>.</p>
 
             <div class="col-sm-offset-2"><input id="verzendknop" class="btn btn-primary" type="submit"
                                                 value="Bestellen"/></div>
