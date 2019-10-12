@@ -20,6 +20,7 @@ class EditorController extends Controller
         // "Plug-in"
         'concert' => \Cyndaron\Ticketsale\EditorPage::class,
         'event' => \Cyndaron\Registration\EditorPage::class,
+        'eventSbk' => \Cyndaron\RegistrationSbk\EditorPage::class,
     ];
     protected $savePages = [
         'category' => \Cyndaron\Category\EditorSavePage::class,
@@ -30,6 +31,7 @@ class EditorController extends Controller
         // "Plug-in"
         'concert' => \Cyndaron\Ticketsale\EditorSavePage::class,
         'event' => \Cyndaron\Registration\EditorSavePage::class,
+        'eventSbk' => \Cyndaron\RegistrationSbk\EditorSavePage::class,
     ];
 
     protected function routeGet()

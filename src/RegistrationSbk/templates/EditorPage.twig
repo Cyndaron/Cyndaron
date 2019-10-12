@@ -1,0 +1,32 @@
+{% extends "EditorPageBase.twig" %}
+{% import "widget.twig" as widget %}
+
+{% block contentSpecificButtons %}
+    <div class="form-group">
+        <label for="descriptionWhenClosed">Beschijving indien gesloten:</label>
+        <textarea class="form-control" id="descriptionWhenClosed" name="descriptionWhenClosed" rows="3">{{ model.descriptionWhenClosed }}</textarea>
+    </div>
+
+    {{ widget.editorCheckbox('openForRegistration', 'Open voor inschrijving', model.openForRegistration) }}
+
+    <div class="form-group row">
+        <label for="registrationCost" class="col-sm-2 col-form-label">Inschrijfgeld:</label>
+        <div class="input-group col-sm-1">
+            <div class="input-group-prepend">
+                <span class="input-group-text">€</span>
+            </div>
+            <input type="text" class="form-control" id="registrationCost" name="registrationCost" value="{{ registrationCost }}">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="performedPiece">Uitgevoerd stuk:</label>
+        <input class="form-control" id="performedPiece" name="performedPiece" value="{{ model.performedPiece }}">
+    </div>
+
+    <div class="form-group">
+        <label for="termsAndConditions">Voorwaarden:</label>
+        <textarea class="form-control" id="termsAndConditions" name="termsAndConditions" rows="3">{{ model.termsAndConditions }}</textarea>
+    </div>
+
+{% endblock %}
