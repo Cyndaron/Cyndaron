@@ -67,7 +67,7 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
         $this->save();
 
         $event = $this->getEvent();
-        $orderTotal = $event->registrationCost;
+        $orderTotal = (float)$event->registrationCost;
 
         $text = 'Beste koorzanger,
 
