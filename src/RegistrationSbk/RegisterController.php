@@ -29,10 +29,14 @@ class RegisterController extends Controller
                 break;
             case 'setApprovalStatus':
                 $status = (int)Request::post('status');
-                if ($status >= Registration::APPROVAL_UNDECIDED && $status <= Registration::APPROVAL_DISAPPROVED)
+                switch ($status)
                 {
-                    $registration->approvalStatus = $status;
-                    $registration->save();
+                    case Registration::APPROVAL_APPROVED:
+                        $registration->setApproved();
+                        break;
+                    case Registration::APPROVAL_DISAPPROVED:
+                        $registration->setDisapproved();
+                        break;
                 }
                 break;
             case 'delete':
