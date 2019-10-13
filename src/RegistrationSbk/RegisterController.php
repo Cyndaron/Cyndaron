@@ -54,7 +54,7 @@ class RegisterController extends Controller
 
             $page = new Page(
                 'Inschrijving verwerkt',
-                'Hartelijk dank voor uw inschrijving. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw inschrijving.'
+                'Hartelijk dank voor je inschrijving. Je ontvangt binnen enkele minuten een e-mail met een bevestiging van je inschrijving.'
             );
             $page->render();
         }
@@ -81,7 +81,7 @@ class RegisterController extends Controller
 
         if (!$eventObj->openForRegistration)
         {
-            throw new Exception('De verkoop voor dit evenement is helaas gesloten, u kunt geen kaarten meer bestellen.');
+            throw new Exception('De inschrijving voor dit evenement is helaas gesloten, je kunt je niet meer inschrijven.');
         }
 
         $errorFields = $this->checkForm($eventObj);

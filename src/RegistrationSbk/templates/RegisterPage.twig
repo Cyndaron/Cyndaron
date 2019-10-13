@@ -6,7 +6,7 @@
 
 {% block contents %}
     {% if event.openForRegistration == false %}
-        {{ event.descriptionWhenClosed|raw|default('Voor dit evenement kunt u zich helaas niet meer inschrijven.') }}
+        {{ event.descriptionWhenClosed|raw|default('Voor dit evenement kun je je helaas niet meer inschrijven.') }}
     {% else %}
         {{ event.description|raw }}
 
@@ -14,7 +14,7 @@
             <input type="hidden" name="csrfToken" value="{{ getCSRFToken('eventSbk-registration', 'add') }}"/>
             <input type="hidden" id="eventId" name="event_id" value="{{ event.id }}"/>
 
-            <h3>Uw gegevens (verplicht):</h3>
+            <h3>Je gegevens (verplicht):</h3>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="lastName">Achternaam:</label>
@@ -77,7 +77,7 @@
 
             <h3>Verzenden:</h3>
 
-            <p>Als u nog opmerkingen heeft kunt u deze hier kwijt.</p>
+            <p>Als je nog opmerkingen hebt kun je deze hier kwijt.</p>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="comments">Opmerkingen (niet verplicht):</label>
@@ -85,7 +85,7 @@
                                                 rows="4"></textarea></div>
             </div>
 
-            <p>Om te voorkomen dat er spam wordt verstuurd met dit formulier<br/>wordt u verzocht in het onderstaande
+            <p>Om te voorkomen dat er spam wordt verstuurd met dit formulier<br/>word je verzocht in het onderstaande
                 vak <span style="font-family:monospace;">{{ event.getAntiSpam() }}</span> in te vullen.</p>
 
             <div class="form-group row">
@@ -93,10 +93,10 @@
                 <div class="col-sm-5"><input id="antispam" name="antispam" required class="form-control"/></div>
             </div>
 
-{#            <p>Uw gegevens zullen worden verwerkt zoals beschreven in onze <a href="/privacyverklaring">privacyverklaring</a>.</p>#}
+{#            <p>Je gegevens zullen worden verwerkt zoals beschreven in onze <a href="/privacyverklaring">privacyverklaring</a>.</p>#}
 
             <div class="col-sm-offset-2"><input id="verzendknop" class="btn btn-primary" type="submit"
-                                                value="Bestellen"/></div>
+                                                value="Versturen"/></div>
         </form>
     {% endif %}
 {% endblock %}
