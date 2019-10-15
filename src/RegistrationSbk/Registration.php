@@ -48,7 +48,7 @@ class Registration extends Model
 
         $text = 'Hartelijk dank voor je aanmelding op de SBK-website voor deelname als koorzanger voor ' . $event->name . '. Je aanmelding is door het SBK-bestuur in goede orde ontvangen.
 
-Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur je via de mail weten of de procedure goed verlopen is en of je als koorzanger in aanmerking komt deel te nemen in het SBK-koor.';
+Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur je via de mail weten of je als koorzanger kunt deelnemen in het SBK-koor. Je hoeft nu dus nog niet te betalen.';
 
         return Util::mail($this->email, 'Inschrijving ' . $event->name . ' ontvangen', $text, self::FROM_ADDRESS, self::FROM_NAME);
     }
