@@ -6,7 +6,7 @@
 
 {% block contents %}
     {% if event.openForRegistration == false %}
-        {{ event.descriptionWhenClosed|raw|default('Voor dit evenement kun je je helaas niet meer inschrijven.') }}
+        {{ event.descriptionWhenClosed|raw|default('Voor dit evenement kun je je helaas niet meer aanmelden.') }}
     {% else %}
         {{ event.description|raw }}
 
@@ -77,8 +77,6 @@
             <div class="termsAndConditions" style="margin: 25px 0;">{{ event.termsAndConditions|raw }}</div>
 
             <h3>Verzenden:</h3>
-
-            <p>Als je nog opmerkingen hebt kun je deze hier kwijt.</p>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="comments">Opmerkingen (niet verplicht):</label>

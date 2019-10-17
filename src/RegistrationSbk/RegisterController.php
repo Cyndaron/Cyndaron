@@ -53,14 +53,14 @@ class RegisterController extends Controller
             $this->processOrder($eventId);
 
             $page = new Page(
-                'Inschrijving verwerkt',
-                'Hartelijk dank voor je inschrijving. Je ontvangt binnen enkele minuten een e-mail met een bevestiging van je inschrijving.'
+                'Aanmelding verwerkt',
+                'Hartelijk dank voor je aanmelding. Je ontvangt binnen enkele minuten een e-mail met een bevestiging van je aanmelding.'
             );
             $page->render();
         }
         catch (Exception $e)
         {
-            $page = new Page('Fout bij verwerken inschrijving', $e->getMessage());
+            $page = new Page('Fout bij verwerken aanmelding', $e->getMessage());
             $page->render();
         }
     }
@@ -73,7 +73,7 @@ class RegisterController extends Controller
     {
         if (Request::postIsEmpty())
         {
-            throw new Exception('De inschrijvingsgegevens zijn niet goed aangekomen.');
+            throw new Exception('De aanmeldingsgegevens zijn niet goed aangekomen.');
         }
 
         /** @var Event $eventObj */
@@ -81,7 +81,7 @@ class RegisterController extends Controller
 
         if (!$eventObj->openForRegistration)
         {
-            throw new Exception('De inschrijving voor dit evenement is helaas gesloten, je kunt je niet meer inschrijven.');
+            throw new Exception('De aanmeldingen voor dit evenement is helaas gesloten, je kunt je niet meer aanmelden.');
         }
 
         $errorFields = $this->checkForm($eventObj);
@@ -109,7 +109,7 @@ class RegisterController extends Controller
         if ($result === false)
         {
             $msg = var_export(DBConnection::errorInfo(), true);
-            throw new Exception($msg . 'Opslaan inschrijving mislukt!');
+            throw new Exception($msg . 'Opslaan aanmelding mislukt!');
         }
 
         $order->sendConfirmationMail();

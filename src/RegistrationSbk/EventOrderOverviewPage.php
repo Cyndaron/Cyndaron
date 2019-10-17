@@ -20,7 +20,7 @@ class EventOrderOverviewPage extends Page
 
         $this->addScript('/src/RegistrationSbk/js/EventOrderOverviewPage.js');
 
-        parent::__construct('Overzicht inschrijvingen: ' . $event->name);
+        parent::__construct('Overzicht aanmeldingen: ' . $event->name);
 
         foreach ($registrations as $registration)
         {

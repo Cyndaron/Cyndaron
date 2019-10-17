@@ -8,7 +8,7 @@
         <thead>
             <tr class="rotate">
                 <th class="rotate">
-                    <div><span>Inschrijvingsnummer</span></div>
+                    <div><span>Aanmeldingsnummer</span></div>
                 </th>
                 <th class="rotate">
                     <div><span>Persoonsgegevens</span></div>
@@ -20,7 +20,7 @@
                     <div><span>Contactgegevens</span></div>
                 </th>
                 <th class="rotate">
-                    <div><span>Inschrijfdatum</span></div>
+                    <div><span>Aanmeldingsdatum</span></div>
                 </th>
                 <th class="rotate">
                     <div><span>Opmerkingen</span></div>
@@ -67,14 +67,14 @@
                 <td>
                     <div class="btn-group btn-group-sm">
                         {% if registration.approvalStatus == constant('Cyndaron\\RegistrationSbk\\Registration::APPROVAL_UNDECIDED') %}
-                            <button data-order-id="{{ orderId }}" data-approval-status="{{ constant('Cyndaron\\RegistrationSbk\\Registration::APPROVAL_APPROVED') }}" data-csrf-token-set-approval-status="{{ getCSRFToken('eventSbk-registration', 'setApprovalStatus') }}" title="Inschrijving goedkeuren" class="eom-order-set-approval-status btn btn-sm btn-success"><span class="glyphicon glyphicon-ok"></span></button>
-                            <button data-order-id="{{ orderId }}" data-approval-status="{{ constant('Cyndaron\\RegistrationSbk\\Registration::APPROVAL_DISAPPROVED') }}" data-csrf-token-set-approval-status="{{ getCSRFToken('eventSbk-registration', 'setApprovalStatus') }}" title="Inschrijving afkeuren" class="eom-order-set-approval-status btn btn-sm btn-warning"><span class="glyphicon glyphicon-remove"></span></button>
+                            <button data-order-id="{{ orderId }}" data-approval-status="{{ constant('Cyndaron\\RegistrationSbk\\Registration::APPROVAL_APPROVED') }}" data-csrf-token-set-approval-status="{{ getCSRFToken('eventSbk-registration', 'setApprovalStatus') }}" title="Aanmelding goedkeuren" class="eom-order-set-approval-status btn btn-sm btn-success"><span class="glyphicon glyphicon-ok"></span></button>
+                            <button data-order-id="{{ orderId }}" data-approval-status="{{ constant('Cyndaron\\RegistrationSbk\\Registration::APPROVAL_DISAPPROVED') }}" data-csrf-token-set-approval-status="{{ getCSRFToken('eventSbk-registration', 'setApprovalStatus') }}" title="Aanmelding afkeuren" class="eom-order-set-approval-status btn btn-sm btn-warning"><span class="glyphicon glyphicon-remove"></span></button>
                         {% endif %}
                         {% if registration.shouldPay() %}
                             <button data-order-id="{{ orderId }}" data-csrf-token-set-is-paid="{{ getCSRFToken('eventSbk-registration', 'setIsPaid') }}" title="Markeren als betaald" class="eom-order-set-paid btn btn-sm btn-success"><span class="glyphicon glyphicon-eur"></span></button>
                         {% endif %}
                     </div>
-                    <button data-order-id="{{ orderId }}" data-csrf-token-delete="{{ getCSRFToken('eventSbk-registration', 'delete') }}" title="Inschrijving verwijderen" class="eom-order-delete btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                    <button data-order-id="{{ orderId }}" data-csrf-token-delete="{{ getCSRFToken('eventSbk-registration', 'delete') }}" title="Aanmelding verwijderen" class="eom-order-delete btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
                 </td>
             </tr>
             {% endfor %}

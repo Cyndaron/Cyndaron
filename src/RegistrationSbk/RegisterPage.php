@@ -7,7 +7,7 @@ class RegisterPage extends Page
 {
     public function __construct(Event $event)
     {
-        parent::__construct('Inschrijving: ' . $event->name);
+        parent::__construct('Aanmelding: ' . $event->name);
         $this->render([
             'event' => $event,
         ]);

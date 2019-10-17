@@ -23,7 +23,7 @@ $(document).ready(function ()
     {
         let orderId = $(this).data('order-id');
         let csrfToken = $(this).data('csrf-token-delete');
-        del(`Weet u zeker dat u deze inschrijving wilt verwijderen?`, function() {
+        del(`Weet u zeker dat u deze aanmelding wilt verwijderen?`, function() {
             $.post('/eventSbk-registration/delete/' + orderId, { csrfToken: csrfToken }).done(function () {
                 location.reload();
             });

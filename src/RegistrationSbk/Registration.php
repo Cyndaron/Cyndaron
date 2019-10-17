@@ -50,7 +50,7 @@ class Registration extends Model
 
 Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur je via de mail weten of je als koorzanger kunt deelnemen in het SBK-koor. Je hoeft nu dus nog niet te betalen.';
 
-        return Util::mail($this->email, 'Inschrijving ' . $event->name . ' ontvangen', $text, self::FROM_ADDRESS, self::FROM_NAME);
+        return Util::mail($this->email, 'Aanmelding ' . $event->name . ' ontvangen', $text, self::FROM_ADDRESS, self::FROM_NAME);
     }
 
     /**
@@ -76,7 +76,7 @@ Nogmaals dank voor je belangstelling voor ' . $event->name . '. Inmiddels zijn a
 Gebruik bij het betalen de volgende gegevens:
    Rekeningnummer: NL72 RABO 0342 0672 22 t.n.v. Bijzondere Koorprojecten
    Bedrag: ' . Util::formatEuro($orderTotal) . '
-   Onder vermelding van: inschrijvingsnummer ' . $this->id . '
+   Onder vermelding van: aanmeldingsnummer ' . $this->id . '
 
 We kijken uit naar plezierige repetities en een mooi concert!
 
@@ -84,7 +84,7 @@ Met vriendelijke groet,
 
 Stichting Bijzondere Koorprojecten';
 
-        return Util::mail($this->email, 'Inschrijving ' . $event->name . ' goedgekeurd', $text, self::FROM_ADDRESS, self::FROM_NAME);
+        return Util::mail($this->email, 'Aanmelding ' . $event->name . ' goedgekeurd', $text, self::FROM_ADDRESS, self::FROM_NAME);
     }
 
     public function setDisapproved()
@@ -107,7 +107,7 @@ Met vriendelijke groet,
 
 Stichting Bijzondere Koorprojecten';
 
-        return Util::mail($this->email, 'Inschrijving ' . $event->name, $text, self::FROM_ADDRESS, self::FROM_NAME);
+        return Util::mail($this->email, 'Aanmelding ' . $event->name, $text, self::FROM_ADDRESS, self::FROM_NAME);
     }
 
     public function setIsPaid()
