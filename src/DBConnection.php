@@ -65,20 +65,8 @@ class DBConnection
         return ['pdo' => static::$pdo->errorInfo(), 'statement' => static::$statementError, 'query' => static::$errorQuery];
     }
 
-    public static function connect()
+    public static function connect($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass)
     {
-        if (static::$pdo !== null)
-        {
-            return;
-        }
-
-        $dbmethode = 'mysql';
-        $dbuser = 'root';
-        $dbpass = '';
-        $dbplek = 'localhost';
-        $dbnaam = 'cyndaron';
-        require __DIR__ . '/../instellingen.php';
-
         try
         {
             static::$pdo = @new PDO($dbmethode . ':host=' . $dbplek . ';dbname=' . $dbnaam . ';charset=utf8', $dbuser, $dbpass);
@@ -94,7 +82,6 @@ class DBConnection
 
     public static function getPdo(): PDO
     {
-        static::connect();
         return static::$pdo;
     }
 }

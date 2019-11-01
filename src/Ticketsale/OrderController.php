@@ -65,7 +65,7 @@ class OrderController extends Controller
     {
         if (Request::postIsEmpty())
         {
-            throw new Exception('De bestellingsgegevens zijn niet goed aangekomen.');
+            throw new InvalidOrder('De bestellingsgegevens zijn niet goed aangekomen.');
         }
 
         /** @var Concert $concertObj */
@@ -73,7 +73,7 @@ class OrderController extends Controller
 
         if (!$concertObj->openForSales)
         {
-            throw new Exception('De verkoop voor dit concert is helaas gesloten, u kunt geen kaarten meer bestellen.');
+            throw new InvalidOrder('De verkoop voor dit concert is helaas gesloten, u kunt geen kaarten meer bestellen.');
         }
 
         $postcode = Request::post('postcode');
@@ -87,7 +87,7 @@ class OrderController extends Controller
         {
             $message = 'De volgende velden zijn niet goed ingevuld of niet goed aangekomen: ';
             $message .= implode(', ', $incorrecteVelden) . '.';
-            throw new Exception($message);
+            throw new InvalidOrder($message);
         }
 
         $totaalprijs = 0.0;
@@ -132,7 +132,7 @@ class OrderController extends Controller
 
         if ($totaalprijs <= 0)
         {
-            throw new Exception('U heeft een bestelling van 0 kaarten geplaatst of het formulier is niet goed aangekomen.');
+            throw new InvalidOrder('U heeft een bestelling van 0 kaarten geplaatst of het formulier is niet goed aangekomen.');
         }
 
         $email = Request::post('email');
@@ -144,12 +144,12 @@ class OrderController extends Controller
         $comments = Request::post('comments');
 
         $result = DBConnection::doQuery('INSERT INTO ticketsale_orders
-            (`concertId`, `lastName`, `initials`, `email`, `street`, `postcode`, `city`, `delivery`,               `hasReservedSeats`, `deliveryByMember`, `deliveryMemberName`, `addressIsAbroad`, `comments`) VALUES
-            (?,           ?,          ?,          ?,       ?,        ?,          ?,      ?,                        ?,                  ?,                  ?,                    ?,                 ?)',
-            [$concertId,  $lastName,  $initials,  $email,  $street,  $postcode,  $city, ($payForDelivery ? 1 : 0), $reserveSeats,      $deliveryByMember,  $deliveryMemberName,  $addressIsAbroad,  $comments]);
+            (`concertId`, `lastName`, `initials`, `email`, `street`, `postcode`, `city`, `delivery`,               `hasReservedSeats`, `deliveryByMember`, `deliveryMemberName`, `addressIsAbroad`,      `comments`) VALUES
+            (?,           ?,          ?,          ?,       ?,        ?,          ?,      ?,                        ?,                  ?,                  ?,                    ?,                      ?)',
+            [$concertId,  $lastName,  $initials,  $email,  $street,  $postcode,  $city, ($payForDelivery ? 1 : 0), $reserveSeats,      $deliveryByMember,  $deliveryMemberName,  (int)$addressIsAbroad,  $comments]);
         if ($result === false)
         {
-            throw new Exception('Opslaan bestelling mislukt!');
+            throw new InvalidOrder('Opslaan bestelling mislukt!');
         }
         $orderId = (int)$result;
 
@@ -162,7 +162,7 @@ class OrderController extends Controller
                     [$orderId, $ticketType['id'], $order_tickettypes[$ticketType['id']]]);
                 if ($result === false)
                 {
-                    throw new Exception('Opslaan kaarttypen mislukt!');
+                    throw new InvalidOrder('Opslaan kaarttypen mislukt!');
                 }
             }
         }

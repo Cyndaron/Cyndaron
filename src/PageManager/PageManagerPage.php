@@ -15,60 +15,57 @@ use Cyndaron\Widget\Toolbar;
 
 class PageManagerPage extends Page
 {
+    private static $pageTypes = [
+        'sub' => [
+            'name' => 'Statische pagina\'s',
+            'tabDraw' => self::class . '::showSubs',
+        ],
+        'category' => [
+            'name' => 'Categorieën',
+            'tabDraw' => self::class . '::showCategories',
+        ],
+        'photoalbum' => [
+            'name' => 'Fotoalbums',
+            'tabDraw' => self::class . '::showPhotoAlbums',
+        ],
+        'friendlyurl' => [
+            'name' => 'Friendly URL\'s',
+            'tabDraw' => self::class . '::showFriendlyURLs',
+        ],
+        'mailform' => [
+            'name' => 'Mailformulieren',
+            'tabDraw' => self::class . '::showMailforms',
+        ]
+    ];
+    
     public function __construct($currentPage)
     {
         $this->addScript('/src/PageManager/PageManagerPage.js');
         parent::__construct('Paginaoverzicht');
         $this->showPrePage();
 
-        echo new PageTabs([
-            'sub' => 'Statische pagina\'s',
-            'category' => 'Categorieën',
-            'photoalbum' => 'Fotoalbums',
-            'friendlyurl' => 'Friendly URL\'s',
-            'mailform' => 'Mailformulieren',
-            // "Plug-in"
-            'concert' => 'Concerten',
-            'event' => 'Evenementen',
-            'eventSbk' => 'Evenementen (SBK)',
-        ], '/pagemanager/', $currentPage);
+        $pageTabs = [];
+        foreach (static::$pageTypes as $pageType => $data)
+        {
+            $pageTabs[$pageType] = $data['name'];
+        }
 
+        echo new PageTabs($pageTabs, '/pagemanager/', $currentPage);
         echo '<div class="container-fluid tab-contents">';
 
-        switch ($currentPage)
+        if (!array_key_exists($currentPage, static::$pageTypes))
         {
-            case 'category':
-                $this->showCategories();
-                break;
-            case 'friendlyurl':
-                $this->showFriendlyURLs();
-                break;
-            case 'photoalbum':
-                $this->showPhotoAlbums();
-                break;
-            case 'mailform':
-                $this->showMailforms();
-                break;
-            case 'concert':
-                $this->showConcerts();
-                break;
-            case 'event':
-                $this->showEvents();
-                break;
-            case 'eventSbk':
-                $this->showSbkEvents();
-                break;
-            case 'sub':
-            default:
-                $this->showSubs();
+            $currentPage = array_key_first(static::$pageTypes);
         }
+        $function = static::$pageTypes[$currentPage]['tabDraw'];
+        $function();
 
         echo '<div>';
 
         $this->showPostPage();
     }
 
-    private function showSubs()
+    private static function showSubs()
     {
         echo new Toolbar('', '', (string)new Button('new', '/editor/sub', 'Nieuwe statische pagina', 'Nieuwe statische pagina'));
 
@@ -291,116 +288,8 @@ class PageManagerPage extends Page
         <?php
     }
 
-    public function showConcerts()
+    public static function addPageType(array $pageType)
     {
-        echo new Toolbar('', '', (string)new Button('new', '/editor/concert', 'Nieuw concert', 'Nieuw concert'));
-
-        $concerts = Concert::fetchAll();
-        ?>
-
-        <table class="table table-striped table-bordered pm-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Naam</th>
-                    <th>Acties</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($concerts as $concert):?>
-                <tr>
-                    <td><?=$concert->id?></td>
-                    <td>
-                        <?=$concert->name?>
-                        (<a href="/concert/order/<?=$concert->id?>">bestelpagina</a>,
-                        <a href="/concert/viewOrders/<?=$concert->id?>">overzicht bestellingen</a>)
-                    </td>
-                    <td>
-                        <div class="btn-group">
-                            <a class="btn btn-outline-cyndaron btn-sm" href="/editor/concert/<?=$concert->id?>"><span class="glyphicon glyphicon-pencil" title="Bewerk dit concert"></span></a>
-                            <button class="btn btn-danger btn-sm pm-delete" data-type="concert" data-id="<?=$concert->id;?>" data-csrf-token="<?=User::getCSRFToken('concert', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit concert"></span></button>
-                        </div>
-
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        <?php
-    }
-
-    public function showEvents()
-    {
-        echo new Toolbar('', '', (string)new Button('new', '/editor/event', 'Nieuw evenement', 'Nieuw evenement'));
-
-        $events = Event::fetchAll();
-        ?>
-
-        <table class="table table-striped table-bordered pm-table">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Naam</th>
-                <th>Acties</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($events as $event):?>
-                <tr>
-                    <td><?=$event->id?></td>
-                    <td>
-                        <?=$event->name?>
-                        (<a href="/event/order/<?=$event->id?>">inschrijfpagina</a>,
-                        <a href="/event/viewOrders/<?=$event->id?>">overzicht inschrijvingen</a>)
-                    </td>
-                    <td>
-                        <div class="btn-group">
-                            <a class="btn btn-outline-cyndaron btn-sm" href="/editor/event/<?=$event->id?>"><span class="glyphicon glyphicon-pencil" title="Bewerk dit evenement"></span></a>
-                            <button class="btn btn-danger btn-sm pm-delete" data-type="event" data-id="<?=$event->id;?>" data-csrf-token="<?=User::getCSRFToken('event', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit evenement"></span></button>
-                        </div>
-
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-        <?php
-    }
-
-    public function showSbkEvents()
-    {
-        echo new Toolbar('', '', (string)new Button('new', '/editor/eventSbk', 'Nieuw evenement', 'Nieuw evenement'));
-
-        $events = \Cyndaron\RegistrationSbk\Event::fetchAll();
-        ?>
-
-        <table class="table table-striped table-bordered pm-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Naam</th>
-                    <th>Acties</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($events as $event):?>
-                    <tr>
-                        <td><?=$event->id?></td>
-                        <td>
-                            <?=$event->name?>
-                            (<a href="/eventSbk/register/<?=$event->id?>">inschrijfpagina</a>,
-                            <a href="/eventSbk/viewRegistrations/<?=$event->id?>">overzicht inschrijvingen</a>)
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                <a class="btn btn-outline-cyndaron btn-sm" href="/editor/eventSbk/<?=$event->id?>"><span class="glyphicon glyphicon-pencil" title="Bewerk dit evenement"></span></a>
-                                <button class="btn btn-danger btn-sm pm-delete" data-type="eventSbk" data-id="<?=$event->id;?>" data-csrf-token="<?=User::getCSRFToken('eventSbk', 'delete')?>"><span class="glyphicon glyphicon-trash" title="Verwijder dit evenement"></span></button>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        <?php
+        static::$pageTypes = array_merge(static::$pageTypes, $pageType);
     }
 }

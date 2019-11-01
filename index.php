@@ -17,6 +17,11 @@ if (!file_exists(__DIR__ . '/instellingen.php'))
     die();
 }
 
+$dbmethode = 'mysql';
+$dbuser = 'root';
+$dbpass = '';
+$dbplek = 'localhost';
+$dbnaam = 'cyndaron';
 include __DIR__ . '/instellingen.php';
 
 /**
@@ -104,5 +109,5 @@ spl_autoload_register(function ($class)
     }
 });
 
-\Cyndaron\DBConnection::connect();
+\Cyndaron\DBConnection::connect($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass);
 $router = new \Cyndaron\Router();

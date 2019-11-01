@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Cyndaron;
 
+use Cyndaron\Editor\EditorController;
+use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\User\User;
 
 /**
@@ -31,14 +33,8 @@ class Router
         'user' =>  \Cyndaron\User\UserController::class,
 
         // Official plugins
-        'concert' =>  Ticketsale\ConcertController::class,
-        'concert-order' =>  Ticketsale\OrderController::class,
         'file-cabinet' =>  FileCabinet\FileCabinetController::class,
         'minecraft' =>  Minecraft\MinecraftController::class,
-        'event' => Registration\EventController::class,
-        'event-order' =>  Registration\OrderController::class,
-        'eventSbk' => RegistrationSbk\EventController::class,
-        'eventSbk-registration' => RegistrationSbk\RegisterController::class,
     ];
 
     const OLD_URLS = [
@@ -64,6 +60,8 @@ class Router
         $this->sendCSPHeader();
 
         $this->redirectOldUrls($request);
+
+        $this->loadModules();
 
         // Frontpage
         if ($this->requestVars[0] === '')
@@ -216,5 +214,35 @@ class Router
         }
         $this->requestVars = $vars;
         Request::setVars($this->requestVars);
+    }
+
+    private function loadModules(): void
+    {
+        if (!defined('MODULES')) {
+            return;
+        }
+
+        /** @var ModuleInterface $module */
+        foreach (MODULES as $moduleClass)
+        {
+            $module = new $moduleClass();
+            $this->endpoints = array_merge($this->endpoints, $module->routes());
+
+            foreach ($module->dataTypes() as $dataType => $additions)
+            {
+                if (array_key_exists('editorPage', $additions))
+                {
+                    EditorController::addEditorPage([$dataType => $additions['editorPage']]);
+                }
+                if (array_key_exists('editorSavePage', $additions))
+                {
+                    EditorController::addEditorSavePage([$dataType => $additions['editorSavePage']]);
+                }
+                if (array_key_exists('pageManagerTab', $additions))
+                {
+                    PageManagerPage::addPageType([$dataType => ['name' => $additions['plural'], 'tabDraw' => $additions['pageManagerTab']]]);
+                }
+            }
+        }
     }
 }
