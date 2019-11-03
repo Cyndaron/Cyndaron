@@ -94,12 +94,16 @@ class Model
         }
         $results = DBConnection::doQueryAndFetchAll('SELECT * FROM ' . static::TABLE . ' ' . $whereString . ' ' . $afterWhere, $args);
         $ret = [];
-        foreach ($results as $result)
+        if ($results)
         {
-            $obj = new static((int)$result['id']);
-            $obj->updateFromArray($result);
-            $ret[] = $obj;
+            foreach ($results as $result)
+            {
+                $obj = new static((int)$result['id']);
+                $obj->updateFromArray($result);
+                $ret[] = $obj;
+            }
         }
+
         return $ret;
     }
 
