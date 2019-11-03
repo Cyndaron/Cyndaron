@@ -26,7 +26,7 @@ class Url
 
     public function getUnfriendly(): string
     {
-        if ($unfriendly = DBConnection::doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$this->url]))
+        if ($unfriendly = DBConnection::doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [trim($this->url, '/')]))
         {
             return $unfriendly;
         }
