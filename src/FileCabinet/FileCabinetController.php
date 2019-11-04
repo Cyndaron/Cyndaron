@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace Cyndaron\FileCabinet;
 
-use Cyndaron\Bestandenkast\OverviewPage;
+use Cyndaron\FileCabinet\OverviewPage;
 use Cyndaron\Controller;
 
 class FileCabinetController extends Controller

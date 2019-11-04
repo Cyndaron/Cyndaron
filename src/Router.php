@@ -5,6 +5,8 @@ declare (strict_types = 1);
 namespace Cyndaron;
 
 use Cyndaron\Editor\EditorController;
+use Cyndaron\Module\Datatypes;
+use Cyndaron\Module\Routes;
 use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\User\User;
 
@@ -19,22 +21,18 @@ class Router
 
     protected $endpoints = [
         // Default endpoints
-        'category' =>  Category\CategoryController::class,
-        'editor' =>  Editor\EditorController::class,
-        'error' =>  Error\ErrorController::class,
-        'friendlyurl' =>  FriendlyUrl\FriendlyUrlController::class,
+        'category' => Category\CategoryController::class,
+        'editor' => Editor\EditorController::class,
+        'error' => Error\ErrorController::class,
+        'friendlyurl' => FriendlyUrl\FriendlyUrlController::class,
         'menu' => Menu\MenuController::class,
         'menu-editor' => Menu\MenuEditorController::class,
-        'migrate' =>  MigrateController::class,
-        'pagemanager' =>  PageManager\PageManagerController::class,
-        'photoalbum' =>  Photoalbum\PhotoalbumController::class,
-        'sub' =>  StaticPage\StaticPageController::class,
-        'system' =>  System\SystemController::class,
-        'user' =>  \Cyndaron\User\UserController::class,
-
-        // Official plugins
-        'file-cabinet' =>  FileCabinet\FileCabinetController::class,
-        'minecraft' =>  Minecraft\MinecraftController::class,
+        'migrate' => MigrateController::class,
+        'pagemanager' => PageManager\PageManagerController::class,
+        'photoalbum' => Photoalbum\PhotoalbumController::class,
+        'sub' => StaticPage\StaticPageController::class,
+        'system' => System\SystemController::class,
+        'user' => \Cyndaron\User\UserController::class,
     ];
 
     const OLD_URLS = [
@@ -222,25 +220,30 @@ class Router
             return;
         }
 
-        /** @var ModuleInterface $module */
         foreach (MODULES as $moduleClass)
         {
             $module = new $moduleClass();
-            $this->endpoints = array_merge($this->endpoints, $module->routes());
 
-            foreach ($module->dataTypes() as $dataType => $additions)
+            if ($module instanceof Routes)
             {
-                if (array_key_exists('editorPage', $additions))
+                $this->endpoints = array_merge($this->endpoints, $module->routes());
+            }
+            if ($module instanceof Datatypes)
+            {
+                foreach ($module->dataTypes() as $dataType => $additions)
                 {
-                    EditorController::addEditorPage([$dataType => $additions['editorPage']]);
-                }
-                if (array_key_exists('editorSavePage', $additions))
-                {
-                    EditorController::addEditorSavePage([$dataType => $additions['editorSavePage']]);
-                }
-                if (array_key_exists('pageManagerTab', $additions))
-                {
-                    PageManagerPage::addPageType([$dataType => ['name' => $additions['plural'], 'tabDraw' => $additions['pageManagerTab']]]);
+                    if (array_key_exists('editorPage', $additions))
+                    {
+                        EditorController::addEditorPage([$dataType => $additions['editorPage']]);
+                    }
+                    if (array_key_exists('editorSavePage', $additions))
+                    {
+                        EditorController::addEditorSavePage([$dataType => $additions['editorSavePage']]);
+                    }
+                    if (array_key_exists('pageManagerTab', $additions))
+                    {
+                        PageManagerPage::addPageType([$dataType => ['name' => $additions['plural'], 'tabDraw' => $additions['pageManagerTab']]]);
+                    }
                 }
             }
         }

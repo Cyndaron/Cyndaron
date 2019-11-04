@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Bestandenkast;
+namespace Cyndaron\FileCabinet;
 
 use Cyndaron\Page;
 

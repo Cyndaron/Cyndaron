@@ -1,18 +1,18 @@
 <?php
 namespace Cyndaron\RegistrationSbk;
 
-use Cyndaron\DBConnection;
 use Cyndaron\User\User;
 use Cyndaron\Widget\Button;
 use Cyndaron\Widget\Toolbar;
 
 class Util extends \Cyndaron\Util
 {
+    /** @noinspection PhpUnused */
     public static function drawPageManagerTab()
     {
         echo new Toolbar('', '', (string)new Button('new', '/editor/eventSbk', 'Nieuw evenement', 'Nieuw evenement'));
 
-        $events = \Cyndaron\RegistrationSbk\Event::fetchAll();
+        $events = Event::fetchAll();
         ?>
 
         <table class="table table-striped table-bordered pm-table">

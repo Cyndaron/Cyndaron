@@ -2,9 +2,10 @@
 declare(strict_types=1);
 namespace Cyndaron\RegistrationSbk;
 
-use Cyndaron\ModuleInterface;
+use Cyndaron\Module\Datatypes;
+use Cyndaron\Module\Routes;
 
-class Module implements ModuleInterface
+class Module implements Routes, Datatypes
 {
 
     public function routes(): array
