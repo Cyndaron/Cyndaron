@@ -10,7 +10,7 @@ class Module implements Routes
     public function routes(): array
     {
         return [
-            'file-cabinet' =>  FileCabinetController::class,
+            'filecabinet' =>  FileCabinetController::class,
         ];
     }
 }
