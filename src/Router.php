@@ -230,19 +230,19 @@ class Router
             }
             if ($module instanceof Datatypes)
             {
-                foreach ($module->dataTypes() as $dataType => $additions)
+                foreach ($module->dataTypes() as $dataTypeName => $definition)
                 {
-                    if (array_key_exists('editorPage', $additions))
+                    if ($definition->editorPage)
                     {
-                        EditorController::addEditorPage([$dataType => $additions['editorPage']]);
+                        EditorController::addEditorPage([$dataTypeName => $definition->editorPage]);
                     }
-                    if (array_key_exists('editorSavePage', $additions))
+                    if ($definition->editorSavePage)
                     {
-                        EditorController::addEditorSavePage([$dataType => $additions['editorSavePage']]);
+                        EditorController::addEditorSavePage([$dataTypeName => $definition->editorSavePage]);
                     }
-                    if (array_key_exists('pageManagerTab', $additions))
+                    if ($definition->pageManagerTab)
                     {
-                        PageManagerPage::addPageType([$dataType => ['name' => $additions['plural'], 'tabDraw' => $additions['pageManagerTab']]]);
+                        PageManagerPage::addPageType([$dataTypeName => ['name' => $definition->plural, 'tabDraw' => $definition->pageManagerTab]]);
                     }
                 }
             }
