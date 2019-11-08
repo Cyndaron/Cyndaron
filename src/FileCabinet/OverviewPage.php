@@ -7,9 +7,12 @@ use Cyndaron\User\User;
 
 class OverviewPage extends Page
 {
+    private const PATH = './bestandenkast/';
+
     public function __construct()
     {
         $title = Setting::get('filecabinet_title') ?: 'Bestandenkast';
+        $orderBy = Setting::get('filecabinet_orderBy') ?: 'name';
         parent::__construct($title);
         $this->showPrePage();
 
@@ -27,19 +30,14 @@ class OverviewPage extends Page
         }
 
         // Introduction/comments
-        $includefile = './bestandenkast/include.html';
-        if ($handle = @fopen($includefile, 'r'))
+        $introduction = $this->getIntroduction();
+        if ($introduction)
         {
-            $contents = fread($handle, filesize($includefile));
-            // Take the inner-HTML of the body, discarding the rest.
-            preg_match("/<body(.*?)>(.*?)<\\/body>/si", $contents, $match);
-            echo $match[2];
-            fclose($handle);
-            echo '<hr />';
+            echo $introduction . '<hr>';
         }
 
         // File list
-        if($bestandendir = @opendir("./bestandenkast"))
+        if($bestandendir = @opendir(self::PATH))
         {
             $dirArray = [];
 
@@ -52,7 +50,18 @@ class OverviewPage extends Page
                 }
             }
             closedir($bestandendir);
-            natsort($dirArray);
+
+            if ($orderBy == 'date')
+            {
+                usort($dirArray, function ($file1, $file2) {
+                    // In this order, because we want the newest files to come first.
+                    return filectime(self::PATH . $file2) <=> filectime(self::PATH . $file1);
+                });
+            }
+            else
+            {
+                natsort($dirArray);
+            }
 
             echo '<ul>';
             $deleteCsrfToken = User::getCSRFToken('filecabinet', 'deleteItem');
@@ -76,5 +85,22 @@ class OverviewPage extends Page
             echo '</ul>';
         }
         $this->showPostPage();
+    }
+
+    public function getIntroduction(): string
+    {
+        $introduction = '';
+
+        $includefile = self::PATH . 'include.html';
+        if ($handle = @fopen($includefile, 'r'))
+        {
+            $contents = fread($handle, filesize($includefile));
+            fclose($handle);
+            // Take the inner-HTML of the body, discarding the rest.
+            preg_match("/<body(.*?)>(.*?)<\\/body>/si", $contents, $matches);
+            $introduction = $matches[2];
+        }
+
+        return $introduction;
     }
 }
