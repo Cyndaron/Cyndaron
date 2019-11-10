@@ -15,18 +15,4 @@ class Menu
         return $menu;
     }
 
-    public static function replace(array $newMenu)
-    {
-        DBConnection::doQueryAndFetchOne('DELETE FROM menu;');
-
-        if (count($newMenu) > 0)
-        {
-            $order = 1;
-            foreach ($newMenu as $menuitem)
-            {
-                DBConnection::doQueryAndFetchOne('INSERT INTO menu(id,link,alias) VALUES(?,?,?);', [$order, $menuitem['link'], $menuitem['alias']]);
-                $order++;
-            }
-        }
-    }
 }
