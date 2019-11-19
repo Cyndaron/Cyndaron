@@ -86,7 +86,7 @@ class LedenPagina extends Page
             echo '</div>';
         }
 
-        $this->twigVars['preloadLinks'] = $tePreloaden;
+        $this->templateVars['preloadLinks'] = $tePreloaden;
 
         $this->showPostPage();
     }

@@ -3,11 +3,8 @@
 namespace Cyndaron;
 
 use Cyndaron\Category\Category;
-use Cyndaron\Menu\Menu;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\User\User;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 /*
  * Copyright © 2009-2017, Michael Steenbeek
@@ -39,130 +36,102 @@ class Page
     protected $model = null;
 
     protected $template = '';
-    const MAIN_TEMPLATE_DIR = __DIR__ . '/templates';
-    protected $templateDir = '';
-    private $templateDirs = [self::MAIN_TEMPLATE_DIR];
-    /** @var $twig Environment */
-    protected $twig = null;
-    protected $twigVars = [];
+
+    protected $templateVars = [];
+
 
     public function __construct(string $title, string $body = '')
     {
         $this->title = $title;
         $this->body = $body;
 
-        $this->setupTwig();
-    }
-
-    protected function setupTwig()
-    {
         $this->updateTemplate();
-        $this->addTemplateDir($this->templateDir);
-        $loader = new FilesystemLoader(array_unique($this->templateDirs));
-        $this->twig = new Environment($loader, [
-            'auto_reload' => true,
-            'cache' => __DIR__ . '/../cache/twig',
-        ]);
-        $ext = new TwigHelper();
-        foreach ($ext->getFunctions() as $function)
-        {
-            $this->twig->addFunction($function);
-        }
-        foreach ($ext->getFilters() as $filter)
-        {
-            $this->twig->addFilter($filter);
-        }
     }
 
     protected function updateTemplate()
     {
-        $rc = new \ReflectionClass(get_called_class());
-        if (empty ($this->templateDir))
-        {
-            $this->templateDir = dirname($rc->getFileName()) . '/templates';
-        }
         if (empty($this->template))
         {
-            $file = str_replace('.php', '.twig', basename($rc->getFileName()));
-            if (file_exists($this->templateDir . '/' . $file))
+            $rc = new \ReflectionClass(get_called_class());
+            $dir = dirname($rc->getFileName()) . '/templates';
+
+            $file = str_replace('.php', '.blade.php', basename($rc->getFileName()));
+            $testPath = "$dir/$file";
+
+            if (file_exists($testPath))
             {
-                $this->template = $file;
+                $this->template = $testPath;
             }
             else
             {
-                $this->template = 'index.twig';
+                $this->template = 'Index';
             }
         }
-    }
-
-    protected function addTemplateDir($dir)
-    {
-        if (file_exists($dir))
-            $this->templateDirs[] = $dir;
     }
 
     protected function renderSkeleton()
     {
         $this->websiteName = Setting::get('siteName');
-        $this->twigVars['isAdmin'] = User::isAdmin();
-        $this->twigVars['websiteName'] = $this->websiteName;
-        $this->twigVars['title'] = $this->title;
-        $this->twigVars['referrer'] = $_SESSION['referrer'] ?? '';
+        $this->templateVars['isAdmin'] = User::isAdmin();
+        $this->templateVars['websiteName'] = $this->websiteName;
+        $this->templateVars['title'] = $this->title;
+        $this->templateVars['referrer'] = $_SESSION['referrer'] ?? '';
 
-        $this->twigVars['version'] = CyndaronInfo::ENGINE_VERSION;
+        $this->templateVars['version'] = CyndaronInfo::ENGINE_VERSION;
         if ($favicon = Setting::get('favicon'))
         {
             $extension = substr(strrchr($favicon, "."), 1);
-            $this->twigVars['favicon'] = $favicon;
-            $this->twigVars['faviconType'] = "image/$extension";
+            $this->templateVars['favicon'] = $favicon;
+            $this->templateVars['faviconType'] = "image/$extension";
         }
-        $this->twigVars['backgroundColor'] = Setting::get('backgroundColor');
-        $this->twigVars['menuColor'] = Setting::get('menuColor');
-        $this->twigVars['articleColor'] = Setting::get('articleColor');
-        $this->twigVars['accentColor'] = Setting::get('accentColor');
+        $this->templateVars['backgroundColor'] = Setting::get('backgroundColor');
+        $this->templateVars['menuColor'] = Setting::get('menuColor');
+        $this->templateVars['menuBackground'] = Setting::get('menuBackground');
+        $this->templateVars['articleColor'] = Setting::get('articleColor');
+        $this->templateVars['accentColor'] = Setting::get('accentColor');
 
-        $this->twigVars['menu'] = $this->renderMenu();
+        $this->templateVars['menu'] = $this->renderMenu();
 
         $jumboContents = Setting::get('jumboContents');
-        $this->twigVars['showJumbo'] = $this->isFrontPage() && Setting::get('frontPageIsJumbo') && $jumboContents;
-        $this->twigVars['jumboContents'] = $jumboContents;
+        $this->templateVars['showJumbo'] = $this->isFrontPage() && Setting::get('frontPageIsJumbo') && $jumboContents;
+        $this->templateVars['jumboContents'] = $jumboContents;
 
-        $this->twigVars['pageCaptionClasses'] = '';
+        $this->templateVars['pageCaptionClasses'] = '';
         if ($this->isFrontPage())
         {
-            $this->twigVars['pageCaptionClasses'] = 'voorpagina';
+            $this->templateVars['pageCaptionClasses'] = 'voorpagina';
         }
 
-        $this->twigVars['pageCaption'] = $this->generateBreadcrumbs();
-        $this->twigVars['titleButtons'] = $this->titleButtons;
+        $this->templateVars['pageCaption'] = $this->generateBreadcrumbs();
+        $this->templateVars['titleButtons'] = $this->titleButtons;
 
-        $this->twigVars['extraScripts'] = $this->extraScripts;
-        $this->twigVars['extraCss'] = $this->extraCss;
+        $this->templateVars['extraScripts'] = $this->extraScripts;
+        $this->templateVars['extraCss'] = $this->extraCss;
 
-        $this->twigVars['extraHead'] = '';
+        $this->templateVars['extraHead'] = '';
         if (file_exists(__DIR__ . '/../extra-head.php'))
         {
             ob_start();
             include __DIR__ . '/../extra-head.php';
-            $this->twigVars['extraHead'] = ob_get_contents();
+            $this->templateVars['extraHead'] = ob_get_contents();
             ob_end_clean();
         }
 
-        $this->twigVars['extraBodyStart'] = '';
+        $this->templateVars['extraBodyStart'] = '';
         if (file_exists(__DIR__ . '/../extra-body-start.php'))
         {
             ob_start();
             include __DIR__ . '/../extra-body-start.php';
-            $this->twigVars['extraBodyStart'] = ob_get_contents();
+            $this->templateVars['extraBodyStart'] = ob_get_contents();
             ob_end_clean();
         }
 
-        $this->twigVars['extraBodyEnd'] = '';
+        $this->templateVars['extraBodyEnd'] = '';
         if (file_exists(__DIR__ . '/../extra-body-end.php'))
         {
             ob_start();
             include __DIR__ . '/../extra-body-end.php';
-            $this->twigVars['extraBodyEnd'] = ob_get_contents();
+            $this->templateVars['extraBodyEnd'] = ob_get_contents();
             ob_end_clean();
         }
     }
@@ -194,44 +163,45 @@ class Page
     protected function renderMenu()
     {
         $logo = Setting::get('logo');
-        $twigVars = [
+        $vars = [
             'isLoggedIn' => User::isLoggedIn(),
             'isAdmin' => User::isAdmin(),
             'inverseClass' => (Setting::get('menuTheme') == 'dark') ? 'navbar-dark' : 'navbar-light',
             'navbar' => $logo ? sprintf('<img alt="" src="%s"> ', $logo) : $this->websiteName,
         ];
 
-        $twigVars['menuItems'] = $this->getMenu();
-        $twigVars['configMenuItems'] = [
+        $vars['menuItems'] = $this->getMenu();
+        $vars['configMenuItems'] = [
             ['link' => '/system', 'title' => 'Systeembeheer', 'icon' => 'cog'],
             ['link' => '/pagemanager', 'title' => 'Pagina-overzicht', 'icon' => 'th-list'],
             ['link' => '/menu-editor', 'title' => 'Menu bewerken', 'icon' => 'menu-hamburger'],
             ['link' => '/user/manager', 'title' => 'Gebruikersbeheer', 'icon' => 'user'],
         ];
-        $twigVars['userMenuItems'] = [
+        $vars['userMenuItems'] = [
             ['link' => '', 'title' => $_SESSION['naam'] ?? ''],
             ['link' => '/user/logout', 'title' => 'Uitloggen', 'icon' => 'log-out']
         ];
 
-        $twigVars['notifications'] = User::getNotifications();
+        $vars['notifications'] = User::getNotifications();
 
-        return $this->twig->render('menu.twig', $twigVars);
-
+        $template = new Template\Template();
+        return $template->render('Menu', $vars);
     }
 
     public function showPostPage()
     {
-        $this->twigVars['contents'] = ob_get_contents();
+        $this->templateVars['contents'] = ob_get_contents();
         ob_end_clean();
 
         $this->renderSkeleton();
 
-        echo $this->twig->render($this->template, $this->twigVars);
+        $template = new \Cyndaron\Template\Template();
+        echo $template->render($this->template, $this->templateVars);
     }
 
     public function render(array $vars = [])
     {
-        $this->twigVars = array_merge($this->twigVars, $vars);
+        $this->templateVars = array_merge($this->templateVars, $vars);
         $this->showPrePage();
         $this->showBody();
         $this->showPostPage();
@@ -329,8 +299,4 @@ class Page
         return $title;
     }
 
-    public function setVar(string $varName, $value)
-    {
-        $this->twigVars[$varName] = $value;
-    }
 }

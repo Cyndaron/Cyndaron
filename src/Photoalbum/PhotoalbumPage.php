@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Page;
+use Cyndaron\Template\Template;
 use Cyndaron\Widget\Button;
 
 class PhotoalbumPage extends Page
@@ -22,14 +23,14 @@ class PhotoalbumPage extends Page
             $this->addScript('/sys/js/lightbox.min.js');
 
             $photos = Photo::fetchAllByAlbum($this->model);
-            $this->twigVars['model'] = $this->model;
-            $this->twigVars['photos'] = $photos;
+            $this->templateVars['model'] = $this->model;
+            $this->templateVars['photos'] = $photos;
         }
     }
 
     public function drawSlider(Photoalbum $album)
     {
         $photos = Photo::fetchAllByAlbum($album);
-        return $this->twig->render('Photoslider.twig', compact('album', 'photos'));
+        return (new Template())->render('Photoalbum/Photoslider', compact('album', 'photos'));
     }
 }

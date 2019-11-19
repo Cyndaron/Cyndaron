@@ -16,6 +16,9 @@
  */
 namespace Cyndaron;
 
+use Cyndaron\Photoalbum\Photoalbum;
+use Cyndaron\Photoalbum\PhotoalbumPage;
+
 class Util
 {
     private static $months = ["", "januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"];
@@ -114,5 +117,20 @@ class Util
         $additionalParameters = "-f$fromAddress";
 
         return mail($to, $subject, $message, $additionalHeaders, $additionalParameters);
+    }
+
+    public static function filterHm(string $hms): string
+    {
+        $parts = explode(':', $hms);
+        return "$parts[0]:$parts[1]";
+    }
+
+    public static function parseText(string $text): string
+    {
+        return preg_replace_callback('/%slider\|([0-9]+)%/', function($matches) {
+            $album = Photoalbum::loadFromDatabase($matches[1]);
+            $page = new PhotoalbumPage($album, 1);
+            return $page->drawSlider($album);
+        }, $text);
     }
 }

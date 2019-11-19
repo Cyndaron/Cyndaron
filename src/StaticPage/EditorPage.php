@@ -26,8 +26,8 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
             $tags = $sub['tags'];
         }
 
-        $this->twigVars['enableComments'] = $enableComments;
-        $this->twigVars['tags'] = $tags;
+        $this->templateVars['enableComments'] = $enableComments;
+        $this->templateVars['tags'] = $tags;
     }
 
     protected function showContentSpecificButtons()

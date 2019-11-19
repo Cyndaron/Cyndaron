@@ -223,4 +223,14 @@ EOT;
         User::addNotification('U bent afgemeld.');
         header('Location: /');
     }
+
+    public function getFullName(): string
+    {
+        $ret = $this->firstName . ' ' . $this->tussenvoegsel;
+        if (substr($this->tussenvoegsel, -1) != "'")
+            $ret .= ' ';
+        $ret .= $this->lastName;
+
+        return $ret;
+    }
 }

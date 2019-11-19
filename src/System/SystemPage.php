@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\System;
 
+use Cyndaron\Category\Category;
 use Cyndaron\CyndaronInfo;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
@@ -10,11 +11,11 @@ class SystemPage extends Page
 {
     public function __construct($currentPage)
     {
-        $this->template = $currentPage . '.twig';
+        $this->template = 'System/' . ucfirst($currentPage);
         parent::__construct('Systeembeheer');
 
-        $this->twigVars['currentPage'] = $currentPage;
-        $this->twigVars['pageTabs'] = [
+        $this->templateVars['currentPage'] = $currentPage;
+        $this->templateVars['pageTabs'] = [
             'config' => 'Configuratie',
             'phpinfo' => 'PHP-info',
             'about' => 'Over ' . CyndaronInfo::PRODUCT_NAME,
@@ -40,7 +41,7 @@ class SystemPage extends Page
     {
         $this->addScript('/src/System/SystemPage.js');
 
-        $this->twigVars['defaultCategory'] = Setting::get('defaultCategory');
+        $this->templateVars['defaultCategory'] = Setting::get('defaultCategory');
 
         $formItems = [
             ['name' => 'siteName', 'description' => 'Naam website', 'type' => 'text', 'value' => Setting::get('siteName', true)],
@@ -54,14 +55,13 @@ class SystemPage extends Page
             ['name' => 'menuBackground', 'description' => 'Achtergrondafbeelding menu', 'type' => 'text', 'value' => Setting::get('menuBackground', true)],
             ['name' => 'frontPage', 'description' => 'Voorpagina', 'type' => 'text', 'value' => Setting::get('frontPage', true)],
         ];
-        $this->twigVars['formItems'] = $formItems;
+        $this->templateVars['formItems'] = $formItems;
 
-        $categories = DBConnection::doQueryAndFetchAll('SELECT id,name FROM categories ORDER BY id ASC');
-        $this->twigVars['categories'] = $categories;
+        $this->templateVars['categories'] = Category::fetchAll([], [], 'ORDER BY name');
 
         $menuTheme = Setting::get('menuTheme');
-        $this->twigVars['lightMenu'] = ($menuTheme !== 'dark') ? 'selected' : '';
-        $this->twigVars['darkMenu'] = ($menuTheme === 'dark') ? 'selected' : '';
+        $this->templateVars['lightMenu'] = ($menuTheme !== 'dark') ? 'selected' : '';
+        $this->templateVars['darkMenu'] = ($menuTheme === 'dark') ? 'selected' : '';
     }
 
     public function showPHPInfo()
@@ -84,12 +84,12 @@ class SystemPage extends Page
         $phpinfo = preg_replace('/<font(.*?)>/', '', $phpinfo);
         $phpinfo = preg_replace('/<\/font(.*?)>/', '', $phpinfo);
 
-        $this->twigVars['phpinfo'] = $phpinfo;
+        $this->templateVars['phpinfo'] = $phpinfo;
     }
 
     public function showAboutProduct()
     {
-        $this->twigVars += [
+        $this->templateVars += [
             'productName' => CyndaronInfo::PRODUCT_NAME,
             'productVersion' => CyndaronInfo::PRODUCT_VERSION,
             'productCodename' => CyndaronInfo::PRODUCT_CODENAME,

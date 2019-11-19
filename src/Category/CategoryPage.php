@@ -16,12 +16,12 @@ class CategoryPage extends Page
     {
         if ($id === '0' || $id == 'fotoboeken')
         {
-            $this->twigVars['type'] = 'photoalbums';
+            $this->templateVars['type'] = 'photoalbums';
             $this->showPhotoalbumsIndex();
         }
         elseif ($id == 'tag')
         {
-            $this->twigVars['type'] = 'tag';
+            $this->templateVars['type'] = 'tag';
             $this->showTagIndex(Request::getVar(2));
         }
         else
@@ -31,7 +31,7 @@ class CategoryPage extends Page
                 header("Location: /error/404");
                 die('Incorrecte parameter ontvangen.');
             }
-            $this->twigVars['type'] = 'subs';
+            $this->templateVars['type'] = 'subs';
             $this->showCategoryIndex(intval($id));
         }
     }
@@ -46,7 +46,7 @@ class CategoryPage extends Page
         $this->setTitleButtons($controls);
         $this->showPrePage();
 
-        $this->twigVars['model'] = $this->model;
+        $this->templateVars['model'] = $this->model;
 
         $tags = [];
         $subs = StaticPageModel::fetchAll(['categoryId= ?'], [$id], 'ORDER BY id DESC');
@@ -58,9 +58,9 @@ class CategoryPage extends Page
                 $tags += $tagList;
             }
         }
-        $this->twigVars['pages'] = $subs;
-        $this->twigVars['viewMode'] = $this->model->viewMode;
-        $this->twigVars['tags'] = $tags;
+        $this->templateVars['pages'] = $subs;
+        $this->templateVars['viewMode'] = $this->model->viewMode;
+        $this->templateVars['tags'] = $tags;
 
         if ($this->model->viewMode == Category::VIEWMODE_PORTFOLIO)
         {
@@ -71,7 +71,7 @@ class CategoryPage extends Page
                 $subs = StaticPageModel::fetchAll(['categoryId = ?'], [$subCategory->id], 'ORDER BY id DESC');
                 $portfolioContent[$subCategory->name] = $subs;
             }
-            $this->twigVars['portfolioContent'] = $portfolioContent;
+            $this->templateVars['portfolioContent'] = $portfolioContent;
         }
 
         $this->showPostPage();
@@ -82,8 +82,8 @@ class CategoryPage extends Page
         parent::__construct('Fotoalbums');
         $this->showPrePage();
         $photoalbums = Photoalbum::fetchAll(['hideFromOverview = 0'], [], 'ORDER BY id DESC');
-        $this->twigVars['pages'] = $photoalbums;
-        $this->twigVars['viewMode'] = 1;
+        $this->templateVars['pages'] = $photoalbums;
+        $this->templateVars['viewMode'] = 1;
 
         $this->showPostPage();
     }
@@ -108,9 +108,9 @@ class CategoryPage extends Page
                 }
             }
         }
-        $this->twigVars['pages'] = $pages;
-        $this->twigVars['tags'] = $tags;
-        $this->twigVars['viewMode'] = 2;
+        $this->templateVars['pages'] = $pages;
+        $this->templateVars['tags'] = $tags;
+        $this->templateVars['viewMode'] = 2;
 
         $this->showPostPage();
     }

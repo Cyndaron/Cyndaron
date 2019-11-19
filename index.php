@@ -24,6 +24,8 @@ $dbplek = 'localhost';
 $dbnaam = 'cyndaron';
 include __DIR__ . '/instellingen.php';
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 /**
  * Cyndaron autoloader (PSR-4)
  */

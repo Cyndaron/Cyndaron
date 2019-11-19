@@ -17,7 +17,7 @@ class MenuEditorPage extends Page
         $this->showPrePage();
         $this->addScript('/src/Menu/MenuEditorPage.js');
 
-        $this->twigVars['toolbar'] = new Toolbar('', '',
+        $this->templateVars['toolbar'] = new Toolbar('', '',
             '<button id="mm-create-item"
                 data-csrf-token="' . User::getCSRFToken('menu', 'addItem') . '"
                 type="button" class="btn btn-success" data-toggle="modal" data-target="#mm-edit-item-dialog">
@@ -25,8 +25,8 @@ class MenuEditorPage extends Page
             </button>'
         );
 
-        $this->twigVars['menuItems'] = Menu::get();
-        $this->twigVars['mmModal'] = new Modal('mm-edit-item-dialog', 'Menu-item bewerken',
+        $this->templateVars['menuItems'] = Menu::get();
+        $this->templateVars['mmModal'] = new Modal('mm-edit-item-dialog', 'Menu-item bewerken',
             '<input type="hidden" id="mm-id" />
             <input type="hidden" id="mm-csrf-token" />
 

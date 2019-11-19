@@ -22,10 +22,10 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
             $this->model->load();
             $this->content = $this->model->description;
             $this->contentTitle = $this->model->name;
-            $this->twigVars['model'] = $this->model;
+            $this->templateVars['model'] = $this->model;
         }
 
-        $this->twigVars['registrationCost'] = Util::formatCurrency((float)($this->model->registrationCost ?? 65.0));
+        $this->templateVars['registrationCost'] = Util::formatCurrency((float)($this->model->registrationCost ?? 65.0));
     }
 
     protected function showContentSpecificButtons()

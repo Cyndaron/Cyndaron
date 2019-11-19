@@ -27,7 +27,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
         $options = Category::VIEWMODE_DESCRIPTIONS;
         $selected = $viewMode;
 
-        $this->twigVars = array_merge($this->twigVars, compact('id', 'label', 'options', 'selected'));
+        $this->templateVars = array_merge($this->templateVars, compact('id', 'label', 'options', 'selected'));
     }
 
     protected function showContentSpecificButtons()

@@ -8,7 +8,7 @@ Versie 6.0 (Trajectum)
 - Feature: tekst gereserveerde plaatsen bij kaartverkoop in database (#46)
 - Feature: voorpagina hoeft niet meer de eerste pagina in het menu te zijn (#67)
 - Technisch: Bootstrap geüpdatet naar 4.2.1 (#75)
-- Technisch: gebruik van Twig-templates (#10)
+- Technisch: gebruik van Blade-templates (#10)
 - Technisch: jQuery geüpdatet naar 3.3.1
 - Verwijderd: delen en Facebookintegratie (#80)
 - Verwijderd: ideeënbus

@@ -20,7 +20,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
             $this->content = $photoalbum->notes;
             $this->contentTitle = $photoalbum->name;
         }
-        $this->twigVars['viewModeOptions'] = Photoalbum::VIEWMODE_DESCRIPTIONS;
+        $this->templateVars['viewModeOptions'] = Photoalbum::VIEWMODE_DESCRIPTIONS;
     }
 
     // Not used, but required.

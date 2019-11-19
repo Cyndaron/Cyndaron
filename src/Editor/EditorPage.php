@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Editor;
 
+use Cyndaron\Category\Category;
 use Cyndaron\DBConnection;
 use Cyndaron\Model;
 use Cyndaron\Page;
@@ -33,8 +34,6 @@ abstract class EditorPage extends Page
         $this->vorigeversie = Request::getVar(3) === 'previous';
         $this->vvstring = $this->vorigeversie ? 'vorige' : '';
 
-        $this->addTemplateDir(__DIR__ . '/templates');
-
         $this->prepare();
 
         parent::__construct('Editor');
@@ -51,16 +50,16 @@ abstract class EditorPage extends Page
         }
 
         $saveUrl = sprintf(static::SAVE_URL, $this->id ? (string)$this->id : '');
-        $this->twigVars['id'] = $this->id;
-        $this->twigVars['saveUrl'] = $saveUrl;
-        $this->twigVars['articleType'] = static::TYPE;
-        $this->twigVars['hasTitle'] = static::HAS_TITLE;
-        $this->twigVars['hasCategory'] = static::HAS_CATEGORY;
-        $this->twigVars['contentTitle'] = $this->contentTitle;
-        $this->twigVars['friendlyUrl'] = trim($friendlyUrl, '/');
-        $this->twigVars['friendlyUrlPrefix'] = "https://{$_SERVER['HTTP_HOST']}/";
-        $this->twigVars['article'] = $this->content;
-        $this->twigVars['model'] = $this->model;
+        $this->templateVars['id'] = $this->id;
+        $this->templateVars['saveUrl'] = $saveUrl;
+        $this->templateVars['articleType'] = static::TYPE;
+        $this->templateVars['hasTitle'] = static::HAS_TITLE;
+        $this->templateVars['hasCategory'] = static::HAS_CATEGORY;
+        $this->templateVars['contentTitle'] = $this->contentTitle;
+        $this->templateVars['friendlyUrl'] = trim($friendlyUrl, '/');
+        $this->templateVars['friendlyUrlPrefix'] = "https://{$_SERVER['HTTP_HOST']}/";
+        $this->templateVars['article'] = $this->content;
+        $this->templateVars['model'] = $this->model;
 
         $sql = "SELECT * FROM (
             SELECT * FROM (SELECT CONCAT('/sub/', id) AS link, CONCAT('Statische pag.: ', name) AS name FROM subs) AS one
@@ -72,20 +71,20 @@ abstract class EditorPage extends Page
             SELECT * FROM (SELECT CONCAT('/concert/order/', id) AS link, CONCAT('Concert: ', name) AS name FROM  ticketsale_concerts) AS four
             ) as zero ORDER BY name;";
 
-        $this->twigVars['internalLinks'] = DBConnection::doQueryAndFetchAll($sql);
+        $this->templateVars['internalLinks'] = DBConnection::doQueryAndFetchAll($sql);
 
         if (static::HAS_CATEGORY)
         {
             if ($this->id)
             {
-                $this->twigVars['categoryId'] = DBConnection::doQueryAndFetchOne('SELECT categoryId FROM ' . static::TABLE . ' WHERE id= ?', [$this->id]);
+                $this->templateVars['categoryId'] = DBConnection::doQueryAndFetchOne('SELECT categoryId FROM ' . static::TABLE . ' WHERE id= ?', [$this->id]);
             }
             else
             {
-                $this->twigVars['categoryId'] = Setting::get('defaultCategory');
+                $this->templateVars['categoryId'] = Setting::get('defaultCategory');
             }
 
-            $this->twigVars['categories'] = DBConnection::doQueryAndFetchAll("SELECT * FROM categories ORDER BY name;");
+            $this->templateVars['categories'] = Category::fetchAll([], [], 'ORDER BY name');
 
             $showBreadcrumbs = false;
             if ($this->id)
@@ -93,7 +92,7 @@ abstract class EditorPage extends Page
                 $showBreadcrumbs = (bool)DBConnection::doQueryAndFetchOne('SELECT showBreadcrumbs FROM ' . static::TABLE . ' WHERE id=?', [$this->id]);
             }
 
-            $this->twigVars['showBreadcrumbs'] = $showBreadcrumbs;
+            $this->templateVars['showBreadcrumbs'] = $showBreadcrumbs;
         }
         $this->showContentSpecificButtons();
 

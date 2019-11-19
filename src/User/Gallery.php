@@ -11,23 +11,20 @@ class Gallery extends Page
 
     public function __construct()
     {
-        $leden = DBConnection::doQueryAndFetchAll('SELECT * FROM users WHERE hideFromMemberList = 0 ORDER BY lastName, tussenvoegsel, firstName;');
+//        $leden = DBConnection::doQueryAndFetchAll('SELECT * FROM users WHERE hideFromMemberList = 0 ORDER BY lastName, tussenvoegsel, firstName;');
+        $leden = User::fetchAll(['hideFromMemberList = 0'], [], 'ORDER BY lastname, tussenvoegsel, firstName');
         parent::__construct('Wie is wie');
         $this->showPrePage();
         echo '<table class="ledenlijst">';
         foreach ($leden as $lid)
         {
-            $avatar = $lid['avatar'] ? 'afb/leden/' . $lid['avatar'] : static::FALLBACK_IMAGE;
+            $avatar = $lid->avatar ? 'afb/leden/' . $lid->avatar : static::FALLBACK_IMAGE;
 
             echo '<tr><td><img style="height: 150px;" alt="" src="' . $avatar . '"/></td>';
             echo '<td><b><span style="text-decoration: underline;">';
-            if ($lid['firstName'] || $lid['lastName'])
+            if ($lid->firstName || $lid->lastName)
             {
-                echo $lid['firstName'] . ' ';
-                echo $lid['tussenvoegsel'];
-                if (substr($lid['tussenvoegsel'], -1) != "'")
-                    echo ' ';
-                echo $lid['lastName'];
+                echo $lid->getFullName();
             }
             else
             {
