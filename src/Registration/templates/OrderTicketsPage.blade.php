@@ -163,7 +163,7 @@
                     @foreach ($ticketTypes as $ticketType)
                         <tr>
                             <td>{{ $ticketType->name }}</td>
-                            <td>{{ $ticketType->price|formatEuro }}@if ($ticketType->discountPer5)(5 halen, 4 betalen)@endif</td>
+                            <td>{{ $ticketType->price|euro }}@if ($ticketType->discountPer5) (5 halen, 4 betalen)@endif</td>
                             <td>
                                 <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ $ticketType->id }}" id="tickettype-{{ $ticketType->id }}" value="0"/>
                                 <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ $ticketType->id }}"><span class="glyphicon glyphicon-plus"></span></button>
