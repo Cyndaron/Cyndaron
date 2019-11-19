@@ -1,17 +1,18 @@
-{% extends "index.twig" %}
+@extends ("Index")
 
-{% block titleControls %}
-    <a href="/editor/event/{{ event.id }}" class="btn btn-outline-cyndaron" title="Dit evenement bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
-{% endblock %}
+@section ('titleControls')
+    <a href="/editor/event/{{ $event->id }}" class="btn btn-outline-cyndaron" title="Dit evenement bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
+@endsection
 
-{% block contents %}
-    {% if event.openForRegistration == false %}
-        {{ event.descriptionWhenClosed|raw|default('Voor dit evenement kunt u zich helaas niet meer inschrijven.') }}
-    {% else %}
-        {{ event.description|raw }}
+@section ('contents')
+    @php /** @var \Cyndaron\Registration\Event $event */ @endphp
+    @if ($event->openForRegistration == false)
+        {!! $event->descriptionWhenClosed ?? 'Voor dit evenement kunt u zich helaas niet meer inschrijven.' !!}
+    @else
+        {!! $event->description !!}
 
         <form method="post" action="/event-order/add" class="form-horizontal" id="kaartenbestellen">
-            <input type="hidden" name="csrfToken" value="{{ getCSRFToken('event-order', 'add') }}"/>
+            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('event-order', 'add') }}"/>
 
             <h3>Uw gegevens (verplicht):</h3>
 
@@ -148,7 +149,7 @@
             </div>
 
             <h3>Kaarten voor vrienden/familie:</h3>
-            <input type="hidden" id="eventId" name="event_id" value="{{ event.id }}"/>
+            <input type="hidden" id="eventId" name="event_id" value="{{ $event->id }}"/>
             <table class="kaartverkoop table table-striped">
                 <thead>
                     <tr>
@@ -158,17 +159,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for ticketType in ticketTypes %}
+                    @php /** @var \Cyndaron\Registration\EventTicketType[] $ticketTypes */ @endphp
+                    @foreach ($ticketTypes as $ticketType)
                         <tr>
-                            <td>{{ ticketType.name }}</td>
-                            <td>{{ ticketType.price|formatEuro }}{% if ticketType.discountPer5 %} (5 halen, 4 betalen){% endif %}</td>
+                            <td>{{ $ticketType->name }}</td>
+                            <td>{{ $ticketType->price|formatEuro }}@if ($ticketType->discountPer5)(5 halen, 4 betalen)@endif</td>
                             <td>
-                                <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ ticketType.id }}" id="tickettype-{{ ticketType.id }}" value="0"/>
-                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ ticketType.id }}"><span class="glyphicon glyphicon-plus"></span></button>
-                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ ticketType.id }}"><span class="glyphicon glyphicon-minus"></span></button>
+                                <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ $ticketType->id }}" id="tickettype-{{ $ticketType->id }}" value="0"/>
+                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ $ticketType->id }}"><span class="glyphicon glyphicon-plus"></span></button>
+                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ $ticketType->id }}"><span class="glyphicon glyphicon-minus"></span></button>
                             </td>
                         </tr>
-                    {% endfor %}
+                    @endforeach
                 </tbody>
             </table>
 
@@ -186,7 +188,7 @@
             </div>
 
             <p>Om te voorkomen dat er spam wordt verstuurd met dit formulier<br/>wordt u verzocht in het onderstaande
-                vak <span style="font-family:monospace;">{{ event.getAntiSpam() }}</span> in te vullen.</p>
+                vak <span style="font-family:monospace;">{{ $event->getAntiSpam() }}</span> in te vullen.</p>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="antispam">Antispam:</label>
@@ -196,7 +198,7 @@
             <p>Uw gegevens zullen worden verwerkt zoals beschreven in onze <a href="/privacyverklaring">privacyverklaring</a>.</p>
 
             <div class="col-sm-offset-2"><input id="verzendknop" class="btn btn-primary" type="submit"
-                                                value="Bestellen"/></div>
+                                                value="Inschrijven"/></div>
         </form>
-    {% endif %}
-{% endblock %}
+    @endif
+@endsection

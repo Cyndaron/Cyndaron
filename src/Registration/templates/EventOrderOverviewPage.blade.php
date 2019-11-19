@@ -76,7 +76,7 @@
                     {{ $registration->postcode }} {{ $registration->city }}
                 </td>
                 <td>
-                    {{ date('d-m-Y', $registration->created) }}
+                    {{ date('d-m-Y', strtotime($registration->created)) }}
                 </td>
                 <td>
                     {{ $registration->comments }}
@@ -94,7 +94,7 @@
                         @endif
                     </td>
                 @endforeach
-                @php $orderTicketTypes = $ticketTypesByOrder[$orderId] ?: [] @endphp
+                @php $orderTicketTypes = $ticketTypesByOrder[$orderId] ?? [] @endphp
                 <td>{{ $registration->calculateTotal($orderTicketTypes)|euro }}</td>
                 <td>{{ $registration->isPaid|boolToText }}</td>
                 <td>
