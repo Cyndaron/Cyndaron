@@ -11,3 +11,4 @@ fotoalbums/
 bestandenkast/
 cache/
 .sass-cache/
+vendor/
