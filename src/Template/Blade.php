@@ -13,7 +13,10 @@ use Illuminate\View\Factory;
 use Pine\BladeFilters\BladeFiltersCompiler;
 
 /**
- * TODO: Restore proper attribution
+ * Based on the original at https://github.com/jenssegers/blade
+ * which is stated to be released under the terms of the MIT License, but does not contain a copy of that license.
+ *
+ * Any changes to this file are © Michael Steenbeek and available under the same license.
  *
  * Class Blade
  * @package Cyndaron\Template
