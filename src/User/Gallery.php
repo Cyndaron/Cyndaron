@@ -11,7 +11,6 @@ class Gallery extends Page
 
     public function __construct()
     {
-//        $leden = DBConnection::doQueryAndFetchAll('SELECT * FROM users WHERE hideFromMemberList = 0 ORDER BY lastName, tussenvoegsel, firstName;');
         $leden = User::fetchAll(['hideFromMemberList = 0'], [], 'ORDER BY lastname, tussenvoegsel, firstName');
         parent::__construct('Wie is wie');
         $this->showPrePage();
@@ -28,12 +27,12 @@ class Gallery extends Page
             }
             else
             {
-                echo $lid['username'];
+                echo $lid->username;
             }
             echo '</span></b><br /><br />';
-            echo $lid['role'];
+            echo $lid->role;
 
-            static::showIfSet($lid['comments'], '<br />', '');
+            static::showIfSet($lid->comments, '<br />', '');
             echo '</td></tr>';
         }
         echo '</table>';
