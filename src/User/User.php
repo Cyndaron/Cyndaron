@@ -39,7 +39,7 @@ EOT;
 
     public static function isAdmin(): bool
     {
-        if (!isset($_SESSION['naam']) || $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] || $_SESSION['level'] < 4)
+        if (!isset($_SESSION['naam']) || $_SESSION['level'] < 4)
         {
             return false;
         }
@@ -51,7 +51,7 @@ EOT;
 
     public static function isLoggedIn(): bool
     {
-        return (isset($_SESSION['naam']) && $_SESSION['ip'] == $_SERVER['REMOTE_ADDR'] && $_SESSION['level'] > 0);
+        return (isset($_SESSION['naam']) && $_SESSION['level'] > 0);
     }
 
     public static function addNotification(string $content): void
