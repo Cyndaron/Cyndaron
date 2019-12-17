@@ -34,7 +34,7 @@ class User extends Model
     const MAIL_HEADERS = <<<EOT
 MIME-Version: 1.0
 Content-type: text/html; charset=utf-8
-From: %s <noreply@%s>
+From: %s <%s>
 EOT;
 
     public static function isAdmin(): bool
@@ -92,14 +92,15 @@ EOT;
         $prep->execute([$passwordHash, $this->id]);
 
         $websiteName = Setting::get('siteName');
-        $domain = Util::getDomain();
+        $organisation = Setting::get('organisation') ?: Setting::get('siteName');
+        $from = 'noreply@' . Util::getDomain();
 
         mail(
             $this->email,
             'Nieuw wachtwoord ingesteld',
             sprintf(self::RESET_PASSWORD_MAIL_TEXT, $websiteName, $newPassword),
-            sprintf(self::MAIL_HEADERS, $websiteName, $domain),
-            "-fnoreply@$domain"
+            sprintf(self::MAIL_HEADERS, $organisation, $from),
+            "-f$from"
         );
     }
 
