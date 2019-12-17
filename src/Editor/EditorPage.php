@@ -42,11 +42,11 @@ abstract class EditorPage extends Page
         $this->showPrePage();
 
         $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $this->id);
-        $friendlyUrl = new Url($unfriendlyUrl->getFriendly());
+        $friendlyUrl = $unfriendlyUrl->getFriendly();
 
-        if ($unfriendlyUrl->equals($friendlyUrl))
+        if ($unfriendlyUrl == $friendlyUrl)
         {
-            $friendlyUrl = "";
+            $friendlyUrl = '';
         }
 
         $saveUrl = sprintf(static::SAVE_URL, $this->id ? (string)$this->id : '');
