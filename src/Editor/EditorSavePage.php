@@ -46,7 +46,7 @@ abstract class EditorSavePage
 
     protected function parseTextForInlineImages($text)
     {
-        return preg_replace_callback('/src="(data\:)(.*)"/', 'static::extractImages', $text);
+        return preg_replace_callback('/src="(data\:)(.*?)"/', 'static::extractImages', $text);
     }
 
     protected static function extractImages($matches)
