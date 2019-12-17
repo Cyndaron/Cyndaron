@@ -133,4 +133,14 @@ class Util
             return $page->drawSlider($album);
         }, $text);
     }
+
+    public static function getDomain(): string
+    {
+        $domain = str_replace("www.", "", $_SERVER['HTTP_HOST']);
+        $domain = str_replace("http://", "", $domain);
+        $domain = str_replace("https://", "", $domain);
+        $domain = str_replace("/", "", $domain);
+
+        return $domain;
+    }
 }

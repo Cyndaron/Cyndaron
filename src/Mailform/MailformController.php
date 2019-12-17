@@ -8,6 +8,7 @@ use Cyndaron\Page;
 use Cyndaron\Request;
 use Cyndaron\Setting;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util;
 use Cyndaron\VerwerkMailformulierPaginaLDBF;
 use Exception;
 
@@ -15,24 +16,35 @@ class MailformController extends Controller
 {
     protected $minLevelPost = UserLevel::ANONYMOUS;
 
+    public function checkCSRFToken(string $token): void
+    {
+        if (!in_array($this->action, ['process', 'process-ldbf']))
+        {
+            parent::checkCSRFToken($token);
+        }
+    }
+
     protected function routePost()
     {
         $id = (int)Request::getVar(2);
         try
         {
             if ($this->action === 'process-ldbf')
+            {
                 new VerwerkMailformulierPaginaLDBF();
+            }
             else
+            {
                 $this->process($id);
+                $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
+                $page->render();
+            }
         }
         catch (Exception $e)
         {
             $page = new Page('Formulier versturen mislukt', $e->getMessage());
             $page->render();
         }
-        $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
-        $page->render();
-
     }
 
     /**
@@ -42,15 +54,15 @@ class MailformController extends Controller
      */
     private function process(int $id)
     {
-        $form = Mailform::loadFromDatabase($id)->asArray();
+        $form = Mailform::loadFromDatabase($id);
 
-        if ($form['naam'])
+        if ($form->name)
         {
-            if ($form['stuur_bevestiging'] == true && empty(Request::post('E-mailadres')))
+            if ($form->sendConfirmation && empty(Request::post('E-mailadres')))
             {
                 throw new Exception('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
             }
-            elseif (strtolower(Request::post('antispam')) == strtolower($form['antispamantwoord']))
+            elseif (strtolower(Request::post('antispam')) == strtolower($form->antiSpamAnswer))
             {
                 $mailBody = '';
                 foreach (Request::post() as $question => $answer)
@@ -60,14 +72,11 @@ class MailformController extends Controller
                         $mailBody .= $question . ': ' . strtr($answer, ['\\' => '']) . "\n";
                     }
                 }
-                $recipient = $form['mailadres'];
-                $subject = $form['naam'];
+                $recipient = $form->email;
+                $subject = $form->name;
                 $sender = Request::post('E-mailadres');
 
-                $server = str_replace("www.", "", $_SERVER['HTTP_HOST']);
-                $server = str_replace("http://", "", $server);
-                $server = str_replace("https://", "", $server);
-                $server = str_replace("/", "", $server);
+                $server = Util::getDomain();
                 $fromAddress = "noreply@$server";
                 $fromName = html_entity_decode(Setting::get('siteName'));
                 $extraHeaders = 'From: ' . $fromAddress;
@@ -79,11 +88,11 @@ class MailformController extends Controller
 
                 if (mail($recipient, $subject, $mailBody, $extraHeaders, "-f$fromAddress"))
                 {
-                    if ($form['stuur_bevestiging'] == true && $sender)
+                    if ($form->sendConfirmation == true && $sender)
                     {
                         $extraHeaders = sprintf('From: %s <%s>', $fromName, $fromAddress);
                         $extraHeaders .= "\r\n" . 'Reply-To: ' . $recipient;
-                        mail($sender, 'Ontvangstbevestiging', $form['tekst_bevestiging'], $extraHeaders, "-f$fromAddress");
+                        mail($sender, 'Ontvangstbevestiging', $form->confirmationText, $extraHeaders, "-f$fromAddress");
                     }
                     return true;
                 }

@@ -92,10 +92,7 @@ EOT;
         $prep->execute([$passwordHash, $this->id]);
 
         $websiteName = Setting::get('siteName');
-        $domain = str_replace("www.", "", $_SERVER['HTTP_HOST']);
-        $domain = str_replace("http://", "", $domain);
-        $domain = str_replace("https://", "", $domain);
-        $domain = str_replace("/", "", $domain);
+        $domain = Util::getDomain();
 
         mail(
             $this->email,

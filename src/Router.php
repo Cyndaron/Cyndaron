@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Cyndaron;
 
 use Cyndaron\Editor\EditorController;
+use Cyndaron\Mailform\Mailform;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 use Cyndaron\PageManager\PageManagerPage;
@@ -25,6 +26,7 @@ class Router
         'editor' => Editor\EditorController::class,
         'error' => Error\ErrorController::class,
         'friendlyurl' => FriendlyUrl\FriendlyUrlController::class,
+        'mailform' => \Cyndaron\Mailform\MailformController::class,
         'menu' => Menu\MenuController::class,
         'menu-editor' => Menu\MenuEditorController::class,
         'migrate' => MigrateController::class,
@@ -40,7 +42,6 @@ class Router
         'toonfoto.php' => ['url' => '/photoalbum/', 'id' => 'boekid'], // Old link to photo in album (pre-Lightbox)
         'toonfotoboek.php' => ['url' => '/photoalbum/', 'id' => 'id'],
         'toonsub.php' => ['url' => '/sub/', 'id' => 'id'],
-        'verwerkmailformulier.php' => ['url' => '/mailform/process/', 'id' => 'id'],
     ];
 
     public function __construct()
@@ -163,6 +164,11 @@ class Router
             $id = Request::get(self::OLD_URLS[$request]['id']);
             header("Location: ${url}${id}");
             die();
+        }
+        if ($request === 'verwerkmailformulier.php')
+        {
+            $id = (int)$_GET['id'];
+            $this->updateRequestVars("/mailform/process/$id");
         }
     }
 
