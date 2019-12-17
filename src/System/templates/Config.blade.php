@@ -9,7 +9,8 @@
             <div class="form-group row">
                 <label for="{{ $formItem['name'] }}" class="col-md-3 col-form-label col-form-label-md">{{ $formItem['description'] }}:</label>
                 <div class="col-md-6">
-                    <input type="{{ $formItem['type'] }}" class="form-control form-control-md" id="{{ $formItem['name'] }}" name="{{ $formItem['name'] }}" value="{{ $formItem['value'] }}" {{ $formItem['extraAttr'] ?? '' }}/>
+                    @php $class = !in_array($formItem['type'], ['checkbox', 'radio']) ? 'form-control form-control-md' : '' @endphp
+                    <input type="{{ $formItem['type'] }}" class="{{ $class }}" id="{{ $formItem['name'] }}" name="{{ $formItem['name'] }}" value="{{ $formItem['value'] }}" {{ $formItem['extraAttr'] ?? '' }}/>
                 </div>
             </div>
             @endforeach

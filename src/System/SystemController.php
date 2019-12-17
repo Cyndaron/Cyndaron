@@ -31,6 +31,7 @@ class SystemController extends Controller
         Setting::set('defaultCategory', Request::post('defaultCategory'));
         Setting::set('menuTheme', Request::post('menuTheme'));
         Setting::set('frontPage', Request::post('frontPage'));
+        Setting::set('frontPageIsJumbo', Request::post('frontPageIsJumbo'));
 
         new SystemPage('config');
     }
