@@ -13,7 +13,28 @@ class CategoryController extends Controller
     protected function routeGet()
     {
         $id = Request::getVar(1);
-        new CategoryPage($id);
+
+        if ($id === '0' || $id == 'fotoboeken')
+        {
+            $page = new CategoryPage();
+            $page->showPhotoalbumsIndex();
+        }
+        elseif ($id == 'tag')
+        {
+            $page = new CategoryPage();
+            $page->showTagIndex(Request::getVar(2));
+        }
+        elseif ($id < 0)
+        {
+            header("Location: /error/404");
+            die('Incorrecte parameter ontvangen.');
+        }
+        else
+        {
+            $category = Category::loadFromDatabase(intval($id));
+            $page = new CategoryPage();
+            $page->showCategoryIndex($category);
+        }
     }
 
     protected function routePost()

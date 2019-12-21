@@ -46,9 +46,16 @@ class DBConnection
         });
     }
 
+    public static function doQueryAndReturnFetchable(string $query, array $vars = []): PDOStatement
+    {
+        return static::executeQuery($query, $vars, function(PDOStatement $prep, $result) {
+            return $prep;
+        });
+    }
+
     public static function doQueryAndFetchFirstRow(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function(PDOStatement$prep, $result) {
+        return static::executeQuery($query, $vars, function(PDOStatement $prep, $result) {
             return $prep->fetch(PDO::FETCH_ASSOC);
         });
     }

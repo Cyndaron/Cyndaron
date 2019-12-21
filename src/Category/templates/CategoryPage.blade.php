@@ -3,7 +3,7 @@
 @section ('contents')
 <div id="category-container">
     <div id="category-main">
-        {!! $model->description !!}
+        {!! $model ? $model->description : '' !!}
 
     @if ($viewMode == 0)
         <div class="category-listview">

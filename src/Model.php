@@ -117,6 +117,17 @@ class Model
         return $return;
     }
 
+    /**
+     * @param array $array
+     * @return static
+     */
+    public static function fromArray(array $array): self
+    {
+        $sub = new static((int)$array['id']);
+        $sub->updateFromArray($array);
+        return $sub;
+    }
+
     public function updateFromArray($newArray)
     {
         foreach (self::getExtendedTableFields() as $tableField)

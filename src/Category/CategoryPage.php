@@ -4,44 +4,19 @@ namespace Cyndaron\Category;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Photoalbum\Photoalbum;
-use Cyndaron\Request;
 use Cyndaron\StaticPage\StaticPageModel;
-use Cyndaron\Url;
-use Cyndaron\Util;
 
 class CategoryPage extends Page
 {
     /** @noinspection PhpMissingParentConstructorInspection */
-    public function __construct($id)
-    {
-        if ($id === '0' || $id == 'fotoboeken')
-        {
-            $this->templateVars['type'] = 'photoalbums';
-            $this->showPhotoalbumsIndex();
-        }
-        elseif ($id == 'tag')
-        {
-            $this->templateVars['type'] = 'tag';
-            $this->showTagIndex(Request::getVar(2));
-        }
-        else
-        {
-            if ($id < 0)
-            {
-                header("Location: /error/404");
-                die('Incorrecte parameter ontvangen.');
-            }
-            $this->templateVars['type'] = 'subs';
-            $this->showCategoryIndex(intval($id));
-        }
-    }
+    public function __construct() { }
 
-    private function showCategoryIndex(int $id)
+    public function showCategoryIndex(Category $category)
     {
-        $this->model = new Category($id);
-        $this->model->load();
+        $this->templateVars['type'] = 'subs';
+        $this->model = $category;
 
-        $controls = sprintf('<a href="/editor/category/%d" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $id);
+        $controls = sprintf('<a href="/editor/category/%d" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $category->id);
         parent::__construct($this->model->name);
         $this->setTitleButtons($controls);
         $this->showPrePage();
@@ -49,7 +24,7 @@ class CategoryPage extends Page
         $this->templateVars['model'] = $this->model;
 
         $tags = [];
-        $subs = StaticPageModel::fetchAll(['categoryId= ?'], [$id], 'ORDER BY id DESC');
+        $subs = StaticPageModel::fetchAll(['categoryId= ?'], [$category->id], 'ORDER BY id DESC');
         foreach ($subs as $sub)
         {
             $tagList = $sub->getTagList();
@@ -65,7 +40,7 @@ class CategoryPage extends Page
         if ($this->model->viewMode == Category::VIEWMODE_PORTFOLIO)
         {
             $portfolioContent = [];
-            $subCategories = Category::fetchAll(['categoryId = ?'], [$id]);
+            $subCategories = Category::fetchAll(['categoryId = ?'], [$category->id]);
             foreach ($subCategories as $subCategory)
             {
                 $subs = StaticPageModel::fetchAll(['categoryId = ?'], [$subCategory->id], 'ORDER BY id DESC');
@@ -77,27 +52,31 @@ class CategoryPage extends Page
         $this->showPostPage();
     }
 
-    private function showPhotoalbumsIndex()
+    public function showPhotoalbumsIndex()
     {
         parent::__construct('Fotoalbums');
         $this->showPrePage();
         $photoalbums = Photoalbum::fetchAll(['hideFromOverview = 0'], [], 'ORDER BY id DESC');
+        $this->templateVars['type'] = 'photoalbums';
         $this->templateVars['pages'] = $photoalbums;
-        $this->templateVars['viewMode'] = 1;
+        $this->templateVars['viewMode'] = Category::VIEWMODE_TITLES;
 
         $this->showPostPage();
     }
 
-    private function showTagIndex($tag)
+    public function showTagIndex(string $tag)
     {
+        $this->templateVars['type'] = 'tag';
         parent::__construct(ucfirst($tag));
         $this->showPrePage();
 
         $tags = [];
         $pages = [];
-        $subs = StaticPageModel::fetchAll([], [], 'ORDER BY id DESC');
+
+        $subs = DBConnection::doQueryAndReturnFetchable('SELECT * FROM subs WHERE `tags` LIKE ? ORDER BY id DESC', ["%$tag%"]);
         foreach ($subs as $sub)
         {
+            $sub = StaticPageModel::fromArray($sub);
             $tagList = $sub->getTagList();
             if ($tagList)
             {
@@ -110,7 +89,7 @@ class CategoryPage extends Page
         }
         $this->templateVars['pages'] = $pages;
         $this->templateVars['tags'] = $tags;
-        $this->templateVars['viewMode'] = 2;
+        $this->templateVars['viewMode'] = Category::VIEWMODE_BLOG;
 
         $this->showPostPage();
     }
