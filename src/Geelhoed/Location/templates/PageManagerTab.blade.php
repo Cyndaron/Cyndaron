@@ -7,7 +7,7 @@
         </tr>
     </thead>
     <tbody>
-        @php /** @var \Cyndaron\Geelhoed\Location[] $locations */ @endphp
+        @php /** @var \Cyndaron\Geelhoed\Location\Location[] $locations */ @endphp
         @foreach ($locations as $location)
         <tr>
             <td>{{ $location->id }}</td>
@@ -15,7 +15,7 @@
                 {{ $location->getName() }}
                 @foreach ($location->getHours() as $hour)
                     <br>
-                    {{ $hour->from|hm }} - {{ $hour->until|hm }} ({{ $hour->sport }})
+                    {{ $hour->from|hm }} - {{ $hour->until|hm }} {{ $hour->description }} ({{ $hour->getSportName() }})
                 @endforeach
             </td>
             <td>

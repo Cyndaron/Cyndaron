@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed;
 
+use Cyndaron\Geelhoed\Location\Location;
+use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Template\Template;
-use Cyndaron\User\User;
-use Cyndaron\Util;
 use Cyndaron\Widget\Button;
 use Cyndaron\Widget\Toolbar;
 
@@ -16,12 +16,12 @@ class PageManagerTabs
         echo new Toolbar('', '', (string)new Button('new', '/editor/location', 'Nieuwe locatie', 'Nieuwe locatie'));
 
         $locations = Location::fetchAll();
-        echo (new Template())->render('Geelhoed/PageManagerTabLocation', compact('locations'));
+        echo (new Template())->render('Geelhoed/Location/PageManagerTab', compact('locations'));
     }
 
     public static function membersTab(): void
     {
         $members = Member::fetchAll([], [], '');
-        echo (new Template())->render('Geelhoed/PageManagerTabMembers', compact('members'));
+        echo (new Template())->render('Geelhoed/Member/PageManagerTab', compact('members'));
     }
 }

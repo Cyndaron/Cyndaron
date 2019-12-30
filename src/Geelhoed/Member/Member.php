@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Geelhoed;
+namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Geelhoed\Hour;
 use Cyndaron\Model;
 use Cyndaron\User\User;
 

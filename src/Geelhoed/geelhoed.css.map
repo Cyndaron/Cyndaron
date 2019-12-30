@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,uBACA;EACI,UAAU,EAAE,MAAM;EAElB,0BAAG;IACC,WAAW,EAAC,MAAM;IAClB,UAAU,EAAE,QAAQ",
+"sources": ["geelhoed.scss"],
+"names": [],
+"file": "geelhoed.css"
+}

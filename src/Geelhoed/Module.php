@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed;
 
+use Cyndaron\Geelhoed\Location\LocationController;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
+use Cyndaron\Module\Routes;
 
-class Module implements Datatypes
+class Module implements Datatypes, Routes
 {
-
     /**
      * @return Datatype[]
      */
@@ -25,6 +26,13 @@ class Module implements Datatypes
                 'plural' => 'Leden',
                 'pageManagerTab' => PageManagerTabs::class . '::membersTab',
             ]),
+        ];
+    }
+
+    public function routes(): array
+    {
+        return [
+            'location' =>  LocationController::class,
         ];
     }
 }
