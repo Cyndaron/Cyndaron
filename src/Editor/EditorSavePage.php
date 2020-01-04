@@ -4,6 +4,7 @@ namespace Cyndaron\Editor;
 use Cyndaron\DBConnection;
 use Cyndaron\Request;
 use Cyndaron\Url;
+use Cyndaron\Util;
 
 abstract class EditorSavePage
 {
@@ -51,7 +52,7 @@ abstract class EditorSavePage
 
     protected static function extractImages($matches)
     {
-        list($type, $image) = explode(';', $matches[2]);
+        [$type, $image] = explode(';', $matches[2]);
 
         switch ($type)
         {
@@ -75,7 +76,7 @@ abstract class EditorSavePage
         $image = base64_decode(str_replace(' ', '+', $image));
         $uploadDir = 'afb/via-editor/';
         $destinationFilename = $uploadDir . date('c') . '-' . md5($image) . '.' . $extensie;
-        @mkdir($uploadDir, 0777, true);
+        Util::createDir($uploadDir);
         file_put_contents($destinationFilename, $image);
 
         return 'src="/' . $destinationFilename . '"';

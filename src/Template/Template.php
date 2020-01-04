@@ -2,6 +2,8 @@
 
 namespace Cyndaron\Template;
 
+use Cyndaron\Util;
+
 class Template
 {
     private $compiledDir = 'cache/template';
@@ -29,7 +31,7 @@ class Template
     public function createCacheDir(string $engine): string
     {
         $cacheDir = $this->compiledDir . '/' . $engine;
-        @mkdir($cacheDir, 0777, true);
+        Util::createDir($cacheDir);
 
         return $cacheDir;
     }

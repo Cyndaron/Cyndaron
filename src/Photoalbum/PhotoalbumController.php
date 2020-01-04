@@ -45,6 +45,17 @@ class PhotoalbumController extends Controller
                 $menuItem->link = '/photoalbum/' . $id;
                 $menuItem->save();
                 break;
+            case 'addPhoto':
+                $album = Photoalbum::loadFromDatabase($id);
+                Photo::create($album);
+                header("Location: /photoalbum/{$album->id}");
+                die();
+            case 'deletePhoto':
+                $album = Photoalbum::loadFromDatabase($id);
+                $filename = Request::getVar(3);
+                Photo::deleteByAlbumAndFilename($album, $filename);
+                header("Location: /photoalbum/{$album->id}");
+                die();
         }
     }
 }

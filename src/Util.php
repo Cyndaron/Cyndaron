@@ -150,4 +150,13 @@ class Util
             ' ' => '-'
         ]);
     }
+
+    public static function createDir(string $dir, int $mask = 0777): bool
+    {
+        $oldUmask = umask(0);
+        $ret = @mkdir($dir, $mask, true);
+        umask($oldUmask);
+
+        return $ret;
+    }
 }

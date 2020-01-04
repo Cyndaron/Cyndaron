@@ -6,6 +6,7 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\DBConnection;
 use Cyndaron\Model;
 use Cyndaron\Url;
+use Cyndaron\Util;
 use Exception;
 
 class Photoalbum extends Model
@@ -37,8 +38,8 @@ class Photoalbum extends Model
         $id = DBConnection::doQuery('INSERT INTO photoalbums(`name`,`notes`,`showBreadcrumbs`) VALUES (?,?,?);', [$naam, $notities,(int)$showBreadcrumbs]);
         if ($id !== false)
         {
-            mkdir(__DIR__ . "/../../fotoalbums/${id}", 0777, true);
-            mkdir(__DIR__ . "/../../fotoalbums/${id}thumbnails", 0777, true);
+            Util::createDir(__DIR__ . "/../../fotoalbums/${id}");
+            Util::createDir(__DIR__ . "/../../fotoalbums/${id}thumbnails");
         }
 
         return $id;

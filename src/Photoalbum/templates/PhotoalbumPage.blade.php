@@ -1,6 +1,15 @@
 @extends ('Index')
 
 @section ('contents')
+    @if ($isAdmin)
+        <form method="post" action="/photoalbum/addPhoto/{{ $model->id }}" enctype="multipart/form-data">
+            <label for="newFile">Foto toevoegen:</label>
+            <input type="file" id="newFile" name="newFile" required>
+            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('photoalbum', 'addPhoto') }}">
+            <input class="btn btn-primary" type="submit" value="Uploaden">
+        </form>
+    @endif
+
     @php $numEntries = count($photos) @endphp
     @if ($numEntries == 0)
         <div class="alert alert-info">Dit album is leeg.</div>
@@ -14,6 +23,7 @@
         @endif
 
         <div class="fotoalbum">
+            @php $deleteToken = \Cyndaron\User\User::getCSRFToken('photoalbum', 'deletePhoto'); @endphp
             @foreach ($photos as $photo)
             <figure class="fotobadge">
 
@@ -29,7 +39,14 @@
                 @if ($isAdmin)
                     <br/>
                     @php $captionId = $photo->caption->id ?? 0 @endphp
-                    {!! new \Cyndaron\Widget\Button('edit', "/editor/photo/#{captionId}/#{photo.hash}", 'Bijschrift bewerken', 'Bijschrift bewerken', 16) !!}
+                    <form method="post" action="/photoalbum/deletePhoto/{{ $model->id }}/{{ $photo->filename }}">
+
+                        <input type="hidden" name="csrfToken" value="{{ $deleteToken }}">
+                        <div class="btn-group btn-group-sm">
+                            {!! new \Cyndaron\Widget\Button('edit', "/editor/photo/$captionId/{$photo->hash}", 'Bijschrift bewerken', 'Bijschrift bewerken', 16) !!}
+                            <button class="btn btn-sm btn-danger" type="submit"><span class="glyphicon glyphicon-trash"></span></button>
+                        </div>
+                    </form>
                 @endif
             </figure>
             @endforeach
