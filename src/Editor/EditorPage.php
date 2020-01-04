@@ -26,7 +26,7 @@ abstract class EditorPage extends Page
     protected $contentTitle = '';
     /** @var Model */
     protected $model = null;
-    protected $template = 'EditorPageBase.twig';
+    protected $template = 'Editor/PageBase';
 
     public function __construct()
     {
