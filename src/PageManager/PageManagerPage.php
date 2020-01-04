@@ -15,28 +15,7 @@ use Cyndaron\Widget\Toolbar;
 
 class PageManagerPage extends Page
 {
-    private static $pageTypes = [
-        'sub' => [
-            'name' => 'Statische pagina\'s',
-            'tabDraw' => self::class . '::showSubs',
-        ],
-        'category' => [
-            'name' => 'Categorieën',
-            'tabDraw' => self::class . '::showCategories',
-        ],
-        'photoalbum' => [
-            'name' => 'Fotoalbums',
-            'tabDraw' => self::class . '::showPhotoAlbums',
-        ],
-        'friendlyurl' => [
-            'name' => 'Friendly URL\'s',
-            'tabDraw' => self::class . '::showFriendlyURLs',
-        ],
-        'mailform' => [
-            'name' => 'Mailformulieren',
-            'tabDraw' => self::class . '::showMailforms',
-        ]
-    ];
+    private static $pageTypes = [];
     
     public function __construct($currentPage)
     {

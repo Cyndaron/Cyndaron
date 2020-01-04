@@ -3,12 +3,14 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed;
 
+use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Location\LocationController;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
+use Cyndaron\Module\UrlProvider;
 
-class Module implements Datatypes, Routes
+class Module implements Datatypes, Routes, UrlProvider
 {
     /**
      * @return Datatype[]
@@ -34,5 +36,21 @@ class Module implements Datatypes, Routes
         return [
             'location' =>  LocationController::class,
         ];
+    }
+
+    public function url(array $linkParts): ?string
+    {
+        switch ($linkParts[0])
+        {
+            case 'location':
+                switch ($linkParts[1])
+                {
+                    case 'view':
+                        $location = Location::loadFromDatabase((int)$linkParts[2]);
+                        return $location->getName();
+                }
+        }
+
+        return null;
     }
 }

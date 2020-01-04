@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
@@ -29,5 +30,10 @@ class Module implements Routes, Datatypes
                 'pageManagerTab' => Util::class . '::drawPageManagerTab',
             ])
         ];
+    }
+
+    public function getList(): array
+    {
+        return DBConnection::doQueryAndFetchAll('SELECT CONCAT(\'/concert/order/\', id) AS link, CONCAT(\'Concert: \', name) AS name FROM ticketsale_concerts');
     }
 }

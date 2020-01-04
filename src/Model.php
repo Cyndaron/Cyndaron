@@ -24,6 +24,7 @@ class Model
     /**
      * @param int $id
      * @return static|null
+     * @throws Exception
      */
     public static function loadFromDatabase(int $id)
     {

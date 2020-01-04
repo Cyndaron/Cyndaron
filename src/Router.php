@@ -5,9 +5,10 @@ declare (strict_types = 1);
 namespace Cyndaron;
 
 use Cyndaron\Editor\EditorController;
-use Cyndaron\Mailform\Mailform;
 use Cyndaron\Module\Datatypes;
+use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
+use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\User\User;
 
@@ -22,17 +23,12 @@ class Router
 
     protected $endpoints = [
         // Default endpoints
-        'category' => Category\CategoryController::class,
         'editor' => Editor\EditorController::class,
         'error' => Error\ErrorController::class,
-        'friendlyurl' => FriendlyUrl\FriendlyUrlController::class,
-        'mailform' => \Cyndaron\Mailform\MailformController::class,
         'menu' => Menu\MenuController::class,
         'menu-editor' => Menu\MenuEditorController::class,
         'migrate' => MigrateController::class,
         'pagemanager' => PageManager\PageManagerController::class,
-        'photoalbum' => Photoalbum\PhotoalbumController::class,
-        'sub' => StaticPage\StaticPageController::class,
         'system' => System\SystemController::class,
         'user' => \Cyndaron\User\UserController::class,
     ];
@@ -222,11 +218,19 @@ class Router
 
     private function loadModules(): void
     {
-        if (!defined('MODULES')) {
-            return;
+        $modules = [
+            \Cyndaron\StaticPage\Module::class,
+            \Cyndaron\Category\Module::class,
+            \Cyndaron\Photoalbum\Module::class,
+            \Cyndaron\FriendlyUrl\Module::class,
+            \Cyndaron\Mailform\Module::class,
+        ];
+
+        if (defined('MODULES')) {
+            $modules = array_merge($modules, MODULES);
         }
 
-        foreach (MODULES as $moduleClass)
+        foreach ($modules as $moduleClass)
         {
             $module = new $moduleClass();
 
@@ -249,6 +253,14 @@ class Router
                     if ($definition->pageManagerTab)
                     {
                         PageManagerPage::addPageType([$dataTypeName => ['name' => $definition->plural, 'tabDraw' => $definition->pageManagerTab]]);
+                    }
+                    if ($module instanceof UrlProvider)
+                    {
+                        Url::addUrlProvider($dataTypeName, $moduleClass);
+                    }
+                    if ($module instanceof Linkable)
+                    {
+                        EditorController::addInternalLinkType($moduleClass);
                     }
                 }
             }

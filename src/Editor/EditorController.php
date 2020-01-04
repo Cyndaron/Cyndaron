@@ -1,9 +1,10 @@
-<?php /** @noinspection PhpFullyQualifiedNameUsageInspection */
+<?php
 declare (strict_types = 1);
 
 namespace Cyndaron\Editor;
 
 use Cyndaron\Controller;
+use Cyndaron\Module\Linkable;
 use Cyndaron\Request;
 use Cyndaron\User\UserLevel;
 
@@ -11,20 +12,9 @@ class EditorController extends Controller
 {
     protected $minLevelGet = UserLevel::ADMIN;
 
-    protected static $editorPages = [
-        'category' => \Cyndaron\Category\EditorPage::class,
-        'mailform' => \Cyndaron\Mailform\EditorPage::class,
-        'photo' => \Cyndaron\Photoalbum\EditorPagePhoto::class,
-        'photoalbum' => \Cyndaron\Photoalbum\EditorPage::class,
-        'sub' => \Cyndaron\StaticPage\EditorPage::class,
-    ];
-    protected static $savePages = [
-        'category' => \Cyndaron\Category\EditorSavePage::class,
-        'mailform' => \Cyndaron\Mailform\EditorSavePage::class,
-        'photo' => \Cyndaron\Photoalbum\EditorSavePagePhoto::class,
-        'photoalbum' => \Cyndaron\Photoalbum\EditorSavePage::class,
-        'sub' => \Cyndaron\StaticPage\EditorSavePage::class,
-    ];
+    protected static $editorPages = [];
+    protected static $savePages = [];
+    protected static $internalLinkTypes = [];
 
     protected function routeGet()
     {
@@ -32,7 +22,7 @@ class EditorController extends Controller
         if (array_key_exists($type, static::$editorPages))
         {
             $class = static::$editorPages[$type];
-            new $class;
+            new $class($this->getInternalLinks());
         }
     }
 
@@ -46,6 +36,21 @@ class EditorController extends Controller
         }
     }
 
+    protected function getInternalLinks(): array
+    {
+        $internalLinks = [];
+        foreach (static::$internalLinkTypes as $internalLinkType)
+        {
+            /** @var Linkable $class */
+            $class = new $internalLinkType;
+            $internalLinks = array_merge($internalLinks, $class->getList());
+        }
+        usort($internalLinks, function (array $link1, array $link2) {
+            return $link1['name'] <=> $link2['name'];
+        });
+        return $internalLinks;
+    }
+
     public static function addEditorPage(array $page): void
     {
         static::$editorPages = array_merge(static::$editorPages, $page);
@@ -56,4 +61,8 @@ class EditorController extends Controller
         static::$savePages = array_merge(static::$savePages, $page);
     }
 
+    public static function addInternalLinkType(string $moduleClass): void
+    {
+        static::$internalLinkTypes[] = $moduleClass;
+    }
 }

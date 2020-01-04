@@ -3,10 +3,6 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Photoalbum\Photoalbum;
-use Cyndaron\Photoalbum\PhotoalbumCaption;
-use Cyndaron\Photoalbum\PhotoalbumPage;
-use Cyndaron\User\User;
 use Cyndaron\Util;
 
 class StaticPage extends Page

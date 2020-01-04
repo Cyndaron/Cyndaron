@@ -28,7 +28,7 @@ abstract class EditorPage extends Page
     protected $model = null;
     protected $template = 'Editor/PageBase';
 
-    public function __construct()
+    public function __construct(array $internalLinks)
     {
         $this->id = (int)Request::getVar(2);
         $this->vorigeversie = Request::getVar(3) === 'previous';
@@ -61,17 +61,7 @@ abstract class EditorPage extends Page
         $this->templateVars['article'] = $this->content;
         $this->templateVars['model'] = $this->model;
 
-        $sql = "SELECT * FROM (
-            SELECT * FROM (SELECT CONCAT('/sub/', id) AS link, CONCAT('Statische pag.: ', name) AS name FROM subs) AS one
-            UNION
-            SELECT * FROM (SELECT CONCAT('/category/', id) AS link, CONCAT('Categorie: ', name) AS name FROM categories) AS two
-            UNION
-            SELECT * FROM (SELECT CONCAT('/photoalbum/', id) AS link, CONCAT('Fotoalbum: ', name) AS name FROM photoalbums) AS three
-            UNION
-            SELECT * FROM (SELECT CONCAT('/concert/order/', id) AS link, CONCAT('Concert: ', name) AS name FROM  ticketsale_concerts) AS four
-            ) as zero ORDER BY name;";
-
-        $this->templateVars['internalLinks'] = DBConnection::doQueryAndFetchAll($sql);
+        $this->templateVars['internalLinks'] = $internalLinks;
 
         if (static::HAS_CATEGORY)
         {

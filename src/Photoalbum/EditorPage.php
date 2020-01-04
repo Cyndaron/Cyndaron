@@ -14,7 +14,6 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     {
         if ($this->id)
         {
-            /** @var Photoalbum $photoalbum */
             $photoalbum = Photoalbum::loadFromDatabase($this->id);
             $this->model = $photoalbum;
             $this->content = $photoalbum->notes;

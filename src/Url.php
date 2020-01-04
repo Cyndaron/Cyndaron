@@ -1,11 +1,13 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\Module\UrlProvider;
 use Exception;
 
 class Url
 {
     private $url;
+    protected static $urlProviders = [];
 
     public function __construct(string $url)
     {
@@ -73,38 +75,29 @@ class Url
         $link = trim($this->getUnfriendly(), '/');
         $linkParts = explode('/', $link);
 
-        switch ($linkParts[0])
+        if (array_key_exists($linkParts[0], static::$urlProviders))
         {
-            case 'sub':
-                $sql = 'SELECT name FROM subs WHERE id=?';
-                break;
-            case 'category':
-                if ($linkParts[1] == 'fotoboeken')
-                {
-                    return 'Fotoalbums';
-                }
-                else
-                {
-                    $sql = 'SELECT name FROM categories WHERE id=?';
-                }
-                break;
-            case 'photoalbum':
-                $sql = 'SELECT name FROM photoalbums WHERE id=?';
-                break;
-            default:
-                return $link;
+            $classname = static::$urlProviders[$linkParts[0]];
+            /** @var UrlProvider $class */
+            $class = new $classname;
+            $result = $class->url($linkParts);
+
+            if ($result !== null)
+            {
+                return $result;
+            }
         }
-        if ($name = DBConnection::doQueryAndFetchOne($sql, [$linkParts[1]]))
+
+        if ($name = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target=?', [$link]))
         {
             return $name;
         }
-        elseif ($name = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target=?', [$link]))
-        {
-            return $name;
-        }
-        else
-        {
-            return $link;
-        }
+
+        return $link;
+    }
+
+    public static function addUrlProvider(string $urlBase, string $class)
+    {
+        static::$urlProviders[$urlBase] = $class;
     }
 }
