@@ -10,9 +10,8 @@ class VerwerkMailformulierPaginaLDBF extends Page
             if (empty(Request::post('E-mailadres')))
             {
                 parent::__construct('Formulier versturen mislukt');
-                $this->showPrePage();
-                echo 'U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.';
-                $this->showPostPage();
+                $this->body = 'U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.';
+                $this->render();
             }
             else
             {
@@ -141,24 +140,21 @@ class VerwerkMailformulierPaginaLDBF extends Page
                 if ($mail1 && $mail2)
                 {
                     parent::__construct('Formulier verstuurd');
-                    $this->showPrePage();
-                    echo 'Het versturen is gelukt.';
+                    $this->body = 'Het versturen is gelukt.';
                 }
                 else
                 {
                     parent::__construct('Formulier versturen mislukt');
-                    $this->showPrePage();
-                    echo 'Wegens een technisch probleem is het versturen niet gelukt';
+                    $this->body = 'Wegens een technisch probleem is het versturen niet gelukt';
                 }
-                $this->showPostPage();
+                $this->render();
             }
         }
         else
         {
             parent::__construct('Formulier versturen mislukt');
-            $this->showPrePage();
-            echo 'Ongeldig formulier.';
-            $this->showPostPage();
+            $this->body = 'Ongeldig formulier.';
+            $this->render();
         }
     }
 }

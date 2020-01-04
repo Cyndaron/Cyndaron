@@ -144,9 +144,9 @@ class OrderController extends Controller
         $comments = Request::post('comments');
 
         $result = DBConnection::doQuery('INSERT INTO ticketsale_orders
-            (`concertId`, `lastName`, `initials`, `email`, `street`, `postcode`, `city`, `delivery`,               `hasReservedSeats`, `deliveryByMember`, `deliveryMemberName`, `addressIsAbroad`,      `comments`) VALUES
-            (?,           ?,          ?,          ?,       ?,        ?,          ?,      ?,                        ?,                  ?,                  ?,                    ?,                      ?)',
-            [$concertId,  $lastName,  $initials,  $email,  $street,  $postcode,  $city, ($payForDelivery ? 1 : 0), $reserveSeats,      $deliveryByMember,  $deliveryMemberName,  (int)$addressIsAbroad,  $comments]);
+            (`concertId`, `lastName`, `initials`, `email`, `street`, `postcode`, `city`, `delivery`,               `hasReservedSeats`, `deliveryByMember`,      `deliveryMemberName`, `addressIsAbroad`,      `comments`) VALUES
+            (?,           ?,          ?,          ?,       ?,        ?,          ?,      ?,                        ?,                  ?,                       ?,                    ?,                      ?)',
+            [$concertId,  $lastName,  $initials,  $email,  $street,  $postcode,  $city, ($payForDelivery ? 1 : 0), $reserveSeats,      (int)$deliveryByMember,  $deliveryMemberName,  (int)$addressIsAbroad,  $comments]);
         if ($result === false)
         {
             throw new InvalidOrder('Opslaan bestelling mislukt!');

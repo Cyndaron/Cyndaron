@@ -39,7 +39,6 @@ abstract class EditorPage extends Page
         parent::__construct('Editor');
         $this->addScript('/contrib/ckeditor/ckeditor.js');
         $this->addScript('/sys/js/editor.js');
-        $this->showPrePage();
 
         $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $this->id);
         $friendlyUrl = $unfriendlyUrl->getFriendly();
@@ -84,7 +83,7 @@ abstract class EditorPage extends Page
 
             $this->templateVars['showBreadcrumbs'] = $showBreadcrumbs;
         }
-        $this->showPostPage();
+        $this->render();
     }
 
     abstract protected function prepare();

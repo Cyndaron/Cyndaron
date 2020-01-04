@@ -11,31 +11,12 @@ class Gallery extends Page
 
     public function __construct()
     {
-        $leden = User::fetchAll(['hideFromMemberList = 0'], [], 'ORDER BY lastname, tussenvoegsel, firstName');
+        $members = User::fetchAll(['hideFromMemberList = 0'], [], 'ORDER BY lastname, tussenvoegsel, firstName');
         parent::__construct('Wie is wie');
-        $this->showPrePage();
-        echo '<table class="ledenlijst">';
-        foreach ($leden as $lid)
-        {
-            $avatar = $lid->avatar ? '/' . User::AVATAR_DIR . "/{$lid->avatar}" : static::FALLBACK_IMAGE;
 
-            echo '<tr><td><img style="height: 150px;" alt="" src="' . $avatar . '"/></td>';
-            echo '<td><b><span style="text-decoration: underline;">';
-            if ($lid->firstName || $lid->lastName)
-            {
-                echo $lid->getFullName();
-            }
-            else
-            {
-                echo $lid->username;
-            }
-            echo '</span></b><br /><br />';
-            echo $lid->role;
-
-            static::showIfSet($lid->comments, '<br />', '');
-            echo '</td></tr>';
-        }
-        echo '</table>';
-        $this->showPostPage();
+        $this->render([
+            'members' => $members,
+            'fallbackImage' => self::FALLBACK_IMAGE,
+        ]);
     }
 }

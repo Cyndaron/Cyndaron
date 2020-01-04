@@ -27,7 +27,6 @@ class Page
 {
     protected $extraMeta = '';
     protected $title = '';
-    protected $titleButtons = null;
     protected $extraScripts = [];
     protected $extraCss = [];
     protected $websiteName = '';
@@ -84,11 +83,11 @@ class Page
             $this->templateVars['favicon'] = $favicon;
             $this->templateVars['faviconType'] = "image/$extension";
         }
-        $this->templateVars['backgroundColor'] = Setting::get('backgroundColor');
-        $this->templateVars['menuColor'] = Setting::get('menuColor');
-        $this->templateVars['menuBackground'] = Setting::get('menuBackground');
-        $this->templateVars['articleColor'] = Setting::get('articleColor');
-        $this->templateVars['accentColor'] = Setting::get('accentColor');
+
+        foreach (['backgroundColor', 'menuColor', 'menuBackground', 'articleColor', 'accentColor'] as $setting)
+        {
+            $this->templateVars[$setting] = Setting::get($setting);
+        }
 
         $this->templateVars['menu'] = $this->renderMenu();
 
@@ -103,52 +102,31 @@ class Page
         }
 
         $this->templateVars['pageCaption'] = $this->generateBreadcrumbs();
-        $this->templateVars['titleButtons'] = $this->titleButtons;
 
         $this->templateVars['extraScripts'] = $this->extraScripts;
         $this->templateVars['extraCss'] = $this->extraCss;
 
-        $this->templateVars['extraHead'] = '';
-        if (file_exists(__DIR__ . '/../extra-head.php'))
-        {
-            ob_start();
-            include __DIR__ . '/../extra-head.php';
-            $this->templateVars['extraHead'] = ob_get_contents();
-            ob_end_clean();
-        }
+        static $includes = [
+            'extraHead' => 'extra-head',
+            'extraBodyStart' => 'extra-body-start',
+            'extraBodyEnd' => 'extra-body-end'
+        ];
 
-        $this->templateVars['extraBodyStart'] = '';
-        if (file_exists(__DIR__ . '/../extra-body-start.php'))
+        foreach ($includes as $varName => $filename)
         {
-            ob_start();
-            include __DIR__ . '/../extra-body-start.php';
-            $this->templateVars['extraBodyStart'] = ob_get_contents();
-            ob_end_clean();
-        }
-
-        $this->templateVars['extraBodyEnd'] = '';
-        if (file_exists(__DIR__ . '/../extra-body-end.php'))
-        {
-            ob_start();
-            include __DIR__ . '/../extra-body-end.php';
-            $this->templateVars['extraBodyEnd'] = ob_get_contents();
-            ob_end_clean();
+            $this->templateVars[$varName] = '';
+            if (file_exists(__DIR__ . "/../$filename.php"))
+            {
+                ob_start();
+                include __DIR__ . "/../$filename.php";
+                $this->templateVars[$varName] = ob_get_clean();
+            }
         }
     }
 
     public function setExtraMeta(string $extraMeta)
     {
         $this->extraMeta = $extraMeta;
-    }
-
-    public function setTitleButtons(string $titleButtons)
-    {
-        $this->titleButtons = $titleButtons;
-    }
-
-    public function showPrePage()
-    {
-        ob_start();
     }
 
     public function isFrontPage(): bool
@@ -188,23 +166,16 @@ class Page
         return $template->render('Menu', $vars);
     }
 
-    public function showPostPage()
+    public function render(array $vars = [])
     {
-        $this->templateVars['contents'] = ob_get_contents();
-        ob_end_clean();
+        $this->templateVars = array_merge($this->templateVars, $vars);
+
+        $this->templateVars['contents'] = $this->body;
 
         $this->renderSkeleton();
 
         $template = new \Cyndaron\Template\Template();
         echo $template->render($this->template, $this->templateVars);
-    }
-
-    public function render(array $vars = [])
-    {
-        $this->templateVars = array_merge($this->templateVars, $vars);
-        $this->showPrePage();
-        $this->showBody();
-        $this->showPostPage();
     }
 
     public function addScript($script)
@@ -224,41 +195,6 @@ class Page
             return [];
         }
         return MenuItem::fetchAll([], [], 'ORDER BY priority, id');
-    }
-
-    public static function showIfSet($string, $before = '', $after = '')
-    {
-        if ($string)
-        {
-            echo $before;
-            echo $string;
-            echo $after;
-        }
-    }
-
-    public static function showIfSetAndAdmin($string, $before = '', $after = '')
-    {
-        if (User::isAdmin() && $string)
-        {
-            echo $before;
-            echo $string;
-            echo $after;
-        }
-    }
-
-    public static function showIfSetAndNotAdmin($string, $before = '', $after = '')
-    {
-        if (!User::isAdmin() && $string)
-        {
-            echo $before;
-            echo $string;
-            echo $after;
-        }
-    }
-
-    public function showBody(): void
-    {
-        echo $this->body;
     }
 
     protected function generateBreadcrumbs(): string

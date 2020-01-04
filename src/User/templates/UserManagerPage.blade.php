@@ -33,21 +33,21 @@
                 <td>{{ $user->id }}</td>
                 <td>{{ $user->username }}</td>
                 <td>{{ $user->email }}</td>
-                <td><?=$userLevelDescriptions[$user->level]?></td>
+                <td>{{ $userLevelDescriptions[$user->level] }}</td>
                 <td>
                     <div class="btn-group">
                         <button class="um-edit-user btn btn-sm btn-outline-cyndaron" title="Gebruiker bewerken"
                                 data-toggle="modal" data-target="#um-edit-user-dialog"
                                 data-id="{{ $user->id }}"
-                                data-username="<?=$user->username?>"
-                                data-email="<?=$user->email?>"
-                                data-level="<?=$user->level?>"
-                                data-firstName="<?=$user->firstName?>"
-                                data-tussenvoegsel="<?=$user->tussenvoegsel?>"
-                                data-lastName="<?=$user->lastName?>"
-                                data-role="<?=$user->role?>"
-                                data-comments="<?=$user->comments?>"
-                                data-avatar="<?=$user->avatar?>"
+                                data-username="{{ $user->username }}"
+                                data-email="{{ $user->email }}"
+                                data-level="{{ $user->level }}"
+                                data-firstName="{{ $user->firstName }}"
+                                data-tussenvoegsel="{{ $user->tussenvoegsel }}"
+                                data-lastName="{{ $user->lastName }}"
+                                data-role="{{ $user->role }}"
+                                data-comments="{{ $user->comments }}"
+                                data-avatar="{{ $user->avatar }}"
                                 data-hideFromMemberList="{{ $user->hideFromMemberList }}">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </button>

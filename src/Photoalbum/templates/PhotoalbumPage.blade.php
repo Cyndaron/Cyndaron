@@ -1,5 +1,11 @@
 @extends ('Index')
 
+@section ('titleControls')
+    @if ($model->viewMode == 0)
+        @include('Widget/Button', ['kind' => 'edit', 'link' => '/editor/photoalbum' . $model->id, 'description' => 'Dit fotoalbum bewerken'])
+    @endif
+@endsection
+
 @section ('contents')
     @if ($isAdmin)
         <form method="post" action="/photoalbum/addPhoto/{{ $model->id }}" enctype="multipart/form-data">

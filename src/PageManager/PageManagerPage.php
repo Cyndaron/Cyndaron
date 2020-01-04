@@ -21,7 +21,6 @@ class PageManagerPage extends Page
     {
         $this->addScript('/src/PageManager/PageManagerPage.js');
         parent::__construct('Paginaoverzicht');
-        $this->showPrePage();
 
         $pageTabs = [];
         foreach (static::$pageTypes as $pageType => $data)
@@ -29,19 +28,16 @@ class PageManagerPage extends Page
             $pageTabs[$pageType] = $data['name'];
         }
 
-        echo new PageTabs($pageTabs, '/pagemanager/', $currentPage);
-        echo '<div class="container-fluid tab-contents">';
-
-        if (!array_key_exists($currentPage, static::$pageTypes))
-        {
-            $currentPage = array_key_first(static::$pageTypes);
-        }
+        ob_start();
         $function = static::$pageTypes[$currentPage]['tabDraw'];
         $function();
+        $tabContents = ob_get_clean();
 
-        echo '<div>';
-
-        $this->showPostPage();
+        $this->render([
+            'pageTabs' => $pageTabs,
+            'currentPage' => $currentPage,
+            'tabContents' => $tabContents,
+        ]);
     }
 
     private static function showSubs()

@@ -3,7 +3,7 @@ namespace Cyndaron\Widget;
 
 class Button extends Widget
 {
-    public function __construct($kind, $link, $description = null, $text = null, $size = 20)
+    public function __construct($kind, $link, $description = '', $text = null, $size = 20)
     {
         $btnClass = 'btn-outline-cyndaron';
 

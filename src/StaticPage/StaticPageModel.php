@@ -26,6 +26,17 @@ class StaticPageModel extends Model
         DBConnection::doQuery('DELETE FROM sub_backups WHERE id = ?', [$this->id]);
     }
 
+    public function save(): bool
+    {
+        $oldData = self::loadFromDatabase($this->id);
+        $result = parent::save();
+        if ($result)
+        {
+            DBConnection::doQuery('REPLACE INTO sub_backups(`id`, `name`, `text`) VALUES (?,?,?)', [$oldData->id, $oldData->name, $oldData->text]);
+        }
+        return $result;
+    }
+
     public function hasBackup(): bool
     {
         return (bool)DBConnection::doQueryAndFetchOne('SELECT * FROM sub_backups WHERE id= ?', [$this->id]);

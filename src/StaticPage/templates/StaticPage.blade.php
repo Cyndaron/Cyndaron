@@ -1,24 +1,31 @@
 @extends('Index')
 
+@section ('titleControls')
+    <a href="/editor/sub/{{ $model->id }}" class="btn btn-outline-cyndaron" title="Bewerk deze statische pagina"><span class="glyphicon glyphicon-pencil"></span></a>
+    @if ($model->hasBackup())
+        <a href="/editor/sub/{{ $model->id }}/previous" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-lastversion"></span></a>
+    @endif
+@endsection
+
 @section ('contents')
     {!! $text !!}
 
     @foreach ($replies as $reply)
         <article class="card mb-2">
             <div class="card-header">
-                Reactie van <strong>{{ reply.author }}</strong> op <time datetime="{{ reply.created }}">{{ reply.friendlyDate }} om {{ reply.friendlyTime }}</time>
+                Reactie van <strong>{{ $reply['author'] }}</strong> op <time datetime="{{ $reply['created'] }}">{{ $reply['friendlyDate'] }} om {{ $reply['friendlyTime'] }}</time>
             </div>
             <div class="card-body">
-                {{ reply.text }}
+                {{ $reply['text'] }}
             </div>
         </article>
     @endforeach
 
-    @if ($replies && !$allowReplies)
+    @if ($replies && !$model->enableComments)
         Op dit bericht kan niet meer worden gereageerd.<br />
     @endif
 
-    @if ($allowReplies)
+    @if ($model->enableComments)
         <h3>Reageren:</h3>
         <form name="reactie" method="post" action="/sub/react/{{ $id }}" class="form-horizontal">
             <div class="form-group row">

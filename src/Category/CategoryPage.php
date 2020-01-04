@@ -13,18 +13,29 @@ class CategoryPage extends Page
 
     public function showCategoryIndex(Category $category)
     {
-        $this->templateVars['type'] = 'subs';
         $this->model = $category;
 
-        $controls = sprintf('<a href="/editor/category/%d" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>', $category->id);
         parent::__construct($this->model->name);
-        $this->setTitleButtons($controls);
-        $this->showPrePage();
 
-        $this->templateVars['model'] = $this->model;
-
-        $tags = [];
         $subs = StaticPageModel::fetchAll(['categoryId= ?'], [$category->id], 'ORDER BY id DESC');
+
+        $this->render([
+            'type' => 'subs',
+            'model' => $this->model,
+            'viewMode' => $this->model->viewMode,
+            'pages' => $subs,
+            'tags' => $this->getTags($subs),
+            'portfolioContent' => $this->getPortfolioContent(),
+        ]);
+    }
+
+    /**
+     * @param StaticPageModel[] $subs
+     * @return array
+     */
+    protected function getTags(array $subs)
+    {
+        $tags = [];
         foreach ($subs as $sub)
         {
             $tagList = $sub->getTagList();
@@ -33,42 +44,41 @@ class CategoryPage extends Page
                 $tags += $tagList;
             }
         }
-        $this->templateVars['pages'] = $subs;
-        $this->templateVars['viewMode'] = $this->model->viewMode;
-        $this->templateVars['tags'] = $tags;
+        return $tags;
+    }
+
+    protected function getPortfolioContent(): array
+    {
+        $portfolioContent = [];
 
         if ($this->model->viewMode == Category::VIEWMODE_PORTFOLIO)
         {
-            $portfolioContent = [];
-            $subCategories = Category::fetchAll(['categoryId = ?'], [$category->id]);
+            $subCategories = Category::fetchAll(['categoryId = ?'], [$this->model->id]);
             foreach ($subCategories as $subCategory)
             {
                 $subs = StaticPageModel::fetchAll(['categoryId = ?'], [$subCategory->id], 'ORDER BY id DESC');
                 $portfolioContent[$subCategory->name] = $subs;
             }
-            $this->templateVars['portfolioContent'] = $portfolioContent;
         }
 
-        $this->showPostPage();
+        return $portfolioContent;
     }
 
     public function showPhotoalbumsIndex()
     {
         parent::__construct('Fotoalbums');
-        $this->showPrePage();
         $photoalbums = Photoalbum::fetchAll(['hideFromOverview = 0'], [], 'ORDER BY id DESC');
-        $this->templateVars['type'] = 'photoalbums';
-        $this->templateVars['pages'] = $photoalbums;
-        $this->templateVars['viewMode'] = Category::VIEWMODE_TITLES;
 
-        $this->showPostPage();
+        $this->render([
+            'type' => 'photoalbums',
+            'pages' => $photoalbums,
+            'viewMode' => Category::VIEWMODE_TITLES
+        ]);
     }
 
     public function showTagIndex(string $tag)
     {
-        $this->templateVars['type'] = 'tag';
         parent::__construct(ucfirst($tag));
-        $this->showPrePage();
 
         $tags = [];
         $pages = [];
@@ -87,10 +97,12 @@ class CategoryPage extends Page
                 }
             }
         }
-        $this->templateVars['pages'] = $pages;
-        $this->templateVars['tags'] = $tags;
-        $this->templateVars['viewMode'] = Category::VIEWMODE_BLOG;
 
-        $this->showPostPage();
+        $this->render([
+            'type' => 'tag',
+            'pages' => $pages,
+            'tags' => $tags,
+            'viewMode' => Category::VIEWMODE_BLOG,
+        ]);
     }
 }

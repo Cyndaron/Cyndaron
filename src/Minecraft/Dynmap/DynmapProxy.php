@@ -32,8 +32,6 @@ class DynmapProxy
             $link .= '/' . $linkpart;
         }
 
-
-
         if ($link === '' || $link === '/')
         {
             $contents = file_get_contents(__DIR__ . '/index.html');
@@ -44,20 +42,6 @@ class DynmapProxy
 
         }
 
-
-        // Coerce false to 0.
-//        $pos1 = intval(strrpos($link, '?'));
-//        $pos = strrpos($link, '.', $pos1);
-//        if ($pos !== false)
-//        {
-//            $extension = substr($link, $pos);
-//            var_dump($extension);
-//            if (array_key_exists($extension, self::MIMETABLE))
-//            {
-//                header('Content-Type: ' . self::MIMETABLE[$extension]);
-//            }
-//        }
-
         foreach (self::MIMETABLE as $extension => $mimetype)
         {
             if (strpos($link, ".$extension") !== false)
@@ -67,21 +51,8 @@ class DynmapProxy
             }
         }
 
-
-//        $ch = curl_init('http://185.114.156.169:8888/' . $link);
-//        curl_setopt($ch, CURLOPT_HEADER, 0);
-//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-//        curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
-//        $contents = curl_exec($ch);
-//
-//
-//        $finfo = new finfo(FILEINFO_MIME_TYPE);
-//        $mimeType = $finfo->buffer($contents);
-
         $contents = str_replace('%SERVER%', '/minecraft/dynmapproxy/1/', $contents);
         $contents = str_replace($serverAddr, '/minecraft/dynmapproxy/1/', $contents);
         echo $contents;
-
-
     }
 }

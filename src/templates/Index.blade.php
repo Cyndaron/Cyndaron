@@ -65,9 +65,7 @@
                     <h1>{!! $pageCaption !!}</h1>
                     @if ($isAdmin)
                         <div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">
-                            @section ('titleControls')
-                                {!! $titleButtons !!}
-                            @show
+                            @section ('titleControls')@show
                         </div>
                     @endif
                 </div>

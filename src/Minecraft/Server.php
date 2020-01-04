@@ -83,7 +83,7 @@ class Server
         }
 
         $data = substr($data, 9);
-        $data = mb_convert_encoding($data, 'auto', 'UCS-2');
+        $data = mb_convert_encoding($data, 'UTF-8', 'UCS-2');
         $data = explode("\x00", $data);
 
         $stats->is_online = true;

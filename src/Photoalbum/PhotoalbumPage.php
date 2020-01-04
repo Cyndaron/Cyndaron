@@ -18,8 +18,6 @@ class PhotoalbumPage extends Page
 
         if ($viewMode == 0)
         {
-            $controls = new Button('edit', '/editor/photoalbum/' . $id, 'Dit fotoalbum bewerken');
-            $this->setTitleButtons((string)$controls);
             $this->addScript('/sys/js/lightbox.min.js');
 
             $photos = Photo::fetchAllByAlbum($this->model);
