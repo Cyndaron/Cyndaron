@@ -110,7 +110,15 @@ class Router
         $route->checkCSRFToken($token);
         try
         {
-            $route->route();
+            if ($this->isApiCall)
+                ob_start();
+
+            $ret = $route->route();
+
+            if ($this->isApiCall && ob_get_flush() == '')
+            {
+                echo json_encode($ret);
+            }
         }
         catch (\Exception $e)
         {

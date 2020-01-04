@@ -43,7 +43,7 @@ $(document).ready(function () {
     $('.um-resetpassword').on('click', function () {
         let id = $(this).data('id');
         let csrfToken = $('#um-usertable').data('resetpassword-csrf-token');
-        $.post('/user/resetpassword/' + id, { csrfToken: csrfToken }).done(function () {
+        $.post('/api/user/resetpassword/' + id, { csrfToken: csrfToken }).done(function () {
             alert('Wachtwoord gereset.');
         });
     });
@@ -54,7 +54,7 @@ $(document).ready(function () {
         let csrfToken = $('#um-usertable').data('delete-csrf-token');
 
         del('Weet u zeker dat u deze gebruiker wilt verwijderen?', function() {
-            $.post('/user/delete/' + id, { csrfToken: csrfToken }).done(function () {
+            $.post('/api/user/delete/' + id, { csrfToken: csrfToken }).done(function () {
                 location.reload();
             });
         });
@@ -72,7 +72,7 @@ $(document).ready(function () {
                 payload[item] = $('#um-' + item).val();
         });
 
-        $.post('/user/' + action + '/' + id, payload).done(function() {
+        $.post('/api/user/' + action + '/' + id, payload).done(function() {
             location.reload();
         });
     });

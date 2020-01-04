@@ -190,8 +190,8 @@ class PageManagerPage extends Page
     {
         echo new Toolbar('', '', '
             <label for="pm-friendlyurl-new-name" class="mr-sm-2">Nieuwe friendly URL:</label> 
-            <input id="pm-friendlyurl-new-name" type="text" placeholder="URL" class="form-control mr-sm-2"/>
-            <input id="pm-friendlyurl-new-target" type="text" placeholder="Verwijzingsdoel" class="form-control mr-sm-2"/>
+            <input id="pm-friendlyurl-new-name" type="text" placeholder="URL" class="form-control mr-sm-2" required/>
+            <input id="pm-friendlyurl-new-target" type="text" placeholder="Verwijzingsdoel" class="form-control mr-sm-2" required/>
             <button id="pm-create-friendlyurl" type="button" data-csrf-token="' . User::getCSRFToken('friendlyurl', 'add') . '" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
         ');
         ?>

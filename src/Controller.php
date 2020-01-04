@@ -60,12 +60,12 @@ class Controller
             $level = $route['level'] ?? UserLevel::ADMIN;
             $this->checkUserLevelOrDie($level);
             $function = $route['function'];
-            $this->$function();
+            return $this->$function();
         }
         else
         {
             $this->checkUserLevelOrDie($oldMinLevel);
-            $this->$oldRouteFunction();
+            return $this->$oldRouteFunction();
         }
     }
 

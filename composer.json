@@ -3,6 +3,7 @@
         "illuminate/view": "^6.5",
         "thepinecode/blade-filters": "^0.4.0",
         "ext-pdo": "*",
-        "ext-imagick": "*"
+        "ext-imagick": "*",
+        "ext-json": "*"
     }
 }

@@ -62,7 +62,10 @@ class Url
     {
         if ($name == '' || $this->url == '')
             throw new Exception('Cannot create friendly URL with no name or no URL!');
-        DBConnection::doQuery('INSERT INTO friendlyurls(name,target) VALUES (?,?)', [$name, $this->url]);
+        if (DBConnection::doQuery('INSERT INTO friendlyurls(name,target) VALUES (?,?)', [$name, $this->url]) === false)
+        {
+            throw new Exception('Could not insert friendly URL! Is the URL unique?');
+        }
     }
 
     public static function deleteFriendlyUrl(string $naam)

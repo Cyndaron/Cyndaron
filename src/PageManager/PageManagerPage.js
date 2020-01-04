@@ -11,7 +11,7 @@ $(document).ready(function () {
         $('#confirm-dangerous-yes').off();
         $('#confirm-dangerous-yes').on('click', function()
         {
-            $.post('/' + type + '/delete/' + id, { csrfToken: csrfToken }).done(function() {
+            $.post('/api/' + type + '/delete/' + id, { csrfToken: csrfToken }).done(function() {
                 $('#pm-row-' + type + '-' + id).remove();
                 $('#confirm-dangerous').modal('hide');
             });
@@ -23,7 +23,7 @@ $(document).ready(function () {
         let type = $(this).data('type');
         let csrfToken = $(this).data('csrf-token');
 
-        $.post('/' + type + '/addtomenu/' + id, { csrfToken: csrfToken }).done(function() {
+        $.post('/api/' + type + '/addtomenu/' + id, { csrfToken: csrfToken }).done(function() {
             location.reload();
         });
     });
@@ -38,7 +38,7 @@ $(document).ready(function () {
             name: name,
             csrfToken: csrfToken
         };
-        $.post('/category/add', data).done(function() {
+        $.post('/api/category/add', data).done(function() {
             location.reload();
         });
     });
@@ -49,7 +49,7 @@ $(document).ready(function () {
             name: $('#pm-photoalbum-new-name').val(),
             csrfToken: csrfToken
         };
-        $.post('/photoalbum/add', data).done(function() {
+        $.post('/api/photoalbum/add', data).done(function() {
             location.reload();
         });
     });
@@ -61,8 +61,10 @@ $(document).ready(function () {
             target:   $('#pm-friendlyurl-new-target').val(),
             csrfToken: csrfToken
         };
-        $.post('/api/friendlyurl/add', data).done(function() {
+        $.post('/api/friendlyurl/add', data, null, 'json').done(function() {
             location.reload();
+        }).fail(function(result) {
+            alert('Kon de friendly URL niet toevoegen! Melding: ' + result.responseJSON.error);
         });
     });
 });

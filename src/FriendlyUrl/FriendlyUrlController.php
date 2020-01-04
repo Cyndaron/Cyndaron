@@ -30,5 +30,7 @@ class FriendlyUrlController extends Controller
                 $menuItem->save();
                 break;
         }
+
+        return [];
     }
 }
