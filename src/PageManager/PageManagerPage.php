@@ -108,7 +108,7 @@ class PageManagerPage extends Page
         }
     }
 
-    public function showCategories()
+    public static function showCategories()
     {
         echo new Toolbar('', '', '
             <label for="pm-category-new-name" class="mr-sm-2">Nieuwe categorie:</label>
@@ -147,7 +147,7 @@ class PageManagerPage extends Page
         <?php
     }
 
-    public function showPhotoAlbums()
+    public static function showPhotoAlbums()
     {
         echo new Toolbar('', '', '
             <label for="pm-photoalbum-new-name" class="mr-sm-2">Nieuw fotoalbum:</label>
@@ -186,7 +186,7 @@ class PageManagerPage extends Page
         <?php
     }
 
-    public function showFriendlyURLs()
+    public static function showFriendlyURLs()
     {
         echo new Toolbar('', '', '
             <label for="pm-friendlyurl-new-name" class="mr-sm-2">Nieuwe friendly URL:</label> 
@@ -231,7 +231,7 @@ class PageManagerPage extends Page
         <?php
     }
 
-    public function showMailforms()
+    public static function showMailforms()
     {
         echo new Toolbar('', '', (string)new Button('new', '/editor/mailform', 'Nieuw mailformulier', 'Nieuw mailformulier'));
 
