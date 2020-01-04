@@ -35,7 +35,7 @@ abstract class EditorSavePage
             // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast
             DBConnection::doQueryAndFetchOne('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oudeFriendlyUrl]);
         }
-        if (!$this->returnUrl)
+        if (!$this->returnUrl && isset($_SESSION['referrer']))
         {
             $this->returnUrl = strtr($_SESSION['referrer'], ['&amp;' => '&']);
         }
@@ -46,7 +46,7 @@ abstract class EditorSavePage
 
     protected function parseTextForInlineImages($text)
     {
-        return preg_replace_callback('/src="(data\:)(.*?)"/', 'static::extractImages', $text);
+        return preg_replace_callback('/src="(data\:)([^"]*)"/', 'static::extractImages', $text);
     }
 
     protected static function extractImages($matches)
@@ -71,7 +71,7 @@ abstract class EditorSavePage
                 return 'src="' . $matches[0] . '"';
         }
 
-        $image = str_replace('base64', '', $image);
+        $image = str_replace('base64,', '', $image);
         $image = base64_decode(str_replace(' ', '+', $image));
         $uploadDir = 'afb/via-editor/';
         $destinationFilename = $uploadDir . date('c') . '-' . md5($image) . '.' . $extensie;
