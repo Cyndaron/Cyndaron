@@ -4,6 +4,7 @@ Versie 6.0 (Trajectum)
 - Feature: accentkleur voor knoppen en links
 - Feature: bij aanmaken van een fotoalbum wordt meteen de bijbehorende map aangemaakt (#81)
 - Feature: bij aanmaken van een gebruiker wordt automatisch het wachtwoord gemaild (#93)
+- Feature: bodyclass op basis van paginanaam (#95)
 - Feature: broodkruimel (#15)
 - Feautre: volledige menu-editor (#73)
 - Feature: tekst gereserveerde plaatsen bij kaartverkoop in database (#46)

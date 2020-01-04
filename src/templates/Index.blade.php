@@ -45,7 +45,7 @@
     @endforeach
     {!! $extraHead !!}
 </head>
-<body class="cyndaron" data-articleColor="{{ $articleColor }}">
+<body class="cyndaron {{ \Cyndaron\Util::slug($title) }}" data-articleColor="{{ $articleColor }}">
     {!! $extraHeadStart ?? '' !!}
 
     <div class="paginacontainer">

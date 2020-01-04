@@ -143,4 +143,11 @@ class Util
 
         return $domain;
     }
+
+    public static function slug(string $string): string
+    {
+        return strtr(strtolower($string), [
+            ' ' => '-'
+        ]);
+    }
 }
