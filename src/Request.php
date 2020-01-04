@@ -10,7 +10,7 @@ class Request
         if ($var === null)
             return static::postArray();
 
-        if (empty($_POST[$var]))
+        if (!isset($_POST[$var]))
             return '';
 
         return static::cleanVariable($_POST[$var]);
@@ -18,7 +18,7 @@ class Request
 
     public static function get($var)
     {
-        if (empty($_GET[$var]))
+        if (!isset($_GET[$var]))
             return '';
 
         return static::cleanVariable($_GET[$var]);
@@ -26,7 +26,7 @@ class Request
 
     public static function referrer()
     {
-        if (empty($_SERVER['HTTP_REFERER']))
+        if (!isset($_SERVER['HTTP_REFERER']))
             return '';
 
         return static::cleanVariable($_SERVER['HTTP_REFERER']);
@@ -34,7 +34,7 @@ class Request
 
     public static function unsafePost($var)
     {
-        if (empty($_POST[$var]))
+        if (!isset($_POST[$var]))
             return '';
 
         return $_POST[$var];
@@ -42,7 +42,7 @@ class Request
 
     public static function postIsEmpty(): bool
     {
-        if (empty($_POST))
+        if (!isset($_POST))
         {
             return true;
         }

@@ -11,7 +11,7 @@
         <tr>
             <th>ID</th>
             <th>Link</th>
-            <th>Alias</th>
+            <th>Titel</th>
             <th>Dropdown</th>
             <th>Afbeelding</th>
             <th>Prioriteit</th>
@@ -28,7 +28,7 @@
                 {{ $menuItem->link }}
             </td>
             <td>
-                {{ $menuItem->alias }}
+                {{ $menuItem->getTitle() }}
             </td>
             <td>
                 {{ $menuItem->isDropdown|boolToText }}
