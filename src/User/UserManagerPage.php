@@ -58,7 +58,7 @@ class UserManagerPage extends Page
                     <td><?=self::USER_LEVEL_DESCRIPTIONS[$user['level']]?></td>
                     <td>
                         <div class="btn-group">
-                            <button class="um-edit-user btn btn-sm btn-outline-cyndaron"
+                            <button class="um-edit-user btn btn-sm btn-outline-cyndaron" title="Gebruiker bewerken"
                                     data-toggle="modal" data-target="#um-edit-user-dialog"
                                     data-id="<?=$user['id']?>"
                                     data-username="<?=$user['username']?>"
@@ -73,10 +73,10 @@ class UserManagerPage extends Page
                                     data-hideFromMemberList="<?=$user['hideFromMemberList']?>">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </button>
-                            <button class="um-resetpassword btn btn-sm btn-outline-cyndaron" data-id="<?=$user['id']?>">
+                            <button class="um-resetpassword btn btn-sm btn-outline-cyndaron" data-id="<?=$user['id']?>" title="Nieuw wachtwoord instellen">
                                 <span class="glyphicon glyphicon-repeat"></span>
                             </button>
-                            <button class="um-delete btn btn-sm btn-danger" data-id="<?=$user['id']?>">
+                            <button class="um-delete btn btn-sm btn-danger" data-id="<?=$user['id']?>" title="Gebruiker verwijderen">
                                 <span class="glyphicon glyphicon-trash"></span>
                             </button>
                         </div>

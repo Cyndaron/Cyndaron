@@ -156,7 +156,7 @@ class UserController extends Controller
         {
             $user = new User((int)$userId);
             $user->load();
-            $user->sendNewPassword();
+            $user->resetPassword();
 
             echo json_encode([]);
         }

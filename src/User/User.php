@@ -77,7 +77,7 @@ EOT;
         return (static::getLevel() >= $minimumReadLevel);
     }
 
-    public function sendNewPassword()
+    public function resetPassword()
     {
         if ($this->id === null)
         {
@@ -91,14 +91,19 @@ EOT;
         $prep = $pdo->prepare('UPDATE users SET password=? WHERE id =?');
         $prep->execute([$passwordHash, $this->id]);
 
+        $this->mailNewPassword($newPassword);
+    }
+
+    public function mailNewPassword(string $password): bool
+    {
         $websiteName = Setting::get('siteName');
         $organisation = Setting::get('organisation') ?: Setting::get('siteName');
         $from = 'noreply@' . Util::getDomain();
 
-        mail(
+        return mail(
             $this->email,
             'Nieuw wachtwoord ingesteld',
-            sprintf(self::RESET_PASSWORD_MAIL_TEXT, $websiteName, $newPassword),
+            sprintf(self::RESET_PASSWORD_MAIL_TEXT, $websiteName, $password),
             sprintf(self::MAIL_HEADERS, $organisation, $from),
             "-f$from"
         );
@@ -136,7 +141,6 @@ EOT;
 
     public static function create(string $username, string $email, string $password, int $level, string $firstName, string $tussenvoegsel, string $lastName, string $role, string $comments, string $avatar, bool $hideFromMemberList): ?int
     {
-        /** @noinspection PhpUnusedLocalVariableInspection */
         $password = password_hash($password, PASSWORD_DEFAULT);
 
         $user = new User(null);
@@ -146,6 +150,7 @@ EOT;
         }
         if ($user->save())
         {
+            $user->mailNewPassword($password);
             return $user->id;
         }
         else
