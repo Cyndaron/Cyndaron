@@ -1,0 +1,1 @@
+@include('Widget/Form/BasicInput', ['inputType' => 'number', 'id' => $id, 'label' => $label, 'value' => $value])

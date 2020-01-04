@@ -29,8 +29,4 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
         $this->templateVars['enableComments'] = $enableComments;
         $this->templateVars['tags'] = $tags;
     }
-
-    protected function showContentSpecificButtons()
-    {
-    }
 }

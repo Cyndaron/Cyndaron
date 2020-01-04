@@ -35,8 +35,4 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
         $this->templateVars['registrationCost1'] = Util::formatCurrency((float)($this->model->registrationCost1 ?? 15.0));
         $this->templateVars['lunchCost'] = Util::formatCurrency((float)($this->model->lunchCost ?? 15.0));
     }
-
-    protected function showContentSpecificButtons()
-    {
-    }
 }

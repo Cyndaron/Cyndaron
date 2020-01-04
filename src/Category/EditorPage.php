@@ -29,8 +29,4 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
 
         $this->templateVars = array_merge($this->templateVars, compact('id', 'label', 'options', 'selected'));
     }
-
-    protected function showContentSpecificButtons()
-    {
-    }
 }

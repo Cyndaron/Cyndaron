@@ -84,22 +84,8 @@ abstract class EditorPage extends Page
 
             $this->templateVars['showBreadcrumbs'] = $showBreadcrumbs;
         }
-        $this->showContentSpecificButtons();
-
         $this->showPostPage();
     }
 
     abstract protected function prepare();
-
-    abstract protected function showContentSpecificButtons();
-
-    protected function showCheckbox(string $id, string $description, bool $checked)
-    {
-        ?>
-        <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="<?=$id?>" name="<?=$id?>" <?=$checked ? 'checked' : ''?> value="1">
-            <label class="form-check-label" for="<?=$id?>"><?=$description?></label>
-        </div>
-        <?php
-    }
 }

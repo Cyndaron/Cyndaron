@@ -27,8 +27,4 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
 
         $this->templateVars['registrationCost'] = Util::formatCurrency((float)($this->model->registrationCost ?? 65.0));
     }
-
-    protected function showContentSpecificButtons()
-    {
-    }
 }

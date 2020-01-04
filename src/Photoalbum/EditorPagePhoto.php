@@ -10,6 +10,8 @@ class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
     const TABLE = 'bijschiften';
     const SAVE_URL = '/editor/photo/%s';
 
+    protected $template = '';
+
     protected $hash;
 
     protected function prepare()
@@ -21,10 +23,6 @@ class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
             $this->content = $this->model->caption;
         }
         $_SESSION['referrer'] = Request::referrer();
-    }
-
-    protected function showContentSpecificButtons()
-    {
-        echo '<input type="hidden" name="hash" value="' . $this->hash . '"/>';
+        $this->templateVars['hash'] = $this->hash;
     }
 }

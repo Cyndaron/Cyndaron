@@ -21,8 +21,4 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
         }
         $this->templateVars['viewModeOptions'] = Photoalbum::VIEWMODE_DESCRIPTIONS;
     }
-
-    // Not used, but required.
-    protected function showContentSpecificButtons()
-    {}
 }
