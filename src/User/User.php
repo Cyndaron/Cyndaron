@@ -8,11 +8,14 @@ use Cyndaron\Model;
 use Cyndaron\Setting;
 use Cyndaron\Util;
 use Exception;
+use finfo;
 
 class User extends Model
 {
     const TABLE = 'users';
     const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList'];
+
+    const AVATAR_DIR = 'uploads/user/avatar';
 
     public $username;
     public $password;
@@ -92,6 +95,42 @@ EOT;
         $prep->execute([$passwordHash, $this->id]);
 
         $this->mailNewPassword($newPassword);
+    }
+
+    public function uploadNewAvatar()
+    {
+        Util::createDir(User::AVATAR_DIR);
+
+        $tmpName = $_FILES['avatarFile']['tmp_name'];
+        $buffer = file_get_contents($tmpName);
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->buffer($buffer);
+        switch ($mimeType)
+        {
+            case 'image/gif':
+                $avatarImg = imagecreatefromgif($tmpName);
+                break;
+            case 'image/jpeg':
+                $avatarImg = imagecreatefromjpeg($tmpName);
+                break;
+            case 'image/png':
+                $avatarImg = imagecreatefrompng($tmpName);
+                break;
+            default:
+                die("Ongeldig bestandtype.");
+        }
+
+        $filename = User::AVATAR_DIR . "/{$this->id}.png";
+        if (file_exists($filename))
+        {
+            unlink($filename);
+        }
+
+        imagepng($avatarImg, $filename);
+        unlink($tmpName);
+
+        $this->avatar = basename($filename);
+        $this->save();
     }
 
     public function mailNewPassword(string $password): bool
@@ -194,6 +233,7 @@ EOT;
 
             if ($loginSucceeded)
             {
+                $_SESSION['userId'] = $userdata['id'];
                 $_SESSION['naam'] = $userdata['username'];
                 $_SESSION['email'] = $userdata['email'];
                 $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];

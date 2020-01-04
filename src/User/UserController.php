@@ -24,6 +24,7 @@ class UserController extends Controller
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
         'login' => ['level' => UserLevel::ANONYMOUS, 'function' => 'loginPost'],
         'resetpassword' => ['level' => UserLevel::ADMIN, 'function' => 'resetPassword'],
+        'changeAvatar' => ['level' => UserLevel::ADMIN, 'function' => 'changeAvatar'],
     ];
 
     protected function gallery()
@@ -159,6 +160,23 @@ class UserController extends Controller
             $user->resetPassword();
 
             echo json_encode([]);
+        }
+        else
+        {
+            $this->send400();
+        }
+    }
+
+    protected function changeAvatar()
+    {
+        $userId = Request::getVar(2);
+        if ($userId !== null)
+        {
+            $user = new User((int)$userId);
+            $user->load();
+            $user->uploadNewAvatar();
+
+            header('Location: /user/manager');
         }
         else
         {

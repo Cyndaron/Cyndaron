@@ -48,6 +48,11 @@ $(document).ready(function () {
         });
     });
 
+    $('.um-updateAvatar').on('click', function () {
+        let id = $(this).data('id');
+        $('#um-update-avatar').prop('action', '/user/changeAvatar/' + id);
+    });
+
     $('.um-delete').on('click', function ()
     {
         let id = $(this).data('id');

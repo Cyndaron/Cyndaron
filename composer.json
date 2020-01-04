@@ -4,6 +4,8 @@
         "thepinecode/blade-filters": "^0.4.0",
         "ext-pdo": "*",
         "ext-imagick": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-fileinfo": "*",
+        "ext-gd": "*"
     }
 }

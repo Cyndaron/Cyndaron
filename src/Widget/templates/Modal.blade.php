@@ -1,5 +1,5 @@
 <div id="{{ $id }}" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog {{ $sizeClass }}" role="document">
+    <div class="modal-dialog {{ $sizeClass ?? '' }}" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{{ $title }}</h5>
@@ -11,7 +11,7 @@
                 {{ $body }}
             </div>
             <div class="modal-footer">
-                {{ $footer }}
+                {{ $footer ?? '' }}
             </div>
         </div>
     </div>

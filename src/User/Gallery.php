@@ -17,7 +17,7 @@ class Gallery extends Page
         echo '<table class="ledenlijst">';
         foreach ($leden as $lid)
         {
-            $avatar = $lid->avatar ? 'afb/leden/' . $lid->avatar : static::FALLBACK_IMAGE;
+            $avatar = $lid->avatar ? '/' . User::AVATAR_DIR . "/{$lid->avatar}" : static::FALLBACK_IMAGE;
 
             echo '<tr><td><img style="height: 150px;" alt="" src="' . $avatar . '"/></td>';
             echo '<td><b><span style="text-decoration: underline;">';
