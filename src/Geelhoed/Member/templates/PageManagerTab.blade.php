@@ -56,10 +56,10 @@
     'title' => 'Lid bewerken'])
 
     @slot('body')
-        @include('Editor/InputText', ['id' => 'firstName', 'label' => 'Voornaam'])
-        @include('Editor/InputText', ['id' => 'tussenvoegsel', 'label' => 'Tussenvoegsel'])
-        @include('Editor/InputText', ['id' => 'lastName', 'label' => 'Achternaam'])
-        @include('Editor/Checkbox', ['id' => 'isContestant', 'label' => 'Wedstrijdjudoka'])
+        @include('Widget/Form/InputText', ['id' => 'firstName', 'label' => 'Voornaam'])
+        @include('Widget/Form/InputText', ['id' => 'tussenvoegsel', 'label' => 'Tussenvoegsel'])
+        @include('Widget/Form/InputText', ['id' => 'lastName', 'label' => 'Achternaam'])
+        @include('Widget/Form/Checkbox', ['id' => 'isContestant', 'label' => 'Wedstrijdjudoka'])
     @endslot
     @slot ('footer')
         aaaaaa

@@ -6,13 +6,13 @@
         <textarea class="form-control" id="descriptionWhenClosed" name="descriptionWhenClosed" rows="3">{{ $model->descriptionWhenClosed }}</textarea>
     </div>
 
-    @include ('Editor/Checkbox', ['id' => 'openForRegistration', 'description' => 'Open voor inschrijving', 'checked' => $model->openForRegistration])
+    @include ('Widget/Form/Checkbox', ['id' => 'openForRegistration', 'description' => 'Open voor inschrijving', 'checked' => $model->openForRegistration])
 
-    @include ('Editor/Currency', ['id' => 'registrationCost0', 'label' => 'Inschrijfgeld volwassenen', 'value' => $registrationCost0])
+    @include ('Widget/Form/Currency', ['id' => 'registrationCost0', 'label' => 'Inschrijfgeld volwassenen', 'value' => $registrationCost0])
 
-    @include ('Editor/Currency', ['id' => 'registrationCost1', 'label' => 'Inschrijfgeld studenten / < 20', 'value' => $registrationCost1])
+    @include ('Widget/Form/Currency', ['id' => 'registrationCost1', 'label' => 'Inschrijfgeld studenten / < 20', 'value' => $registrationCost1])
 
-    @include ('Editor/Currency', ['id' => 'lunchCost', 'label' => 'Lunchkosten', 'value' => $lunchCost])
+    @include ('Widget/Form/Currency', ['id' => 'lunchCost', 'label' => 'Lunchkosten', 'value' => $lunchCost])
 
 
     <div class="form-group row">

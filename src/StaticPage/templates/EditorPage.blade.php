@@ -1,7 +1,7 @@
 @extends ('Editor/PageBase')
 
 @section ('contentSpecificButtons')
-    @include ('Editor/Checkbox', ['id' => 'enableComments', 'description' => 'Reacties toestaan', 'checked' => $enableComments])
+    @include ('Widget/Form/Checkbox', ['id' => 'enableComments', 'description' => 'Reacties toestaan', 'checked' => $enableComments])
 
     <div class="form-group row">
         <label for="tags" class="col-sm-2 col-form-label">Tags</label>

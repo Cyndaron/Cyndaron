@@ -13,7 +13,7 @@
             </div>
 
             @if ($hasCategory)
-                @include ('Editor/Checkbox', ['id' => 'showBreadcrumbs', 'description' => 'Titel tonen als breadcrumbs', 'checked' => $showBreadcrumbs])
+                @include ('Widget/Form/Checkbox', ['id' => 'showBreadcrumbs', 'description' => 'Titel tonen als breadcrumbs', 'checked' => $showBreadcrumbs])
             @endif
 
             <div class="form-group row">

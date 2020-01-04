@@ -1,18 +1,19 @@
-{% extends "index.twig" %}
+@extends ("Index")
+@php /** @var \Cyndaron\RegistrationSbk\Event $event */@endphp
 
-{% block titleControls %}
-    <a href="/editor/eventSbk/{{ event.id }}" class="btn btn-outline-cyndaron" title="Dit evenement bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
-{% endblock %}
+@section ('titleControls')
+    <a href="/editor/eventSbk/{{ $event->id }}" class="btn btn-outline-cyndaron" title="Dit evenement bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
+@endsection
 
-{% block contents %}
-    {% if event.openForRegistration == false %}
-        {{ event.descriptionWhenClosed|raw|default('Voor dit evenement kun je je helaas niet meer aanmelden.') }}
-    {% else %}
-        {{ event.description|raw }}
+@section ('contents')
+    @if (!$event->openForRegistration)
+        {!! $event->descriptionWhenClosed ?: 'Voor dit evenement kun je je helaas niet meer aanmelden.' !!}
+    @else
+        {!! $event->description !!}
 
         <form method="post" action="/eventSbk-registration/add" class="form-horizontal" id="kaartenbestellen">
-            <input type="hidden" name="csrfToken" value="{{ getCSRFToken('eventSbk-registration', 'add') }}"/>
-            <input type="hidden" id="eventId" name="event_id" value="{{ event.id }}"/>
+            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('eventSbk-registration', 'add') }}"/>
+            <input type="hidden" id="eventId" name="event_id" value="{{ $event->id }}"/>
 
             <h3>Je gegevens (verplicht):</h3>
 
@@ -67,14 +68,14 @@
             <div class="form-group row">
                 <div class="col-sm-12">
                     <input id="performedBefore" name="performedBefore" type="checkbox" value="1">
-                    <label for="performedBefore">Ik heb {{ event.performedPiece }} al eens eerder gezongen</label>
+                    <label for="performedBefore">Ik heb {{ $event->performedPiece }} al eens eerder gezongen</label>
                 </div>
             </div>
 
-            <div><b>Kosten van deelname:</b> <span id="prijsvak">{{ event.registrationCost|formatEuro }}</span><br>
+            <div><b>Kosten van deelname:</b> <span id="prijsvak">{{ $event->registrationCost|euro }}</span><br>
             Je hoeft pas te betalen nadat je bericht van indeling hebt gekregen.</div>
 
-            <div class="termsAndConditions" style="margin: 25px 0;">{{ event.termsAndConditions|raw }}</div>
+            <div class="termsAndConditions" style="margin: 25px 0;">{!! $event->termsAndConditions !!}</div>
 
             <h3>Versturen:</h3>
 
@@ -85,17 +86,17 @@
             </div>
 
             <p>Om te voorkomen dat er spam wordt verstuurd met dit formulier<br/>word je verzocht in het onderstaande
-                vak <span style="font-family:monospace;">{{ event.getAntiSpam() }}</span> in te vullen.</p>
+                vak <span style="font-family:monospace;">{{ $event->getAntiSpam() }}</span> in te vullen.</p>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="antispam">Antispam:</label>
                 <div class="col-sm-5"><input id="antispam" name="antispam" required class="form-control"/></div>
             </div>
 
-{#            <p>Je gegevens zullen worden verwerkt zoals beschreven in onze <a href="/privacyverklaring">privacyverklaring</a>.</p>#}
+{{--            <p>Je gegevens zullen worden verwerkt zoals beschreven in onze <a href="/privacyverklaring">privacyverklaring</a>.</p>--}}
 
             <div class="col-sm-offset-2"><input id="verzendknop" class="btn btn-primary" type="submit"
                                                 value="Versturen"/></div>
         </form>
-    {% endif %}
-{% endblock %}
+    @endif
+@endsection
