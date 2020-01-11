@@ -5,7 +5,7 @@
     @component('Widget/Toolbar')
         @slot('right')
             <button id="mm-create-item"
-                    data-csrf-token="' . User::getCSRFToken('menu', 'addItem') . '"
+                    data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('menu', 'addItem') }}"
                     type="button" class="btn btn-success" data-toggle="modal" data-target="#mm-edit-item-dialog">
                 <span class="glyphicon glyphicon-plus"></span> Nieuw menuitem
             </button>
