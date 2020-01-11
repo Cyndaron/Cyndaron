@@ -68,9 +68,9 @@ class Url
         }
     }
 
-    public static function deleteFriendlyUrl(string $naam)
+    public static function deleteFriendlyUrl(string $name)
     {
-        DBConnection::doQuery('DELETE FROM friendlyurls WHERE name=?', [$naam]);
+        DBConnection::doQuery('DELETE FROM friendlyurls WHERE name=?', [ltrim($name, '/')]);
     }
 
     public function getPageTitle(): string
