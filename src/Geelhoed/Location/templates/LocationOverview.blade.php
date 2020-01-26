@@ -1,38 +1,40 @@
 @extends ('Index')
 
 @section ('contents')
-    @php
-        $lastCity = '';
-        /** @var \Cyndaron\Geelhoed\Location\Location[] $locations*/
-    @endphp
+    @php /** @var \Cyndaron\Geelhoed\Location\Location[] $locations*/ @endphp
     @foreach ($locations as $location)
-        @if ($location->city !== $lastCity)<h2>{{ $location->city }}</h2>@php $lastCity = $location->city @endphp@endif
+        <div class="card location-card">
+            <div class="card-header">
+                <h2>{{ $location->city }}, {{ $location->name ?: ($location->street) }}</h2>
+            </div>
+            <div class="card-body">
+                {{ $location->street }} {{ $location->houseNumber }}<br>
+                {{ $location->postalCode }} {{ $location->city }}<br>
 
-        <h3>{{ $location->name ?: ($location->street) }}</h3>
-        {{ $location->street }} {{ $location->houseNumber }}<br>
-        {{ $location->postalCode }} {{ $location->city }}<br>
+                <a href="/location/view/{{ $location->id }}">Meer informatie</a>
 
-        <a href="/location/view/{{ $location->id }}">Meer informatie</a>
+                @foreach ($location->getHoursSortedByWeekday() as $weekDay => $hours)
+                    <h4>{{ \Cyndaron\Util::getWeekday($weekDay) }}</h4>
 
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Groep</th><th>Van</th><th>Tot</th><th>Training</th><th>Afdeling</th>
-                </tr>
-            </thead>
-            <tbody>
-
-            @php $department = $location->getDepartment() @endphp
-            @foreach ($location->getHours() as $hour)
-                <tr>
-                    <td>{{ $hour->description }}</td>
-                    <td>{{ $hour->from|hm }}</td>
-                    <td>{{ $hour->until|hm }}</td>
-                    <td>{{ $hour->getSportName() }}</td>
-                    <td>{{ $department->name }}</td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
+                    <table class="table table-striped table-bordered location-overview">
+                        <thead>
+                            <tr>
+                                <th>Groep</th><th>Lestijd</th><th>Training</th><th>Afdeling</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($hours as $hour)
+                                <tr>
+                                    <td>{{ $hour->description }}</td>
+                                    <td>{{ $hour->from|hm }}&nbsp;&ndash;&nbsp;{{ $hour->until|hm }}</td>
+                                    <td>{{ $hour->getSportName() }}</td>
+                                    <td>{{ $hour->getDepartment()->name }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endforeach
+            </div>
+        </div>
     @endforeach
 @endsection

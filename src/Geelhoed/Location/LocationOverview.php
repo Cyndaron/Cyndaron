@@ -8,7 +8,8 @@ class LocationOverview extends Page
     public function __construct()
     {
         parent::__construct('Leslocaties');
-        $locations = Location::fetchAll([], [], 'ORDER BY city');
+        $this->addCss('/src/Geelhoed/geelhoed.css');
+        $locations = Location::fetchAll([], [], 'ORDER BY city, street');
         $this->render(compact('locations'));
     }
 }

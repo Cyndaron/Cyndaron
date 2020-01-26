@@ -45,7 +45,7 @@ class Util
      */
     public static function getWeekday(int $number): string
     {
-        return static::$weekDays[$number];
+        return static::$weekDays[$number % 7];
     }
 
     /**
