@@ -76,8 +76,7 @@ class MailformController extends Controller
                 $subject = $form->name;
                 $sender = Request::post('E-mailadres');
 
-                $server = Util::getDomain();
-                $fromAddress = "noreply@$server";
+                $fromAddress = Util::getNoreplyAddress();
                 $fromName = html_entity_decode(Setting::get('organisation') ?: Setting::get('siteName'));
                 $extraHeaders = 'From: ' . $fromAddress;
 

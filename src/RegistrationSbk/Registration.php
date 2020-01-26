@@ -11,9 +11,6 @@ class Registration extends Model
     const TABLE = 'registrationsbk_registrations';
     const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'vocalRange', 'email', 'phone', 'city', 'currentChoir', 'choirExperience', 'performedBefore', 'comments', 'approvalStatus', 'isPaid'];
 
-    const FROM_ADDRESS = 'noreply@bijzonderekoorprojecten.nl';
-    const FROM_NAME = 'Bijzondere Koorprojecten';
-
     const APPROVAL_UNDECIDED = 0;
     const APPROVAL_APPROVED = 1;
     const APPROVAL_DISAPPROVED = 2;
@@ -50,7 +47,7 @@ class Registration extends Model
 
 Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur je via de mail weten of je als koorzanger kunt deelnemen in het SBK-koor. Je hoeft nu dus nog niet te betalen.';
 
-        return Util::mail($this->email, 'Aanmelding ' . $event->name . ' ontvangen', $text, self::FROM_ADDRESS, self::FROM_NAME);
+        return Util::mail($this->email, 'Aanmelding ' . $event->name . ' ontvangen', $text);
     }
 
     /**
@@ -84,7 +81,7 @@ Met vriendelijke groet,
 
 Stichting Bijzondere Koorprojecten';
 
-        return Util::mail($this->email, 'Aanmelding ' . $event->name . ' goedgekeurd', $text, self::FROM_ADDRESS, self::FROM_NAME);
+        return Util::mail($this->email, 'Aanmelding ' . $event->name . ' goedgekeurd', $text);
     }
 
     public function setDisapproved()
@@ -107,7 +104,7 @@ Met vriendelijke groet,
 
 Stichting Bijzondere Koorprojecten';
 
-        return Util::mail($this->email, 'Aanmelding ' . $event->name, $text, self::FROM_ADDRESS, self::FROM_NAME);
+        return Util::mail($this->email, 'Aanmelding ' . $event->name, $text);
     }
 
     public function setIsPaid()
@@ -130,7 +127,7 @@ Met vriendelijke groet,
 
 Stichting Bijzondere Koorprojecten';
 
-        return Util::mail($this->email, 'Betalingsbevestiging ' . $event->name, $text, self::FROM_ADDRESS, self::FROM_NAME);
+        return Util::mail($this->email, 'Betalingsbevestiging ' . $event->name, $text);
     }
 
     public function calculateTotal(): float

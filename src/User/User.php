@@ -137,7 +137,7 @@ EOT;
     {
         $websiteName = Setting::get('siteName');
         $organisation = Setting::get('organisation') ?: Setting::get('siteName');
-        $from = 'noreply@' . Util::getDomain();
+        $from = Util::getNoreplyAddress();
 
         return mail(
             $this->email,

@@ -44,12 +44,7 @@ class Order extends Model
             $text .= 'Uw kaarten zullen op de avond van het concert voor u klaarliggen bij de kassa.';
         }
 
-        return Util::mail(
-            $this->email,
-            'Betalingsbevestiging',
-            $text,
-            'noreply@vlissingse-oratoriumvereniging.nl',
-            'Vlissingse Oratorium Vereniging');
+        return Util::mail($this->email, 'Betalingsbevestiging', $text);
     }
 
     public function setIsSent()

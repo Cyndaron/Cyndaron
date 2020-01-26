@@ -4,15 +4,13 @@ declare (strict_types = 1);
 namespace Cyndaron\Registration;
 
 use Cyndaron\Model;
+use Cyndaron\Setting;
 use \Exception;
 
 class Order extends Model
 {
     const TABLE = 'registration_orders';
     const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'participatedBefore', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid'];
-
-    const FROM_ADDRESS = 'noreply@scratchzeeland.nl';
-    const FROM_NAME = 'Scratch Messiah Zeeland';
 
     public $eventId;
     public $lastName;
@@ -106,7 +104,7 @@ Lunch: ' . $lunchText . PHP_EOL . PHP_EOL;
         }
         $text.= PHP_EOL . 'Totaalbedrag: ' . Util::formatEuro($orderTotal);
 
-        return Util::mail($this->email, 'Inschrijving ' . $event->name, $text, self::FROM_ADDRESS, self::FROM_NAME);
+        return Util::mail($this->email, 'Inschrijving ' . $event->name, $text);
     }
 
     public function setIsPaid()
@@ -122,7 +120,7 @@ Lunch: ' . $lunchText . PHP_EOL . PHP_EOL;
         $text = "Hartelijk dank voor uw inschrijving bij de Scratch Messiah Zeeland. Wij hebben uw betaling in goede orde ontvangen.\n"
               . 'Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaarliggen bij de kassa.';
 
-        return Util::mail($this->email, 'Betalingsbevestiging', $text, self::FROM_ADDRESS, self::FROM_NAME);
+        return Util::mail($this->email, 'Betalingsbevestiging', $text);
     }
 
     public function calculateTotal(array $orderTicketTypes): float

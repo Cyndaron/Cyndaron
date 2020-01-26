@@ -107,8 +107,17 @@ class Util
         return 'Nee';
     }
 
-    public static function mail(string $to, string $subject, string $message, string $fromAddress, string $fromName): bool
+    public static function mail(string $to, string $subject, string $message, string $fromAddress = null, string $fromName = null): bool
     {
+        if (empty($fromAddress))
+        {
+            $fromAddress = Util::getNoreplyAddress();
+        }
+        if (empty($fromName))
+        {
+            $fromName = Setting::get('organisation') ?: Setting::get('siteName');
+        }
+
         $additionalHeaders = [
             'From' => "\"$fromName\" <$fromAddress>",
             'Content-Type' => 'text/plain; charset="UTF-8"',
@@ -142,6 +151,12 @@ class Util
         $domain = str_replace("/", "", $domain);
 
         return $domain;
+    }
+
+    public static function getNoreplyAddress(): string
+    {
+        $domain = Util::getDomain();
+        return "noreply@$domain";
     }
 
     public static function slug(string $string): string

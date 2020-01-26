@@ -320,11 +320,6 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
             }
         }
 
-        return Util::mail(
-            $email,
-            'Bestelling concertkaarten',
-            $text,
-            'noreply@vlissingse-oratoriumvereniging.nl',
-            'Vlissingse Oratorium Vereniging');
+        return Util::mail($email, 'Bestelling concertkaarten', $text);
     }
 }
