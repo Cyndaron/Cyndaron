@@ -21,8 +21,8 @@ use Cyndaron\Photoalbum\PhotoalbumPage;
 
 class Util
 {
-    private static $months = ["", "januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"];
-    private static $weekDays = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"];
+    const MONTHS = ["", "januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"];
+    const WEEKDAYS = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"];
 
     /**
      * Zet een maandnummer om in de naam.
@@ -33,7 +33,7 @@ class Util
      */
     public static function getMonth(int $number): string
     {
-        return static::$months[$number];
+        return static::MONTHS[$number];
     }
 
     /**
@@ -45,7 +45,7 @@ class Util
      */
     public static function getWeekday(int $number): string
     {
-        return static::$weekDays[$number % 7];
+        return static::WEEKDAYS[$number % 7];
     }
 
     /**

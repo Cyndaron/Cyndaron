@@ -3,7 +3,7 @@ namespace Cyndaron;
 
 class Request
 {
-    protected static $vars = [];
+    protected static array $vars = [];
 
     public static function post($var = null)
     {

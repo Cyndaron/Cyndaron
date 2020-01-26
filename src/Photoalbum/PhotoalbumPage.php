@@ -5,18 +5,16 @@ namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Page;
 use Cyndaron\Template\Template;
-use Cyndaron\Widget\Button;
 
 class PhotoalbumPage extends Page
 {
-    public function __construct(Photoalbum $album, $viewMode = 0)
+    public function __construct(Photoalbum $album, $viewMode = Photoalbum::VIEWMODE_REGULAR)
     {
-        $id = $album->id;
         $this->model = $album;
         $this->model->load();
         parent::__construct($this->model->name);
 
-        if ($viewMode == 0)
+        if ($viewMode == Photoalbum::VIEWMODE_REGULAR)
         {
             $this->addScript('/sys/js/lightbox.min.js');
 

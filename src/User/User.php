@@ -17,17 +17,17 @@ class User extends Model
 
     const AVATAR_DIR = 'uploads/user/avatar';
 
-    public $username;
-    public $password;
-    public $email;
-    public $level;
-    public $firstName;
-    public $tussenvoegsel;
-    public $lastName;
-    public $role;
-    public $comments;
-    public $avatar;
-    public $hideFromMemberList;
+    public string $username;
+    public string $password;
+    public string $email;
+    public int $level;
+    public string $firstName;
+    public string $tussenvoegsel;
+    public string $lastName;
+    public string $role;
+    public string $comments;
+    public string $avatar;
+    public bool $hideFromMemberList;
 
     const RESET_PASSWORD_MAIL_TEXT =
         '<p>U vroeg om een nieuw wachtwoord voor %s.</p>

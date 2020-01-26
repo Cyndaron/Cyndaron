@@ -8,5 +8,5 @@ class Sport extends Model
     const TABLE = 'geelhoed_sports';
     const TABLE_FIELDS = ['name'];
 
-    public $name;
+    public string $name;
 }

@@ -13,12 +13,12 @@ class StaticPageModel extends Model
     const TABLE_FIELDS = ['name', 'text', 'enableComments', 'categoryId', 'showBreadcrumbs', 'tags'];
     const HAS_CATEGORY = true;
 
-    public $name = '';
-    public $text = '';
-    public $enableComments = false;
-    public $categoryId = null;
-    public $showBreadcrumbs = false;
-    public $tags = '';
+    public string $name = '';
+    public string $text = '';
+    public bool $enableComments = false;
+    public ?int $categoryId = null;
+    public bool $showBreadcrumbs = false;
+    public string $tags = '';
 
     public function delete(): void
     {

@@ -9,7 +9,7 @@ use Cyndaron\User\UserLevel;
 
 class MigrateController extends Controller
 {
-    protected $minLevelGet = UserLevel::ANONYMOUS;
+    protected int $minLevelGet = UserLevel::ANONYMOUS;
 
     const VERSIONS = [
         '5.3' => 'migrate53',
@@ -75,8 +75,8 @@ class MigrateController extends Controller
 //            stoelen dus direct bij elkaar staan.
 //            Vrije plaatsen zijn: de zijvakken en de balkons.');
 
-        $frontPage = DBConnection::doQueryAndFetchOne('SELECT link FROM menu WHERE id=(SELECT MIN(id) FROM menu)');
-        Setting::set('frontPage', $frontPage);
+//        $frontPage = DBConnection::doQueryAndFetchOne('SELECT link FROM menu WHERE id=(SELECT MIN(id) FROM menu)');
+//        Setting::set('frontPage', $frontPage);
     }
 }
 

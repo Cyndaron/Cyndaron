@@ -4,7 +4,6 @@ declare (strict_types = 1);
 namespace Cyndaron\Registration;
 
 use Cyndaron\Model;
-use Cyndaron\Setting;
 use \Exception;
 
 class Order extends Model
@@ -12,27 +11,27 @@ class Order extends Model
     const TABLE = 'registration_orders';
     const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'participatedBefore', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid'];
 
-    public $eventId;
-    public $lastName;
-    public $initials;
-    public $registrationGroup = 0;
-    public $vocalRange;
-    public $birthYear = null;
-    public $lunch = false;
-    public $lunchType = '';
-    public $bhv = false;
-    public $kleinkoor = false;
-    public $kleinkoorExplanation = '';
-    public $participatedBefore = false;
-    public $numPosters = 0;
-    public $email;
-    public $street;
-    public $houseNumber;
-    public $houseNumberAddition;
-    public $postcode;
-    public $city;
-    public $comments;
-    public $isPaid = false;
+    public int $eventId;
+    public string $lastName;
+    public string $initials;
+    public int $registrationGroup = 0;
+    public string $vocalRange;
+    public ?int $birthYear = null;
+    public bool $lunch = false;
+    public string $lunchType = '';
+    public bool $bhv = false;
+    public bool $kleinkoor = false;
+    public string $kleinkoorExplanation = '';
+    public bool $participatedBefore = false;
+    public int $numPosters = 0;
+    public string $email;
+    public string $street;
+    public int $houseNumber;
+    public string $houseNumberAddition;
+    public string $postcode;
+    public string $city;
+    public string $comments;
+    public bool $isPaid = false;
 
     public static function loadByEvent(Event $event)
     {

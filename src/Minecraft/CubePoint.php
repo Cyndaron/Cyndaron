@@ -3,10 +3,8 @@ namespace Cyndaron\Minecraft;
 
 class CubePoint
 {
-    /** @var Point $point */
-    private $point;
-    /** @var array $places */
-    private $places;
+    private Point $point;
+    private array $places;
 
     public function __construct(Point $point, array $places)
     {

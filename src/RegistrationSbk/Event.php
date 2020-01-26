@@ -12,17 +12,15 @@ class Event extends Model
 
     private const ANTISPAM_ANSWER = 'Mozart';
 
-    public $name = '';
-    /** @var bool */
-    public $openForRegistration = true;
-    public $description = '';
-    public $descriptionWhenClosed = '';
-    /** @var float */
-    public $registrationCost;
+    public string $name = '';
+    public bool $openForRegistration = true;
+    public string $description = '';
+    public string $descriptionWhenClosed = '';
+    public float $registrationCost;
 
-    public $performedPiece = '';
+    public string $performedPiece = '';
 
-    public $termsAndConditions = '';
+    public string $termsAndConditions = '';
 
     public function getAntispam(): string
     {

@@ -23,9 +23,9 @@ class Category extends Model
         self::VIEWMODE_HORIZONTAL => 'Horizontaal',
     ];
 
-    public $name = '';
-    public $description = '';
-    public $viewMode = 0;
-    public $categoryId = null;
-    public $showBreadcrumbs = false;
+    public string $name = '';
+    public string $description = '';
+    public int $viewMode = self::VIEWMODE_REGULAR;
+    public ?int $categoryId = null;
+    public bool $showBreadcrumbs = false;
 }

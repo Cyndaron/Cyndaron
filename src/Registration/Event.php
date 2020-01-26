@@ -12,22 +12,21 @@ class Event extends Model
 
     private const ANTISPAM_ANSWER = 'Scratch';
 
-    public $name = '';
-    /** @var bool */
-    public $openForRegistration = true;
-    public $description = '';
-    public $descriptionWhenClosed = '';
-    /** @var float */
-    public $registrationCost0;
-    /** @var float */
-    public $registrationCost1;
-    /** @var float */
-    public $lunchCost;
-    /** @var int */
-    public $maxRegistrations = 300;
-    /** @var int */
-    public $numSeats = 300;
+    public string $name = '';
+    public bool $openForRegistration = true;
+    public string $description = '';
+    public string $descriptionWhenClosed = '';
+    public float $registrationCost0;
+    public float $registrationCost1;
+    public float $lunchCost;
+    public int $maxRegistrations = 300;
+    public int $numSeats = 300;
 
+    /**
+     * Get answer to antispam question.
+     *
+     * @return string
+     */
     public function getAntispam(): string
     {
         return static::ANTISPAM_ANSWER;

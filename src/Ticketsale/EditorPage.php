@@ -8,10 +8,8 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     const TYPE = 'concert';
     const TABLE = 'ticketsale_concerts';
     const SAVE_URL = '/editor/concert/%s';
-    protected $template = '';
 
-    /** @var Concert|null */
-    protected $model = null;
+    protected string $template = '';
 
     protected function prepare()
     {

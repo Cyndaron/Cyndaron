@@ -3,8 +3,6 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\User\User;
-use Cyndaron\Widget\Toolbar;
 
 class ConcertOrderOverviewPage extends Page
 {

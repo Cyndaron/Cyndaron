@@ -30,14 +30,14 @@ use Cyndaron\Request;
 
 class SkinRendererHandler
 {
-    public static $cos_alpha;
-    public static $sin_alpha;
-    public static $cos_omega;
-    public static $sin_omega;
-    public static $minX = 0;
-    public static $maxX = 0;
-    public static $minY = 0;
-    public static $maxY = 0;
+    public static float $cos_alpha;
+    public static float $sin_alpha;
+    public static float $cos_omega;
+    public static float $sin_omega;
+    public static int $minX = 0;
+    public static int $maxX = 0;
+    public static int $minY = 0;
+    public static int $maxY = 0;
 
     public function __construct()
     {

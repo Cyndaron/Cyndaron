@@ -8,10 +8,10 @@ class EventTicketType extends Model
     const TABLE = 'registration_tickettypes';
     const TABLE_FIELDS = ['eventId', 'name', 'price', 'discountPer5'];
 
-    public $eventId;
-    public $name;
-    public $price;
-    public $discountPer5 = false;
+    public int $eventId;
+    public string $name;
+    public string $price;
+    public bool $discountPer5 = false;
 
     /**
      * @param Event $event

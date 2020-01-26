@@ -1,9 +1,7 @@
 <?php
 namespace Cyndaron\User;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Page;
-
 
 class Gallery extends Page
 {

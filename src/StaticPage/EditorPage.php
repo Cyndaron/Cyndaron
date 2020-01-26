@@ -9,7 +9,8 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     const TABLE = 'subs';
     const SAVE_URL = '/editor/sub/%s';
     const HAS_CATEGORY = true;
-    protected $template = '';
+
+    protected string $template = '';
 
     protected function prepare()
     {
@@ -18,7 +19,9 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
         if ($this->id)
         {
             $table = ($this->vvstring) ? 'sub_backups' : self::TABLE;
+            /** @noinspection SqlResolve */
             $this->content = DBConnection::doQueryAndFetchOne('SELECT text FROM ' . $table . ' WHERE id=?', [$this->id]);
+            /** @noinspection SqlResolve */
             $this->contentTitle = DBConnection::doQueryAndFetchOne('SELECT name FROM ' . $table . ' WHERE id=?', [$this->id]);
 
             $sub = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM subs WHERE id=?', [$this->id]);

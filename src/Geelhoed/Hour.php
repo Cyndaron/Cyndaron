@@ -11,15 +11,15 @@ class Hour extends Model
     const TABLE = 'geelhoed_hours';
     const TABLE_FIELDS = ['locationId', 'day', 'description', 'from', 'until', 'sportId', 'sportOverride', 'departmentId', 'notes'];
 
-    public $locationId;
-    public $day;
-    public $description;
-    public $from;
-    public $until;
-    public $sportId;
-    public $sportOverride;
-    public $departmentId;
-    public $notes;
+    public int $locationId;
+    public int $day;
+    public string $description;
+    public string $from;
+    public string $until;
+    public int $sportId;
+    public string $sportOverride;
+    public int $departmentId;
+    public string $notes;
 
     public function getLocation(): Location
     {

@@ -4,18 +4,15 @@ declare (strict_types = 1);
 namespace Cyndaron\PageManager;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Registration\Event;
-use Cyndaron\Ticketsale\Concert;
 use Cyndaron\Mailform\Mailform;
 use Cyndaron\Page;
 use Cyndaron\User\User;
 use Cyndaron\Widget\Button;
-use Cyndaron\Widget\PageTabs;
 use Cyndaron\Widget\Toolbar;
 
 class PageManagerPage extends Page
 {
-    private static $pageTypes = [];
+    private static array $pageTypes = [];
     
     public function __construct($currentPage)
     {
@@ -42,6 +39,7 @@ class PageManagerPage extends Page
         ]);
     }
 
+    /** @noinspection PhpUnusedPrivateMethodInspection */
     private static function showSubs()
     {
         echo new Toolbar('', '', (string)new Button('new', '/editor/sub', 'Nieuwe statische pagina', 'Nieuwe statische pagina'));
@@ -106,6 +104,7 @@ class PageManagerPage extends Page
         }
     }
 
+    /** @noinspection PhpUnused */
     public static function showCategories()
     {
         echo new Toolbar('', '', '
@@ -145,6 +144,7 @@ class PageManagerPage extends Page
         <?php
     }
 
+    /** @noinspection PhpUnused */
     public static function showPhotoAlbums()
     {
         echo new Toolbar('', '', '
@@ -184,6 +184,9 @@ class PageManagerPage extends Page
         <?php
     }
 
+    /**
+     * @noinspection PhpUnused
+     */
     public static function showFriendlyURLs()
     {
         echo new Toolbar('', '', '
@@ -229,6 +232,9 @@ class PageManagerPage extends Page
         <?php
     }
 
+    /**
+     * @noinspection PhpUnused
+     */
     public static function showMailforms()
     {
         echo new Toolbar('', '', (string)new Button('new', '/editor/mailform', 'Nieuw mailformulier', 'Nieuw mailformulier'));
@@ -265,6 +271,11 @@ class PageManagerPage extends Page
         <?php
     }
 
+    /**
+     * Adds a tab definition to the page manager.
+     *
+     * @param array $pageType
+     */
     public static function addPageType(array $pageType)
     {
         static::$pageTypes = array_merge(static::$pageTypes, $pageType);

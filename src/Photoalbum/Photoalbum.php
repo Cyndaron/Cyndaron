@@ -23,12 +23,12 @@ class Photoalbum extends Model
         self::VIEWMODE_PORTFOLIO => 'Portfolio',
     ];
 
-    public $name = '';
-    public $notes = '';
-    public $categoryId = null;
-    public $showBreadcrumbs = false;
-    public $hideFromOverview = false;
-    public $viewMode = self::VIEWMODE_REGULAR;
+    public string $name = '';
+    public string $notes = '';
+    public ?int $categoryId = null;
+    public bool $showBreadcrumbs = false;
+    public bool $hideFromOverview = false;
+    public int $viewMode = self::VIEWMODE_REGULAR;
 
     public static function create(string $naam, string $notities = "", bool $showBreadcrumbs = false)
     {

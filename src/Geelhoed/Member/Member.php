@@ -13,13 +13,13 @@ class Member extends Model
     const TABLE = 'geelhoed_members';
     const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'freeParticipation'];
 
-    public $userId = null;
-    public $parentEmail = '';
-    protected $phoneNumbers = '';
-    public $isContestant = false;
-    protected $paymentMethod = 'incasso';
-    public $iban;
-    public $freeParticipation = false;
+    public int $userId;
+    public string $parentEmail = '';
+    protected string $phoneNumbers = '';
+    public bool $isContestant = false;
+    protected string $paymentMethod = 'incasso';
+    public string $iban;
+    public bool $freeParticipation = false;
 
     const PAYMENT_METHODS = [
         'incasso' => 'Automatische incasso',
@@ -30,7 +30,7 @@ class Member extends Model
 
     function getProfile(): User
     {
-        $profile = new User((int)$this->userId);
+        $profile = new User($this->userId);
         $profile->load();
         return $profile;
     }

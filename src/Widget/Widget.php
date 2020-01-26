@@ -3,7 +3,7 @@ namespace Cyndaron\Widget;
 
 class Widget
 {
-    protected $code;
+    protected string $code;
 
     public function __toString()
     {

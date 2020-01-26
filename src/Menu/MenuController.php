@@ -10,7 +10,7 @@ use Exception;
 
 class MenuController extends Controller
 {
-    protected $postRoutes = [
+    protected array $postRoutes = [
         'addItem' => ['level' => UserLevel::ADMIN, 'function' => 'addItem'],
         'editItem' => ['level' => UserLevel::ADMIN, 'function' => 'editItem'],
         'deleteItem' => ['level' => UserLevel::ADMIN, 'function' => 'deleteItem'],
@@ -38,8 +38,8 @@ class MenuController extends Controller
         $menuItem->load();
         $menuItem->link = Request::post('link');
         $menuItem->alias = Request::post('alias');
-        $menuItem->isDropdown = (int)Request::post('isDropdown');
-        $menuItem->isImage = (int)Request::post('isImage');
+        $menuItem->isDropdown = (bool)(int)Request::post('isDropdown');
+        $menuItem->isImage = (bool)(int)Request::post('isImage');
         $menuItem->priority = Request::post('priority');
 
         if (!$menuItem->save())

@@ -9,8 +9,8 @@ class PhotoalbumCaption extends Model
     const TABLE = 'photoalbum_captions';
     const TABLE_FIELDS = ['hash', 'caption'];
 
-    public $hash;
-    public $caption;
+    public string $hash;
+    public string $caption;
 
     public static function create(string $hash, string $caption)
     {

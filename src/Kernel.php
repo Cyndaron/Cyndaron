@@ -62,7 +62,7 @@ class Kernel
             /** @noinspection PhpUndefinedVariableInspection,PhpIncludeInspection */
             include $settingsFile;
 
-            \Cyndaron\DBConnection::connect($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass);
+            DBConnection::connect($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass);
         }
         else
         {
@@ -73,6 +73,6 @@ class Kernel
 
     protected function handleRequest()
     {
-        $router = new \Cyndaron\Router();
+        new Router();
     }
 }

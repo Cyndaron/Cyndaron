@@ -8,5 +8,5 @@ class Department extends Model
     const TABLE = 'geelhoed_departments';
     const TABLE_FIELDS = ['name'];
 
-    public $name;
+    public string $name;
 }

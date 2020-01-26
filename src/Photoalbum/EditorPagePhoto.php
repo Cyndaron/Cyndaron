@@ -10,9 +10,9 @@ class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
     const TABLE = 'bijschiften';
     const SAVE_URL = '/editor/photo/%s';
 
-    protected $template = '';
+    protected string $template = '';
 
-    protected $hash;
+    protected string $hash;
 
     protected function prepare()
     {

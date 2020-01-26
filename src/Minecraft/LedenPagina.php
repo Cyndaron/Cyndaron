@@ -7,7 +7,7 @@ use Cyndaron\Page;
 
 class LedenPagina extends Page
 {
-    private $level = [
+    private array $level = [
         "In de Goelag",
         "Aspirant-lid",
         "Lid",
@@ -15,7 +15,7 @@ class LedenPagina extends Page
         "Medebeheerder",
         "Eeuwige Dictator en Geliefde Leider van TXcraft",
     ];
-    private $pageLevels = [
+    private array $pageLevels = [
         'In de Goelag',
         'Aspirant-leden',
         'Leden',

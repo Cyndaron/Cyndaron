@@ -3,9 +3,6 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Setting;
-use Cyndaron\User\User;
-
 
 class OrderTicketsPage extends Page
 {

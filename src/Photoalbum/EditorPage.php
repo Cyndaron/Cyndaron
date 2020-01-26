@@ -8,7 +8,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     const HAS_CATEGORY = true;
     const SAVE_URL = '/editor/photoalbum/%s';
 
-    protected $template = '';
+    protected string $template = '';
 
     protected function prepare()
     {

@@ -9,7 +9,7 @@ use Cyndaron\User\UserLevel;
 
 class PageManagerController extends Controller
 {
-    protected $minLevelGet = UserLevel::ADMIN;
+    protected int $minLevelGet = UserLevel::ADMIN;
 
     protected function routeGet()
     {

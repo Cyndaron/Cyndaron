@@ -10,11 +10,11 @@ use Cyndaron\User\UserLevel;
 
 class EditorController extends Controller
 {
-    protected $minLevelGet = UserLevel::ADMIN;
+    protected int $minLevelGet = UserLevel::ADMIN;
 
-    protected static $editorPages = [];
-    protected static $savePages = [];
-    protected static $internalLinkTypes = [];
+    protected static array $editorPages = [];
+    protected static array $savePages = [];
+    protected static array $internalLinkTypes = [];
 
     protected function routeGet()
     {

@@ -5,11 +5,11 @@ namespace Cyndaron\Module;
 
 class Datatype
 {
-    public $singular;
-    public $plural;
-    public $editorPage;
-    public $editorSavePage;
-    public $pageManagerTab;
+    public string $singular;
+    public string $plural;
+    public string $editorPage;
+    public string $editorSavePage;
+    public string $pageManagerTab;
 
     public static function fromArray(array $array): self
     {

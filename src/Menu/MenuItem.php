@@ -13,11 +13,11 @@ class MenuItem extends Model
     const TABLE = 'menu';
     const TABLE_FIELDS = ['link', 'alias', 'isDropdown', 'isImage', 'priority'];
 
-    public $link;
-    public $alias = null;
-    public $isDropdown = false;
-    public $isImage = false;
-    public $priority;
+    public string $link;
+    public ?string $alias = null;
+    public bool $isDropdown = false;
+    public bool $isImage = false;
+    public ?int $priority;
 
     public function save(): bool
     {
@@ -53,6 +53,8 @@ class MenuItem extends Model
             $url = new Url($this->link);
             return $url->getFriendly();
         }
+
+        return $this->link;
     }
 
     public function isCurrentPage(): bool

@@ -6,26 +6,14 @@ use Imagick;
 
 class Photo
 {
-    public $filename;
-    public $hash;
-
     const THUMBNAIL_WIDTH = 270;
     const THUMBNAIL_HEIGHT = 200;
 
-    /**
-     * @var Photoalbum $album
-     */
-    public $album;
-
-    /**
-     * @var PhotoalbumCaption|null $caption
-     */
-    public $caption = null;
-
-    /**
-     * @var string $link
-     */
-    public $link = '';
+    public string $filename;
+    public string $hash;
+    public Photoalbum $album;
+    public ?PhotoalbumCaption $caption = null;
+    public string $link = '';
 
     /**
      * @param Photoalbum $album

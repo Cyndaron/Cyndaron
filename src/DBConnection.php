@@ -11,10 +11,9 @@ use PDOStatement;
  */
 class DBConnection
 {
-    /** @var PDO $pdo */
-    private static $pdo;
-    private static $statementError = [];
-    private static $errorQuery = '';
+    private static PDO $pdo;
+    private static array $statementError = [];
+    private static string $errorQuery = '';
 
     private static function executeQuery(string $query, array $vars, callable $functionOnSuccess)
     {

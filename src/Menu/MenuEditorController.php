@@ -8,7 +8,7 @@ use Cyndaron\User\UserLevel;
 
 class MenuEditorController extends Controller
 {
-    protected $minLevelGet = UserLevel::ADMIN;
+    protected int $minLevelGet = UserLevel::ADMIN;
 
     protected function routeGet()
     {

@@ -9,7 +9,7 @@ use Cyndaron\User\UserLevel;
 
 class EventController extends Controller
 {
-    protected $getRoutes = [
+    protected array $getRoutes = [
         'register' => ['level' => UserLevel::ANONYMOUS, 'function' => 'register'],
         'viewRegistrations' => ['level' => UserLevel::ADMIN, 'function' => 'viewRegistrations'],
     ];

@@ -12,7 +12,7 @@ use Exception;
 
 class RegisterController extends Controller
 {
-    protected $postRoutes = [
+    protected array $postRoutes = [
         'add' => ['level' => UserLevel::ANONYMOUS, 'function' => 'add'],
     ];
 

@@ -7,7 +7,7 @@ use Cyndaron\User\UserLevel;
 
 class LocationController extends Controller
 {
-    protected $getRoutes = [
+    protected array $getRoutes = [
         'view' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
         'overview' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overview']
     ];

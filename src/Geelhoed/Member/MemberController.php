@@ -7,7 +7,7 @@ use Cyndaron\User\UserLevel;
 
 class MemberController extends Controller
 {
-    protected $getRoutes = [
+    protected array $getRoutes = [
         'get' => ['level' => UserLevel::ADMIN, 'function' => 'get'],
     ];
 

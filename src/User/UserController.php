@@ -11,14 +11,14 @@ use Exception;
 
 class UserController extends Controller
 {
-    protected $getRoutes = [
+    protected array $getRoutes = [
         'gallery' => ['level' => UserLevel::LOGGED_IN, 'function' => 'gallery'],
         'login' => ['level' => UserLevel::ANONYMOUS, 'function' => 'loginGet'],
         'logout' => ['level' => UserLevel::LOGGED_IN, 'function' => 'logout'],
         'manager' => ['level' => UserLevel::ADMIN, 'function' => 'manager'],
     ];
 
-    protected $postRoutes = [
+    protected array $postRoutes = [
         'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
@@ -126,7 +126,7 @@ class UserController extends Controller
         $user->role = $role;
         $user->comments = $comments;
         $user->avatar = $avatar;
-        $user->hideFromMemberList = intval($hideFromMemberList);
+        $user->hideFromMemberList = $hideFromMemberList;
         $result = $user->save();
         if ($result !== true)
         {

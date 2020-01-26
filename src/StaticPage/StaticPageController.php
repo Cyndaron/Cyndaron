@@ -10,7 +10,7 @@ use Cyndaron\User\UserLevel;
 
 class StaticPageController extends Controller
 {
-    protected $postRoutes = [
+    protected array $postRoutes = [
         'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
         'react' => ['level' => UserLevel::ANONYMOUS, 'function' => 'react'],

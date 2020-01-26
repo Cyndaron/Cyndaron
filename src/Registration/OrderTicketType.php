@@ -8,9 +8,9 @@ class OrderTicketType extends Model
     const TABLE = 'registration_orders_tickettypes';
     const TABLE_FIELDS = ['orderId', 'tickettypeId', 'amount'];
 
-    public $orderId;
-    public $tickettypeId;
-    public $amount;
+    public int $orderId;
+    public int $tickettypeId;
+    public int $amount;
 
     /**
      * @param Order $order

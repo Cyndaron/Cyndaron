@@ -12,11 +12,11 @@ class Order extends Model
     const TABLE = 'ticketsale_orders';
     const TABLE_FIELDS = ['concert_id', 'delivery', 'deliveryByMember', 'deliveryMemberName', 'email'];
 
-    public $concert_id;
-    public $delivery;
-    public $deliveryByMember;
-    public $deliveryMemberName;
-    public $email;
+    public int $concert_id;
+    public string $delivery;
+    public bool $deliveryByMember;
+    public string $deliveryMemberName;
+    public string $email;
 
     public function setIsPaid()
     {

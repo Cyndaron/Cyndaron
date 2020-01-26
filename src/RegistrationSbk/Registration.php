@@ -15,19 +15,19 @@ class Registration extends Model
     const APPROVAL_APPROVED = 1;
     const APPROVAL_DISAPPROVED = 2;
 
-    public $eventId;
-    public $lastName;
-    public $initials;
-    public $vocalRange;
-    public $email = '';
-    public $phone = '';
-    public $city = '';
-    public $currentChoir = '';
-    public $choirExperience = 0;
-    public $performedBefore = false;
-    public $comments;
-    public $approvalStatus = self::APPROVAL_UNDECIDED;
-    public $isPaid = false;
+    public int $eventId;
+    public string $lastName;
+    public string $initials;
+    public string $vocalRange;
+    public string $email = '';
+    public string $phone = '';
+    public string $city = '';
+    public string $currentChoir = '';
+    public int $choirExperience = 0;
+    public bool $performedBefore = false;
+    public string $comments;
+    public int $approvalStatus = self::APPROVAL_UNDECIDED;
+    public bool $isPaid = false;
 
     public static function loadByEvent(Event $event)
     {
@@ -52,6 +52,7 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
 
     /**
      * @return bool
+     * @throws Exception
      */
     public function setApproved()
     {

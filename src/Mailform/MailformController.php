@@ -14,7 +14,7 @@ use Exception;
 
 class MailformController extends Controller
 {
-    protected $minLevelPost = UserLevel::ANONYMOUS;
+    protected int $minLevelPost = UserLevel::ANONYMOUS;
 
     public function checkCSRFToken(string $token): void
     {

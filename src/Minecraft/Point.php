@@ -6,25 +6,10 @@ namespace Cyndaron\Minecraft;
  */
 class Point
 {
-    /**
-     * @var array
-     */
-    private $_originCoord;
-
-    /**
-     * @var array
-     */
-    private $_destCoord = [];
-
-    /**
-     * @var bool
-     */
-    private $_isProjected = false;
-
-    /**
-     * @var bool
-     */
-    private $_isPreProjected = false;
+    private array $_originCoord;
+    private array $_destCoord = [];
+    private bool $_isProjected = false;
+    private bool $_isPreProjected = false;
 
     /**
      * Point constructor.

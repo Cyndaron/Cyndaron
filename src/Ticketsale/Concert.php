@@ -12,17 +12,17 @@ class Concert extends Model
     const TABLE = 'ticketsale_concerts';
     const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats'];
 
-    public $name = '';
-    public $openForSales = true;
-    public $description = '';
-    public $descriptionWhenClosed = '';
-    public $deliveryCost = 1.50;
-    public $forcedDelivery = true;
-    public $hasReservedSeats = true;
-    public $reservedSeatCharge = 5.00;
-    public $reservedSeatsAreSoldOut = false;
-    public $numFreeSeats = 250;
-    public $numReservedSeats = 270;
+    public string $name = '';
+    public bool $openForSales = true;
+    public string $description = '';
+    public string $descriptionWhenClosed = '';
+    public float $deliveryCost = 1.50;
+    public bool $forcedDelivery = true;
+    public bool $hasReservedSeats = true;
+    public float $reservedSeatCharge = 5.00;
+    public bool $reservedSeatsAreSoldOut = false;
+    public int $numFreeSeats = 250;
+    public int $numReservedSeats = 270;
 
     /**
      * @param int $numTickets
@@ -75,7 +75,7 @@ class Concert extends Model
 
         if ($foundEnoughSeats)
         {
-            DBConnection::doQuery('INSERT INTO ticketsale_reservedseats(`orderId`, `rij`, `eerste_stoel`, `laatste_stoel`) VALUES(?, \'A\', ?, ?)', [$orderId, $firstSeat, $lastSeat]);
+            DBConnection::doQuery('INSERT INTO ticketsale_reservedseats(`orderId`, `row`, `firstSeat`, `lastSeat`) VALUES(?, \'A\', ?, ?)', [$orderId, $firstSeat, $lastSeat]);
             return range($firstSeat, $lastSeat);
         }
         else

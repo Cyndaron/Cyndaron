@@ -15,10 +15,10 @@ use stdClass;
 
 class Server
 {
-    protected $name;
-    protected $hostname;
-    protected $port;
-    protected $dynmapPort;
+    protected string $name;
+    protected string $hostname;
+    protected int $port;
+    protected int $dynmapPort;
 
     public function __construct(string $name, string $hostname = '127.0.0.1', int $port = 25565, int $dynmapPort = 8888)
     {
@@ -43,11 +43,11 @@ class Server
             if (preg_match('/:\/\//', $hostname))
             {
                 /** @noinspection PhpUnusedLocalVariableInspection */
-                list($protocol, $this->hostname, $this->port) = explode(':', str_replace('//', '', $hostname));
+                [$protocol, $this->hostname, $this->port] = explode(':', str_replace('//', '', $hostname));
             }
             else
             {
-                list($this->hostname, $this->port) = explode(':', $hostname);
+                [$this->hostname, $this->port] = explode(':', $hostname);
             }
         }
         else
@@ -87,7 +87,7 @@ class Server
         $data = explode("\x00", $data);
 
         $stats->is_online = true;
-        list($stats->protocol_version, $stats->game_version, $stats->motd, $stats->online_players, $stats->max_players) = $data;
+        [$stats->protocol_version, $stats->game_version, $stats->motd, $stats->online_players, $stats->max_players] = $data;
         $stats->motd = mb_convert_encoding(Util::mineToWeb($stats->motd), 'UTF-8', 'ISO-8859-1');
 
         return $stats;

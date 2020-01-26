@@ -10,7 +10,7 @@ use Cyndaron\User\UserLevel;
 
 class ConcertController extends Controller
 {
-    protected $getRoutes = [
+    protected array $getRoutes = [
         'getInfo' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getConcertInfo'],
         'order' => ['level' => UserLevel::ANONYMOUS, 'function' => 'order'],
         'viewOrders' => ['level' => UserLevel::ADMIN, 'function' => 'viewOrders'],

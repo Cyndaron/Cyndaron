@@ -9,7 +9,7 @@ use Cyndaron\User\UserLevel;
 
 class SystemController extends Controller
 {
-    protected $minLevelGet = UserLevel::ADMIN;
+    protected int $minLevelGet = UserLevel::ADMIN;
 
     protected function routeGet()
     {

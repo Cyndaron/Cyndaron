@@ -25,18 +25,17 @@ use Cyndaron\User\User;
 
 class Page
 {
-    protected $extraMeta = '';
-    protected $title = '';
-    protected $extraScripts = [];
-    protected $extraCss = [];
-    protected $websiteName = '';
-    protected $body = '';
-    /** @var Model $model */
-    protected $model = null;
+    protected string $extraMeta = '';
+    protected string $title = '';
+    protected array $extraScripts = [];
+    protected array $extraCss = [];
+    protected string $websiteName = '';
+    protected string $body = '';
 
-    protected $template = '';
+    protected ?Model $model = null;
 
-    protected $templateVars = [];
+    protected string $template = '';
+    protected array $templateVars = [];
 
 
     public function __construct(string $title, string $body = '')

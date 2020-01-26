@@ -3,7 +3,6 @@ declare (strict_types = 1);
 
 namespace Cyndaron\FileCabinet;
 
-use Cyndaron\FileCabinet\OverviewPage;
 use Cyndaron\Controller;
 use Cyndaron\Request;
 use Cyndaron\User\User;
@@ -11,7 +10,7 @@ use Cyndaron\User\UserLevel;
 
 class FileCabinetController extends Controller
 {
-    protected $postRoutes = [
+    protected array $postRoutes = [
         'addItem' => ['level' => UserLevel::ADMIN, 'function' => 'addItem'],
         'deleteItem' => ['level' => UserLevel::ADMIN, 'function' => 'deleteItem']
     ];

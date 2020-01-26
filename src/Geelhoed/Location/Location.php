@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Location;
 
-use Cyndaron\Geelhoed\Department;
 use Cyndaron\Geelhoed\Hour;
 use Cyndaron\Model;
 
@@ -12,11 +11,11 @@ class Location extends Model
     const TABLE = 'geelhoed_locations';
     const TABLE_FIELDS = ['name', 'street', 'houseNumber', 'postalCode', 'city'];
 
-    public $name;
-    public $street;
-    public $houseNumber;
-    public $postalCode;
-    public $city;
+    public string $name;
+    public string $street;
+    public string $houseNumber;
+    public string $postalCode;
+    public string $city;
 
     /**
      * @return Hour[]

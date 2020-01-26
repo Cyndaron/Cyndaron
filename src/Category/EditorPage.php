@@ -10,7 +10,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     const HAS_CATEGORY = true;
     const SAVE_URL = '/editor/category/%s';
 
-    protected $template = '';
+    protected string $template = '';
 
     protected function prepare()
     {

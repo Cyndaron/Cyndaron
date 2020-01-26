@@ -18,10 +18,10 @@ use Cyndaron\User\User;
  */
 class Router
 {
-    private $requestVars = [''];
-    private $isApiCall = false;
+    private array $requestVars = [''];
+    private bool $isApiCall = false;
 
-    protected $endpoints = [
+    protected array $endpoints = [
         // Default endpoints
         'editor' => Editor\EditorController::class,
         'error' => Error\ErrorController::class,
@@ -250,15 +250,15 @@ class Router
             {
                 foreach ($module->dataTypes() as $dataTypeName => $definition)
                 {
-                    if ($definition->editorPage)
+                    if (isset($definition->editorPage))
                     {
                         EditorController::addEditorPage([$dataTypeName => $definition->editorPage]);
                     }
-                    if ($definition->editorSavePage)
+                    if (isset($definition->editorSavePage))
                     {
                         EditorController::addEditorSavePage([$dataTypeName => $definition->editorSavePage]);
                     }
-                    if ($definition->pageManagerTab)
+                    if (isset($definition->pageManagerTab))
                     {
                         PageManagerPage::addPageType([$dataTypeName => ['name' => $definition->plural, 'tabDraw' => $definition->pageManagerTab]]);
                     }

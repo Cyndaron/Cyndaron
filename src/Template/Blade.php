@@ -23,20 +23,11 @@ use Pine\BladeFilters\BladeFiltersCompiler;
  */
 class Blade implements FactoryContract
 {
-    /**
-     * @var Container
-     */
-    protected $container;
+    protected ?Container $container;
 
-    /**
-     * @var Factory
-     */
-    private $factory;
+    private ? Factory $factory;
 
-    /**
-     * @var BladeCompiler
-     */
-    private $compiler;
+    private BladeCompiler $compiler;
 
     public function __construct(array $viewPaths, string $cachePath, ContainerInterface $container = null)
     {

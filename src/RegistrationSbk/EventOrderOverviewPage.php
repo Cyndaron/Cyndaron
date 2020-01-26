@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron\RegistrationSbk;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Page;
 
 class EventOrderOverviewPage extends Page

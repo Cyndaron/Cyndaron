@@ -9,10 +9,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     const TABLE = 'registration_events';
     const SAVE_URL = '/editor/event/%s';
 
-    protected $template = '';
-
-    /** @var Event|null */
-    protected $model = null;
+    protected string $template = '';
 
     protected function prepare()
     {

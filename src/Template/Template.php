@@ -6,9 +6,9 @@ use Cyndaron\Util;
 
 class Template
 {
-    private $compiledDir = 'cache/template';
-    private $data = [];
-    private $templateFinder;
+    private string $compiledDir = 'cache/template';
+    private array $data = [];
+    private TemplateFinder $templateFinder;
 
     public function __construct()
     {

@@ -9,27 +9,27 @@ class Polygon
     /**
      * @var Point[]
      */
-    private $_dots;
+    private array $_dots;
 
     /**
      * @var int
      */
-    private $_colour;
+    private int $_colour;
 
     /**
      * @var bool
      */
-    private $_isProjected = false;
+    private bool $_isProjected = false;
 
     /**
      * @var string
      */
-    private $_face = 'w';
+    private string $_face = 'w';
 
     /**
      * @var int
      */
-    private $_faceDepth = 0;
+    private int $_faceDepth = 0;
 
     /**
      * Polygon constructor.

@@ -3,12 +3,10 @@ namespace Cyndaron\Editor;
 
 use Cyndaron\Category\Category;
 use Cyndaron\DBConnection;
-use Cyndaron\Model;
 use Cyndaron\Page;
 use Cyndaron\Request;
 use Cyndaron\Setting;
 use Cyndaron\Url;
-use Cyndaron\User\User;
 
 abstract class EditorPage extends Page
 {
@@ -18,15 +16,13 @@ abstract class EditorPage extends Page
     const HAS_CATEGORY = false;
     const SAVE_URL = '';
 
-    protected $id = null;
+    protected ?int $id = null;
 
-    protected $vorigeversie = false;
-    protected $vvstring = '';
-    protected $content;
-    protected $contentTitle = '';
-    /** @var Model */
-    protected $model = null;
-    protected $template = 'Editor/PageBase';
+    protected bool $vorigeversie = false;
+    protected string $vvstring = '';
+    protected string $content = '';
+    protected string $contentTitle = '';
+    protected string $template = 'Editor/PageBase';
 
     public function __construct(array $internalLinks)
     {
@@ -66,6 +62,7 @@ abstract class EditorPage extends Page
         {
             if ($this->id)
             {
+                /** @noinspection SqlResolve */
                 $this->templateVars['categoryId'] = DBConnection::doQueryAndFetchOne('SELECT categoryId FROM ' . static::TABLE . ' WHERE id= ?', [$this->id]);
             }
             else
@@ -78,6 +75,7 @@ abstract class EditorPage extends Page
             $showBreadcrumbs = false;
             if ($this->id)
             {
+                /** @noinspection SqlResolve */
                 $showBreadcrumbs = (bool)DBConnection::doQueryAndFetchOne('SELECT showBreadcrumbs FROM ' . static::TABLE . ' WHERE id=?', [$this->id]);
             }
 

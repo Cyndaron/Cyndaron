@@ -6,8 +6,8 @@ use Exception;
 
 class Url
 {
-    private $url;
-    protected static $urlProviders = [];
+    private string $url;
+    protected static array $urlProviders = [];
 
     public function __construct(string $url)
     {

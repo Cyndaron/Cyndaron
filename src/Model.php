@@ -1,5 +1,4 @@
 <?php
-declare (strict_types = 1);
 
 namespace Cyndaron;
 
@@ -12,9 +11,9 @@ class Model
     // Override to include the fields for that particular model
     const TABLE_FIELDS = [];
 
-    public $id;
-    public $modified;
-    public $created;
+    public ?int $id;
+    public string $modified;
+    public string $created;
 
     public function __construct(?int $id = null)
     {

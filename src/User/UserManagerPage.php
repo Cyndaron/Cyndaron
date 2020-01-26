@@ -1,12 +1,7 @@
 <?php
-
-
 namespace Cyndaron\User;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Widget\Modal;
-use Cyndaron\Widget\Toolbar;
 
 class UserManagerPage extends Page
 {

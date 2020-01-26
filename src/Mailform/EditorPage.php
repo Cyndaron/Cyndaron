@@ -9,10 +9,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     const TABLE = 'mailformulieren';
     const SAVE_URL = '/editor/mailform/%s';
 
-    protected $template = '';
-
-    /** @var Mailform|null  */
-    protected $model = null;
+    protected string $template = '';
 
     protected function prepare()
     {

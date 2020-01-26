@@ -8,14 +8,14 @@ use Cyndaron\User\UserLevel;
 
 class Controller
 {
-    protected $module = null;
-    protected $action = null;
+    protected ?string $module = null;
+    protected ?string $action = null;
 
-    protected $minLevelGet = UserLevel::ANONYMOUS;
-    protected $minLevelPost = UserLevel::ADMIN;
+    protected int $minLevelGet = UserLevel::ANONYMOUS;
+    protected int $minLevelPost = UserLevel::ADMIN;
 
-    protected $getRoutes = [];
-    protected $postRoutes = [];
+    protected array $getRoutes = [];
+    protected array $postRoutes = [];
 
     public function __construct(string $module, string $action)
     {
