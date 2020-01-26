@@ -5,6 +5,7 @@ namespace Cyndaron\Geelhoed;
 
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Location\LocationController;
+use Cyndaron\Geelhoed\Member\MemberController;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
@@ -35,6 +36,7 @@ class Module implements Datatypes, Routes, UrlProvider
     {
         return [
             'location' =>  LocationController::class,
+            'member' => MemberController::class,
         ];
     }
 

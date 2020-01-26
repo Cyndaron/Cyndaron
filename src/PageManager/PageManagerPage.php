@@ -30,8 +30,10 @@ class PageManagerPage extends Page
 
         ob_start();
         $function = static::$pageTypes[$currentPage]['tabDraw'];
-        $function();
-        $tabContents = ob_get_clean();
+        $tabContents = $function();
+        if (!$tabContents)
+            $tabContents = ob_get_contents();
+        ob_end_clean();
 
         $this->render([
             'pageTabs' => $pageTabs,

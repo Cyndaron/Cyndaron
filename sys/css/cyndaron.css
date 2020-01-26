@@ -533,3 +533,9 @@ button.aantalKaarten
     height: auto;
 }
 /* */
+
+.modal-body .tab-pane {
+    border: 1px solid #dee2e6;
+    border-top: 0;
+    padding: 15px;
+}

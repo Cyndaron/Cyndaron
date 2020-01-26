@@ -11,17 +11,18 @@ use Cyndaron\Widget\Toolbar;
 
 class PageManagerTabs
 {
-    public static function locationsTab(): void
+    public static function locationsTab(): string
     {
-        echo new Toolbar('', '', (string)new Button('new', '/editor/location', 'Nieuwe locatie', 'Nieuwe locatie'));
+        $ret = new Toolbar('', '', (string)new Button('new', '/editor/location', 'Nieuwe locatie', 'Nieuwe locatie'));
 
         $locations = Location::fetchAll();
-        echo (new Template())->render('Geelhoed/Location/PageManagerTab', compact('locations'));
+        $ret .= (new Template())->render('Geelhoed/Location/PageManagerTab', compact('locations'));
+        return $ret;
     }
 
-    public static function membersTab(): void
+    public static function membersTab(): string
     {
         $members = Member::fetchAll([], [], '');
-        echo (new Template())->render('Geelhoed/Member/PageManagerTab', compact('members'));
+        return (new Template())->render('Geelhoed/Member/PageManagerTab', compact('members'));
     }
 }

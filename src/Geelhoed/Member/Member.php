@@ -11,12 +11,22 @@ use Cyndaron\User\User;
 class Member extends Model
 {
     const TABLE = 'geelhoed_members';
-    const TABLE_FIELDS = ['userId', 'email', 'phoneNumbers', 'isContestant'];
+    const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'freeParticipation'];
 
     public $userId = null;
-    public $email = '';
+    public $parentEmail = '';
     protected $phoneNumbers = '';
     public $isContestant = false;
+    protected $paymentMethod = 'incasso';
+    public $iban;
+    public $freeParticipation = false;
+
+    const PAYMENT_METHODS = [
+        'incasso' => 'Automatische incasso',
+        'jsf' => 'Jeugdsportfonds',
+        'rekening' => 'Op rekening',
+        'leergeld' => 'Stichting Leergeld',
+    ];
 
     function getProfile(): User
     {
@@ -27,6 +37,7 @@ class Member extends Model
 
     /**
      * @return Hour[]
+     * @throws \Exception
      */
     function getHours(): array
     {
@@ -56,6 +67,7 @@ class Member extends Model
 
     function getEmail(): string
     {
-        return $this->email;
+        $profile = $this->getProfile();
+        return $profile->email ?: $this->parentEmail;
     }
 }
