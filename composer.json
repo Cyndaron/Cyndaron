@@ -12,5 +12,10 @@
         "ext-json": "*",
         "ext-fileinfo": "*",
         "ext-gd": "*"
+    },
+    "config": {
+        "platform": {
+            "php": "7.4.0"
+        }
     }
 }
