@@ -1,4 +1,9 @@
 {
+    "autoload": {
+        "psr-4": {
+            "Cyndaron\\": "src/"
+        }
+    },
     "require": {
         "illuminate/view": "^6.5",
         "thepinecode/blade-filters": "^0.4.0",
