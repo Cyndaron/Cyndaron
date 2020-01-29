@@ -33,8 +33,7 @@ class OverviewPage extends Page
             if ($orderBy == 'date')
             {
                 usort($dirArray, function ($file1, $file2) {
-                    // In this order, because we want the newest files to come first.
-                    return filectime(self::PATH . $file2) <=> filectime(self::PATH . $file1);
+                    return filectime(self::PATH . $file1) <=> filectime(self::PATH . $file2);
                 });
             }
             else
