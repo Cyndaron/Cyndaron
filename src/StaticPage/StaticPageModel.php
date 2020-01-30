@@ -28,9 +28,13 @@ class StaticPageModel extends Model
 
     public function save(): bool
     {
-        $oldData = self::loadFromDatabase($this->id);
+        $oldData = null;
+        if ($this->id !== null)
+        {
+            $oldData = self::loadFromDatabase($this->id);
+        }
         $result = parent::save();
-        if ($result)
+        if ($result && $oldData !== null)
         {
             DBConnection::doQuery('REPLACE INTO sub_backups(`id`, `name`, `text`) VALUES (?,?,?)', [$oldData->id, $oldData->name, $oldData->text]);
         }
