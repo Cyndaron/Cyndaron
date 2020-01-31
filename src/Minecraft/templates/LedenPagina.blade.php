@@ -1,13 +1,13 @@
 @extends('Index')
 
 @section('contents')
-    @php $lastLevel = 4 @endphp
+    @php
+        $lastLevel = 4;
+        $highestLevel = count($pageLevels) - 1;
+    @endphp
 
     @foreach ($members as $member)
-        @php
-            $highestLevel = count($pageLevels) - 1;
-            $normalisedPageLevel = min($member['level'], $highestLevel);
-        @endphp
+        @php $normalisedPageLevel = min((int)$member['level'], $highestLevel); @endphp
 
         @for ($level = $highestLevel; $level >= 0; $level--)
             @if ($lastLevel >= $level + 1 && $normalisedPageLevel === min($level, $highestLevel))

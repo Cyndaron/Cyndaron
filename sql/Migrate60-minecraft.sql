@@ -8,9 +8,9 @@ ALTER TABLE `minecraft_members` CHANGE `echtenaam` `realName` VARCHAR(150) CHARA
 ALTER TABLE `minecraft_members` CHANGE `niveau` `level` INT(2) NOT NULL;
 ALTER TABLE `minecraft_members` CHANGE `donateur` `donor` INT(1) NOT NULL DEFAULT '0';
 ALTER TABLE `minecraft_members` CHANGE `renderAvatarHaar` `renderAvatarHair` INT(1) NOT NULL DEFAULT '1';
-ALTER TABLE `minecraft_members` ADD `newRenderer` BOOLEAN NOT NULL DEFAULT FALSE AFTER `renderAvatarHair`;
-ALTER TABLE `minecraft_members` ADD `uuid` CHAR(32) NULL DEFAULT NULL AFTER `userName`;
-ALTER TABLE `minecraft_members` ADD `skinUrl` CHAR(103) NULL DEFAULT NULL AFTER `donor`;
+# ALTER TABLE `minecraft_members` ADD `newRenderer` BOOLEAN NOT NULL DEFAULT FALSE AFTER `renderAvatarHair`;
+# ALTER TABLE `minecraft_members` ADD `uuid` CHAR(32) NULL DEFAULT NULL AFTER `userName`;
+# ALTER TABLE `minecraft_members` ADD `skinUrl` CHAR(103) NULL DEFAULT NULL AFTER `donor`;
 ALTER TABLE `minecraft_members` ADD `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `newRenderer`, ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`;
 
 RENAME TABLE mc_servers TO minecraft_servers;
