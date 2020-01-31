@@ -33,7 +33,7 @@ class Server
      *
      * @param string $hostname The hostname. Must be IP or domain (only IPv4).
      */
-    protected function setHostname(string $hostname)
+    protected function setHostname(string $hostname): void
     {
         // Overload for hostname:port syntax.
         if (preg_match('/:\d+$/', $hostname))
@@ -56,7 +56,7 @@ class Server
         }
     }
 
-    function retrieve(): stdClass
+    public function retrieve(): stdClass
     {
         $socket = @stream_socket_client(sprintf('tcp://%s:%u', $this->hostname, $this->port), $errno, $errstr, 1);
 
@@ -77,7 +77,7 @@ class Server
         fclose($socket);
 
         // Is this a disconnect with the ping?
-        if ($data == false && substr($data, 0, 1) != "\xFF")
+        if ($data === false && substr($data, 0, 1) !== "\xFF")
         {
             return $stats;
         }

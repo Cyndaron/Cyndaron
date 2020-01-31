@@ -45,7 +45,7 @@ class EditorController extends Controller
             $class = new $internalLinkType;
             $internalLinks = array_merge($internalLinks, $class->getList());
         }
-        usort($internalLinks, function (array $link1, array $link2) {
+        usort($internalLinks, static function (array $link1, array $link2) {
             return $link1['name'] <=> $link2['name'];
         });
         return $internalLinks;

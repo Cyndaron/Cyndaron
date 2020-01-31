@@ -60,7 +60,7 @@ class Blade implements FactoryContract
     }
 
     /** @noinspection PhpUnused */
-    public function directive(string $name, callable $handler)
+    public function directive(string $name, callable $handler): void
     {
         $this->compiler->directive($name, $handler);
     }
@@ -109,17 +109,17 @@ class Blade implements FactoryContract
         return call_user_func_array([$this->factory, $method], $params);
     }
 
-    protected function setupContainer(array $viewPaths, string $cachePath)
+    protected function setupContainer(array $viewPaths, string $cachePath): void
     {
-        $this->container->bindIf('files', function () {
+        $this->container->bindIf('files', static function () {
             return new Filesystem;
         }, true);
 
-        $this->container->bindIf('events', function () {
+        $this->container->bindIf('events', static function () {
             return new Dispatcher;
         }, true);
 
-        $this->container->bindIf('config', function () use ($viewPaths, $cachePath) {
+        $this->container->bindIf('config', static function () use ($viewPaths, $cachePath) {
             return [
                 'view.paths' => $viewPaths,
                 'view.compiled' => $cachePath,

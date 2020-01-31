@@ -25,13 +25,10 @@ class Controller
 
     public function checkCSRFToken(string $token): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST')
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !User::checkToken($this->module, $this->action, $token))
         {
-            if (!User::checkToken($this->module, $this->action, $token))
-            {
-                $this->send403('Controle CSRF-token gefaald!');
-                die();
-            }
+            $this->send403('Controle CSRF-token gefaald!');
+            die();
         }
     }
 
@@ -62,11 +59,9 @@ class Controller
             $function = $route['function'];
             return $this->$function();
         }
-        else
-        {
-            $this->checkUserLevelOrDie($oldMinLevel);
-            return $this->$oldRouteFunction();
-        }
+
+        $this->checkUserLevelOrDie($oldMinLevel);
+        return $this->$oldRouteFunction();
     }
 
     protected function routeGet()
@@ -121,7 +116,7 @@ class Controller
             header('Location: /user/login');
             die();
         }
-        else if (User::getLevel() < $requiredLevel)
+        if (User::getLevel() < $requiredLevel)
         {
             $this->send403('Insufficient user rights!');
             die();

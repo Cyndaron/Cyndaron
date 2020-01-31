@@ -15,10 +15,13 @@ class Widget
         return '';
     }
 
-    public static function create()
+    /**
+     * @return static
+     */
+    public static function create(): Widget
     {
         $arguments = func_get_args();
-        $class = get_called_class();
+        $class = static::class;
         return new $class(...$arguments);
     }
 }

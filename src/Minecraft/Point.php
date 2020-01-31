@@ -15,14 +15,14 @@ class Point
      * Point constructor.
      * @param $originCoord
      */
-    function __construct(array $originCoord)
+    public function __construct(array $originCoord)
     {
-        if (count($originCoord) == 3)
+        if (count($originCoord) === 3)
         {
             $this->_originCoord = [
-                'x' => (isset($originCoord['x']) ? $originCoord['x'] : 0),
-                'y' => (isset($originCoord['y']) ? $originCoord['y'] : 0),
-                'z' => (isset($originCoord['z']) ? $originCoord['z'] : 0),
+                'x' => ($originCoord['x'] ?? 0),
+                'y' => ($originCoord['y'] ?? 0),
+                'z' => ($originCoord['z'] ?? 0),
             ];
         }
         else
@@ -31,7 +31,7 @@ class Point
         }
     }
 
-    function project()
+    public function project(): void
     {
         $cos_alpha = SkinRendererHandler::$cos_alpha;
         $sin_alpha = SkinRendererHandler::$sin_alpha;
@@ -52,7 +52,7 @@ class Point
         SkinRendererHandler::$maxY = max(SkinRendererHandler::$maxY, $this->_destCoord['y']);
     }
 
-    function preProject($dx, $dy, $dz, $cos_alpha, $sin_alpha, $cos_omega, $sin_omega)
+    public function preProject($dx, $dy, $dz, $cos_alpha, $sin_alpha, $cos_omega, $sin_omega): void
     {
         if (!$this->_isPreProjected)
         {
@@ -69,7 +69,7 @@ class Point
     /**
      * @return array
      */
-    function getOriginCoord()
+    public function getOriginCoord(): array
     {
         return $this->_originCoord;
     }
@@ -77,7 +77,7 @@ class Point
     /**
      * @return array
      */
-    function getDestCoord()
+    public function getDestCoord(): array
     {
         return $this->_destCoord;
     }
@@ -85,7 +85,7 @@ class Point
     /**
      * @return array
      */
-    function getDepth()
+    public function getDepth(): float
     {
         if (!$this->_isProjected)
         {
@@ -97,7 +97,7 @@ class Point
     /**
      * @return bool
      */
-    function isProjected()
+    public function isProjected(): bool
     {
         return $this->_isProjected;
     }

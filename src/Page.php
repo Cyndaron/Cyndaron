@@ -46,11 +46,11 @@ class Page
         $this->updateTemplate();
     }
 
-    protected function updateTemplate()
+    protected function updateTemplate(): void
     {
         if (empty($this->template))
         {
-            $rc = new \ReflectionClass(get_called_class());
+            $rc = new \ReflectionClass(static::class);
             $dir = dirname($rc->getFileName()) . '/templates';
 
             $file = str_replace('.php', '.blade.php', basename($rc->getFileName()));
@@ -67,7 +67,7 @@ class Page
         }
     }
 
-    protected function renderSkeleton()
+    protected function renderSkeleton(): void
     {
         $this->websiteName = Setting::get('siteName');
         $this->templateVars['isAdmin'] = User::isAdmin();
@@ -78,7 +78,7 @@ class Page
         $this->templateVars['version'] = CyndaronInfo::ENGINE_VERSION;
         if ($favicon = Setting::get('favicon'))
         {
-            $extension = substr(strrchr($favicon, "."), 1);
+            $extension = substr(strrchr($favicon, '.'), 1);
             $this->templateVars['favicon'] = $favicon;
             $this->templateVars['faviconType'] = "image/$extension";
         }
@@ -123,27 +123,23 @@ class Page
         }
     }
 
-    public function setExtraMeta(string $extraMeta)
+    public function setExtraMeta(string $extraMeta): void
     {
         $this->extraMeta = $extraMeta;
     }
 
     public function isFrontPage(): bool
     {
-        if ($_SERVER['REQUEST_URI'] === '/')
-        {
-            return true;
-        }
-        return false;
+        return $_SERVER['REQUEST_URI'] === '/';
     }
 
-    protected function renderMenu()
+    protected function renderMenu(): string
     {
         $logo = Setting::get('logo');
         $vars = [
             'isLoggedIn' => User::isLoggedIn(),
             'isAdmin' => User::isAdmin(),
-            'inverseClass' => (Setting::get('menuTheme') == 'dark') ? 'navbar-dark' : 'navbar-light',
+            'inverseClass' => (Setting::get('menuTheme') === 'dark') ? 'navbar-dark' : 'navbar-light',
             'navbar' => $logo ? sprintf('<img alt="" src="%s"> ', $logo) : $this->websiteName,
         ];
 
@@ -165,7 +161,7 @@ class Page
         return $template->render('Menu', $vars);
     }
 
-    public function render(array $vars = [])
+    public function render(array $vars = []): void
     {
         $this->templateVars = array_merge($this->templateVars, $vars);
 
@@ -177,12 +173,12 @@ class Page
         echo $template->render($this->template, $this->templateVars);
     }
 
-    public function addScript($script)
+    public function addScript($script): void
     {
         $this->extraScripts[] = $script;
     }
 
-    public function addCss($script)
+    public function addCss($script): void
     {
         $this->extraCss[] = $script;
     }
@@ -203,14 +199,11 @@ class Page
         if ($this->model !== null && $this->model::HAS_CATEGORY)
         {
             $titleParts = [];
-            if ($this->model->showBreadcrumbs)
+            if ($this->model->showBreadcrumbs && $this->model->categoryId)
             {
-                if ($this->model->categoryId)
-                {
-                    /** @var Category $category */
-                    $category = Category::loadFromDatabase((int)$this->model->categoryId);
-                    $titleParts[] = $category->name;
-                }
+                /** @var Category $category */
+                $category = Category::loadFromDatabase((int)$this->model->categoryId);
+                $titleParts[] = $category->name;
             }
             $titleParts[] = $this->model->name;
         }

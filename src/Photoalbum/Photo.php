@@ -24,7 +24,7 @@ class Photo
         $ret = [];
         foreach ($album->getPhotos() as $filename)
         {
-            $photo = new Photo();
+            $photo = new static();
             $photo->album = $album;
             $photo->filename = $filename;
             $photo->hash = md5_file($photo->getFullPath());
@@ -99,21 +99,21 @@ class Photo
      *
      * @param Imagick $image
      */
-    protected static function autoRotate(Imagick &$image)
+    protected static function autoRotate(Imagick $image): void
     {
         $orientation = $image->getImageOrientation();
 
         switch($orientation) {
             case imagick::ORIENTATION_BOTTOMRIGHT:
-                $image->rotateimage("#000", 180);
+                $image->rotateimage('#000', 180);
                 break;
 
             case imagick::ORIENTATION_RIGHTTOP:
-                $image->rotateimage("#000", 90);
+                $image->rotateimage('#000', 90);
                 break;
 
             case imagick::ORIENTATION_LEFTBOTTOM:
-                $image->rotateimage("#000", -90);
+                $image->rotateimage('#000', -90);
                 break;
         }
 
@@ -127,20 +127,14 @@ class Photo
 
         $path = __DIR__ . "/../../fotoalbums/{$album->id}";
         $mainPhoto = "$path/$filename";
-        if (file_exists($mainPhoto))
+        if (file_exists($mainPhoto) && unlink($mainPhoto))
         {
-            if (unlink($mainPhoto))
-            {
-                $numDeleted++;
-            }
+            $numDeleted++;
         }
         $thumbnail = "{$path}thumbnails/$filename";
-        if (file_exists($thumbnail))
+        if (file_exists($thumbnail) && unlink($thumbnail))
         {
-            if (unlink($thumbnail))
-            {
-                $numDeleted++;
-            }
+            $numDeleted++;
         }
 
         return $numDeleted;

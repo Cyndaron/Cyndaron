@@ -31,11 +31,11 @@ class Order extends Model
         DBConnection::doQuery('UPDATE ticketsale_orders SET `isPaid`=1 WHERE id=?', [$this->id]);
 
         $text = "Hartelijk dank voor uw bestelling bij de Vlissingse Oratorium Vereniging. Wij hebben uw betaling in goede orde ontvangen.\n";
-        if ($this->delivery || ($concert->forcedDelivery && $this->deliveryByMember == 0))
+        if ($this->delivery || ($concert->forcedDelivery && !$this->deliveryByMember))
         {
             $text .= 'Uw kaarten zullen zo spoedig mogelijk worden opgestuurd.';
         }
-        elseif ($concert->forcedDelivery && $this->deliveryByMember == 1)
+        elseif ($concert->forcedDelivery && $this->deliveryByMember)
         {
             $text .= 'Uw kaarten zullen worden meegegeven aan ' . $this->deliveryMemberName . '.';
         }

@@ -1,4 +1,4 @@
-@extends ("Index")
+@extends ('Index')
 @php /** @var \Cyndaron\RegistrationSbk\Event $event */@endphp
 
 @section ('titleControls')

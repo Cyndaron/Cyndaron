@@ -14,24 +14,24 @@ class CategoryController extends Controller
     {
         $id = Request::getVar(1);
 
-        if ($id === '0' || $id == 'fotoboeken')
+        if ($id === '0' || $id === 'fotoboeken')
         {
             $page = new CategoryPage();
             $page->showPhotoalbumsIndex();
         }
-        elseif ($id == 'tag')
+        elseif ($id === 'tag')
         {
             $page = new CategoryPage();
             $page->showTagIndex(Request::getVar(2));
         }
         elseif ($id < 0)
         {
-            header("Location: /error/404");
+            header('Location: /error/404');
             die('Incorrecte parameter ontvangen.');
         }
         else
         {
-            $category = Category::loadFromDatabase(intval($id));
+            $category = Category::loadFromDatabase((int)$id);
             $page = new CategoryPage();
             $page->showCategoryIndex($category);
         }
@@ -39,7 +39,7 @@ class CategoryController extends Controller
 
     protected function routePost()
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         $return = [];
 
         switch ($this->action)

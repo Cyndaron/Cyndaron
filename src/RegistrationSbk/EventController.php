@@ -16,14 +16,14 @@ class EventController extends Controller
 
     protected function register()
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         $event = Event::loadFromDatabase($id);
         new RegisterPage($event);
     }
 
     protected function viewRegistrations()
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         $event = Event::loadFromDatabase($id);
         new EventOrderOverviewPage($event);
     }

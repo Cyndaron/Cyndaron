@@ -3,7 +3,7 @@ namespace Cyndaron\Widget;
 
 class PageTabs extends Widget
 {
-    public function __construct($subpages, $urlPrefix = '', $currentPage = '')
+    public function __construct(array $subpages, string $urlPrefix = '', string $currentPage = '')
     {
         $this->code = '<ul class="nav nav-tabs">';
 
@@ -11,7 +11,7 @@ class PageTabs extends Widget
         {
             $this->code .= sprintf(
                 '<li role="presentation" class="nav-item"><a class="nav-link %s" href="%s">%s</a></li>',
-                ($link == $currentPage) ? ' active' : '',
+                ($link === $currentPage) ? ' active' : '',
                 rtrim($urlPrefix . $link, '/'),
                 $title
             );

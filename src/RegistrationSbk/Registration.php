@@ -156,6 +156,6 @@ Stichting Bijzondere Koorprojecten';
 
     public function shouldPay(): bool
     {
-        return !$this->isPaid && $this->approvalStatus == self::APPROVAL_APPROVED;
+        return !$this->isPaid && $this->approvalStatus === self::APPROVAL_APPROVED;
     }
 }

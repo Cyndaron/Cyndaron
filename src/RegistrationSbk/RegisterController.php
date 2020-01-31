@@ -115,7 +115,7 @@ class RegisterController extends Controller
         $order->sendConfirmationMail();
     }
 
-    private function checkForm(Event $event)
+    private function checkForm(Event $event): array
     {
         $errorFields = [];
         if (strcasecmp(Request::post('antispam'),$event->getAntispam()) !== 0)
@@ -123,17 +123,17 @@ class RegisterController extends Controller
             $errorFields[] = 'Antispam';
         }
 
-        if (strlen(Request::post('lastName')) === 0)
+        if (Request::post('lastName') === '')
         {
             $errorFields[] = 'Achternaam';
         }
 
-        if (strlen(Request::post('initials')) === 0)
+        if (Request::post('initials') === '')
         {
             $errorFields[] = 'Voorletters';
         }
 
-        if (strlen(Request::post('email')) === 0)
+        if (Request::post('email') === '')
         {
             $errorFields[] = 'E-mailadres';
         }

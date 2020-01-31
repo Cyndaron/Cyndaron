@@ -18,7 +18,7 @@ class EventController extends Controller
 
     protected function getEventInfo()
     {
-        $eventId = intval(Request::getVar(2));
+        $eventId = (int)Request::getVar(2);
         $event = new Event($eventId);
         $event->load();
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM registration_tickettypes WHERE eventId=? ORDER BY price DESC', [$eventId]);
@@ -35,14 +35,14 @@ class EventController extends Controller
 
     protected function order()
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         $event = Event::loadFromDatabase($id);
         new OrderTicketsPage($event);
     }
 
     protected function viewOrders()
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         $event = Event::loadFromDatabase($id);
         new EventOrderOverviewPage($event);
     }

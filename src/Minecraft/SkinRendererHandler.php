@@ -51,14 +51,14 @@ class SkinRendererHandler
 
         $width = imagesx($img_png);
         $height = imagesy($img_png);
-        if ($height == $width)
+        if ($height === $width)
         {
             $img_png_old = $img_png;
             $img_png = imagecreatetruecolor($width, $height / 2);
             imagecopyresampled($img_png, $img_png_old, 0, 0, 0, 0, $width, $height / 2, $width, $height / 2);
             $height = imagesy($img_png);
         }
-        elseif (!($width == $height * 2) || $height % 32 != 0)
+        elseif (!($width === $height * 2) || $height % 32 !== 0)
         {
             // Bad ratio created
             $img_png = imagecreatefrompng(SkinRenderer::FALLBACK_IMAGE);
@@ -91,7 +91,7 @@ class SkinRendererHandler
             'sin_omega' => sin(0),
         ];
         $alpha_head = 0;
-        $omega_head = deg2rad(floatval(Request::get('hrh')));
+        $omega_head = deg2rad((float)Request::get('hrh'));
         $parts_angles['head'] = [
             'cos_alpha' => cos($alpha_head),
             'sin_alpha' => sin($alpha_head),
@@ -104,7 +104,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_head),
             'sin_omega' => sin($omega_head),
         ];
-        $alpha_right_arm = deg2rad(floatval(Request::get('vrra')));
+        $alpha_right_arm = deg2rad((float)Request::get('vrra'));
         $omega_right_arm = 0;
         $parts_angles['rightArm'] = [
             'cos_alpha' => cos($alpha_right_arm),
@@ -112,7 +112,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_right_arm),
             'sin_omega' => sin($omega_right_arm),
         ];
-        $alpha_left_arm = deg2rad(floatval(Request::get('vrla')));
+        $alpha_left_arm = deg2rad((float)Request::get('vrla'));
         $omega_left_arm = 0;
         $parts_angles['leftArm'] = [
             'cos_alpha' => cos($alpha_left_arm),
@@ -120,7 +120,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_left_arm),
             'sin_omega' => sin($omega_left_arm),
         ];
-        $alpha_right_leg = deg2rad(floatval(Request::get('vrrl')));
+        $alpha_right_leg = deg2rad((float)Request::get('vrrl'));
         $omega_right_leg = 0;
         $parts_angles['rightLeg'] = [
             'cos_alpha' => cos($alpha_right_leg),
@@ -128,7 +128,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_right_leg),
             'sin_omega' => sin($omega_right_leg),
         ];
-        $alpha_left_leg = deg2rad(floatval(Request::get('vrll')));
+        $alpha_left_leg = deg2rad((float)Request::get('vrll'));
         $omega_left_leg = 0;
         $parts_angles['leftLeg'] = [
             'cos_alpha' => cos($alpha_left_leg),
@@ -185,7 +185,7 @@ class SkinRendererHandler
             $faceFormat['front'] = array_diff($all_faces, $faceFormat['back']);
         }
 
-        unset($cube_max_depth_faces);
+        unset($cube_max_depth_faces, $faceFormat);
         $cubePoints = $this->generateCubePoints();
         $cube_max_depth_faces = $cubePoints[0];
 
@@ -991,19 +991,19 @@ class SkinRendererHandler
 
         // Handle the ratio
         $min_ratio = 2;
-        $ratio = intval(Request::get('ratio'));
+        $ratio = (int)Request::get('ratio');
         $ratio = ($ratio < $min_ratio) ? $min_ratio : $ratio;
 
         if (SkinRenderer::SECONDS_TO_CACHE > 0)
         {
-            $ts = gmdate("D, d M Y H:i:s", time() + SkinRenderer::SECONDS_TO_CACHE) . ' GMT';
+            $ts = gmdate('D, d M Y H:i:s', time() + SkinRenderer::SECONDS_TO_CACHE) . ' GMT';
             header('Expires: ' . $ts);
             header('Pragma: cache');
             header('Cache-Control: max-age=' . SkinRenderer::SECONDS_TO_CACHE);
         }
 
         $image = null;
-        if (Request::get('format') == 'svg')
+        if (Request::get('format') === 'svg')
         {
             header('Content-Type: image/svg+xml');
             echo '<?xml version="1.0" standalone="no"?>
@@ -1023,9 +1023,9 @@ class SkinRendererHandler
         }
 
         $display_order = [];
-        if (in_array('top', $front_faces))
+        if (in_array('top', $front_faces, true))
         {
-            if (in_array('right', $front_faces))
+            if (in_array('right', $front_faces, true))
             {
                 $display_order[] = ['leftLeg' => $back_faces];
                 $display_order[] = ['leftLeg' => $visible_faces['leftLeg']['front']];
@@ -1062,7 +1062,7 @@ class SkinRendererHandler
             $display_order[] = ['head' => $back_faces];
             $display_order[] = ['head' => $visible_faces['head']['front']];
             $display_order[] = ['helmet' => $visible_faces['head']['front']];
-            if (in_array('right', $front_faces))
+            if (in_array('right', $front_faces, true))
             {
                 $display_order[] = ['leftArm' => $back_faces];
                 $display_order[] = ['leftArm' => $visible_faces['leftArm']['front']];
@@ -1100,7 +1100,7 @@ class SkinRendererHandler
                 {
                     foreach ($polygons[$piece][$face] as $poly)
                     {
-                        if (Request::get('format') == 'svg')
+                        if (Request::get('format') === 'svg')
                         {
                             echo $poly->getSvgPolygon(1);
                         }
@@ -1115,7 +1115,7 @@ class SkinRendererHandler
 
         $times[] = ['Display-image', $this->microtime_float()];
 
-        if (Request::get('format') == 'svg')
+        if (Request::get('format') === 'svg')
         {
             echo '</svg>' . "\n";
             for ($i = 1; $i < count($times); $i++)

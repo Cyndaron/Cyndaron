@@ -9,7 +9,7 @@
     <div id="category-main">
         {!! $model ? $model->description : '' !!}
 
-    @if ($viewMode == 0)
+    @if ($viewMode === 0)
         <div class="category-listview">
         @foreach ($pages as $page)
             <div>
@@ -18,13 +18,13 @@
             </div>
         @endforeach
         </div>
-    @elseif ($viewMode == 1)
+    @elseif ($viewMode === 1)
     <ul class="zonderbullets">
         @foreach ($pages as $page)
             <li><h3><a href="{{ $page->getFriendlyUrl() }}">{{ $page->name }}</a></h3></li>
         @endforeach
     </ul>
-    @elseif ($viewMode == 2)
+    @elseif ($viewMode === 2)
         <div class="category-blockview">
             @foreach ($pages as $page)
                 <div class="category-block">
@@ -36,7 +36,7 @@
                 </div>
             @endforeach
         </div>
-    @elseif ($viewMode == 3)
+    @elseif ($viewMode === 3)
         @foreach ($portfolioContent as $albumname => $albumcontent)
             <h2>{{ $albumname }}</h2>
             @foreach ($albumcontent as $page)
@@ -49,7 +49,7 @@
                 </div>
             @endforeach
         @endforeach
-    @elseif ($viewMode == 4)
+    @elseif ($viewMode === 4)
         <div class="category-horizontalview">
             @foreach ($pages as $page)
                 <div class="category-block">

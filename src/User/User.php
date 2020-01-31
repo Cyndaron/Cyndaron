@@ -12,10 +12,10 @@ use finfo;
 
 class User extends Model
 {
-    const TABLE = 'users';
-    const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList'];
+    public const TABLE = 'users';
+    public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList'];
 
-    const AVATAR_DIR = 'uploads/user/avatar';
+    public const AVATAR_DIR = 'uploads/user/avatar';
 
     public string $username;
     public string $password;
@@ -29,7 +29,7 @@ class User extends Model
     public string $avatar;
     public bool $hideFromMemberList;
 
-    const RESET_PASSWORD_MAIL_TEXT =
+    public const RESET_PASSWORD_MAIL_TEXT =
         '<p>U vroeg om een nieuw wachtwoord voor %s.</p>
 
 <p>Uw nieuwe wachtwoord is: %s</p>';
@@ -42,14 +42,7 @@ EOT;
 
     public static function isAdmin(): bool
     {
-        if (!isset($_SESSION['naam']) || $_SESSION['level'] < 4)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return isset($_SESSION['naam']) && $_SESSION['level'] >= 4;
     }
 
     public static function isLoggedIn(): bool
@@ -71,16 +64,16 @@ EOT;
 
     public static function getLevel(): int
     {
-        return intval(@$_SESSION['level']);
+        return (int)@$_SESSION['level'];
     }
 
     public static function hasSufficientReadLevel(): bool
     {
-        $minimumReadLevel = intval(Setting::get('minimumReadLevel'));
+        $minimumReadLevel = (int)Setting::get('minimumReadLevel');
         return (static::getLevel() >= $minimumReadLevel);
     }
 
-    public function resetPassword()
+    public function resetPassword(): void
     {
         if ($this->id === null)
         {
@@ -97,9 +90,9 @@ EOT;
         $this->mailNewPassword($newPassword);
     }
 
-    public function uploadNewAvatar()
+    public function uploadNewAvatar(): void
     {
-        Util::createDir(User::AVATAR_DIR);
+        Util::createDir(static::AVATAR_DIR);
 
         $tmpName = $_FILES['avatarFile']['tmp_name'];
         $buffer = file_get_contents($tmpName);
@@ -117,10 +110,10 @@ EOT;
                 $avatarImg = imagecreatefrompng($tmpName);
                 break;
             default:
-                die("Ongeldig bestandtype.");
+                die('Ongeldig bestandtype.');
         }
 
-        $filename = User::AVATAR_DIR . "/{$this->id}.png";
+        $filename = static::AVATAR_DIR . "/{$this->id}.png";
         if (file_exists($filename))
         {
             unlink($filename);
@@ -182,7 +175,7 @@ EOT;
     {
         $password = password_hash($password, PASSWORD_DEFAULT);
 
-        $user = new User(null);
+        $user = new static(null);
         foreach(static::TABLE_FIELDS as $fieldname)
         {
             $user->$fieldname = $$fieldname;
@@ -217,60 +210,59 @@ EOT;
         {
             throw new IncorrectCredentials('Onbekende gebruikersnaam of e-mailadres.');
         }
-        else
+
+        $loginSucceeded = false;
+        if (password_verify($password, $userdata['password']))
         {
-            $loginSucceeded = false;
-            if (password_verify($password, $userdata['password']))
-            {
-                $loginSucceeded = true;
+            $loginSucceeded = true;
 
-                if (password_needs_rehash($userdata['password'], PASSWORD_DEFAULT))
-                {
-                    $password = password_hash($password, PASSWORD_DEFAULT);
-                    DBConnection::doQuery($updateQuery, [$password, $identification]);
-                }
-            }
-
-            if ($loginSucceeded)
+            if (password_needs_rehash($userdata['password'], PASSWORD_DEFAULT))
             {
-                $_SESSION['userId'] = $userdata['id'];
-                $_SESSION['naam'] = $userdata['username'];
-                $_SESSION['email'] = $userdata['email'];
-                $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
-                $_SESSION['level'] = $userdata['level'];
-                User::addNotification('U bent ingelogd.');
-                if ($_SESSION['redirect'])
-                {
-                    $_SESSION['request'] = $_SESSION['redirect'];
-                    $_SESSION['redirect'] = null;
-                }
-                else
-                {
-                    $_SESSION['request'] = '/';
-                }
-                header('Location: ' . $_SESSION['request']);
-            }
-            else
-            {
-                throw new IncorrectCredentials('Verkeerd wachtwoord.');
+                $password = password_hash($password, PASSWORD_DEFAULT);
+                DBConnection::doQuery($updateQuery, [$password, $identification]);
             }
         }
+
+        if (!$loginSucceeded)
+        {
+            throw new IncorrectCredentials('Verkeerd wachtwoord.');
+
+        }
+
+        $_SESSION['userId'] = $userdata['id'];
+        $_SESSION['naam'] = $userdata['username'];
+        $_SESSION['email'] = $userdata['email'];
+        $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+        $_SESSION['level'] = $userdata['level'];
+
+        static::addNotification('U bent ingelogd.');
+
+        if ($_SESSION['redirect'])
+        {
+            $_SESSION['request'] = $_SESSION['redirect'];
+            $_SESSION['redirect'] = null;
+        }
+        else
+        {
+            $_SESSION['request'] = '/';
+        }
+        header('Location: ' . $_SESSION['request']);
     }
 
-    public static function logout()
+    public static function logout(): void
     {
         session_start();
         session_destroy();
 
         session_start();
-        User::addNotification('U bent afgemeld.');
+        static::addNotification('U bent afgemeld.');
         header('Location: /');
     }
 
     public function getFullName(): string
     {
         $ret = $this->firstName . ' ' . $this->tussenvoegsel;
-        if (substr($this->tussenvoegsel, -1) != "'")
+        if (substr($this->tussenvoegsel, -1) !== "'")
             $ret .= ' ';
         $ret .= $this->lastName;
 

@@ -33,7 +33,7 @@ class CategoryPage extends Page
      * @param StaticPageModel[] $subs
      * @return array
      */
-    protected function getTags(array $subs)
+    protected function getTags(array $subs): array
     {
         $tags = [];
         foreach ($subs as $sub)
@@ -51,7 +51,7 @@ class CategoryPage extends Page
     {
         $portfolioContent = [];
 
-        if ($this->model->viewMode == Category::VIEWMODE_PORTFOLIO)
+        if ($this->model->viewMode === Category::VIEWMODE_PORTFOLIO)
         {
             $subCategories = Category::fetchAll(['categoryId = ?'], [$this->model->id]);
             foreach ($subCategories as $subCategory)
@@ -91,7 +91,7 @@ class CategoryPage extends Page
             if ($tagList)
             {
                 $tags += $tagList;
-                if (in_array(strtolower($tag), $tagList))
+                if (in_array(strtolower($tag), $tagList, true))
                 {
                     $pages[] = $sub;
                 }

@@ -15,7 +15,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $text = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
         $enableComments = (bool)Request::post('enableComments');
         $showBreadcrumbs = (bool)Request::post('showBreadcrumbs');
-        $categoryId = intval(Request::post('categoryId'));
+        $categoryId = (int)Request::post('categoryId');
         $tags = trim(Request::post('tags'), "; \t\n\r\0\x0B");
 
         $model = new StaticPageModel($this->id);

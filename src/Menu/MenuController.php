@@ -23,7 +23,7 @@ class MenuController extends Controller
         $menuItem->alias = Request::post('alias');
         $menuItem->isDropdown = (bool)Request::post('isDropdown');
         $menuItem->isImage = (bool)Request::post('isImage');
-        $menuItem->priority = Request::post('priority');
+        $menuItem->priority = (int)Request::post('priority');
 
         if (!$menuItem->save())
         {
@@ -33,14 +33,14 @@ class MenuController extends Controller
 
     protected function editItem()
     {
-        $index = intval(Request::getVar(2));
+        $index = (int)Request::getVar(2);
         $menuItem = new MenuItem($index);
         $menuItem->load();
         $menuItem->link = Request::post('link');
         $menuItem->alias = Request::post('alias');
         $menuItem->isDropdown = (bool)(int)Request::post('isDropdown');
         $menuItem->isImage = (bool)(int)Request::post('isImage');
-        $menuItem->priority = Request::post('priority');
+        $menuItem->priority = (int)Request::post('priority');
 
         if (!$menuItem->save())
         {
@@ -50,7 +50,7 @@ class MenuController extends Controller
 
     protected function deleteItem()
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         $menuItem = new MenuItem($id);
         $menuItem->delete();
     }

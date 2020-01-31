@@ -10,7 +10,7 @@
         @endphp
 
         @for ($level = $highestLevel; $level >= 0; $level--)
-            @if ($normalisedPageLevel == min($level, $highestLevel) && $lastLevel >= $level + 1)
+            @if ($lastLevel >= $level + 1 && $normalisedPageLevel === min($level, $highestLevel))
                 <h2>{{ $pageLevels[$level] }}</h2>
                 @break
             @endif

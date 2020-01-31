@@ -1,4 +1,4 @@
-@extends ("Index")
+@extends ('Index')
 
 @section ('titleControls')
     <a href="/editor/event/{{ $event->id }}" class="btn btn-outline-cyndaron" title="Dit evenement bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
@@ -6,7 +6,7 @@
 
 @section ('contents')
     @php /** @var \Cyndaron\Registration\Event $event */ @endphp
-    @if ($event->openForRegistration == false)
+    @if (!$event->openForRegistration)
         {!! $event->descriptionWhenClosed ?? 'Voor dit evenement kunt u zich helaas niet meer inschrijven.' !!}
     @else
         {!! $event->description !!}

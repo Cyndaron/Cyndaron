@@ -19,9 +19,9 @@
                 <label class="col-md-3 col-form-label col-form-label-md">Standaardcategorie:</label>
                 <div class="col-md-6">
                     <select name="defaultCategory" class="custom-select">
-                        <option value="0" @if ($defaultCategory == 0) selected @endif>Geen</option>
+                        <option value="0" @if ($defaultCategory === 0) selected @endif>Geen</option>
                         @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" @if ($category->id == $defaultCategory) selected @endif>
+                        <option value="{{ $category->id }}" @if ($category->id === $defaultCategory) selected @endif>
                             {{ $category->name }}
                         </option>
                         @endforeach

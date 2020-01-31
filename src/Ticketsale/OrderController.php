@@ -18,7 +18,7 @@ class OrderController extends Controller
 
     protected function routePost()
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
 
@@ -37,9 +37,9 @@ class OrderController extends Controller
         }
     }
 
-    protected function add()
+    protected function add(): void
     {
-        $concertId = intval(Request::post('concert_id'));
+        $concertId = (int)Request::post('concert_id');
         try
         {
             $this->processOrder($concertId);
@@ -61,7 +61,7 @@ class OrderController extends Controller
      * @param $concertId
      * @throws Exception
      */
-    private function processOrder($concertId)
+    private function processOrder($concertId): void
     {
         if (Request::postIsEmpty())
         {
@@ -77,8 +77,8 @@ class OrderController extends Controller
         }
 
         $postcode = Request::post('postcode');
-        $addressIsAbroad = (Request::post('country') === 'abroad') ? true : false;
-        $deliveryByMember = Request::post('deliveryByMember') ? true : false;
+        $addressIsAbroad = Request::post('country') === 'abroad';
+        $deliveryByMember = (bool)Request::post('deliveryByMember');
         $deliveryByMember = $addressIsAbroad ? true : $deliveryByMember;
         $deliveryMemberName = Request::post('deliveryMemberName');
 
@@ -95,23 +95,20 @@ class OrderController extends Controller
 
         if ($concertObj->forcedDelivery)
         {
-            $qualifiesForFreeDelivery = ($addressIsAbroad) ? false : Util::postcodeQualifiesForFreeDelivery(intval($postcode));
+            $qualifiesForFreeDelivery = ($addressIsAbroad) ? false : Util::postcodeQualifiesForFreeDelivery((int)$postcode);
 
             if ($qualifiesForFreeDelivery)
             {
                 $payForDelivery = false;
                 $deliveryByMember = false;
             }
+            else if ($deliveryByMember)
+            {
+                $payForDelivery = false;
+            }
             else
             {
-                if ($deliveryByMember)
-                {
-                    $payForDelivery = false;
-                }
-                else
-                {
-                    $payForDelivery = true;
-                }
+                $payForDelivery = true;
             }
         }
         else
@@ -120,12 +117,12 @@ class OrderController extends Controller
         }
         $deliveryPrice = $payForDelivery ? $concertObj->deliveryCost : 0.0;
         $reserveSeats = Request::post('hasReservedSeats') ? 1 : 0;
-        $toeslag_gereserveerde_plaats = ($reserveSeats == 1) ? $concertObj->reservedSeatCharge : 0;
+        $toeslag_gereserveerde_plaats = ($reserveSeats === 1) ? $concertObj->reservedSeatCharge : 0;
         $order_tickettypes = [];
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
         foreach ($ticketTypes as $ticketType)
         {
-            $order_tickettypes[$ticketType['id']] = intval(Request::post('tickettype-' . $ticketType['id']));
+            $order_tickettypes[$ticketType['id']] = (int)Request::post('tickettype-' . $ticketType['id']);
             $totaalprijs += $order_tickettypes[$ticketType['id']] * ($ticketType['price'] + $deliveryPrice + $toeslag_gereserveerde_plaats);
             $totaalAantalKaarten += $order_tickettypes[$ticketType['id']];
         }
@@ -168,7 +165,7 @@ class OrderController extends Controller
         }
 
         $reservedSeats = null;
-        if ($reserveSeats == 1)
+        if ($reserveSeats === 1)
         {
             $reservedSeats = $concertObj->reserveSeats($orderId, $totaalAantalKaarten);
             if ($reservedSeats === null)
@@ -182,7 +179,7 @@ class OrderController extends Controller
         $this->sendMail($payForDelivery, $concertObj, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats, $totaalprijs, $orderId, $ticketTypes, $order_tickettypes, $lastName, $initials, $street, $postcode, $city, $comments, $email);
     }
 
-    private function checkForm($forcedDelivery = false, $memberDelivery = false)
+    private function checkForm($forcedDelivery = false, $memberDelivery = false): array
     {
         $incorrecteVelden = [];
         if (strtoupper(Request::post('antispam')) !== 'VLISSINGEN')
@@ -190,34 +187,34 @@ class OrderController extends Controller
             $incorrecteVelden[] = 'Antispam';
         }
 
-        if (strlen(Request::post('lastName')) === 0)
+        if (Request::post('lastName') === '')
         {
             $incorrecteVelden[] = 'Achternaam';
         }
 
-        if (strlen(Request::post('initials')) === 0)
+        if (Request::post('initials') === '')
         {
             $incorrecteVelden[] = 'Voorletters';
         }
 
-        if (strlen(Request::post('email')) === 0)
+        if (Request::post('email') === '')
         {
             $incorrecteVelden[] = 'E-mailadres';
         }
 
-        if ((!$forcedDelivery && Request::post('delivery')) || ($forcedDelivery && !$memberDelivery))
+        if (($forcedDelivery && !$memberDelivery) || (!$forcedDelivery && Request::post('delivery')))
         {
-            if (strlen(Request::post('street')) === 0)
+            if (Request::post('street') === '')
             {
                 $incorrecteVelden[] = 'Straatnaam en huisnummer';
             }
 
-            if (strlen(Request::post('postcode')) === 0)
+            if (Request::post('postcode') === '')
             {
                 $incorrecteVelden[] = 'Postcode';
             }
 
-            if (strlen(Request::post('city')) === 0)
+            if (Request::post('city') === '')
             {
                 $incorrecteVelden[] = 'Woonplaats';
             }
@@ -299,7 +296,7 @@ Kaartsoorten:
             $text .= PHP_EOL . 'Kaarten bezorgen: ' . Util::boolToText($delivery);
         }
 
-        $text .= PHP_EOL . 'Gereserveerde plaatsen: ' . $reserveSeats == 1 ? 'Ja' : 'Nee' . PHP_EOL;
+        $text .= PHP_EOL . 'Gereserveerde plaatsen: ' . $reserveSeats === 1 ? 'Ja' : 'Nee' . PHP_EOL;
         $text .= 'Totaalbedrag: ' . Util::formatEuro($total) . '
 
 Achternaam: ' . $lastName . '

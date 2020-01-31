@@ -10,8 +10,8 @@ use Cyndaron\Url;
 
 class MenuItem extends Model
 {
-    const TABLE = 'menu';
-    const TABLE_FIELDS = ['link', 'alias', 'isDropdown', 'isImage', 'priority'];
+    public const TABLE = 'menu';
+    public const TABLE_FIELDS = ['link', 'alias', 'isDropdown', 'isImage', 'priority'];
 
     public string $link;
     public ?string $alias = null;
@@ -34,21 +34,19 @@ class MenuItem extends Model
         {
             return $this->alias;
         }
-        else
-        {
-            $url = new Url($this->link);
-            return $url->getPageTitle();
-        }
+
+        $url = new Url($this->link);
+        return $url->getPageTitle();
     }
 
     public function getLink(): string
     {
-        if ($this->link == Setting::get('frontPage'))
+        if ($this->link === Setting::get('frontPage'))
         {
             return '/';
         }
         // For dropdowns, this is not necessary and it makes detection harder down the line.
-        elseif (!$this->isDropdown)
+        if (!$this->isDropdown)
         {
             $url = new Url($this->link);
             return $url->getFriendly();
@@ -60,8 +58,8 @@ class MenuItem extends Model
     public function isCurrentPage(): bool
     {
         $link = $this->getLink();
-        // Vergelijking na || betekent testen of de hoofdurl is opgevraagd
-        if ($link == basename(substr($_SERVER['REQUEST_URI'], 1)) || ($link == '/' && $_SERVER['REQUEST_URI'] === '/'))
+        // The first comparison checks if the homepage has been requested.
+        if (($link === '/' && $_SERVER['REQUEST_URI'] === '/') || $link === basename(substr($_SERVER['REQUEST_URI'], 1)))
         {
             return true;
         }
@@ -74,9 +72,9 @@ class MenuItem extends Model
         return strpos($this->link, '/category/') === 0 && $this->isDropdown;
     }
 
-    public function getSubMenu()
+    public function getSubMenu(): array
     {
-        $id = intval(str_replace('/category/', '', $this->link));
+        $id = (int)str_replace('/category/', '', $this->link);
         $pagesInCategory = DBConnection::doQueryAndFetchAll("
             SELECT * FROM
             (

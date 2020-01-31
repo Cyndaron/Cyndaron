@@ -3,9 +3,9 @@ namespace Cyndaron\Widget;
 
 class Pagination extends Widget
 {
-    public function __construct($link, $numPages, $currentPage, $offset = 0)
+    public function __construct(string $link, int $numPages, int $currentPage, int $offset = 0)
     {
-        if ($numPages == 1)
+        if ($numPages === 1)
         {
             return;
         }
@@ -17,11 +17,11 @@ class Pagination extends Widget
             $currentPage - 2, $currentPage - 1, $currentPage, $currentPage + 1, $currentPage + 2,
         ];
 
-        if ($currentPage == 7)
+        if ($currentPage === 7)
         {
             $teTonenPaginas[] = 4;
         }
-        if ($numPages - $currentPage == 6)
+        if ($numPages - $currentPage === 6)
         {
             $teTonenPaginas[] = $numPages - 3;
         }
@@ -42,13 +42,13 @@ class Pagination extends Widget
                 continue;
             }
 
-            if ($vorigePaginanummer != $i - 1)
+            if ($vorigePaginanummer !== $i - 1)
             {
                 $this->code .= '<li><span>...</span></li>';
             }
 
             $class = '';
-            if ($i == $currentPage)
+            if ($i === $currentPage)
             {
                 $class = 'class="active"';
             }

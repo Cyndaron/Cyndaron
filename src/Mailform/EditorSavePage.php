@@ -18,7 +18,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $mailform->name = Request::unsafePost('titel');
         $mailform->email = Request::unsafePost('email');
         $mailform->antiSpamAnswer = Request::unsafePost('antiSpamAnswer');
-        $mailform->sendConfirmation = (bool)Request::unsafePost('sendConfirmation');;
+        $mailform->sendConfirmation = (bool)Request::unsafePost('sendConfirmation');
         $mailform->confirmationText = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
 
         if ($mailform->save())

@@ -11,7 +11,7 @@ class PhotoalbumController extends Controller
 {
     protected function routeGet()
     {
-        $id = intval(Request::getVar(1));
+        $id = (int)Request::getVar(1);
         if ($id < 1)
         {
             header('Location: /error/404');
@@ -24,7 +24,7 @@ class PhotoalbumController extends Controller
 
     protected function routePost()
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
 
         switch ($this->action)
         {

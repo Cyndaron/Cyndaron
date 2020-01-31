@@ -52,7 +52,7 @@
                 <td>{{ $orderId }}</td>
                 <td>
                     {{ $registration->initials }} {{ $registration->lastName }}<br>
-                    @if ($registration->registrationGroup == 1)Student / jongere @else Volwassene @endif
+                    @if ($registration->registrationGroup === 1)Student / jongere @else Volwassene @endif
                     @if ($registration->birthYear)
                         <br>Geboortejaar: {{ $registration->birthYear }}
                     @endif
@@ -125,7 +125,7 @@
         <tbody>
             @foreach ($totals as $vocalRange => $counts)
                 <tr>
-                    <td>@if ($vocalRange == 'Totaal')<b>{{ $vocalRange }}</b>@else{{ $vocalRange }}@endif</td>
+                    <td>@if ($vocalRange === 'Totaal')<b>{{ $vocalRange }}</b>@else{{ $vocalRange }}@endif</td>
                     <td>{{ $counts[0]['num'] }}</td>
                     <td>{{ $counts[1]['num'] }}</td>
                     <td>{{ $counts[0]['num'] + $counts[1]['num'] }}</td>

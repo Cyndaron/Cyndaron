@@ -46,20 +46,17 @@ class StaticPageModel extends Model
         return (bool)DBConnection::doQueryAndFetchOne('SELECT * FROM sub_backups WHERE id= ?', [$this->id]);
     }
 
-    public function react(string $author, string $reactie, string $antispam)
+    public function react(string $author, string $reactie, string $antispam): bool
     {
-        if ($this->id == null)
+        if ($this->id === null)
         {
             throw new Exception('No ID!');
         }
-        if ($this->load() && $this->enableComments)
+        if ($this->load() && $this->enableComments && $author && $reactie && ($antispam === 'acht' || $antispam === '8'))
         {
-            if ($author && $reactie && ($antispam == 'acht' || $antispam == '8'))
-            {
-                $prep = DBConnection::getPdo()->prepare('INSERT INTO sub_replies(subId, author, text) VALUES (?, ?, ?)');
-                $prep->execute([$this->id, $author, $reactie]);
-                return true;
-            }
+            $prep = DBConnection::getPdo()->prepare('INSERT INTO sub_replies(subId, author, text) VALUES (?, ?, ?)');
+            $prep->execute([$this->id, $author, $reactie]);
+            return true;
         }
         return false;
     }
@@ -90,7 +87,7 @@ class StaticPageModel extends Model
 
     public function getImage(): string
     {
-        preg_match("/<img.*?src=\"(.*?)\".*?>/si", $this->text, $match);
+        preg_match('/<img.*?src="(.*?)".*?>/si', $this->text, $match);
         return $page['image'] = $match[1] ?? '';
     }
 }

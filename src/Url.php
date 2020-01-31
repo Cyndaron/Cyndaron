@@ -20,10 +20,8 @@ class Url
         {
             return '/' . $friendly;
         }
-        else
-        {
-            return $this->url;
-        }
+
+        return $this->url;
     }
 
     public function getUnfriendly(): string
@@ -32,10 +30,8 @@ class Url
         {
             return $unfriendly;
         }
-        else
-        {
-            return $this->url;
-        }
+
+        return $this->url;
     }
 
     public function equals(Url $otherUrl): bool
@@ -43,14 +39,7 @@ class Url
         $url1 = $this->getUnfriendly();
         $url2 = $otherUrl->getUnfriendly();
 
-        if ($url1 == $url2)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return $url1 === $url2;
     }
 
     public function __toString(): string
@@ -58,17 +47,19 @@ class Url
         return $this->url;
     }
 
-    public function createFriendly(string $name)
+    public function createFriendly(string $name): void
     {
-        if ($name == '' || $this->url == '')
+        if ($name === '' || $this->url === '')
+        {
             throw new Exception('Cannot create friendly URL with no name or no URL!');
+        }
         if (DBConnection::doQuery('INSERT INTO friendlyurls(name,target) VALUES (?,?)', [$name, $this->url]) === false)
         {
             throw new Exception('Could not insert friendly URL! Is the URL unique?');
         }
     }
 
-    public static function deleteFriendlyUrl(string $name)
+    public static function deleteFriendlyUrl(string $name): void
     {
         DBConnection::doQuery('DELETE FROM friendlyurls WHERE name=?', [ltrim($name, '/')]);
     }
@@ -99,7 +90,7 @@ class Url
         return $link;
     }
 
-    public static function addUrlProvider(string $urlBase, string $class)
+    public static function addUrlProvider(string $urlBase, string $class): void
     {
         static::$urlProviders[$urlBase] = $class;
     }

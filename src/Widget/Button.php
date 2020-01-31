@@ -3,7 +3,7 @@ namespace Cyndaron\Widget;
 
 class Button extends Widget
 {
-    public function __construct($kind, $link, $description = '', $text = null, $size = 20)
+    public function __construct(string $kind, string $link, string $description = '', $text = null, int $size = 20)
     {
         $btnClass = 'btn-outline-cyndaron';
 
@@ -30,11 +30,9 @@ class Button extends Widget
                 $icon = $kind;
         }
 
-        switch ($size)
+        if ($size === 16)
         {
-            case 16:
-                $btnClass .= ' btn-sm';
-                break;
+            $btnClass .= ' btn-sm';
         }
 
         $title = $description ? 'title="' . $description . '"' : '';

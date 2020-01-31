@@ -126,10 +126,14 @@ Lunch: ' . $lunchText . PHP_EOL . PHP_EOL;
     {
         $event = $this->getEvent();
         $orderTotal = 0;
-        if ($this->registrationGroup == 1)
+        if ($this->registrationGroup === 1)
+        {
             $orderTotal += $event->registrationCost1;
+        }
         else
+        {
             $orderTotal += $event->registrationCost0;
+        }
 
         if ($this->lunch)
         {
@@ -141,7 +145,9 @@ Lunch: ' . $lunchText . PHP_EOL . PHP_EOL;
         {
             $num = $orderTicketTypes[$ticketType->id] ?? 0;
             if ($ticketType->discountPer5)
+            {
                 $num -= floor($num / 5);
+            }
 
             $orderTotal +=  $num * $ticketType->price;
         }

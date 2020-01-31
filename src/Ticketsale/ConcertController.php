@@ -19,14 +19,14 @@ class ConcertController extends Controller
 
     protected function getConcertInfo()
     {
-        $concertId = intval(Request::getVar(2));
+        $concertId = (int)Request::getVar(2);
         $concert = new Concert($concertId);
         $concert->load();
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
 
         $answer = [
             'tickettypes' => [],
-            'forcedDelivery' => boolval($concert->forcedDelivery),
+            'forcedDelivery' => (bool)$concert->forcedDelivery,
             'defaultDeliveryCost' => $concert->deliveryCost,
             'reservedSeatCharge' => $concert->reservedSeatCharge,
         ];
@@ -44,19 +44,19 @@ class ConcertController extends Controller
 
     protected function order()
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         new OrderTicketsPage($id);
     }
 
     protected function viewOrders()
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         new ConcertOrderOverviewPage($id);
     }
 
     protected function viewReservedSeats()
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         new ShowReservedSeats($id);
     }
 }

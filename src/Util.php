@@ -21,8 +21,8 @@ use Cyndaron\Photoalbum\PhotoalbumPage;
 
 class Util
 {
-    const MONTHS = ["", "januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"];
-    const WEEKDAYS = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"];
+    protected const MONTHS = ['', 'januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
+    protected const WEEKDAYS = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
 
     /**
      * Zet een maandnummer om in de naam.
@@ -64,10 +64,8 @@ class Util
         {
             return implode(' ', array_slice($words, 0, $length)) . $ellipsis;
         }
-        else
-        {
-            return $text;
-        }
+
+        return $text;
     }
 
     public static function generatePassword($length = 10): string
@@ -79,7 +77,7 @@ class Util
 
         for ($c = 0; $c < $length; $c++)
         {
-            $gencode .= $letters[rand(0, count($letters) - 1)];
+            $gencode .= $letters[random_int(0, count($letters) - 1)];
         }
 
         return $gencode;
@@ -102,16 +100,14 @@ class Util
 
     public static function boolToText(bool $bool): string
     {
-        if ($bool == true)
-            return 'Ja';
-        return 'Nee';
+        return $bool ? 'Ja' : 'Nee';
     }
 
     public static function mail(string $to, string $subject, string $message, string $fromAddress = null, string $fromName = null): bool
     {
         if (empty($fromAddress))
         {
-            $fromAddress = Util::getNoreplyAddress();
+            $fromAddress = static::getNoreplyAddress();
         }
         if (empty($fromName))
         {
@@ -136,26 +132,26 @@ class Util
 
     public static function parseText(string $text): string
     {
-        return preg_replace_callback('/%slider\|([0-9]+)%/', function($matches) {
+        return preg_replace_callback('/%slider\|(\d+)%/', static function($matches)
+        {
             $album = Photoalbum::loadFromDatabase($matches[1]);
             $page = new PhotoalbumPage($album, 1);
-            return $page->drawSlider($album);
+            if ($album && $page)
+            {
+                return $page->drawSlider($album);
+            }
+            return '';
         }, $text);
     }
 
     public static function getDomain(): string
     {
-        $domain = str_replace("www.", "", $_SERVER['HTTP_HOST']);
-        $domain = str_replace("http://", "", $domain);
-        $domain = str_replace("https://", "", $domain);
-        $domain = str_replace("/", "", $domain);
-
-        return $domain;
+        return str_replace(['www.', 'http://', 'https://', '/'], '', $_SERVER['HTTP_HOST']);
     }
 
     public static function getNoreplyAddress(): string
     {
-        $domain = Util::getDomain();
+        $domain = static::getDomain();
         return "noreply@$domain";
     }
 

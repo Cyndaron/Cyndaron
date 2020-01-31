@@ -55,7 +55,7 @@ class Concert extends Model
         $adjacentFreeSeats = 0;
         for ($stoel = 1; $stoel <= $this->numReservedSeats; $stoel++)
         {
-            if (isset($reservedSeats[$stoel]) && $reservedSeats[$stoel] == true)
+            if (isset($reservedSeats[$stoel]) && $reservedSeats[$stoel])
             {
                 $adjacentFreeSeats = 0;
             }
@@ -64,7 +64,7 @@ class Concert extends Model
                 $adjacentFreeSeats++;
             }
 
-            if ($adjacentFreeSeats == $numTickets)
+            if ($adjacentFreeSeats === $numTickets)
             {
                 $foundEnoughSeats = true;
                 $firstSeat = $stoel - $numTickets + 1;
@@ -78,9 +78,7 @@ class Concert extends Model
             DBConnection::doQuery('INSERT INTO ticketsale_reservedseats(`orderId`, `row`, `firstSeat`, `lastSeat`) VALUES(?, \'A\', ?, ?)', [$orderId, $firstSeat, $lastSeat]);
             return range($firstSeat, $lastSeat);
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 }

@@ -39,15 +39,13 @@ class Module implements Datatypes, Routes, UrlProvider, Linkable
 
     public function url(array $linkParts): ?string
     {
-        if ($linkParts[1] == 0 || $linkParts[1] == 'fotoboeken')
+        if ((int)$linkParts[1] === 0 || $linkParts[1] === 'fotoboeken')
         {
             return 'Fotoalbums';
         }
-        else
-        {
-            $category = Category::loadFromDatabase((int)$linkParts[1]);
-            return $category ? $category->name : null;
-        }
+
+        $category = Category::loadFromDatabase((int)$linkParts[1]);
+        return $category ? $category->name : null;
     }
 
     public function getList(): array

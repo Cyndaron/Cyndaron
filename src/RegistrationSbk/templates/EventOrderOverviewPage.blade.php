@@ -1,4 +1,4 @@
-@extends ("Index")
+@extends ('Index')
 @php /** @var \Cyndaron\RegistrationSbk\Event $event */@endphp
 
 @section ('contents')
@@ -71,7 +71,7 @@
                 <td>{{ $registration->getStatus() }}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
-                        @if ($registration->approvalStatus == Cyndaron\RegistrationSbk\Registration::APPROVAL_UNDECIDED)
+                        @if ($registration->approvalStatus === Cyndaron\RegistrationSbk\Registration::APPROVAL_UNDECIDED)
                             <button data-order-id="{{ $orderId }}" data-approval-status="{{ \Cyndaron\RegistrationSbk\Registration::APPROVAL_APPROVED }}" data-csrf-token-set-approval-status="{{ \Cyndaron\User\User::getCSRFToken('eventSbk-registration', 'setApprovalStatus') }}" title="Aanmelding goedkeuren" class="eom-order-set-approval-status btn btn-sm btn-success"><span class="glyphicon glyphicon-ok"></span></button>
                             <button data-order-id="{{ $orderId }}" data-approval-status="{{ \Cyndaron\RegistrationSbk\Registration::APPROVAL_DISAPPROVED }}" data-csrf-token-set-approval-status="{{ \Cyndaron\User\User::getCSRFToken('eventSbk-registration', 'setApprovalStatus') }}" title="Aanmelding afkeuren" class="eom-order-set-approval-status btn btn-sm btn-warning"><span class="glyphicon glyphicon-remove"></span></button>
                         @endif
@@ -101,7 +101,7 @@
         <tbody>
             @foreach ($totals as $vocalRange => $counts)
                 <tr>
-                    <td>@if ($vocalRange == 'Totaal')<b>{{ $vocalRange }}</b>@else{{ $vocalRange }}@endif</td>
+                    <td>@if ($vocalRange === 'Totaal')<b>{{ $vocalRange }}</b>@else{{ $vocalRange }}@endif</td>
                     <td>{{ $counts[0]['num'] }}</td>
                     <td>{{ $counts[0]['num'] }}</td>
                     <td>{{ $counts[0]['num'] + $counts[0]['num'] }}</td>

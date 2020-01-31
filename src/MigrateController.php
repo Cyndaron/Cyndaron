@@ -11,7 +11,7 @@ class MigrateController extends Controller
 {
     protected int $minLevelGet = UserLevel::ANONYMOUS;
 
-    const VERSIONS = [
+    public const VERSIONS = [
         '5.3' => 'migrate53',
         '6.0' => 'migrate60',
     ];
@@ -29,7 +29,7 @@ class MigrateController extends Controller
         }
     }
 
-    private function migrate53()
+    private function migrate53(): void
     {
         if (!User::isAdmin())
         {
@@ -48,7 +48,7 @@ class MigrateController extends Controller
         DBConnection::doQuery('UPDATE `menu` SET alias = REPLACE(alias, \'img#\', \'\'), isImage=1 WHERE alias LIKE \'%img#\'');
     }
 
-    private function migrate60()
+    private function migrate60(): void
     {
         return;
 
@@ -80,4 +80,3 @@ class MigrateController extends Controller
     }
 }
 
-;

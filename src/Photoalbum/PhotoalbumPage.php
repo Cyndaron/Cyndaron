@@ -14,7 +14,7 @@ class PhotoalbumPage extends Page
         $this->model->load();
         parent::__construct($this->model->name);
 
-        if ($viewMode == Photoalbum::VIEWMODE_REGULAR)
+        if ($viewMode === Photoalbum::VIEWMODE_REGULAR)
         {
             $this->addScript('/sys/js/lightbox.min.js');
 

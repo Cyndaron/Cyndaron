@@ -5,17 +5,17 @@ use Cyndaron\Model;
 
 class Category extends Model
 {
-    const TABLE = 'categories';
-    const TABLE_FIELDS = ['name', 'description', 'viewMode', 'categoryId', 'showBreadcrumbs'];
-    const HAS_CATEGORY = true;
+    public const TABLE = 'categories';
+    public const TABLE_FIELDS = ['name', 'description', 'viewMode', 'categoryId', 'showBreadcrumbs'];
+    public const HAS_CATEGORY = true;
 
-    const VIEWMODE_REGULAR = 0;
-    const VIEWMODE_TITLES = 1;
-    const VIEWMODE_BLOG = 2;
-    const VIEWMODE_PORTFOLIO = 3;
-    const VIEWMODE_HORIZONTAL = 4;
+    public const VIEWMODE_REGULAR = 0;
+    public const VIEWMODE_TITLES = 1;
+    public const VIEWMODE_BLOG = 2;
+    public const VIEWMODE_PORTFOLIO = 3;
+    public const VIEWMODE_HORIZONTAL = 4;
 
-    const VIEWMODE_DESCRIPTIONS = [
+    public const VIEWMODE_DESCRIPTIONS = [
         self::VIEWMODE_REGULAR => 'Samenvatting',
         self::VIEWMODE_TITLES => 'Alleen titels',
         self::VIEWMODE_BLOG => 'Blog',

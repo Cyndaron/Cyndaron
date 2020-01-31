@@ -6,8 +6,8 @@ namespace Cyndaron\Minecraft;
  */
 class SkinRenderer
 {
-    const SECONDS_TO_CACHE = 604800; // Cache for 7 days
-    const FALLBACK_IMAGE = __DIR__ . '/char.png';
+    public const SECONDS_TO_CACHE = 604800; // Cache for 7 days
+    public const FALLBACK_IMAGE = __DIR__ . '/char.png';
 
     /**
      * @param string $skinUrl
@@ -15,7 +15,7 @@ class SkinRenderer
      */
     public static function getSkinOrFallback($skinUrl)
     {
-        if (trim($skinUrl) == '')
+        if (trim($skinUrl) === '')
         {
             $img_png = imagecreatefrompng(self::FALLBACK_IMAGE);
         }

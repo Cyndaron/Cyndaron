@@ -79,7 +79,7 @@ class Router
         $this->routeEndpoint();
     }
 
-    private function routeFoundNowCheckLogin()
+    private function routeFoundNowCheckLogin(): void
     {
         $userLevel = User::getLevel();
         if (!User::hasSufficientReadLevel() && !($this->requestVars[0] === 'user' && $this->requestVars[1] === 'login'))
@@ -90,13 +90,11 @@ class Router
                 header('Location: /error/403');
                 die('Deze pagina mag niet worden opgevraagd.');
             }
-            else
-            {
-                User::addNotification('U moet inloggen om deze site te bekijken');
-                $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
-                header('Location: /user/login');
-                die();
-            }
+
+            User::addNotification('U moet inloggen om deze site te bekijken');
+            $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
+            header('Location: /user/login');
+            die();
         }
     }
 
@@ -111,11 +109,13 @@ class Router
         try
         {
             if ($this->isApiCall)
+            {
                 ob_start();
+            }
 
             $ret = $route->route();
 
-            if ($this->isApiCall && ob_get_flush() == '')
+            if ($this->isApiCall && ob_get_flush() === '')
             {
                 echo json_encode($ret);
             }
@@ -157,7 +157,7 @@ class Router
             die();
         }
         // Redirect if a friendly url exists for the requested unfriendly url
-        if ($_SERVER['REQUEST_URI'] != '/' && $url = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target = ?', [$_SERVER['REQUEST_URI']]))
+        if ($_SERVER['REQUEST_URI'] !== '/' && $url = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target = ?', [$_SERVER['REQUEST_URI']]))
         {
             header('Location: /' . $url);
             die();
@@ -190,7 +190,7 @@ class Router
 
         // Unfortunately, CKeditor still needs inline scripting. Only allow this on editor pages,
         // in order to prevent degrading the security of the rest of the system.
-        if ($this->requestVars[0] == 'editor')
+        if ($this->requestVars[0] === 'editor')
         {
             $scriptSrc .= " 'unsafe-inline'";
         }
@@ -203,7 +203,7 @@ class Router
      */
     private function blockPathTraversal(string $request): void
     {
-        if ((substr($request, 0, 1) == '.' || substr($request, 0, 1) == '/') && $request != '/') {
+        if ($request !== '/' && (substr($request, 0, 1) === '.' || substr($request, 0, 1) === '/')) {
             header('Location: /error/403');
             die('Deze locatie mag niet worden opgevraagd.');
         }

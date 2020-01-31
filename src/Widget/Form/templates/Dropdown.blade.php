@@ -3,7 +3,7 @@
     <div class="col-sm-5">
         <select id="{{ $id }}" name="{{ $id }}" class="form-control custom-select">
             @foreach ($options as $value => $description)
-            <option value="{{ $value }}" @if ($value == $selected) selected @endif>{{ $description }}</option>
+            <option value="{{ $value }}" @if ($value === $selected) selected @endif>{{ $description }}</option>
             @endforeach
         </select>
     </div>

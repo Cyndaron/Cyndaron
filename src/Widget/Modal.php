@@ -28,7 +28,6 @@ class Modal extends Widget
             </div>
         </div>
         <?php
-        $this->code = ob_get_contents();
-        ob_end_clean();
+        $this->code = ob_get_clean();
     }
 }

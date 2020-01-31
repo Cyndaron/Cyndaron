@@ -18,7 +18,7 @@ class OrderController extends Controller
 
     protected function routePost()
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
 
@@ -36,7 +36,7 @@ class OrderController extends Controller
 
     protected function add()
     {
-        $eventId = intval(Request::post('event_id'));
+        $eventId = (int)Request::post('event_id');
         try
         {
             $this->processOrder($eventId);
@@ -85,7 +85,7 @@ class OrderController extends Controller
         $ticketTypes = EventTicketType::loadByEvent($eventObj);
         foreach ($ticketTypes as $ticketType)
         {
-            $orderTicketTypes[$ticketType->id] = intval(Request::post('tickettype-' . $ticketType->id));
+            $orderTicketTypes[$ticketType->id] = (int)Request::post('tickettype-' . $ticketType->id);
         }
 
         $order = new Order();
@@ -153,17 +153,17 @@ class OrderController extends Controller
             $errorFields[] = 'Antispam';
         }
 
-        if (strlen(Request::post('lastName')) === 0)
+        if (Request::post('lastName') === '')
         {
             $errorFields[] = 'Achternaam';
         }
 
-        if (strlen(Request::post('initials')) === 0)
+        if (Request::post('initials') === '')
         {
             $errorFields[] = 'Voorletters';
         }
 
-        if (strlen(Request::post('email')) === 0)
+        if (Request::post('email') === '')
         {
             $errorFields[] = 'E-mailadres';
         }

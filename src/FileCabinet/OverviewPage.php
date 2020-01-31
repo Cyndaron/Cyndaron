@@ -23,16 +23,16 @@ class OverviewPage extends Page
             while($filename = readdir($bestandendir))
             {
                 // Hide hidden files, HTML files and PHP files
-                if ((substr($filename, 0, 1) != '.') && (substr($filename, -4) != 'html') && (substr($filename, -3) != 'php'))
+                if ((substr($filename, 0, 1) !== '.') && (substr($filename, -4) !== 'html') && (substr($filename, -3) !== 'php'))
                 {
                     $dirArray[] = $filename;
                 }
             }
             closedir($bestandendir);
 
-            if ($orderBy == 'date')
+            if ($orderBy === 'date')
             {
-                usort($dirArray, function ($file1, $file2) {
+                usort($dirArray, static function ($file1, $file2) {
                     return filectime(self::PATH . $file1) <=> filectime(self::PATH . $file2);
                 });
             }

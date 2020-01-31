@@ -77,14 +77,14 @@ class UserController extends Controller
         $username = Request::post('username');
         $email = Request::post('email');
         $password = Request::post('password') ?: Util::generatePassword();
-        $level = intval(Request::post('level'));
+        $level = (int)Request::post('level');
         $firstName = Request::post('firstName');
         $tussenvoegsel = Request::post('tussenvoegsel');
         $lastName = Request::post('lastName');
         $role = Request::post('role');
         $comments = Request::post('comments');
         $avatar = Request::post('avatar');
-        $hideFromMemberList = Request::post('hideFromMemberList') == '1' ? true : false;
+        $hideFromMemberList = Request::post('hideFromMemberList') === '1';
 
         $userId = User::create($username, $email, $password, $level, $firstName, $tussenvoegsel, $lastName, $role, $comments, $avatar, $hideFromMemberList);
         echo json_encode(['userId' => $userId]);
@@ -97,15 +97,15 @@ class UserController extends Controller
         {
             $username = Request::post('username');
             $email = Request::post('email');
-            $level = intval(Request::post('level'));
+            $level = (int)Request::post('level');
             $firstName = Request::post('firstName');
             $tussenvoegsel = Request::post('tussenvoegsel');
             $lastName = Request::post('lastName');
             $role = Request::post('role');
             $comments = Request::post('comments');
             $avatar = Request::post('avatar');
-            $hideFromMemberList = Request::post('hideFromMemberList') == '1' ? true : false;
-            $this->editHelper(intval($id), $username, $email, $level, $firstName, $tussenvoegsel, $lastName, $role, $comments, $avatar, $hideFromMemberList);
+            $hideFromMemberList = Request::post('hideFromMemberList') === '1';
+            $this->editHelper((int)$id, $username, $email, $level, $firstName, $tussenvoegsel, $lastName, $role, $comments, $avatar, $hideFromMemberList);
         }
         else
         {

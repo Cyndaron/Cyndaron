@@ -36,24 +36,24 @@ class Polygon
      * @param Point[] $dots
      * @param int $colour
      */
-    function __construct($dots, $colour)
+    public function __construct($dots, $colour)
     {
         $this->_dots = $dots;
         $this->_colour = $colour;
         $coord_0 = $dots[0]->getOriginCoord();
         $coord_1 = $dots[1]->getOriginCoord();
         $coord_2 = $dots[2]->getOriginCoord();
-        if ($coord_0['x'] == $coord_1['x'] && $coord_1['x'] == $coord_2['x'])
+        if ($coord_0['x'] === $coord_1['x'] && $coord_1['x'] === $coord_2['x'])
         {
             $this->_face = 'x';
             $this->_faceDepth = $coord_0['x'];
         }
-        elseif ($coord_0['y'] == $coord_1['y'] && $coord_1['y'] == $coord_2['y'])
+        elseif ($coord_0['y'] === $coord_1['y'] && $coord_1['y'] === $coord_2['y'])
         {
             $this->_face = 'y';
             $this->_faceDepth = $coord_0['y'];
         }
-        elseif ($coord_0['z'] == $coord_1['z'] && $coord_1['z'] == $coord_2['z'])
+        elseif ($coord_0['z'] === $coord_1['z'] && $coord_1['z'] === $coord_2['z'])
         {
             $this->_face = 'z';
             $this->_faceDepth = $coord_0['z'];
@@ -63,7 +63,7 @@ class Polygon
     /**
      * @return string
      */
-    function getFace()
+    public function getFace(): string
     {
         return $this->_face;
     }
@@ -72,14 +72,14 @@ class Polygon
      * @param int $ratio
      * @return string
      */
-    function getSvgPolygon($ratio)
+    public function getSvgPolygon($ratio): string
     {
         $points_2d = '';
         $r = ($this->_colour >> 16) & 0xFF;
         $g = ($this->_colour >> 8) & 0xFF;
         $b = $this->_colour & 0xFF;
         $vR = (127 - (($this->_colour & 0x7F000000) >> 24)) / 127;
-        if ($vR == 0)
+        if ($vR === 0)
         {
             return '';
         }
@@ -98,7 +98,7 @@ class Polygon
      * @param int $minY
      * @param int $ratio
      */
-    function addPngPolygon(&$image, $minX, $minY, $ratio)
+    public function addPngPolygon(&$image, $minX, $minY, $ratio): void
     {
         $points_2d = [];
         $nb_points = 0;
@@ -106,7 +106,7 @@ class Polygon
         $g = ($this->_colour >> 8) & 0xFF;
         $b = $this->_colour & 0xFF;
         $vR = (127 - (($this->_colour & 0x7F000000) >> 24)) / 127;
-        if ($vR == 0)
+        if ($vR === 0)
         {
             return;
         }
@@ -123,11 +123,11 @@ class Polygon
             {
                 $coord_y = $coord['y'];
             }
-            if ($coord_x != $coord['x'])
+            if ($coord_x !== $coord['x'])
             {
                 $same_plan_x = false;
             }
-            if ($coord_y != $coord['y'])
+            if ($coord_y !== $coord['y'])
             {
                 $same_plan_y = false;
             }
@@ -145,12 +145,12 @@ class Polygon
     /**
      * @return bool
      */
-    function isProjected()
+    public function isProjected(): bool
     {
         return $this->_isProjected;
     }
 
-    function project()
+    public function project(): void
     {
         foreach ($this->_dots as &$dot)
         {
@@ -159,10 +159,11 @@ class Polygon
                 $dot->project();
             }
         }
+        unset($dot);
         $this->_isProjected = true;
     }
 
-    function preProject($dx, $dy, $dz, $cos_alpha, $sin_alpha, $cos_omega, $sin_omega)
+    public function preProject($dx, $dy, $dz, $cos_alpha, $sin_alpha, $cos_omega, $sin_omega): void
     {
         foreach ($this->_dots as &$dot)
         {

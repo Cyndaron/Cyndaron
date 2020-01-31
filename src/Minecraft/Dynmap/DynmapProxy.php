@@ -8,7 +8,7 @@ use Cyndaron\Request;
 
 class DynmapProxy
 {
-    const MIMETABLE = [
+    public const MIMETABLE = [
         'css' => 'text/css',
         'ico' => 'image/vnd.microsoft.icon',
         'js' => 'application/javascript',
@@ -22,7 +22,7 @@ class DynmapProxy
         {
             die('');
         }
-        $serverAddr = sprintf('http://%s:%d', $server['hostname'], intval($server['dynmapPort']));
+        $serverAddr = sprintf('http://%s:%d', $server['hostname'], (int)$server['dynmapPort']);
 
 
         $link = '';
@@ -39,7 +39,6 @@ class DynmapProxy
         else
         {
             $contents = file_get_contents($serverAddr . $link);
-
         }
 
         foreach (self::MIMETABLE as $extension => $mimetype)
@@ -51,8 +50,7 @@ class DynmapProxy
             }
         }
 
-        $contents = str_replace('%SERVER%', '/minecraft/dynmapproxy/1/', $contents);
-        $contents = str_replace($serverAddr, '/minecraft/dynmapproxy/1/', $contents);
+        $contents = str_replace(['%SERVER%', $serverAddr], '/minecraft/dynmapproxy/1/', $contents);
         echo $contents;
     }
 }

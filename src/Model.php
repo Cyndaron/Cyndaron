@@ -25,7 +25,7 @@ class Model
      * @return static|null
      * @throws Exception
      */
-    public static function loadFromDatabase(int $id)
+    public static function loadFromDatabase(int $id): ?Model
     {
         // Needed to make sure an object of the derived class is returned, not one of the base class.
         $object = new static($id);
@@ -33,10 +33,8 @@ class Model
         {
             return $object;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
     /**
@@ -53,10 +51,8 @@ class Model
         {
             return $this->load();
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     public function load(): bool
@@ -189,16 +185,20 @@ class Model
             $result = DBConnection::doQuery('UPDATE ' . static::TABLE . ' SET ' . implode(',', $setStrings) . ' WHERE id=?', $arguments);
         }
 
-        return ($result === false) ? false : true;
+        return $result !== false;
     }
 
     private function mangleVar($var): ?string
     {
         if ($var === null)
+        {
             return null;
+        }
 
         if (is_bool($var))
+        {
             $var = (int)$var;
+        }
         return (string)$var;
     }
 }

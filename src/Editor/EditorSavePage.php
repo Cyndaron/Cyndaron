@@ -8,21 +8,17 @@ use Cyndaron\Util;
 
 abstract class EditorSavePage
 {
-    const TYPE = '';
+    public const TYPE = '';
 
     protected $id = null;
-    protected $returnUrl;
+    protected string $returnUrl = '';
 
     public function __construct()
     {
         $id = Request::getVar(2);
         if ($id)
         {
-            $this->id = intval($id);
-        }
-        else
-        {
-            $this->id = null;
+            $this->id = (int)$id;
         }
 
         $this->prepare();
@@ -50,7 +46,7 @@ abstract class EditorSavePage
         return preg_replace_callback('/src="(data:)([^"]*)"/', 'static::extractImages', $text);
     }
 
-    protected static function extractImages($matches)
+    protected static function extractImages($matches): string
     {
         [$type, $image] = explode(';', $matches[2]);
 

@@ -9,9 +9,9 @@ class DaySelector extends Widget
 
         for ($i = 1; $i <= 31; $i++)
         {
-            $i = (strlen($i) == 1) ? $i = "0" . $i : $i;
-            $sel = ($i == $selectedDay) ? "selected" : "";
-            $this->code .= "<option value='" . $i . "' $sel>" . $i . "</option>";
+            $i = (strlen($i) === 1) ? $i = '0' . $i : $i;
+            $sel = ($i === $selectedDay) ? 'selected' : '';
+            $this->code .= sprintf('<option value="%d" %s>%d</option>', $i, $sel, $i);
         }
     }
 }

@@ -25,36 +25,34 @@ class DBConnection
             static::$errorQuery = $query;
             return false;
         }
-        else
-        {
-            return call_user_func($functionOnSuccess, $prep, $result);
-        }
+
+        return call_user_func($functionOnSuccess, $prep, $result);
     }
 
     public static function doQuery(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function(PDOStatement $prep, $result) {
+        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result) {
             return static::$pdo->lastInsertId();
         });
     }
 
     public static function doQueryAndFetchAll(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function(PDOStatement $prep, $result) {
+        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result) {
             return $prep->fetchAll(PDO::FETCH_ASSOC);
         });
     }
 
     public static function doQueryAndReturnFetchable(string $query, array $vars = []): PDOStatement
     {
-        return static::executeQuery($query, $vars, function(PDOStatement $prep, $result) {
+        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result) {
             return $prep;
         });
     }
 
     public static function doQueryAndFetchFirstRow(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function(PDOStatement $prep, $result) {
+        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result) {
             return $prep->fetch(PDO::FETCH_ASSOC);
         });
     }
@@ -66,12 +64,12 @@ class DBConnection
         });
     }
 
-    public static function errorInfo()
+    public static function errorInfo(): array
     {
         return ['pdo' => static::$pdo->errorInfo(), 'statement' => static::$statementError, 'query' => static::$errorQuery];
     }
 
-    public static function connect($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass)
+    public static function connect($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass): void
     {
         try
         {

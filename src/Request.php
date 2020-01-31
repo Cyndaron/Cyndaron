@@ -74,13 +74,11 @@ class Request
             }
             return $tmp;
         }
-        else
-        {
-            return self::cleanVariable($invoer);
-        }
+
+        return self::cleanVariable($invoer);
     }
 
-    public static function cleanVariable($var)
+    public static function cleanVariable(string $var): string
     {
         // Dit filtert niet-bestaande en ongewenste UTF-8 tekens uit een string.
         // Line feeds, carriage returns en horizontale tabs zijn toegestaan.
@@ -94,7 +92,7 @@ class Request
         return $output;
     }
 
-    public static function sendDoNotCache()
+    public static function sendDoNotCache(): void
     {
         header('Cache-Control: no-cache, no-store, must-revalidate');
         header('Pragma: no-cache');
@@ -112,9 +110,7 @@ class Request
         {
             return null;
         }
-        else
-        {
-            return static::$vars[$varNum];
-        }
+
+        return static::$vars[$varNum];
     }
 }
