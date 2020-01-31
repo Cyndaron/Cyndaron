@@ -83,7 +83,7 @@ class Point
     }
 
     /**
-     * @return array
+     * @return float
      */
     public function getDepth(): float
     {

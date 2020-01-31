@@ -27,11 +27,6 @@ class Polygon
     private string $_face = 'w';
 
     /**
-     * @var int
-     */
-    private int $_faceDepth = 0;
-
-    /**
      * Polygon constructor.
      * @param Point[] $dots
      * @param int $colour
@@ -46,17 +41,14 @@ class Polygon
         if ($coord_0['x'] === $coord_1['x'] && $coord_1['x'] === $coord_2['x'])
         {
             $this->_face = 'x';
-            $this->_faceDepth = $coord_0['x'];
         }
         elseif ($coord_0['y'] === $coord_1['y'] && $coord_1['y'] === $coord_2['y'])
         {
             $this->_face = 'y';
-            $this->_faceDepth = $coord_0['y'];
         }
         elseif ($coord_0['z'] === $coord_1['z'] && $coord_1['z'] === $coord_2['z'])
         {
             $this->_face = 'z';
-            $this->_faceDepth = $coord_0['z'];
         }
     }
 
