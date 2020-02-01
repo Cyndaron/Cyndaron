@@ -112,6 +112,8 @@ class OrderController extends Controller
         $order->postcode = Request::post('postcode');
         $order->city = Request::post('city');
         $order->comments = Request::post('comments');
+        $order->currentChoir = Request::post('currentChoir');
+        $order->choirPreference = Request::post('choirPreference');
 
         $orderTotal = $order->calculateTotal($orderTicketTypes);
         if ($orderTotal <= 0)

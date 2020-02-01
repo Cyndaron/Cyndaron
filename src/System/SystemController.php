@@ -20,6 +20,7 @@ class SystemController extends Controller
     protected function routePost()
     {
         Setting::set('siteName', Request::post('siteName'));
+        Setting::set('organisation', Request::post('organisation'));
         Setting::set('logo', Request::post('logo'));
         Setting::set('subTitle', Request::post('subTitle'));
         Setting::set('favicon', Request::post('favicon'));

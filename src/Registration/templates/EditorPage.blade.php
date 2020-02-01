@@ -8,9 +8,10 @@
 
     @include ('Widget/Form/Checkbox', ['id' => 'openForRegistration', 'description' => 'Open voor inschrijving', 'checked' => $model->openForRegistration])
 
-    @include ('Widget/Form/Currency', ['id' => 'registrationCost0', 'label' => 'Inschrijfgeld volwassenen', 'value' => $registrationCost0])
+    @include ('Widget/Form/Currency', ['id' => 'registrationCost0', 'label' => 'Inschrijfgeld groep 0', 'value' => $registrationCost0])
+    @include ('Widget/Form/Currency', ['id' => 'registrationCost1', 'label' => 'Inschrijfgeld groep 1', 'value' => $registrationCost1])
+    @include ('Widget/Form/Currency', ['id' => 'registrationCost2', 'label' => 'Inschrijfgeld groep 2', 'value' => $registrationCost2])
 
-    @include ('Widget/Form/Currency', ['id' => 'registrationCost1', 'label' => 'Inschrijfgeld studenten / < 20', 'value' => $registrationCost1])
 
     @include ('Widget/Form/Currency', ['id' => 'lunchCost', 'label' => 'Lunchkosten', 'value' => $lunchCost])
 

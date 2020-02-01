@@ -13,8 +13,14 @@
 
         <form method="post" action="/event-order/add" class="form-horizontal" id="kaartenbestellen">
             <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('event-order', 'add') }}"/>
+            <input type="hidden" id="eventId" name="event_id" value="{{ $event->id }}"/>
 
             <h3>Uw gegevens (verplicht):</h3>
+
+            @include('Widget/Form/Select', [
+                'id' => 'lunchType',
+                'label' => 'Soort lunch',
+                'options' => ['Vegetarisch' => 'Vegetarisch', 'Vis' => 'Vis', 'Vlees' => 'Vlees']])
 
             <div class="form-group row">
                 <div class="col-sm-12">
@@ -26,67 +32,22 @@
                 </div>
             </div>
 
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="lastName">Achternaam:</label>
-                <div class="col-sm-5"><input id="lastName" name="lastName" required class="form-control"/></div>
-            </div>
+            @include('Widget/Form/BasicInput', ['id' => 'lastName', 'label' => 'Achternaam', 'required' => true])
+            @include('Widget/Form/BasicInput', ['id' => 'initials', 'label' => 'Voorletters', 'required' => true])
+            @include('Widget/Form/Select', ['id' => 'vocalRange', 'label' => 'Stemsoort', 'required' => true, 'options' => ['Sopraan' => 'Sopraan', 'Alt' => 'Alt', 'Tenor' => 'Tenor', 'Bas' => 'Bas']])
+            @include('Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'E-mailadres', 'required' => true])
 
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="initials">Voorletters:</label>
-                <div class="col-sm-5"><input id="initials" name="initials" required class="form-control"/></div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="vocalRange">Stemsoort:</label>
-                <div class="col-sm-5">
-                    <select id="vocalRange" name="vocalRange" required class="form-control">
-                        <option value="">Kies een zangstem</option>
-                        <option>Sopraan</option>
-                        <option>Alt</option>
-                        <option>Tenor</option>
-                        <option>Bas</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="email">E-mailadres:</label>
-                <div class="col-sm-5"><input id="email" name="email" type="email" required class="form-control"/></div>
-            </div>
-
-            <div class="form-group row">
-                <div class="col-sm-12">
-                    <input id="lunch" name="lunch" type="checkbox" value="1" class="recalculateTotal">
-                    <label for="lunch">Ik wil graag gebruik maken van de lunch</label>
-                </div>
-            </div>
+            @include('Widget/Form/Checkbox', ['id' => 'lunch', 'label' => 'Ik wil graag gebruik maken van de lunch'])
 
             <div id="lunchTypeWrapper">
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label" for="lunchType">Soort lunch:</label>
-                    <div class="col-sm-5">
-                        <select id="lunchType" name="lunchType" class="form-control">
-                            <option value="Vegetarisch">Vegetarisch</option>
-                            <option value="Vis">Vis</option>
-                            <option value="Vlees">Vlees</option>
-                        </select>
-                    </div>
-                </div>
+                @include('Widget/Form/Select', [
+                    'id' => 'lunchType',
+                    'label' => 'Soort lunch',
+                    'options' => ['Vegetarisch' => 'Vegetarisch', 'Vis' => 'Vis', 'Vlees' => 'Vlees']])
             </div>
 
-            <div class="form-group row">
-                <div class="col-sm-12">
-                    <input id="bhv" name="bhv" type="checkbox" value="1">
-                    <label for="bhv">Ik ben arts of in het bezit van een BHV- of AED-certificaat</label>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class="col-sm-12">
-                    <input id="kleinkoor" name="kleinkoor" type="checkbox" value="1">
-                    <label for="kleinkoor">Ik wil graag meezingen in het kleinkoor</label>
-                </div>
-            </div>
+            @include('Widget/Form/Checkbox', ['id' => 'bhv', 'label' => 'Ik ben arts of in het bezit van een BHV- of AED-certificaat'])
+            @include('Widget/Form/Checkbox', ['id' => 'kleinkoor', 'label' => 'Ik wil graag meezingen in het kleinkoor'])
 
             <div id="kleinkoorExplanationWrapper">
                 <div class="form-group row">
@@ -100,38 +61,13 @@
 
             <h3 id="adresgegevensKop">Overige gegevens (niet verplicht):</h3>
 
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="birthYear">Uw geboortejaar:</label>
-                <div class="col-sm-1"><input id="birthYear" name="birthYear" type="number" min="1900" max="2019" step="1" pattern="[0-9]{4}" class="form-control"/></div>
-            </div>
+            @include('Widget/Form/BasicInput', ['id' => 'birthYear', 'label' => 'Uw geboortejaar', 'type' => 'number', 'min' => 1900, 'max' => date('Y') - 10, 'step' => 1, 'pattern' => '[0-9]{4}'])
 
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="street">Straatnaam:</label>
-                <div class="col-sm-5"><input id="street" name="street"
-                                             class="form-control"/></div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="houseNumber">Huisnummer:</label>
-                <div class="col-sm-5"><input id="houseNumber" name="houseNumber" type="number"
-                                             class="form-control"/></div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="houseNumberAddition">Huisnummertoevoeging:</label>
-                <div class="col-sm-5"><input id="houseNumberAddition" name="houseNumberAddition"
-                                             class="form-control"/></div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="postcode">Postcode:</label>
-                <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control"/></div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="city">Woonplaats:</label>
-                <div class="col-sm-5"><input id="city" name="city" class="form-control"/></div>
-            </div>
+            @include('Widget/Form/BasicInput', ['id' => 'street', 'label' => 'Straatnaam'])
+            @include('Widget/Form/BasicInput', ['id' => 'houseNumber', 'label' => 'Huisnummer', 'type' => 'number'])
+            @include('Widget/Form/BasicInput', ['id' => 'houseNumberAddition', 'label' => 'Huisnummertoevoeging'])
+            @include('Widget/Form/BasicInput', ['id' => 'postcode', 'label' => 'Postcode'])
+            @include('Widget/Form/BasicInput', ['id' => 'city', 'label' => 'Woonplaats'])
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Eerder meegedaan?</label>
@@ -149,7 +85,6 @@
             </div>
 
             <h3>Kaarten voor vrienden/familie:</h3>
-            <input type="hidden" id="eventId" name="event_id" value="{{ $event->id }}"/>
             <table class="kaartverkoop table table-striped">
                 <thead>
                     <tr>
@@ -190,10 +125,7 @@
             <p>Om te voorkomen dat er spam wordt verstuurd met dit formulier<br/>wordt u verzocht in het onderstaande
                 vak <span style="font-family:monospace;">{{ $event->getAntiSpam() }}</span> in te vullen.</p>
 
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="antispam">Antispam:</label>
-                <div class="col-sm-5"><input id="antispam" name="antispam" required class="form-control"/></div>
-            </div>
+            @include('Widget/Form/BasicInput', ['id' => 'antispam', 'label' => 'Antispam', 'required' => true])
 
             <p>Uw gegevens zullen worden verwerkt zoals beschreven in onze <a href="/privacyverklaring">privacyverklaring</a>.</p>
 

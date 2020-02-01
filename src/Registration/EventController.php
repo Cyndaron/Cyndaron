@@ -26,6 +26,7 @@ class EventController extends Controller
         $answer = [
             'registrationCost0' => $event->registrationCost0,
             'registrationCost1' => $event->registrationCost1,
+            'registrationCost2' => $event->registrationCost2,
             'lunchCost' => $event->lunchCost,
             'tickettypes' => $ticketTypes,
         ];
@@ -37,7 +38,7 @@ class EventController extends Controller
     {
         $id = (int)Request::getVar(2);
         $event = Event::loadFromDatabase($id);
-        new OrderTicketsPage($event);
+        new OrderPage($event);
     }
 
     protected function viewOrders()

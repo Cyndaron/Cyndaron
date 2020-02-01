@@ -3,12 +3,18 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
+use Cyndaron\Setting;
 
 class EventOrderOverviewPage extends Page
 {
     public function __construct(Event $event)
     {
         $ticketTypesByOrder = [];
+
+        if (Setting::get('organisation') === 'Vlissingse Oratorium Vereniging')
+        {
+            $this->template = 'Registration/EventOrderOverviewPageVOV';
+        }
 
         $ticketTypes = EventTicketType::loadByEvent($event);
         $registrations = Order::loadByEvent($event);

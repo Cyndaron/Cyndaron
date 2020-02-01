@@ -15,7 +15,7 @@ class ViewFinder extends FileViewFinder
      *
      * @throws InvalidArgumentException
      */
-    protected function findInPaths($name, $paths)
+    protected function findInPaths($name, $paths): string
     {
         $name = strtr($name, [
             '.' => '/',

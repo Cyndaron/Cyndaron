@@ -16,15 +16,6 @@ class Template
     }
 
     /**
-     * @param string $file
-     * @deprecated
-     */
-    public function display(string $file)
-    {
-        echo $this->render($file, $this->data);
-    }
-
-    /**
      * @param string $engine
      * @return string
      */
@@ -41,7 +32,7 @@ class Template
      * @param array|null $data
      * @return string
      */
-    public function render(string $template, array $data = null)
+    public function render(string $template, array $data = null): string
     {
         $data = $data ?: $this->data;
 
@@ -51,7 +42,7 @@ class Template
         return $result->render();
     }
 
-    public function templateExists($name)
+    public function templateExists($name): bool
     {
         return $this->templateFinder->path($name) !== null;
     }

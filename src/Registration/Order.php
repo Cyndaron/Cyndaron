@@ -4,12 +4,14 @@ declare (strict_types = 1);
 namespace Cyndaron\Registration;
 
 use Cyndaron\Model;
+use Cyndaron\Setting;
+use Cyndaron\Template\Template;
 use \Exception;
 
 class Order extends Model
 {
     const TABLE = 'registration_orders';
-    const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'participatedBefore', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid'];
+    const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'participatedBefore', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid', 'currentChoir', 'choirPreference'];
 
     public int $eventId;
     public string $lastName;
@@ -32,6 +34,8 @@ class Order extends Model
     public string $city;
     public string $comments;
     public bool $isPaid = false;
+    public string $currentChoir = '';
+    public string $choirPreference = '';
 
     public static function loadByEvent(Event $event)
     {
@@ -48,32 +52,12 @@ class Order extends Model
      * @param array $orderTicketTypes
      * @return bool
      */
-    public function sendConfirmationMail(float $orderTotal, array $orderTicketTypes)
+    public function sendConfirmationMail(float $orderTotal, array $orderTicketTypes): bool
     {
+        $order = $this;
         $event = $this->getEvent();
         $ticketTypes = EventTicketType::loadByEvent($event);
         $lunchText = ($this->lunch) ? $this->lunchType : 'Geen';
-
-        $text = 'Hartelijk dank voor uw inschrijving bij de Scratch Messiah Zeeland.
-Na betaling is uw inschrijving definitief. Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaargelegd worden bij de ingang van de kerk.
-
-Gebruik bij het betalen de volgende gegevens:
-   Rekeningnummer: NL44 RABO 0389 3198 21 t.n.v. Scratch Messiah Zeeland
-   Bedrag: ' . Util::formatEuro($orderTotal) . '
-   Onder vermelding van: inschrijvingsnummer ' . $this->id . '
-
-
-Hieronder volgt een overzicht van uw inschrijving.
-
-Inschrijvingsnummer: ' . $this->id . '
-
-Achternaam: ' . $this->lastName . '
-Voorletters: ' . $this->initials . '
-Stemsoort: ' . $this->vocalRange . '
-Arts / BHV / AED: ' . Util::boolToText($this->bhv) . '
-Meezingen in kleinkoor: ' . Util::boolToText($this->kleinkoor) . '
-Lunch: ' . $lunchText . PHP_EOL . PHP_EOL;
-
         $extraFields = [
             'Geboortejaar' => $this->birthYear,
             'Straatnaam en huisnummer' => "$this->street $this->houseNumber $this->houseNumberAddition",
@@ -82,31 +66,22 @@ Lunch: ' . $lunchText . PHP_EOL . PHP_EOL;
             'Opmerkingen' => $this->comments,
         ];
 
-        foreach ($extraFields as $description => $contents)
+        $templateFile = 'Registration/ConfirmationMail';
+        if (Setting::get('organisation') === 'Vlissingse Oratorium Vereniging')
         {
-            if (!empty(trim((string)$contents)))
-            {
-                $text .= $description . ': ' . $contents . PHP_EOL;
-            }
+            $templateFile = 'Registration/ConfirmationMailVOV';
         }
 
-        if (!empty($ticketTypes))
-        {
-            $text .= 'Kaartsoorten:' . PHP_EOL;
-            foreach ($ticketTypes as $ticketType)
-            {
-                if ($orderTicketTypes[$ticketType->id] > 0)
-                {
-                    $text .= '   ' . $ticketType->name . ': ' . $orderTicketTypes[$ticketType->id] . ' à ' . Util::formatEuro((float)$ticketType->price) . PHP_EOL;
-                }
-            }
-        }
-        $text.= PHP_EOL . 'Totaalbedrag: ' . Util::formatEuro($orderTotal);
+        $template = new Template();
+        $args = compact('order', 'orderTotal', 'ticketTypes', 'orderTicketTypes', 'lunchText', 'extraFields');
+        $text = $template->render($templateFile, $args);
+        // We're sending a plaintext mail, so avoid displaying html entities.
+        $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
         return Util::mail($this->email, 'Inschrijving ' . $event->name, $text);
     }
 
-    public function setIsPaid()
+    public function setIsPaid(): bool
     {
         if ($this->id === null)
         {
@@ -116,8 +91,12 @@ Lunch: ' . $lunchText . PHP_EOL . PHP_EOL;
         $this->isPaid = true;
         $this->save();
 
-        $text = "Hartelijk dank voor uw inschrijving bij de Scratch Messiah Zeeland. Wij hebben uw betaling in goede orde ontvangen.\n"
-              . 'Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaarliggen bij de kassa.';
+        $organisation = Setting::get('organisation');
+        $text = "Hartelijk dank voor uw inschrijving bij $organisation. Wij hebben uw betaling in goede orde ontvangen.\n";
+        if ($organisation !== 'Vlissingse Oratorium Vereniging')
+        {
+            $text .= 'Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaarliggen bij de kassa.';
+        }
 
         return Util::mail($this->email, 'Betalingsbevestiging', $text);
     }
@@ -126,7 +105,11 @@ Lunch: ' . $lunchText . PHP_EOL . PHP_EOL;
     {
         $event = $this->getEvent();
         $orderTotal = 0;
-        if ($this->registrationGroup === 1)
+        if ($this->registrationGroup === 2)
+        {
+            $orderTotal += $event->registrationCost2;
+        }
+        elseif ($this->registrationGroup === 1)
         {
             $orderTotal += $event->registrationCost1;
         }

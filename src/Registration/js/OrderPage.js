@@ -17,9 +17,10 @@
 'use strict';
 
 const eventId = $('#eventId').val();
-let tickettypes;
+let tickettypes = [];
 let registrationCost0 = NaN;
 let registrationCost1 = NaN;
+let registrationCost2 = NaN;
 let lunchCost = NaN;
 
 $.ajax('/event/getInfo/' + eventId, {}).done(function (json)
@@ -28,6 +29,7 @@ $.ajax('/event/getInfo/' + eventId, {}).done(function (json)
     tickettypes = data.tickettypes;
     registrationCost0 = parseFloat(data.registrationCost0);
     registrationCost1 = parseFloat(data.registrationCost1);
+    registrationCost2 = parseFloat(data.registrationCost2);
     lunchCost = parseFloat(data.lunchCost);
 });
 
@@ -71,7 +73,24 @@ function blockFormOnInvalidInput()
 function calculateTotal()
 {
     let total = 0;
-    if ($('[name=registrationGroup]:checked').val() == 1)
+    let regGroup = 0;
+    let input = $('[name=registrationGroup]:checked');
+    if (input.length > 0)
+    {
+        regGroup = parseInt(input.val());
+    }
+    else
+    {
+        let input = $('[name=registrationGroup]').first();
+        if (input.length > 0)
+        {
+            regGroup = parseInt(input.val());
+        }
+    }
+
+    if (regGroup === 2)
+        total += registrationCost2;
+    else if (regGroup === 1)
         total += registrationCost1;
     else
         total += registrationCost0;
