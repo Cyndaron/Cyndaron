@@ -3,23 +3,36 @@ SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `cyndaron`
+--
+
+-- --------------------------------------------------------
+
 --
 -- Table structure for table `registration_events`
 --
 
 CREATE TABLE `registration_events` (
-    `id` int(11) NOT NULL,
-    `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `openForRegistration` tinyint(1) NOT NULL,
-    `description` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-    `descriptionWhenClosed` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-    `registrationCost0` double NOT NULL,
-    `registrationCost1` double NOT NULL,
-    `lunchCost` double NOT NULL,
-    `maxRegistrations` int(11) NOT NULL DEFAULT '250',
-    `numSeats` int(11) NOT NULL DEFAULT '250',
-    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                                       `id` int NOT NULL,
+                                       `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `openForRegistration` tinyint(1) NOT NULL,
+                                       `description` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `descriptionWhenClosed` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `registrationCost0` double NOT NULL,
+                                       `registrationCost1` double NOT NULL,
+                                       `registrationCost2` double NOT NULL,
+                                       `lunchCost` double NOT NULL,
+                                       `maxRegistrations` int NOT NULL DEFAULT '250',
+                                       `numSeats` int NOT NULL DEFAULT '250',
+                                       `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                       `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -29,30 +42,32 @@ CREATE TABLE `registration_events` (
 --
 
 CREATE TABLE `registration_orders` (
-    `id` int(11) NOT NULL,
-    `eventId` int(11) NOT NULL,
-    `lastName` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `initials` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `registrationGroup` tinyint(1) NOT NULL DEFAULT '0',
-    `vocalRange` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `birthYear` int(4) DEFAULT NULL,
-    `email` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `street` varchar(300) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `houseNumber` int(11) NOT NULL DEFAULT '0',
-    `houseNumberAddition` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-    `postcode` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `city` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `isPaid` int(1) NOT NULL DEFAULT '0',
-    `lunch` tinyint(1) NOT NULL DEFAULT '0',
-    `lunchType` varchar(200) NOT NULL DEFAULT '',
-    `bhv` tinyint(1) NOT NULL DEFAULT '0',
-    `kleinkoor` tinyint(1) NOT NULL DEFAULT '0',
-    `kleinkoorExplanation` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-    `participatedBefore` tinyint(1) NOT NULL DEFAULT '0',
-    `numPosters` int(2) NOT NULL DEFAULT '0',
-    `comments` varchar(400) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                                       `id` int NOT NULL,
+                                       `eventId` int NOT NULL,
+                                       `lastName` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `initials` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `registrationGroup` tinyint(1) NOT NULL DEFAULT '0',
+                                       `vocalRange` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `birthYear` int DEFAULT NULL,
+                                       `email` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `street` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `houseNumber` int NOT NULL DEFAULT '0',
+                                       `houseNumberAddition` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                                       `postcode` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `city` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `isPaid` int NOT NULL DEFAULT '0',
+                                       `lunch` tinyint(1) NOT NULL DEFAULT '0',
+                                       `lunchType` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                                       `bhv` tinyint(1) NOT NULL DEFAULT '0',
+                                       `kleinkoor` tinyint(1) NOT NULL DEFAULT '0',
+                                       `kleinkoorExplanation` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                                       `participatedBefore` tinyint(1) NOT NULL DEFAULT '0',
+                                       `numPosters` int NOT NULL DEFAULT '0',
+                                       `currentChoir` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `choirPreference` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `comments` varchar(400) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                                       `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                       `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -62,9 +77,9 @@ CREATE TABLE `registration_orders` (
 --
 
 CREATE TABLE `registration_orders_tickettypes` (
-    `orderId` int(11) NOT NULL,
-    `tickettypeId` int(11) NOT NULL,
-    `amount` int(2) NOT NULL
+                                                   `orderId` int NOT NULL,
+                                                   `tickettypeId` int NOT NULL,
+                                                   `amount` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -74,12 +89,16 @@ CREATE TABLE `registration_orders_tickettypes` (
 --
 
 CREATE TABLE `registration_tickettypes` (
-    `id` int(11) NOT NULL,
-    `eventId` int(11) NOT NULL,
-    `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `price` double NOT NULL,
-    `discountPer5` tinyint(1) NOT NULL DEFAULT '0'
+                                            `id` int NOT NULL,
+                                            `eventId` int NOT NULL,
+                                            `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+                                            `price` double NOT NULL,
+                                            `discountPer5` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Indexes for dumped tables
+--
 
 --
 -- Indexes for table `registration_events`
@@ -111,22 +130,26 @@ ALTER TABLE `registration_tickettypes`
     ADD KEY `event_id_2` (`eventId`);
 
 --
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
 -- AUTO_INCREMENT for table `registration_events`
 --
 ALTER TABLE `registration_events`
-    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+    MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `registration_orders`
 --
 ALTER TABLE `registration_orders`
-    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+    MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `registration_tickettypes`
 --
 ALTER TABLE `registration_tickettypes`
-    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+    MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -151,3 +174,7 @@ ALTER TABLE `registration_orders_tickettypes`
 ALTER TABLE `registration_tickettypes`
     ADD CONSTRAINT `registration_tickettypes_ibfk_1` FOREIGN KEY (`eventId`) REFERENCES `registration_events` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

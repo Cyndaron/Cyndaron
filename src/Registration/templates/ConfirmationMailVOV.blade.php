@@ -13,7 +13,7 @@ Inschrijvingsnummer: {{ $order->id }}
 Achternaam: {{ $order->lastName }}
 Voorletters: {{ $order->initials }}
 Stemsoort: {{ $order->vocalRange }}
-Lid van: {{ $order->currentChoir }}
+Lid van: {{ $order->currentChoir ?: 'Geen koor / ander koor' }}
 Voorkeur koor I/II: {{ $order->choirPreference }}
 
 @foreach ($extraFields as $description => $contents)
