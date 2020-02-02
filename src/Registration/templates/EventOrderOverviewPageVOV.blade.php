@@ -45,7 +45,7 @@
                 <td>
                     {{ $registration->initials }} {{ $registration->lastName }}
                     @if ($registration->birthYear)
-                        <br>Geboortejaar: {{ $registration->birthYear }}
+                        <br>Leeftijdcategorie: {{ \Cyndaron\Registration\Util::birthYearToCategory($registration->birthYear) }}
                     @endif
                 </td>
                 <td>

@@ -8,21 +8,6 @@ use Cyndaron\Widget\Toolbar;
 
 class Util extends \Cyndaron\Util
 {
-    const MAX_RESERVED_SEATS = 330;
-
-    public static function postcodeQualifiesForFreeDelivery(int $postcode)
-    {
-        if ($postcode >= 4330 && $postcode <= 4399)
-            return true;
-        else
-            return false;
-    }
-
-    public static function getLatestEventId(): ?int
-    {
-        return DBConnection::doQueryAndFetchOne('SELECT MAX(id) FROM registration_events');
-    }
-
     public static function drawPageManagerTab()
     {
         echo new Toolbar('', '', (string)new Button('new', '/editor/event', 'Nieuw evenement', 'Nieuw evenement'));
@@ -59,6 +44,24 @@ class Util extends \Cyndaron\Util
             </tbody>
         </table>
         <?php
+    }
 
+    public static function birthYearToCategory(int $birthYear): string
+    {
+        $age = date('Y') - $birthYear;
+
+        if ($age < 12)
+            return 'Niet opgegeven';
+
+        static $ageRanges = [
+            [12, 25], [26, 50], [51, 65], [66, 70], [71, 75], [76, 80]
+        ];
+        foreach ($ageRanges as $ageRange)
+        {
+            if ($age >= $ageRange[0] && $age <= $ageRange[1])
+                return "$ageRange[0] - $ageRange[1]";
+        }
+
+        return '81+';
     }
 }

@@ -22,8 +22,17 @@
             @include('Widget/Form/BasicInput', ['id' => 'initials', 'label' => 'Voornaam', 'required' => true])
             @include('Widget/Form/BasicInput', ['id' => 'city', 'label' => 'Woonplaats', 'required' => true])
             @include('Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'E-mailadres', 'required' => true])
-            @php $birthYearLabel = '<abbr title="Wij vragen uw geboortejaar zodat we tot een gunstige leeftijdsspreiding kunnen komen">Uw geboortejaar</abbr>' @endphp
-            @include('Widget/Form/BasicInput', ['id' => 'birthYear', 'label' => $birthYearLabel, 'type' => 'number', 'min' => 1900, 'max' => date('Y') - 10, 'step' => 1, 'pattern' => '[0-9]{4}', 'required' => true])
+
+            @include('Widget/Form/Select', ['id' => 'birthYear', 'label' => 'Leeftijdscategorie', 'required' => true, 'options' => [
+                              (0) => 'Maak een keuze',
+                 (date('Y') - 12) => '12 - 25',
+                 (date('Y') - 26) => '26 - 50',
+                 (date('Y') - 51) => '51 - 65',
+                 (date('Y') - 66) => '66 - 70',
+                 (date('Y') - 71) => '71 - 75',
+                 (date('Y') - 76) => '76 - 80',
+                 (date('Y') - 81) => '81+',
+            ]])
             @include('Widget/Form/Select', ['id' => 'vocalRange', 'label' => 'Stemsoort', 'required' => true, 'options' => ['Sopraan' => 'Sopraan', 'Alt' => 'Alt', 'Tenor' => 'Tenor', 'Bas' => 'Bas']])
 
             <div class="form-group row">
