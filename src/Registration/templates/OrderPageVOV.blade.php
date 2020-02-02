@@ -18,27 +18,31 @@
 
             <h3>Uw gegevens (verplicht):</h3>
 
+            @include('Widget/Form/BasicInput', ['id' => 'lastName', 'label' => 'Achternaam', 'required' => true])
+            @include('Widget/Form/BasicInput', ['id' => 'initials', 'label' => 'Voornaam', 'required' => true])
+            @include('Widget/Form/BasicInput', ['id' => 'city', 'label' => 'Woonplaats', 'required' => true])
+            @include('Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'E-mailadres', 'required' => true])
+            @php $birthYearLabel = '<abbr title="Wij vragen uw geboortejaar zodat we tot een gunstige leeftijdsspreiding kunnen komen">Uw geboortejaar</abbr>' @endphp
+            @include('Widget/Form/BasicInput', ['id' => 'birthYear', 'label' => $birthYearLabel, 'type' => 'number', 'min' => 1900, 'max' => date('Y') - 10, 'step' => 1, 'pattern' => '[0-9]{4}', 'required' => true])
+            @include('Widget/Form/Select', ['id' => 'vocalRange', 'label' => 'Stemsoort', 'required' => true, 'options' => ['Sopraan' => 'Sopraan', 'Alt' => 'Alt', 'Tenor' => 'Tenor', 'Bas' => 'Bas']])
+
             <div class="form-group row">
                 <label for="currentChoir" class="col-md-3 col-form-label">Ik ben lid van:</label>
                 <div class="col-md-6">
                     <select id="currentChoir" name="currentChoir" class="form-control custom-select" required>
+                        <option data-registration-group="0" selected value="" disabled>Maak een keuze</option>
                         <option data-registration-group="1" value="Vlissingse Oratorium Vereniging">Vlissingse Oratorium Vereniging</option>
                         <option data-registration-group="2" value="KOV Middelburg">KOV Middelburg</option>
                         <option data-registration-group="2" value="COV Goes">COV Goes</option>
-                        <option data-registration-group="2" value="Vocaal Ensembe Cantar">Vocaal Ensembe Cantar</option>
+                        <option data-registration-group="2" value="Vocaal Ensembe Cantare">Vocaal Ensembe Cantare</option>
                         <option data-registration-group="2" value="COV Te Deum Laudamus Kapelle">COV Te Deum Laudamus Kapelle</option>
-                        <option data-registration-group="2" value="Het Zwinkoor Sluis">Het Zwinkoor Sluis</option>
+                        <option data-registration-group="2" value="Zwinkoor Sluis">Zwinkoor Sluis</option>
                         <option data-registration-group="2" value="Hét Concertkoor Bergen op Zoom">Hét Concertkoor Bergen op Zoom</option>
                         <option data-registration-group="2" value="COV Soli Deo Gloria Sliedrecht">COV Soli Deo Gloria Sliedrecht</option>
-                        <option data-registration-group="0" selected value="">Geen koor / een ander koor</option>
+                        <option data-registration-group="0" value="">Geen koor / een ander koor</option>
                     </select>
                 </div>
             </div>
-
-            @include('Widget/Form/BasicInput', ['id' => 'lastName', 'label' => 'Achternaam', 'required' => true])
-            @include('Widget/Form/BasicInput', ['id' => 'initials', 'label' => 'Voorletters', 'required' => true])
-            @include('Widget/Form/Select', ['id' => 'vocalRange', 'label' => 'Stemsoort', 'required' => true, 'options' => ['Sopraan' => 'Sopraan', 'Alt' => 'Alt', 'Tenor' => 'Tenor', 'Bas' => 'Bas']])
-            @include('Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'E-mailadres', 'required' => true])
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Eerder meegedaan?</label>
@@ -57,19 +61,10 @@
                 </div>
             </div>
 
-            @include('Widget/Form/Select', ['id' => 'choirPreference', 'label' => 'Voorkeur koor I/II', 'required' => true, 'options' => ['Geen voorkeur' => 'Geen voorkeur', 'Voorkeur koor I' => 'Voorkeur koor I', 'Voorkeur koor II' => 'Voorkeur koor II']])
+            @include('Widget/Form/Select', ['id' => 'choirPreference', 'label' => 'Voorkeur koor 1 / 2', 'required' => true, 'options' => ['Geen voorkeur' => 'Geen voorkeur', 'Voorkeur koor 1' => 'Voorkeur koor 1', 'Voorkeur koor 2' => 'Voorkeur koor 2']])
 
             <div><h5><b>Totaalprijs:</b> <span id="prijsvak">€&nbsp;0,00</span></h5></div>
 
-            <h3 id="adresgegevensKop">Overige gegevens (niet verplicht):</h3>
-
-            @include('Widget/Form/BasicInput', ['id' => 'birthYear', 'label' => 'Uw geboortejaar', 'type' => 'number', 'min' => 1900, 'max' => date('Y') - 10, 'step' => 1, 'pattern' => '[0-9]{4}'])
-
-            @include('Widget/Form/BasicInput', ['id' => 'street', 'label' => 'Straatnaam'])
-            @include('Widget/Form/BasicInput', ['id' => 'houseNumber', 'label' => 'Huisnummer', 'type' => 'number'])
-            @include('Widget/Form/BasicInput', ['id' => 'houseNumberAddition', 'label' => 'Huisnummertoevoeging'])
-            @include('Widget/Form/BasicInput', ['id' => 'postcode', 'label' => 'Postcode'])
-            @include('Widget/Form/BasicInput', ['id' => 'city', 'label' => 'Woonplaats'])
 
             <h3>Verzenden:</h3>
 
@@ -86,7 +81,7 @@
 
             @include('Widget/Form/BasicInput', ['id' => 'antispam', 'label' => 'Antispam', 'required' => true])
 
-            <p>Uw gegevens zullen worden verwerkt zoals beschreven in onze <a href="/privacyverklaring">privacyverklaring</a>.</p>
+{{--            <p>Uw gegevens zullen worden verwerkt zoals beschreven in onze <a href="/privacyverklaring">privacyverklaring</a>.</p>--}}
 
             <div class="col-sm-offset-2"><input id="verzendknop" class="btn btn-primary" type="submit"
                                                 value="Inschrijven"/></div>
