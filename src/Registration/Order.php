@@ -73,7 +73,7 @@ class Order extends Model
         }
 
         $template = new Template();
-        $args = compact('order', 'orderTotal', 'ticketTypes', 'orderTicketTypes', 'lunchText', 'extraFields');
+        $args = compact('order', 'event', 'orderTotal', 'ticketTypes', 'orderTicketTypes', 'lunchText', 'extraFields');
         $text = $template->render($templateFile, $args);
         // We're sending a plaintext mail, so avoid displaying html entities.
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');

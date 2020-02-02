@@ -1,10 +1,5 @@
-Hartelijk dank voor uw inschrijving bij de Vlissingse Oratorium Vereniging. Na betaling is uw inschrijving definitief.
-
-Gebruik bij het betalen de volgende gegevens:
-Rekeningnummer: NL06 INGB 0000 5459 25 t.n.v. Vlissingse Oratorium Vereniging
-Bedrag: {{ $orderTotal|euro }}
-Onder vermelding van: inschrijvingsnummer {{ $order->id }}
-
+Hartelijk dank voor uw inschrijving voor {{ $event->name }}.
+Zodra de inschrijving is gesloten krijgt u van ons een nader bericht over het vervolg.
 
 Hieronder volgt een overzicht van uw inschrijving.
 
