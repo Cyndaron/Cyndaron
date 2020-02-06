@@ -14,5 +14,5 @@ class Mailform extends Model
     public string $email;
     public string $antiSpamAnswer;
     public bool $sendConfirmation;
-    public string $confirmationText;
+    public ?string $confirmationText;
 }
