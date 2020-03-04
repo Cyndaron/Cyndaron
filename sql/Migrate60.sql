@@ -133,3 +133,8 @@ ALTER TABLE `sub_replies` CHANGE `auteur` `author` VARCHAR(100) CHARACTER SET ut
 ALTER TABLE `sub_replies` CHANGE `tekst` `text` MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
 ALTER TABLE `sub_replies` CHANGE `datum` `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE `sub_replies` ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created`;
+
+# After beta 1
+
+ALTER TABLE `users` ADD `gender` ENUM('male','female','other') NULL DEFAULT NULL AFTER `hideFromMemberList`, ADD `street` VARCHAR(200) NULL DEFAULT NULL AFTER `gender`, ADD `houseNumber` INT NULL DEFAULT NULL AFTER `street`, ADD `houseNumberAddition` VARCHAR(20) NULL DEFAULT NULL AFTER `houseNumber`, ADD `postalCode` VARCHAR(20) NULL DEFAULT NULL AFTER `houseNumberAddition`, ADD `city` VARCHAR(200) NULL DEFAULT NULL AFTER `postalCode`;
+ALTER TABLE `users` ADD UNIQUE(`username`);

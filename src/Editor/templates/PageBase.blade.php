@@ -52,7 +52,7 @@
                 <select id="categoryId" name="categoryId" class="form-control custom-select">
                     <option value="0">&lt;Geen categorie&gt;</option>
                     @foreach ($categories as $category)
-                        @if ($type !== 'category' || $category->id !== $id)
+                        @if ($articleType !== 'category' || $category->id !== $id)
                             <option value="{{ $category->id }}" @if ($categoryId === $category->id) selected @endif>{{ $category->name }}</option>
                         @endif
                     @endforeach

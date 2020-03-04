@@ -5,6 +5,7 @@ namespace Cyndaron\Geelhoed;
 
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Model;
+use Cyndaron\Util;
 
 class Hour extends Model
 {
@@ -43,5 +44,10 @@ class Hour extends Model
     public function getDepartment(): Department
     {
         return Department::loadFromDatabase((int)$this->departmentId);
+    }
+
+    public function getRange(): string
+    {
+        return sprintf('%s – %s', Util::filterHm($this->from), Util::filterHm($this->until));
     }
 }

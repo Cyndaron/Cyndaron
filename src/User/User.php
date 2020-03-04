@@ -13,13 +13,13 @@ use finfo;
 class User extends Model
 {
     public const TABLE = 'users';
-    public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList'];
+    public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city'];
 
     public const AVATAR_DIR = 'uploads/user/avatar';
 
     public string $username;
     public string $password;
-    public string $email;
+    public ?string $email;
     public int $level;
     public string $firstName;
     public string $tussenvoegsel;
@@ -28,6 +28,12 @@ class User extends Model
     public string $comments;
     public string $avatar;
     public bool $hideFromMemberList;
+    public ?string $gender = null;
+    public ?string $street = null;
+    public ?int $houseNumber = null;
+    public ?string $houseNumberAddition = null;
+    public ?string $postalCode = null;
+    public ?string $city = null;
 
     public const RESET_PASSWORD_MAIL_TEXT =
         '<p>U vroeg om een nieuw wachtwoord voor %s.</p>
@@ -73,6 +79,13 @@ EOT;
         return (static::getLevel() >= $minimumReadLevel);
     }
 
+    public function generatePassword(): string
+    {
+        $newPassword = Util::generatePassword();
+        $this->password = password_hash($newPassword, PASSWORD_DEFAULT);
+        return $newPassword;
+    }
+
     public function resetPassword(): void
     {
         if ($this->id === null)
@@ -80,12 +93,11 @@ EOT;
             throw new Exception('ID is leeg!');
         }
 
-        $newPassword = Util::generatePassword();
-        $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $newPassword = $this->generatePassword();
 
         $pdo = DBConnection::getPdo();
         $prep = $pdo->prepare('UPDATE users SET password=? WHERE id =?');
-        $prep->execute([$passwordHash, $this->id]);
+        $prep->execute([$this->password, $this->id]);
 
         $this->mailNewPassword($newPassword);
     }

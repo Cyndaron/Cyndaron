@@ -3,19 +3,23 @@
 $('#gum-new').on('click', function() {
     $('#gum-edit-user-dialog input,textarea,select').each(function () {
         let element = $(this);
-        if (element.is(':checkbox'))
+        if (element.prop('name') !== 'csrfToken')
         {
-            element.prop('checked', false);
-        }
-        else if (element.is('select'))
-        {
-            element.find('option').prop('selected', false);
-        }
-        else
-        {
-            element.val('');
+            if (element.is(':checkbox'))
+            {
+                element.prop('checked', false);
+            }
+            else if (element.is('select'))
+            {
+                element.find('option').prop('selected', false);
+            }
+            else
+            {
+                element.val('');
+            }
         }
     });
+    $('#gum-user-dialog-graduation-list').html('');
 });
 
 $('.btn-gum-edit').on('click', function () {
@@ -27,21 +31,28 @@ $('.btn-gum-edit').on('click', function () {
             {
                 if (data.hasOwnProperty(property))
                 {
-                    let element = $('#gum-edit-user-dialog [name=' + property + ']').first();
-                    if (element)
+                    if (property === 'graduationList')
                     {
-                        if (element.is(':checkbox'))
+                        $('#gum-user-dialog-graduation-list').html(data[property]);
+                    }
+                    else
+                    {
+                        let element = $('#gum-edit-user-dialog [name=' + property + ']').first();
+                        if (element)
                         {
-                            element.prop('checked', parseInt(data[property]) !== 0);
-                        }
-                        else if (element.is('select'))
-                        {
-                            $('#gum-edit-user-dialog [name=' + property + '] option').prop('selected', false);
-                            $('#gum-edit-user-dialog [name=' + property + '] option[value=' + data[property] + ']').prop('selected', true);
-                        }
-                        else
-                        {
-                            element.val(data[property])
+                            if (element.is(':checkbox'))
+                            {
+                                element.prop('checked', data[property]);
+                            }
+                            else if (element.is('select'))
+                            {
+                                $('#gum-edit-user-dialog [name=' + property + '] option').prop('selected', false);
+                                $('#gum-edit-user-dialog [name=' + property + '] option[value=' + data[property] + ']').prop('selected', true);
+                            }
+                            else
+                            {
+                                element.val(data[property])
+                            }
                         }
                     }
                 }
@@ -50,4 +61,19 @@ $('.btn-gum-edit').on('click', function () {
     );
 
     $('#gum-edit-user-dialog [name=id]').val(memberId);
+});
+
+$(document).on('submit', '.myForm', function(e) {
+
+    e.preventDefault();
+});
+
+$('#gum-popup-save').on('click keyup', function () {
+    $.post({
+        url: '/api/member/save',
+        data: $('#gum-user-popup').serialize(),
+    }).done(function (data) {
+        location.reload();
+    });
+
 });

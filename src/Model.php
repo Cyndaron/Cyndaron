@@ -3,6 +3,7 @@
 namespace Cyndaron;
 
 use Exception;
+use ReflectionProperty;
 
 class Model
 {
@@ -200,5 +201,32 @@ class Model
             $var = (int)$var;
         }
         return (string)$var;
+    }
+
+    /**
+     * @param string $property
+     * @param string $var
+     *
+     * @return string|int|bool
+     * @throws \ReflectionException
+     */
+    public static function mangleVarForProperty(string $property, string $var)
+    {
+        $rp = new ReflectionProperty(static::class, $property);
+        $type = $rp->getType();
+        if ($type === null)
+        {
+            return $var;
+        }
+
+        switch ($type->getName())
+        {
+            case 'int':
+                return (int)$var;
+            case 'bool';
+                return (bool)(int)$var;
+        }
+
+        return $var;
     }
 }

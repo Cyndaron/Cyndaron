@@ -4,31 +4,36 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Hour;
+use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Model;
+use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\User\User;
 
 class Member extends Model
 {
-    const TABLE = 'geelhoed_members';
-    const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'freeParticipation'];
+    public const TABLE = 'geelhoed_members';
+    public const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'freeParticipation', 'temporaryStop', 'joinedAt'];
 
     public int $userId;
     public string $parentEmail = '';
-    protected string $phoneNumbers = '';
+    public string $phoneNumbers = '';
     public bool $isContestant = false;
-    protected string $paymentMethod = 'incasso';
+    public string $paymentMethod = 'incasso';
     public string $iban;
     public bool $freeParticipation = false;
+    public bool $temporaryStop = false;
+    public ?string $joinedAt = null;
 
-    const PAYMENT_METHODS = [
+    public const PAYMENT_METHODS = [
         'incasso' => 'Automatische incasso',
         'jsf' => 'Jeugdsportfonds',
         'rekening' => 'Op rekening',
         'leergeld' => 'Stichting Leergeld',
     ];
 
-    function getProfile(): User
+    public function getProfile(): User
     {
         $profile = new User($this->userId);
         $profile->load();
@@ -39,7 +44,7 @@ class Member extends Model
      * @return Hour[]
      * @throws \Exception
      */
-    function getHours(): array
+    public function getHours(): array
     {
         $sql = 'SELECT * FROM geelhoed_hours WHERE id IN (SELECT hourId FROM geelhoed_members_hours WHERE memberId = ?)';
         $hoursArr = DBConnection::doQueryAndFetchAll($sql, [$this->id]);
@@ -51,7 +56,27 @@ class Member extends Model
         return $hours;
     }
 
-    function getPhoneNumbers(): array
+    /**
+     * @param Hour[] $hours
+     */
+    public function setHours(array $hours): void
+    {
+        DBConnection::doQuery('DELETE FROM geelhoed_members_hours WHERE memberId = ?', [$this->id]);
+
+        if (empty($hours))
+            return;
+
+        $sql = 'INSERT INTO geelhoed_members_hours(memberId, hourId) VALUES ';
+        foreach ($hours as $hour)
+        {
+            $sql .= "({$this->id}, {$hour->id}), ";
+        }
+
+        $sql = trim($sql, ' ,');
+        DBConnection::doQuery($sql);
+    }
+
+    public function getPhoneNumbers(): array
     {
         if (!$this->phoneNumbers)
         {
@@ -60,14 +85,39 @@ class Member extends Model
         return explode(',', $this->phoneNumbers);
     }
 
-    function setPhoneNumbers(array $numbers): void
+    public function setPhoneNumbers(array $numbers): void
     {
         $this->phoneNumbers = implode(',', $numbers);
     }
 
-    function getEmail(): string
+    public function getEmail(): string
     {
         $profile = $this->getProfile();
         return $profile->email ?: $this->parentEmail;
+    }
+
+    public function canLogin(): bool
+    {
+        $profile = $this->getProfile();
+        return $profile->password && $profile->email && $profile->username;
+    }
+
+    /**
+     * @return MemberGraduation[]
+     */
+    public function getMemberGraduations(): array
+    {
+        return MemberGraduation::fetchAllByMember($this);
+    }
+
+    public function getGraduationList(): array
+    {
+        $list = [];
+        foreach($this->getMemberGraduations() as $memberGraduation)
+        {
+            $graduation = $memberGraduation->getGraduation();
+            $list[] = "{$graduation->getSport()->name}: {$graduation->name} ({$memberGraduation->date})";
+        }
+        return $list;
     }
 }
