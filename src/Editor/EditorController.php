@@ -24,6 +24,10 @@ class EditorController extends Controller
             $class = static::$editorPages[$type];
             new $class($this->getInternalLinks());
         }
+        else
+        {
+            throw new \Exception('Onbekend paginatype!');
+        }
     }
 
     protected function routePost()
@@ -33,6 +37,10 @@ class EditorController extends Controller
         {
             $class = static::$savePages[$type];
             new $class;
+        }
+        else
+        {
+            throw new \Exception('Onbekend paginatype!');
         }
     }
 

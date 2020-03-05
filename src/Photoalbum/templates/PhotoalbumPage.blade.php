@@ -2,7 +2,7 @@
 
 @section ('titleControls')
     @if ($model->viewMode == 0)
-        @include('Widget/Button', ['kind' => 'edit', 'link' => '/editor/photoalbum' . $model->id, 'description' => 'Dit fotoalbum bewerken'])
+        @include('Widget/Button', ['kind' => 'edit', 'link' => '/editor/photoalbum/' . $model->id, 'description' => 'Dit fotoalbum bewerken'])
     @endif
 @endsection
 
