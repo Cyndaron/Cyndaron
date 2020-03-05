@@ -132,7 +132,7 @@ class Util
 
     public static function parseText(string $text): string
     {
-        return preg_replace_callback('/%slider\|(\d+)%/', static function($matches)
+        $text = preg_replace_callback('/%slider\|(\d+)%/', static function($matches)
         {
             $album = Photoalbum::loadFromDatabase($matches[1]);
             $page = new PhotoalbumPage($album, 1);
@@ -142,6 +142,10 @@ class Util
             }
             return '';
         }, $text);
+        $youtube = '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="https://www.youtube.com/embed/$1" sandbox="allow-scripts allow-same-origin allow-popups" allowfullscreen></iframe></div>';
+        $text = preg_replace('/%youtube\|([A-Za-z_\-]+)%/', $youtube, $text);
+
+        return $text;
     }
 
     public static function getDomain(): string
