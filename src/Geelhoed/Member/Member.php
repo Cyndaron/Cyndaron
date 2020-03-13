@@ -22,8 +22,8 @@ class Member extends Model
     public string $phoneNumbers = '';
     public bool $isContestant = false;
     public string $paymentMethod = 'incasso';
-    public string $iban;
-    public bool $paymentProblem;
+    public string $iban = '';
+    public bool $paymentProblem = false;
     public string $paymentProblemNote = '';
     public bool $freeParticipation = false;
     public bool $temporaryStop = false;
@@ -99,12 +99,6 @@ class Member extends Model
     {
         $profile = $this->getProfile();
         return $profile->email ?: $this->parentEmail;
-    }
-
-    public function canLogin(): bool
-    {
-        $profile = $this->getProfile();
-        return $profile->password && $profile->email && $profile->username;
     }
 
     /**

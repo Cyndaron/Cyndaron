@@ -50,7 +50,7 @@
                     </td>
                     <td>
                         @if ($member->isContestant)<abbr title="Wedstrijdjudoka">W</abbr><br>@endif
-                        @if ($member->canLogin())<abbr title="Kan inloggen">I</abbr><br>@endif
+                        @if ($member->getProfile()->canLogin())<abbr title="Kan inloggen">I</abbr><br>@endif
                         @if ($member->isSenior())<abbr title="Is senior">S</abbr>@endif
                     </td>
                     <td>
@@ -125,7 +125,7 @@
                 <div class="tab-pane fade" id="sport" role="tabpanel" aria-labelledby="contact-tab">
                     @include('Widget/Form/BasicInput', ['id' => 'joinedAt', 'type' => 'date', 'label' => 'Lid sinds'])
                     @include('Widget/Form/BasicInput', ['id' => 'jbnNumber', 'label' => 'JBN-nummer'])
-                    @include('Widget/Form/Select', ['id' => 'jbnNumberLocation', 'label' => 'Locatie JBN-nummer', 'options' => ['' => 'n.v.t.', 'Walcheren' => 'Walcheren', 'Beveland' => 'Beveland']])
+                    @include('Widget/Form/Select', ['id' => 'jbnNumberLocation', 'label' => 'Locatie JBN-nummer', 'options' => ['' => 'n.v.t.', 'Walcheren' => 'Walcheren', 'Bevelanden' => 'Bevelanden']])
 
                     @include('Widget/Form/Checkbox', ['id' => 'isContestant', 'label' => 'Wedstrijdjudoka'])
 

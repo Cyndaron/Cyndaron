@@ -13,21 +13,22 @@ use finfo;
 class User extends Model
 {
     public const TABLE = 'users';
-    public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city', 'dateOfBirth', 'notes'];
+    public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'initials', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city', 'dateOfBirth', 'notes'];
 
     public const AVATAR_DIR = 'uploads/user/avatar';
 
-    public string $username;
-    public string $password;
-    public ?string $email;
-    public int $level;
-    public string $firstName;
-    public string $tussenvoegsel;
-    public string $lastName;
-    public string $role;
+    public string $username = '';
+    public string $password = '';
+    public ?string $email = null;
+    public int $level = UserLevel::LOGGED_IN;
+    public string $firstName = '';
+    public string $initials = '';
+    public string $tussenvoegsel = '';
+    public string $lastName = '';
+    public string $role = '';
     public string $comments = '';
-    public string $avatar;
-    public bool $hideFromMemberList;
+    public string $avatar = '';
+    public bool $hideFromMemberList = false;
     public ?string $gender = null;
     public ?string $street = null;
     public ?int $houseNumber = null;
@@ -291,5 +292,37 @@ EOT;
         }
 
         return \DateTimeImmutable::createFromFormat('!Y-m-d', $this->dateOfBirth);
+    }
+
+    public function save(): bool
+    {
+        if (empty($this->username))
+        {
+            $initials = $this->initials ?: $this->firstName;
+            $username = strtolower("{$initials}{$this->lastName}");
+            // Last resort!
+            if ($username === '')
+            {
+                $username = random_int(10000, 99999);
+            }
+            else
+            {
+                $existing = DBConnection::doQueryAndFetchAll('SELECT * FROM users WHERE username = ?', [$username]);
+                if (count($existing) > 0)
+                {
+                    $username .= random_int(10000, 99999);
+                }
+
+            }
+            $this->username = $username;
+        }
+
+        return parent::save();
+
+    }
+
+    public function canLogin(): bool
+    {
+        return $this->username && $this->password && $this->email;
     }
 }

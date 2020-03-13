@@ -1,8 +1,5 @@
 #geelhoed-membermanager {
   overflow-x: scroll; }
-  #geelhoed-membermanager td {
-    white-space: nowrap;
-    word-break: keep-all; }
 
 .location-card {
   margin-bottom: 30px; }
