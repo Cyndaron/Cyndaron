@@ -7,7 +7,6 @@ use Cyndaron\Geelhoed\Hour;
 use Cyndaron\Request;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
-use ReflectionProperty;
 
 class MemberController extends Controller
 {
@@ -42,7 +41,7 @@ class MemberController extends Controller
         return $ret;
     }
 
-    public function save()
+    public function save(): array
     {
         $memberId = (int)Request::post('id');
 
@@ -59,16 +58,14 @@ class MemberController extends Controller
             $member = new Member();
         }
 
-        foreach (User::TABLE_FIELDS as $tableField)
+        $tableFields = ['username', 'email', 'firstName', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city', 'dateOfBirth', 'notes'];
+        foreach ($tableFields as $tableField)
         {
-            if (!in_array($tableField, ['password', 'level'], true))
-            {
-                $newValue = User::mangleVarForProperty($tableField, Request::post($tableField));
-                if ($tableField === 'email' && $newValue === '')
-                    $newValue = null;
+            $newValue = User::mangleVarForProperty($tableField, Request::post($tableField));
+            if ($tableField === 'email' && $newValue === '')
+                $newValue = null;
 
-                $user->$tableField = $newValue;
-            }
+            $user->$tableField = $newValue;
         }
 
         if (!$user->save())

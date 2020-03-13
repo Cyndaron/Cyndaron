@@ -10,11 +10,12 @@ use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Model;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\User\User;
+use Cyndaron\Util;
 
 class Member extends Model
 {
     public const TABLE = 'geelhoed_members';
-    public const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'freeParticipation', 'temporaryStop', 'joinedAt'];
+    public const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'paymentProblem', 'paymentProblemNote', 'freeParticipation', 'temporaryStop', 'joinedAt', 'jbnNumber', 'jbnNumberLocation'];
 
     public int $userId;
     public string $parentEmail = '';
@@ -22,9 +23,13 @@ class Member extends Model
     public bool $isContestant = false;
     public string $paymentMethod = 'incasso';
     public string $iban;
+    public bool $paymentProblem;
+    public string $paymentProblemNote = '';
     public bool $freeParticipation = false;
     public bool $temporaryStop = false;
     public ?string $joinedAt = null;
+    public string $jbnNumber = '';
+    public string $jbnNumberLocation = '';
 
     public const PAYMENT_METHODS = [
         'incasso' => 'Automatische incasso',
@@ -119,5 +124,18 @@ class Member extends Model
             $list[] = "{$graduation->getSport()->name}: {$graduation->name} ({$memberGraduation->date})";
         }
         return $list;
+    }
+
+    public function isSenior(): bool
+    {
+        $dateOfBirth = $this->getProfile()->getDateOfBirth();
+        if ($dateOfBirth === null)
+        {
+            return true;
+        }
+
+        $startOfNextQuarter = Util::getStartOfNextQuarter();
+        $diff = $startOfNextQuarter->diff($dateOfBirth);
+        return $diff->format('%y') >= 15;
     }
 }

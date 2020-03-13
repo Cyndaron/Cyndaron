@@ -174,4 +174,32 @@ class Util
 
         return $ret;
     }
+
+    public static function getStartOfNextQuarter(): \DateTimeImmutable
+    {
+        $year = date('Y');
+        $nextYear = $year + 1;
+        $currentQuarter = floor((date('m') - 1) / 3) + 1;
+
+        switch ($currentQuarter)
+        {
+            case 1:
+                $date = "$year-04-01";
+                break;
+            case 2:
+                $date = "$year-07-01";
+                break;
+            case 3:
+                $date = "$year-10-01";
+                break;
+            case 4:
+            default:
+                $date = "$nextYear-01-01";
+                break;
+
+        }
+
+        return \DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+
+    }
 }

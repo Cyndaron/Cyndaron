@@ -138,3 +138,7 @@ ALTER TABLE `sub_replies` ADD `modified` TIMESTAMP on update CURRENT_TIMESTAMP N
 
 ALTER TABLE `users` ADD `gender` ENUM('male','female','other') NULL DEFAULT NULL AFTER `hideFromMemberList`, ADD `street` VARCHAR(200) NULL DEFAULT NULL AFTER `gender`, ADD `houseNumber` INT NULL DEFAULT NULL AFTER `street`, ADD `houseNumberAddition` VARCHAR(20) NULL DEFAULT NULL AFTER `houseNumber`, ADD `postalCode` VARCHAR(20) NULL DEFAULT NULL AFTER `houseNumberAddition`, ADD `city` VARCHAR(200) NULL DEFAULT NULL AFTER `postalCode`;
 ALTER TABLE `users` ADD UNIQUE(`username`);
+
+ALTER TABLE `users` ADD `initials` VARCHAR(20) NOT NULL AFTER `firstName`;
+ALTER TABLE `users` ADD `dateOfBirth` DATE NULL DEFAULT NULL AFTER `city`;
+ALTER TABLE `users` ADD `notes` TEXT NOT NULL AFTER `dateOfBirth`; 

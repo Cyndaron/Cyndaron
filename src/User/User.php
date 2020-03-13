@@ -13,7 +13,7 @@ use finfo;
 class User extends Model
 {
     public const TABLE = 'users';
-    public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city'];
+    public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city', 'dateOfBirth', 'notes'];
 
     public const AVATAR_DIR = 'uploads/user/avatar';
 
@@ -25,7 +25,7 @@ class User extends Model
     public string $tussenvoegsel;
     public string $lastName;
     public string $role;
-    public string $comments;
+    public string $comments = '';
     public string $avatar;
     public bool $hideFromMemberList;
     public ?string $gender = null;
@@ -34,6 +34,8 @@ class User extends Model
     public ?string $houseNumberAddition = null;
     public ?string $postalCode = null;
     public ?string $city = null;
+    public ?string $dateOfBirth = null;
+    public string $notes = '';
 
     public const RESET_PASSWORD_MAIL_TEXT =
         '<p>U vroeg om een nieuw wachtwoord voor %s.</p>
@@ -279,5 +281,15 @@ EOT;
         $ret .= $this->lastName;
 
         return $ret;
+    }
+
+    public function getDateOfBirth(): ?\DateTimeImmutable
+    {
+        if ($this->dateOfBirth === null || $this->dateOfBirth === '')
+        {
+            return null;
+        }
+
+        return \DateTimeImmutable::createFromFormat('!Y-m-d', $this->dateOfBirth);
     }
 }
