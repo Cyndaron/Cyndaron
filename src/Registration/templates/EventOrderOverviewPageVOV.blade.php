@@ -32,7 +32,7 @@
                     <div><span>Totaal</span></div>
                 </th>
                 <th class="rotate">
-                    <div><span>Is betaald?</span></div>
+                    <div><span>Status</span></div>
                 </th>
                 <th style="min-width: 150px;"></th>
             </tr>
@@ -68,8 +68,8 @@
                     {{ $registration->comments }}
                 </td>
 
-                <td>{{ $registration->calculateTotal([])|euro }}</td>
-                <td>{{ $registration->isPaid|boolToText }}</td>
+                <td>{{ $registration->calculateTotal()|euro }}</td>
+                <td>{{ $registration->getStatus() }}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
                         @if (!$registration->isPaid)

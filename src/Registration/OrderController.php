@@ -27,6 +27,18 @@ class OrderController extends Controller
             case 'setIsPaid':
                 $order->setIsPaid();
                 break;
+            case 'setApprovalStatus':
+                $status = (int)Request::post('status');
+                switch ($status)
+                {
+                    case Order::APPROVAL_APPROVED:
+                        $order->setApproved();
+                        break;
+                    case Order::APPROVAL_DISAPPROVED:
+                        $order->setDisapproved();
+                        break;
+                }
+                break;
             case 'delete':
                 $order->delete();
                 break;
@@ -114,6 +126,7 @@ class OrderController extends Controller
         $order->comments = Request::post('comments');
         $order->currentChoir = Request::post('currentChoir');
         $order->choirPreference = Request::post('choirPreference');
+        $order->approvalStatus = $eventObj->requireApproval ? Order::APPROVAL_UNDECIDED : Order::APPROVAL_APPROVED;
 
         $orderTotal = $order->calculateTotal($orderTicketTypes);
         if ($orderTotal <= 0)

@@ -10,8 +10,12 @@ use \Exception;
 
 class Order extends Model
 {
-    const TABLE = 'registration_orders';
-    const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'participatedBefore', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid', 'currentChoir', 'choirPreference'];
+    public const TABLE = 'registration_orders';
+    public const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'participatedBefore', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid', 'currentChoir', 'choirPreference', 'approvalStatus'];
+
+    public const APPROVAL_UNDECIDED = 0;
+    public const APPROVAL_APPROVED = 1;
+    public const APPROVAL_DISAPPROVED = 2;
 
     public int $eventId;
     public string $lastName;
@@ -36,8 +40,9 @@ class Order extends Model
     public bool $isPaid = false;
     public string $currentChoir = '';
     public string $choirPreference = '';
+    public int $approvalStatus = self::APPROVAL_UNDECIDED;
 
-    public static function loadByEvent(Event $event)
+    public static function loadByEvent(Event $event): array
     {
         return static::fetchAll(['eventId = ?'], [$event->id], 'ORDER BY id');
     }
@@ -101,7 +106,7 @@ class Order extends Model
         return Util::mail($this->email, 'Betalingsbevestiging', $text);
     }
 
-    public function calculateTotal(array $orderTicketTypes): float
+    public function calculateTotal(array $orderTicketTypes = []): float
     {
         $event = $this->getEvent();
         $orderTotal = 0;
@@ -135,5 +140,71 @@ class Order extends Model
             $orderTotal +=  $num * $ticketType->price;
         }
         return $orderTotal;
+    }
+
+    public function getStatus(): string
+    {
+        switch ($this->approvalStatus)
+        {
+            case self::APPROVAL_UNDECIDED:
+                return 'Nieuw';
+            case self::APPROVAL_APPROVED:
+                if ($this->isPaid)
+                    return 'Toegelaten, betaald';
+                else
+                    return 'Toegelaten, niet betaald';
+            case self::APPROVAL_DISAPPROVED:
+                if ($this->isPaid)
+                    return 'Afgewezen, betaald';
+                else
+                    return 'Afgewezen, niet betaald';
+        }
+        return 'Onbekend';
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function setApproved(): bool
+    {
+        if ($this->id === null)
+        {
+            throw new Exception('ID is null!');
+        }
+
+        $this->approvalStatus = self::APPROVAL_APPROVED;
+        $this->save();
+
+        $event = $this->getEvent();
+        $orderTotal = $this->calculateTotal();
+
+        $text = '';
+
+        return Util::mail($this->email, 'Aanmelding ' . $event->name . ' goedgekeurd', $text);
+    }
+
+    public function setDisapproved(): bool
+    {
+        if ($this->id === null)
+        {
+            throw new Exception('ID is null!');
+        }
+
+        $this->approvalStatus = self::APPROVAL_DISAPPROVED;
+        $this->save();
+
+        $event = $this->getEvent();
+
+        if ($event->requireApproval)
+        {
+            $text = '';
+        }
+        else
+        {
+            $text = 'Uw bestelling is geannuleerd. Eventuele betalingen zullen worden teruggestort.';
+        }
+
+        return Util::mail($this->email, 'Aanmelding ' . $event->name, $text);
     }
 }

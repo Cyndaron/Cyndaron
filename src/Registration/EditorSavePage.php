@@ -23,6 +23,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $event->lunchCost = (float)str_replace(',', '.', Request::post('lunchCost'));
         $event->maxRegistrations = (int)Request::post('maxRegistrations');
         $event->numSeats = (int)Request::post('numSeats');
+        $event->requireApproval = (bool)Request::post('requireApproval');
 
         if ($event->save())
         {

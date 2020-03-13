@@ -178,3 +178,14 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+/*
+
+
+ ALTER TABLE `registration_orders` ADD `currentChoir` VARCHAR(120) NOT NULL AFTER `numPosters`;
+ ALTER TABLE `registration_orders` ADD `choirPreference` VARCHAR(50) NOT NULL AFTER `currentChoir`;
+ */
+ALTER TABLE `registration_orders` ADD `approvalStatus` tinyint(1) NOT NULL DEFAULT '0' AFTER `choirPreference`;
+
+ALTER TABLE `registration_events` ADD `requireApproval` TINYINT(1) NOT NULL AFTER `numSeats`;

@@ -29,4 +29,6 @@
         </div>
     </div>
 
+    @include ('Widget/Form/Checkbox', ['id' => 'requireApproval', 'description' => 'Vereis goedkeuring van inschrijvingen', 'checked' => $model->requireApproval])
+
 @endsection

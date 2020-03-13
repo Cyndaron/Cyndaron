@@ -9,7 +9,7 @@ use Cyndaron\Setting;
 class Event extends Model
 {
     public const TABLE = 'registration_events';
-    public const TABLE_FIELDS = ['name', 'openForRegistration', 'description', 'descriptionWhenClosed', 'registrationCost0', 'registrationCost1', 'registrationCost2', 'lunchCost', 'maxRegistrations', 'numSeats'];
+    public const TABLE_FIELDS = ['name', 'openForRegistration', 'description', 'descriptionWhenClosed', 'registrationCost0', 'registrationCost1', 'registrationCost2', 'lunchCost', 'maxRegistrations', 'numSeats', 'requireApproval'];
 
     public string $name = '';
     public bool $openForRegistration = true;
@@ -21,6 +21,7 @@ class Event extends Model
     public float $lunchCost;
     public int $maxRegistrations = 300;
     public int $numSeats = 300;
+    public bool $requireApproval = false;
 
     /**
      * Get answer to antispam question.
