@@ -130,7 +130,9 @@ class Model
         foreach (self::getExtendedTableFields() as $tableField)
         {
             if (array_key_exists($tableField, $newArray))
+            {
                 $this->$tableField = $newArray[$tableField];
+            }
         }
     }
 
@@ -166,9 +168,11 @@ class Model
                 $arguments[] = $this->mangleVar($this->$tableField);
             }
 
-            $result = DBConnection::doQuery('INSERT INTO ' . static::TABLE . ' (' . implode(',', static::TABLE_FIELDS) .  ') VALUES (' . $placeholders . ')', $arguments);
+            $result = DBConnection::doQuery('INSERT INTO ' . static::TABLE . ' (' . implode(',', static::TABLE_FIELDS) . ') VALUES (' . $placeholders . ')', $arguments);
             if ($result !== false)
+            {
                 $this->id = (int)$result;
+            }
         }
         // Modify existing entry
         else
@@ -228,5 +232,12 @@ class Model
         }
 
         return $var;
+    }
+
+    public static function deleteById(int $id): bool
+    {
+        DBConnection::doQuery(sprintf('DELETE FROM %s WHERE id = ?', static::TABLE), [$id]);
+
+        return true;
     }
 }

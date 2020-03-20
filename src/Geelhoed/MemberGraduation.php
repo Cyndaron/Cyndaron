@@ -21,7 +21,7 @@ class MemberGraduation extends Model
      */
     public static function fetchAllByMember(Member $member): array
     {
-        return static::fetchAll(['memberId = ?'], [$member->id]);
+        return static::fetchAll(['memberId = ?'], [$member->id], 'ORDER BY date');
     }
     
     public function getGraduation(): Graduation

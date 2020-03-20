@@ -2,6 +2,36 @@
 
 <div id="geelhoed-membermanager">
     @component('Widget/Toolbar')
+        @slot('left')
+            IBAN:
+            <select id="gum-filter-iban" class="custom-select form-control-inline">
+                <option value="">(Alles)</option>
+                <option value="1">Met IBAN</option>
+                <option value="2">Zonder IBAN</option>
+            </select>
+
+            M/V:
+            <select id="gum-filter-gender" class="custom-select form-control-inline">
+                <option value="">(Alles)</option>
+                <option value="male">M</option>
+                <option value="female">V</option>
+            </select>
+
+            Tijd. stop:
+            <select id="gum-filter-temporaryStop" class="custom-select form-control-inline">
+                <option value="-1">(Alles)</option>
+                <option value="1">Ja</option>
+                <option value="0">Nee</option>
+            </select>
+
+            Bet.probleem:
+            <select id="gum-filter-paymentProblem" class="custom-select form-control-inline">
+                <option value="-1">(Alles)</option>
+                <option value="1">Ja</option>
+                <option value="0">Nee</option>
+            </select>
+
+        @endslot
         @slot('right')
             <button type="button" id="gum-new" class="btn btn-success" data-toggle="modal" data-target="#gum-edit-user-dialog">
                 <span class="glyphicon glyphicon-plus"></span>Nieuw lid
@@ -23,9 +53,14 @@
         <tbody>
             @php /** @var \Cyndaron\Geelhoed\Member\Member[] $members */ @endphp
             @foreach ($members as $member)
-                <tr>
+                @php $profile = $member->getProfile() @endphp
+                <tr class="geelhoed-member-entry"
+                    data-iban="{{ $member->iban }}"
+                    data-gender="{{ $profile->gender ?? '' }}"
+                    data-temporaryStop="{{ (int)$member->temporaryStop }}"
+                    data-paymentProblem="{{ (int)$member->paymentProblem }}"
+                >
                     <td>{{ $member->id }}</td>
-                    @php $profile = $member->getProfile() @endphp
                     <td>
                         {{ $profile->getFullName() }}<br>
                         {{ $profile->street }} {{ $profile->houseNumber ?: '' }} {{ $profile->houseNumberAddition }}<br>
@@ -94,6 +129,7 @@
                     van de ouders in (onder “Persoonsgegevens”).</p>
                     <input type="hidden" name="id" value="0">
                     <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('member', 'save') }}">
+                    <input type="hidden" name="csrfTokenRemoveGraduation" value="{{ \Cyndaron\User\User::getCSRFToken('member', 'removeGraduation') }}">
                     @include('Widget/Form/BasicInput', ['id' => 'username', 'label' => 'Gebruikersnaam', 'placeholder' => 'Bijv.: ammulder'])
                     @include('Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'Eigen e-mailadres'])
                 </div>
@@ -133,7 +169,12 @@
                     <ul id="gum-user-dialog-graduation-list">
 
                     </ul>
-
+                    Nieuwe graduatie: <select id="new-graduation-id" name="new-graduation-id" class="form-control form-control-inline custom-select">
+                        <option value=""></option>
+                        @foreach (\Cyndaron\Geelhoed\Graduation::fetchAll() as $graduation)
+                            <option value="{{ $graduation->id }}">{{ $graduation->getSport()->name }}: {{ $graduation->name }}</option>
+                        @endforeach
+                    </select> <input id="new-graduation-date" name="new-graduation-date" type="date" class="form-control form-control-inline">
 
                 </div>
                 <div class="tab-pane fade" id="lessons" role="tabpanel" aria-labelledby="lessons-tab">

@@ -1,6 +1,8 @@
 'use strict';
 
 $('#gum-new').on('click', function() {
+    $('.remove-member-graduation').off();
+
     $('#gum-edit-user-dialog input,textarea,select').each(function () {
         let element = $(this);
         if (element.prop('name') !== 'csrfToken')
@@ -23,6 +25,8 @@ $('#gum-new').on('click', function() {
 });
 
 $('.btn-gum-edit').on('click', function () {
+    $('.remove-member-graduation').off();
+
     let memberId = $(this).data('id');
     $.get('/api/member/get/' + memberId, {}, null, 'json')
         .done(function (data) {
@@ -34,6 +38,15 @@ $('.btn-gum-edit').on('click', function () {
                     if (property === 'graduationList')
                     {
                         $('#gum-user-dialog-graduation-list').html(data[property]);
+                        $('.remove-member-graduation').on('click', function() {
+                            let id = $(this).data('id')
+                            $.post({
+                                url: '/api/member/removeGraduation/' + id,
+                                data: { 'csrfToken': $('[name=csrfTokenRemoveGraduation]').first().val()},
+                            }).done(function() {
+                                $('#member-graduation-' + id).remove();
+                            });
+                        });
                     }
                     else
                     {
@@ -76,4 +89,48 @@ $('#gum-popup-save').on('click keyup', function () {
         location.reload();
     });
 
+});
+
+$('#gum-filter-iban').on('change', function () {
+    let value = parseInt($( "#gum-filter-iban option:selected" ).val());
+    $('.geelhoed-member-entry').show();
+
+    if (value === 1)
+    {
+        $('.geelhoed-member-entry[data-iban=""]').hide();
+    }
+    else if (value === 2)
+    {
+        $('.geelhoed-member-entry:not([data-iban=""])').hide();
+    }
+});
+
+$('#gum-filter-gender').on('change', function () {
+    let value = $( "#gum-filter-gender option:selected" ).val();
+    $('.geelhoed-member-entry').show();
+
+    if (value !== '')
+    {
+        $('.geelhoed-member-entry:not([data-gender="' + value + '"])').hide();
+    }
+});
+
+$('#gum-filter-temporaryStop').on('change', function () {
+    let value = parseInt($( "#gum-filter-temporaryStop option:selected" ).val());
+    $('.geelhoed-member-entry').show();
+
+    if (value !== -1)
+    {
+        $('.geelhoed-member-entry:not([data-temporaryStop="' + value + '"])').hide();
+    }
+});
+
+$('#gum-filter-paymentProblem').on('change', function () {
+    let value = parseInt($( "#gum-filter-paymentProblem option:selected" ).val());
+    $('.geelhoed-member-entry').show();
+
+    if (value !== -1)
+    {
+        $('.geelhoed-member-entry:not([data-temporaryStop="' + value + '"])').hide();
+    }
 });

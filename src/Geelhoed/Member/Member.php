@@ -109,17 +109,6 @@ class Member extends Model
         return MemberGraduation::fetchAllByMember($this);
     }
 
-    public function getGraduationList(): array
-    {
-        $list = [];
-        foreach($this->getMemberGraduations() as $memberGraduation)
-        {
-            $graduation = $memberGraduation->getGraduation();
-            $list[] = "{$graduation->getSport()->name}: {$graduation->name} ({$memberGraduation->date})";
-        }
-        return $list;
-    }
-
     public function isSenior(): bool
     {
         $dateOfBirth = $this->getProfile()->getDateOfBirth();

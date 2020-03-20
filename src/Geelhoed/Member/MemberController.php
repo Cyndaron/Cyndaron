@@ -4,6 +4,7 @@ namespace Cyndaron\Geelhoed\Member;
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Hour;
+use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Request;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
@@ -14,6 +15,7 @@ class MemberController extends Controller
         'get' => ['level' => UserLevel::ADMIN, 'function' => 'get'],
     ];
     protected array $postRoutes = [
+        'removeGraduation' => ['level' => UserLevel::ADMIN, 'function' => 'removeGraduation'],
         'save' => ['level' => UserLevel::ADMIN, 'function' => 'save']
     ];
 
@@ -30,15 +32,26 @@ class MemberController extends Controller
                 $ret["hour-{$hour->id}"] = true;
             }
 
-            $list = $member->getGraduationList();
-            $processedList = array_map(static function (string $line) {
-                return "<li>$line</li>";
-            }, $list);
+            $list = [];
+            foreach($member->getMemberGraduations() as $memberGraduation)
+            {
+                $graduation = $memberGraduation->getGraduation();
+                $description = "{$graduation->getSport()->name}: {$graduation->name} ({$memberGraduation->date})";
+                $list[] = sprintf('<li id="member-graduation-%d">%s <a class="btn btn-sm btn-danger remove-member-graduation" data-id="%d"><span class="glyphicon glyphicon-trash"></span></a></li>', $memberGraduation->id, $description, $memberGraduation->id);
+            }
 
-            $ret['graduationList'] = implode($processedList);
+            $ret['graduationList'] = implode($list);
         }
 
         return $ret;
+    }
+
+    public function removeGraduation(): array
+    {
+        $id = (int)Request::getVar(2);
+        MemberGraduation::deleteById($id);
+
+        return ['status' => 'ok'];
     }
 
     public function save(): array
@@ -75,15 +88,23 @@ class MemberController extends Controller
 
         foreach (Member::TABLE_FIELDS as $tableField)
         {
-            if ($tableField === 'joinedAt')
-                continue;
-
             $member->$tableField = Member::mangleVarForProperty($tableField, Request::post($tableField));
         }
         $member->userId = $user->id;
         if (!$member->save())
         {
             throw new \Exception('Error saving member record: ' . var_export(DBConnection::errorInfo(), true));
+        }
+
+        $newGraduationId = filter_input(INPUT_POST, 'new-graduation-id', FILTER_SANITIZE_NUMBER_INT);
+        $newGraduationDate = filter_input(INPUT_POST, 'new-graduation-date', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+        if ($newGraduationId && $newGraduationDate)
+        {
+            $mg = new MemberGraduation();
+            $mg->memberId = $member->id;
+            $mg->graduationId = $newGraduationId;
+            $mg->date = $newGraduationDate;
+            $mg->save();
         }
 
         $hours = [];
