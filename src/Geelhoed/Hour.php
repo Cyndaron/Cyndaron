@@ -22,6 +22,9 @@ class Hour extends Model
     public int $departmentId;
     public string $notes;
 
+    /** @var Hour[] */
+    private static array $cache = [];
+
     public function getLocation(): Location
     {
         return Location::loadFromDatabase((int)$this->locationId);
@@ -49,5 +52,28 @@ class Hour extends Model
     public function getRange(): string
     {
         return sprintf('%s – %s', Util::filterHm($this->from), Util::filterHm($this->until));
+    }
+
+    public static function loadFromDatabase(int $id): ?Model
+    {
+        if (array_key_exists($id, static::$cache))
+        {
+            return static::$cache[$id];
+        }
+
+        $object = parent::loadFromDatabase($id);
+        static::$cache[$id] = $object;
+
+        return $object;
+    }
+
+    public function save(): bool
+    {
+        $result = parent::save();
+        if ($result)
+        {
+            static::$cache[$this->id] = $this;
+        }
+        return $result;
     }
 }

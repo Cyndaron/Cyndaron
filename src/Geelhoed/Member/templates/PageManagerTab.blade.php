@@ -17,11 +17,35 @@
                 <option value="female">V</option>
             </select>
 
+            Sport:
+            <select id="gum-filter-sport" class="custom-select form-control-inline">
+                <option value="-1">(Alles)</option>
+                @foreach (\Cyndaron\Geelhoed\Sport::fetchAll() as $sport)
+                    <option value="{{ $sport->id }}">{{ $sport->name }}</option>
+                @endforeach
+            </select>
+
+            Band:
+            <select id="gum-filter-graduation" class="custom-select form-control-inline">
+                <option value="-1">(Alles)</option>
+                @foreach (\Cyndaron\Geelhoed\Graduation::fetchAll() as $graduation)
+                    <option value="{{ $graduation->id }}">{{ $graduation->getSport()->name }}, {{ $graduation->name }}</option>
+                @endforeach
+            </select>
+
             Tijd. stop:
             <select id="gum-filter-temporaryStop" class="custom-select form-control-inline">
                 <option value="-1">(Alles)</option>
                 <option value="1">Ja</option>
                 <option value="0">Nee</option>
+            </select>
+
+            Bet.meth.
+            <select id="gum-filter-paymentMethod" class="custom-select form-control-inline">
+                <option value="">(Alles)</option>
+                @foreach (\Cyndaron\Geelhoed\Member\Member::PAYMENT_METHODS as $key => $value)
+                    <option value="{{ $key }}">{{ $value }}</option>
+                @endforeach
             </select>
 
             Bet.probleem:
@@ -58,7 +82,14 @@
                     data-iban="{{ $member->iban }}"
                     data-gender="{{ $profile->gender ?? '' }}"
                     data-temporaryStop="{{ (int)$member->temporaryStop }}"
+                    data-paymentMethod="{{ $member->paymentMethod }}"
                     data-paymentProblem="{{ (int)$member->paymentProblem }}"
+                    @foreach ($member->getSports() as $sport)
+                        data-sport{{ $sport->id }}="1"
+                    @endforeach
+                    @foreach ($member->getMemberGraduations() as $memberGraduation)
+                        data-graduation{{ $memberGraduation->graduationId }}="1"
+                    @endforeach
                 >
                     <td>{{ $member->id }}</td>
                     <td>

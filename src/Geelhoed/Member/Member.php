@@ -121,4 +121,16 @@ class Member extends Model
         $diff = $startOfNextQuarter->diff($dateOfBirth);
         return $diff->format('%y') >= 15;
     }
+
+    public function getSports(): array
+    {
+        $sports = [];
+        foreach ($this->getHours() as $hour)
+        {
+            $sport = $hour->getSport();
+            $sports[$sport->id] = $sport;
+        }
+
+        return $sports;
+    }
 }

@@ -134,3 +134,33 @@ $('#gum-filter-paymentProblem').on('change', function () {
         $('.geelhoed-member-entry:not([data-temporaryStop="' + value + '"])').hide();
     }
 });
+
+$('#gum-filter-sport').on('change', function () {
+    let value = parseInt($( "#gum-filter-sport option:selected" ).val());
+    $('.geelhoed-member-entry').show();
+
+    if (value !== -1)
+    {
+        $('.geelhoed-member-entry:not([data-sport' + value + '="1"])').hide();
+    }
+});
+
+$('#gum-filter-graduation').on('change', function () {
+    let value = parseInt($( "#gum-filter-graduation option:selected" ).val());
+    $('.geelhoed-member-entry').show();
+
+    if (value !== -1)
+    {
+        $('.geelhoed-member-entry:not([data-graduation' + value + '="1"])').hide();
+    }
+});
+
+$('#gum-filter-paymentMethod').on('change', function () {
+    let value = $( "#gum-filter-paymentMethod option:selected" ).val();
+    $('.geelhoed-member-entry').show();
+
+    if (value !== '')
+    {
+        $('.geelhoed-member-entry:not([data-paymentMethod="' + value + '"])').hide();
+    }
+});
