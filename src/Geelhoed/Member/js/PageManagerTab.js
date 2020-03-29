@@ -141,7 +141,7 @@ $('#gum-filter-sport').on('change', function () {
 
     if (value !== -1)
     {
-        $('.geelhoed-member-entry:not([data-sport' + value + '="1"])').hide();
+        $('.geelhoed-member-entry:not([data-sport-' + value + '="1"])').hide();
     }
 });
 
@@ -151,7 +151,7 @@ $('#gum-filter-graduation').on('change', function () {
 
     if (value !== -1)
     {
-        $('.geelhoed-member-entry:not([data-graduation' + value + '="1"])').hide();
+        $('.geelhoed-member-entry:not([data-graduation-' + value + '="1"])').hide();
     }
 });
 

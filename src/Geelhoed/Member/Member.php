@@ -7,6 +7,7 @@ use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
+use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Model;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\User\User;
@@ -122,6 +123,10 @@ class Member extends Model
         return $diff->format('%y') >= 15;
     }
 
+    /**
+     * @return Sport[]
+     * @throws \Exception
+     */
     public function getSports(): array
     {
         $sports = [];
@@ -132,5 +137,68 @@ class Member extends Model
         }
 
         return $sports;
+    }
+
+    public function getHighestGraduation(Sport $sport): ?Graduation
+    {
+        $graduations = MemberGraduation::fetchAllByMember($this);
+        // Results are ordered by date, so the reverse it to start with the highest ones.
+        foreach (array_reverse($graduations) as $memberGraduation)
+        {
+            $graduation = $memberGraduation->getGraduation();
+            if ($graduation->getSport()->id === $sport->id)
+            {
+                return $graduation;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Calculate monthly total from the start of the next quarter.
+     *
+     * @return float
+     * @throws \Exception
+     */
+    public function getMonthlyFee(): float
+    {
+        $isSenior = $this->isSenior();
+        $sports = $this->getSports();
+        if (count($sports) === 0)
+        {
+            return 0.00;
+        }
+        if (count($sports) === 1)
+        {
+            $sport = reset($sports);
+            if ($isSenior)
+                return $sport->seniorFee;
+            else
+                return $sport->juniorFee;
+        }
+        else
+        {
+            $highestFee = 0.00;
+            foreach ($sports as $sport)
+            {
+                $fee = $isSenior ? $sport->seniorFee : $sport->juniorFee;
+                if ($fee > $highestFee)
+                    $highestFee = $fee;
+            }
+
+            return $highestFee + 5.00;
+        }
+    }
+
+    /**
+     * Calculate quarterly total from the start of the next quarter.
+     *
+     * @return float
+     * @throws \Exception
+     */
+    public function getQuarterlyFee(): float
+    {
+        return $this->getMonthlyFee() * 3;
     }
 }

@@ -85,10 +85,13 @@
                     data-paymentMethod="{{ $member->paymentMethod }}"
                     data-paymentProblem="{{ (int)$member->paymentProblem }}"
                     @foreach ($member->getSports() as $sport)
-                        data-sport{{ $sport->id }}="1"
+                        data-sport-{{ $sport->id }}="1"
                     @endforeach
-                    @foreach ($member->getMemberGraduations() as $memberGraduation)
-                        data-graduation{{ $memberGraduation->graduationId }}="1"
+                    @foreach (\Cyndaron\Geelhoed\Sport::fetchAll() as $sport)
+                        @php $graduation = $member->getHighestGraduation($sport) @endphp
+                        @if ($graduation !== null)
+                            data-graduation-{{ $graduation->id }}="1"
+                        @endif
                     @endforeach
                 >
                     <td>{{ $member->id }}</td>
@@ -112,7 +115,7 @@
                     </td>
                     <td>
                         {{ $member->iban }}<br>
-                        <abbr title="Voor kwartaal dat begint op {{ \Cyndaron\Util::getStartOfNextQuarter()->format('d-m-Y') }}">Kw.bedrag: </abbr>
+                        <abbr title="Voor kwartaal dat begint op {{ \Cyndaron\Util::getStartOfNextQuarter()->format('d-m-Y') }}">Kw.bedrag: </abbr>{{ \Cyndaron\Util::formatEuro($member->getQuarterlyFee()) }}
                     </td>
                     <td>
                         @if ($member->isContestant)<abbr title="Wedstrijdjudoka">W</abbr><br>@endif

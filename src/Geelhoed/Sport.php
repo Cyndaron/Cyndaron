@@ -5,8 +5,10 @@ use Cyndaron\Model;
 
 class Sport extends Model
 {
-    const TABLE = 'geelhoed_sports';
-    const TABLE_FIELDS = ['name'];
+    public const TABLE = 'geelhoed_sports';
+    public const TABLE_FIELDS = ['name', 'juniorFee', 'seniorFee'];
 
     public string $name;
+    public float $juniorFee;
+    public float $seniorFee;
 }
