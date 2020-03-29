@@ -201,4 +201,32 @@ class Member extends Model
     {
         return $this->getMonthlyFee() * 3;
     }
+
+    /**
+     * @param array $where
+     * @param array $args
+     * @param string $afterWhere
+     * @return static[]
+     */
+    public static function fetchAll(array $where = [], array $args = [], string $afterWhere = 'ORDER BY lastname,tussenvoegsel,firstname'): array
+    {
+        $whereString = '';
+        if (count($where) > 0)
+        {
+            $whereString = 'WHERE ' . implode(' AND ', $where);
+        }
+        $results = DBConnection::doQueryAndFetchAll('SELECT * FROM `geelhoed_members` gm INNER JOIN `users` u on gm.userId = u.id ' . $whereString . ' ' . $afterWhere, $args);
+        $ret = [];
+        if ($results)
+        {
+            foreach ($results as $result)
+            {
+                $obj = new static((int)$result['id']);
+                $obj->updateFromArray($result);
+                $ret[] = $obj;
+            }
+        }
+
+        return $ret;
+    }
 }

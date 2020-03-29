@@ -22,7 +22,7 @@ class PageManagerTabs
 
     public static function membersTab(): string
     {
-        $members = Member::fetchAll([], [], '');
+        $members = Member::fetchAll();
         return (new Template())->render('Geelhoed/Member/PageManagerTab', compact('members'));
     }
 }

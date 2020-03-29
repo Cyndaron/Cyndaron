@@ -55,6 +55,11 @@
                 <option value="0">Nee</option>
             </select>
 
+            Geb. datum start:
+            <input id="gum-filter-dateOfBirth-start" class="gum-filter-dateOfBirth form-control form-control-inline" type="date"/>
+            Geb. datum eind:
+            <input id="gum-filter-dateOfBirth-end" class="gum-filter-dateOfBirth form-control form-control-inline" type="date"/>
+
         @endslot
         @slot('right')
             <button type="button" id="gum-new" class="btn btn-success" data-toggle="modal" data-target="#gum-edit-user-dialog">
@@ -84,6 +89,9 @@
                     data-temporaryStop="{{ (int)$member->temporaryStop }}"
                     data-paymentMethod="{{ $member->paymentMethod }}"
                     data-paymentProblem="{{ (int)$member->paymentProblem }}"
+                    @if ($profile->dateOfBirth)
+                         data-dateOfBirth="{{ date('Y-m-d', strtotime($profile->dateOfBirth)) }}"
+                    @endif
                     @foreach ($member->getSports() as $sport)
                         data-sport-{{ $sport->id }}="1"
                     @endforeach

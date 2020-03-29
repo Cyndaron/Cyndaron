@@ -180,3 +180,48 @@ $('#gum-filter-paymentMethod').on('change', function ()
         $('.geelhoed-member-entry:not([data-paymentMethod="' + value + '"])').hide();
     }
 });
+
+$('.gum-filter-dateOfBirth').on('change', function ()
+{
+    $('.geelhoed-member-entry').show();
+
+    let startVal = $("#gum-filter-dateOfBirth-start").val();
+    let endVal = $("#gum-filter-dateOfBirth-end").val();
+
+    if (startVal === '' && endVal === '')
+    {
+        return;
+    }
+
+    let startDate = null;
+    if (startVal)
+    {
+        startDate = new Date(startVal);
+    }
+    let endDate = null;
+    if (endVal)
+    {
+        endDate = new Date(endVal);
+    }
+
+    $('.geelhoed-member-entry').each(function ()
+    {
+        let dateOfBirthVal = $(this).data('dateofbirth');
+        if (!dateOfBirthVal)
+        {
+            $(this).hide();
+        }
+        else
+        {
+            let dateOfBirth = new Date(dateOfBirthVal);
+            if (startDate && startDate > dateOfBirth)
+            {
+                $(this).hide();
+            }
+            if (endDate && endDate < dateOfBirth)
+            {
+                $(this).hide();
+            }
+        }
+    });
+});
