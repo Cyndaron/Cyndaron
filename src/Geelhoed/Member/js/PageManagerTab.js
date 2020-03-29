@@ -1,6 +1,7 @@
 'use strict';
 
-$('#gum-new').on('click', function() {
+function clearPopUpFields()
+{
     $('.remove-member-graduation').off();
 
     $('#gum-edit-user-dialog input,textarea,select').each(function () {
@@ -22,10 +23,16 @@ $('#gum-new').on('click', function() {
         }
     });
     $('#gum-user-dialog-graduation-list').html('');
+}
+
+$('#gum-new').on('click', function()
+{
+    clearPopUpFields();
 });
 
-$('.btn-gum-edit').on('click', function () {
-    $('.remove-member-graduation').off();
+$('.btn-gum-edit').on('click', function ()
+{
+    clearPopUpFields();
 
     let memberId = $(this).data('id');
     $.get('/api/member/get/' + memberId, {}, null, 'json')
@@ -39,7 +46,7 @@ $('.btn-gum-edit').on('click', function () {
                     {
                         $('#gum-user-dialog-graduation-list').html(data[property]);
                         $('.remove-member-graduation').on('click', function() {
-                            let id = $(this).data('id')
+                            let id = $(this).data('id');
                             $.post({
                                 url: '/api/member/removeGraduation/' + id,
                                 data: { 'csrfToken': $('[name=csrfTokenRemoveGraduation]').first().val()},
@@ -60,7 +67,8 @@ $('.btn-gum-edit').on('click', function () {
                             else if (element.is('select'))
                             {
                                 $('#gum-edit-user-dialog [name=' + property + '] option').prop('selected', false);
-                                $('#gum-edit-user-dialog [name=' + property + '] option[value=' + data[property] + ']').prop('selected', true);
+                                if (data[property])
+                                    $('#gum-edit-user-dialog [name=' + property + '] option[value=' + data[property] + ']').prop('selected', true);
                             }
                             else
                             {
@@ -76,12 +84,13 @@ $('.btn-gum-edit').on('click', function () {
     $('#gum-edit-user-dialog [name=id]').val(memberId);
 });
 
-$(document).on('submit', '.myForm', function(e) {
-
+$(document).on('submit', '.myForm', function(e)
+{
     e.preventDefault();
 });
 
-$('#gum-popup-save').on('click keyup', function () {
+$('#gum-popup-save').on('click keyup', function ()
+{
     $.post({
         url: '/api/member/save',
         data: $('#gum-user-popup').serialize(),
@@ -91,7 +100,8 @@ $('#gum-popup-save').on('click keyup', function () {
 
 });
 
-$('#gum-filter-iban').on('change', function () {
+$('#gum-filter-iban').on('change', function ()
+{
     let value = parseInt($( "#gum-filter-iban option:selected" ).val());
     $('.geelhoed-member-entry').show();
 
@@ -105,7 +115,8 @@ $('#gum-filter-iban').on('change', function () {
     }
 });
 
-$('#gum-filter-gender').on('change', function () {
+$('#gum-filter-gender').on('change', function ()
+{
     let value = $( "#gum-filter-gender option:selected" ).val();
     $('.geelhoed-member-entry').show();
 
@@ -115,7 +126,8 @@ $('#gum-filter-gender').on('change', function () {
     }
 });
 
-$('#gum-filter-temporaryStop').on('change', function () {
+$('#gum-filter-temporaryStop').on('change', function ()
+{
     let value = parseInt($( "#gum-filter-temporaryStop option:selected" ).val());
     $('.geelhoed-member-entry').show();
 
@@ -125,7 +137,8 @@ $('#gum-filter-temporaryStop').on('change', function () {
     }
 });
 
-$('#gum-filter-paymentProblem').on('change', function () {
+$('#gum-filter-paymentProblem').on('change', function ()
+{
     let value = parseInt($( "#gum-filter-paymentProblem option:selected" ).val());
     $('.geelhoed-member-entry').show();
 
@@ -135,7 +148,8 @@ $('#gum-filter-paymentProblem').on('change', function () {
     }
 });
 
-$('#gum-filter-sport').on('change', function () {
+$('#gum-filter-sport').on('change', function ()
+{
     let value = parseInt($( "#gum-filter-sport option:selected" ).val());
     $('.geelhoed-member-entry').show();
 
@@ -145,7 +159,8 @@ $('#gum-filter-sport').on('change', function () {
     }
 });
 
-$('#gum-filter-graduation').on('change', function () {
+$('#gum-filter-graduation').on('change', function ()
+{
     let value = parseInt($( "#gum-filter-graduation option:selected" ).val());
     $('.geelhoed-member-entry').show();
 
@@ -155,7 +170,8 @@ $('#gum-filter-graduation').on('change', function () {
     }
 });
 
-$('#gum-filter-paymentMethod').on('change', function () {
+$('#gum-filter-paymentMethod').on('change', function ()
+{
     let value = $( "#gum-filter-paymentMethod option:selected" ).val();
     $('.geelhoed-member-entry').show();
 

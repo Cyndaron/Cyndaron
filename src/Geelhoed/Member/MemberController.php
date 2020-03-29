@@ -88,7 +88,8 @@ class MemberController extends Controller
 
         foreach (Member::TABLE_FIELDS as $tableField)
         {
-            $member->$tableField = Member::mangleVarForProperty($tableField, Request::post($tableField));
+            if ($tableField !== 'joinedAt' || Request::post($tableField) !== '')
+                $member->$tableField = Member::mangleVarForProperty($tableField, Request::post($tableField));
         }
         $member->userId = $user->id;
         if (!$member->save())

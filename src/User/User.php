@@ -299,7 +299,7 @@ EOT;
         if (empty($this->username))
         {
             $initials = $this->initials ?: $this->firstName;
-            $username = strtolower("{$initials}{$this->lastName}");
+            $username = strtolower("{$initials}{$this->tussenvoegsel}{$this->lastName}");
             // Last resort!
             if ($username === '')
             {

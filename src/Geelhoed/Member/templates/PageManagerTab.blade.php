@@ -43,8 +43,8 @@
             Bet.meth.
             <select id="gum-filter-paymentMethod" class="custom-select form-control-inline">
                 <option value="">(Alles)</option>
-                @foreach (\Cyndaron\Geelhoed\Member\Member::PAYMENT_METHODS as $key => $value)
-                    <option value="{{ $key }}">{{ $value }}</option>
+                @foreach (\Cyndaron\Geelhoed\Member\Member::PAYMENT_METHODS as $paymentKey => $paymentValue)
+                    <option value="{{ $paymentKey }}">{{ $paymentValue }}</option>
                 @endforeach
             </select>
 
@@ -96,7 +96,7 @@
                 >
                     <td>{{ $member->id }}</td>
                     <td>
-                        {{ $profile->getFullName() }}<br>
+                        {{ $profile->lastName }} {{ $profile->tussenvoegsel }} {{ $profile->firstName }}<br>
                         {{ $profile->street }} {{ $profile->houseNumber ?: '' }} {{ $profile->houseNumberAddition }}<br>
                         {{ $profile->postalCode }} {{ $profile->city }}
                     </td>
@@ -164,32 +164,32 @@
                     <input type="hidden" name="id" value="0">
                     <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('member', 'save') }}">
                     <input type="hidden" name="csrfTokenRemoveGraduation" value="{{ \Cyndaron\User\User::getCSRFToken('member', 'removeGraduation') }}">
-                    @include('Widget/Form/BasicInput', ['id' => 'username', 'label' => 'Gebruikersnaam', 'placeholder' => 'Bijv.: ammulder'])
-                    @include('Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'Eigen e-mailadres'])
+                    @include('Widget/Form/BasicInput', ['id' => 'username', 'label' => 'Gebruikersnaam', 'placeholder' => 'Bijv.: ammulder', 'value' => ''])
+                    @include('Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'Eigen e-mailadres', 'value' => ''])
                 </div>
                 <div class="tab-pane fade" id="personal-data" role="tabpanel" aria-labelledby="personal-data-tab">
-                    @include('Widget/Form/BasicInput', ['id' => 'firstName', 'label' => 'Voornaam'])
-                    @include('Widget/Form/BasicInput', ['id' => 'tussenvoegsel', 'label' => 'Tussenvoegsel'])
-                    @include('Widget/Form/BasicInput', ['id' => 'lastName', 'label' => 'Achternaam'])
+                    @include('Widget/Form/BasicInput', ['id' => 'firstName', 'label' => 'Voornaam', 'value' => ''])
+                    @include('Widget/Form/BasicInput', ['id' => 'tussenvoegsel', 'label' => 'Tussenvoegsel', 'value' => ''])
+                    @include('Widget/Form/BasicInput', ['id' => 'lastName', 'label' => 'Achternaam', 'value' => ''])
                     @include('Widget/Form/Select', ['id' => 'gender', 'label' => 'Geslacht', 'options' => ['male' => 'man', 'female' => 'vrouw']])
-                    @include('Widget/Form/BasicInput', ['id' => 'dateOfBirth', 'type' => 'date', 'required' => true, 'label' => 'Geboortedatum'])
+                    @include('Widget/Form/BasicInput', ['id' => 'dateOfBirth', 'type' => 'date', 'required' => true, 'label' => 'Geboortedatum', 'value' => ''])
 
                     <h4>Contactgegevens:</h4>
-                    @include('Widget/Form/BasicInput', ['id' => 'parentEmail', 'type' => 'email', 'label' => 'E-mailadres ouders'])
-                    @include('Widget/Form/BasicInput', ['id' => 'phoneNumbers', 'label' => 'Telefoonnummers'])
-                    @include('Widget/Form/BasicInput', ['id' => 'street', 'label' => 'Straatnaam'])
-                    @include('Widget/Form/BasicInput', ['id' => 'houseNumber', 'label' => 'Huisnummer', 'type' => 'number'])
-                    @include('Widget/Form/BasicInput', ['id' => 'houseNumberAddition', 'label' => 'Huisnummertoevoeging'])
-                    @include('Widget/Form/BasicInput', ['id' => 'postalCode', 'label' => 'Postcode'])
-                    @include('Widget/Form/BasicInput', ['id' => 'city', 'label' => 'Woonplaats'])
+                    @include('Widget/Form/BasicInput', ['id' => 'parentEmail', 'type' => 'email', 'label' => 'E-mailadres ouders', 'value' => ''])
+                    @include('Widget/Form/BasicInput', ['id' => 'phoneNumbers', 'label' => 'Telefoonnummers', 'value' => ''])
+                    @include('Widget/Form/BasicInput', ['id' => 'street', 'label' => 'Straatnaam', 'value' => ''])
+                    @include('Widget/Form/BasicInput', ['id' => 'houseNumber', 'label' => 'Huisnummer', 'type' => 'number', 'value' => ''])
+                    @include('Widget/Form/BasicInput', ['id' => 'houseNumberAddition', 'label' => 'Huisnummertoevoeging', 'value' => ''])
+                    @include('Widget/Form/BasicInput', ['id' => 'postalCode', 'label' => 'Postcode', 'value' => ''])
+                    @include('Widget/Form/BasicInput', ['id' => 'city', 'label' => 'Woonplaats', 'value' => ''])
 
                     <h4>Betaalgegevens</h4>
                     @include('Widget/Form/Checkbox', ['id' => 'freeParticipation', 'label' => 'Mag gratis meedoen'])
                     @include('Widget/Form/Checkbox', ['id' => 'temporaryStop', 'label' => 'Tijdelijke stop'])
                     @include('Widget/Form/Select', ['id' => 'paymentMethod', 'label' => 'Betaalwijze', 'options' => \Cyndaron\Geelhoed\Member\Member::PAYMENT_METHODS])
-                    @include('Widget/Form/BasicInput', ['id' => 'iban', 'label' => 'IBAN-nummer'])
+                    @include('Widget/Form/BasicInput', ['id' => 'iban', 'label' => 'IBAN-nummer', 'value' => ''])
                     @include('Widget/Form/Checkbox', ['id' => 'paymentProblem', 'label' => 'Heeft betalingsprobleem'])
-                    @include('Widget/Form/Textarea', ['id' => 'paymentProblemNote', 'label' => 'Notitie betalingsprobleem'])
+                    @include('Widget/Form/Textarea', ['id' => 'paymentProblemNote', 'label' => 'Notitie betalingsprobleem', 'value' => ''])
 
                 </div>
                 <div class="tab-pane fade" id="sport" role="tabpanel" aria-labelledby="contact-tab">
