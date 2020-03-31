@@ -13,3 +13,6 @@ cache/
 .sass-cache/
 vendor/
 uploads/
+extra-head.php
+extra-body-start.php
+extra-body-end.php
