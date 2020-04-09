@@ -6,6 +6,7 @@ namespace Cyndaron\User;
 use Cyndaron\Controller;
 use Cyndaron\Page;
 use Cyndaron\Request;
+use Cyndaron\Setting;
 use Cyndaron\Util;
 use Exception;
 
@@ -29,6 +30,9 @@ class UserController extends Controller
 
     protected function gallery()
     {
+        // Has to be done here because you cannot specify the expression during member variable initialization.
+        $minLevel = (int)Setting::get('userGalleryMinLevel') ?: UserLevel::ADMIN;
+        $this->checkUserLevelOrDie($minLevel);
         new Gallery();
     }
 
