@@ -13,6 +13,7 @@ Versie 6.0 (Trajectum)
 - Feature: veld voor organisatie achter site (#96)
 - Feature: verwijderen van foto uit album (#83)
 - Fix: styling van afbeeldingen wordt de eerste keer niet opgeslagen (#102)
+- Fix: overzicht gebruikers moet standaard alleen voor beheerders beschikbaar zijn (#105)
 - Technisch: Bootstrap geüpdatet naar 4.2.1 (#75)
 - Technisch: gebruik van Blade-templates (#10)
 - Technisch: jQuery geüpdatet naar 3.3.1
