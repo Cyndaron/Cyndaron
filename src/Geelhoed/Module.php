@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed;
 
+use Cyndaron\Geelhoed\Hour\HourController;
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Location\LocationController;
 use Cyndaron\Geelhoed\Member\MemberController;
@@ -35,6 +36,7 @@ class Module implements Datatypes, Routes, UrlProvider
     public function routes(): array
     {
         return [
+            'hour' => HourController::class,
             'location' =>  LocationController::class,
             'member' => MemberController::class,
         ];

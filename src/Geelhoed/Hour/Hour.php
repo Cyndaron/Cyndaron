@@ -1,16 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Geelhoed;
+namespace Cyndaron\Geelhoed\Hour;
 
+use Cyndaron\Geelhoed\Department;
 use Cyndaron\Geelhoed\Location\Location;
+use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Model;
 use Cyndaron\Util;
 
 class Hour extends Model
 {
-    const TABLE = 'geelhoed_hours';
-    const TABLE_FIELDS = ['locationId', 'day', 'description', 'from', 'until', 'sportId', 'sportOverride', 'departmentId', 'notes'];
+    public const TABLE = 'geelhoed_hours';
+    public const TABLE_FIELDS = ['locationId', 'day', 'description', 'from', 'until', 'sportId', 'sportOverride', 'departmentId', 'notes'];
 
     public int $locationId;
     public int $day;
@@ -54,6 +56,11 @@ class Hour extends Model
         return sprintf('%s – %s', Util::filterHm($this->from), Util::filterHm($this->until));
     }
 
+    /**
+     * @param int $id
+     * @return static|null
+     * @throws \Exception
+     */
     public static function loadFromDatabase(int $id): ?Model
     {
         if (array_key_exists($id, static::$cache))

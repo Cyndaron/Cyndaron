@@ -5,11 +5,10 @@ namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Graduation;
-use Cyndaron\Geelhoed\Hour;
+use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Model;
-use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\User\User;
 use Cyndaron\Util;
 
@@ -216,6 +215,27 @@ class Member extends Model
             $whereString = 'WHERE ' . implode(' AND ', $where);
         }
         $results = DBConnection::doQueryAndFetchAll('SELECT * FROM `geelhoed_members` gm INNER JOIN `users` u on gm.userId = u.id ' . $whereString . ' ' . $afterWhere, $args);
+        $ret = [];
+        if ($results)
+        {
+            foreach ($results as $result)
+            {
+                $obj = new static((int)$result['id']);
+                $obj->updateFromArray($result);
+                $ret[] = $obj;
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @param Hour $hour
+     * @return Member[]
+     */
+    public static function fetchAllByHour(Hour $hour): array
+    {
+        $results = DBConnection::doQueryAndFetchAll('SELECT * FROM `geelhoed_members` WHERE id IN (SELECT memberId FROM geelhoed_members_hours WHERE hourId = ?)', [$hour->id]);
         $ret = [];
         if ($results)
         {

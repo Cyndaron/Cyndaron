@@ -3,7 +3,7 @@ namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
-use Cyndaron\Geelhoed\Hour;
+use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Request;
 use Cyndaron\User\User;

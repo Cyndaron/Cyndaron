@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Location;
 
-use Cyndaron\Geelhoed\Hour;
+use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Model;
 
 class Location extends Model

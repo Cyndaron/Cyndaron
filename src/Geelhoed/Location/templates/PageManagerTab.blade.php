@@ -15,7 +15,7 @@
                 {{ $location->getName() }}
                 @foreach ($location->getHours() as $hour)
                     <br>
-                    {{ $hour->from|hm }} - {{ $hour->until|hm }} {{ $hour->description }} ({{ $hour->getSportName() }})
+                    {{ \Cyndaron\Util::getWeekday($hour->day) }} {{ $hour->from|hm }} - {{ $hour->until|hm }}: {{ $hour->description }} ({{ $hour->getSportName() }}) (<a href="/hour/memberList/{{ $hour->id }}">ledenlijst</a>)
                 @endforeach
             </td>
             <td>
