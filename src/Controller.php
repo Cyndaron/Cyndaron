@@ -54,8 +54,14 @@ class Controller
         if (array_key_exists($this->action, $routesTable))
         {
             $route = $routesTable[$this->action];
-            $level = $route['level'] ?? UserLevel::ADMIN;
-            $this->checkUserLevelOrDie($level);
+            $right = $route['right'] ?? '';
+            $hasRight = $right !== '' && !empty($_SESSION['profile']) && $_SESSION['profile']->hasRight($right);
+            if (!$hasRight)
+            {
+                $level = $route['level'] ?? UserLevel::ADMIN;
+                $this->checkUserLevelOrDie($level);
+            }
+
             $function = $route['function'];
             return $this->$function();
         }

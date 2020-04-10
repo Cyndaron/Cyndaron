@@ -51,23 +51,23 @@ EOT;
 
     public static function isAdmin(): bool
     {
-        return isset($_SESSION['naam']) && $_SESSION['level'] >= 4;
+        return isset($_SESSION['username']) && $_SESSION['level'] >= 4;
     }
 
     public static function isLoggedIn(): bool
     {
-        return (isset($_SESSION['naam']) && $_SESSION['level'] > 0);
+        return (isset($_SESSION['username']) && $_SESSION['level'] > 0);
     }
 
     public static function addNotification(string $content): void
     {
-        $_SESSION['meldingen'][] = $content;
+        $_SESSION['notifications'][] = $content;
     }
 
     public static function getNotifications(): ?array
     {
-        $return = @$_SESSION['meldingen'];
-        $_SESSION['meldingen'] = null;
+        $return = @$_SESSION['notifications'];
+        $_SESSION['notifications'] = null;
         return $return;
     }
 
@@ -241,11 +241,11 @@ EOT;
         if (!$loginSucceeded)
         {
             throw new IncorrectCredentials('Verkeerd wachtwoord.');
-
         }
 
         $_SESSION['userId'] = $userdata['id'];
-        $_SESSION['naam'] = $userdata['username'];
+        $_SESSION['profile'] = self::fromArray($userdata);
+        $_SESSION['username'] = $userdata['username'];
         $_SESSION['email'] = $userdata['email'];
         $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
         $_SESSION['level'] = $userdata['level'];
@@ -324,5 +324,17 @@ EOT;
     public function canLogin(): bool
     {
         return $this->username && $this->password && $this->email;
+    }
+
+    public function hasRight(string $right): bool
+    {
+        if ($this->level === UserLevel::ADMIN)
+            return true;
+
+        $records = DBConnection::doQueryAndFetchAll('SELECT * FROM user_rights WHERE `userId` = ? AND `right` = ?', [$this->id, $right]);
+        if (count($records) > 0)
+            return true;
+
+        return false;
     }
 }

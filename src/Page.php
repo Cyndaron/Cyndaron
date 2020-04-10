@@ -151,7 +151,7 @@ class Page
             ['link' => '/user/manager', 'title' => 'Gebruikersbeheer', 'icon' => 'user'],
         ];
         $vars['userMenuItems'] = [
-            ['link' => '', 'title' => $_SESSION['naam'] ?? ''],
+            ['link' => '', 'title' => $_SESSION['username'] ?? ''],
             ['link' => '/user/logout', 'title' => 'Uitloggen', 'icon' => 'log-out']
         ];
 

@@ -141,4 +141,17 @@ ALTER TABLE `users` ADD UNIQUE(`username`);
 
 ALTER TABLE `users` ADD `initials` VARCHAR(20) NOT NULL AFTER `firstName`;
 ALTER TABLE `users` ADD `dateOfBirth` DATE NULL DEFAULT NULL AFTER `city`;
-ALTER TABLE `users` ADD `notes` TEXT NOT NULL AFTER `dateOfBirth`; 
+ALTER TABLE `users` ADD `notes` TEXT NOT NULL AFTER `dateOfBirth`;
+
+CREATE TABLE `user_rights` (
+                               `userId` int NOT NULL,
+                               `right` varchar(63) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `user_rights`
+    ADD KEY `userId` (`userId`);
+
+ALTER TABLE `user_rights`
+    ADD CONSTRAINT `user_rights_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `user_rights` ADD UNIQUE( `userId`, `right`);
