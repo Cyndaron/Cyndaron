@@ -3,8 +3,8 @@ namespace Cyndaron;
 
 class CyndaronInfo
 {
-    const ENGINE_VERSION = '5.99.1';
-    const PRODUCT_CODENAME = 'Trajectum';
-    const PRODUCT_VERSION = '6.0 bèta 1';
-    const PRODUCT_NAME = 'Cyndaron';
+    public const ENGINE_VERSION = '6.0.0';
+    public const PRODUCT_CODENAME = 'Trajectum';
+    public const PRODUCT_VERSION = '6.0';
+    public const PRODUCT_NAME = 'Cyndaron';
 }
