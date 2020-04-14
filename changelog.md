@@ -6,7 +6,9 @@ Versie 6.0 (Trajectum)
 - Feature: bij aanmaken van een gebruiker wordt automatisch het wachtwoord gemaild (#93)
 - Feature: bodyclass op basis van paginanaam (#95)
 - Feature: broodkruimel (#15)
-- Feautre: volledige menu-editor (#73)
+- Feature: gemakkelijker embedden van YouTube-filmpjes (#107)
+- Feature: plug-insysteem, waarmee nieuwe inhoudstypen, endpoints, beheerstabs en dergelijke kunnen worden ingeladen.
+- Feature: volledige menu-editor (#73)
 - Feature: toevoegen van foto's aan bestaand album (#82)
 - Feature: tekst gereserveerde plaatsen bij kaartverkoop in database (#46)
 - Feature: voorpagina hoeft niet meer de eerste pagina in het menu te zijn (#67)
@@ -17,6 +19,7 @@ Versie 6.0 (Trajectum)
 - Technisch: Bootstrap geüpdatet naar 4.2.1 (#75)
 - Technisch: gebruik van Blade-templates (#10)
 - Technisch: jQuery geüpdatet naar 3.3.1
+- Technisch: minimum PHP-versie is nu 7.4.
 - Verwijderd: delen en Facebookintegratie (#80)
 - Verwijderd: ideeënbus
 - Verwijderd: instelling voor extra bodycode (kan nu via PHP-includes)
