@@ -1,5 +1,8 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\Mailform;
+
+use Cyndaron\Page;
+use Cyndaron\Request;
 
 class VerwerkMailFormulierPaginaLDBF extends Page
 {

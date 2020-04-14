@@ -9,7 +9,6 @@ use Cyndaron\Request;
 use Cyndaron\Setting;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util;
-use Cyndaron\VerwerkMailformulierPaginaLDBF;
 use Exception;
 
 class MailformController extends Controller
@@ -31,7 +30,7 @@ class MailformController extends Controller
         {
             if ($this->action === 'process-ldbf')
             {
-                new VerwerkMailformulierPaginaLDBF();
+                new VerwerkMailFormulierPaginaLDBF();
             }
             else
             {
