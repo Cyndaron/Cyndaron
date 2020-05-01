@@ -125,7 +125,7 @@ class ContestController extends Controller
 
         $id = $_POST['id'];
         $payment = $mollie->payments->get($id);
-        $contestMember = ContestMember::fetch(['molliePaymentId' => $id]);
+        $contestMember = ContestMember::fetch(['molliePaymentId = ?'], [$id]);
 
         if ($payment && $contestMember)
         {
