@@ -337,4 +337,9 @@ EOT;
 
         return false;
     }
+
+    public static function getLoggedIn(): ?self
+    {
+        return $_SESSION['profile'] ?? null;
+    }
 }

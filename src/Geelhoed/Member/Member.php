@@ -249,4 +249,36 @@ class Member extends Model
 
         return $ret;
     }
+
+    public static function loadFromProfile(User $profile): ?self
+    {
+        $results = self::fetchAll(['userId = ?'], [$profile->id]);
+        if (count($results) > 0)
+        {
+            return reset($results);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public static function loadFromLoggedInUser(): ?self
+    {
+        if (!empty($_SESSION['geelhoedMemberProfile']))
+            return $_SESSION['geelhoedMemberProfile'];
+
+        if (!User::isLoggedIn())
+            return null;
+
+        $profile = $_SESSION['profile'];
+        if ($profile === null)
+            return null;
+
+        $member = self::loadFromProfile($profile);
+        if ($member !== null)
+            $_SESSION['geelhoedMemberProfile'] = $member;
+
+        return $member;
+    }
 }

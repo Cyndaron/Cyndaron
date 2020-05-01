@@ -200,6 +200,18 @@ class Util
         }
 
         return \DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+    }
 
+    public static function filterDutchDate(string $date): string
+    {
+        $day = date('j');
+        $month = static::getMonth(date('m', strtotime($date)));
+        $year = date('Y');
+        return sprintf('%s %s %s', $day, $month, $year);
+    }
+
+    public static function filterDutchDateTime(string $date): string
+    {
+        return sprintf('%s om %s', static::filterDutchDate($date), date('H:i', strtotime($date)));
     }
 }

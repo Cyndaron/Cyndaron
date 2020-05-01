@@ -22,4 +22,18 @@ class Graduation extends Model
 
         return static::$sportCache[$this->sportId];
     }
+
+    /**
+     * @param Sport $sport
+     * @return self[];
+     */
+    public static function fetchAllBySport(Sport $sport): array
+    {
+        return static::fetchAll(['sportId = ?'], [$sport->id]);
+    }
+
+    public function Equals(?Graduation $otherGraduation)
+    {
+
+    }
 }

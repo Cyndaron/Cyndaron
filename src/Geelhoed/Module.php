@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed;
 
+use Cyndaron\Geelhoed\Contest\ContestController;
 use Cyndaron\Geelhoed\Hour\HourController;
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Location\LocationController;
@@ -30,6 +31,11 @@ class Module implements Datatypes, Routes, UrlProvider
                 'plural' => 'Leden',
                 'pageManagerTab' => PageManagerTabs::class . '::membersTab',
             ]),
+            'contest' => Datatype::fromArray([
+                'singular' => 'Wedstrijd',
+                'plural' => 'Wedstrijden',
+                'pageManagerTab' => PageManagerTabs::class . '::contestsTab',
+            ]),
         ];
     }
 
@@ -39,6 +45,7 @@ class Module implements Datatypes, Routes, UrlProvider
             'hour' => HourController::class,
             'location' =>  LocationController::class,
             'member' => MemberController::class,
+            'contest' => ContestController::class,
         ];
     }
 

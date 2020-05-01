@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed;
 
+use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Template\Template;
@@ -24,5 +25,11 @@ class PageManagerTabs
     {
         $members = Member::fetchAll();
         return (new Template())->render('Geelhoed/Member/PageManagerTab', compact('members'));
+    }
+
+    public static function contestsTab(): string
+    {
+        $contests = Contest::fetchAll([], [], 'ORDER BY date DESC');
+        return (new Template())->render('Geelhoed/Contest/PageManagerTab', compact('contests'));
     }
 }

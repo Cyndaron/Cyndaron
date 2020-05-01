@@ -2,6 +2,7 @@
 
 namespace Cyndaron\Template;
 
+use Cyndaron\Util;
 use Pine\BladeFilters\BladeFilters;
 
 class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
@@ -11,13 +12,19 @@ class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
         parent::register();
 
         BladeFilters::macro('euro', static function ($value) {
-            return \Cyndaron\Util::formatEuro($value);
+            return Util::formatEuro($value);
         });
         BladeFilters::macro('hm', static function ($value) {
-            return \Cyndaron\Util::filterHm($value);
+            return Util::filterHm($value);
+        });
+        BladeFilters::macro('dmy', static function ($value) {
+            return Util::filterDutchDate($value);
+        });
+        BladeFilters::macro('dmyHm', static function ($value) {
+            return Util::filterDutchDateTime($value);
         });
         BladeFilters::macro('boolToText', static function($value) {
-            return \Cyndaron\Util::boolToText($value ?? false);
+            return Util::boolToText($value ?? false);
         });
     }
 
