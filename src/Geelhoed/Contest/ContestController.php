@@ -139,6 +139,21 @@ class ContestController extends Controller
                 $contestMember->isPaid = false;
                 $contestMember->save();
             }
+
+            return ['status' => 'ok'];
+        }
+        else
+        {
+            $message = sprintf('Poging tot updaten van transactie met id %s mislukt.', $id);
+            if ($payment === null)
+            {
+                $message .= ' $payment is null.';
+            }
+            if ($contestMember === null)
+            {
+                $message .= ' $contestMember is null.';
+            }
+            error_log($message);
         }
     }
 }
