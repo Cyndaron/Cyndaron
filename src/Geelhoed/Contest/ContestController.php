@@ -2,6 +2,7 @@
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Controller;
+use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Request;
 use Cyndaron\Setting;
@@ -67,9 +68,15 @@ class ContestController extends Controller
                 {
                     $this->doMollieTransaction($contest, $contestMember);
                 }
+                else
+                {
+                    header('Location: /contest/view/' . $contest->id);
+                }
             }
-
-            header('Location: /contest/view/' . $contest->id);
+            else
+            {
+                $this->send500('Kon de inschrijving niet opslaan!');
+            }
         }
         else
         {
@@ -84,7 +91,7 @@ class ContestController extends Controller
         $mollie->setApiKey($apiKey);
 
         $formattedAmount = number_format($contest->price, 2, '.', '');
-        $baseUrl = "https://{$_SERVER['HTTP_HOST']}/";
+        $baseUrl = "https://{$_SERVER['HTTP_HOST']}";
 
         $payment = $mollie->payments->create([
             'amount' => [
@@ -99,8 +106,14 @@ class ContestController extends Controller
         if ($payment && $payment->id)
         {
             $contestMember->molliePaymentId = $payment->id;
-            $contestMember->save();
-            header("Location: {$payment->getCheckoutUrl()}", true, 303);
+            if ($contestMember->save())
+            {
+                header("Location: {$payment->getCheckoutUrl()}", true, 303);
+            }
+            else
+            {
+                $this->send500('Kon de betalings-ID niet opslaan');
+            }
         }
     }
 

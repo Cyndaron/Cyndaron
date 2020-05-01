@@ -14,7 +14,7 @@ class ContestMember extends Model
     public int $memberId;
     public int $graduationId;
     public int $weight;
-    public ?int $molliePaymentId = null;
+    public ?string $molliePaymentId = null;
     public bool $isPaid = false;
     public string $comments = '';
 
