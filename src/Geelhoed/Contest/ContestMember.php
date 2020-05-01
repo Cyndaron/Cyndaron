@@ -8,12 +8,13 @@ use Cyndaron\Model;
 class ContestMember extends Model
 {
     public const TABLE = 'geelhoed_contests_members';
-    public const TABLE_FIELDS = ['contestId', 'memberId', 'graduationId', 'weight', 'isPaid', 'comments'];
+    public const TABLE_FIELDS = ['contestId', 'memberId', 'graduationId', 'weight', 'molliePaymentId', 'isPaid', 'comments'];
 
     public int $contestId;
     public int $memberId;
     public int $graduationId;
     public int $weight;
+    public ?int $molliePaymentId = null;
     public bool $isPaid = false;
     public string $comments = '';
 

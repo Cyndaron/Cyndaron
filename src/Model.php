@@ -104,6 +104,24 @@ class Model
         return $ret;
     }
 
+    /**
+     * @param array $where
+     * @param array $args
+     * @param string $afterWhere
+     * @return static|null
+     */
+    public static function fetch(array $where = [], array $args = [], string $afterWhere = ''): ?self
+    {
+        $results = static::fetchAll($where, $args, $afterWhere);
+        if (count($results) > 0)
+        {
+            return reset($results);
+        }
+
+        return null;
+    }
+
+
     public function asArray(): array
     {
         $return = [];

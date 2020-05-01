@@ -69,7 +69,7 @@
                 @endcomponent
                 @component ('Widget/Form/FormWrapper', ['id' => 'weight', 'label' => 'Gewicht (hele kg)'])
                     @slot('right')
-                        <input id="weight" name="weight" type="number" class="form-control">
+                        <input id="weight" name="weight" type="number" class="form-control" required>
                     @endslot
                 @endcomponent
                 @component ('Widget/Form/FormWrapper', ['label' => 'Inschrijfgeld'])

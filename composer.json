@@ -11,7 +11,8 @@
         "ext-imagick": "*",
         "ext-json": "*",
         "ext-fileinfo": "*",
-        "ext-gd": "*"
+        "ext-gd": "*",
+        "mollie/mollie-api-php": "^2.0"
     },
     "config": {
         "platform": {
