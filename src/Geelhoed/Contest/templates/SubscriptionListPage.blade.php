@@ -2,6 +2,13 @@
 
 @section ('contents')
     @php /** @var \Cyndaron\Geelhoed\Contest\Contest $contest */@endphp
+
+    @component('Widget/Toolbar')
+        @slot('right')
+            @include('Widget/Button', ['kind' => 'th', 'link' => '/contest/subscriptionListExcel/' . $contest->id, 'text' => 'Excel-export'])
+        @endslot
+    @endcomponent
+
     <table class="table table-striped table-bordered pm-table">
         <thead>
             <tr>

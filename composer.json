@@ -12,7 +12,8 @@
         "ext-json": "*",
         "ext-fileinfo": "*",
         "ext-gd": "*",
-        "mollie/mollie-api-php": "^2.0"
+        "mollie/mollie-api-php": "^2.0",
+        "phpoffice/phpspreadsheet": "^1.12"
     },
     "config": {
         "platform": {

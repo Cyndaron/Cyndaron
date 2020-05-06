@@ -2,15 +2,15 @@
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Controller;
-use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
 use Cyndaron\Page;
 use Cyndaron\Request;
 use Cyndaron\Setting;
-use Cyndaron\Template\Template;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class ContestController extends Controller
 {
@@ -19,6 +19,7 @@ class ContestController extends Controller
         'view' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
         'manageOverview' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'manageOverview'],
         'subscriptionList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'subscriptionList'],
+        'subscriptionListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'subscriptionListExcel'],
     ];
     protected array $postRoutes = [
         'subscribe' => ['level' => UserLevel::LOGGED_IN, 'function' => 'subscribe'],
@@ -175,5 +176,50 @@ class ContestController extends Controller
         $id = (int)Request::getVar(2);
         $contest = Contest::loadFromDatabase($id);
         new SubscriptionListPage($contest);
+    }
+
+    public function subScriptionListExcel()
+    {
+        $id = (int)Request::getVar(2);
+        $contest = Contest::loadFromDatabase($id);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $headers = ['Naam', 'Band', 'Gewicht', 'JBN-nummer'];
+        foreach ($headers as $key => $value)
+        {
+            $column = chr(ord('A') + $key);
+            $sheet->setCellValue("{$column}1", $value);
+        }
+
+        $row = 2;
+        foreach ($contest->getContestMembers() as $contestMember)
+        {
+            $member = $contestMember->getMember();
+
+            $sheet->setCellValue("A{$row}", $member->getProfile()->getFullName());
+            $sheet->setCellValue("B{$row}", $contestMember->getGraduation()->name);
+            $sheet->setCellValue("C{$row}", $contestMember->weight);
+            $sheet->setCellValue("D{$row}", $member->jbnNumber);
+
+            $row++;
+        }
+        for ($i = 0, $numHeaders = count($headers); $i < $numHeaders; $i++)
+        {
+            $column = chr(ord('A') + $i);
+            $dimension = $sheet->getColumnDimension($column);
+            if ($dimension)
+                $dimension->setAutoSize(true);
+        }
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8');
+        header('Content-Disposition: attachment;filename="deelnemers.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+
+        exit(0);
     }
 }
