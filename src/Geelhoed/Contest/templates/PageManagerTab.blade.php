@@ -13,7 +13,9 @@
             <td>{{ $contest->id }}</td>
             <td>{{ $contest->name }}</td>
             <td>{{ $contest->date }}</td>
-            <td></td>
+            <td>
+                <a href="/contest/subscriptionList/{{ $contest->id }}" class="btn btn-outline-cyndaron"><span class="glyphicon glyphicon-list"></span></a>
+            </td>
         </tr>
         @endforeach
     </tbody>

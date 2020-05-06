@@ -1,0 +1,13 @@
+<?php
+namespace Cyndaron\Geelhoed\Contest;
+
+use Cyndaron\Page;
+
+class SubscriptionListPage extends Page
+{
+    public function __construct(Contest $contest)
+    {
+        parent::__construct('Overzicht inschrijvingen ' . $contest->name);
+        $this->render(compact('contest'));
+    }
+}

@@ -11,7 +11,7 @@ class ContestViewPage extends Page
     {
         $user = User::getLoggedIn();
         $loggedInMember = Member::loadFromLoggedInUser();
-        $mayViewOtherContestants = ($loggedInMember !== null && $loggedInMember->isContestant) || ($user !== null && $user->hasRight('geelhoed_manage_contests'));
+        $mayViewOtherContestants = ($loggedInMember !== null && $loggedInMember->isContestant) || ($user !== null && $user->hasRight(Contest::RIGHT));
         parent::__construct(sprintf('Wedstrijd: %s', $contest->name));
         $this->render(compact('contest', 'loggedInMember', 'mayViewOtherContestants'));
     }

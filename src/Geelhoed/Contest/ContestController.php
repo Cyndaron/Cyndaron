@@ -4,8 +4,11 @@ namespace Cyndaron\Geelhoed\Contest;
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Member\Member;
+use Cyndaron\Geelhoed\PageManagerTabs;
+use Cyndaron\Page;
 use Cyndaron\Request;
 use Cyndaron\Setting;
+use Cyndaron\Template\Template;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 
@@ -14,6 +17,8 @@ class ContestController extends Controller
     protected array $getRoutes = [
         'overview' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overview'],
         'view' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
+        'manageOverview' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'manageOverview'],
+        'subscriptionList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'subscriptionList'],
     ];
     protected array $postRoutes = [
         'subscribe' => ['level' => UserLevel::LOGGED_IN, 'function' => 'subscribe'],
@@ -108,6 +113,7 @@ class ContestController extends Controller
             $contestMember->molliePaymentId = $payment->id;
             if ($contestMember->save())
             {
+                User::addNotification('Bedankt voor je inschrijving! Het kan even duren voordat de betaling geregistreerd is.');
                 header("Location: {$payment->getCheckoutUrl()}", true, 303);
             }
             else
@@ -155,5 +161,19 @@ class ContestController extends Controller
             }
             error_log($message);
         }
+    }
+
+    public function manageOverview()
+    {
+        $contents = PageManagerTabs::contestsTab();
+        $page = new Page('Overzicht wedstrijden', $contents);
+        $page->render();
+    }
+
+    public function subscriptionList()
+    {
+        $id = (int)Request::getVar(2);
+        $contest = Contest::loadFromDatabase($id);
+        new SubscriptionListPage($contest);
     }
 }
