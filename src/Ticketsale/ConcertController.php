@@ -57,6 +57,7 @@ class ConcertController extends Controller
     protected function viewReservedSeats()
     {
         $id = (int)Request::getVar(2);
-        new ShowReservedSeats($id);
+        $concert = new Concert($id);
+        new ShowReservedSeats($concert);
     }
 }

@@ -5,14 +5,13 @@ use Cyndaron\DBConnection;
 
 class ShowReservedSeats
 {
-    public function __construct(int $concert_id)
+    public function __construct(Concert $concert)
     {
-        $concert = new Concert($concert_id);
         $concert->load();
 
         $bookedSeats = [];
 
-        $seatBookings = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$concert_id]);
+        $seatBookings = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$concertId]);
         foreach ($seatBookings as $currentBooking)
         {
             $order = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM ticketsale_orders WHERE id=?', [$currentBooking['orderId']]);
