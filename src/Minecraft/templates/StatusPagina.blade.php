@@ -7,7 +7,7 @@
         @if ($server->is_online)
             Aantal spelers online: {{ $server->online_players }} (maximaal {{ $server->max_players }})<br />
             Versie: {{ $server->game_version }}<br />
-            <abbr title="Message of the day">MOTD</abbr>: {{ $server->motd }}<br />
+            <abbr title="Message of the day">MOTD</abbr>: {!! $server->motd !!}<br />
         @endif
     @endforeach
 

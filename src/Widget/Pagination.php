@@ -11,26 +11,9 @@ class Pagination extends Widget
         }
 
         $this->code = '<div class="lettermenu"><ul class="pagination">';
-        $teTonenPaginas = [
-            1, 2, 3,
-            $numPages, $numPages - 1, $numPages - 2,
-            $currentPage - 2, $currentPage - 1, $currentPage, $currentPage + 1, $currentPage + 2,
-        ];
 
-        if ($currentPage === 7)
-        {
-            $teTonenPaginas[] = 4;
-        }
-        if ($numPages - $currentPage === 6)
-        {
-            $teTonenPaginas[] = $numPages - 3;
-        }
-
-        $teTonenPaginas = array_unique($teTonenPaginas);
-        natsort($teTonenPaginas);
-
-        $vorigePaginanummer = 0;
-        foreach ($teTonenPaginas as $i)
+        $lastPageNum = 0;
+        foreach ($this->determinePages($numPages, $currentPage) as $i)
         {
             if ($i > $numPages)
             {
@@ -42,22 +25,44 @@ class Pagination extends Widget
                 continue;
             }
 
-            if ($vorigePaginanummer !== $i - 1)
+            if ($lastPageNum !== $i - 1)
             {
                 $this->code .= '<li><span>...</span></li>';
             }
 
-            $class = '';
-            if ($i === $currentPage)
-            {
-                $class = 'class="active"';
-            }
-
+            $class = $i === $currentPage ? 'class="active"' : '';
             $this->code .= sprintf('<li %s><a href="%s%d">%d</a></li>', $class, $link, ($i + $offset), $i);
 
-            $vorigePaginanummer = $i;
+            $lastPageNum = $i;
         }
 
         $this->code .= '</ul></div>';
+    }
+
+    /**
+     * @param int $numPages
+     * @param int $currentPage
+     * @return int[]
+     */
+    public function determinePages(int $numPages, int $currentPage): array
+    {
+        $pagesToShow = [
+            1, 2, 3,
+            $numPages, $numPages - 1, $numPages - 2,
+            $currentPage - 2, $currentPage - 1, $currentPage, $currentPage + 1, $currentPage + 2,
+        ];
+
+        if ($currentPage === 7)
+        {
+            $pagesToShow[] = 4;
+        }
+        if ($numPages - $currentPage === 6)
+        {
+            $pagesToShow[] = $numPages - 3;
+        }
+
+        $pagesToShow = array_unique($pagesToShow);
+        natsort($pagesToShow);
+        return $pagesToShow;
     }
 }

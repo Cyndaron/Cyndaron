@@ -88,7 +88,7 @@ class Server
 
         $stats->is_online = true;
         [$stats->protocol_version, $stats->game_version, $stats->motd, $stats->online_players, $stats->max_players] = $data;
-        $stats->motd = mb_convert_encoding(Util::mineToWeb($stats->motd), 'UTF-8', 'ISO-8859-1');
+        $stats->motd = Util::mineToWeb($stats->motd);
 
         return $stats;
     }
