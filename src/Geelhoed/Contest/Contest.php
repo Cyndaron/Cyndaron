@@ -8,7 +8,7 @@ use Cyndaron\Model;
 class Contest extends Model
 {
     public const TABLE = 'geelhoed_contests';
-    public const TABLE_FIELDS = ['name', 'location','sportId', 'date', 'participationDeadline', 'price'];
+    public const TABLE_FIELDS = ['name', 'location','sportId', 'date', 'registrationDeadline', 'price'];
 
     public const RIGHT = 'geelhoed_manage_contests';
 
@@ -16,7 +16,7 @@ class Contest extends Model
     public string $location = '';
     public int $sportId = 0;
     public string $date = '';
-    public string $participationDeadline = '';
+    public string $registrationDeadline = '';
     public float $price;
 
     /**

@@ -11,7 +11,7 @@
                 <table>
                     <tr><th>Locatie:</th><td>{{ $contest->location }}</td></tr>
                     <tr><th>Datum en tijd:</th><td>{{ $contest->date|dmyHm }}</td></tr>
-                    <tr><th>Inschrijven voor:</th><td>{{ $contest->participationDeadline|dmyHm }}</td></tr>
+                    <tr><th>Inschrijven voor:</th><td>{{ $contest->registrationDeadline|dmyHm }}</td></tr>
                 </table>
                 <a role="button" class="btn btn-outline-cyndaron" href="/contest/view/{{ $contest->id }}">Meer informatie en inschrijven</a>
             </div>

@@ -2,6 +2,7 @@
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Controller;
+use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
 use Cyndaron\Page;
@@ -9,6 +10,7 @@ use Cyndaron\Request;
 use Cyndaron\Setting;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
@@ -24,6 +26,9 @@ class ContestController extends Controller
     protected array $postRoutes = [
         'subscribe' => ['level' => UserLevel::LOGGED_IN, 'function' => 'subscribe'],
         'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook'],
+        'edit' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'createOrEdit'],
+        'delete' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'delete'],
+        'removeSubscription' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'removeSubscription'],
     ];
 
     public function checkCSRFToken(string $token): void
@@ -166,8 +171,8 @@ class ContestController extends Controller
 
     public function manageOverview()
     {
-        $contents = PageManagerTabs::contestsTab();
-        $page = new Page('Overzicht wedstrijden', $contents);
+        $contests = PageManagerTabs::contestsTab();
+        $page = new Page('Overzicht wedstrijden', $contests);
         $page->render();
     }
 
@@ -186,7 +191,7 @@ class ContestController extends Controller
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $headers = ['Naam', 'Band', 'Gewicht', 'JBN-nummer'];
+        $headers = ['Naam', 'Band', 'Gewicht', 'JBN-nummer', 'Betaald'];
         foreach ($headers as $key => $value)
         {
             $column = chr(ord('A') + $key);
@@ -202,6 +207,7 @@ class ContestController extends Controller
             $sheet->setCellValue("B{$row}", $contestMember->getGraduation()->name);
             $sheet->setCellValue("C{$row}", $contestMember->weight);
             $sheet->setCellValue("D{$row}", $member->jbnNumber);
+            $sheet->setCellValue("E{$row}", Util::boolToText($contestMember->isPaid));
 
             $row++;
         }
@@ -221,5 +227,68 @@ class ContestController extends Controller
         $writer->save('php://output');
 
         exit(0);
+    }
+
+    public function removeSubscription()
+    {
+        $id = (int)filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $contestMember = ContestMember::loadFromDatabase($id);
+        if ($contestMember === null)
+        {
+            $this->send404();
+        }
+        else
+        {
+            $contestMember->delete();
+        }
+
+        return [];
+    }
+
+    public function delete()
+    {
+        $id = (int)filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $contest = Contest::loadFromDatabase($id);
+        if ($contest === null)
+        {
+            $this->send404();
+        }
+        else
+        {
+            $contest->delete();
+        }
+
+        return [];
+    }
+
+    public function createOrEdit()
+    {
+        $id = (int)filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+        if ($id > 0)
+        {
+            $contest = Contest::loadFromDatabase($id);
+            if ($contest === null)
+            {
+                $this->send404();
+            }
+        }
+        else
+        {
+            $contest = new Contest();
+        }
+
+        $contest->name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+        $contest->location = filter_input(INPUT_POST, 'location', FILTER_SANITIZE_STRING);
+        $contest->sportId = (int)filter_input(INPUT_POST, 'sportId', FILTER_SANITIZE_NUMBER_INT);
+        $contest->date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
+        $contest->registrationDeadline = filter_input(INPUT_POST, 'registrationDeadline', FILTER_SANITIZE_STRING);
+        $contest->price = (float)filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+        if (!$contest->save())
+        {
+            $this->send500();
+        }
+
+        return [];
     }
 }

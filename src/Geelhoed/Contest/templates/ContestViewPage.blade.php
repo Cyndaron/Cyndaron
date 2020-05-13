@@ -11,7 +11,7 @@
         <tr><th>Locatie: </th><td>{{ $contest->location }}</td></tr>
         <tr><th>Datum en tijd: </th><td>{{ $contest->date|dmyHm }}</td></tr>
         <tr><th>Sport: </th><td>{{ $sport->name }}</td></tr>
-        <tr><th>Inschrijven voor: </th><td>{{ $contest->participationDeadline|dmyHm }}</td></tr>
+        <tr><th>Inschrijven voor: </th><td>{{ $contest->registrationDeadline|dmyHm }}</td></tr>
         @if ($mayViewOtherContestants)
             <tr>
                 <th>Deelnemers: </th>
@@ -57,7 +57,8 @@
                         {{ $loggedInMember->getEmail() }}
                     @endslot
                 @endcomponent
-                @component ('Widget/Form/FormWrapper', ['id' => 'graduationId', 'label' => 'Band'])
+                @php $sportName = strtolower($sport->name); @endphp
+                @component ('Widget/Form/FormWrapper', ['id' => 'graduationId', 'label' => "Band {$sportName}"])
                     @slot('right')
                         <select id="graduationId" name="graduationId" class="form-control custom-select">
                             @foreach (\Cyndaron\Geelhoed\Graduation::fetchAllBySport($sport) as $graduation)

@@ -11,4 +11,9 @@ class Sport extends Model
     public string $name;
     public float $juniorFee;
     public float $seniorFee;
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
 }

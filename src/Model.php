@@ -258,4 +258,19 @@ class Model
 
         return true;
     }
+
+    /**
+     * @return static[];
+     */
+    public static function fetchAllForSelect(): array
+    {
+        $records = static::fetchAll();
+        $ret = [];
+        foreach ($records as $record)
+        {
+            $ret[$record->id] = $record;
+        }
+
+        return $ret;
+    }
 }
