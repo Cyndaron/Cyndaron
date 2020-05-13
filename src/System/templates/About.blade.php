@@ -9,9 +9,6 @@
         © Michael Steenbeek, 2009-2019<br />
         Beschikbaar onder de ISC-licentie (zie het bestand LICENSE), m.u.v. van de volgende onderdelen:
         <ul>
-            <li>Bootstrap: MIT-licentie (LICENSE.Bootstrap)</li>
-            <li>CKeditor: MPL-, LGPL- en GPL-licenties (contrib/ckeditor/LICENSE.md)</li>
-            <li>jQuery: MIT-licentie (LICENSE.jQuery)</li>
             <li>Lightbox: MIT-licentie (LICENSE.Lightbox)</li>
             <li>MCServerStats: MIT-licentie (LICENSE.MCServerStats)</li>
             <li>MinecraftSkinRenderer: BSD-3-licentie (LICENSE.MinecraftSkinRenderer)</li>

@@ -7,7 +7,7 @@ CKEDITOR.editorConfig = function( config ) {
 	// Define changes to default configuration here. For example:
 	config.language = 'nl';
 	config.uiColor = geefInstelling('artikelkleur');
-	config.contentsCss = ['/contrib/Normalize/normalize.css', '/contrib/Bootstrap/css/bootstrap.min.css', '/sys/css/cyndaron.css', '/user.css'];
+	config.contentsCss = ['/contrib/Normalize/normalize.css', '/vendor/twbs/bootstrap/dist/css/bootstrap.min.css', '/sys/css/cyndaron.css', '/user.css'];
 	config.allowedContent = true;
 	config.disallowedContent = 'table[cellspacing,cellpadding,border]';
 };

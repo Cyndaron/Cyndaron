@@ -10,7 +10,7 @@
     <meta name="application-name" content="{{ $websiteName }}">
     <title>{{ $title }} - {{ $websiteName }}</title>
 
-    <link href="/contrib/Bootstrap/css/bootstrap.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
+    <link href="/vendor/twbs/bootstrap/dist/css/bootstrap.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
     <link href="/contrib/Glyphicons/css/glyphicons.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
     <link href="/sys/css/lightbox.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
     <link href="/sys/css/cyndaron.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
@@ -98,8 +98,8 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="/contrib/jQuery/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="/contrib/Bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/vendor/components/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/sys/js/cyndaron.js"></script>
     @foreach ($extraScripts as $extraScript)
         <script type="text/javascript" src="{{ $extraScript }}"></script>
