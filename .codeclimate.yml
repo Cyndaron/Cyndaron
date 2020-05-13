@@ -1,0 +1,12 @@
+engines:
+  phpmd:
+    enabled: true
+    checks:
+      CleanCode/ElseExpression:
+        enabled: false
+      CleanCode/StaticAccess:
+        enabled: false
+      Naming/LongVariable:
+        enabled: false
+      Naming/ShortVariable:
+        enabled: false
