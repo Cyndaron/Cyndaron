@@ -7,11 +7,9 @@ class ShowReservedSeats
 {
     public function __construct(Concert $concert)
     {
-        $concert->load();
-
         $bookedSeats = [];
 
-        $seatBookings = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$concertId]);
+        $seatBookings = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$concert->id]);
         foreach ($seatBookings as $currentBooking)
         {
             $order = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM ticketsale_orders WHERE id=?', [$currentBooking['orderId']]);
