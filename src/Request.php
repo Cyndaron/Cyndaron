@@ -50,7 +50,7 @@ class Request
         return false;
     }
 
-    private static function postArray()
+    private static function postArray(): array
     {
         $ret = [];
 
