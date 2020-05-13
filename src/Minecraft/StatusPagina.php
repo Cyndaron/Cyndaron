@@ -10,16 +10,11 @@ class StatusPagina extends Page
     {
         parent::__construct('Status en landkaart');
 
-        $serverData = DBConnection::doQueryAndFetchAll('SELECT * FROM minecraft_servers ORDER BY name');
-        $servers = [];
-
-        foreach ($serverData as $server)
+        $servers = Server::fetchAll([], [], 'ORDER BY name');
+        array_walk($servers, static function(Server $server)
         {
-            $serverObj = new Server($server['name'], $server['hostname'], $server['port'], $server['dynmapPort']);
-            $serverRet = $serverObj->retrieve();
-            $serverRet->id = $server['id'];
-            $servers[] = $serverRet;
-        }
+            $server->retrieveInfo();
+        });
 
         $this->render([
             'servers' => $servers,

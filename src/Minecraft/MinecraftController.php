@@ -5,6 +5,7 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Controller;
 use Cyndaron\Minecraft\Dynmap\DynmapProxy;
+use Cyndaron\Request;
 
 class MinecraftController extends Controller
 {
@@ -13,7 +14,14 @@ class MinecraftController extends Controller
         switch ($this->action)
         {
             case 'dynmapproxy':
-                new DynmapProxy();
+                $serverId = (int)Request::getVar(2);
+                $server = Server::loadFromDatabase($serverId);
+                if ($server === null)
+                {
+                    $this->send404();
+                    return;
+                }
+                new DynmapProxy($server);
                 break;
             case 'members':
                 new LedenPagina();

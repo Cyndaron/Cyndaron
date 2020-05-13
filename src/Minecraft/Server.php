@@ -1,7 +1,7 @@
 <?php
 /**
- * Copyright (c) 2012 Matt Harzewski
- * Copyright (c) 2015-2017 Michael Steenbeek
+ * Copyright © 2012 Matt Harzewski
+ * Copyright © 2015-2020 Michael Steenbeek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -11,65 +11,32 @@
  */
 namespace Cyndaron\Minecraft;
 
-use stdClass;
+use Cyndaron\Model;
 
-class Server
+class Server extends Model
 {
-    protected string $name;
-    protected string $hostname;
-    protected int $port;
-    protected int $dynmapPort;
+    public const TABLE = 'minecraft_servers';
+    public const TABLE_FIELDS = ['name', 'hostname', 'port', 'dynmapPort'];
 
-    public function __construct(string $name, string $hostname = '127.0.0.1', int $port = 25565, int $dynmapPort = 8888)
-    {
-        $this->name = $name;
-        $this->port = $port;
-        $this->dynmapPort = $dynmapPort;
-        $this->setHostname($hostname);
-    }
+    public string $name = '';
+    public string $hostname = '127.0.0.1';
+    public int $port = 25565;
+    public int $dynmapPort = 8888;
 
-    /**
-     * Set the hostname of the server.
-     *
-     * @param string $hostname The hostname. Must be IP or domain (only IPv4).
-     */
-    protected function setHostname(string $hostname): void
-    {
-        // Overload for hostname:port syntax.
-        if (preg_match('/:\d+$/', $hostname))
-        {
-
-            // if protocol (e.g., 'http') was included; strip it out
-            if (preg_match('/:\/\//', $hostname))
-            {
-                /** @noinspection PhpUnusedLocalVariableInspection */
-                [$protocol, $this->hostname, $this->port] = explode(':', str_replace('//', '', $hostname));
-            }
-            else
-            {
-                [$this->hostname, $this->port] = explode(':', $hostname);
-            }
-        }
-        else
-        {
-            $this->hostname = $hostname;
-        }
-    }
-
-    public function retrieve(): stdClass
+    public bool $isOnline = false;
+    public string $protocolVersion;
+    public string $gameVersion;
+    public string $motd;
+    public int $onlinePlayers;
+    public int $maxPlayers;
+    
+    public function retrieveInfo(): bool
     {
         $socket = @stream_socket_client(sprintf('tcp://%s:%u', $this->hostname, $this->port), $errno, $errstr, 1);
 
-        $stats = new stdClass;
-        $stats->hostname = $this->hostname;
-        $stats->port = $this->port;
-        $stats->dynmapPort = $this->dynmapPort;
-        $stats->name = $this->name;
-        $stats->is_online = false;
-
         if (!$socket)
         {
-            return $stats;
+            return false;
         }
 
         fwrite($socket, "\xfe\x01");
@@ -77,19 +44,19 @@ class Server
         fclose($socket);
 
         // Is this a disconnect with the ping?
-        if ($data === false && substr($data, 0, 1) !== "\xFF")
+        if ($data === false || substr($data, 0, 1) !== "\xFF")
         {
-            return $stats;
+            return false;
         }
 
         $data = substr($data, 9);
         $data = mb_convert_encoding($data, 'UTF-8', 'UCS-2');
         $data = explode("\x00", $data);
 
-        $stats->is_online = true;
-        [$stats->protocol_version, $stats->game_version, $stats->motd, $stats->online_players, $stats->max_players] = $data;
-        $stats->motd = Util::mineToWeb($stats->motd);
+        $this->isOnline = true;
+        [$this->protocolVersion, $this->gameVersion, $this->motd, $this->onlinePlayers, $this->maxPlayers] = $data;
+        $this->motd = Util::mineToWeb($this->motd);
 
-        return $stats;
+        return true;
     }
 }

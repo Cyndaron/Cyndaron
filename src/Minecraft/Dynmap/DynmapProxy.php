@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Minecraft\Dynmap;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Minecraft\Server;
 use Cyndaron\Request;
 
 class DynmapProxy
@@ -14,23 +15,45 @@ class DynmapProxy
         'js' => 'application/javascript',
         'png' => 'image/png',
     ];
-    public function __construct()
+
+    public function __construct(Server $server)
     {
-        $serverId = Request::getVar(2);
-        $server = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM minecraft_servers WHERE id = ?', [$serverId]);
-        if (!$server)
-        {
-            die('');
-        }
-        $serverAddr = sprintf('http://%s:%d', $server['hostname'], (int)$server['dynmapPort']);
-
-
         $link = '';
-
         for ($i = 3; $linkpart = Request::getVar($i); $i++)
         {
             $link .= '/' . $linkpart;
         }
+
+        $contents = $this->getFileContents($link, $server);
+
+        $this->sendContentTypeHeader($link);
+
+        echo $contents;
+    }
+
+    /**
+     * @param string $link
+     */
+    private function sendContentTypeHeader(string $link): void
+    {
+        foreach (self::MIMETABLE as $extension => $mimetype)
+        {
+            if (strpos($link, ".$extension") !== false)
+            {
+                header('Content-Type: ' . $mimetype);
+                break;
+            }
+        }
+    }
+
+    /**
+     * @param string $link
+     * @param Server $server
+     * @return false|string
+     */
+    private function getFileContents(string $link, Server $server)
+    {
+        $serverAddr = sprintf('http://%s:%d', $server->hostname, $server->dynmapPort);
 
         if ($link === '' || $link === '/')
         {
@@ -41,16 +64,7 @@ class DynmapProxy
             $contents = file_get_contents($serverAddr . $link);
         }
 
-        foreach (self::MIMETABLE as $extension => $mimetype)
-        {
-            if (strpos($link, ".$extension") !== false)
-            {
-                header('Content-Type: ' . $mimetype);
-                break;
-            }
-        }
-
         $contents = str_replace(['%SERVER%', $serverAddr], '/minecraft/dynmapproxy/1/', $contents);
-        echo $contents;
+        return $contents;
     }
 }
