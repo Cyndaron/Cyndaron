@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6dae204408ffd207cb9bb3e3adff9a4c",
+    "content-hash": "e5b2e04a3f7fbf0906f0d4f276c2da6d",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
-            "version": "4.14.0",
+            "version": "dev-full/4.13.x",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ckeditor/ckeditor4-releases.git",
-                "reference": "998e43cd6305bca24304b9538a682da123ac5b73"
+                "reference": "ca793fa3217a61d24c0029e865f051ddf74fa368"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ckeditor/ckeditor4-releases/zipball/998e43cd6305bca24304b9538a682da123ac5b73",
-                "reference": "998e43cd6305bca24304b9538a682da123ac5b73",
+                "url": "https://api.github.com/repos/ckeditor/ckeditor4-releases/zipball/ca793fa3217a61d24c0029e865f051ddf74fa368",
+                "reference": "ca793fa3217a61d24c0029e865f051ddf74fa368",
                 "shasum": ""
             },
             "type": "library",
@@ -46,7 +46,7 @@
                 "text",
                 "wysiwyg"
             ],
-            "time": "2020-03-04T13:19:40+00:00"
+            "time": "2019-12-09T13:20:05+00:00"
         },
         {
             "name": "components/jquery",
@@ -1907,7 +1907,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "ckeditor/ckeditor": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

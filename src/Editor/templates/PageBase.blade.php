@@ -31,7 +31,7 @@
             </div>
         @endif
 
-        <textarea class="ckeditor" name="artikel" rows="25" cols="125">{{ $article }}</textarea>
+        <textarea id="ckeditor-parent" name="artikel" rows="25" cols="125">{{ $article }}</textarea>
 
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="verwijzing">Interne link maken: </label>

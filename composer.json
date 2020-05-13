@@ -15,7 +15,7 @@
         "mollie/mollie-api-php": "^2.0",
         "phpoffice/phpspreadsheet": "^1.12",
         "components/jquery": "^3.5",
-        "ckeditor/ckeditor": "^4.14",
+        "ckeditor/ckeditor": "dev-full/4.13.x",
         "twbs/bootstrap": "^4.5"
     },
     "config": {

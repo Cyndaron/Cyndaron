@@ -34,3 +34,7 @@ function plakLink()
 }
 
 $('#plaklink').on('click', function() {plakLink();});
+
+CKEDITOR.replace('ckeditor-parent', {
+    customConfig: '/sys/js/ckeditor-config.js'
+});
