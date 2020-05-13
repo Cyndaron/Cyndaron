@@ -36,5 +36,6 @@ function plakLink()
 $('#plaklink').on('click', function() {plakLink();});
 
 CKEDITOR.replace('ckeditor-parent', {
+    removePlugins: 'flash',
     customConfig: '/sys/js/ckeditor-config.js'
 });
