@@ -51,13 +51,14 @@ class ConcertController extends Controller
     protected function viewOrders()
     {
         $id = (int)Request::getVar(2);
-        new ConcertOrderOverviewPage($id);
+        $concert = Concert::loadFromDatabase($id);
+        new ConcertOrderOverviewPage($concert);
     }
 
     protected function viewReservedSeats()
     {
         $id = (int)Request::getVar(2);
-        $concert = new Concert($id);
+        $concert = Concert::loadFromDatabase($id);
         new ShowReservedSeats($concert);
     }
 }
