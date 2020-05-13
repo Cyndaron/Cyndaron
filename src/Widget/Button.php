@@ -5,6 +5,22 @@ class Button extends Widget
 {
     public function __construct(string $kind, string $link, string $description = '', $text = null, int $size = 20)
     {
+        [$icon, $btnClass] = $this->getIconAndClass($kind);
+
+        if ($size === 16)
+        {
+            $btnClass .= ' btn-sm';
+        }
+
+        $title = $description ? sprintf('title="%s"', $description) : '';
+        $textAfterIcon = $text ? " $text" : '';
+        $this->code = sprintf('<a class="btn %s" href="%s" %s><span class="glyphicon glyphicon-%s"></span>%s</a>', $btnClass, $link, $title, $icon, $textAfterIcon);
+    }/**
+ * @param string $kind
+ * @return string[]
+ */
+    private function getIconAndClass(string $kind): array
+    {
         $btnClass = 'btn-outline-cyndaron';
 
         switch ($kind)
@@ -29,14 +45,6 @@ class Button extends Widget
             default:
                 $icon = $kind;
         }
-
-        if ($size === 16)
-        {
-            $btnClass .= ' btn-sm';
-        }
-
-        $title = $description ? 'title="' . $description . '"' : '';
-        $textAfterIcon = $text ? ' ' . $text : '';
-        $this->code = sprintf('<a class="btn %s" href="%s" %s><span class="glyphicon glyphicon-%s"></span>%s</a>', $btnClass, $link, $title, $icon, $textAfterIcon);
+        return [$icon, $btnClass];
     }
 }

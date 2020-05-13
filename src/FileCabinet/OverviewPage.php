@@ -15,36 +15,9 @@ class OverviewPage extends Page
         $orderBy = Setting::get('filecabinet_orderBy') ?: 'name';
         parent::__construct($title);
 
-        $dirArray = [];
-        // File list
-        if($bestandendir = @opendir(self::PATH))
-        {
-
-            while($filename = readdir($bestandendir))
-            {
-                // Hide hidden files, HTML files and PHP files
-                if ((substr($filename, 0, 1) !== '.') && (substr($filename, -4) !== 'html') && (substr($filename, -3) !== 'php'))
-                {
-                    $dirArray[] = $filename;
-                }
-            }
-            closedir($bestandendir);
-
-            if ($orderBy === 'date')
-            {
-                usort($dirArray, static function ($file1, $file2) {
-                    return filectime(self::PATH . $file1) <=> filectime(self::PATH . $file2);
-                });
-            }
-            else
-            {
-                natsort($dirArray);
-            }
-        }
-
         $this->render([
             'introduction' => $this->getIntroduction(),
-            'files' => $dirArray,
+            'files' => $this->getFileList($orderBy),
             'deleteCsrfToken' => User::getCSRFToken('filecabinet', 'deleteItem'),
         ]);
     }
@@ -64,5 +37,38 @@ class OverviewPage extends Page
         }
 
         return $introduction;
+    }
+
+    /**
+     * @param string $orderBy
+     * @return array
+     */
+    private function getFileList(string $orderBy): array
+    {
+        $dirArray = [];
+        if ($dir = @opendir(self::PATH))
+        {
+            while ($filename = readdir($dir))
+            {
+                // Hide hidden files, HTML files and PHP files
+                if ((substr($filename, 0, 1) !== '.') && (substr($filename, -4) !== 'html') && (substr($filename, -3) !== 'php'))
+                {
+                    $dirArray[] = $filename;
+                }
+            }
+            closedir($dir);
+
+            if ($orderBy === 'date')
+            {
+                usort($dirArray, static function ($file1, $file2) {
+                    return filectime(self::PATH . $file1) <=> filectime(self::PATH . $file2);
+                });
+            }
+            else
+            {
+                natsort($dirArray);
+            }
+        }
+        return $dirArray;
     }
 }
