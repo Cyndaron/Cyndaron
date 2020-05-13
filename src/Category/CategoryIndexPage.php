@@ -1,17 +1,14 @@
 <?php
 namespace Cyndaron\Category;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\StaticPage\StaticPageModel;
 
-class CategoryPage extends Page
+class CategoryIndexPage extends Page
 {
-    /** @noinspection PhpMissingParentConstructorInspection */
-    public function __construct() { }
+    protected string $template = 'Category/CategoryPage';
 
-    public function showCategoryIndex(Category $category)
+    public function __construct(Category $category)
     {
         $this->model = $category;
 
@@ -62,47 +59,5 @@ class CategoryPage extends Page
         }
 
         return $portfolioContent;
-    }
-
-    public function showPhotoalbumsIndex()
-    {
-        parent::__construct('Fotoalbums');
-        $photoalbums = Photoalbum::fetchAll(['hideFromOverview = 0'], [], 'ORDER BY id DESC');
-
-        $this->render([
-            'type' => 'photoalbums',
-            'pages' => $photoalbums,
-            'viewMode' => Category::VIEWMODE_TITLES
-        ]);
-    }
-
-    public function showTagIndex(string $tag)
-    {
-        parent::__construct(ucfirst($tag));
-
-        $tags = [];
-        $pages = [];
-
-        $subs = DBConnection::doQueryAndReturnFetchable('SELECT * FROM subs WHERE `tags` LIKE ? ORDER BY id DESC', ["%$tag%"]);
-        foreach ($subs as $sub)
-        {
-            $sub = StaticPageModel::fromArray($sub);
-            $tagList = $sub->getTagList();
-            if ($tagList)
-            {
-                $tags += $tagList;
-                if (in_array(strtolower($tag), $tagList, true))
-                {
-                    $pages[] = $sub;
-                }
-            }
-        }
-
-        $this->render([
-            'type' => 'tag',
-            'pages' => $pages,
-            'tags' => $tags,
-            'viewMode' => Category::VIEWMODE_BLOG,
-        ]);
     }
 }

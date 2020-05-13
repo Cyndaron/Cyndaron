@@ -16,13 +16,12 @@ class CategoryController extends Controller
 
         if ($id === '0' || $id === 'fotoboeken')
         {
-            $page = new CategoryPage();
-            $page->showPhotoalbumsIndex();
+            $page = new PhotoalbumIndexPage();
         }
         elseif ($id === 'tag')
         {
-            $page = new CategoryPage();
-            $page->showTagIndex(Request::getVar(2));
+            $tag = Request::getVar(2);
+            $page = new TagIndexPage($tag);
         }
         elseif ($id < 0)
         {
@@ -32,8 +31,7 @@ class CategoryController extends Controller
         else
         {
             $category = Category::loadFromDatabase((int)$id);
-            $page = new CategoryPage();
-            $page->showCategoryIndex($category);
+            $page = new CategoryIndexPage($category);
         }
     }
 
