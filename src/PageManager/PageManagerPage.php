@@ -32,7 +32,7 @@ class PageManagerPage extends Page
             $tabContents = ob_get_contents();
         ob_end_clean();
 
-        $this->render([
+        $this->renderAndEcho([
             'pageTabs' => $pageTabs,
             'currentPage' => $currentPage,
             'tabContents' => $tabContents,

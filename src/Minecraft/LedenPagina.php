@@ -30,7 +30,7 @@ class LedenPagina extends Page
 
         $members = DBConnection::doQueryAndFetchAll('SELECT * FROM minecraft_members ORDER BY level DESC, userName ASC');
 
-        $this->render([
+        $this->renderAndEcho([
             'members' => $members,
             'pageLevels' => $this->pageLevels,
             'level' => $this->level,

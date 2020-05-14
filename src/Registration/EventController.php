@@ -6,6 +6,7 @@ namespace Cyndaron\Registration;
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Request;
+use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
 
 class EventController extends Controller
@@ -16,7 +17,7 @@ class EventController extends Controller
         'viewOrders' => ['level' => UserLevel::ADMIN, 'function' => 'viewOrders'],
     ];
 
-    protected function getEventInfo()
+    protected function getEventInfo(): JSONResponse
     {
         $eventId = (int)Request::getVar(2);
         $event = new Event($eventId);
@@ -31,7 +32,7 @@ class EventController extends Controller
             'tickettypes' => $ticketTypes,
         ];
 
-        echo json_encode($answer);
+        return new JSONResponse($answer);
     }
 
     protected function order()

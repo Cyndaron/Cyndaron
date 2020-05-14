@@ -7,6 +7,7 @@ use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Request;
+use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
 use Exception;
 
@@ -15,39 +16,15 @@ class RegisterController extends Controller
     protected array $postRoutes = [
         'add' => ['level' => UserLevel::ANONYMOUS, 'function' => 'add'],
     ];
-
-    protected function routePost()
-    {
-        $id = intval(Request::getVar(2));
-        /** @var Registration $registration */
-        $registration = Registration::loadFromDatabase($id);
-
-        switch ($this->action)
-        {
-            case 'setIsPaid':
-                $registration->setIsPaid();
-                break;
-            case 'setApprovalStatus':
-                $status = (int)Request::post('status');
-                switch ($status)
-                {
-                    case Registration::APPROVAL_APPROVED:
-                        $registration->setApproved();
-                        break;
-                    case Registration::APPROVAL_DISAPPROVED:
-                        $registration->setDisapproved();
-                        break;
-                }
-                break;
-            case 'delete':
-                $registration->delete();
-                break;
-        }
-    }
+    protected array $apiPostRoutes = [
+        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
+        'setApprovalStatus' => ['level' => UserLevel::ADMIN, 'function' => 'setApprovalStatus'],
+        'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
+    ];
 
     protected function add()
     {
-        $eventId = intval(Request::post('event_id'));
+        $eventId = (int)Request::post('event_id');
         try
         {
             $this->processOrder($eventId);
@@ -56,12 +33,12 @@ class RegisterController extends Controller
                 'Aanmelding verwerkt',
                 'Hartelijk dank voor je aanmelding. Je ontvangt binnen enkele minuten een e-mail met een bevestiging van je aanmelding.'
             );
-            $page->render();
+            $page->renderAndEcho();
         }
         catch (Exception $e)
         {
             $page = new Page('Fout bij verwerken aanmelding', $e->getMessage());
-            $page->render();
+            $page->renderAndEcho();
         }
     }
 
@@ -139,5 +116,44 @@ class RegisterController extends Controller
         }
 
         return $errorFields;
+    }
+
+    public function delete(): JSONResponse
+    {
+        $id = (int)Request::getVar(2);
+        /** @var Registration $registration */
+        $registration = Registration::loadFromDatabase($id);
+        $registration->delete();
+
+        return new JSONResponse();
+    }
+
+    public function setApprovalStatus(): JSONResponse
+    {
+        $id = (int)Request::getVar(2);
+        /** @var Registration $registration */
+        $registration = Registration::loadFromDatabase($id);
+        $status = (int)Request::post('status');
+        switch ($status)
+        {
+            case Registration::APPROVAL_APPROVED:
+                $registration->setApproved();
+                break;
+            case Registration::APPROVAL_DISAPPROVED:
+                $registration->setDisapproved();
+                break;
+        }
+
+        return new JSONResponse();
+    }
+
+    public function setIsPaid(): JSONResponse
+    {
+        $id = (int)Request::getVar(2);
+        /** @var Registration $registration */
+        $registration = Registration::loadFromDatabase($id);
+        $registration->setIsPaid();
+
+        return new JSONResponse();
     }
 }

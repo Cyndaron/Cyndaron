@@ -2,17 +2,18 @@
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Controller;
-use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
 use Cyndaron\Page;
 use Cyndaron\Request;
+use Cyndaron\Response\JSONResponse;
 use Cyndaron\Setting;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Symfony\Component\HttpFoundation\Response;
 
 class ContestController extends Controller
 {
@@ -23,11 +24,15 @@ class ContestController extends Controller
         'subscriptionList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'subscriptionList'],
         'subscriptionListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'subscriptionListExcel'],
     ];
+
     protected array $postRoutes = [
         'subscribe' => ['level' => UserLevel::LOGGED_IN, 'function' => 'subscribe'],
-        'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook'],
+    ];
+
+    protected array $apiPostRoutes = [
         'edit' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'createOrEdit'],
         'delete' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'delete'],
+        'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook'],
         'removeSubscription' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'removeSubscription'],
     ];
 
@@ -46,7 +51,7 @@ class ContestController extends Controller
         new OverviewPage();
     }
 
-    public function view(): void
+    public function view()
     {
         $id = (int)Request::getVar(2);
         $contest = Contest::loadFromDatabase($id);
@@ -56,11 +61,11 @@ class ContestController extends Controller
         }
         else
         {
-            $this->send404('Wedstrijd niet gevonden!');
+            return new JSONResponse(['error' => 'Contest does not exist!'], Response::HTTP_NOT_FOUND);
         }
     }
 
-    public function subscribe(): void
+    public function subscribe()
     {
         $id = (int)Request::getVar(2);
         $contest = Contest::loadFromDatabase($id);
@@ -91,7 +96,7 @@ class ContestController extends Controller
         }
         else
         {
-            $this->send404('Wedstrijd niet gevonden!');
+            return new JSONResponse(['error' => 'Contest does not exist!'], Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -111,7 +116,7 @@ class ContestController extends Controller
             ],
             'description' => "Inschrijving {$contest->name}",
             'redirectUrl' => "{$baseUrl}/contest/view/{$contest->id}",
-            'webhookUrl' => "{$baseUrl}/contest/mollieWebhook",
+            'webhookUrl' => "{$baseUrl}/api/contest/mollieWebhook",
         ]);
 
         if ($payment && $payment->id)
@@ -144,15 +149,22 @@ class ContestController extends Controller
             if ($payment->isPaid() && !$payment->hasRefunds() && !$payment->hasChargebacks())
             {
                 $contestMember->isPaid = true;
-                $contestMember->save();
+                $saveSucceeded = $contestMember->save();
             }
             else
             {
                 $contestMember->isPaid = false;
-                $contestMember->save();
+                $saveSucceeded = $contestMember->save();
             }
 
-            return ['status' => 'ok'];
+            if ($saveSucceeded)
+            {
+                return new JSONResponse();
+            }
+            else
+            {
+                return new JSONResponse(['error' => 'Could not update payment information!'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
         }
         else
         {
@@ -166,6 +178,7 @@ class ContestController extends Controller
                 $message .= ' $contestMember is null.';
             }
             error_log($message);
+            return new JSONResponse(['error' => 'Could not find payment!'], Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -173,7 +186,7 @@ class ContestController extends Controller
     {
         $contests = PageManagerTabs::contestsTab();
         $page = new Page('Overzicht wedstrijden', $contests);
-        $page->render();
+        $page->renderAndEcho();
     }
 
     public function subscriptionList()
@@ -229,36 +242,36 @@ class ContestController extends Controller
         exit(0);
     }
 
-    public function removeSubscription()
+    public function removeSubscription(): JSONResponse
     {
         $id = (int)filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
         $contestMember = ContestMember::loadFromDatabase($id);
         if ($contestMember === null)
         {
-            $this->send404();
+            return new JSONResponse(['error' => 'Contest member does not exist!'], Response::HTTP_NOT_FOUND);
         }
         else
         {
             $contestMember->delete();
         }
 
-        return [];
+        return new JSONResponse();
     }
 
-    public function delete()
+    public function delete(): JSONResponse
     {
         $id = (int)filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
         $contest = Contest::loadFromDatabase($id);
         if ($contest === null)
         {
-            $this->send404();
+            return new JSONResponse(['error' => 'Contest does not exist!'], Response::HTTP_NOT_FOUND);
         }
         else
         {
             $contest->delete();
         }
 
-        return [];
+        return new JSONResponse();
     }
 
     public function createOrEdit()
@@ -269,7 +282,7 @@ class ContestController extends Controller
             $contest = Contest::loadFromDatabase($id);
             if ($contest === null)
             {
-                $this->send404();
+                return new JSONResponse(['error' => 'Contest does not exist!'], Response::HTTP_NOT_FOUND);
             }
         }
         else
@@ -283,12 +296,11 @@ class ContestController extends Controller
         $contest->date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
         $contest->registrationDeadline = filter_input(INPUT_POST, 'registrationDeadline', FILTER_SANITIZE_STRING);
         $contest->price = (float)filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-
         if (!$contest->save())
         {
-            $this->send500();
+            return new JSONResponse(['error' => 'Could not save contest!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return [];
+        return new JSONResponse();
     }
 }

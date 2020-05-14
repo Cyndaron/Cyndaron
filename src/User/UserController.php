@@ -6,9 +6,11 @@ namespace Cyndaron\User;
 use Cyndaron\Controller;
 use Cyndaron\Page;
 use Cyndaron\Request;
+use Cyndaron\Response\JSONResponse;
 use Cyndaron\Setting;
 use Cyndaron\Util;
 use Exception;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -20,12 +22,15 @@ class UserController extends Controller
     ];
 
     protected array $postRoutes = [
-        'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
         'login' => ['level' => UserLevel::ANONYMOUS, 'function' => 'loginPost'],
-        'resetpassword' => ['level' => UserLevel::ADMIN, 'function' => 'resetPassword'],
         'changeAvatar' => ['level' => UserLevel::ADMIN, 'function' => 'changeAvatar'],
+    ];
+
+    protected array $apiPostRoutes = [
+        'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
+        'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
+        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
+        'resetpassword' => ['level' => UserLevel::ADMIN, 'function' => 'resetPassword'],
     ];
 
     protected function gallery()
@@ -67,16 +72,16 @@ class UserController extends Controller
         catch (IncorrectCredentials $e)
         {
             $page = new Page('Inloggen mislukt', $e->getMessage());
-            $page->render();
+            $page->renderAndEcho();
         }
         catch (Exception $e)
         {
             $page = new Page('Inloggen mislukt', 'Onbekende fout: ' . $e->getMessage());
-            $page->render();
+            $page->renderAndEcho();
         }
     }
 
-    protected function add()
+    protected function add(): JSONResponse
     {
         $username = Request::post('username');
         $email = Request::post('email');
@@ -91,84 +96,69 @@ class UserController extends Controller
         $hideFromMemberList = Request::post('hideFromMemberList') === '1';
 
         $userId = User::create($username, $email, $password, $level, $firstName, $tussenvoegsel, $lastName, $role, $comments, $avatar, $hideFromMemberList);
-        echo json_encode(['userId' => $userId]);
+        return new JSONResponse(['userId' => $userId]);
     }
 
-    protected function edit()
+    protected function edit(): JSONResponse
     {
         $id = Request::getVar(2);
-        if ($id !== null)
+        if ($id === null)
         {
-            $username = Request::post('username');
-            $email = Request::post('email');
-            $level = (int)Request::post('level');
-            $firstName = Request::post('firstName');
-            $tussenvoegsel = Request::post('tussenvoegsel');
-            $lastName = Request::post('lastName');
-            $role = Request::post('role');
-            $comments = Request::post('comments');
-            $avatar = Request::post('avatar');
-            $hideFromMemberList = Request::post('hideFromMemberList') === '1';
-            $this->editHelper((int)$id, $username, $email, $level, $firstName, $tussenvoegsel, $lastName, $role, $comments, $avatar, $hideFromMemberList);
+            return new JSONResponse(['error' => 'No ID specified!', Response::HTTP_BAD_REQUEST]);
         }
-        else
-        {
-            $this->send400();
-        }
-    }
 
-    private function editHelper(int $id, string $username, string $email, int $level, string $firstName, string $tussenvoegsel, string $lastName, string $role, string $comments, string $avatar, bool $hideFromMemberList)
-    {
-        $user = new User($id);
-        $user->load();
-        $user->username = $username;
-        $user->email = $email;
-        $user->level = $level;
-        $user->firstName = $firstName;
-        $user->tussenvoegsel = $tussenvoegsel;
-        $user->lastName = $lastName;
-        $user->role = $role;
-        $user->comments = $comments;
-        $user->avatar = $avatar;
-        $user->hideFromMemberList = $hideFromMemberList;
+        $user = User::loadFromDatabase((int)$id);
+        if ($user === null)
+        {
+            return new JSONResponse(['error' => 'User not found!', Response::HTTP_NOT_FOUND]);
+        }
+
+        $user->username = Request::post('username');
+        $user->email = Request::post('email');
+        $user->level = (int)Request::post('level');
+        $user->firstName = Request::post('firstName');
+        $user->tussenvoegsel = Request::post('tussenvoegsel');
+        $user->lastName = Request::post('lastName');
+        $user->role = Request::post('role');
+        $user->comments = Request::post('comments');
+        $user->avatar = Request::post('avatar');
+        $user->hideFromMemberList = Request::post('hideFromMemberList') === '1';
         $result = $user->save();
-        if ($result !== true)
+        if ($result === false)
         {
-            $this->send500('Could not update user!');
+            return new JSONResponse(['error' => 'Could not update user!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        return new JSONResponse();
     }
 
-    protected function delete()
+    protected function delete(): JSONResponse
     {
         $userId = Request::getVar(2);
-        if ($userId !== null)
+        if ($userId === null)
         {
-            $user = new User((int)$userId);
-            $user->delete();
+            return new JSONResponse(['error' => 'No ID specified!'], Response::HTTP_BAD_REQUEST);
+        }
 
-            echo json_encode([]);
-        }
-        else
-        {
-            $this->send400();
-        }
+        $user = new User((int)$userId);
+        $user->delete();
+
+        return new JSONResponse();
     }
 
-    protected function resetPassword()
+    protected function resetPassword(): JSONResponse
     {
         $userId = Request::getVar(2);
-        if ($userId !== null)
+        if ($userId === null)
         {
-            $user = new User((int)$userId);
-            $user->load();
-            $user->resetPassword();
+            return new JSONResponse(['error' => 'ID not specified!'], Response::HTTP_BAD_REQUEST);
+        }
 
-            echo json_encode([]);
-        }
-        else
-        {
-            $this->send400();
-        }
+        $user = new User((int)$userId);
+        $user->load();
+        $user->resetPassword();
+
+        return new JSONResponse();
     }
 
     protected function changeAvatar()

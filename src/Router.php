@@ -11,6 +11,7 @@ use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\User\User;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Zorgt voor correct doorverwijzen van verzoeken.
@@ -33,7 +34,7 @@ class Router
         'user' => \Cyndaron\User\UserController::class,
     ];
 
-    const OLD_URLS = [
+    public const OLD_URLS = [
         'tooncategorie.php' => ['url' => '/category/', 'id' => 'id'],
         'toonfoto.php' => ['url' => '/photoalbum/', 'id' => 'boekid'], // Old link to photo in album (pre-Lightbox)
         'toonfotoboek.php' => ['url' => '/photoalbum/', 'id' => 'id'],
@@ -67,7 +68,6 @@ class Router
         // Known friendly URL
         elseif ($url = DBConnection::doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$request]))
         {
-            /** @noinspection PhpStrictTypeCheckingInspection */
             $this->updateRequestVars($this->rewriteFriendlyUrl(new Url($url)));
         }
 
@@ -82,7 +82,8 @@ class Router
     private function routeFoundNowCheckLogin(): void
     {
         $userLevel = User::getLevel();
-        if (!User::hasSufficientReadLevel() && !($this->requestVars[0] === 'user' && $this->requestVars[1] === 'login'))
+        $isLoggingIn = $this->requestVars[0] === 'user' && $this->requestVars[1] === 'login';
+        if (!$isLoggingIn && !User::hasSufficientReadLevel())
         {
             Request::sendDoNotCache();
             if ($userLevel > 0)
@@ -108,16 +109,10 @@ class Router
         $route->checkCSRFToken($token);
         try
         {
-            if ($this->isApiCall)
+            $ret = $route->route($this->isApiCall);
+            if ($ret instanceof Response)
             {
-                ob_start();
-            }
-
-            $ret = $route->route();
-
-            if ($this->isApiCall && ob_get_flush() === '')
-            {
-                echo json_encode($ret);
+                $ret->send();
             }
         }
         catch (\Exception $e)
@@ -203,7 +198,8 @@ class Router
      */
     private function blockPathTraversal(string $request): void
     {
-        if ($request !== '/' && (substr($request, 0, 1) === '.' || substr($request, 0, 1) === '/')) {
+        if ($request !== '/' && (substr($request, 0, 1) === '.' || substr($request, 0, 1) === '/'))
+        {
             header('Location: /error/403');
             die('Deze locatie mag niet worden opgevraagd.');
         }

@@ -7,6 +7,7 @@ use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Request;
+use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
 use Exception;
 
@@ -15,36 +16,11 @@ class OrderController extends Controller
     protected array $postRoutes = [
         'add' => ['level' => UserLevel::ANONYMOUS, 'function' => 'add'],
     ];
-
-    protected function routePost()
-    {
-        $id = (int)Request::getVar(2);
-        /** @var Order $order */
-        $order = Order::loadFromDatabase($id);
-
-        switch ($this->action)
-        {
-            case 'setIsPaid':
-                $order->setIsPaid();
-                break;
-            case 'setApprovalStatus':
-                $status = (int)Request::post('status');
-                switch ($status)
-                {
-                    case Order::APPROVAL_APPROVED:
-                        $order->setApproved();
-                        break;
-                    case Order::APPROVAL_DISAPPROVED:
-                        $order->setDisapproved();
-                        break;
-                }
-                break;
-            case 'delete':
-                $order->delete();
-                break;
-
-        }
-    }
+    protected array $apiPostRoutes = [
+        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
+        'setApprovalStatus' => ['level' => UserLevel::ADMIN, 'function' => 'setApprovalStatus'],
+        'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
+    ];
 
     protected function add()
     {
@@ -57,12 +33,12 @@ class OrderController extends Controller
                 'Inschrijving verwerkt',
                 'Hartelijk dank voor uw inschrijving. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw inschrijving en betaalinformatie.'
             );
-            $page->render();
+            $page->renderAndEcho();
         }
         catch (Exception $e)
         {
             $page = new Page('Fout bij verwerken inschrijving', $e->getMessage());
-            $page->render();
+            $page->renderAndEcho();
         }
     }
 
@@ -184,5 +160,44 @@ class OrderController extends Controller
         }
 
         return $errorFields;
+    }
+
+    public function delete(): JSONResponse
+    {
+        $id = (int)Request::getVar(2);
+        /** @var Order $order */
+        $order = Order::loadFromDatabase($id);
+        $order->delete();
+
+        return new JSONResponse();
+    }
+
+    public function setApprovalStatus(): JSONResponse
+    {
+        $id = (int)Request::getVar(2);
+        /** @var Order $order */
+        $order = Order::loadFromDatabase($id);
+        $status = (int)Request::post('status');
+        switch ($status)
+        {
+            case Order::APPROVAL_APPROVED:
+                $order->setApproved();
+                break;
+            case Order::APPROVAL_DISAPPROVED:
+                $order->setDisapproved();
+                break;
+        }
+
+        return new JSONResponse();
+    }
+
+    public function setIsPaid(): JSONResponse
+    {
+        $id = (int)Request::getVar(2);
+        /** @var Order $order */
+        $order = Order::loadFromDatabase($id);
+        $order->setIsPaid();
+
+        return new JSONResponse();
     }
 }

@@ -6,6 +6,7 @@ namespace Cyndaron\StaticPage;
 use Cyndaron\Controller;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request;
+use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
 
 class StaticPageController extends Controller
@@ -22,19 +23,21 @@ class StaticPageController extends Controller
         new StaticPage($id);
     }
 
-    protected function addToMenu()
+    protected function addToMenu(): JSONResponse
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         $menuItem = new MenuItem();
         $menuItem->link = '/sub/' . $id;
         $menuItem->save();
+        return new JSONResponse();
     }
 
-    protected function delete()
+    protected function delete(): JSONResponse
     {
-        $id = intval(Request::getVar(2));
+        $id = (int)Request::getVar(2);
         $model = new StaticPageModel($id);
         $model->delete();
+        return new JSONResponse();
     }
 
     protected function react()

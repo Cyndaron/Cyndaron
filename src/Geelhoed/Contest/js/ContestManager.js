@@ -46,7 +46,7 @@ $(document).ready(function()
 
         del('Weet u zeker dat u deze wedstrijd wilt verwijderen?', function()
         {
-            $.post('/contest/delete', { id: id, csrfToken: csrfToken }).done(function()
+            $.post('/api/contest/delete', { id: id, csrfToken: csrfToken }).done(function()
             {
                 row.remove();
                 $('#confirm-dangerous').modal('hide');
@@ -67,7 +67,7 @@ $(document).ready(function()
             price: parseFloat($('#gcm-edit-price').val()),
         };
 
-        $.post('/contest/edit', payLoad).done(function () {
+        $.post('/api/contest/edit', payLoad).done(function () {
             location.reload();
         });
     });

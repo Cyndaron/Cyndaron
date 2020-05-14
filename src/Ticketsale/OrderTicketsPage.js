@@ -23,7 +23,7 @@ let addressIsAbroad = false;
 let defaultDeliveryCost;
 let reservedSeatCharge;
 
-$.ajax('/concert/getInfo/' + concertId, {}).done(function (json)
+$.ajax('/api/concert/getInfo/' + concertId, {}).done(function (json)
 {
     let data = JSON.parse(json);
     tickettypes = data.tickettypes;

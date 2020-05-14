@@ -6,32 +6,48 @@ namespace Cyndaron\Minecraft;
 use Cyndaron\Controller;
 use Cyndaron\Minecraft\Dynmap\DynmapProxy;
 use Cyndaron\Request;
+use Cyndaron\Response\JSONResponse;
+use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\Response;
 
 class MinecraftController extends Controller
 {
-    protected function routeGet()
+    public array $getRoutes = [
+        'dynmapproxy' => ['level' => UserLevel::ANONYMOUS, 'function' => 'dynmapProxy'],
+        'members' => ['level' => UserLevel::ANONYMOUS, 'function' => 'members'],
+        'skin' => ['level' => UserLevel::ANONYMOUS, 'function' => 'skin'],
+        'status' => ['level' => UserLevel::ANONYMOUS, 'function' => 'status'],
+    ];
+
+    public function dynmapProxy(): Response
     {
-        switch ($this->action)
+        $serverId = (int)Request::getVar(2);
+        $server = Server::loadFromDatabase($serverId);
+        if ($server === null)
         {
-            case 'dynmapproxy':
-                $serverId = (int)Request::getVar(2);
-                $server = Server::loadFromDatabase($serverId);
-                if ($server === null)
-                {
-                    $this->send404();
-                    return;
-                }
-                new DynmapProxy($server);
-                break;
-            case 'members':
-                new LedenPagina();
-                break;
-            case 'skin':
-                new SkinRendererHandler();
-                break;
-            case 'status':
-                new StatusPagina();
-                break;
+            return new JSONResponse(['error' => 'Server does not exist!'], Response::HTTP_NOT_FOUND);
         }
+
+        $proxy = new DynmapProxy($server);
+
+        return new Response(
+            $proxy->getContents(),
+            Response::HTTP_OK,
+            ['content-type' => $proxy->getContentType()]);
+    }
+
+    public function members()
+    {
+        new LedenPagina();
+    }
+
+    public function skin()
+    {
+        new SkinRendererHandler();
+    }
+
+    public function status()
+    {
+        new StatusPagina();
     }
 }

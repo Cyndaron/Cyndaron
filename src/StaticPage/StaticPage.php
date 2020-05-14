@@ -29,7 +29,7 @@ class StaticPage extends Page
 
         parent::__construct($this->model->name);
 
-        $this->render([
+        $this->renderAndEcho([
             'model' => $this->model,
             'text' => Util::parseText($this->model->text),
             'replies' => $replies,

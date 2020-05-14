@@ -59,6 +59,6 @@ class EventOrderOverviewPage extends Page
             $totals['Totaal'][1]['amount'] += $totals[$vocalRange][1]['amount'];
         }
 
-        $this->render(compact('event', 'ticketTypes', 'ticketTypesByOrder', 'registrations', 'totals'));
+        $this->renderAndEcho(compact('event', 'ticketTypes', 'ticketTypesByOrder', 'registrations', 'totals'));
     }
 }

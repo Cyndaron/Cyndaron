@@ -7,9 +7,18 @@ use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request;
+use Cyndaron\Response\JSONResponse;
+use Cyndaron\User\UserLevel;
 
 class CategoryController extends Controller
 {
+    protected array $apiPostRoutes = [
+        'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
+        'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
+        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
+        'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
+    ];
+
     protected function routeGet()
     {
         $id = Request::getVar(1);
@@ -35,42 +44,52 @@ class CategoryController extends Controller
         }
     }
 
-    protected function routePost()
+    public function add(): JSONResponse
+    {
+        $return = [];
+        $category = new Category(null);
+        $category->name = Request::post('name');
+        $result = $category->save();
+        if ($result === false) {
+            $return = DBConnection::errorInfo();
+        }
+
+        return new JSONResponse($return);
+    }
+
+    public function addToMenu(): JSONResponse
     {
         $id = (int)Request::getVar(2);
         $return = [];
-
-        switch ($this->action)
+        $menuItem = new MenuItem();
+        $menuItem->link = '/category/' . $id;
+        $result = $menuItem->save();
+        if ($result === false)
         {
-            case 'add':
-                $category = new Category(null);
-                $category->name = Request::post('name');
-                $result = $category->save();
-                if ($result === false) {
-                    $return = DBConnection::errorInfo();
-                }
-                break;
-            case 'edit':
-                $category = new Category($id);
-                $category->load();
-                $category->name = Request::post('name');
-                $category->save();
-                break;
-            case 'delete':
-                $category = new Category($id);
-                $category->delete();
-                break;
-            case 'addtomenu':
-                $menuItem = new MenuItem();
-                $menuItem->link = '/category/' . $id;
-                $result = $menuItem->save();
-                if ($result === false)
-                {
-                    $return = DBConnection::errorInfo();
-                }
-                break;
+            $return = DBConnection::errorInfo();
         }
 
-        echo json_encode($return);
+        return new JSONResponse($return);
     }
+
+    public function delete(): JSONResponse
+    {
+        $id = (int)Request::getVar(2);
+        $category = new Category($id);
+        $category->delete();
+
+        return new JSONResponse();
+    }
+
+    public function edit(): JSONResponse
+    {
+        $id = (int)Request::getVar(2);
+        $category = new Category($id);
+        $category->load();
+        $category->name = Request::post('name');
+        $category->save();
+
+        return new JSONResponse();
+    }
+
 }

@@ -9,6 +9,6 @@ class LoginPage extends Page
     {
         $csrfToken = User::getCSRFToken('user', 'login');
         parent::__construct('Inloggen');
-        $this->render(compact('csrfToken'));
+        $this->renderAndEcho(compact('csrfToken'));
     }
 }

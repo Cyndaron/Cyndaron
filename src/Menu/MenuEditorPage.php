@@ -12,7 +12,7 @@ class MenuEditorPage extends Page
         parent::__construct('Menu-editor');
         $this->addScript('/src/Menu/MenuEditorPage.js');
 
-        $this->render([
+        $this->renderAndEcho([
             'menuItems' => Menu::get(),
         ]);
     }

@@ -6,20 +6,21 @@ use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Request;
+use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 
 class MemberController extends Controller
 {
-    protected array $getRoutes = [
+    protected array $apiGetRoutes = [
         'get' => ['level' => UserLevel::ADMIN, 'function' => 'get'],
     ];
-    protected array $postRoutes = [
+    protected array $apiPostRoutes = [
         'removeGraduation' => ['level' => UserLevel::ADMIN, 'function' => 'removeGraduation'],
         'save' => ['level' => UserLevel::ADMIN, 'function' => 'save']
     ];
 
-    public function get()
+    public function get(): JSONResponse
     {
         $id = (int)Request::getVar(2);
         $ret = [];
@@ -43,18 +44,18 @@ class MemberController extends Controller
             $ret['graduationList'] = implode($list);
         }
 
-        return $ret;
+        return new JSONResponse($ret);
     }
 
-    public function removeGraduation(): array
+    public function removeGraduation(): JSONResponse
     {
         $id = (int)Request::getVar(2);
         MemberGraduation::deleteById($id);
 
-        return ['status' => 'ok'];
+        return new JSONResponse();
     }
 
-    public function save(): array
+    public function save(): JSONResponse
     {
         $memberId = (int)Request::post('id');
 
@@ -118,6 +119,6 @@ class MemberController extends Controller
         }
         $member->setHours($hours);
 
-        return ['status' => 'ok'];
+        return new JSONResponse();
     }
 }

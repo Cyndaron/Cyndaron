@@ -32,7 +32,7 @@ class TagIndexPage extends Page
             }
         }
 
-        $this->render([
+        $this->renderAndEcho([
             'type' => 'tag',
             'pages' => $pages,
             'tags' => $tags,

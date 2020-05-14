@@ -10,7 +10,7 @@ $(document).ready(function ()
         let csrfToken = $('#mm-menutable').data('delete-csrf-token');
 
         del('Weet u zeker dat u dit menu-item wilt verwijderen?', function () {
-            $.post('/menu/deleteItem/' + index, { csrfToken: csrfToken }).done(function () {
+            $.post('/api/menu/deleteItem/' + index, { csrfToken: csrfToken }).done(function () {
                 location.reload();
             });
         });
@@ -56,7 +56,7 @@ $(document).ready(function ()
                 payload[item] = $('#mm-' + item).val();
         });
 
-        $.post('/menu/' + action + '/' + id, payload).done(function() {
+        $.post('/api/menu/' + action + '/' + id, payload).done(function() {
             location.reload();
         });
     });

@@ -7,6 +7,7 @@ use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Request;
+use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
 use Exception;
 
@@ -15,27 +16,11 @@ class OrderController extends Controller
     protected array $postRoutes = [
         'add' => ['level' => UserLevel::ANONYMOUS, 'function' => 'add'],
     ];
-
-    protected function routePost()
-    {
-        $id = (int)Request::getVar(2);
-        /** @var Order $order */
-        $order = Order::loadFromDatabase($id);
-
-        switch ($this->action)
-        {
-            case 'setIsPaid':
-                $order->setIsPaid();
-                break;
-            case 'setIsSent':
-                $order->setIsSent();
-                break;
-            case 'delete':
-                $order->delete();
-                break;
-
-        }
-    }
+    protected array $apiPostRoutes = [
+        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
+        'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
+        'setIsSent' => ['level' => UserLevel::ADMIN, 'function' => 'setIsSent'],
+    ];
 
     protected function add(): void
     {
@@ -48,12 +33,12 @@ class OrderController extends Controller
                 'Bestelling verwerkt',
                 'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw bestelling en betaalinformatie.'
             );
-            $page->render();
+            $page->renderAndEcho();
         }
         catch (Exception $e)
         {
             $page = new Page('Fout bij verwerken bestelling', $e->getMessage());
-            $page->render();
+            $page->renderAndEcho();
         }
     }
 
@@ -318,5 +303,35 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
         }
 
         return Util::mail($email, 'Bestelling concertkaarten', $text);
+    }
+
+    public function delete(): JSONResponse
+    {
+        $id = (int)Request::getVar(2);
+        /** @var Order $order */
+        $order = Order::loadFromDatabase($id);
+        $order->delete();
+
+        return new JSONResponse();
+    }
+
+    public function setIsPaid(): JSONResponse
+    {
+        $id = (int)Request::getVar(2);
+        /** @var Order $order */
+        $order = Order::loadFromDatabase($id);
+        $order->setIsPaid();
+
+        return new JSONResponse();
+    }
+
+    public function setIsSent(): JSONResponse
+    {
+        $id = (int)Request::getVar(2);
+        /** @var Order $order */
+        $order = Order::loadFromDatabase($id);
+        $order->setIsSent();
+
+        return new JSONResponse();
     }
 }

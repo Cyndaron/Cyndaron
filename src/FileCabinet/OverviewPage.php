@@ -15,7 +15,7 @@ class OverviewPage extends Page
         $orderBy = Setting::get('filecabinet_orderBy') ?: 'name';
         parent::__construct($title);
 
-        $this->render([
+        $this->renderAndEcho([
             'introduction' => $this->getIntroduction(),
             'files' => $this->getFileList($orderBy),
             'deleteCsrfToken' => User::getCSRFToken('filecabinet', 'deleteItem'),

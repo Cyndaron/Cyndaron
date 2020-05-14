@@ -6,6 +6,7 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Request;
+use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
 
 class ConcertController extends Controller
@@ -17,7 +18,7 @@ class ConcertController extends Controller
         'viewReservedSeats' => ['level' => UserLevel::ADMIN, 'function' => 'viewReservedSeats'],
     ];
 
-    protected function getConcertInfo()
+    protected function getConcertInfo(): JSONResponse
     {
         $concertId = (int)Request::getVar(2);
         $concert = new Concert($concertId);
@@ -39,7 +40,7 @@ class ConcertController extends Controller
             ];
         }
 
-        echo json_encode($answer);
+        return new JSONResponse($answer);
     }
 
     protected function order()

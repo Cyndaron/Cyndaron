@@ -3,6 +3,7 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Request;
+use Cyndaron\Template\Template;
 
 /* ***** MINECRAFT 3D Skin Generator *****
  * The contents of this project were first developed by Pierre Gros on 17th April 2012.
@@ -189,7 +190,6 @@ class SkinRendererHandler
         $cubePoints = $this->generateCubePoints();
         $cube_max_depth_faces = $cubePoints[0];
 
-        /** @var CubePoint $cubePoint */
         foreach ($cubePoints as $cubePoint)
         {
             $cubePoint->getPoint()->project();
@@ -1002,20 +1002,23 @@ class SkinRendererHandler
             header('Cache-Control: max-age=' . SkinRenderer::SECONDS_TO_CACHE);
         }
 
+        $svgTemplate = null;
+        $svgTemplateVars = [];
+
         $image = null;
         if (Request::get('format') === 'svg')
         {
-            header('Content-Type: image/svg+xml');
-            echo '<?xml version="1.0" standalone="no"?>
-        <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
-        "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-
-        <svg width="100%" height="100%" version="1.1"
-        xmlns="http://www.w3.org/2000/svg" viewBox="' . static::$minX . ' ' . static::$minY . ' ' . $width . ' ' . $height . '">';
+            $svgTemplate = new Template();
+            $svgTemplateVars = [
+                'minX' => static::$minX,
+                'minY' => static::$minY,
+                'width' => $width,
+                'height' => $height,
+                'contents' => '',
+            ];
         }
         else
         {
-            //header('Content-type: image/png');
             $image = imagecreatetruecolor($ratio * $width + 1, $ratio * $height + 1);
             imagesavealpha($image, true);
             $trans_colour = imagecolorallocatealpha($image, 0, 0, 0, 127);
@@ -1102,7 +1105,7 @@ class SkinRendererHandler
                     {
                         if (Request::get('format') === 'svg')
                         {
-                            echo $poly->getSvgPolygon(1);
+                            $svgTemplateVars['contents'] .= $poly->getSvgPolygon(1);
                         }
                         else
                         {
@@ -1117,18 +1120,23 @@ class SkinRendererHandler
 
         if (Request::get('format') === 'svg')
         {
-            echo '</svg>' . "\n";
-            for ($i = 1; $i < count($times); $i++)
+            $svgTemplateVars['remarks'] = '';
+            for ($i = 1, $iMax = count($times); $i < $iMax; $i++)
             {
-                echo '<!-- ' . ($times[$i][1] - $times[$i - 1][1]) * 1000 . 'ms : ' . $times[$i][0] . ' -->' . "\n";
+                $svgTemplateVars['remarks'] .= '<!-- ' . ($times[$i][1] - $times[$i - 1][1]) * 1000 . 'ms : ' . $times[$i][0] . ' -->' . "\n";
             }
-            echo '<!-- TOTAL : ' . ($times[count($times) - 1][1] - $times[0][1]) * 1000 . 'ms -->' . "\n";
+            $svgTemplateVars['remarks'] .= '<!-- TOTAL : ' . ($times[count($times) - 1][1] - $times[0][1]) * 1000 . 'ms -->' . "\n";
+
+            header('Content-Type: image/svg+xml');
+            echo $svgTemplate->render('Minecraft/SkinSVG', $svgTemplateVars);
         }
         else
         {
+            header('Content-type: image/png');
+
             imagepng($image);
             imagedestroy($image);
-            for ($i = 1; $i < count($times); $i++)
+            for ($i = 1, $iMax = count($times); $i < $iMax; $i++)
             {
                 header('generation-time-' . $i . '-' . $times[$i][0] . ': ' . ($times[$i][1] - $times[$i - 1][1]) * 1000 . 'ms');
             }

@@ -38,12 +38,12 @@ class MailformController extends Controller
         {
             $this->processHelper($form);
             $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
-            $page->render();
+            $page->renderAndEcho();
         }
         catch (Exception $e)
         {
             $page = new Page('Formulier versturen mislukt', $e->getMessage());
-            $page->render();
+            $page->renderAndEcho();
         }
     }
 
@@ -54,13 +54,13 @@ class MailformController extends Controller
             $this->processLDBFHelper();
 
             $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
-            $page->render();
+            $page->renderAndEcho();
         }
 
         catch (Exception $e)
         {
             $page = new Page('Formulier versturen mislukt', $e->getMessage());
-            $page->render();
+            $page->renderAndEcho();
         }
     }
 

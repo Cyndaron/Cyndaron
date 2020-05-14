@@ -13,7 +13,7 @@ class PhotoalbumIndexPage extends Page
         parent::__construct('Fotoalbums');
         $photoalbums = Photoalbum::fetchAll(['hideFromOverview = 0'], [], 'ORDER BY id DESC');
 
-        $this->render([
+        $this->renderAndEcho([
             'type' => 'photoalbums',
             'pages' => $photoalbums,
             'viewMode' => Category::VIEWMODE_TITLES

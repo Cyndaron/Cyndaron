@@ -14,7 +14,7 @@ class Gallery extends Page
         $title = Setting::get('userGalleryTitle') ?: 'Wie is wie';
         parent::__construct($title);
 
-        $this->render([
+        $this->renderAndEcho([
             'members' => $members,
             'fallbackImage' => self::FALLBACK_IMAGE,
         ]);

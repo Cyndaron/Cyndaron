@@ -161,7 +161,7 @@ class Page
         return $template->render('Menu', $vars);
     }
 
-    public function render(array $vars = []): void
+    public function render(array $vars = []): string
     {
         $this->templateVars = array_merge($this->templateVars, $vars);
 
@@ -170,7 +170,12 @@ class Page
         $this->renderSkeleton();
 
         $template = new \Cyndaron\Template\Template();
-        echo $template->render($this->template, $this->templateVars);
+        return $template->render($this->template, $this->templateVars);
+    }
+
+    public function renderAndEcho(array $vars = []): void
+    {
+        echo $this->render($vars);
     }
 
     public function addScript($script): void

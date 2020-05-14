@@ -9,9 +9,13 @@ use Cyndaron\Request;
 
 class DynmapProxy
 {
+    private string $contents = '';
+    private string $contentType = 'text/html';
+
     public const MIMETABLE = [
         'css' => 'text/css',
         'ico' => 'image/vnd.microsoft.icon',
+        'json' => 'application/json',
         'js' => 'application/javascript',
         'png' => 'image/png',
     ];
@@ -24,26 +28,35 @@ class DynmapProxy
             $link .= '/' . $linkpart;
         }
 
-        $contents = $this->getFileContents($link, $server);
-
-        $this->sendContentTypeHeader($link);
-
-        echo $contents;
+        $this->contents = $this->getFileContents($link, $server);
+        $this->contentType = $this->determineContentType($link);
     }
 
     /**
      * @param string $link
+     * @return string
      */
-    private function sendContentTypeHeader(string $link): void
+    public function determineContentType(string $link): string
     {
         foreach (self::MIMETABLE as $extension => $mimetype)
         {
             if (strpos($link, ".$extension") !== false)
             {
-                header('Content-Type: ' . $mimetype);
-                break;
+                return $mimetype;
             }
         }
+
+        return 'text/html';
+    }
+
+    public function getContents(): string
+    {
+        return $this->contents;
+    }
+
+    public function getContentType(): string
+    {
+        return $this->contentType;
     }
 
     /**

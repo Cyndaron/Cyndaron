@@ -12,6 +12,6 @@ class MemberListPage extends Page
         $location = $hour->getLocation();
         $weekday = Util::getWeekday($hour->day);
         parent::__construct(sprintf("{$location->getName()} {$weekday} {$hour->getRange()}"));
-        $this->render(['hour' => $hour, 'members' => Member::fetchAllByHour($hour)]);
+        $this->renderAndEcho(['hour' => $hour, 'members' => Member::fetchAllByHour($hour)]);
     }
 }

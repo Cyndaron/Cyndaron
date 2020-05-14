@@ -33,7 +33,7 @@ class SystemPage extends Page
                 $this->showConfigPage();
         }
 
-        $this->render();
+        $this->renderAndEcho();
     }
 
     public function showConfigPage()

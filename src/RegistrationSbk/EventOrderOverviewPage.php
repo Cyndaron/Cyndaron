@@ -37,6 +37,6 @@ class EventOrderOverviewPage extends Page
             $totals['Totaal'][1]['amount'] += $totals[$vocalRange][1]['amount'];
         }
 
-        $this->render(compact('event', 'registrations', 'totals'));
+        $this->renderAndEcho(compact('event', 'registrations', 'totals'));
     }
 }

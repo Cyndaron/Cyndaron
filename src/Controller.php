@@ -16,6 +16,8 @@ class Controller
 
     protected array $getRoutes = [];
     protected array $postRoutes = [];
+    protected array $apiGetRoutes = [];
+    protected array $apiPostRoutes = [];
 
     public function __construct(string $module, string $action)
     {
@@ -32,17 +34,20 @@ class Controller
         }
     }
 
-    public function route()
+    public function route(bool $isApiCall)
     {
+        $getRoutes = ($isApiCall && !empty($this->apiGetRoutes)) ? $this->apiGetRoutes : $this->getRoutes;
+        $postRoutes = ($isApiCall && !empty($this->apiPostRoutes)) ? $this->apiPostRoutes : $this->postRoutes;
+
         switch($_SERVER['REQUEST_METHOD'])
         {
             case 'GET':
-                $routesTable = $this->getRoutes;
+                $routesTable = $getRoutes;
                 $oldRouteFunction = 'routeGet';
                 $oldMinLevel = $this->minLevelGet;
                 break;
             case 'POST':
-                $routesTable = $this->postRoutes;
+                $routesTable = $postRoutes;
                 $oldRouteFunction = 'routePost';
                 $oldMinLevel = $this->minLevelPost;
                 break;

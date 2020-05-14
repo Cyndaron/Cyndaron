@@ -17,7 +17,7 @@ class UserManagerPage extends Page
     {
         parent::__construct('Gebruikersbeheer');
         $this->addScript('/src/User/UserManagerPage.js');
-        $this->render([
+        $this->renderAndEcho([
             'users' => User::fetchAll([], [], 'ORDER BY username'),
             'userLevelDescriptions' => self::USER_LEVEL_DESCRIPTIONS,
         ]);
