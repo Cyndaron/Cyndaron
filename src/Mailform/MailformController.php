@@ -13,7 +13,10 @@ use Exception;
 
 class MailformController extends Controller
 {
-    protected int $minLevelPost = UserLevel::ANONYMOUS;
+    protected array $postRoutes = [
+        'process' => ['level' => UserLevel::ANONYMOUS, 'function' => 'process'],
+        'process-ldbf' => ['level' => UserLevel::ANONYMOUS, 'function' => 'processLDBF'],
+    ];
 
     public function checkCSRFToken(string $token): void
     {
@@ -23,21 +26,19 @@ class MailformController extends Controller
         }
     }
 
-    protected function routePost()
+    /**
+     * @throws Exception
+     */
+    public function process(): void
     {
         $id = (int)Request::getVar(2);
+        $form = Mailform::loadFromDatabase($id);
+
         try
         {
-            if ($this->action === 'process-ldbf')
-            {
-                new VerwerkMailFormulierPaginaLDBF();
-            }
-            else
-            {
-                $this->process($id);
-                $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
-                $page->render();
-            }
+            $this->processHelper($form);
+            $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
+            $page->render();
         }
         catch (Exception $e)
         {
@@ -46,14 +47,53 @@ class MailformController extends Controller
         }
     }
 
+    public function processLDBF(): void
+    {
+        try
+        {
+            $this->processLDBFHelper();
+
+            $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
+            $page->render();
+        }
+
+        catch (Exception $e)
+        {
+            $page = new Page('Formulier versturen mislukt', $e->getMessage());
+            $page->render();
+        }
+    }
+
+    private function processLDBFHelper(): bool
+    {
+        if (Request::postIsEmpty())
+        {
+            throw new Exception('Ongeldig formulier.');
+        }
+        if (empty(Request::post('E-mailadres')))
+        {
+            throw new Exception('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
+        }
+
+        $mailForm = new MailFormLDBF();
+        $mailForm->fillMailTemplate();
+        $mailSent = $mailForm->sendMail();
+
+        if (!$mailSent)
+        {
+            throw new Exception('Wegens een technisch probleem is het versturen van de e-mail niet gelukt.');
+        }
+
+        return true;
+    }
+
     /**
-     * @param int $id
+     * @param Mailform $form
      * @return bool
      * @throws Exception
      */
-    private function process(int $id)
+    public function processHelper(Mailform $form): bool
     {
-        $form = Mailform::loadFromDatabase($id);
         if ($form === null || !$form->name)
         {
             throw new Exception('Ongeldig formulier.');
