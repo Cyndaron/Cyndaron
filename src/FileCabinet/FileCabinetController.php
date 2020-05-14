@@ -7,6 +7,8 @@ use Cyndaron\Controller;
 use Cyndaron\Request;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class FileCabinetController extends Controller
 {
@@ -15,12 +17,13 @@ class FileCabinetController extends Controller
         'deleteItem' => ['level' => UserLevel::ADMIN, 'function' => 'deleteItem']
     ];
 
-    protected function routeGet()
+    protected function routeGet(): Response
     {
-        new OverviewPage();
+        $page = new OverviewPage();
+        return new Response($page->render());
     }
 
-    protected function addItem()
+    protected function addItem(): Response
     {
         $filename = './bestandenkast/' . basename($_FILES['newFile']['name']);
         if (move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
@@ -32,10 +35,10 @@ class FileCabinetController extends Controller
             User::addNotification('Bestand kon niet naar de uploadmap worden verplaatst.');
         }
 
-        header('Location: /filecabinet');
+        return new RedirectResponse('/filecabinet');
     }
 
-    protected function deleteItem()
+    protected function deleteItem(): Response
     {
         $filename = Request::post('filename');
         $fullPath = "./bestandenkast/$filename";
@@ -55,6 +58,6 @@ class FileCabinetController extends Controller
             User::addNotification('Bestand bestaat niet.');
         }
 
-        header('Location: /filecabinet');
+        return new RedirectResponse('/filecabinet');
     }
 }

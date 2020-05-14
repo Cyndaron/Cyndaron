@@ -6,9 +6,11 @@ namespace Cyndaron\Category;
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Page;
 use Cyndaron\Request;
-use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends Controller
 {
@@ -19,32 +21,33 @@ class CategoryController extends Controller
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
     ];
 
-    protected function routeGet()
+    protected function routeGet(): Response
     {
         $id = Request::getVar(1);
 
         if ($id === '0' || $id === 'fotoboeken')
         {
             $page = new PhotoalbumIndexPage();
+            return new Response($page->render());
         }
-        elseif ($id === 'tag')
+        if ($id === 'tag')
         {
             $tag = Request::getVar(2);
             $page = new TagIndexPage($tag);
+            return new Response($page->render());
         }
-        elseif ($id < 0)
+        if ($id < 0)
         {
-            header('Location: /error/404');
-            die('Incorrecte parameter ontvangen.');
+            $page = new Page('Foute aanvraag', 'Incorrecte parameter ontvangen.');
+            return new Response($page->render());
         }
-        else
-        {
-            $category = Category::loadFromDatabase((int)$id);
-            $page = new CategoryIndexPage($category);
-        }
+
+        $category = Category::loadFromDatabase((int)$id);
+        $page = new CategoryIndexPage($category);
+        return new Response($page->render());
     }
 
-    public function add(): JSONResponse
+    public function add(): JsonResponse
     {
         $return = [];
         $category = new Category(null);
@@ -54,10 +57,10 @@ class CategoryController extends Controller
             $return = DBConnection::errorInfo();
         }
 
-        return new JSONResponse($return);
+        return new JsonResponse($return);
     }
 
-    public function addToMenu(): JSONResponse
+    public function addToMenu(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         $return = [];
@@ -69,19 +72,19 @@ class CategoryController extends Controller
             $return = DBConnection::errorInfo();
         }
 
-        return new JSONResponse($return);
+        return new JsonResponse($return);
     }
 
-    public function delete(): JSONResponse
+    public function delete(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         $category = new Category($id);
         $category->delete();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function edit(): JSONResponse
+    public function edit(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         $category = new Category($id);
@@ -89,7 +92,7 @@ class CategoryController extends Controller
         $category->name = Request::post('name');
         $category->save();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
 }

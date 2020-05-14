@@ -8,6 +8,6 @@ class LocationPage extends Page
     public function __construct(Location $location)
     {
         parent::__construct($location->getName());
-        $this->renderAndEcho(compact('location'));
+        $this->addTemplateVars(compact('location'));
     }
 }

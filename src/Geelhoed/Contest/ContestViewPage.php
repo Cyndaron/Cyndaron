@@ -13,7 +13,6 @@ class ContestViewPage extends Page
         $loggedInMember = Member::loadFromLoggedInUser();
         $mayViewOtherContestants = ($loggedInMember !== null && $loggedInMember->isContestant) || ($user !== null && $user->hasRight(Contest::RIGHT));
         parent::__construct(sprintf('Wedstrijd: %s', $contest->name));
-        $this->templateVars = array_merge($this->templateVars, compact('contest', 'loggedInMember', 'mayViewOtherContestants'));
-        $this->renderAndEcho();
+        $this->addTemplateVars(compact('contest', 'loggedInMember', 'mayViewOtherContestants'));
     }
 }

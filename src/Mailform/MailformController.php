@@ -10,6 +10,7 @@ use Cyndaron\Setting;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util;
 use Exception;
+use Symfony\Component\HttpFoundation\Response;
 
 class MailformController extends Controller
 {
@@ -18,18 +19,20 @@ class MailformController extends Controller
         'process-ldbf' => ['level' => UserLevel::ANONYMOUS, 'function' => 'processLDBF'],
     ];
 
-    public function checkCSRFToken(string $token): void
+    public function checkCSRFToken(string $token): bool
     {
-        if (!in_array($this->action, ['process', 'process-ldbf']))
+        if (in_array($this->action, ['process', 'process-ldbf']))
         {
-            parent::checkCSRFToken($token);
+            return true;
         }
+
+        return parent::checkCSRFToken($token);
     }
 
     /**
      * @throws Exception
      */
-    public function process(): void
+    public function process(): Response
     {
         $id = (int)Request::getVar(2);
         $form = Mailform::loadFromDatabase($id);
@@ -38,29 +41,29 @@ class MailformController extends Controller
         {
             $this->processHelper($form);
             $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
         catch (Exception $e)
         {
             $page = new Page('Formulier versturen mislukt', $e->getMessage());
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
     }
 
-    public function processLDBF(): void
+    public function processLDBF(): Response
     {
         try
         {
             $this->processLDBFHelper();
 
             $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
 
         catch (Exception $e)
         {
             $page = new Page('Formulier versturen mislukt', $e->getMessage());
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
     }
 

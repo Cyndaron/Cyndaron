@@ -32,8 +32,6 @@ class SystemPage extends Page
             default:
                 $this->showConfigPage();
         }
-
-        $this->renderAndEcho();
     }
 
     public function showConfigPage()

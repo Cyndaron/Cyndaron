@@ -6,6 +6,7 @@ namespace Cyndaron;
 
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\Response;
 
 class MigrateController extends Controller
 {
@@ -16,7 +17,7 @@ class MigrateController extends Controller
         '6.0' => 'migrate60',
     ];
 
-    protected function routeGet()
+    protected function routeGet(): Response
     {
         $version = $this->action;
 
@@ -24,9 +25,13 @@ class MigrateController extends Controller
         {
             $method = static::VERSIONS[$version];
             $this->$method();
+
             $page = new Page('Upgrade naar versie ' . $version, 'De upgrade is voltooid.');
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
+
+        $page = new Page('Upgrade mislukt', 'Onbekende versie');
+        return new Response($page->render(), Response::HTTP_NOT_FOUND);
     }
 
     private function migrate53(): void

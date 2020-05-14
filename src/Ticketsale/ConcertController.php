@@ -6,8 +6,9 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Request;
-use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class ConcertController extends Controller
 {
@@ -18,7 +19,7 @@ class ConcertController extends Controller
         'viewReservedSeats' => ['level' => UserLevel::ADMIN, 'function' => 'viewReservedSeats'],
     ];
 
-    protected function getConcertInfo(): JSONResponse
+    protected function getConcertInfo(): JsonResponse
     {
         $concertId = (int)Request::getVar(2);
         $concert = new Concert($concertId);
@@ -40,26 +41,29 @@ class ConcertController extends Controller
             ];
         }
 
-        return new JSONResponse($answer);
+        return new JsonResponse($answer);
     }
 
-    protected function order()
+    protected function order(): Response
     {
         $id = (int)Request::getVar(2);
-        new OrderTicketsPage($id);
+        $page = new OrderTicketsPage($id);
+        return new Response($page->render());
     }
 
-    protected function viewOrders()
-    {
-        $id = (int)Request::getVar(2);
-        $concert = Concert::loadFromDatabase($id);
-        new ConcertOrderOverviewPage($concert);
-    }
-
-    protected function viewReservedSeats()
+    protected function viewOrders(): Response
     {
         $id = (int)Request::getVar(2);
         $concert = Concert::loadFromDatabase($id);
-        new ShowReservedSeats($concert);
+        $page = new ConcertOrderOverviewPage($concert);
+        return new Response($page->render());
+    }
+
+    protected function viewReservedSeats(): Response
+    {
+        $id = (int)Request::getVar(2);
+        $concert = Concert::loadFromDatabase($id);
+        $page = new ShowReservedSeats($concert);
+        return new Response($page->render());
     }
 }

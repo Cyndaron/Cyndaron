@@ -5,6 +5,8 @@ use Cyndaron\DBConnection;
 
 class ShowReservedSeats
 {
+    private string $contents = '';
+
     public function __construct(Concert $concert)
     {
         $bookedSeats = [];
@@ -23,16 +25,21 @@ class ShowReservedSeats
         $seatRange = range(1, $concert->numReservedSeats);
         foreach ($seatRange as $seat)
         {
-            echo '<div style="display: inline-block; text-align: center; width: 220px; margin: 5px;">' . $seat . '<br>';
+            $this->contents .= '<div style="display: inline-block; text-align: center; width: 220px; margin: 5px;">' . $seat . '<br>';
             if (isset($bookedSeats[$seat]))
             {
-                echo $bookedSeats[$seat];
+                $this->contents .= $bookedSeats[$seat];
             }
             else
             {
-                echo '&nbsp;';
+                $this->contents .= '&nbsp;';
             }
-            echo '</div>';
+            $this->contents .= '</div>';
         }
+    }
+
+    public function render(): string
+    {
+        return $this->contents;
     }
 }

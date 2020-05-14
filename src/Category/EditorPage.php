@@ -27,6 +27,6 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
         $options = Category::VIEWMODE_DESCRIPTIONS;
         $selected = $viewMode;
 
-        $this->templateVars = array_merge($this->templateVars, compact('id', 'label', 'options', 'selected'));
+        $this->addTemplateVars(compact('id', 'label', 'options', 'selected'));
     }
 }

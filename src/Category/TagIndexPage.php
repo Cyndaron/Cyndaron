@@ -3,7 +3,6 @@ namespace Cyndaron\Category;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\StaticPage\StaticPageModel;
 
 class TagIndexPage extends Page
@@ -32,7 +31,7 @@ class TagIndexPage extends Page
             }
         }
 
-        $this->renderAndEcho([
+        $this->addTemplateVars([
             'type' => 'tag',
             'pages' => $pages,
             'tags' => $tags,

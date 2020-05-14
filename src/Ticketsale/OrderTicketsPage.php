@@ -18,7 +18,7 @@ class OrderTicketsPage extends Page
 
         parent::__construct('Kaarten bestellen: ' . $concert->name);
 
-        $this->renderAndEcho([
+        $this->addTemplateVars([
             'concert' => $concert,
             'ticketTypes' => $ticketTypes,
         ]);

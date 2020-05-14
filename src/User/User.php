@@ -206,7 +206,7 @@ EOT;
         }
     }
 
-    public static function login(string $identification, string $password)
+    public static function login(string $identification, string $password): string
     {
         if (strpos($identification, '@') !== false)
         {
@@ -261,7 +261,8 @@ EOT;
         {
             $_SESSION['request'] = '/';
         }
-        header('Location: ' . $_SESSION['request']);
+
+        return $_SESSION['request'];
     }
 
     public static function logout(): void
@@ -271,7 +272,6 @@ EOT;
 
         session_start();
         static::addNotification('U bent afgemeld.');
-        header('Location: /');
     }
 
     public function getFullName(): string

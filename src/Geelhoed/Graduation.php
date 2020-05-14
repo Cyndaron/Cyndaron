@@ -31,9 +31,4 @@ class Graduation extends Model
     {
         return static::fetchAll(['sportId = ?'], [$sport->id]);
     }
-
-    public function Equals(?Graduation $otherGraduation)
-    {
-
-    }
 }

@@ -37,7 +37,6 @@ class Page
     protected string $template = '';
     protected array $templateVars = [];
 
-
     public function __construct(string $title, string $body = '')
     {
         $this->title = $title;
@@ -163,7 +162,7 @@ class Page
 
     public function render(array $vars = []): string
     {
-        $this->templateVars = array_merge($this->templateVars, $vars);
+        $this->addTemplateVars($vars);
 
         $this->templateVars['contents'] = $this->body;
 
@@ -171,11 +170,6 @@ class Page
 
         $template = new \Cyndaron\Template\Template();
         return $template->render($this->template, $this->templateVars);
-    }
-
-    public function renderAndEcho(array $vars = []): void
-    {
-        echo $this->render($vars);
     }
 
     public function addScript($script): void
@@ -230,6 +224,16 @@ class Page
         }
 
         return $title;
+    }
+
+    public function addTemplateVar(string $varName, $var): void
+    {
+        $this->templateVars[$varName] = $var;
+    }
+
+    public function addTemplateVars(array $vars): void
+    {
+        $this->templateVars = array_merge($this->templateVars, $vars);
     }
 
 }

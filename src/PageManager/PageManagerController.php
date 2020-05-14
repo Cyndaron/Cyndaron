@@ -6,14 +6,16 @@ namespace Cyndaron\PageManager;
 use Cyndaron\Controller;
 use Cyndaron\Request;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\Response;
 
 class PageManagerController extends Controller
 {
     protected int $minLevelGet = UserLevel::ADMIN;
 
-    protected function routeGet()
+    protected function routeGet(): Response
     {
         $currentPage = Request::getVar(1) ?: 'sub';
-        new PageManagerPage($currentPage);
+        $page = new PageManagerPage($currentPage);
+        return new Response($page->render());
     }
 }

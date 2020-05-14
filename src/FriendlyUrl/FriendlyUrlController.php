@@ -6,9 +6,9 @@ namespace Cyndaron\FriendlyUrl;
 use Cyndaron\Controller;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request;
-use Cyndaron\Response\JSONResponse;
 use Cyndaron\Url;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FriendlyUrlController extends Controller
 {
@@ -18,30 +18,30 @@ class FriendlyUrlController extends Controller
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
     ];
 
-    public function add(): JSONResponse
+    public function add(): JsonResponse
     {
         $name = Request::post('name');
         $target = new Url(Request::post('target'));
         $target->createFriendly($name);
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function addToMenu(): JSONResponse
+    public function addToMenu(): JsonResponse
     {
         $name = Request::getVar(3);
         $menuItem = new MenuItem();
         $menuItem->link = '/' . $name;
         $menuItem->save();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function delete(): JSONResponse
+    public function delete(): JsonResponse
     {
         $name = Request::getVar(2);
         Url::deleteFriendlyUrl($name);
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 }

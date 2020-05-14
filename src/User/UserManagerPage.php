@@ -5,7 +5,7 @@ use Cyndaron\Page;
 
 class UserManagerPage extends Page
 {
-    const USER_LEVEL_DESCRIPTIONS = [
+    public const USER_LEVEL_DESCRIPTIONS = [
         'Niet ingelogd',
         'Normale gebruiker',
         'Gereserveerd',
@@ -17,7 +17,7 @@ class UserManagerPage extends Page
     {
         parent::__construct('Gebruikersbeheer');
         $this->addScript('/src/User/UserManagerPage.js');
-        $this->renderAndEcho([
+        $this->addTemplateVars([
             'users' => User::fetchAll([], [], 'ORDER BY username'),
             'userLevelDescriptions' => self::USER_LEVEL_DESCRIPTIONS,
         ]);

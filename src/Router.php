@@ -11,6 +11,7 @@ use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\User\User;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -104,20 +105,39 @@ class Router
         $this->routeFoundNowCheckLogin();
         $classname = $this->endpoints[$this->requestVars[0]];
         /** @var Controller $route */
-        $route = new $classname($this->requestVars[0], $this->requestVars[1] ?? '');
+        $route = new $classname($this->requestVars[0], $this->requestVars[1] ?? '', $this->isApiCall);
+
+        $ret = $this->getResponse($route);
+        $ret->send();
+    }
+
+    private function getResponse(Controller $route): Response
+    {
         $token = Request::post('csrfToken');
-        $route->checkCSRFToken($token);
+        $tokenCorrect = $route->checkCSRFToken($token);
+        if (!$tokenCorrect)
+        {
+            if ($this->isApiCall)
+            {
+                return new JsonResponse(['error' => 'CSRF token incorrect!'], Response::HTTP_FORBIDDEN);
+            }
+
+            $page = new Page('Controle CSRF-token gefaald!', 'Uw CSRF-token is niet correct.');
+            return new Response($page->render(), Response::HTTP_FORBIDDEN);
+        }
+
         try
         {
-            $ret = $route->route($this->isApiCall);
-            if ($ret instanceof Response)
-            {
-                $ret->send();
-            }
+            return $route->route();
         }
         catch (\Exception $e)
         {
-            $route->send500($e->getMessage());
+            if ($this->isApiCall)
+            {
+                return new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            return new Response(null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -22,7 +22,7 @@ class ConcertOrderOverviewPage extends Page
 
         parent::__construct('Overzicht bestellingen: ' . $concert->name);
         $this->addScript('/src/Ticketsale/ConcertOrderOverviewPage.js');
-        $this->renderAndEcho([
+        $this->addTemplateVars([
             'ticketTypes' => $ticketTypes,
             'concert' => $concert,
             'orders' => $orders,

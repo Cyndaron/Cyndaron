@@ -5,9 +5,13 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\Controller;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Model;
+use Cyndaron\Page;
 use Cyndaron\Request;
-use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class StaticPageController extends Controller
 {
@@ -17,37 +21,44 @@ class StaticPageController extends Controller
         'react' => ['level' => UserLevel::ANONYMOUS, 'function' => 'react'],
     ];
 
-    protected function routeGet()
+    protected function routeGet(): Response
     {
-        $id = intval(Request::getVar(1));
-        new StaticPage($id);
+        $id = (int)Request::getVar(1);
+        $model = StaticPageModel::loadFromDatabase($id);
+        if ($model === null)
+        {
+            $page = new Page('Fout', 'Statische pagina niet gevonden.');
+            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+        }
+        $page = new StaticPage($model);
+        return new Response($page->render());
     }
 
-    protected function addToMenu(): JSONResponse
+    protected function addToMenu(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         $menuItem = new MenuItem();
         $menuItem->link = '/sub/' . $id;
         $menuItem->save();
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    protected function delete(): JSONResponse
+    protected function delete(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         $model = new StaticPageModel($id);
         $model->delete();
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    protected function react()
+    protected function react(): Response
     {
-        $id = intval(Request::getVar(2));
-        $model = new StaticPageModel($id);
-        if (!$model->load())
+        $id = (int)Request::getVar(2);
+        $model = Model::loadFromDatabase($id);
+        if ($model === null)
         {
-            header('Location: /error/404');
-            die('Pagina bestaat niet.');
+            $page = new Page('Fout', 'Statische pagina niet gevonden.');
+            return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
 
         $author = Request::post('author');
@@ -55,6 +66,6 @@ class StaticPageController extends Controller
         $antispam = strtolower(Request::post('antispam'));
         $model->react($author, $reactie, $antispam);
 
-        header('Location: /sub/' . $id);
+        return new RedirectResponse("/sub/$id");
     }
 }

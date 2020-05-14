@@ -5,11 +5,16 @@ namespace Cyndaron;
 
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\Response;
 
 class Controller
 {
     protected ?string $module = null;
     protected ?string $action = null;
+    protected bool $isApiCall = false;
 
     protected int $minLevelGet = UserLevel::ANONYMOUS;
     protected int $minLevelPost = UserLevel::ADMIN;
@@ -19,25 +24,27 @@ class Controller
     protected array $apiGetRoutes = [];
     protected array $apiPostRoutes = [];
 
-    public function __construct(string $module, string $action)
+    public function __construct(string $module, string $action, bool $isApiCall = false)
     {
         $this->module = $module;
         $this->action = $action;
+        $this->isApiCall = $isApiCall;
     }
 
-    public function checkCSRFToken(string $token): void
+    public function checkCSRFToken(string $token): bool
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && !User::checkToken($this->module, $this->action, $token))
         {
-            $this->send403('Controle CSRF-token gefaald!');
-            die();
+            return false;
         }
+
+        return true;
     }
 
-    public function route(bool $isApiCall)
+    public function route()
     {
-        $getRoutes = ($isApiCall && !empty($this->apiGetRoutes)) ? $this->apiGetRoutes : $this->getRoutes;
-        $postRoutes = ($isApiCall && !empty($this->apiPostRoutes)) ? $this->apiPostRoutes : $this->postRoutes;
+        $getRoutes = ($this->isApiCall && !empty($this->apiGetRoutes)) ? $this->apiGetRoutes : $this->getRoutes;
+        $postRoutes = ($this->isApiCall && !empty($this->apiPostRoutes)) ? $this->apiPostRoutes : $this->postRoutes;
 
         switch($_SERVER['REQUEST_METHOD'])
         {
@@ -52,10 +59,14 @@ class Controller
                 $oldMinLevel = $this->minLevelPost;
                 break;
             default:
-                $this->send400();
-                die();
+                if ($this->isApiCall)
+                    return new JsonResponse(['error' => 'Unacceptable request method!'], Response::HTTP_METHOD_NOT_ALLOWED, ['allow' => 'GET, POST']);
+
+                $page = new Page('Verkeerde aanvraag', 'U kunt geen aanvraag doen met deze methode.');
+                return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
 
+        $request = SymfonyRequest::createFromGlobals();
         if (array_key_exists($this->action, $routesTable))
         {
             $route = $routesTable[$this->action];
@@ -68,68 +79,46 @@ class Controller
             }
 
             $function = $route['function'];
-            return $this->$function();
+            return $this->$function($request);
+        }
+
+        // Do not fall back to old functions for API calls.
+        if ($this->isApiCall)
+        {
+            return new JsonResponse(['error' => 'Route not found!'], Response::HTTP_NOT_FOUND);
         }
 
         $this->checkUserLevelOrDie($oldMinLevel);
-        return $this->$oldRouteFunction();
+        return $this->$oldRouteFunction($request);
     }
 
-    protected function routeGet()
+    protected function routeGet(): Response
     {
-        $this->send404('Route niet gevonden!');
+        return new Response('Route niet gevonden!', Response::HTTP_NOT_FOUND);
     }
 
-    protected function routePost()
+    protected function routePost(): Response
     {
-        $this->send404('Route niet gevonden!');
-    }
-
-    public function sendErrorMessage(string $message): void
-    {
-        echo json_encode([
-            'error' => $message
-        ]);
-    }
-
-    public function send400(string $message = 'Bad request'): void
-    {
-        header('HTTP/1.1 400 Bad Request');
-        $this->sendErrorMessage($message);
-    }
-
-    public function send403(string $message = 'Forbidden'): void
-    {
-        header('HTTP/1.1 403 Forbidden');
-        $this->sendErrorMessage($message);
-    }
-
-    public function send404(string $message = 'Not found'): void
-    {
-        header('HTTP/1.1 404 Not Found');
-        $this->sendErrorMessage($message);
-    }
-
-    public function send500(string $message = 'Internal server error'): void
-    {
-        header('HTTP/1.1 500 Internal Server Error');
-        $this->sendErrorMessage($message);
+        return new Response('Route niet gevonden!', Response::HTTP_NOT_FOUND);
     }
 
     public function checkUserLevelOrDie(int $requiredLevel): void
     {
-        if ($requiredLevel > 0 && !User::isLoggedIn())
+        if ($requiredLevel > UserLevel::ANONYMOUS && !User::isLoggedIn())
         {
             session_destroy();
             session_start();
             User::addNotification('U moet inloggen om deze pagina te bekijken');
             $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
-            header('Location: /user/login');
+
+            $response = new RedirectResponse('/user/login', );
+            $response->send();
             die();
         }
         if (User::getLevel() < $requiredLevel)
         {
-            $this->send403('Insufficient user rights!');
+            $response = new Response('Insufficient user rights!', Response::HTTP_FORBIDDEN);
+            $response->send();
             die();
         }
     }

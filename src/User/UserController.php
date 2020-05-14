@@ -6,10 +6,11 @@ namespace Cyndaron\User;
 use Cyndaron\Controller;
 use Cyndaron\Page;
 use Cyndaron\Request;
-use Cyndaron\Response\JSONResponse;
 use Cyndaron\Setting;
 use Cyndaron\Util;
 use Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
@@ -33,55 +34,60 @@ class UserController extends Controller
         'resetpassword' => ['level' => UserLevel::ADMIN, 'function' => 'resetPassword'],
     ];
 
-    protected function gallery()
+    protected function gallery(): Response
     {
         // Has to be done here because you cannot specify the expression during member variable initialization.
         $minLevel = (int)Setting::get('userGalleryMinLevel') ?: UserLevel::ADMIN;
         $this->checkUserLevelOrDie($minLevel);
-        new Gallery();
+        $page = new Gallery();
+        return new Response($page->render());
     }
 
-    protected function loginGet()
+    protected function loginGet(): Response
     {
         if (empty($_SESSION['redirect']))
         {
             $_SESSION['redirect'] = Request::referrer();
         }
-        new LoginPage();
+        $page = new LoginPage();
+        return new Response($page->render());
     }
 
-    protected function logout()
+    protected function logout(): Response
     {
         User::logout();
+        return new RedirectResponse('/');
     }
 
-    protected function manager()
+    protected function manager(): Response
     {
-        new UserManagerPage();
+        $page = new UserManagerPage();
+        return new Response($page->render());
     }
 
-    protected function loginPost()
+    protected function loginPost(): Response
     {
         $identification = Request::post('login_user');
         $verification = Request::post('login_pass');
 
         try
         {
-            User::login($identification, $verification);
+            $redirectUrl = User::login($identification, $verification);
+            return new RedirectResponse($redirectUrl);
         }
         catch (IncorrectCredentials $e)
         {
             $page = new Page('Inloggen mislukt', $e->getMessage());
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
         catch (Exception $e)
         {
             $page = new Page('Inloggen mislukt', 'Onbekende fout: ' . $e->getMessage());
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
     }
 
-    protected function add(): JSONResponse
+    protected function add(): JsonResponse
     {
         $username = Request::post('username');
         $email = Request::post('email');
@@ -96,21 +102,21 @@ class UserController extends Controller
         $hideFromMemberList = Request::post('hideFromMemberList') === '1';
 
         $userId = User::create($username, $email, $password, $level, $firstName, $tussenvoegsel, $lastName, $role, $comments, $avatar, $hideFromMemberList);
-        return new JSONResponse(['userId' => $userId]);
+        return new JsonResponse(['userId' => $userId]);
     }
 
-    protected function edit(): JSONResponse
+    protected function edit(): JsonResponse
     {
         $id = Request::getVar(2);
         if ($id === null)
         {
-            return new JSONResponse(['error' => 'No ID specified!', Response::HTTP_BAD_REQUEST]);
+            return new JsonResponse(['error' => 'No ID specified!', Response::HTTP_BAD_REQUEST]);
         }
 
         $user = User::loadFromDatabase((int)$id);
         if ($user === null)
         {
-            return new JSONResponse(['error' => 'User not found!', Response::HTTP_NOT_FOUND]);
+            return new JsonResponse(['error' => 'User not found!', Response::HTTP_NOT_FOUND]);
         }
 
         $user->username = Request::post('username');
@@ -126,39 +132,39 @@ class UserController extends Controller
         $result = $user->save();
         if ($result === false)
         {
-            return new JSONResponse(['error' => 'Could not update user!'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new JsonResponse(['error' => 'Could not update user!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    protected function delete(): JSONResponse
+    protected function delete(): JsonResponse
     {
         $userId = Request::getVar(2);
         if ($userId === null)
         {
-            return new JSONResponse(['error' => 'No ID specified!'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'No ID specified!'], Response::HTTP_BAD_REQUEST);
         }
 
         $user = new User((int)$userId);
         $user->delete();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    protected function resetPassword(): JSONResponse
+    protected function resetPassword(): JsonResponse
     {
         $userId = Request::getVar(2);
         if ($userId === null)
         {
-            return new JSONResponse(['error' => 'ID not specified!'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'ID not specified!'], Response::HTTP_BAD_REQUEST);
         }
 
         $user = new User((int)$userId);
         $user->load();
         $user->resetPassword();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
     protected function changeAvatar()
@@ -170,11 +176,12 @@ class UserController extends Controller
             $user->load();
             $user->uploadNewAvatar();
 
-            header('Location: /user/manager');
+            return new RedirectResponse('/user/manager');
         }
         else
         {
-            $this->send400();
+            $page = new Page('Fout bij veranderen avatar', 'Onbekende fout.');
+            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
     }
 }

@@ -5,13 +5,15 @@ namespace Cyndaron\Menu;
 
 use Cyndaron\Controller;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\Response;
 
 class MenuEditorController extends Controller
 {
     protected int $minLevelGet = UserLevel::ADMIN;
 
-    protected function routeGet()
+    protected function routeGet(): Response
     {
-        new MenuEditorPage();
+        $page = new MenuEditorPage();
+        return new Response($page->render());
     }
 }

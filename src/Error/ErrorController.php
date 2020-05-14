@@ -5,6 +5,7 @@ namespace Cyndaron\Error;
 
 use Cyndaron\Controller;
 use Cyndaron\Page;
+use Symfony\Component\HttpFoundation\Response;
 
 class ErrorController extends Controller
 {
@@ -29,12 +30,12 @@ class ErrorController extends Controller
             $error = static::KNOWN_ERRORS[$this->action];
             header($error['httpStatus']);
             $page = new Page($error['pageTitle'], $error['notification']);
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
         else
         {
             $page = new Page('Onbekende fout', 'Er is een onbekende fout opgetreden. Code: ' . $this->action);
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
     }
 }

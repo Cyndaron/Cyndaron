@@ -4,6 +4,7 @@ namespace Cyndaron\Geelhoed\Hour;
 use Cyndaron\Controller;
 use Cyndaron\Request;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\Response;
 
 class HourController extends Controller
 {
@@ -11,9 +12,10 @@ class HourController extends Controller
         'memberList' => ['level' => UserLevel::ADMIN, 'function' => 'memberList'],
     ];
 
-    public function memberList()
+    public function memberList(): Response
     {
         $hour = Hour::loadFromDatabase(Request::getVar(2));
-        new MemberListPage($hour);
+        $page = new MemberListPage($hour);
+        return new Response($page->render());
     }
 }

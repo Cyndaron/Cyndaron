@@ -81,7 +81,6 @@ abstract class EditorPage extends Page
 
             $this->templateVars['showBreadcrumbs'] = $showBreadcrumbs;
         }
-        $this->renderAndEcho();
     }
 
     abstract protected function prepare();

@@ -6,9 +6,9 @@ use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Request;
-use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class MemberController extends Controller
 {
@@ -20,7 +20,7 @@ class MemberController extends Controller
         'save' => ['level' => UserLevel::ADMIN, 'function' => 'save']
     ];
 
-    public function get(): JSONResponse
+    public function get(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         $ret = [];
@@ -44,18 +44,18 @@ class MemberController extends Controller
             $ret['graduationList'] = implode($list);
         }
 
-        return new JSONResponse($ret);
+        return new JsonResponse($ret);
     }
 
-    public function removeGraduation(): JSONResponse
+    public function removeGraduation(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         MemberGraduation::deleteById($id);
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function save(): JSONResponse
+    public function save(): JsonResponse
     {
         $memberId = (int)Request::post('id');
 
@@ -119,6 +119,6 @@ class MemberController extends Controller
         }
         $member->setHours($hours);
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 }

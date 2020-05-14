@@ -10,6 +10,6 @@ class LocationOverview extends Page
         parent::__construct('Leslocaties');
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $locations = Location::fetchAll([], [], 'ORDER BY city, street');
-        $this->renderAndEcho(compact('locations'));
+        $this->addTemplateVars(compact('locations'));
     }
 }

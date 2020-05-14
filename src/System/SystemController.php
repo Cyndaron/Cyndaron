@@ -6,18 +6,21 @@ use Cyndaron\Controller;
 use Cyndaron\Request;
 use Cyndaron\Setting;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class SystemController extends Controller
 {
     protected int $minLevelGet = UserLevel::ADMIN;
 
-    protected function routeGet()
+    protected function routeGet(): Response
     {
         $currentPage = Request::getVar(1) ?: 'config';
-        new SystemPage($currentPage);
+        $page = new SystemPage($currentPage);
+        return new Response($page->render());
     }
 
-    protected function routePost()
+    protected function routePost(): Response
     {
         Setting::set('siteName', Request::post('siteName'));
         Setting::set('organisation', Request::post('organisation'));
@@ -34,6 +37,7 @@ class SystemController extends Controller
         Setting::set('frontPage', Request::post('frontPage'));
         Setting::set('frontPageIsJumbo', Request::post('frontPageIsJumbo'));
 
-        new SystemPage('config');
+        // Redirect to GET
+        return new RedirectResponse('/system/config');
     }
 }

@@ -9,6 +9,6 @@ class SubscriptionListPage extends Page
     {
         parent::__construct('Overzicht inschrijvingen ' . $contest->name);
         $this->addScript('/src/Geelhoed/Contest/js/SubscriptionListPage.js');
-        $this->renderAndEcho(compact('contest'));
+        $this->addTemplateVars(compact('contest'));
     }
 }

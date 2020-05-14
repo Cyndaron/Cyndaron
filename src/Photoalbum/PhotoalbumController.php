@@ -5,53 +5,59 @@ namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Controller;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Page;
 use Cyndaron\Request;
-use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class PhotoalbumController extends Controller
 {
+    protected array $postRoutes = [
+        'addPhoto' => ['level' => UserLevel::ADMIN, 'function' => 'addPhoto'],
+        'deletePhoto' => ['level' => UserLevel::ADMIN, 'function' => 'deletePhoto'],
+    ];
+
     protected array $apiPostRoutes = [
         'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
-        'addPhoto' => ['level' => UserLevel::ADMIN, 'function' => 'addPhoto'],
         'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'deletePhoto' => ['level' => UserLevel::ADMIN, 'function' => 'deletePhoto'],
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
     ];
 
-    protected function routeGet()
+    protected function routeGet(): Response
     {
         $id = (int)Request::getVar(1);
         if ($id < 1)
         {
-            header('Location: /error/404');
-            die('Incorrecte parameter ontvangen.');
+            $page = new Page('Fotoalbum', 'Ongeldige parameter.');
+            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
         $album = Photoalbum::loadFromDatabase($id);
         $page = new PhotoalbumPage($album);
-        $page->renderAndEcho();
+        return new Response($page->render());
     }
 
-    public function add(): JSONResponse
+    public function add(): JsonResponse
     {
         $name = Request::post('name');
         Photoalbum::create($name);
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function addPhoto(): JSONResponse
+    public function addPhoto(): Response
     {
         $id = (int)Request::getVar(2);
 
         $album = Photoalbum::loadFromDatabase($id);
         Photo::create($album);
-        header("Location: /photoalbum/{$album->id}");
-        die();
+
+        return new RedirectResponse("/photoalbum/{$album->id}");
     }
 
-    public function addToMenu(): JSONResponse
+    public function addToMenu(): JsonResponse
     {
         $id = (int)Request::getVar(2);
 
@@ -59,38 +65,37 @@ class PhotoalbumController extends Controller
         $menuItem->link = '/photoalbum/' . $id;
         $menuItem->save();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function delete(): JSONResponse
+    public function delete(): JsonResponse
     {
         $id = (int)Request::getVar(2);
 
         $obj = new Photoalbum($id);
         $obj->delete();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function deletePhoto(): JSONResponse
+    public function deletePhoto(): Response
     {
         $id = (int)Request::getVar(2);
 
         $album = Photoalbum::loadFromDatabase($id);
         $filename = Request::getVar(3);
         Photo::deleteByAlbumAndFilename($album, $filename);
-        header("Location: /photoalbum/{$album->id}");
-        die();
 
+        return new RedirectResponse("/photoalbum/{$album->id}");
     }
 
-    public function edit(): JSONResponse
+    public function edit(): JsonResponse
     {
         $id = (int)Request::getVar(2);
 
         $name = Request::post('name');
         Photoalbum::edit($id, $name);
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 }

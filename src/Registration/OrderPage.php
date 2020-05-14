@@ -19,7 +19,7 @@ class OrderPage extends Page
             $this->addScript('/src/Registration/js/OrderPageVOV.js');
         }
 
-        $this->renderAndEcho([
+        $this->addTemplateVars([
             'event' => $event,
             'ticketTypes' => EventTicketType::loadByEvent($event),
         ]);

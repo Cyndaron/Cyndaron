@@ -7,9 +7,10 @@ use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Request;
-use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
 use Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
 {
@@ -22,7 +23,7 @@ class OrderController extends Controller
         'setIsSent' => ['level' => UserLevel::ADMIN, 'function' => 'setIsSent'],
     ];
 
-    protected function add(): void
+    protected function add(): Response
     {
         $concertId = (int)Request::post('concert_id');
         try
@@ -33,12 +34,12 @@ class OrderController extends Controller
                 'Bestelling verwerkt',
                 'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw bestelling en betaalinformatie.'
             );
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
         catch (Exception $e)
         {
             $page = new Page('Fout bij verwerken bestelling', $e->getMessage());
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
     }
 
@@ -305,33 +306,33 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
         return Util::mail($email, 'Bestelling concertkaarten', $text);
     }
 
-    public function delete(): JSONResponse
+    public function delete(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->delete();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function setIsPaid(): JSONResponse
+    public function setIsPaid(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->setIsPaid();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function setIsSent(): JSONResponse
+    public function setIsSent(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->setIsSent();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 }

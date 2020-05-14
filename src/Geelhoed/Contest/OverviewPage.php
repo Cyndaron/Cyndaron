@@ -9,6 +9,6 @@ class OverviewPage extends Page
     {
         $contests = Contest::fetchAll(['date >= ?'], [date('Y-m-d H:i:s')], 'ORDER BY date');
         parent::__construct('Overzicht wedstrijden');
-        $this->renderAndEcho(compact('contests'));
+        $this->addTemplateVars(compact('contests'));
     }
 }

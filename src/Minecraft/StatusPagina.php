@@ -16,7 +16,7 @@ class StatusPagina extends Page
             $server->retrieveInfo();
         });
 
-        $this->renderAndEcho([
+        $this->addTemplateVars([
             'servers' => $servers,
         ]);
     }

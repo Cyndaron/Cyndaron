@@ -7,16 +7,17 @@ use Cyndaron\Controller;
 use Cyndaron\Request;
 use Cyndaron\User\UserLevel;
 use Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class MenuController extends Controller
 {
-    protected array $postRoutes = [
+    protected array $apiPostRoutes = [
         'addItem' => ['level' => UserLevel::ADMIN, 'function' => 'addItem'],
         'editItem' => ['level' => UserLevel::ADMIN, 'function' => 'editItem'],
         'deleteItem' => ['level' => UserLevel::ADMIN, 'function' => 'deleteItem'],
     ];
 
-    protected function addItem()
+    protected function addItem(): JsonResponse
     {
         $menuItem = new MenuItem();
         $menuItem->link = Request::post('link');
@@ -29,9 +30,11 @@ class MenuController extends Controller
         {
             throw new Exception('Cannot add menu item!');
         }
+
+        return new JsonResponse();
     }
 
-    protected function editItem()
+    protected function editItem(): JsonResponse
     {
         $index = (int)Request::getVar(2);
         $menuItem = new MenuItem($index);
@@ -46,12 +49,16 @@ class MenuController extends Controller
         {
             throw new Exception('Could not edit menu item!');
         }
+
+        return new JsonResponse();
     }
 
-    protected function deleteItem()
+    protected function deleteItem(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         $menuItem = new MenuItem($id);
         $menuItem->delete();
+
+        return new JsonResponse();
     }
 }

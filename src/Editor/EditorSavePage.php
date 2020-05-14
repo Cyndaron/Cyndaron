@@ -10,16 +10,12 @@ abstract class EditorSavePage
 {
     public const TYPE = '';
 
-    protected $id = null;
+    protected ?int $id = null;
     protected string $returnUrl = '';
 
-    public function __construct()
+    public function __construct(?int $id)
     {
-        $id = Request::getVar(2);
-        if ($id)
-        {
-            $this->id = (int)$id;
-        }
+        $this->id = $id;
 
         $this->prepare();
 
@@ -36,7 +32,6 @@ abstract class EditorSavePage
         {
             $this->returnUrl = strtr($_SESSION['referrer'], ['&amp;' => '&']);
         }
-        header('Location: ' . $this->returnUrl);
     }
 
     abstract protected function prepare();
@@ -76,6 +71,11 @@ abstract class EditorSavePage
         file_put_contents($destinationFilename, $image);
 
         return 'src="/' . $destinationFilename . '"';
+    }
+
+    public function getReturnUrl(): string
+    {
+        return $this->returnUrl;
     }
 }
 

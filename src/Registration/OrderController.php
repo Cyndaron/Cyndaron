@@ -7,9 +7,10 @@ use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Request;
-use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
 use Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
 {
@@ -22,7 +23,7 @@ class OrderController extends Controller
         'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
     ];
 
-    protected function add()
+    protected function add(): Response
     {
         $eventId = (int)Request::post('event_id');
         try
@@ -33,20 +34,21 @@ class OrderController extends Controller
                 'Inschrijving verwerkt',
                 'Hartelijk dank voor uw inschrijving. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw inschrijving en betaalinformatie.'
             );
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
         catch (Exception $e)
         {
             $page = new Page('Fout bij verwerken inschrijving', $e->getMessage());
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
     }
 
     /**
      * @param $eventId
+     * @return bool
      * @throws Exception
      */
-    private function processOrder($eventId)
+    private function processOrder($eventId): bool
     {
         if (Request::postIsEmpty())
         {
@@ -133,10 +135,10 @@ class OrderController extends Controller
             }
         }
 
-        $order->sendConfirmationMail($orderTotal, $orderTicketTypes);
+        return $order->sendConfirmationMail($orderTotal, $orderTicketTypes);
     }
 
-    private function checkForm(Event $event)
+    private function checkForm(Event $event): array
     {
         $errorFields = [];
         if (strcasecmp(Request::post('antispam'),$event->getAntispam()) !== 0)
@@ -162,17 +164,17 @@ class OrderController extends Controller
         return $errorFields;
     }
 
-    public function delete(): JSONResponse
+    public function delete(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->delete();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function setApprovalStatus(): JSONResponse
+    public function setApprovalStatus(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         /** @var Order $order */
@@ -188,16 +190,16 @@ class OrderController extends Controller
                 break;
         }
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function setIsPaid(): JSONResponse
+    public function setIsPaid(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->setIsPaid();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 }

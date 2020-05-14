@@ -7,9 +7,10 @@ use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Request;
-use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
 use Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class RegisterController extends Controller
 {
@@ -22,7 +23,7 @@ class RegisterController extends Controller
         'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
     ];
 
-    protected function add()
+    protected function add(): Response
     {
         $eventId = (int)Request::post('event_id');
         try
@@ -33,12 +34,12 @@ class RegisterController extends Controller
                 'Aanmelding verwerkt',
                 'Hartelijk dank voor je aanmelding. Je ontvangt binnen enkele minuten een e-mail met een bevestiging van je aanmelding.'
             );
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
         catch (Exception $e)
         {
             $page = new Page('Fout bij verwerken aanmelding', $e->getMessage());
-            $page->renderAndEcho();
+            return new Response($page->render());
         }
     }
 
@@ -46,7 +47,7 @@ class RegisterController extends Controller
      * @param $eventId
      * @throws Exception
      */
-    private function processOrder($eventId)
+    private function processOrder($eventId): bool
     {
         if (Request::postIsEmpty())
         {
@@ -89,7 +90,7 @@ class RegisterController extends Controller
             throw new Exception($msg . 'Opslaan aanmelding mislukt!');
         }
 
-        $order->sendConfirmationMail();
+        return $order->sendConfirmationMail();
     }
 
     private function checkForm(Event $event): array
@@ -118,17 +119,17 @@ class RegisterController extends Controller
         return $errorFields;
     }
 
-    public function delete(): JSONResponse
+    public function delete(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         /** @var Registration $registration */
         $registration = Registration::loadFromDatabase($id);
         $registration->delete();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function setApprovalStatus(): JSONResponse
+    public function setApprovalStatus(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         /** @var Registration $registration */
@@ -144,16 +145,16 @@ class RegisterController extends Controller
                 break;
         }
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 
-    public function setIsPaid(): JSONResponse
+    public function setIsPaid(): JsonResponse
     {
         $id = (int)Request::getVar(2);
         /** @var Registration $registration */
         $registration = Registration::loadFromDatabase($id);
         $registration->setIsPaid();
 
-        return new JSONResponse();
+        return new JsonResponse();
     }
 }

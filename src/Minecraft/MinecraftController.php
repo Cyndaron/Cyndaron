@@ -6,8 +6,8 @@ namespace Cyndaron\Minecraft;
 use Cyndaron\Controller;
 use Cyndaron\Minecraft\Dynmap\DynmapProxy;
 use Cyndaron\Request;
-use Cyndaron\Response\JSONResponse;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class MinecraftController extends Controller
@@ -25,7 +25,7 @@ class MinecraftController extends Controller
         $server = Server::loadFromDatabase($serverId);
         if ($server === null)
         {
-            return new JSONResponse(['error' => 'Server does not exist!'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'Server does not exist!'], Response::HTTP_NOT_FOUND);
         }
 
         $proxy = new DynmapProxy($server);
@@ -36,18 +36,22 @@ class MinecraftController extends Controller
             ['content-type' => $proxy->getContentType()]);
     }
 
-    public function members()
+    public function members(): Response
     {
-        new LedenPagina();
+        $page = new LedenPagina();
+        return new Response($page->render());
     }
 
-    public function skin()
+    public function skin(): Response
     {
+        ob_start();
         new SkinRendererHandler();
+        return new Response(ob_get_clean());
     }
 
-    public function status()
+    public function status(): Response
     {
-        new StatusPagina();
+        $page = new StatusPagina();
+        return new Response($page->render());
     }
 }

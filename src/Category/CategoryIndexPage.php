@@ -16,7 +16,7 @@ class CategoryIndexPage extends Page
 
         $subs = StaticPageModel::fetchAll(['categoryId= ?'], [$category->id], 'ORDER BY id DESC');
 
-        $this->renderAndEcho([
+        $this->addTemplateVars([
             'type' => 'subs',
             'model' => $this->model,
             'viewMode' => $this->model->viewMode,
