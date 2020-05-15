@@ -23,7 +23,7 @@ class CategoryController extends Controller
 
     protected function routeGet(): Response
     {
-        $id = Request::getVar(1);
+        $id = $this->queryBits->getInt(1);
 
         if ($id === '0' || $id === 'fotoboeken')
         {
@@ -32,7 +32,7 @@ class CategoryController extends Controller
         }
         if ($id === 'tag')
         {
-            $tag = Request::getVar(2);
+            $tag = $this->queryBits->get(2);
             $page = new TagIndexPage($tag);
             return new Response($page->render());
         }
@@ -62,7 +62,7 @@ class CategoryController extends Controller
 
     public function addToMenu(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $return = [];
         $menuItem = new MenuItem();
         $menuItem->link = '/category/' . $id;
@@ -77,7 +77,7 @@ class CategoryController extends Controller
 
     public function delete(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $category = new Category($id);
         $category->delete();
 
@@ -86,7 +86,7 @@ class CategoryController extends Controller
 
     public function edit(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $category = new Category($id);
         $category->load();
         $category->name = Request::post('name');

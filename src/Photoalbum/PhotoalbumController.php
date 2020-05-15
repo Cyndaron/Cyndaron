@@ -28,7 +28,7 @@ class PhotoalbumController extends Controller
 
     protected function routeGet(): Response
     {
-        $id = (int)Request::getVar(1);
+        $id = $this->queryBits->getInt(1);
         if ($id < 1)
         {
             $page = new Page('Fotoalbum', 'Ongeldige parameter.');
@@ -49,7 +49,7 @@ class PhotoalbumController extends Controller
 
     public function addPhoto(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
 
         $album = Photoalbum::loadFromDatabase($id);
         Photo::create($album);
@@ -59,7 +59,7 @@ class PhotoalbumController extends Controller
 
     public function addToMenu(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
 
         $menuItem = new MenuItem();
         $menuItem->link = '/photoalbum/' . $id;
@@ -70,7 +70,7 @@ class PhotoalbumController extends Controller
 
     public function delete(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
 
         $obj = new Photoalbum($id);
         $obj->delete();
@@ -80,10 +80,10 @@ class PhotoalbumController extends Controller
 
     public function deletePhoto(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
 
         $album = Photoalbum::loadFromDatabase($id);
-        $filename = Request::getVar(3);
+        $filename = $this->queryBits->get(3);
         Photo::deleteByAlbumAndFilename($album, $filename);
 
         return new RedirectResponse("/photoalbum/{$album->id}");
@@ -91,7 +91,7 @@ class PhotoalbumController extends Controller
 
     public function edit(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
 
         $name = Request::post('name');
         Photoalbum::edit($id, $name);

@@ -17,7 +17,7 @@ class EventController extends Controller
 
     protected function register(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $event = Event::loadFromDatabase($id);
         $page = new RegisterPage($event);
         return new Response($page->render());
@@ -25,7 +25,7 @@ class EventController extends Controller
 
     protected function viewRegistrations(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $event = Event::loadFromDatabase($id);
         $page = new EventOrderOverviewPage($event);
         return new Response($page->render());

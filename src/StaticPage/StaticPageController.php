@@ -23,7 +23,7 @@ class StaticPageController extends Controller
 
     protected function routeGet(): Response
     {
-        $id = (int)Request::getVar(1);
+        $id = $this->queryBits->getInt(1);
         $model = StaticPageModel::loadFromDatabase($id);
         if ($model === null)
         {
@@ -36,7 +36,7 @@ class StaticPageController extends Controller
 
     protected function addToMenu(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $menuItem = new MenuItem();
         $menuItem->link = '/sub/' . $id;
         $menuItem->save();
@@ -45,7 +45,7 @@ class StaticPageController extends Controller
 
     protected function delete(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $model = new StaticPageModel($id);
         $model->delete();
         return new JsonResponse();
@@ -53,7 +53,7 @@ class StaticPageController extends Controller
 
     protected function react(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $model = Model::loadFromDatabase($id);
         if ($model === null)
         {

@@ -29,7 +29,7 @@ class FriendlyUrlController extends Controller
 
     public function addToMenu(): JsonResponse
     {
-        $name = Request::getVar(3);
+        $name = $this->queryBits->get(3);
         $menuItem = new MenuItem();
         $menuItem->link = '/' . $name;
         $menuItem->save();
@@ -39,7 +39,7 @@ class FriendlyUrlController extends Controller
 
     public function delete(): JsonResponse
     {
-        $name = Request::getVar(2);
+        $name = $this->queryBits->get(2);
         Url::deleteFriendlyUrl($name);
 
         return new JsonResponse();

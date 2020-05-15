@@ -106,6 +106,7 @@ class Router
         $classname = $this->endpoints[$this->requestVars[0]];
         /** @var Controller $route */
         $route = new $classname($this->requestVars[0], $this->requestVars[1] ?? '', $this->isApiCall);
+        $route->setQueryBits(new QueryBits($this->requestVars));
 
         $ret = $this->getResponse($route);
         $ret->send();
@@ -132,6 +133,7 @@ class Router
         }
         catch (\Exception $e)
         {
+            error_log($e->getMessage());
             if ($this->isApiCall)
             {
                 return new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -237,7 +239,6 @@ class Router
             $this->isApiCall = true;
         }
         $this->requestVars = $vars;
-        Request::setVars($this->requestVars);
     }
 
     private function loadModules(): void

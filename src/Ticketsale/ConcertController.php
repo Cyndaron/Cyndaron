@@ -21,7 +21,7 @@ class ConcertController extends Controller
 
     protected function getConcertInfo(): JsonResponse
     {
-        $concertId = (int)Request::getVar(2);
+        $concertId = $this->queryBits->getInt(2);
         $concert = new Concert($concertId);
         $concert->load();
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
@@ -46,14 +46,14 @@ class ConcertController extends Controller
 
     protected function order(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $page = new OrderTicketsPage($id);
         return new Response($page->render());
     }
 
     protected function viewOrders(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $concert = Concert::loadFromDatabase($id);
         $page = new ConcertOrderOverviewPage($concert);
         return new Response($page->render());
@@ -61,7 +61,7 @@ class ConcertController extends Controller
 
     protected function viewReservedSeats(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $concert = Concert::loadFromDatabase($id);
         $page = new ShowReservedSeats($concert);
         return new Response($page->render());

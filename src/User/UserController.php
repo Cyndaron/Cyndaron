@@ -107,7 +107,7 @@ class UserController extends Controller
 
     protected function edit(): JsonResponse
     {
-        $id = Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         if ($id === null)
         {
             return new JsonResponse(['error' => 'No ID specified!', Response::HTTP_BAD_REQUEST]);
@@ -140,13 +140,13 @@ class UserController extends Controller
 
     protected function delete(): JsonResponse
     {
-        $userId = Request::getVar(2);
+        $userId = $this->queryBits->getInt(2);
         if ($userId === null)
         {
             return new JsonResponse(['error' => 'No ID specified!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = new User((int)$userId);
+        $user = new User($userId);
         $user->delete();
 
         return new JsonResponse();
@@ -154,13 +154,13 @@ class UserController extends Controller
 
     protected function resetPassword(): JsonResponse
     {
-        $userId = Request::getVar(2);
+        $userId = $this->queryBits->getInt(2);
         if ($userId === null)
         {
             return new JsonResponse(['error' => 'ID not specified!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = new User((int)$userId);
+        $user = new User($userId);
         $user->load();
         $user->resetPassword();
 
@@ -169,10 +169,10 @@ class UserController extends Controller
 
     protected function changeAvatar()
     {
-        $userId = Request::getVar(2);
+        $userId = $this->queryBits->getInt(2);
         if ($userId !== null)
         {
-            $user = new User((int)$userId);
+            $user = new User($userId);
             $user->load();
             $user->uploadNewAvatar();
 

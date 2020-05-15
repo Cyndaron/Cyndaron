@@ -20,7 +20,7 @@ class EventController extends Controller
 
     protected function getEventInfo(): JsonResponse
     {
-        $eventId = (int)Request::getVar(2);
+        $eventId = $this->queryBits->getInt(2);
         $event = new Event($eventId);
         $event->load();
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM registration_tickettypes WHERE eventId=? ORDER BY price DESC', [$eventId]);
@@ -38,7 +38,7 @@ class EventController extends Controller
 
     protected function order(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $event = Event::loadFromDatabase($id);
         $page = new OrderPage($event);
         return new Response($page->render());
@@ -46,7 +46,7 @@ class EventController extends Controller
 
     protected function viewOrders(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $event = Event::loadFromDatabase($id);
         $page = new EventOrderOverviewPage($event);
         return new Response($page->render());

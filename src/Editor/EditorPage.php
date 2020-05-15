@@ -24,10 +24,10 @@ abstract class EditorPage extends Page
     protected string $contentTitle = '';
     protected string $template = 'Editor/PageBase';
 
-    public function __construct(array $internalLinks)
+    public function __construct(array $internalLinks, ?int $id, bool $previous)
     {
-        $this->id = (int)Request::getVar(2);
-        $this->vorigeversie = Request::getVar(3) === 'previous';
+        $this->id = $id;
+        $this->vorigeversie = $previous;
         $this->vvstring = $this->vorigeversie ? 'vorige' : '';
 
         $this->prepare();

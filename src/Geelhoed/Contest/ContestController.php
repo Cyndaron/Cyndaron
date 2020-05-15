@@ -14,6 +14,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class ContestController extends Controller
@@ -57,7 +58,7 @@ class ContestController extends Controller
 
     public function view(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $contest = Contest::loadFromDatabase($id);
         if ($contest)
         {
@@ -73,7 +74,7 @@ class ContestController extends Controller
 
     public function subscribe(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $contest = Contest::loadFromDatabase($id);
         if ($contest)
         {
@@ -143,13 +144,13 @@ class ContestController extends Controller
         }
     }
 
-    public function mollieWebhook(): Response
+    public function mollieWebhook(SymfonyRequest $request): Response
     {
         $apiKey = Setting::get('mollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
         $mollie->setApiKey($apiKey);
 
-        $id = $_POST['id'];
+        $id = $request->request->get('id');
         $payment = $mollie->payments->get($id);
         $contestMember = ContestMember::fetch(['molliePaymentId = ?'], [$id]);
 
@@ -196,7 +197,7 @@ class ContestController extends Controller
 
     public function subscriptionList(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $contest = Contest::loadFromDatabase($id);
         $page = new SubscriptionListPage($contest);
         return new Response($page->render());
@@ -204,7 +205,7 @@ class ContestController extends Controller
 
     public function subScriptionListExcel(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $contest = Contest::loadFromDatabase($id);
 
         $spreadsheet = new Spreadsheet();

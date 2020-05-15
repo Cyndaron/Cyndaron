@@ -21,14 +21,14 @@ class MinecraftController extends Controller
 
     public function dynmapProxy(): Response
     {
-        $serverId = (int)Request::getVar(2);
+        $serverId = $this->queryBits->getInt(2);
         $server = Server::loadFromDatabase($serverId);
         if ($server === null)
         {
             return new JsonResponse(['error' => 'Server does not exist!'], Response::HTTP_NOT_FOUND);
         }
 
-        $proxy = new DynmapProxy($server);
+        $proxy = new DynmapProxy($server, $this->queryBits);
 
         return new Response(
             $proxy->getContents(),

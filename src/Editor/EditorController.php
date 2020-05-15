@@ -5,6 +5,7 @@ namespace Cyndaron\Editor;
 
 use Cyndaron\Controller;
 use Cyndaron\Module\Linkable;
+use Cyndaron\Page;
 use Cyndaron\Request;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -20,32 +21,37 @@ class EditorController extends Controller
 
     protected function routeGet(): Response
     {
-        $type = Request::getVar(1);
+        $type = $this->queryBits->get(1);
         if (!array_key_exists($type, static::$editorPages))
         {
             throw new \Exception('Onbekend paginatype!');
         }
 
         $class = static::$editorPages[$type];
-        $editorPage = new $class($this->getInternalLinks());
+        $id = $this->queryBits->getInt(2);
+        $previous = $this->queryBits->get(3) === 'previous';
+        /** @var Page $editorPage */
+        $editorPage = new $class($this->getInternalLinks(), $id, $previous);
+        $hash = $this->queryBits->get(3);
+        $hash = strlen($hash) > 20 ? $hash : '';
+        $editorPage->addTemplateVar('hash', $hash);
         return new Response($editorPage->render());
     }
 
     protected function routePost(): Response
     {
-        $type = Request::getVar(1);
+        $type = $this->queryBits->get(1);
         if (!array_key_exists($type, static::$savePages))
         {
             throw new \Exception('Onbekend paginatype!');
         }
 
-        $id = Request::getVar(2);
-        $id = $id ? (int)$id : null;
+        $id = $this->queryBits->getInt(2);
 
         $class = static::$savePages[$type];
         /** @var EditorSavePage $editorSavePage */
         $editorSavePage = new $class($id);
-        return new RedirectResponse($editorSavePage->getReturnUrl());
+        return new RedirectResponse($editorSavePage->getReturnUrl() ?: '/');
     }
 
     protected function getInternalLinks(): array

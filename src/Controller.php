@@ -24,6 +24,8 @@ class Controller
     protected array $apiGetRoutes = [];
     protected array $apiPostRoutes = [];
 
+    protected QueryBits $queryBits;
+
     public function __construct(string $module, string $action, bool $isApiCall = false)
     {
         $this->module = $module;
@@ -121,5 +123,10 @@ class Controller
             $response->send();
             die();
         }
+    }
+
+    public function setQueryBits(QueryBits $queryBits): void
+    {
+        $this->queryBits = $queryBits;
     }
 }

@@ -5,6 +5,7 @@ namespace Cyndaron\Minecraft\Dynmap;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Minecraft\Server;
+use Cyndaron\QueryBits;
 use Cyndaron\Request;
 
 class DynmapProxy
@@ -20,10 +21,10 @@ class DynmapProxy
         'png' => 'image/png',
     ];
 
-    public function __construct(Server $server)
+    public function __construct(Server $server, QueryBits $queryBits)
     {
         $link = '';
-        for ($i = 3; $linkpart = Request::getVar($i); $i++)
+        for ($i = 3; $linkpart = $queryBits->get($i); $i++)
         {
             $link .= '/' . $linkpart;
         }

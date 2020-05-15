@@ -121,7 +121,7 @@ class RegisterController extends Controller
 
     public function delete(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         /** @var Registration $registration */
         $registration = Registration::loadFromDatabase($id);
         $registration->delete();
@@ -131,7 +131,7 @@ class RegisterController extends Controller
 
     public function setApprovalStatus(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         /** @var Registration $registration */
         $registration = Registration::loadFromDatabase($id);
         $status = (int)Request::post('status');
@@ -150,7 +150,7 @@ class RegisterController extends Controller
 
     public function setIsPaid(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         /** @var Registration $registration */
         $registration = Registration::loadFromDatabase($id);
         $registration->setIsPaid();

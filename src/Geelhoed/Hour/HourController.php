@@ -14,7 +14,7 @@ class HourController extends Controller
 
     public function memberList(): Response
     {
-        $hour = Hour::loadFromDatabase(Request::getVar(2));
+        $hour = Hour::loadFromDatabase($this->queryBits->getInt(2));
         $page = new MemberListPage($hour);
         return new Response($page->render());
     }

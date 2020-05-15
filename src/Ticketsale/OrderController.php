@@ -308,7 +308,7 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
 
     public function delete(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->delete();
@@ -318,7 +318,7 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
 
     public function setIsPaid(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->setIsPaid();
@@ -328,7 +328,7 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
 
     public function setIsSent(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->setIsSent();

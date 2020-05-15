@@ -98,19 +98,4 @@ class Request
         header('Pragma: no-cache');
         header('Expires: 0');
     }
-
-    public static function setVars(array $vars): void
-    {
-        static::$vars = $vars;
-    }
-
-    public static function getVar(int $varNum): ?string
-    {
-        if ($varNum >= count(static::$vars))
-        {
-            return null;
-        }
-
-        return static::$vars[$varNum];
-    }
 }

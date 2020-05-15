@@ -166,7 +166,7 @@ class OrderController extends Controller
 
     public function delete(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->delete();
@@ -176,7 +176,7 @@ class OrderController extends Controller
 
     public function setApprovalStatus(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $status = (int)Request::post('status');
@@ -195,7 +195,7 @@ class OrderController extends Controller
 
     public function setIsPaid(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->setIsPaid();

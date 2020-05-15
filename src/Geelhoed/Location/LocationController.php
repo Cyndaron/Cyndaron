@@ -16,7 +16,7 @@ class LocationController extends Controller
 
     public function view(): Response
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $location = Location::loadFromDatabase($id);
 
         if (!$location)

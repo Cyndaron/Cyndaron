@@ -9,6 +9,7 @@ use Cyndaron\Request;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class MemberController extends Controller
 {
@@ -22,7 +23,7 @@ class MemberController extends Controller
 
     public function get(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         $ret = [];
 
         if ($member = Member::loadFromDatabase($id))
@@ -49,15 +50,15 @@ class MemberController extends Controller
 
     public function removeGraduation(): JsonResponse
     {
-        $id = (int)Request::getVar(2);
+        $id = $this->queryBits->getInt(2);
         MemberGraduation::deleteById($id);
 
         return new JsonResponse();
     }
 
-    public function save(): JsonResponse
+    public function save(SymfonyRequest $request): JsonResponse
     {
-        $memberId = (int)Request::post('id');
+        $memberId = $request->request->getInt('id');
 
         if ($memberId > 0) // Edit existing
         {

@@ -17,11 +17,11 @@ class MenuItem extends Model
     public ?string $alias = null;
     public bool $isDropdown = false;
     public bool $isImage = false;
-    public ?int $priority;
+    public ?int $priority = null;
 
     public function save(): bool
     {
-        if (!isset($this->priority) || $this->priority === '') {
+        if (!$this->priority) {
             $priority = DBConnection::doQueryAndFetchOne('SELECT MAX(priority) FROM menu WHERE id <> ?', [$this->id]) + 1;
             $this->priority = $priority;
         }
