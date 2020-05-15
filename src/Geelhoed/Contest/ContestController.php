@@ -301,6 +301,7 @@ class ContestController extends Controller
         }
 
         $contest->name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+        $contest->description = Request::unsafePost('description');
         $contest->location = filter_input(INPUT_POST, 'location', FILTER_SANITIZE_STRING);
         $contest->sportId = (int)filter_input(INPUT_POST, 'sportId', FILTER_SANITIZE_NUMBER_INT);
         $contest->date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);

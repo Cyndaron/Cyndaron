@@ -23,6 +23,7 @@
                 </td>
             </tr>
         @endif
+        <tr><th>Beschrijving:</th><td>{{ $contest->description }}</td></tr>
     </table>
 
     @if (time() > strtotime($contest->date))

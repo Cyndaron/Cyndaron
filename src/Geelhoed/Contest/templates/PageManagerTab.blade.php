@@ -28,6 +28,7 @@
                     <button title="Wedstrijd bewerken" class="btn btn-warning gcm-edit" type="button"
                             data-id="{{ $contest->id }}"
                             data-name="{{ $contest->name }}"
+                            data-description="{{ $contest->description }}"
                             data-location="{{ $contest->location }}"
                             data-sport-id="{{ $contest->sportId }}"
                             data-date="{{ date('Y-m-d', strtotime($contest->date)) }}"
@@ -49,6 +50,7 @@
         <input type="hidden" id="gcm-edit-id" value="">
 
         @include('Widget/Form/BasicInput', ['id' => 'gcm-edit-name', 'label' => 'Naam', 'required' => true])
+        @include('Widget/Form/Textarea', ['gcm-edit-description', 'label' => 'Beschrijving'])
         @include('Widget/Form/BasicInput', ['id' => 'gcm-edit-location', 'label' => 'Locatie', 'required' => true])
         @include('Widget/Form/Select', ['id' => 'gcm-edit-sportId', 'label' => 'Sport', 'required' => true, 'options' => \Cyndaron\Geelhoed\Sport::fetchAllForSelect()])
         @component('Widget/Form/FormWrapper', ['id' => 'gcm-edit-date', 'label' => 'Datum en tijd'])
