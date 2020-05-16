@@ -25,8 +25,8 @@ class LedenPagina extends Page
     public function __construct()
     {
         parent::__construct('Spelers');
-        $this->addScript('/sys/js/mc-ledenpagina.js');
-        $this->addCss('/sys/css/minecraft-members.min.css');
+        $this->addScript('/src/Minecraft/js/memberpage.js');
+        $this->addCss('/src/Minecraft/css/memberpage.min.css');
 
         $members = DBConnection::doQueryAndFetchAll('SELECT * FROM minecraft_members ORDER BY level DESC, userName ASC');
 
