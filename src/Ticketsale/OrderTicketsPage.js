@@ -38,7 +38,7 @@ function increase(vak)
     if (element.value < 100)
     {
         element.value++;
-        calculateTotal()
+        updateForm()
     }
 }
 function decrease(vak)
@@ -47,7 +47,7 @@ function decrease(vak)
     if (element.value > 0)
     {
         element.value--;
-        calculateTotal()
+        updateForm()
     }
 }
 
@@ -109,12 +109,42 @@ function postcodeQualifiesForFreeDelivery(postcode)
         return false;
 }
 
-function calculateTotal()
+function updateAddressRequirement(delivery, deliveryByMember)
 {
-    let total = 0.0;
-    let delivery = false;
-    let deliveryCost = 0.0;
+    if (delivery)
+    {
+        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
+    }
+    if (!forcedDelivery && delivery)
+    {
+        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
+    }
+    else if (!forcedDelivery && !delivery)
+    {
+        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
+    }
+    else if (forcedDelivery && !deliveryByMember && !addressIsAbroad)
+    {
+        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
+    }
+    else if (forcedDelivery && (deliveryByMember || addressIsAbroad))
+    {
+        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
+    }
+}
 
+function updateVisibleTotal(total)
+{
+    let totalFormatted = total.toLocaleString('nl-NL', {
+        style: 'currency',
+        currency: 'EUR',
+        minimumFractionDigits: 2
+    });
+    document.getElementById('prijsvak').innerHTML = totalFormatted;
+}
+
+function updateAddressIsAbroadFields()
+{
     if (addressIsAbroad)
     {
         document.getElementById('deliveryByMember').checked = true;
@@ -127,7 +157,37 @@ function calculateTotal()
         document.getElementById('deliveryByMember').disabled = false;
         $('.postcode-related').css({display: 'flex'});
     }
+}
 
+function calculateTotal(delivery)
+{
+    let deliveryCost = 0.0;
+    if (delivery)
+    {
+        deliveryCost = defaultDeliveryCost;
+    }
+
+    let seatSurCharge = 0.0;
+    if (document.getElementById('hasReservedSeats').checked)
+    {
+        seatSurCharge = reservedSeatCharge;
+    }
+
+    let total = 0.0;
+    tickettypes.forEach(function (item) {
+        let aantal = document.getElementById('tickettype-' + item.id).value;
+        total = total + (item.price * aantal);
+        total = total + (deliveryCost * aantal);
+        total = total + (seatSurCharge * aantal);
+    });
+    return total;
+}
+
+function updateForm()
+{
+    updateAddressIsAbroadFields();
+
+    let delivery = false;
     let deliveryByMember = false;
     if (forcedDelivery) {
         let postcode = document.getElementById('postcode').value;
@@ -155,55 +215,20 @@ function calculateTotal()
             document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
         }
     }
-    else {
+    else
+    {
         delivery = document.getElementById('bezorgen').checked;
     }
 
-    if (delivery) {
-        deliveryCost = defaultDeliveryCost;
-        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
-    }
-    else {
-        deliveryCost = 0.0;
-        if (!forcedDelivery)
-            document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
-    }
-    let toeslag_gereserveerde_plaats = 0.0;
-    if (document.getElementById('hasReservedSeats').checked) {
-        toeslag_gereserveerde_plaats = reservedSeatCharge;
-    }
+    let total = calculateTotal(delivery);
 
-    if (!forcedDelivery && delivery) {
-        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
-    }
-    else if (!forcedDelivery && !delivery) {
-        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
-    }
-    else if (forcedDelivery && !deliveryByMember && !addressIsAbroad) {
-        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
-    }
-    else if (forcedDelivery && (deliveryByMember || addressIsAbroad)) {
-        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
-    }
-
-    tickettypes.forEach(function(item) {
-        let aantal = document.getElementById('tickettype-' + item.id).value;
-        total = total + (item.price * aantal);
-        total = total + (deliveryCost * aantal);
-        total = total + (toeslag_gereserveerde_plaats * aantal);
-    });
-
-    let totalFormatted = total.toLocaleString('nl-NL', {
-        style: 'currency',
-        currency: 'EUR',
-        minimumFractionDigits: 2
-    });
-    document.getElementById('prijsvak').innerHTML = totalFormatted;
+    updateVisibleTotal(total);
+    updateAddressRequirement(delivery, deliveryByMember);
 }
 
 $('.numTickets-increase').on('click', function() { increase('tickettype-' + $(this).attr('data-kaartsoort')); });
 $('.numTickets-decrease').on('click', function() { decrease('tickettype-' + $(this).attr('data-kaartsoort')); });
-$('.recalculateTotal').on('click', function() { calculateTotal(); });
+$('.recalculateTotal').on('click', function() { updateForm(); });
 $('input[type=radio][name=country]').on('change', function()
 {
     if (this.value === 'abroad')
@@ -219,5 +244,4 @@ $('input[type=radio][name=country]').on('change', function()
 });
 
 setInterval(blockFormOnInvalidInput, 1000);
-setInterval(calculateTotal, 1000);
-
+setInterval(updateForm, 1000);
