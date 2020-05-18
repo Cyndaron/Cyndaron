@@ -2,7 +2,6 @@
 namespace Cyndaron\Geelhoed\Hour;
 
 use Cyndaron\Controller;
-use Cyndaron\Request;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;
 

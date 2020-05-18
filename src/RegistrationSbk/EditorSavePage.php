@@ -4,22 +4,22 @@ declare (strict_types = 1);
 namespace Cyndaron\RegistrationSbk;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
-    protected function prepare()
+    protected function prepare(RequestParameters $post)
     {
         $event = new Event($this->id);
         $event->loadIfIdIsSet();
-        $event->name = Request::unsafePost('titel');
-        $event->description = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
-        $event->descriptionWhenClosed = Request::unsafePost('descriptionWhenClosed');
-        $event->openForRegistration = (bool)Request::post('openForRegistration');
-        $event->registrationCost = (float)str_replace(',', '.', Request::post('registrationCost'));
-        $event->performedPiece = Request::unsafePost('performedPiece');
-        $event->termsAndConditions = Request::unsafePost('termsAndConditions');
+        $event->name = $post->getHTML('titel');
+        $event->description = $this->parseTextForInlineImages($post->getHTML('artikel'));
+        $event->descriptionWhenClosed = $this->parseTextForInlineImages($post->getHTML('descriptionWhenClosed'));
+        $event->openForRegistration = $post->getBool('openForRegistration');
+        $event->registrationCost = $post->getFloat('registrationCost');
+        $event->performedPiece = $post->getHTML('performedPiece');
+        $event->termsAndConditions = $post->getHTML('termsAndConditions');
 
         if ($event->save())
         {

@@ -52,7 +52,7 @@ class StaticPageModel extends Model
         {
             throw new Exception('No ID!');
         }
-        if ($this->load() && $this->enableComments && $author && $reactie && ($antispam === 'acht' || $antispam === '8'))
+        if ($this->enableComments && $author && $reactie && ($antispam === 'acht' || $antispam === '8'))
         {
             $prep = DBConnection::getPdo()->prepare('INSERT INTO sub_replies(subId, author, text) VALUES (?, ?, ?)');
             $prep->execute([$this->id, $author, $reactie]);

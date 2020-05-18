@@ -241,6 +241,7 @@ class Model
             return $var;
         }
 
+        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
         switch ($type->getName())
         {
             case 'int':

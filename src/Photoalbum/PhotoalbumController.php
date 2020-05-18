@@ -6,7 +6,7 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\Controller;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -39,9 +39,9 @@ class PhotoalbumController extends Controller
         return new Response($page->render());
     }
 
-    public function add(): JsonResponse
+    public function add(RequestParameters $post): JsonResponse
     {
-        $name = Request::post('name');
+        $name = $post->getHtml('name');
         Photoalbum::create($name);
 
         return new JsonResponse();
@@ -89,11 +89,11 @@ class PhotoalbumController extends Controller
         return new RedirectResponse("/photoalbum/{$album->id}");
     }
 
-    public function edit(): JsonResponse
+    public function edit(RequestParameters $post): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
 
-        $name = Request::post('name');
+        $name = $post->getHTML('name');
         Photoalbum::edit($id, $name);
 
         return new JsonResponse();

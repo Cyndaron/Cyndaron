@@ -17,7 +17,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
         {
             $this->model = new Mailform((int)$this->id);
             $this->model->load();
-            $this->content = $this->model->confirmationText;
+            $this->content = $this->model->confirmationText ?? '';
             $this->contentTitle = $this->model->name;
         }
     }

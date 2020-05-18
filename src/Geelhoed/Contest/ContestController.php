@@ -5,7 +5,7 @@ use Cyndaron\Controller;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
 use Cyndaron\Page;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\Setting;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
@@ -14,7 +14,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class ContestController extends Controller
@@ -72,7 +71,7 @@ class ContestController extends Controller
         }
     }
 
-    public function subscribe(): Response
+    public function subscribe(RequestParameters $post): Response
     {
         $id = $this->queryBits->getInt(2);
         $contest = Contest::loadFromDatabase($id);
@@ -82,8 +81,8 @@ class ContestController extends Controller
             $contestMember = new ContestMember();
             $contestMember->contestId = $contest->id;
             $contestMember->memberId = $member->id;
-            $contestMember->graduationId = (int)filter_input(INPUT_POST, 'graduationId', FILTER_SANITIZE_NUMBER_INT);
-            $contestMember->weight = (int)filter_input(INPUT_POST, 'weight', FILTER_SANITIZE_NUMBER_INT);
+            $contestMember->graduationId = $post->getInt('graduationId');
+            $contestMember->weight = $post->getInt('weight');
             $contestMember->isPaid = false;
             if ($contestMember->save())
             {
@@ -128,29 +127,30 @@ class ContestController extends Controller
             'webhookUrl' => "{$baseUrl}/api/contest/mollieWebhook",
         ]);
 
-        if ($payment && $payment->id)
+        if (!$payment || !$payment->id)
         {
-            $contestMember->molliePaymentId = $payment->id;
-            if ($contestMember->save())
-            {
-                User::addNotification('Bedankt voor je inschrijving! Het kan even duren voordat de betaling geregistreerd is.');
-                return new RedirectResponse($payment->getCheckoutUrl());
-            }
-            else
-            {
-                $page = new Page('Fout bij inschrijven', 'Kon de betalings-ID niet opslaan!');
-                return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
+            $page = new Page('Fout bij inschrijven', 'Betaling niet gevonden!');
+            return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
+
+        $contestMember->molliePaymentId = $payment->id;
+        if (!$contestMember->save())
+        {
+            $page = new Page('Fout bij inschrijven', 'Kon de betalings-ID niet opslaan!');
+            return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        User::addNotification('Bedankt voor je inschrijving! Het kan even duren voordat de betaling geregistreerd is.');
+        return new RedirectResponse($payment->getCheckoutUrl());
     }
 
-    public function mollieWebhook(SymfonyRequest $request): Response
+    public function mollieWebhook(RequestParameters $post): Response
     {
         $apiKey = Setting::get('mollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
         $mollie->setApiKey($apiKey);
 
-        $id = $request->request->get('id');
+        $id = $post->getUnfilteredString('id');
         $payment = $mollie->payments->get($id);
         $contestMember = ContestMember::fetch(['molliePaymentId = ?'], [$id]);
 
@@ -252,9 +252,9 @@ class ContestController extends Controller
         return new Response(ob_get_clean(), Response::HTTP_OK, $httpHeaders);
     }
 
-    public function removeSubscription(): JsonResponse
+    public function removeSubscription(RequestParameters $post): JsonResponse
     {
-        $id = (int)filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $id = $post->getInt('id');
         $contestMember = ContestMember::loadFromDatabase($id);
         if ($contestMember === null)
         {
@@ -268,9 +268,9 @@ class ContestController extends Controller
         return new JsonResponse();
     }
 
-    public function delete(): JsonResponse
+    public function delete(RequestParameters $post): JsonResponse
     {
-        $id = (int)filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $id = $post->getInt('id');
         $contest = Contest::loadFromDatabase($id);
         if ($contest === null)
         {
@@ -284,9 +284,9 @@ class ContestController extends Controller
         return new JsonResponse();
     }
 
-    public function createOrEdit(): JsonResponse
+    public function createOrEdit(RequestParameters $post): JsonResponse
     {
-        $id = (int)filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $id = $post->getInt('id');
         if ($id > 0)
         {
             $contest = Contest::loadFromDatabase($id);
@@ -300,13 +300,13 @@ class ContestController extends Controller
             $contest = new Contest();
         }
 
-        $contest->name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
-        $contest->description = Request::unsafePost('description');
-        $contest->location = filter_input(INPUT_POST, 'location', FILTER_SANITIZE_STRING);
-        $contest->sportId = (int)filter_input(INPUT_POST, 'sportId', FILTER_SANITIZE_NUMBER_INT);
-        $contest->date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
-        $contest->registrationDeadline = filter_input(INPUT_POST, 'registrationDeadline', FILTER_SANITIZE_STRING);
-        $contest->price = (float)filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        $contest->name = $post->getHTML('name');
+        $contest->description = $post->getHTML('description');
+        $contest->location = $post->getHTML('location');
+        $contest->sportId = $post->getInt('sportId');
+        $contest->date = $post->getDate('date');
+        $contest->registrationDeadline = $post->getDate('registrationDeadline');
+        $contest->price = $post->getFloat('price');
         if (!$contest->save())
         {
             return new JsonResponse(['error' => 'Could not save contest!'], Response::HTTP_INTERNAL_SERVER_ERROR);

@@ -186,6 +186,7 @@ EOT;
         return false;
     }
 
+    // TODO: Just set the fields directly and reduce this to just handling password and mail.
     public static function create(string $username, string $email, string $password, int $level, string $firstName, string $tussenvoegsel, string $lastName, string $role, string $comments, string $avatar, bool $hideFromMemberList): ?int
     {
         $password = password_hash($password, PASSWORD_DEFAULT);
@@ -195,15 +196,13 @@ EOT;
         {
             $user->$fieldname = $$fieldname;
         }
-        if ($user->save())
-        {
-            $user->mailNewPassword($password);
-            return $user->id;
-        }
-        else
+        if (!$user->save())
         {
             throw new Exception(implode(',', DBConnection::errorInfo()));
         }
+
+        $user->mailNewPassword($password);
+        return $user->id;
     }
 
     public static function login(string $identification, string $password): string

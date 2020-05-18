@@ -3,7 +3,6 @@ namespace Cyndaron\Geelhoed\Location;
 
 use Cyndaron\Controller;
 use Cyndaron\Page;
-use Cyndaron\Request;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;
 

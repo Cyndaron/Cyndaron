@@ -5,7 +5,6 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
-use Cyndaron\Request;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

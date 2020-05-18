@@ -4,22 +4,22 @@ declare (strict_types = 1);
 namespace Cyndaron\Mailform;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     const TYPE = 'mailform';
 
-    protected function prepare()
+    protected function prepare(RequestParameters $post)
     {
         $mailform = new Mailform($this->id);
         $mailform->loadIfIdIsSet();
-        $mailform->name = Request::unsafePost('titel');
-        $mailform->email = Request::unsafePost('email');
-        $mailform->antiSpamAnswer = Request::unsafePost('antiSpamAnswer');
-        $mailform->sendConfirmation = (bool)Request::unsafePost('sendConfirmation');
-        $mailform->confirmationText = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
+        $mailform->name = $post->getHTML('titel');
+        $mailform->email = $post->getEmail('email');
+        $mailform->antiSpamAnswer = $post->getAlphaNum('antiSpamAnswer');
+        $mailform->sendConfirmation = $post->getBool('sendConfirmation');
+        $mailform->confirmationText = $this->parseTextForInlineImages($post->getHTML('artikel'));
 
         if ($mailform->save())
         {

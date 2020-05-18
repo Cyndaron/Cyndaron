@@ -4,7 +4,6 @@ namespace Cyndaron\Editor;
 use Cyndaron\Category\Category;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Request;
 use Cyndaron\Setting;
 use Cyndaron\Url;
 

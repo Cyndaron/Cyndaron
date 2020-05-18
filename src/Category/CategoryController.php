@@ -7,7 +7,7 @@ use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,11 +47,11 @@ class CategoryController extends Controller
         return new Response($page->render());
     }
 
-    public function add(): JsonResponse
+    public function add(RequestParameters $post): JsonResponse
     {
         $return = [];
         $category = new Category(null);
-        $category->name = Request::post('name');
+        $category->name = $post->getHTML('name');
         $result = $category->save();
         if ($result === false) {
             $return = DBConnection::errorInfo();
@@ -84,12 +84,12 @@ class CategoryController extends Controller
         return new JsonResponse();
     }
 
-    public function edit(): JsonResponse
+    public function edit(RequestParameters $post): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
         $category = new Category($id);
         $category->load();
-        $category->name = Request::post('name');
+        $category->name = $post->getHTML('name');
         $category->save();
 
         return new JsonResponse();

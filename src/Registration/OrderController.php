@@ -6,7 +6,7 @@ namespace Cyndaron\Registration;
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,12 +23,11 @@ class OrderController extends Controller
         'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
     ];
 
-    protected function add(): Response
+    protected function add(RequestParameters $post): Response
     {
-        $eventId = (int)Request::post('event_id');
         try
         {
-            $this->processOrder($eventId);
+            $this->processOrder($post);
 
             $page = new Page(
                 'Inschrijving verwerkt',
@@ -44,16 +43,18 @@ class OrderController extends Controller
     }
 
     /**
-     * @param $eventId
+     * @param RequestParameters $post
      * @return bool
      * @throws Exception
      */
-    private function processOrder($eventId): bool
+    private function processOrder(RequestParameters $post): bool
     {
-        if (Request::postIsEmpty())
+        if ($post->isEmpty())
         {
             throw new Exception('De inschrijvingsgegevens zijn niet goed aangekomen.');
         }
+
+        $eventId = $post->getInt('event_id');
 
         /** @var Event $eventObj */
         $eventObj = Event::loadFromDatabase($eventId);
@@ -63,7 +64,7 @@ class OrderController extends Controller
             throw new Exception('De verkoop voor dit evenement is helaas gesloten, u kunt geen kaarten meer bestellen.');
         }
 
-        $errorFields = $this->checkForm($eventObj);
+        $errorFields = $this->checkForm($eventObj, $post);
         if (!empty($errorFields))
         {
             $message = 'De volgende velden zijn niet goed ingevuld of niet goed aangekomen: ';
@@ -75,35 +76,35 @@ class OrderController extends Controller
         $ticketTypes = EventTicketType::loadByEvent($eventObj);
         foreach ($ticketTypes as $ticketType)
         {
-            $orderTicketTypes[$ticketType->id] = (int)Request::post('tickettype-' . $ticketType->id);
+            $orderTicketTypes[$ticketType->id] = $post->getInt('tickettype-' . $ticketType->id);
         }
 
         $order = new Order();
         $order->eventId = $eventObj->id;
-        $order->lastName = Request::post('lastName');
-        $order->initials = Request::post('initials');
-        $order->vocalRange = Request::post('vocalRange');
-        $order->registrationGroup = (int)Request::post('registrationGroup');
-        $order->birthYear = (int)Request::post('birthYear') ?: null;
-        $order->lunch = (bool)filter_input(INPUT_POST, 'lunch', FILTER_VALIDATE_BOOLEAN);
+        $order->lastName = $post->getSimpleString('lastName');
+        $order->initials = $post->getInitials('initials');
+        $order->vocalRange = $post->getSimpleString('vocalRange');
+        $order->registrationGroup = $post->getInt('registrationGroup');
+        $order->birthYear = $post->getInt('birthYear') ?: null;
+        $order->lunch = $post->getBool( 'lunch');
         if ($order->lunch)
         {
-            $order->lunchType = filter_input(INPUT_POST, 'lunchType', FILTER_SANITIZE_STRING);
+            $order->lunchType = $post->getSimpleString('lunchType');
         }
-        $order->bhv = (bool)filter_input(INPUT_POST, 'bhv', FILTER_VALIDATE_BOOLEAN);
-        $order->kleinkoor = (bool)filter_input(INPUT_POST, 'kleinkoor', FILTER_VALIDATE_BOOLEAN);
-        $order->kleinkoorExplanation = Request::post('kleinkoorExplanation');
-        $order->participatedBefore = (bool)filter_input(INPUT_POST, 'participatedBefore', FILTER_VALIDATE_BOOLEAN);
-        $order->numPosters = (int)Request::post('numPosters');
-        $order->email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-        $order->street = Request::post('street');
-        $order->houseNumber = (int)Request::post('houseNumber');
-        $order->houseNumberAddition = Request::post('houseNumberAddition');
-        $order->postcode = Request::post('postcode');
-        $order->city = Request::post('city');
-        $order->comments = Request::post('comments');
-        $order->currentChoir = Request::post('currentChoir');
-        $order->choirPreference = Request::post('choirPreference');
+        $order->bhv = $post->getBool('bhv');
+        $order->kleinkoor = $post->getBool('kleinkoor');
+        $order->kleinkoorExplanation = $post->getSimpleString('kleinkoorExplanation');
+        $order->participatedBefore = $post->getBool('participatedBefore');
+        $order->numPosters = $post->getInt('numPosters');
+        $order->email = $post->getEmail('email');
+        $order->street = $post->getSimpleString('street');
+        $order->houseNumber = $post->getInt('houseNumber');
+        $order->houseNumberAddition = $post->getSimpleString('houseNumberAddition');
+        $order->postcode = $post->getPostcode('postcode');
+        $order->city = $post->getSimpleString('city');
+        $order->comments = $post->getHTML('comments');
+        $order->currentChoir = $post->getSimpleString('currentChoir');
+        $order->choirPreference = $post->getSimpleString('choirPreference');
         $order->approvalStatus = $eventObj->requireApproval ? Order::APPROVAL_UNDECIDED : Order::APPROVAL_APPROVED;
 
         $orderTotal = $order->calculateTotal($orderTicketTypes);
@@ -138,25 +139,25 @@ class OrderController extends Controller
         return $order->sendConfirmationMail($orderTotal, $orderTicketTypes);
     }
 
-    private function checkForm(Event $event): array
+    private function checkForm(Event $event, RequestParameters $post): array
     {
         $errorFields = [];
-        if (strcasecmp(Request::post('antispam'),$event->getAntispam()) !== 0)
+        if (strcasecmp($post->getAlphaNum('antispam'), $event->getAntispam()) !== 0)
         {
             $errorFields[] = 'Antispam';
         }
 
-        if (Request::post('lastName') === '')
+        if ($post->getSimpleString('lastName') === '')
         {
             $errorFields[] = 'Achternaam';
         }
 
-        if (Request::post('initials') === '')
+        if ($post->getInitials('initials') === '')
         {
             $errorFields[] = 'Voorletters';
         }
 
-        if (Request::post('email') === '')
+        if ($post->getEmail('email') === '')
         {
             $errorFields[] = 'E-mailadres';
         }
@@ -174,12 +175,12 @@ class OrderController extends Controller
         return new JsonResponse();
     }
 
-    public function setApprovalStatus(): JsonResponse
+    public function setApprovalStatus(RequestParameters $post): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
-        $status = (int)Request::post('status');
+        $status = $post->getInt('status');
         switch ($status)
         {
             case Order::APPROVAL_APPROVED:

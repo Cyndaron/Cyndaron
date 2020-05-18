@@ -6,7 +6,7 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,12 +23,11 @@ class OrderController extends Controller
         'setIsSent' => ['level' => UserLevel::ADMIN, 'function' => 'setIsSent'],
     ];
 
-    protected function add(): Response
+    protected function add(RequestParameters $post): Response
     {
-        $concertId = (int)Request::post('concert_id');
         try
         {
-            $this->processOrder($concertId);
+            $this->processOrder($post);
 
             $page = new Page(
                 'Bestelling verwerkt',
@@ -44,15 +43,17 @@ class OrderController extends Controller
     }
 
     /**
-     * @param $concertId
-     * @throws Exception
+     * @param RequestParameters $post
+     * @throws InvalidOrder
      */
-    private function processOrder($concertId): void
+    private function processOrder(RequestParameters $post): void
     {
-        if (Request::postIsEmpty())
+        if ($post->isEmpty())
         {
             throw new InvalidOrder('De bestellingsgegevens zijn niet goed aangekomen.');
         }
+
+        $concertId = $post->getInt('concert_id');
 
         /** @var Concert $concertObj */
         $concertObj = Concert::loadFromDatabase($concertId);
@@ -62,13 +63,13 @@ class OrderController extends Controller
             throw new InvalidOrder('De verkoop voor dit concert is helaas gesloten, u kunt geen kaarten meer bestellen.');
         }
 
-        $postcode = Request::post('postcode');
-        $addressIsAbroad = Request::post('country') === 'abroad';
-        $deliveryByMember = (bool)Request::post('deliveryByMember');
+        $postcode = $post->getPostcode('postcode');
+        $addressIsAbroad = $post->getUnfilteredString('country') === 'abroad';
+        $deliveryByMember = $post->getBool('deliveryByMember');
         $deliveryByMember = $addressIsAbroad ? true : $deliveryByMember;
-        $deliveryMemberName = Request::post('deliveryMemberName');
+        $deliveryMemberName = $post->getSimpleString('deliveryMemberName');
 
-        $incorrecteVelden = $this->checkForm($concertObj->forcedDelivery, $deliveryByMember);
+        $incorrecteVelden = $this->checkForm($concertObj->forcedDelivery, $deliveryByMember, $post);
         if (!empty($incorrecteVelden))
         {
             $message = 'De volgende velden zijn niet goed ingevuld of niet goed aangekomen: ';
@@ -99,16 +100,16 @@ class OrderController extends Controller
         }
         else
         {
-            $payForDelivery = Request::post('bezorgen') ? true : false;
+            $payForDelivery = $post->getBool('bezorgen');
         }
         $deliveryPrice = $payForDelivery ? $concertObj->deliveryCost : 0.0;
-        $reserveSeats = Request::post('hasReservedSeats') ? 1 : 0;
-        $toeslag_gereserveerde_plaats = ($reserveSeats === 1) ? $concertObj->reservedSeatCharge : 0;
+        $reserveSeats = $post->getBool('hasReservedSeats');
+        $toeslag_gereserveerde_plaats = $reserveSeats ? $concertObj->reservedSeatCharge : 0;
         $order_tickettypes = [];
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
         foreach ($ticketTypes as $ticketType)
         {
-            $order_tickettypes[$ticketType['id']] = (int)Request::post('tickettype-' . $ticketType['id']);
+            $order_tickettypes[$ticketType['id']] = $post->getInt('tickettype-' . $ticketType['id']);
             $totaalprijs += $order_tickettypes[$ticketType['id']] * ($ticketType['price'] + $deliveryPrice + $toeslag_gereserveerde_plaats);
             $totaalAantalKaarten += $order_tickettypes[$ticketType['id']];
         }
@@ -118,13 +119,13 @@ class OrderController extends Controller
             throw new InvalidOrder('U heeft een bestelling van 0 kaarten geplaatst of het formulier is niet goed aangekomen.');
         }
 
-        $email = Request::post('email');
-        $lastName = Request::post('lastName');
-        $initials = Request::post('initials');
-        $street = Request::post('street');
-        $postcode = Request::post('postcode');
-        $city = Request::post('city');
-        $comments = Request::post('comments');
+        $email = $post->getEmail('email');
+        $lastName = $post->getSimpleString('lastName');
+        $initials = $post->getInitials('initials');
+        $street = $post->getSimpleString('street');
+        $postcode = $post->getPostcode('postcode');
+        $city = $post->getSimpleString('city');
+        $comments = $post->getSimpleString('comments');
 
         $result = DBConnection::doQuery('INSERT INTO ticketsale_orders
             (`concertId`, `lastName`, `initials`, `email`, `street`, `postcode`, `city`, `delivery`,               `hasReservedSeats`, `deliveryByMember`,      `deliveryMemberName`, `addressIsAbroad`,      `comments`) VALUES
@@ -165,42 +166,42 @@ class OrderController extends Controller
         $this->sendMail($payForDelivery, $concertObj, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats, $totaalprijs, $orderId, $ticketTypes, $order_tickettypes, $lastName, $initials, $street, $postcode, $city, $comments, $email);
     }
 
-    private function checkForm($forcedDelivery = false, $memberDelivery = false): array
+    private function checkForm(bool $forcedDelivery, bool $memberDelivery, RequestParameters $post): array
     {
         $incorrecteVelden = [];
-        if (strtoupper(Request::post('antispam')) !== 'VLISSINGEN')
+        if (strtoupper($post->getAlphaNum('antispam')) !== 'VLISSINGEN')
         {
             $incorrecteVelden[] = 'Antispam';
         }
 
-        if (Request::post('lastName') === '')
+        if ($post->getSimpleString('lastName') === '')
         {
             $incorrecteVelden[] = 'Achternaam';
         }
 
-        if (Request::post('initials') === '')
+        if ($post->getInitials('initials') === '')
         {
             $incorrecteVelden[] = 'Voorletters';
         }
 
-        if (Request::post('email') === '')
+        if ($post->getEmail('email') === '')
         {
             $incorrecteVelden[] = 'E-mailadres';
         }
 
-        if (($forcedDelivery && !$memberDelivery) || (!$forcedDelivery && Request::post('delivery')))
+        if (($forcedDelivery && !$memberDelivery) || (!$forcedDelivery && $post->getBool('delivery')))
         {
-            if (Request::post('street') === '')
+            if ($post->getSimpleString('street') === '')
             {
                 $incorrecteVelden[] = 'Straatnaam en huisnummer';
             }
 
-            if (Request::post('postcode') === '')
+            if ($post->getPostcode('postcode') === '')
             {
                 $incorrecteVelden[] = 'Postcode';
             }
 
-            if (Request::post('city') === '')
+            if ($post->getSimpleString('city') === '')
             {
                 $incorrecteVelden[] = 'Woonplaats';
             }

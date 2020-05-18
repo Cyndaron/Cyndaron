@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron\Registration;
 
-use Cyndaron\DBConnection;
 use Cyndaron\User\User;
 use Cyndaron\Widget\Button;
 use Cyndaron\Widget\Toolbar;

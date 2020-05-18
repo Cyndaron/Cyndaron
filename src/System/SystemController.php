@@ -3,7 +3,7 @@ declare (strict_types = 1);
 namespace Cyndaron\System;
 
 use Cyndaron\Controller;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\Setting;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -20,22 +20,22 @@ class SystemController extends Controller
         return new Response($page->render());
     }
 
-    protected function routePost(): Response
+    protected function routePost(RequestParameters $post): Response
     {
-        Setting::set('siteName', Request::post('siteName'));
-        Setting::set('organisation', Request::post('organisation'));
-        Setting::set('logo', Request::post('logo'));
-        Setting::set('subTitle', Request::post('subTitle'));
-        Setting::set('favicon', Request::post('favicon'));
-        Setting::set('backgroundColor', Request::post('backgroundColor'));
-        Setting::set('menuColor', Request::post('menuColor'));
-        Setting::set('menuBackground', Request::unsafePost('menuBackground'));
-        Setting::set('articleColor', Request::post('articleColor'));
-        Setting::set('accentColor', Request::post('accentColor'));
-        Setting::set('defaultCategory', Request::post('defaultCategory'));
-        Setting::set('menuTheme', Request::post('menuTheme'));
-        Setting::set('frontPage', Request::post('frontPage'));
-        Setting::set('frontPageIsJumbo', Request::post('frontPageIsJumbo'));
+        Setting::set('siteName', $post->getHTML('siteName'));
+        Setting::set('organisation', $post->getHTML('organisation'));
+        Setting::set('logo', $post->getFilenameWithDirectory('logo'));
+        Setting::set('subTitle', $post->getHTML('subTitle'));
+        Setting::set('favicon', $post->getFilenameWithDirectory('favicon'));
+        Setting::set('backgroundColor', $post->getColor('backgroundColor'));
+        Setting::set('menuColor', $post->getColor('menuColor'));
+        Setting::set('menuBackground', $post->getFilenameWithDirectory('menuBackground'));
+        Setting::set('articleColor', $post->getColor('articleColor'));
+        Setting::set('accentColor', $post->getColor('accentColor'));
+        Setting::set('defaultCategory', (string)$post->getInt('defaultCategory'));
+        Setting::set('menuTheme', $post->getSimpleString('menuTheme'));
+        Setting::set('frontPage', $post->getUrl('frontPage'));
+        Setting::set('frontPageIsJumbo', (string)(int)$post->getBool('frontPageIsJumbo'));
 
         // Redirect to GET
         return new RedirectResponse('/system/config');

@@ -10,6 +10,7 @@ use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerPage;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,7 +50,7 @@ class Router
             session_start();
         }
 
-        $request = Request::get('page') ?: '/';
+        $request = (new RequestParameters($_GET))->getUrl('page') ?: '/';
         $this->updateRequestVars($request);
 
         $this->blockPathTraversal($request);
@@ -86,7 +87,10 @@ class Router
         $isLoggingIn = $this->requestVars[0] === 'user' && $this->requestVars[1] === 'login';
         if (!$isLoggingIn && !User::hasSufficientReadLevel())
         {
-            Request::sendDoNotCache();
+            header('Cache-Control: no-cache, no-store, must-revalidate');
+            header('Pragma: no-cache');
+            header('Expires: 0');
+
             if ($userLevel > 0)
             {
                 header('Location: /error/403');
@@ -114,7 +118,9 @@ class Router
 
     private function getResponse(Controller $route): Response
     {
-        $token = Request::post('csrfToken');
+        $post = new RequestParameters($_POST);
+
+        $token = $post->getAlphaNum('csrfToken');
         $tokenCorrect = $route->checkCSRFToken($token);
         if (!$tokenCorrect)
         {
@@ -129,7 +135,7 @@ class Router
 
         try
         {
-            return $route->route();
+            return $route->route($post);
         }
         catch (\Exception $e)
         {
@@ -182,7 +188,7 @@ class Router
         if (array_key_exists($request, self::OLD_URLS))
         {
             $url = self::OLD_URLS[$request]['url'];
-            $id = Request::get(self::OLD_URLS[$request]['id']);
+            $id = (int)$_GET(self::OLD_URLS[$request]['id']);
             header("Location: ${url}${id}");
             die();
         }
@@ -290,5 +296,10 @@ class Router
                 }
             }
         }
+    }
+
+    public static function referrer()
+    {
+        return filter_input(INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL);
     }
 }

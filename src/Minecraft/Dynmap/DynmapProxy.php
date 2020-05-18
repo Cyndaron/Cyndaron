@@ -3,11 +3,8 @@ declare (strict_types = 1);
 
 namespace Cyndaron\Minecraft\Dynmap;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Minecraft\Server;
 use Cyndaron\QueryBits;
-use Cyndaron\Request;
-
 class DynmapProxy
 {
     private string $contents = '';

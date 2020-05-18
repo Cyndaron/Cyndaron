@@ -5,7 +5,8 @@ namespace Cyndaron\User;
 
 use Cyndaron\Controller;
 use Cyndaron\Page;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
+use Cyndaron\Router;
 use Cyndaron\Setting;
 use Cyndaron\Util;
 use Exception;
@@ -47,7 +48,7 @@ class UserController extends Controller
     {
         if (empty($_SESSION['redirect']))
         {
-            $_SESSION['redirect'] = Request::referrer();
+            $_SESSION['redirect'] = Router::referrer();
         }
         $page = new LoginPage();
         return new Response($page->render());
@@ -65,10 +66,10 @@ class UserController extends Controller
         return new Response($page->render());
     }
 
-    protected function loginPost(): Response
+    protected function loginPost(RequestParameters $post): Response
     {
-        $identification = Request::post('login_user');
-        $verification = Request::post('login_pass');
+        $identification = $post->getAlphaNum('login_user');
+        $verification = $post->getUnfilteredString('login_pass');
 
         try
         {
@@ -87,25 +88,25 @@ class UserController extends Controller
         }
     }
 
-    protected function add(): JsonResponse
+    protected function add(RequestParameters $post): JsonResponse
     {
-        $username = Request::post('username');
-        $email = Request::post('email');
-        $password = Request::post('password') ?: Util::generatePassword();
-        $level = (int)Request::post('level');
-        $firstName = Request::post('firstName');
-        $tussenvoegsel = Request::post('tussenvoegsel');
-        $lastName = Request::post('lastName');
-        $role = Request::post('role');
-        $comments = Request::post('comments');
-        $avatar = Request::post('avatar');
-        $hideFromMemberList = Request::post('hideFromMemberList') === '1';
+        $username = $post->getAlphaNum('username');
+        $email = $post->getEmail('email');
+        $password = $post->getUnfilteredString('password') ?: Util::generatePassword();
+        $level = $post->getInt('level');
+        $firstName = $post->getSimpleString('firstName');
+        $tussenvoegsel = $post->getTussenvoegsel('tussenvoegsel');
+        $lastName = $post->getSimpleString('lastName');
+        $role = $post->getSimpleString('role');
+        $comments = $post->getHTML('comments');
+        $avatar = $post->getFilenameWithDirectory('avatar');
+        $hideFromMemberList = $post->getBool('hideFromMemberList');
 
         $userId = User::create($username, $email, $password, $level, $firstName, $tussenvoegsel, $lastName, $role, $comments, $avatar, $hideFromMemberList);
         return new JsonResponse(['userId' => $userId]);
     }
 
-    protected function edit(): JsonResponse
+    protected function edit(RequestParameters $post): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
         if ($id === null)
@@ -119,16 +120,16 @@ class UserController extends Controller
             return new JsonResponse(['error' => 'User not found!', Response::HTTP_NOT_FOUND]);
         }
 
-        $user->username = Request::post('username');
-        $user->email = Request::post('email');
-        $user->level = (int)Request::post('level');
-        $user->firstName = Request::post('firstName');
-        $user->tussenvoegsel = Request::post('tussenvoegsel');
-        $user->lastName = Request::post('lastName');
-        $user->role = Request::post('role');
-        $user->comments = Request::post('comments');
-        $user->avatar = Request::post('avatar');
-        $user->hideFromMemberList = Request::post('hideFromMemberList') === '1';
+        $user->username = $post->getAlphaNum('username');
+        $user->email = $post->getEmail('email');
+        $user->level = $post->getInt('level');
+        $user->firstName = $post->getSimpleString('firstName');
+        $user->tussenvoegsel = $post->getTussenvoegsel('tussenvoegsel');
+        $user->lastName = $post->getSimpleString('lastName');
+        $user->role = $post->getSimpleString('role');
+        $user->comments = $post->getHTML('comments');
+        $user->avatar = $post->getFilenameWithDirectory('avatar');
+        $user->hideFromMemberList = $post->getBool('hideFromMemberList');
         $result = $user->save();
         if ($result === false)
         {
@@ -167,21 +168,19 @@ class UserController extends Controller
         return new JsonResponse();
     }
 
-    protected function changeAvatar()
+    protected function changeAvatar(): Response
     {
         $userId = $this->queryBits->getInt(2);
-        if ($userId !== null)
-        {
-            $user = new User($userId);
-            $user->load();
-            $user->uploadNewAvatar();
-
-            return new RedirectResponse('/user/manager');
-        }
-        else
+        if ($userId === null)
         {
             $page = new Page('Fout bij veranderen avatar', 'Onbekende fout.');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
+
+        $user = new User($userId);
+        $user->load();
+        $user->uploadNewAvatar();
+
+        return new RedirectResponse('/user/manager');
     }
 }

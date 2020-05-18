@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\FileCabinet;
 
 use Cyndaron\Controller;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -38,9 +38,9 @@ class FileCabinetController extends Controller
         return new RedirectResponse('/filecabinet');
     }
 
-    protected function deleteItem(): Response
+    protected function deleteItem(RequestParameters $post): Response
     {
-        $filename = Request::post('filename');
+        $filename = $post->getFilename('filename');
         $fullPath = "./bestandenkast/$filename";
         if ($filename !== 'include.html' && file_exists($fullPath))
         {

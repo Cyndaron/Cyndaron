@@ -4,7 +4,6 @@ declare (strict_types = 1);
 namespace Cyndaron\PageManager;
 
 use Cyndaron\Controller;
-use Cyndaron\Request;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;
 

@@ -4,11 +4,10 @@ declare (strict_types = 1);
 namespace Cyndaron\Menu;
 
 use Cyndaron\Controller;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class MenuController extends Controller
 {
@@ -18,14 +17,17 @@ class MenuController extends Controller
         'deleteItem' => ['level' => UserLevel::ADMIN, 'function' => 'deleteItem'],
     ];
 
-    protected function addItem(SymfonyRequest $request): JsonResponse
+    protected function addItem(RequestParameters $post): JsonResponse
     {
         $menuItem = new MenuItem();
-        $menuItem->link = Request::post('link');
-        $menuItem->alias = Request::post('alias');
-        $menuItem->isDropdown = (bool)Request::post('isDropdown');
-        $menuItem->isImage = (bool)Request::post('isImage');
-        $menuItem->priority = $request->request->getInt('priority');
+        $menuItem->link = $post->getUrl('link');
+        $menuItem->alias = $post->getUrl('alias');
+        $menuItem->isDropdown = $post->getBool('isDropdown');
+        $menuItem->isImage = $post->getBool('isImage');
+        if ($post->hasVar('priority'))
+        {
+            $menuItem->priority = $post->getInt('priority');
+        }
 
         if (!$menuItem->save())
         {
@@ -35,16 +37,16 @@ class MenuController extends Controller
         return new JsonResponse();
     }
 
-    protected function editItem(SymfonyRequest $request): JsonResponse
+    protected function editItem(RequestParameters $post): JsonResponse
     {
         $index = $this->queryBits->getInt(2);
         $menuItem = new MenuItem($index);
         $menuItem->load();
-        $menuItem->link = Request::post('link');
-        $menuItem->alias = Request::post('alias');
-        $menuItem->isDropdown = (bool)(int)Request::post('isDropdown');
-        $menuItem->isImage = (bool)(int)Request::post('isImage');
-        $menuItem->priority = $request->request->getInt('priority');
+        $menuItem->link = $post->getUrl('link');
+        $menuItem->alias = $post->getUrl('alias');
+        $menuItem->isDropdown = $post->getBool('isDropdown');
+        $menuItem->isImage = $post->getBool('isImage');
+        $menuItem->priority = $post->getInt('priority');
 
         if (!$menuItem->save())
         {

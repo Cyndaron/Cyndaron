@@ -6,7 +6,7 @@ namespace Cyndaron\RegistrationSbk;
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,12 +23,11 @@ class RegisterController extends Controller
         'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
     ];
 
-    protected function add(): Response
+    protected function add(RequestParameters $post): Response
     {
-        $eventId = (int)Request::post('event_id');
         try
         {
-            $this->processOrder($eventId);
+            $this->processOrder($post);
 
             $page = new Page(
                 'Aanmelding verwerkt',
@@ -44,15 +43,18 @@ class RegisterController extends Controller
     }
 
     /**
-     * @param $eventId
+     * @param RequestParameters $post
+     * @return bool
      * @throws Exception
      */
-    private function processOrder($eventId): bool
+    private function processOrder(RequestParameters $post): bool
     {
-        if (Request::postIsEmpty())
+        if ($post->isEmpty())
         {
             throw new Exception('De aanmeldingsgegevens zijn niet goed aangekomen.');
         }
+
+        $eventId = $post->getInt('event_id');
 
         /** @var Event $eventObj */
         $eventObj = Event::loadFromDatabase($eventId);
@@ -62,7 +64,7 @@ class RegisterController extends Controller
             throw new Exception('De aanmeldingen voor dit evenement is helaas gesloten, je kunt je niet meer aanmelden.');
         }
 
-        $errorFields = $this->checkForm($eventObj);
+        $errorFields = $this->checkForm($eventObj, $post);
         if (!empty($errorFields))
         {
             $message = 'De volgende velden zijn niet goed ingevuld of niet goed aangekomen: ';
@@ -72,16 +74,16 @@ class RegisterController extends Controller
 
         $order = new Registration();
         $order->eventId = $eventObj->id;
-        $order->lastName = Request::post('lastName');
-        $order->initials = Request::post('initials');
-        $order->vocalRange = Request::post('vocalRange');
-        $order->email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-        $order->phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
-        $order->city = Request::post('city');
-        $order->currentChoir = filter_input(INPUT_POST, 'currentChoir', FILTER_SANITIZE_STRING);
-        $order->choirExperience = (int)filter_input(INPUT_POST, 'choirExperience', FILTER_SANITIZE_NUMBER_INT);
-        $order->performedBefore = (bool)filter_input(INPUT_POST, 'performedBefore', FILTER_VALIDATE_BOOLEAN);
-        $order->comments = Request::post('comments');
+        $order->lastName = $post->getSimpleString('lastName');
+        $order->initials = $post->getInitials('initials');
+        $order->vocalRange = $post->getSimpleString('vocalRange');
+        $order->email = $post->getEmail('email');
+        $order->phone = $post->getPhone('phone');
+        $order->city = $post->getSimpleString('city');
+        $order->currentChoir = $post->getSimpleString('currentChoir');
+        $order->choirExperience = $post->getInt('choirExperience');
+        $order->performedBefore = $post->getBool('performedBefore');
+        $order->comments = $post->getSimpleString('comments');
 
         $result = $order->save();
         if ($result === false)
@@ -93,25 +95,25 @@ class RegisterController extends Controller
         return $order->sendConfirmationMail();
     }
 
-    private function checkForm(Event $event): array
+    private function checkForm(Event $event, RequestParameters $post): array
     {
         $errorFields = [];
-        if (strcasecmp(Request::post('antispam'),$event->getAntispam()) !== 0)
+        if (strcasecmp($post->getAlphaNum('antispam'), $event->getAntispam()) !== 0)
         {
             $errorFields[] = 'Antispam';
         }
 
-        if (Request::post('lastName') === '')
+        if ($post->getSimpleString('lastName') === '')
         {
             $errorFields[] = 'Achternaam';
         }
 
-        if (Request::post('initials') === '')
+        if ($post->getInitials('initials') === '')
         {
             $errorFields[] = 'Voorletters';
         }
 
-        if (Request::post('email') === '')
+        if ($post->getEmail('email') === '')
         {
             $errorFields[] = 'E-mailadres';
         }
@@ -129,12 +131,12 @@ class RegisterController extends Controller
         return new JsonResponse();
     }
 
-    public function setApprovalStatus(): JsonResponse
+    public function setApprovalStatus(RequestParameters $post): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
         /** @var Registration $registration */
         $registration = Registration::loadFromDatabase($id);
-        $status = (int)Request::post('status');
+        $status = $post->getInt('status');
         switch ($status)
         {
             case Registration::APPROVAL_APPROVED:

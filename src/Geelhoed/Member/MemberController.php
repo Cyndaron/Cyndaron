@@ -5,11 +5,10 @@ use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class MemberController extends Controller
 {
@@ -56,9 +55,9 @@ class MemberController extends Controller
         return new JsonResponse();
     }
 
-    public function save(SymfonyRequest $request): JsonResponse
+    public function save(RequestParameters $post): JsonResponse
     {
-        $memberId = $request->request->getInt('id');
+        $memberId = $post->getInt('id');
 
         if ($memberId > 0) // Edit existing
         {
@@ -73,34 +72,20 @@ class MemberController extends Controller
             $member = new Member();
         }
 
-        $tableFields = ['username', 'email', 'firstName', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city', 'dateOfBirth', 'notes'];
-        foreach ($tableFields as $tableField)
-        {
-            $newValue = User::mangleVarForProperty($tableField, Request::post($tableField));
-            if ($tableField === 'email' && $newValue === '')
-                $newValue = null;
-
-            $user->$tableField = $newValue;
-        }
-
+        $user = $this->updateUserFields($user, $post);
         if (!$user->save())
         {
             throw new \Exception('Error saving user record: ' . var_export(DBConnection::errorInfo(), true));
         }
 
-        foreach (Member::TABLE_FIELDS as $tableField)
-        {
-            if ($tableField !== 'joinedAt' || Request::post($tableField) !== '')
-                $member->$tableField = Member::mangleVarForProperty($tableField, Request::post($tableField));
-        }
-        $member->userId = $user->id;
+        $member = $this->updateMemberFields($user, $member, $post);
         if (!$member->save())
         {
             throw new \Exception('Error saving member record: ' . var_export(DBConnection::errorInfo(), true));
         }
 
-        $newGraduationId = filter_input(INPUT_POST, 'new-graduation-id', FILTER_SANITIZE_NUMBER_INT);
-        $newGraduationDate = filter_input(INPUT_POST, 'new-graduation-date', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+        $newGraduationId = $post->getInt('new-graduation-id');
+        $newGraduationDate = $post->getDate( 'new-graduation-date');
         if ($newGraduationId && $newGraduationDate)
         {
             $mg = new MemberGraduation();
@@ -113,7 +98,7 @@ class MemberController extends Controller
         $hours = [];
         foreach (Hour::fetchAll() as $hour)
         {
-            if (Request::post("hour-{$hour->id}") === '1')
+            if ($post->getBool("hour-{$hour->id}"))
             {
                 $hours[] = $hour;
             }
@@ -121,5 +106,60 @@ class MemberController extends Controller
         $member->setHours($hours);
 
         return new JsonResponse();
+    }
+
+    /**
+     * @param User $user
+     * @param RequestParameters $post
+     * @return User
+     */
+    private function updateUserFields(User $user, RequestParameters $post): string
+    {
+        $user->username = $post->getSimpleString('username');
+        $user->email = $post->getEmail('email') ?: null;
+        $user->firstName = $post->getSimpleString('firstName');
+        $user->tussenvoegsel = $post->getTussenvoegsel('tussenvoegsel');
+        $user->lastName = $post->getSimpleString('lastName');
+        $user->role = $post->getSimpleString('role');
+        $user->comments = $post->getHTML('comments');
+        // Skipping avatar, hideFromMemberList
+        $user->gender = $post->getSimpleString('gender');
+        $user->street = $post->getSimpleString('street');
+        $user->houseNumber = $post->getInt('houseNumber');
+        $user->houseNumberAddition = $post->getSimpleString('houseNumberAddition');
+        $user->postalCode = $post->getPostcode('postalCode');
+        $user->city = $post->getSimpleString('city');
+        $user->dateOfBirth = $post->getDate('dateOfBirth');
+        $user->notes = $post->getHTML('notes');
+
+        return $user;
+    }
+
+    /**
+     * @param $user
+     * @param $member
+     * @param RequestParameters $post
+     * @return Member
+     */
+    private function updateMemberFields($user, $member, RequestParameters $post): Member
+    {
+        $member->userId = $user->id;
+        $member->parentEmail = $post->getEmail('parentEmail');
+        $member->phoneNumbers = $post->getSimpleString('phoneNumber');
+        $member->isContestant = $post->getBool('isContestant');
+        $member->paymentMethod = $post->getSimpleString('paymentMethod');
+        $member->iban = $post->getSimpleString('iban');
+        $member->paymentProblem = $post->getBool('paymentProblem');
+        $member->paymentProblemNote = $post->getHTML('paymentProblem');
+        $member->freeParticipation = $post->getBool('freeParticipation');
+        $member->temporaryStop = $post->getBool('temporaryStop');
+        if ($joinedAt = $post->getDate('joined'))
+        {
+            $member->joinedAt = $joinedAt;
+        }
+        $member->jbnNumber = $post->getAlphaNum('jbnNumber');
+        $member->jbnNumberLocation = $post->getSimpleString('jbnNumberLocation');
+
+        return $member;
     }
 }

@@ -3,20 +3,16 @@ namespace Cyndaron;
 
 class Setting
 {
-    public static function get(string $name, bool $escape = false)
+    public static function get(string $name)
     {
         $connection = DBConnection::getPDO();
         $setting = $connection->prepare('SELECT value FROM settings WHERE name= ?');
         $setting->execute([$name]);
-        if (!$escape)
-        {
-            return $setting->fetchColumn();
-        }
 
-        return htmlspecialchars($setting->fetchColumn(), ENT_COMPAT | ENT_HTML5, 'UTF-8', false);
+        return $setting->fetchColumn();
     }
 
-    public static function set(string $name, string $value)
+    public static function set(string $name, string $value): void
     {
         $connection = DBConnection::getPDO();
         $setting = $connection->prepare('REPLACE INTO settings(`name`, `value`) VALUES (?, ?)');

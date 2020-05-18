@@ -2,7 +2,7 @@
 namespace Cyndaron\Minecraft;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\Template\Template;
 
 /* ***** MINECRAFT 3D Skin Generator *****
@@ -40,13 +40,16 @@ class SkinRendererHandler
     public static int $minY = 0;
     public static int $maxY = 0;
 
-    public function __construct()
+    // TODO: move RequestParameters to Controller.
+    public function __construct(RequestParameters $get)
     {
+        $format = $get->getSimpleString('format');
+
         $times = [];
 
         $times[] = ['Start', $this->microtime_float()];
 
-        $username = Request::get('user');
+        $username = $get->getSimpleString('user');
         $userInfo = DBConnection::doQueryAndFetchFirstRow('SELECT  * FROM minecraft_members WHERE userName = ?', [$username]);
         $img_png = SkinRenderer::getSkinOrFallback($userInfo['skinUrl']);
 
@@ -69,8 +72,8 @@ class SkinRendererHandler
 
         $times[] = ['Download-Image', $this->microtime_float()];
 
-        $vertical_rotation = Request::get('vr');
-        $horizontal_rotation = Request::get('hr');
+        $vertical_rotation = $get->getInt('vr');
+        $horizontal_rotation = $get->getInt('hr');
         $display_hair = $userInfo['renderAvatarHair'];
 
         // Rotation variables in radians (3D Rendering)
@@ -92,7 +95,7 @@ class SkinRendererHandler
             'sin_omega' => sin(0),
         ];
         $alpha_head = 0;
-        $omega_head = deg2rad((float)Request::get('hrh'));
+        $omega_head = deg2rad((float)$get->getInt('hrh'));
         $parts_angles['head'] = [
             'cos_alpha' => cos($alpha_head),
             'sin_alpha' => sin($alpha_head),
@@ -105,7 +108,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_head),
             'sin_omega' => sin($omega_head),
         ];
-        $alpha_right_arm = deg2rad((float)Request::get('vrra'));
+        $alpha_right_arm = deg2rad((float)$get->getInt('vrra'));
         $omega_right_arm = 0;
         $parts_angles['rightArm'] = [
             'cos_alpha' => cos($alpha_right_arm),
@@ -113,7 +116,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_right_arm),
             'sin_omega' => sin($omega_right_arm),
         ];
-        $alpha_left_arm = deg2rad((float)Request::get('vrla'));
+        $alpha_left_arm = deg2rad((float)$get->getInt('vrla'));
         $omega_left_arm = 0;
         $parts_angles['leftArm'] = [
             'cos_alpha' => cos($alpha_left_arm),
@@ -121,7 +124,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_left_arm),
             'sin_omega' => sin($omega_left_arm),
         ];
-        $alpha_right_leg = deg2rad((float)Request::get('vrrl'));
+        $alpha_right_leg = deg2rad((float)$get->getInt('vrrl'));
         $omega_right_leg = 0;
         $parts_angles['rightLeg'] = [
             'cos_alpha' => cos($alpha_right_leg),
@@ -129,7 +132,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_right_leg),
             'sin_omega' => sin($omega_right_leg),
         ];
-        $alpha_left_leg = deg2rad((float)Request::get('vrll'));
+        $alpha_left_leg = deg2rad((float)$get->getInt('vrll'));
         $omega_left_leg = 0;
         $parts_angles['leftLeg'] = [
             'cos_alpha' => cos($alpha_left_leg),
@@ -991,7 +994,7 @@ class SkinRendererHandler
 
         // Handle the ratio
         $min_ratio = 2;
-        $ratio = (int)Request::get('ratio');
+        $ratio = $get->getInt('ratio');
         $ratio = ($ratio < $min_ratio) ? $min_ratio : $ratio;
 
         if (SkinRenderer::SECONDS_TO_CACHE > 0)
@@ -1006,7 +1009,7 @@ class SkinRendererHandler
         $svgTemplateVars = [];
 
         $image = null;
-        if (Request::get('format') === 'svg')
+        if ($format === 'svg')
         {
             $svgTemplate = new Template();
             $svgTemplateVars = [
@@ -1103,7 +1106,7 @@ class SkinRendererHandler
                 {
                     foreach ($polygons[$piece][$face] as $poly)
                     {
-                        if (Request::get('format') === 'svg')
+                        if ($format === 'svg')
                         {
                             $svgTemplateVars['contents'] .= $poly->getSvgPolygon(1);
                         }
@@ -1118,7 +1121,7 @@ class SkinRendererHandler
 
         $times[] = ['Display-image', $this->microtime_float()];
 
-        if (Request::get('format') === 'svg')
+        if ($format === 'svg')
         {
             $svgTemplateVars['remarks'] = '';
             for ($i = 1, $iMax = count($times); $i < $iMax; $i++)

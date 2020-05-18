@@ -6,7 +6,7 @@ namespace Cyndaron\Editor;
 use Cyndaron\Controller;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Page;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,13 +32,13 @@ class EditorController extends Controller
         $previous = $this->queryBits->get(3) === 'previous';
         /** @var Page $editorPage */
         $editorPage = new $class($this->getInternalLinks(), $id, $previous);
-        $hash = $this->queryBits->get(3);
+        $hash = $this->queryBits->get(3) ?? '';
         $hash = strlen($hash) > 20 ? $hash : '';
         $editorPage->addTemplateVar('hash', $hash);
         return new Response($editorPage->render());
     }
 
-    protected function routePost(): Response
+    protected function routePost(RequestParameters $post): Response
     {
         $type = $this->queryBits->get(1);
         if (!array_key_exists($type, static::$savePages))
@@ -50,7 +50,7 @@ class EditorController extends Controller
 
         $class = static::$savePages[$type];
         /** @var EditorSavePage $editorSavePage */
-        $editorSavePage = new $class($id);
+        $editorSavePage = new $class($id, $post);
         return new RedirectResponse($editorSavePage->getReturnUrl() ?: '/');
     }
 

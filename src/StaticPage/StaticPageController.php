@@ -5,9 +5,8 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\Controller;
 use Cyndaron\Menu\MenuItem;
-use Cyndaron\Model;
 use Cyndaron\Page;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -51,19 +50,19 @@ class StaticPageController extends Controller
         return new JsonResponse();
     }
 
-    protected function react(): Response
+    protected function react(RequestParameters $post): Response
     {
         $id = $this->queryBits->getInt(2);
-        $model = Model::loadFromDatabase($id);
+        $model = StaticPageModel::loadFromDatabase($id);
         if ($model === null)
         {
             $page = new Page('Fout', 'Statische pagina niet gevonden.');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
 
-        $author = Request::post('author');
-        $reactie = Request::post('reactie');
-        $antispam = strtolower(Request::post('antispam'));
+        $author = $post->getHTML('author');
+        $reactie = $post->getHTML('reactie');
+        $antispam = strtolower($post->getAlphaNum('antispam'));
         $model->react($author, $reactie, $antispam);
 
         return new RedirectResponse("/sub/$id");

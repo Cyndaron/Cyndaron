@@ -3,11 +3,11 @@ declare (strict_types = 1);
 
 namespace Cyndaron;
 
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class Controller
@@ -43,7 +43,7 @@ class Controller
         return true;
     }
 
-    public function route()
+    public function route(RequestParameters $post)
     {
         $getRoutes = ($this->isApiCall && !empty($this->apiGetRoutes)) ? $this->apiGetRoutes : $this->getRoutes;
         $postRoutes = ($this->isApiCall && !empty($this->apiPostRoutes)) ? $this->apiPostRoutes : $this->postRoutes;
@@ -68,7 +68,6 @@ class Controller
                 return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
 
-        $request = SymfonyRequest::createFromGlobals();
         if (array_key_exists($this->action, $routesTable))
         {
             $route = $routesTable[$this->action];
@@ -81,7 +80,7 @@ class Controller
             }
 
             $function = $route['function'];
-            return $this->$function($request);
+            return $this->$function($post);
         }
 
         // Do not fall back to old functions for API calls.
@@ -91,7 +90,7 @@ class Controller
         }
 
         $this->checkUserLevelOrDie($oldMinLevel);
-        return $this->$oldRouteFunction($request);
+        return $this->$oldRouteFunction($post);
     }
 
     protected function routeGet(): Response
@@ -99,7 +98,8 @@ class Controller
         return new Response('Route niet gevonden!', Response::HTTP_NOT_FOUND);
     }
 
-    protected function routePost(): Response
+    /** @noinspection PhpUnusedParameterInspection */
+    protected function routePost(RequestParameters $post): Response
     {
         return new Response('Route niet gevonden!', Response::HTTP_NOT_FOUND);
     }

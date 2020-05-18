@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Mailform;
 
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\Template\Template;
 
 class MailFormLDBF
@@ -34,7 +34,7 @@ class MailFormLDBF
     private Template $mailTemplate;
     private string $mailBody;
 
-    public function fillMailTemplate(): void
+    public function fillMailTemplate(RequestParameters $post): void
     {
         $this->mailTemplate = new Template();
         $templateVars = [];
@@ -44,20 +44,20 @@ class MailFormLDBF
             if ($templateVar === 'emailadres')
                 $requestVarName = 'E-mailadres';
 
-            $templateVars[$templateVar] = Request::post($requestVarName);
+            $templateVars[$templateVar] = $post->getHTML($requestVarName);
         }
         $this->mailBody = $this->mailTemplate->render('Mailform/LDBFMail.blade.php', $templateVars);
     }
 
-    public function sendMail(): bool
+    public function sendMail(string $requesterMail): bool
     {
         $extraheaders = 'From: "Website Leen de Broekert Fonds" <noreply@leendebroekertfonds.nl>' . "\n" .
             'Content-Type: text/html; charset="UTF-8"';
-        $extraheadersMail1 = $extraheaders . "\n" . 'Reply-To: ' . Request::post('E-mailadres');
+        $extraheadersMail1 = $extraheaders . "\n" . 'Reply-To: ' . $requesterMail;
         $extraheadersMail2 = $extraheaders . "\n" . 'Reply-To: voorzitter@leendebroekertfonds.nl';
 
         $mail1 = mail('voorzitter@leendebroekertfonds.nl', 'Nieuwe aanvraag', $this->mailBody, $extraheadersMail1, '-fnoreply@leendebroekertfonds.nl');
-        $mail2 = mail(Request::post('E-mailadres'), 'Kopie aanvraag', $this->mailBody, $extraheadersMail2, '-fnoreply@leendebroekertfonds.nl');
+        $mail2 = mail($requesterMail, 'Kopie aanvraag', $this->mailBody, $extraheadersMail2, '-fnoreply@leendebroekertfonds.nl');
 
         return $mail1 && $mail2;
     }

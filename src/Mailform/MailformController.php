@@ -5,7 +5,7 @@ namespace Cyndaron\Mailform;
 
 use Cyndaron\Controller;
 use Cyndaron\Page;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\Setting;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util;
@@ -30,16 +30,18 @@ class MailformController extends Controller
     }
 
     /**
+     * @param RequestParameters $post
+     * @return Response
      * @throws Exception
      */
-    public function process(): Response
+    public function process(RequestParameters $post): Response
     {
         $id = $this->queryBits->getInt(2);
         $form = Mailform::loadFromDatabase($id);
 
         try
         {
-            $this->processHelper($form);
+            $this->processHelper($form, $post);
             $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
             return new Response($page->render());
         }
@@ -50,11 +52,11 @@ class MailformController extends Controller
         }
     }
 
-    public function processLDBF(): Response
+    public function processLDBF(RequestParameters $post): Response
     {
         try
         {
-            $this->processLDBFHelper();
+            $this->processLDBFHelper($post);
 
             $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
             return new Response($page->render());
@@ -67,20 +69,20 @@ class MailformController extends Controller
         }
     }
 
-    private function processLDBFHelper(): bool
+    private function processLDBFHelper(RequestParameters $post): bool
     {
-        if (Request::postIsEmpty())
+        if ($post->isEmpty())
         {
             throw new Exception('Ongeldig formulier.');
         }
-        if (empty(Request::post('E-mailadres')))
+        if (empty($post->getEmail('E-mailadres')))
         {
             throw new Exception('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
         }
 
         $mailForm = new MailFormLDBF();
-        $mailForm->fillMailTemplate();
-        $mailSent = $mailForm->sendMail();
+        $mailForm->fillMailTemplate($post);
+        $mailSent = $mailForm->sendMail($post->getEmail('E-mailadres'));
 
         if (!$mailSent)
         {
@@ -92,37 +94,39 @@ class MailformController extends Controller
 
     /**
      * @param Mailform $form
+     * @param RequestParameters $post
      * @return bool
      * @throws Exception
      */
-    public function processHelper(Mailform $form): bool
+    public function processHelper(Mailform $form, RequestParameters $post): bool
     {
         if ($form === null || !$form->name)
         {
             throw new Exception('Ongeldig formulier.');
         }
 
-        if ($form->sendConfirmation && empty(Request::post('E-mailadres')))
+        if ($form->sendConfirmation && empty($post->getEmail('E-mailadres')))
         {
             throw new Exception('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
         }
 
-        if (strtolower(Request::post('antispam')) !== strtolower($form->antiSpamAnswer))
+        if (strcasecmp($post->getAlphaNum('antispam'), $form->antiSpamAnswer) !== 0)
         {
             throw new Exception('U heeft de antispamvraag niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
         }
 
         $mailBody = '';
-        foreach (Request::post() as $question => $answer)
+        foreach ($post->getKeys() as $question)
         {
             if ($question !== 'antispam')
             {
+                $answer = $post->getHTML($question);
                 $mailBody .= $question . ': ' . strtr($answer, ['\\' => '']) . "\n";
             }
         }
         $recipient = $form->email;
         $subject = $form->name;
-        $sender = Request::post('E-mailadres');
+        $sender = $post->getEmail('E-mailadres');
 
         $fromAddress = Util::getNoreplyAddress();
         $fromName = html_entity_decode(Setting::get('organisation') ?: Setting::get('siteName'));

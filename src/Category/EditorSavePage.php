@@ -1,24 +1,24 @@
 <?php
 namespace Cyndaron\Category;
 
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     const TYPE = 'category';
 
-    protected function prepare()
+    protected function prepare(RequestParameters $post)
     {
-        $categoryId = (int)Request::post('categoryId');
+        $categoryId = $post->getInt('categoryId');
 
         $category = new Category($this->id);
         $category->loadIfIdIsSet();
-        $category->name = Request::unsafePost('titel');
-        $category->description = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
-        $category->viewMode = (int)Request::post('viewMode');
+        $category->name = $post->getHTML('titel');
+        $category->description = $this->parseTextForInlineImages($post->getHTML('artikel'));
+        $category->viewMode = $post->getInt('viewMode');
         $category->categoryId = ($categoryId === 0) ? null : $categoryId;
-        $category->showBreadcrumbs = (bool)Request::post('showBreadcrumbs');
+        $category->showBreadcrumbs = $post->getBool('showBreadcrumbs');
         $category->save();
 
         User::addNotification('Categorie bewerkt.');

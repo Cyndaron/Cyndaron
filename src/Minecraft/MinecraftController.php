@@ -5,7 +5,7 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Controller;
 use Cyndaron\Minecraft\Dynmap\DynmapProxy;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,7 +45,8 @@ class MinecraftController extends Controller
     public function skin(): Response
     {
         ob_start();
-        new SkinRendererHandler();
+        $get = new RequestParameters($_GET);
+        new SkinRendererHandler($get);
         return new Response(ob_get_clean());
     }
 

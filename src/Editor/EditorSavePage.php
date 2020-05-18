@@ -2,7 +2,7 @@
 namespace Cyndaron\Editor;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
 use Cyndaron\Util;
 
@@ -13,13 +13,13 @@ abstract class EditorSavePage
     protected ?int $id = null;
     protected string $returnUrl = '';
 
-    public function __construct(?int $id)
+    public function __construct(?int $id, RequestParameters $post)
     {
         $this->id = $id;
 
-        $this->prepare();
+        $this->prepare($post);
 
-        if ($friendlyUrl = Request::post('friendlyUrl'))
+        if ($friendlyUrl = $post->getUrl('friendlyUrl'))
         {
             $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $this->id);
             $oudeFriendlyUrl = $unfriendlyUrl->getFriendly();
@@ -34,11 +34,16 @@ abstract class EditorSavePage
         }
     }
 
-    abstract protected function prepare();
+    abstract protected function prepare(RequestParameters $post);
 
-    protected function parseTextForInlineImages($text)
+    protected function parseTextForInlineImages(string $text): string
     {
-        return preg_replace_callback('/src="(data:)([^"]*)"/', 'static::extractImages', $text);
+        $result = preg_replace_callback('/src="(data:)([^"]*)"/', 'static::extractImages', $text);
+        if (!is_string($result))
+        {
+            throw new \Exception('Error while parsing text for inline images!');
+        }
+        return $result;
     }
 
     protected static function extractImages($matches): string

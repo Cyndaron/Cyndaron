@@ -4,26 +4,26 @@ declare (strict_types = 1);
 namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
-    protected function prepare()
+    protected function prepare(RequestParameters $post)
     {
         $concert = new Concert($this->id);
         $concert->loadIfIdIsSet();
-        $concert->name = Request::unsafePost('titel');
-        $concert->description = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
-        $concert->descriptionWhenClosed = Request::unsafePost('descriptionWhenClosed');
-        $concert->openForSales = (bool)Request::post('openForSales');
-        $concert->forcedDelivery = (bool)Request::post('forcedDelivery');
-        $concert->deliveryCost = (float)str_replace(',', '.', Request::post('deliveryCost'));
-        $concert->hasReservedSeats = (bool)Request::post('hasReservedSeats');
-        $concert->reservedSeatCharge = (float)str_replace(',', '.', Request::post('reservedSeatCharge'));
-        $concert->reservedSeatsAreSoldOut = (bool)Request::post('reservedSeatsAreSoldOut');
-        $concert->numFreeSeats = (int)Request::post('numFreeSeats');
-        $concert->numReservedSeats = (int)Request::post('numReservedSeats');
+        $concert->name = $post->getHTML('titel');
+        $concert->description = $this->parseTextForInlineImages($post->getHTML('artikel'));
+        $concert->descriptionWhenClosed = $this->parseTextForInlineImages($post->getHTML('descriptionWhenClosed'));
+        $concert->openForSales = $post->getBool('openForSales');
+        $concert->forcedDelivery = $post->getBool('forcedDelivery');
+        $concert->deliveryCost = $post->getFloat('deliveryCost');
+        $concert->hasReservedSeats = $post->getBool('hasReservedSeats');
+        $concert->reservedSeatCharge = $post->getFloat('reservedSeatCharge');
+        $concert->reservedSeatsAreSoldOut = $post->getBool('reservedSeatsAreSoldOut');
+        $concert->numFreeSeats = $post->getInt('numFreeSeats');
+        $concert->numReservedSeats = $post->getInt('numReservedSeats');
 
         if ($concert->save())
         {

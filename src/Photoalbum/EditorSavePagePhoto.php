@@ -1,17 +1,17 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 
 class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
 {
     const TYPE = 'photo';
 
-    protected function prepare()
+    protected function prepare(RequestParameters $post)
     {
-        $hash = Request::post('hash');
-        $caption = Request::unsafePost('artikel');
+        $hash = $post->getAlphaNum('hash');
+        $caption = $this->parseTextForInlineImages($post->getHTML('artikel'));
 
         PhotoalbumCaption::create($hash, $caption);
         User::addNotification('Bijschrift bewerkt.');

@@ -4,26 +4,26 @@ declare (strict_types = 1);
 namespace Cyndaron\Registration;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Request;
+use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
-    protected function prepare()
+    protected function prepare(RequestParameters $post)
     {
         $event = new Event($this->id);
         $event->loadIfIdIsSet();
-        $event->name = Request::unsafePost('titel');
-        $event->description = $this->parseTextForInlineImages(Request::unsafePost('artikel'));
-        $event->descriptionWhenClosed = Request::unsafePost('descriptionWhenClosed');
-        $event->openForRegistration = (bool)Request::post('openForRegistration');
-        $event->registrationCost0 = (float)str_replace(',', '.', Request::post('registrationCost0'));
-        $event->registrationCost1 = (float)str_replace(',', '.', Request::post('registrationCost1'));
-        $event->registrationCost2 = (float)str_replace(',', '.', Request::post('registrationCost2'));
-        $event->lunchCost = (float)str_replace(',', '.', Request::post('lunchCost'));
-        $event->maxRegistrations = (int)Request::post('maxRegistrations');
-        $event->numSeats = (int)Request::post('numSeats');
-        $event->requireApproval = (bool)Request::post('requireApproval');
+        $event->name = $post->getHTML('titel');
+        $event->description = $this->parseTextForInlineImages($post->getHTML('artikel'));
+        $event->descriptionWhenClosed = $this->parseTextForInlineImages($post->getHTML('descriptionWhenClosed'));
+        $event->openForRegistration = $post->getBool('openForRegistration');
+        $event->registrationCost0 = $post->getFloat('registrationCost0');
+        $event->registrationCost1 = $post->getFloat('registrationCost1');
+        $event->registrationCost2 = $post->getFloat('registrationCost2');
+        $event->lunchCost = $post->getFloat('lunchCost');
+        $event->maxRegistrations = $post->getInt('maxRegistrations');
+        $event->numSeats = $post->getInt('numSeats');
+        $event->requireApproval = $post->getBool('requireApproval');
 
         if ($event->save())
         {

@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\Request;
+use Cyndaron\Router;
 
 class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
 {
@@ -19,6 +19,6 @@ class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
             $this->model = PhotoalbumCaption::loadFromDatabase($this->id);
             $this->content = $this->model->caption;
         }
-        $_SESSION['referrer'] = Request::referrer();
+        $_SESSION['referrer'] = Router::referrer();
     }
 }
