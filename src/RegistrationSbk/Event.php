@@ -7,8 +7,8 @@ use Cyndaron\Model;
 
 class Event extends Model
 {
-    const TABLE = 'registrationsbk_events';
-    const TABLE_FIELDS = ['name', 'openForRegistration', 'description', 'descriptionWhenClosed', 'registrationCost', 'performedPiece', 'termsAndConditions'];
+    public const TABLE = 'registrationsbk_events';
+    public const TABLE_FIELDS = ['name', 'openForRegistration', 'description', 'descriptionWhenClosed', 'registrationCost', 'performedPiece', 'termsAndConditions'];
 
     private const ANTISPAM_ANSWER = 'Mozart';
 

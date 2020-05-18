@@ -5,10 +5,10 @@ use Cyndaron\Router;
 
 class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
 {
-    const HAS_TITLE = false;
-    const TYPE = 'photo';
-    const TABLE = 'bijschiften';
-    const SAVE_URL = '/editor/photo/%s';
+    public const HAS_TITLE = false;
+    public const TYPE = 'photo';
+    public const TABLE = 'bijschiften';
+    public const SAVE_URL = '/editor/photo/%s';
 
     protected string $template = '';
 

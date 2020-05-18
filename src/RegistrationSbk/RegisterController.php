@@ -58,10 +58,14 @@ class RegisterController extends Controller
 
         /** @var Event $eventObj */
         $eventObj = Event::loadFromDatabase($eventId);
+        if ($eventObj === null)
+        {
+            throw new Exception('Evenement niet gevonden!');
+        }
 
         if (!$eventObj->openForRegistration)
         {
-            throw new Exception('De aanmeldingen voor dit evenement is helaas gesloten, je kunt je niet meer aanmelden.');
+            throw new Exception('De aanmelding voor dit evenement is helaas gesloten, je kunt je niet meer aanmelden.');
         }
 
         $errorFields = $this->checkForm($eventObj, $post);
@@ -73,6 +77,7 @@ class RegisterController extends Controller
         }
 
         $order = new Registration();
+        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $order->eventId = $eventObj->id;
         $order->lastName = $post->getSimpleString('lastName');
         $order->initials = $post->getInitials('initials');

@@ -9,9 +9,9 @@ use Exception;
 
 class StaticPageModel extends Model
 {
-    const TABLE = 'subs';
-    const TABLE_FIELDS = ['name', 'text', 'enableComments', 'categoryId', 'showBreadcrumbs', 'tags'];
-    const HAS_CATEGORY = true;
+    public const TABLE = 'subs';
+    public const TABLE_FIELDS = ['name', 'text', 'enableComments', 'categoryId', 'showBreadcrumbs', 'tags'];
+    public const HAS_CATEGORY = true;
 
     public string $name = '';
     public string $text = '';

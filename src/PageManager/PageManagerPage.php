@@ -87,7 +87,7 @@ class PageManagerPage extends Page
                         </td>
                         <td>
                             <div class="btn-group">
-                                <?= new Button('edit', '/editor/sub/' . $id, 'Bewerk deze statische pagina', null, 16);?>
+                                <?= new Button('edit', '/editor/sub/' . $id, 'Bewerk deze statische pagina', null, 16)?>
                                 <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="sub" data-id="<?=$id;?>" data-csrf-token="<?=User::getCSRFToken('sub', 'delete')?>"><span class="glyphicon glyphicon-trash"></span></button>
                                 <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="sub" data-id="<?=$id;?>" data-csrf-token="<?=User::getCSRFToken('sub', 'addtomenu')?>"><span class="glyphicon glyphicon-bookmark"></span></button>
                                 <?php if ($hasLastVersion)

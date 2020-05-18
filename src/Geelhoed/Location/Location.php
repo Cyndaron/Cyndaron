@@ -8,8 +8,8 @@ use Cyndaron\Model;
 
 class Location extends Model
 {
-    const TABLE = 'geelhoed_locations';
-    const TABLE_FIELDS = ['name', 'street', 'houseNumber', 'postalCode', 'city'];
+    public const TABLE = 'geelhoed_locations';
+    public const TABLE_FIELDS = ['name', 'street', 'houseNumber', 'postalCode', 'city'];
 
     public string $name;
     public string $street;

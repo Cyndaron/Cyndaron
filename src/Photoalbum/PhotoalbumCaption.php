@@ -6,16 +6,16 @@ use Cyndaron\Model;
 
 class PhotoalbumCaption extends Model
 {
-    const TABLE = 'photoalbum_captions';
-    const TABLE_FIELDS = ['hash', 'caption'];
+    public const TABLE = 'photoalbum_captions';
+    public const TABLE_FIELDS = ['hash', 'caption'];
 
     public string $hash;
     public string $caption;
 
-    public static function create(string $hash, string $caption)
+    public static function create(string $hash, string $caption): bool
     {
         DBConnection::doQueryAndFetchOne('DELETE FROM photoalbum_captions WHERE hash = ?', [$hash]);
-        DBConnection::doQueryAndFetchOne('INSERT INTO photoalbum_captions(hash,caption) VALUES (?,?)', [$hash, $caption]);
+        return (bool)DBConnection::doQueryAndFetchOne('INSERT INTO photoalbum_captions(hash,caption) VALUES (?,?)', [$hash, $caption]);
     }
 
     public static function loadByHash(string $hash): ?PhotoalbumCaption

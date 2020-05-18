@@ -43,7 +43,7 @@ class User extends Model
 
 <p>Uw nieuwe wachtwoord is: %s</p>';
 
-    const MAIL_HEADERS = <<<EOT
+    public const MAIL_HEADERS = <<<EOT
 MIME-Version: 1.0
 Content-type: text/html; charset=utf-8
 From: %s <%s>
@@ -85,7 +85,12 @@ EOT;
     public function generatePassword(): string
     {
         $newPassword = Util::generatePassword();
-        $this->password = password_hash($newPassword, PASSWORD_DEFAULT);
+        $hashResult = password_hash($newPassword, PASSWORD_DEFAULT);
+        if (!is_string($hashResult))
+        {
+            throw new Exception('Error while hashing password!');
+        }
+        $this->password = $hashResult;
         return $newPassword;
     }
 

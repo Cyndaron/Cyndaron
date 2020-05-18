@@ -59,7 +59,7 @@ class DBConnection
 
     public static function doQueryAndFetchOne(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, function(PDOStatement$prep, $result) {
+        return static::executeQuery($query, $vars, static function(PDOStatement$prep, $result) {
             return $prep->fetchColumn();
         });
     }

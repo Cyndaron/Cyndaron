@@ -41,6 +41,10 @@ class MailformController extends Controller
 
         try
         {
+            if ($form === null)
+            {
+                throw new Exception('Formulier niet gevonden!');
+            }
             $this->processHelper($form, $post);
             $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
             return new Response($page->render());

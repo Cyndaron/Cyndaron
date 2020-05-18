@@ -52,6 +52,10 @@ class PhotoalbumController extends Controller
         $id = $this->queryBits->getInt(2);
 
         $album = Photoalbum::loadFromDatabase($id);
+        if ($album === null)
+        {
+            throw new \Exception('Photo album not found!');
+        }
         Photo::create($album);
 
         return new RedirectResponse("/photoalbum/{$album->id}");
@@ -83,6 +87,10 @@ class PhotoalbumController extends Controller
         $id = $this->queryBits->getInt(2);
 
         $album = Photoalbum::loadFromDatabase($id);
+        if ($album === null)
+        {
+            throw new \Exception('Photo album not found!');
+        }
         $filename = $this->queryBits->get(3);
         Photo::deleteByAlbumAndFilename($album, $filename);
 

@@ -7,10 +7,10 @@ use ReflectionProperty;
 
 class Model
 {
-    const TABLE = null;
-    const HAS_CATEGORY = false;
+    public const TABLE = null;
+    public const HAS_CATEGORY = false;
     // Override to include the fields for that particular model
-    const TABLE_FIELDS = [];
+    public const TABLE_FIELDS = [];
 
     public ?int $id;
     public string $modified;
@@ -82,7 +82,7 @@ class Model
      * @param string $afterWhere
      * @return static[]
      */
-    public static function fetchAll(array $where = [], array $args = [], string $afterWhere = '')
+    public static function fetchAll(array $where = [], array $args = [], string $afterWhere = ''): array
     {
         $whereString = '';
         if (count($where) > 0)
@@ -143,15 +143,22 @@ class Model
         return $sub;
     }
 
-    public function updateFromArray($newArray)
+    public function updateFromArray($newArray): bool
     {
+        $couldUpdateAll = true;
         foreach (self::getExtendedTableFields() as $tableField)
         {
             if (array_key_exists($tableField, $newArray))
             {
                 $this->$tableField = $newArray[$tableField];
             }
+            else
+            {
+                $couldUpdateAll = false;
+            }
         }
+
+        return $couldUpdateAll;
     }
 
     public function delete(): void

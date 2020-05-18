@@ -31,13 +31,11 @@ class ContestMember extends Model
     public static function fetchByContestAndMember(Contest $contest, Member $member): ?self
     {
         $results = self::fetchAll(['contestId = ?', 'memberId = ?'], [$contest->id, $member->id]);
-        if (count($results) > 0)
-        {
-            return reset($results);
-        }
-        else
+        if (count($results) <= 0)
         {
             return null;
         }
+
+        return reset($results);
     }
 }

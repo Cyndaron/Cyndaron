@@ -12,8 +12,8 @@ class MonthSelector extends Widget
         for ($i = 1; $i <= 12; $i++)
         {
             $label = Util::getMonth($i);
-            $i = (strlen($i) == 1) ? $i = "0" . $i : $i;
-            $sel = ($i == $selectedMonth) ? "selected" : "";
+            $i = (strlen($i) === 1) ? $i = "0" . $i : $i;
+            $sel = ($i === $selectedMonth) ? "selected" : "";
             $this->code .= "<option value='" . $i . "' $sel>" . $label . "</option>";
         }
     }

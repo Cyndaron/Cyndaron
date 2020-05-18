@@ -7,7 +7,7 @@ use Cyndaron\User\User;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
-    const TYPE = 'sub';
+    public const TYPE = 'sub';
 
     protected function prepare(RequestParameters $post)
     {

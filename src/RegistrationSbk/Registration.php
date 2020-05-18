@@ -8,12 +8,12 @@ use \Exception;
 
 class Registration extends Model
 {
-    const TABLE = 'registrationsbk_registrations';
-    const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'vocalRange', 'email', 'phone', 'city', 'currentChoir', 'choirExperience', 'performedBefore', 'comments', 'approvalStatus', 'isPaid'];
+    public const TABLE = 'registrationsbk_registrations';
+    public const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'vocalRange', 'email', 'phone', 'city', 'currentChoir', 'choirExperience', 'performedBefore', 'comments', 'approvalStatus', 'isPaid'];
 
-    const APPROVAL_UNDECIDED = 0;
-    const APPROVAL_APPROVED = 1;
-    const APPROVAL_DISAPPROVED = 2;
+    public const APPROVAL_UNDECIDED = 0;
+    public const APPROVAL_APPROVED = 1;
+    public const APPROVAL_DISAPPROVED = 2;
 
     public int $eventId;
     public string $lastName;
@@ -29,7 +29,7 @@ class Registration extends Model
     public int $approvalStatus = self::APPROVAL_UNDECIDED;
     public bool $isPaid = false;
 
-    public static function loadByEvent(Event $event)
+    public static function loadByEvent(Event $event): array
     {
         return static::fetchAll(['eventId = ?'], [$event->id], 'ORDER BY id');
     }
@@ -39,7 +39,7 @@ class Registration extends Model
         return Event::loadFromDatabase((int)$this->eventId);
     }
 
-    public function sendConfirmationMail()
+    public function sendConfirmationMail(): bool
     {
         $event = $this->getEvent();
 
@@ -54,7 +54,7 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
      * @return bool
      * @throws Exception
      */
-    public function setApproved()
+    public function setApproved(): bool
     {
         if ($this->id === null)
         {
@@ -85,7 +85,7 @@ Stichting Bijzondere Koorprojecten';
         return Util::mail($this->email, 'Aanmelding ' . $event->name . ' goedgekeurd', $text);
     }
 
-    public function setDisapproved()
+    public function setDisapproved(): bool
     {
         if ($this->id === null)
         {
@@ -108,7 +108,7 @@ Stichting Bijzondere Koorprojecten';
         return Util::mail($this->email, 'Aanmelding ' . $event->name, $text);
     }
 
-    public function setIsPaid()
+    public function setIsPaid(): bool
     {
         if ($this->id === null)
         {

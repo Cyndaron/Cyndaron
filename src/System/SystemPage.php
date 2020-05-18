@@ -73,11 +73,12 @@ class SystemPage extends Page
 
         // We only want the innerhtml of the body.
         preg_match("/<body(.*?)>(.*?)<\\/body>/si", $phpinfo, $match);
-        $phpinfo = $match[2];
-        // Remove centering
-        $phpinfo = str_replace('<div class="center"', '<div', $phpinfo);
-        // Enhance table layout
-        $phpinfo = str_replace('<table>', '<table class="table">', $phpinfo);
+        $phpinfo = strtr($match[2], [
+            // Remove centering
+            ['<div class="center"' => '<div'],
+            // Enhance table layout
+            ['<table>' => '<table class="table">'],
+        ]);
         // Strip links (and with it, logos)
         $phpinfo = preg_replace('/<a href(.*?)>(.*?)<\/a>/', '', $phpinfo);
         // Old, dirty tags that contain inline style attributes as well (which we don't want).

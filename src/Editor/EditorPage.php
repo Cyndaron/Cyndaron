@@ -9,11 +9,11 @@ use Cyndaron\Url;
 
 abstract class EditorPage extends Page
 {
-    const TYPE = null;
-    const TABLE = null;
-    const HAS_TITLE = true;
-    const HAS_CATEGORY = false;
-    const SAVE_URL = '';
+    public const TYPE = null;
+    public const TABLE = null;
+    public const HAS_TITLE = true;
+    public const HAS_CATEGORY = false;
+    public const SAVE_URL = '';
 
     protected ?int $id = null;
 
@@ -38,7 +38,7 @@ abstract class EditorPage extends Page
         $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $this->id);
         $friendlyUrl = $unfriendlyUrl->getFriendly();
 
-        if ($unfriendlyUrl == $friendlyUrl)
+        if ((string)$unfriendlyUrl === $friendlyUrl)
         {
             $friendlyUrl = '';
         }

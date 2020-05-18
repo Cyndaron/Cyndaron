@@ -6,7 +6,7 @@ use Cyndaron\User\User;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
-    const TYPE = 'category';
+    public const TYPE = 'category';
 
     protected function prepare(RequestParameters $post)
     {

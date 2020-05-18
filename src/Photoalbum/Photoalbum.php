@@ -11,14 +11,14 @@ use Exception;
 
 class Photoalbum extends Model
 {
-    const TABLE = 'photoalbums';
-    const TABLE_FIELDS = ['name', 'notes', 'categoryId', 'showBreadcrumbs', 'hideFromOverview', 'viewMode'];
-    const HAS_CATEGORY = true;
+    public const TABLE = 'photoalbums';
+    public const TABLE_FIELDS = ['name', 'notes', 'categoryId', 'showBreadcrumbs', 'hideFromOverview', 'viewMode'];
+    public const HAS_CATEGORY = true;
 
-    const VIEWMODE_REGULAR = 0;
-    const VIEWMODE_PORTFOLIO = 1;
+    public const VIEWMODE_REGULAR = 0;
+    public const VIEWMODE_PORTFOLIO = 1;
 
-    const VIEWMODE_DESCRIPTIONS = [
+    public const VIEWMODE_DESCRIPTIONS = [
         self::VIEWMODE_REGULAR => 'Fotoalbum',
         self::VIEWMODE_PORTFOLIO => 'Portfolio',
     ];
@@ -45,6 +45,7 @@ class Photoalbum extends Model
         return $id;
     }
 
+    /** @deprecated  */
     public static function edit(int $id, string $naam = null, $notities = null, bool $showBreadcrumbs = null)
     {
         if ($naam !== null)
@@ -61,7 +62,7 @@ class Photoalbum extends Model
         }
     }
 
-    public function getFriendlyUrl()
+    public function getFriendlyUrl(): string
     {
         $url = new Url('/photoalbum/' . $this->id);
         return $url->getFriendly();

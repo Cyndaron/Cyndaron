@@ -253,14 +253,12 @@ class Member extends Model
     public static function loadFromProfile(User $profile): ?self
     {
         $results = self::fetchAll(['userId = ?'], [$profile->id]);
-        if (count($results) > 0)
-        {
-            return reset($results);
-        }
-        else
+        if (count($results) <= 0)
         {
             return null;
         }
+
+        return reset($results);
     }
 
     public static function loadFromLoggedInUser(): ?self

@@ -59,53 +59,49 @@ class ContestController extends Controller
     {
         $id = $this->queryBits->getInt(2);
         $contest = Contest::loadFromDatabase($id);
-        if ($contest)
-        {
-            $page = new ContestViewPage($contest);
-            return new Response($page->render());
-        }
-        else
+        if ($contest === null)
         {
             $page = new Page('Onbekende wedstrijd', 'Kon de wedstrijd niet vinden');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
+
+        $page = new ContestViewPage($contest);
+        return new Response($page->render());
     }
 
     public function subscribe(RequestParameters $post): Response
     {
         $id = $this->queryBits->getInt(2);
         $contest = Contest::loadFromDatabase($id);
-        if ($contest)
-        {
-            $member = Member::loadFromLoggedInUser();
-            $contestMember = new ContestMember();
-            $contestMember->contestId = $contest->id;
-            $contestMember->memberId = $member->id;
-            $contestMember->graduationId = $post->getInt('graduationId');
-            $contestMember->weight = $post->getInt('weight');
-            $contestMember->isPaid = false;
-            if ($contestMember->save())
-            {
-                if ($contest->price > 0.00)
-                {
-                    return $this->doMollieTransaction($contest, $contestMember);
-                }
-                else
-                {
-                    return new RedirectResponse("/contest/view/{$contest->id}");
-                }
-            }
-            else
-            {
-                $page = new Page('Fout bij inschrijven', 'Kon de inschrijving niet opslaan!');
-                return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-        }
-        else
+        if (!$contest)
         {
             $page = new Page('Onbekende wedstrijd', 'Kon de wedstrijd niet vinden');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
+
+        $member = Member::loadFromLoggedInUser();
+        $contestMember = new ContestMember();
+        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
+        $contestMember->contestId = $contest->id;
+        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
+        /** @noinspection NullPointerExceptionInspection */
+        $contestMember->memberId = $member->id;
+        $contestMember->graduationId = $post->getInt('graduationId');
+        $contestMember->weight = $post->getInt('weight');
+        $contestMember->isPaid = false;
+        if (!$contestMember->save())
+        {
+            $page = new Page('Fout bij inschrijven', 'Kon de inschrijving niet opslaan!');
+            return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        // No need to pay, so just redirect.
+        if ($contest->price <= 0.00)
+        {
+            return new RedirectResponse("/contest/view/{$contest->id}");
+        }
+
+        return $this->doMollieTransaction($contest, $contestMember);
     }
 
     private function doMollieTransaction(Contest $contest, ContestMember $contestMember)
@@ -207,6 +203,10 @@ class ContestController extends Controller
     {
         $id = $this->queryBits->getInt(2);
         $contest = Contest::loadFromDatabase($id);
+        if ($contest === null)
+        {
+            throw new \Exception('Wedstrijd niet gevonden!');
+        }
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -260,10 +260,8 @@ class ContestController extends Controller
         {
             return new JsonResponse(['error' => 'Contest member does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        else
-        {
-            $contestMember->delete();
-        }
+
+        $contestMember->delete();
 
         return new JsonResponse();
     }
@@ -276,10 +274,8 @@ class ContestController extends Controller
         {
             return new JsonResponse(['error' => 'Contest does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        else
-        {
-            $contest->delete();
-        }
+
+        $contest->delete();
 
         return new JsonResponse();
     }
@@ -304,7 +300,9 @@ class ContestController extends Controller
         $contest->description = $post->getHTML('description');
         $contest->location = $post->getHTML('location');
         $contest->sportId = $post->getInt('sportId');
+        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $contest->date = $post->getDate('date');
+        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $contest->registrationDeadline = $post->getDate('registrationDeadline');
         $contest->price = $post->getFloat('price');
         if (!$contest->save())

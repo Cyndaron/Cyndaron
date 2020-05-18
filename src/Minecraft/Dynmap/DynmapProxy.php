@@ -7,8 +7,8 @@ use Cyndaron\Minecraft\Server;
 use Cyndaron\QueryBits;
 class DynmapProxy
 {
-    private string $contents = '';
-    private string $contentType = 'text/html';
+    private string $contents;
+    private string $contentType;
 
     public const MIMETABLE = [
         'css' => 'text/css',

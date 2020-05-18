@@ -9,8 +9,8 @@ use \Exception;
 
 class Order extends Model
 {
-    const TABLE = 'ticketsale_orders';
-    const TABLE_FIELDS = ['concert_id', 'delivery', 'deliveryByMember', 'deliveryMemberName', 'email'];
+    public const TABLE = 'ticketsale_orders';
+    public const TABLE_FIELDS = ['concert_id', 'delivery', 'deliveryByMember', 'deliveryMemberName', 'email'];
 
     public int $concert_id;
     public string $delivery;
@@ -18,7 +18,7 @@ class Order extends Model
     public string $deliveryMemberName;
     public string $email;
 
-    public function setIsPaid()
+    public function setIsPaid(): bool
     {
         if ($this->id === null)
         {
@@ -47,13 +47,14 @@ class Order extends Model
         return Util::mail($this->email, 'Betalingsbevestiging', $text);
     }
 
-    public function setIsSent()
+    public function setIsSent(): bool
     {
         if ($this->id === null)
         {
             throw new Exception('id is null!');
         }
 
-        DBConnection::doQuery('UPDATE ticketsale_orders SET `isDelivered`=1 WHERE id=?', [$this->id]);
+        $result = DBConnection::doQuery('UPDATE ticketsale_orders SET `isDelivered`=1 WHERE id=?', [$this->id]);
+        return (bool)$result;
     }
 }

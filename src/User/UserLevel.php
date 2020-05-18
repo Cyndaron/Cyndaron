@@ -5,7 +5,7 @@ namespace Cyndaron\User;
 
 class UserLevel
 {
-    const ANONYMOUS = 0;
-    const LOGGED_IN = 1;
-    const ADMIN = 4;
+    public const ANONYMOUS = 0;
+    public const LOGGED_IN = 1;
+    public const ADMIN = 4;
 }

@@ -12,7 +12,7 @@ class TemplateFinder
      * @param string $name
      * @return string|null
      */
-    public function path(string $name)
+    public function path(string $name): ?string
     {
         // Full path?
         if (file_exists($name))
@@ -49,7 +49,7 @@ class TemplateFinder
      * @param string $name
      * @return string|null
      */
-    private function searchPath(string $path, string $name)
+    private function searchPath(string $path, string $name): ?string
     {
         $baseName = $path . $name;
         $files = [

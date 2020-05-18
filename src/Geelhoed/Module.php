@@ -58,6 +58,10 @@ class Module implements Datatypes, Routes, UrlProvider
                 {
                     case 'view':
                         $location = Location::loadFromDatabase((int)$linkParts[2]);
+                        if ($location === null)
+                        {
+                            return null;
+                        }
                         return $location->getName();
                 }
         }

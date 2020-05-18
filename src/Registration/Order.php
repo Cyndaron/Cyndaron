@@ -177,7 +177,7 @@ class Order extends Model
         $this->save();
 
         $event = $this->getEvent();
-        $orderTotal = $this->calculateTotal();
+        //$orderTotal = $this->calculateTotal();
 
         $text = '';
 

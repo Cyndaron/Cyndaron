@@ -6,8 +6,8 @@ use Imagick;
 
 class Photo
 {
-    const THUMBNAIL_WIDTH = 270;
-    const THUMBNAIL_HEIGHT = 200;
+    public const THUMBNAIL_WIDTH = 270;
+    public const THUMBNAIL_HEIGHT = 200;
 
     public string $filename;
     public string $hash;
@@ -19,7 +19,7 @@ class Photo
      * @param Photoalbum $album
      * @return self[]
      */
-    public static function fetchAllByAlbum(Photoalbum $album)
+    public static function fetchAllByAlbum(Photoalbum $album): array
     {
         $ret = [];
         foreach ($album->getPhotos() as $filename)
@@ -35,17 +35,17 @@ class Photo
         return $ret;
     }
 
-    public function getFullPath()
+    public function getFullPath(): string
     {
         return $this->album->getLinkPrefix() . $this->filename;
     }
 
-    public function getThumbnailPath()
+    public function getThumbnailPath(): string
     {
         return $this->album->getThumbnailPrefix() . $this->filename;
     }
 
-    public static function create(Photoalbum $album)
+    public static function create(Photoalbum $album): void
     {
         $photoalbumPath = __DIR__ . '/../../fotoalbums/' . $album->id;
         $photoalbumThumbnailsPath = $photoalbumPath . 'thumbnails';
@@ -62,28 +62,26 @@ class Photo
 
         $filenameThumb = "$photoalbumThumbnailsPath/" . basename($filename);
 
-        if (move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
+        if (!move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
         {
-            copy($filename, $filenameThumb);
+            throw new \Exception('Kon foto niet uploaden!');
+        }
 
-            static::resizeMainPhoto($filename);
-            static::createThumbnail($filenameThumb);
-        }
-        else
-        {
-            die('Kon foto niet uploaden!');
-        }
+        copy($filename, $filenameThumb);
+
+        static::resizeMainPhoto($filename);
+        static::createThumbnail($filenameThumb);
     }
 
-    protected static function resizeMainPhoto(string $filename)
+    protected static function resizeMainPhoto(string $filename): bool
     {
         $image = new Imagick($filename);
         static::autoRotate($image);
         $image->scaleImage(1024, 1024, true);
-        $image->writeImage($filename);
+        return $image->writeImage($filename);
     }
 
-    protected static function createThumbnail(string $filename)
+    protected static function createThumbnail(string $filename): bool
     {
         $image = new Imagick($filename);
         static::autoRotate($image);
@@ -91,7 +89,7 @@ class Photo
         $x = ($image->getImageWidth() - self::THUMBNAIL_WIDTH) / 2;
         $y = ($image->getImageHeight() - self::THUMBNAIL_HEIGHT) / 2;
         $image->cropImage(self::THUMBNAIL_WIDTH, self::THUMBNAIL_HEIGHT, $x, $y);
-        $image->writeImage($filename);
+        return $image->writeImage($filename);
     }
 
     /**

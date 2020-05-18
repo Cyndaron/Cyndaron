@@ -27,7 +27,7 @@ class OverviewPage extends Page
         $introduction = '';
 
         $includefile = self::PATH . 'include.html';
-        if ($handle = @fopen($includefile, 'r'))
+        if ($handle = @fopen($includefile, 'rb'))
         {
             $contents = fread($handle, filesize($includefile));
             fclose($handle);

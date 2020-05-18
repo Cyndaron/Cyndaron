@@ -9,8 +9,8 @@ use Exception;
 
 class Concert extends Model
 {
-    const TABLE = 'ticketsale_concerts';
-    const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats'];
+    public const TABLE = 'ticketsale_concerts';
+    public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats'];
 
     public string $name = '';
     public bool $openForSales = true;

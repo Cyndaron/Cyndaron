@@ -8,7 +8,7 @@ use Cyndaron\Widget\Toolbar;
 
 class Util extends \Cyndaron\Util
 {
-    const MAX_RESERVED_SEATS = 330;
+    public const MAX_RESERVED_SEATS = 330;
 
     public static function postcodeQualifiesForFreeDelivery(int $postcode): bool
     {

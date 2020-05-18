@@ -3,10 +3,10 @@ namespace Cyndaron\Photoalbum;
 
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
-    const TYPE = 'photoalbum';
-    const TABLE = 'photoalbums';
-    const HAS_CATEGORY = true;
-    const SAVE_URL = '/editor/photoalbum/%s';
+    public const TYPE = 'photoalbum';
+    public const TABLE = 'photoalbums';
+    public const HAS_CATEGORY = true;
+    public const SAVE_URL = '/editor/photoalbum/%s';
 
     protected string $template = '';
 
@@ -15,9 +15,12 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
         if ($this->id)
         {
             $photoalbum = Photoalbum::loadFromDatabase($this->id);
-            $this->model = $photoalbum;
-            $this->content = $photoalbum->notes;
-            $this->contentTitle = $photoalbum->name;
+            if ($photoalbum !== null)
+            {
+                $this->model = $photoalbum;
+                $this->content = $photoalbum->notes;
+                $this->contentTitle = $photoalbum->name;
+            }
         }
         $this->templateVars['viewModeOptions'] = Photoalbum::VIEWMODE_DESCRIPTIONS;
     }

@@ -5,9 +5,9 @@ namespace Cyndaron\Registration;
 
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
-    const TYPE = 'event';
-    const TABLE = 'registration_events';
-    const SAVE_URL = '/editor/event/%s';
+    public const TYPE = 'event';
+    public const TABLE = 'registration_events';
+    public const SAVE_URL = '/editor/event/%s';
 
     protected string $template = '';
 

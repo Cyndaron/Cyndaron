@@ -5,9 +5,9 @@ namespace Cyndaron\Mailform;
 
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
-    const TYPE = 'mailform';
-    const TABLE = 'mailformulieren';
-    const SAVE_URL = '/editor/mailform/%s';
+    public const TYPE = 'mailform';
+    public const TABLE = 'mailformulieren';
+    public const SAVE_URL = '/editor/mailform/%s';
 
     protected string $template = '';
 

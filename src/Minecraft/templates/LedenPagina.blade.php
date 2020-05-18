@@ -33,7 +33,7 @@
 
                         <span class="spelersnaam">{{ $member['userName'] }}</span>
 
-                        @if ($member['donor'] == 1)
+                        @if ((int)$member['donor'] === 1)
                             <br /><span class="donor">Donateur</span>
                         @endif
 

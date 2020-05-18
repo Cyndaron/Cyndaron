@@ -5,9 +5,9 @@ namespace Cyndaron\Ticketsale;
 
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
-    const TYPE = 'concert';
-    const TABLE = 'ticketsale_concerts';
-    const SAVE_URL = '/editor/concert/%s';
+    public const TYPE = 'concert';
+    public const TABLE = 'ticketsale_concerts';
+    public const SAVE_URL = '/editor/concert/%s';
 
     protected string $template = '';
 

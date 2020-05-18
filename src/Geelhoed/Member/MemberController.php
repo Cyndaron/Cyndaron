@@ -62,6 +62,10 @@ class MemberController extends Controller
         if ($memberId > 0) // Edit existing
         {
             $member = Member::loadFromDatabase($memberId);
+            if ($member === null)
+            {
+                throw new \Exception('Member not found!');
+            }
             $user = $member->getProfile();
         }
         else
@@ -89,6 +93,7 @@ class MemberController extends Controller
         if ($newGraduationId && $newGraduationDate)
         {
             $mg = new MemberGraduation();
+            /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
             $mg->memberId = $member->id;
             $mg->graduationId = $newGraduationId;
             $mg->date = $newGraduationDate;
@@ -141,8 +146,9 @@ class MemberController extends Controller
      * @param RequestParameters $post
      * @return Member
      */
-    private function updateMemberFields($user, $member, RequestParameters $post): Member
+    private function updateMemberFields(User $user, Member $member, RequestParameters $post): Member
     {
+        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $member->userId = $user->id;
         $member->parentEmail = $post->getEmail('parentEmail');
         $member->phoneNumbers = $post->getSimpleString('phoneNumber');

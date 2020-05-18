@@ -58,6 +58,10 @@ class OrderController extends Controller
 
         /** @var Event $eventObj */
         $eventObj = Event::loadFromDatabase($eventId);
+        if ($eventObj === null)
+        {
+            throw new Exception('Evenement niet gevonden!');
+        }
 
         if (!$eventObj->openForRegistration)
         {
@@ -80,6 +84,7 @@ class OrderController extends Controller
         }
 
         $order = new Order();
+        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $order->eventId = $eventObj->id;
         $order->lastName = $post->getSimpleString('lastName');
         $order->initials = $post->getInitials('initials');
@@ -113,8 +118,7 @@ class OrderController extends Controller
             throw new Exception('Het formulier is niet goed aangekomen.');
         }
 
-        $result = $order->save();
-        if ($result === false)
+        if (!$order->save())
         {
             $msg = var_export(DBConnection::errorInfo(), true);
             throw new Exception($msg . 'Opslaan inschrijving mislukt!');
@@ -125,7 +129,9 @@ class OrderController extends Controller
             if ($orderTicketTypes[$ticketType->id] > 0)
             {
                 $ott = new OrderTicketType();
+                /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
                 $ott->orderId = $order->id;
+                /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
                 $ott->tickettypeId = $ticketType->id;
                 $ott->amount = $orderTicketTypes[$ticketType->id];
                 $result = $ott->save();

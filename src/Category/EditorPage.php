@@ -5,10 +5,10 @@ use Cyndaron\DBConnection;
 
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
-    const TYPE = 'category';
-    const TABLE = 'categories';
-    const HAS_CATEGORY = true;
-    const SAVE_URL = '/editor/category/%s';
+    public const TYPE = 'category';
+    public const TABLE = 'categories';
+    public const HAS_CATEGORY = true;
+    public const SAVE_URL = '/editor/category/%s';
 
     protected string $template = '';
 

@@ -63,7 +63,7 @@
                     @slot('right')
                         <select id="graduationId" name="graduationId" class="form-control custom-select">
                             @foreach (\Cyndaron\Geelhoed\Graduation::fetchAllBySport($sport) as $graduation)
-                                @php $selected = ($loggedInMember->getHighestGraduation($sport) == $graduation) ? 'selected' : '' @endphp
+                                @php $selected = ($loggedInMember->getHighestGraduation($sport)->id === $graduation->id) ? 'selected' : '' @endphp
                                 <option value="{{ $graduation->id }}" {{ $selected }}>{{ $graduation->name }}</option>
                             @endforeach
                         </select>

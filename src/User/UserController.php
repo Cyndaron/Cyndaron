@@ -114,7 +114,7 @@ class UserController extends Controller
             return new JsonResponse(['error' => 'No ID specified!', Response::HTTP_BAD_REQUEST]);
         }
 
-        $user = User::loadFromDatabase((int)$id);
+        $user = User::loadFromDatabase($id);
         if ($user === null)
         {
             return new JsonResponse(['error' => 'User not found!', Response::HTTP_NOT_FOUND]);

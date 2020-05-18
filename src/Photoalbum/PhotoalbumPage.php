@@ -24,7 +24,7 @@ class PhotoalbumPage extends Page
         }
     }
 
-    public function drawSlider(Photoalbum $album)
+    public function drawSlider(Photoalbum $album): string
     {
         $photos = Photo::fetchAllByAlbum($album);
         return (new Template())->render('Photoalbum/Photoslider', compact('album', 'photos'));

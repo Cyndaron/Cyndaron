@@ -5,13 +5,10 @@
 namespace Cyndaron;
 
 use Cyndaron\User\User;
-use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;
 
 class MigrateController extends Controller
 {
-    protected int $minLevelGet = UserLevel::ANONYMOUS;
-
     public const VERSIONS = [
         '5.3' => 'migrate53',
         '6.0' => 'migrate60',
@@ -55,8 +52,6 @@ class MigrateController extends Controller
 
     private function migrate60(): void
     {
-        return;
-
 //        DBConnection::doQuery("RENAME TABLE gebruikers TO users;");
 //        DBConnection::doQuery("ALTER TABLE `users` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 //        DBConnection::doQuery("ALTER TABLE `users` CHANGE `gebruikersnaam` `username` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;");

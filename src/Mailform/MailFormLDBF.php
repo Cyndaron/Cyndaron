@@ -31,12 +31,11 @@ class MailFormLDBF
         'ookaanvraag',
     ];
 
-    private Template $mailTemplate;
     private string $mailBody;
 
     public function fillMailTemplate(RequestParameters $post): void
     {
-        $this->mailTemplate = new Template();
+        $mailTemplate = new Template();
         $templateVars = [];
         foreach (self::MAIL_TEMPLATE_VARS as $templateVar)
         {
@@ -46,7 +45,7 @@ class MailFormLDBF
 
             $templateVars[$templateVar] = $post->getHTML($requestVarName);
         }
-        $this->mailBody = $this->mailTemplate->render('Mailform/LDBFMail.blade.php', $templateVars);
+        $this->mailBody = $mailTemplate->render('Mailform/LDBFMail.blade.php', $templateVars);
     }
 
     public function sendMail(string $requesterMail): bool

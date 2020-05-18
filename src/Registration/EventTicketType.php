@@ -5,8 +5,8 @@ use Cyndaron\Model;
 
 class EventTicketType extends Model
 {
-    const TABLE = 'registration_tickettypes';
-    const TABLE_FIELDS = ['eventId', 'name', 'price', 'discountPer5'];
+    public const TABLE = 'registration_tickettypes';
+    public const TABLE_FIELDS = ['eventId', 'name', 'price', 'discountPer5'];
 
     public int $eventId;
     public string $name;

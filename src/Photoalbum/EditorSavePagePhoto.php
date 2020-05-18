@@ -6,7 +6,7 @@ use Cyndaron\User\User;
 
 class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
 {
-    const TYPE = 'photo';
+    public const TYPE = 'photo';
 
     protected function prepare(RequestParameters $post)
     {

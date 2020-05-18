@@ -9,7 +9,7 @@ use Cyndaron\User\User;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
-    const TYPE = 'mailform';
+    public const TYPE = 'mailform';
 
     protected function prepare(RequestParameters $post)
     {
