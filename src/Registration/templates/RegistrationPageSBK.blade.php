@@ -1,5 +1,5 @@
 @extends ('Index')
-@php /** @var \Cyndaron\RegistrationSbk\Event $event */@endphp
+@php /** @var \Cyndaron\Registration\Event $event */@endphp
 
 @section ('titleControls')
     <a href="/editor/eventSbk/{{ $event->id }}" class="btn btn-outline-cyndaron" title="Dit evenement bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>

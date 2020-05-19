@@ -13,7 +13,7 @@ class Module implements Routes, Datatypes
     {
         return [
             'event' => EventController::class,
-            'event-order' =>  OrderController::class,
+            'event-registration' =>  RegistrationController::class,
         ];
     }
 

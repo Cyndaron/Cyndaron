@@ -3,7 +3,7 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\Model;
 
-class OrderTicketType extends Model
+class RegistrationTicketType extends Model
 {
     public const TABLE = 'registration_orders_tickettypes';
     public const TABLE_FIELDS = ['orderId', 'tickettypeId', 'amount'];
@@ -13,11 +13,11 @@ class OrderTicketType extends Model
     public int $amount;
 
     /**
-     * @param Order $order
-     * @return OrderTicketType[]
+     * @param Registration $registration
+     * @return RegistrationTicketType[]
      */
-    public static function loadByOrder(Order $order): array
+    public static function loadByRegistration(Registration $registration): array
     {
-        return static::fetchAll(['orderId = ?'], [$order->id]);
+        return static::fetchAll(['orderId = ?'], [$registration->id]);
     }
 }

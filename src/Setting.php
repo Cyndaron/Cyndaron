@@ -3,6 +3,9 @@ namespace Cyndaron;
 
 class Setting
 {
+    public const ORGANISATION_VOV = 'Vlissingse Oratorium Vereniging';
+    public const ORGANISATION_SBK = 'Stichting Bijzondere Koorprojecten';
+
     public static function get(string $name)
     {
         $connection = DBConnection::getPDO();

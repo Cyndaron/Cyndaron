@@ -189,3 +189,11 @@ COMMIT;
 ALTER TABLE `registration_orders` ADD `approvalStatus` tinyint(1) NOT NULL DEFAULT '0' AFTER `choirPreference`;
 
 ALTER TABLE `registration_events` ADD `requireApproval` TINYINT(1) NOT NULL AFTER `numSeats`;
+
+/* Ported from SBK */
+ALTER TABLE `registration_events` ADD `performedPiece` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' AFTER `requireApproval`;
+ALTER TABLE `registration_events` ADD `termsAndConditions` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL AFTER `performedPiece`;
+
+ALTER TABLE `registration_orders` ADD `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL AFTER email;
+ALTER TABLE `registration_orders` ADD `choirExperience` int NOT NULL DEFAULT '0' AFTER `choirPreference`;
+ALTER TABLE `registration_orders` ADD `performedBefore` tinyint(1) NOT NULL DEFAULT '0' AFTER `choirExperience`;

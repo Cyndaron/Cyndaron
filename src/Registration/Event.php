@@ -9,7 +9,7 @@ use Cyndaron\Setting;
 class Event extends Model
 {
     public const TABLE = 'registration_events';
-    public const TABLE_FIELDS = ['name', 'openForRegistration', 'description', 'descriptionWhenClosed', 'registrationCost0', 'registrationCost1', 'registrationCost2', 'lunchCost', 'maxRegistrations', 'numSeats', 'requireApproval'];
+    public const TABLE_FIELDS = ['name', 'openForRegistration', 'description', 'descriptionWhenClosed', 'registrationCost0', 'registrationCost1', 'registrationCost2', 'lunchCost', 'maxRegistrations', 'numSeats', 'requireApproval', 'performedPiece', 'termsAndConditions'];
 
     public string $name = '';
     public bool $openForRegistration = true;
@@ -23,6 +23,9 @@ class Event extends Model
     public int $numSeats = 300;
     public bool $requireApproval = false;
 
+    public string $performedPiece = '';
+    public string $termsAndConditions = '';
+
     /**
      * Get answer to antispam question.
      *
@@ -30,9 +33,12 @@ class Event extends Model
      */
     public function getAntispam(): string
     {
-        if (Setting::get('organisation') === 'Vlissingse Oratorium Vereniging')
+        switch (Setting::get('organisation'))
         {
-            return 'Vlissingen';
+            case Setting::ORGANISATION_VOV:
+                return 'Vlissingen';
+            case Setting::ORGANISATION_SBK:
+                return 'Mozart';
         }
 
         return 'Scratch';

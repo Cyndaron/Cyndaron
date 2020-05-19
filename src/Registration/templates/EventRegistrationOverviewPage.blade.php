@@ -47,9 +47,9 @@
         </thead>
         <tbody>
             @foreach ($registrations as $registration)
-            @php $orderId = $registration->id @endphp
+            @php $registrationId = $registration->id @endphp
             <tr>
-                <td>{{ $orderId }}</td>
+                <td>{{ $registrationId }}</td>
                 <td>
                     {{ $registration->initials }} {{ $registration->lastName }}<br>
                     @if ($registration->registrationGroup === 1)Student / jongere @else Volwassene @endif
@@ -87,22 +87,22 @@
                 @foreach ($ticketTypes as $ticketType)
                 @php $ticketTypeId = $ticketType->id @endphp
                     <td>
-                        @if ($ticketTypesByOrder[$orderId][$ticketTypeId] > 0)
-                            <b>{{ $ticketTypesByOrder[$orderId][$ticketTypeId] }}</b>
+                        @if ($ticketTypesByRegistration[$registrationId][$ticketTypeId] > 0)
+                            <b>{{ $ticketTypesByRegistration[$registrationId][$ticketTypeId] }}</b>
                         @else
                             &nbsp;
                         @endif
                     </td>
                 @endforeach
-                @php $orderTicketTypes = $ticketTypesByOrder[$orderId] ?? [] @endphp
-                <td>{{ $registration->calculateTotal($orderTicketTypes)|euro }}</td>
+                @php $registrationTicketTypes = $ticketTypesByRegistration[$registrationId] ?? [] @endphp
+                <td>{{ $registration->calculateTotal($registrationTicketTypes)|euro }}</td>
                 <td>{{ $registration->isPaid|boolToText }}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
                         @if (!$registration->isPaid)
-                            <button data-order-id="{{ $orderId }}" data-csrf-token-set-is-paid="{{ Cyndaron\User\User::getCSRFToken('event-order', 'setIsPaid') }}" title="Markeren als betaald" class="eom-order-set-paid btn btn-sm btn-success"><span class="glyphicon glyphicon-eur"></span></button>
+                            <button data-registration-id="{{ $registrationId }}" data-csrf-token-set-is-paid="{{ Cyndaron\User\User::getCSRFToken('event-registration', 'setIsPaid') }}" title="Markeren als betaald" class="eom-registration-set-paid btn btn-sm btn-success"><span class="glyphicon glyphicon-eur"></span></button>
                         @endif
-                        <button data-order-id="{{ $orderId }}" data-csrf-token-delete="{{ Cyndaron\User\User::getCSRFToken('event-order', 'delete') }}" title="Inschrijving verwijderen" class="eom-order-delete btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                        <button data-registration-id="{{ $registrationId }}" data-csrf-token-delete="{{ Cyndaron\User\User::getCSRFToken('event-registration', 'delete') }}" title="Inschrijving verwijderen" class="eom-registration-delete btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
                     </div>
                 </td>
             </tr>

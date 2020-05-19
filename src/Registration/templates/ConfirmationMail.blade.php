@@ -3,17 +3,17 @@ Na betaling is uw inschrijving definitief. Eventueel bestelde kaarten voor vrien
 
 Gebruik bij het betalen de volgende gegevens:
 Rekeningnummer: NL44 RABO 0389 3198 21 t.n.v. Scratch Messiah Zeeland
-Bedrag: {{ $orderTotal|euro }}
-Onder vermelding van: inschrijvingsnummer {{ $order->id }}
+Bedrag: {{ $registrationTotal|euro }}
+Onder vermelding van: inschrijvingsnummer {{ $registration->id }}
 
 
 Hieronder volgt een overzicht van uw inschrijving.
 
-Inschrijvingsnummer: {{ $order->id }}
+Inschrijvingsnummer: {{ $registration->id }}
 
-Achternaam: {{ $order->lastName }}
-Voorletters: {{ $order->initials }}
-Stemsoort: {{ $order->vocalRange }}
+Achternaam: {{ $registration->lastName }}
+Voorletters: {{ $registration->initials }}
+Stemsoort: {{ $registration->vocalRange }}
 Arts / BHV / AED: ' . Util::boolToText($this->bhv) . '
 Meezingen in kleinkoor: ' . Util::boolToText($this->kleinkoor) . '
 Lunch: {{ $lunchText }}
@@ -27,8 +27,8 @@ Lunch: {{ $lunchText }}
 @if (!empty($ticketTypes))
 Kaartsoorten:
 @foreach ($ticketTypes as $ticketType)
-@if ($orderTicketTypes[$ticketType->id] > 0)   {{ $ticketType->name }}: {{ $orderTicketTypes[$ticketType->id] }} à {{ Cyndaron\Util::formatEuro((float)$ticketType->price) }}
+@if ($registrationTicketTypes[$ticketType->id] > 0)   {{ $ticketType->name }}: {{ $registrationTicketTypes[$ticketType->id] }} à {{ Cyndaron\Util::formatEuro((float)$ticketType->price) }}
 @endif
 @endforeach
 @endif
-Totaalbedrag: {{ \Cyndaron\Util::formatEuro($orderTotal) }}
+Totaalbedrag: {{ \Cyndaron\Util::formatEuro($registrationTotal) }}

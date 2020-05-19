@@ -5,19 +5,24 @@ use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Setting;
 
-class EventOrderOverviewPage extends Page
+class EventRegistrationOverviewPage extends Page
 {
     public function __construct(Event $event)
     {
-        $ticketTypesByOrder = [];
+        $ticketTypesByRegistration = [];
 
-        if (Setting::get('organisation') === 'Vlissingse Oratorium Vereniging')
+        switch (Setting::get('organisation'))
         {
-            $this->template = 'Registration/EventOrderOverviewPageVOV';
+            case 'Vlissingse Oratorium Vereniging':
+                $this->template = 'Registration/EventRegistrationOverviewPageVOV';
+                break;
+            case 'Stichting Bijzondere Koorprojecten':
+                $this->template = 'Registration/EventRegistrationOverviewPageSBK';
+                break;
         }
 
         $ticketTypes = EventTicketType::loadByEvent($event);
-        $registrations = Order::loadByEvent($event);
+        $registrations = Registration::loadByEvent($event);
         $boughtTicketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM `registration_orders_tickettypes`');
         $defData = [0 => ['amount' => 0, 'num' => 0], 1 => ['amount' => 0, 'num' => 0]];
         $totals = [
@@ -30,25 +35,25 @@ class EventOrderOverviewPage extends Page
 
         $this->addScript('/src/Registration/js/EventOrderOverviewPage.js');
 
-        parent::__construct('Overzicht inschrijvingen: ' . $event->name);
+        parent::__construct('Overzicht aanmeldingen: ' . $event->name);
 
         foreach ($boughtTicketTypes as $boughtTicketType)
         {
-            $orderId = $boughtTicketType['orderId'];
+            $registrationId = $boughtTicketType['registrationId'];
             $ticketType = $boughtTicketType['tickettypeId'];
-            if (!array_key_exists($orderId, $ticketTypesByOrder))
+            if (!array_key_exists($registrationId, $ticketTypesByRegistration))
             {
-                $ticketTypesByOrder[$orderId] = [];
+                $ticketTypesByRegistration[$registrationId] = [];
             }
 
-            $ticketTypesByOrder[$orderId][$ticketType] = $boughtTicketType['amount'];
+            $ticketTypesByRegistration[$registrationId][$ticketType] = $boughtTicketType['amount'];
         }
         foreach ($registrations as $registration)
         {
             if ($registration->vocalRange)
             {
                 $totals[$registration->vocalRange][$registration->isPaid]['num']++;
-                $totals[$registration->vocalRange][$registration->isPaid]['amount'] += $registration->calculateTotal($ticketTypesByOrder[$registration->id] ?? []);
+                $totals[$registration->vocalRange][$registration->isPaid]['amount'] += $registration->calculateTotal($ticketTypesByRegistration[$registration->id] ?? []);
             }
         }
         foreach (['Alt', 'Bas', 'Sopraan', 'Tenor'] as $vocalRange)
@@ -59,6 +64,6 @@ class EventOrderOverviewPage extends Page
             $totals['Totaal'][1]['amount'] += $totals[$vocalRange][1]['amount'];
         }
 
-        $this->addTemplateVars(compact('event', 'ticketTypes', 'ticketTypesByOrder', 'registrations', 'totals'));
+        $this->addTemplateVars(compact('event', 'ticketTypes', 'ticketTypesByRegistration', 'registrations', 'totals'));
     }
 }

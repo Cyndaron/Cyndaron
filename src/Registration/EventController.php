@@ -13,8 +13,8 @@ class EventController extends Controller
 {
     protected array $getRoutes = [
         'getInfo' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getEventInfo'],
-        'order' => ['level' => UserLevel::ANONYMOUS, 'function' => 'order'],
-        'viewOrders' => ['level' => UserLevel::ADMIN, 'function' => 'viewOrders'],
+        'register' => ['level' => UserLevel::ANONYMOUS, 'function' => 'register'],
+        'viewRegistrations' => ['level' => UserLevel::ADMIN, 'function' => 'viewRegistrations'],
     ];
 
     protected function getEventInfo(): JsonResponse
@@ -35,19 +35,19 @@ class EventController extends Controller
         return new JsonResponse($answer);
     }
 
-    protected function order(): Response
+    protected function register(): Response
     {
         $id = $this->queryBits->getInt(2);
         $event = Event::loadFromDatabase($id);
-        $page = new OrderPage($event);
+        $page = new RegistrationPage($event);
         return new Response($page->render());
     }
 
-    protected function viewOrders(): Response
+    protected function viewRegistrations(): Response
     {
         $id = $this->queryBits->getInt(2);
         $event = Event::loadFromDatabase($id);
-        $page = new EventOrderOverviewPage($event);
+        $page = new EventRegistrationOverviewPage($event);
         return new Response($page->render());
     }
 }

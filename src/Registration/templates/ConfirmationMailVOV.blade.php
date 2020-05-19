@@ -3,17 +3,17 @@ Zodra de inschrijving is gesloten krijgt u van ons een nader bericht over het ve
 
 Hieronder volgt een overzicht van uw inschrijving.
 
-Inschrijvingsnummer: {{ $order->id }}
+Inschrijvingsnummer: {{ $registration->id }}
 
-Achternaam: {{ $order->lastName }}
-Voorletters: {{ $order->initials }}
-Stemsoort: {{ $order->vocalRange }}
-Lid van: {{ $order->currentChoir ?: 'Geen koor / ander koor' }}
-Voorkeur koor I/II: {{ $order->choirPreference }}
+Achternaam: {{ $registration->lastName }}
+Voorletters: {{ $registration->initials }}
+Stemsoort: {{ $registration->vocalRange }}
+Lid van: {{ $registration->currentChoir ?: 'Geen koor / ander koor' }}
+Voorkeur koor I/II: {{ $registration->choirPreference }}
 
 @foreach ($extraFields as $description => $contents)
 @if (!empty(trim((string)$contents))){{ $description }}: {{ $contents }}
 @endif
 @endforeach
 
-Totaalbedrag: {{ \Cyndaron\Util::formatEuro($orderTotal) }}
+Totaalbedrag: {{ \Cyndaron\Util::formatEuro($registrationTotal) }}

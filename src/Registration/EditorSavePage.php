@@ -24,6 +24,8 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $event->maxRegistrations = $post->getInt('maxRegistrations');
         $event->numSeats = $post->getInt('numSeats');
         $event->requireApproval = $post->getBool('requireApproval');
+        $event->performedPiece = $post->getHTML('performedPiece');
+        $event->termsAndConditions = $post->getHTML('termsAndConditions');
 
         if ($event->save())
         {
@@ -35,6 +37,6 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
             User::addNotification('Fout bij opslaan evenement: ' . $errorInfo);
         }
 
-        $this->returnUrl = '/event/order/' . $event->id;
+        $this->returnUrl = '/event/register/' . $event->id;
     }
 }
