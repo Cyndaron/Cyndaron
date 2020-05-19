@@ -18,6 +18,13 @@ plugins:
         enabled: false
       Naming/ShortVariable:
         enabled: false
+  phan:
+    enabled: true
+    checks:
+      dead-code-detection:
+        enabled: true
+    config:
+      file_extensions: "php"
 exclude_patterns:
 - "config/"
 - "db/"
