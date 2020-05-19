@@ -18,6 +18,8 @@ namespace Cyndaron;
 
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Photoalbum\PhotoalbumPage;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class Util
 {
@@ -271,5 +273,13 @@ class Util
         $pagesToShow = array_unique($pagesToShow);
         natsort($pagesToShow);
         return $pagesToShow;
+    }
+
+    public static function spreadsheetToString(Spreadsheet $spreadsheet): string
+    {
+        ob_start();
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        return ob_get_clean();
     }
 }

@@ -245,11 +245,7 @@ class ContestController extends Controller
             'cache-control' => 'max-age=0'
         ];
 
-        ob_start();
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save('php://output');
-
-        return new Response(ob_get_clean(), Response::HTTP_OK, $httpHeaders);
+        return new Response(Util::spreadsheetToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
     }
 
     public function removeSubscription(RequestParameters $post): JsonResponse
