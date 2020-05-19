@@ -18,3 +18,19 @@ plugins:
         enabled: false
       Naming/ShortVariable:
         enabled: false
+exclude_patterns:
+- "config/"
+- "db/"
+- "dist/"
+- "features/"
+- "**/node_modules/"
+- "script/"
+- "**/spec/"
+- "**/test/"
+- "**/tests/"
+- "Tests/"
+- "**/contrib/"
+- "**/vendor/"
+- "**/*_test.go"
+- "**/*.d.ts"
+- "src/Minecraft/Dynmap/dynmap.js"
