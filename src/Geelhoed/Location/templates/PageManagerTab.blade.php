@@ -1,3 +1,9 @@
+@component('Widget/Toolbar')
+    @slot('right')
+        @include('Widget/Button', ['kind' => 'new', 'link' => '/editor/location', 'title' => 'Nieuwe locatie', 'text' => 'Nieuwe locatie'])
+    @endslot
+@endcomponent
+
 <table class="table table-striped table-bordered pm-table">
     <thead>
         <tr>

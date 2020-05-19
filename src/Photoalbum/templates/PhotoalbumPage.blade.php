@@ -49,7 +49,7 @@
 
                         <input type="hidden" name="csrfToken" value="{{ $deleteToken }}">
                         <div class="btn-group btn-group-sm">
-                            {!! new \Cyndaron\Widget\Button('edit', "/editor/photo/$captionId/{$photo->hash}", 'Bijschrift bewerken', 'Bijschrift bewerken', 16) !!}
+                            @include('Widget/Button', ['kind' => 'edit', 'link' => "/editor/photo/$captionId/{$photo->hash}", 'title' => 'Bijschrift bewerken', 'text' => 'Bijschrift bewerken', 'size' => 16])
                             <button class="btn btn-sm btn-danger" type="submit"><span class="glyphicon glyphicon-trash"></span></button>
                         </div>
                     </form>

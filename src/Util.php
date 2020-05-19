@@ -214,4 +214,62 @@ class Util
     {
         return sprintf('%s om %s', static::filterDutchDate($date), date('H:i', strtotime($date)));
     }
+
+    public static function getButtonIconAndClass(string $kind): array
+    {
+        $btnClass = 'btn-outline-cyndaron';
+
+        switch ($kind)
+        {
+            case 'new':
+                $icon = 'plus';
+                $btnClass = 'btn-success';
+                break;
+            case 'edit':
+                $icon = 'pencil';
+                break;
+            case 'delete':
+                $icon = 'trash';
+                $btnClass = 'btn-danger';
+                break;
+            case 'lastversion':
+                $icon = 'lastversion';
+                break;
+            case 'addtomenu':
+                $icon = 'bookmark';
+                break;
+            default:
+                $icon = $kind;
+        }
+        return [$icon, $btnClass];
+    }
+
+    /**
+     * @param int $numPages
+     * @param int $currentPage
+     * @return int[]
+     *
+     * todo: Filter out impossible page numbers
+     */
+    public static function determinePages(int $numPages, int $currentPage): array
+    {
+        $pagesToShow = [
+            1, 2, 3,
+            $numPages, $numPages - 1, $numPages - 2,
+            $currentPage - 2, $currentPage - 1, $currentPage, $currentPage + 1, $currentPage + 2,
+        ];
+
+        if ($currentPage === 7)
+        {
+            $pagesToShow[] = 4;
+        }
+        if ($numPages - $currentPage === 6)
+        {
+            $pagesToShow[] = $numPages - 3;
+        }
+
+        $pagesToShow = array_unique($pagesToShow);
+        natsort($pagesToShow);
+        return $pagesToShow;
+    }
 }

@@ -5,5 +5,18 @@
         $text = null;
     if (!isset($size))
         $size = 20;
+
+    [$icon, $btnClass] = \Cyndaron\Util::getButtonIconAndClass($kind);
+
+    if ($size === 16)
+    {
+        $btnClass .= ' btn-sm';
+    }
+
+    $title = $description ? sprintf('title="%s"', $description) : '';
+    $textAfterIcon = $text ? " $text" : '';
 @endphp
-{!! new \Cyndaron\Widget\Button($kind, $link, $description, $text, $size) !!}
+
+<a class="btn {{ $btnClass }}" href="{{ $link }}" {{ $title }}>
+    <span class="glyphicon glyphicon-{{ $icon }}"></span>{{ $textAfterIcon }}
+</a>
