@@ -2,10 +2,10 @@
 
 namespace Cyndaron;
 
-use http\Exception\RuntimeException;
 use PDO;
 use PDOException;
 use PDOStatement;
+use RuntimeException;
 
 /**
  * Zorgt voor verbinding met de database.

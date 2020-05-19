@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron;
 
-use http\Exception\RuntimeException;
+use RuntimeException;
 
 class Kernel
 {

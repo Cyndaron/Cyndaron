@@ -17,8 +17,7 @@
         "components/jquery": "^3.5",
         "ckeditor/ckeditor": "dev-full/4.13.x",
         "twbs/bootstrap": "^4.5",
-        "symfony/http-foundation": "^5.0",
-        "ext-http": "*"
+        "symfony/http-foundation": "^5.0"
     },
     "config": {
         "platform": {
