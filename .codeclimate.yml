@@ -1,3 +1,6 @@
+plugins:
+  sonar-php:
+    enabled: true
 engines:
   phpmd:
     enabled: true
