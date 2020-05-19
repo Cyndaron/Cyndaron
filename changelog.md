@@ -1,3 +1,10 @@
+Versie 6.1/7.0 (in ontwikkeling)
+- Technisch: algehele refactor waarbij veel functies zijn opgesplitst en meer met objecten is gewerkt.
+- Technisch: alle widgets zijn naar Blade geconverteerd.
+- Technisch: controllermethodes geven nu een Response terug in plaats van zelf te echoën.
+- Technisch: nieuw inputframework.
+- Technisch: scripttags en inline JavaScript worden nu gefilterd uit strings (#11).
+
 Versie 6.0 (Trajectum)
 - Feature: aanmaak- en wijzigingdata worden nu vastgelegd (#85)
 - Feature: aantal vrije en gereserveerde plaatsen is nu in te stellen (#45)
