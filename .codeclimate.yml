@@ -2,6 +2,11 @@ version: 2
 plugins:
   sonar-php:
     enabled: true
+    checks:
+      php:S131:
+        enabled: false
+      php:S1192:
+        enabled: false
   phpmd:
     enabled: true
     checks:
