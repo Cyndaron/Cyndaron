@@ -191,23 +191,15 @@ EOT;
         return false;
     }
 
-    // TODO: Just set the fields directly and reduce this to just handling password and mail.
-    public static function create(string $username, string $email, string $password, int $level, string $firstName, string $tussenvoegsel, string $lastName, string $role, string $comments, string $avatar, bool $hideFromMemberList): ?int
+    public function setPassword(string $newPassword): bool
     {
-        $password = password_hash($password, PASSWORD_DEFAULT);
-
-        $user = new static(null);
-        foreach(static::TABLE_FIELDS as $fieldname)
+        $result = password_hash($newPassword, PASSWORD_DEFAULT);
+        if (!is_string($result))
         {
-            $user->$fieldname = $$fieldname;
-        }
-        if (!$user->save())
-        {
-            throw new Exception(implode(',', DBConnection::errorInfo()));
+            return false;
         }
 
-        $user->mailNewPassword($password);
-        return $user->id;
+        $this->password = $result;
     }
 
     public static function login(string $identification, string $password): string

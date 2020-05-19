@@ -101,8 +101,13 @@ class PhotoalbumController extends Controller
     {
         $id = $this->queryBits->getInt(2);
 
-        $name = $post->getHTML('name');
-        Photoalbum::edit($id, $name);
+        $album = Photoalbum::loadFromDatabase($id);
+        if ($album === null)
+        {
+            throw new \Exception('Photoalbum not found!');
+        }
+        $album->name = $post->getHTML('name');
+        $album->save();
 
         return new JsonResponse();
     }

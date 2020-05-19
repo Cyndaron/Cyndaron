@@ -90,20 +90,28 @@ class UserController extends Controller
 
     protected function add(RequestParameters $post): JsonResponse
     {
-        $username = $post->getAlphaNum('username');
-        $email = $post->getEmail('email');
-        $password = $post->getUnfilteredString('password') ?: Util::generatePassword();
-        $level = $post->getInt('level');
-        $firstName = $post->getSimpleString('firstName');
-        $tussenvoegsel = $post->getTussenvoegsel('tussenvoegsel');
-        $lastName = $post->getSimpleString('lastName');
-        $role = $post->getSimpleString('role');
-        $comments = $post->getHTML('comments');
-        $avatar = $post->getFilenameWithDirectory('avatar');
-        $hideFromMemberList = $post->getBool('hideFromMemberList');
+        $user = new User();
+        $user->username = $post->getAlphaNum('username');
+        $user->email = $post->getEmail('email');
+        $user->level = $post->getInt('level');
+        $user->firstName = $post->getSimpleString('firstName');
+        $user->tussenvoegsel = $post->getTussenvoegsel('tussenvoegsel');
+        $user->lastName = $post->getSimpleString('lastName');
+        $user->role = $post->getSimpleString('role');
+        $user->comments = $post->getHTML('comments');
+        $user->avatar = $post->getFilenameWithDirectory('avatar');
+        $user->hideFromMemberList = $post->getBool('hideFromMemberList');
 
-        $userId = User::create($username, $email, $password, $level, $firstName, $tussenvoegsel, $lastName, $role, $comments, $avatar, $hideFromMemberList);
-        return new JsonResponse(['userId' => $userId]);
+        $password = $post->getUnfilteredString('password') ?: Util::generatePassword();
+        $user->setPassword($password);
+        if (!$user->save())
+        {
+            throw new Exception('Could not add user!');
+        }
+
+        $user->mailNewPassword($password);
+
+        return new JsonResponse(['userId' => $user->id]);
     }
 
     protected function edit(RequestParameters $post): JsonResponse

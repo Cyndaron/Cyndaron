@@ -187,6 +187,7 @@ class Router
 
     /**
      * @param string $request
+     * @return RedirectResponse|null
      */
     private function redirectOldUrls(string $request): ?RedirectResponse
     {

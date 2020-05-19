@@ -45,23 +45,6 @@ class Photoalbum extends Model
         return $id;
     }
 
-    /** @deprecated  */
-    public static function edit(int $id, string $naam = null, $notities = null, bool $showBreadcrumbs = null)
-    {
-        if ($naam !== null)
-        {
-            DBConnection::doQueryAndFetchOne('UPDATE photoalbums SET `name`=? WHERE id=?', [$naam, $id]);
-        }
-        if ($notities !== null)
-        {
-            DBConnection::doQueryAndFetchOne('UPDATE photoalbums SET `notes`=? WHERE id=?', [$notities, $id]);
-        }
-        if ($showBreadcrumbs !== null)
-        {
-            DBConnection::doQueryAndFetchOne('UPDATE photoalbums SET `showBreadcrumbs`=? WHERE id=?', [(int)$showBreadcrumbs, $id]);
-        }
-    }
-
     public function getFriendlyUrl(): string
     {
         $url = new Url('/photoalbum/' . $this->id);

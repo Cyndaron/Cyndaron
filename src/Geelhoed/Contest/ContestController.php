@@ -10,7 +10,6 @@ use Cyndaron\Setting;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
