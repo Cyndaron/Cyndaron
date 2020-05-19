@@ -1,7 +1,7 @@
+version: 2
 plugins:
   sonar-php:
     enabled: true
-engines:
   phpmd:
     enabled: true
     checks:
