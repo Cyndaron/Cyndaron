@@ -27,7 +27,7 @@
 
     @if ($model->enableComments)
         <h3>Reageren:</h3>
-        <form name="reactie" method="post" action="/sub/react/{{ $id }}" class="form-horizontal">
+        <form name="reactie" method="post" action="/sub/react/{{ $model->id }}" class="form-horizontal">
             <div class="form-group row">
                 <label for="author" class="col-sm-3 col-form-label">Naam: </label>
                 <div class="col-sm-9">

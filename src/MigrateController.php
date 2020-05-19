@@ -21,21 +21,25 @@ class MigrateController extends Controller
         if (array_key_exists($version, static::VERSIONS))
         {
             $method = static::VERSIONS[$version];
-            $this->$method();
+            if ($this->$method())
+            {
+                $page = new Page('Upgrade naar versie ' . $version, 'De upgrade is voltooid.');
+                return new Response($page->render());
+            }
 
-            $page = new Page('Upgrade naar versie ' . $version, 'De upgrade is voltooid.');
-            return new Response($page->render());
+            $page = new Page('Upgrade mislukt', 'Onbekende oorzaak');
+            return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $page = new Page('Upgrade mislukt', 'Onbekende versie');
         return new Response($page->render(), Response::HTTP_NOT_FOUND);
     }
 
-    private function migrate53(): void
+    private function migrate53(): bool
     {
         if (!User::isAdmin())
         {
-            die();
+            return false;
         }
 
         DBConnection::doQuery('ALTER TABLE `gebruikers` ADD `email` VARCHAR(255) NULL DEFAULT NULL AFTER `wachtwoord`;');
@@ -48,10 +52,14 @@ class MigrateController extends Controller
         // Bestaande menu-items porten
         DBConnection::doQuery('UPDATE `menu` SET link = REPLACE(link, \'#dd\', \'\'), isDropdown=1 WHERE link LIKE \'%#dd\'');
         DBConnection::doQuery('UPDATE `menu` SET alias = REPLACE(alias, \'img#\', \'\'), isImage=1 WHERE alias LIKE \'%img#\'');
+
+        return true;
     }
 
-    private function migrate60(): void
+    private function migrate60(): bool
     {
+        return false;
+
 //        DBConnection::doQuery("RENAME TABLE gebruikers TO users;");
 //        DBConnection::doQuery("ALTER TABLE `users` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 //        DBConnection::doQuery("ALTER TABLE `users` CHANGE `gebruikersnaam` `username` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;");
@@ -60,7 +68,7 @@ class MigrateController extends Controller
 
 //        if (!User::isAdmin())
 //        {
-//            die();
+//            return false;
 //        }
 
 //        $sql = file_get_contents(__DIR__ . '/Migrate60.sql');

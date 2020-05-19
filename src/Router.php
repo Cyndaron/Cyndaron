@@ -13,6 +13,7 @@ use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -53,11 +54,21 @@ class Router
         $request = (new RequestParameters($_GET))->getUrl('page') ?: '/';
         $this->updateRequestVars($request);
 
-        $this->blockPathTraversal($request);
+        $redirect = $this->blockPathTraversal($request);
+        if ($redirect !== null)
+        {
+            $redirect->send();
+            return;
+        }
 
         $this->sendCSPHeader();
 
-        $this->redirectOldUrls($request);
+        $redirect = $this->redirectOldUrls($request);
+        if ($redirect !== null)
+        {
+            $redirect->send();
+            return;
+        }
 
         $this->loadModules();
 
@@ -81,38 +92,44 @@ class Router
         $this->routeEndpoint();
     }
 
-    private function routeFoundNowCheckLogin(): void
+    private function routeFoundNowCheckLogin(): ?RedirectResponse
     {
         $userLevel = User::getLevel();
         $isLoggingIn = $this->requestVars[0] === 'user' && $this->requestVars[1] === 'login';
         if (!$isLoggingIn && !User::hasSufficientReadLevel())
         {
-            header('Cache-Control: no-cache, no-store, must-revalidate');
-            header('Pragma: no-cache');
-            header('Expires: 0');
+            $headers = [
+                'cache-control' => 'no-cache, no-store, must-revalidate',
+                'pragma' => 'no-cache',
+                'expires' => 0,
+            ];
 
             if ($userLevel > 0)
             {
-                header('Location: /error/403');
-                die('Deze pagina mag niet worden opgevraagd.');
+                return new RedirectResponse('/error/403', Response::HTTP_FOUND, $headers);
             }
 
             User::addNotification('U moet inloggen om deze site te bekijken');
             $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
-            header('Location: /user/login');
-            die();
+            return new RedirectResponse('/user/login', Response::HTTP_FOUND, $headers);
         }
+
+        return null;
     }
 
     private function routeEndpoint(): void
     {
-        $this->routeFoundNowCheckLogin();
-        $classname = $this->endpoints[$this->requestVars[0]];
-        /** @var Controller $route */
-        $route = new $classname($this->requestVars[0], $this->requestVars[1] ?? '', $this->isApiCall);
-        $route->setQueryBits(new QueryBits($this->requestVars));
+        $ret = $this->routeFoundNowCheckLogin();
 
-        $ret = $this->getResponse($route);
+        if ($ret === null)
+        {
+            $classname = $this->endpoints[$this->requestVars[0]];
+            /** @var Controller $route */
+            $route = new $classname($this->requestVars[0], $this->requestVars[1] ?? '', $this->isApiCall);
+            $route->setQueryBits(new QueryBits($this->requestVars));
+            $ret = $this->getResponse($route);
+        }
+
         $ret->send();
     }
 
@@ -171,32 +188,34 @@ class Router
     /**
      * @param string $request
      */
-    private function redirectOldUrls(string $request): void
+    private function redirectOldUrls(string $request): ?RedirectResponse
     {
         $frontPage = $this->getFrontpageUrl();
         if ($frontPage->equals(new Url($_SERVER['REQUEST_URI'])))
         {
-            header('Location: /');
-            die();
+            return new RedirectResponse('/');
+
         }
         // Redirect if a friendly url exists for the requested unfriendly url
         if ($_SERVER['REQUEST_URI'] !== '/' && $url = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target = ?', [$_SERVER['REQUEST_URI']]))
         {
-            header('Location: /' . $url);
-            die();
+            return new RedirectResponse("/$url");
+
         }
         if (array_key_exists($request, self::OLD_URLS))
         {
             $url = self::OLD_URLS[$request]['url'];
             $id = (int)$_GET(self::OLD_URLS[$request]['id']);
-            header("Location: ${url}${id}");
-            die();
+            return new RedirectResponse("${url}${id}");
+
         }
         if ($request === 'verwerkmailformulier.php')
         {
             $id = (int)$_GET['id'];
             $this->updateRequestVars("/mailform/process/$id");
         }
+
+        return null;
     }
 
     /**
@@ -223,14 +242,16 @@ class Router
 
     /**
      * @param string $request
+     * @return RedirectResponse|null
      */
-    private function blockPathTraversal(string $request): void
+    private function blockPathTraversal(string $request): ?RedirectResponse
     {
         if ($request !== '/' && (substr($request, 0, 1) === '.' || substr($request, 0, 1) === '/'))
         {
-            header('Location: /error/403');
-            die('Deze locatie mag niet worden opgevraagd.');
+            return new RedirectResponse('/error/403');
         }
+
+        return null;
     }
 
     /**

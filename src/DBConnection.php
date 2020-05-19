@@ -2,6 +2,7 @@
 
 namespace Cyndaron;
 
+use http\Exception\RuntimeException;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -78,9 +79,7 @@ class DBConnection
         catch(PDOException $e)
         {
             error_log($e);
-            echo 'Kan niet verbinden met database!<br>';
-            echo 'Foutmelding: ' . $e->getMessage();
-            die();
+            throw new RuntimeException('Kan niet verbinden met database!');
         }
     }
 

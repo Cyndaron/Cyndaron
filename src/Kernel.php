@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron;
 
+use http\Exception\RuntimeException;
+
 class Kernel
 {
     public function __construct()
@@ -9,10 +11,17 @@ class Kernel
 
     public function boot(): void
     {
-        $this->setPhpConfig();
-        $this->registerAutoloaders();
-        $this->processSettings();
-        $this->handleRequest();
+        try
+        {
+            $this->setPhpConfig();
+            $this->registerAutoloaders();
+            $this->processSettings();
+            $this->handleRequest();
+        }
+        catch (RuntimeException $e)
+        {
+            echo $e->getMessage();
+        }
     }
 
     protected function setPhpConfig(): void
@@ -37,15 +46,12 @@ class Kernel
     protected function processSettings(): void
     {
         $settingsFile = $this->getSettingsFile();
-        if ($settingsFile !== null)
+        if ($settingsFile === null)
         {
-            $this->connectToDatabase($settingsFile);
+            throw new RuntimeException('Geen instellingenbestand gevonden!');
         }
-        else
-        {
-            echo 'Geen instellingenbestand gevonden!';
-            die();
-        }
+
+        $this->connectToDatabase($settingsFile);
     }
 
     protected function handleRequest(): void

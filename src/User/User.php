@@ -130,7 +130,7 @@ EOT;
                 $avatarImg = imagecreatefrompng($tmpName);
                 break;
             default:
-                die('Ongeldig bestandtype.');
+                throw new Exception('Ongeldig bestandstype');
         }
 
         $filename = static::AVATAR_DIR . "/{$this->id}.png";
