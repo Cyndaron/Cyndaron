@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Photoalbum;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use Cyndaron\Url;
 use Cyndaron\Util;
@@ -33,7 +34,7 @@ class Photoalbum extends Model
     public static function create(string $name, string $notes = '', bool $showBreadcrumbs = false)
     {
         if ($name === '')
-            throw new Exception('Empty photo album name!');
+            throw new IncompleteData('Empty photo album name!');
 
         $id = DBConnection::doQuery('INSERT INTO photoalbums(`name`,`notes`,`showBreadcrumbs`) VALUES (?,?,?);', [$name, $notes,(int)$showBreadcrumbs]);
         if ($id !== false)

@@ -3,6 +3,7 @@ declare (strict_types = 1);
 
 namespace Cyndaron\Registration;
 
+use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use Cyndaron\Setting;
 use Cyndaron\Template\Template;
@@ -104,7 +105,7 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
     {
         if ($this->id === null)
         {
-            throw new Exception('ID is null!');
+            throw new IncompleteData('ID is null!');
         }
 
         $event = $this->getEvent();
@@ -196,7 +197,7 @@ Stichting Bijzondere Koorprojecten';
     {
         if ($this->id === null)
         {
-            throw new Exception('ID is null!');
+            throw new IncompleteData('ID is null!');
         }
 
         $this->approvalStatus = self::APPROVAL_APPROVED;
@@ -232,7 +233,7 @@ Stichting Bijzondere Koorprojecten';
     {
         if ($this->id === null)
         {
-            throw new Exception('ID is null!');
+            throw new IncompleteData('ID is null!');
         }
 
         $this->approvalStatus = self::APPROVAL_DISAPPROVED;

@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use \Exception;
 
@@ -22,7 +23,7 @@ class Order extends Model
     {
         if ($this->id === null)
         {
-            throw new Exception('ID is null!');
+            throw new IncompleteData('ID is null!');
         }
 
         $concert = new Concert((int)$this->concert_id);
@@ -51,7 +52,7 @@ class Order extends Model
     {
         if ($this->id === null)
         {
-            throw new Exception('id is null!');
+            throw new IncompleteData('id is null!');
         }
 
         $result = DBConnection::doQuery('UPDATE ticketsale_orders SET `isDelivered`=1 WHERE id=?', [$this->id]);

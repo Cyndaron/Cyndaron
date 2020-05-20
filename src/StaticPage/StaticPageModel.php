@@ -2,6 +2,7 @@
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use Cyndaron\Url;
 use Cyndaron\Util;
@@ -50,7 +51,7 @@ class StaticPageModel extends Model
     {
         if ($this->id === null)
         {
-            throw new Exception('No ID!');
+            throw new IncompleteData('No ID!');
         }
         if ($this->enableComments && $author && $reactie && ($antispam === 'acht' || $antispam === '8'))
         {

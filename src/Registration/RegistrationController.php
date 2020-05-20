@@ -5,6 +5,7 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
+use Cyndaron\Error\IncompleteData;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Setting;
@@ -58,7 +59,7 @@ class RegistrationController extends Controller
     {
         if ($post->isEmpty())
         {
-            throw new Exception('De aanmeldingsgegevens zijn niet goed aangekomen.');
+            throw new IncompleteData('De aanmeldingsgegevens zijn niet goed aangekomen.');
         }
 
         $eventId = $post->getInt('event_id');

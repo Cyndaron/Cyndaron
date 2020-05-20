@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\User;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use Cyndaron\Setting;
 use Cyndaron\Util;
@@ -98,7 +99,7 @@ EOT;
     {
         if ($this->id === null)
         {
-            throw new Exception('ID is leeg!');
+            throw new IncompleteData('ID is leeg!');
         }
 
         $newPassword = $this->generatePassword();

@@ -2,6 +2,7 @@
 
 namespace Cyndaron;
 
+use Cyndaron\Error\IncompleteData;
 use Exception;
 use ReflectionProperty;
 
@@ -60,7 +61,7 @@ class Model
     {
         if ($this->id === null)
         {
-            throw new Exception('');
+            throw new IncompleteData('ID is not set!');
         }
 
         /** @noinspection SqlResolve */
@@ -165,7 +166,7 @@ class Model
     {
         if (!$this->id)
         {
-            throw new Exception('No ID!');
+            throw new IncompleteData('No ID!');
         }
 
         /** @noinspection SqlResolve */

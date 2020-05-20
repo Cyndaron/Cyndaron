@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Mailform;
 
 use Cyndaron\Controller;
+use Cyndaron\Error\IncompleteData;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Setting;
@@ -48,7 +49,7 @@ class MailformController extends Controller
         {
             if ($form === null)
             {
-                throw new Exception('Formulier niet gevonden!');
+                throw new IncompleteData('Formulier niet gevonden!');
             }
             $this->processHelper($form, $post);
             $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
@@ -82,11 +83,11 @@ class MailformController extends Controller
     {
         if ($post->isEmpty())
         {
-            throw new Exception('Ongeldig formulier.');
+            throw new IncompleteData('Ongeldig formulier.');
         }
         if (empty($post->getEmail('E-mailadres')))
         {
-            throw new Exception('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
+            throw new IncompleteData('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
         }
 
         $mailForm = new MailFormLDBF();
@@ -111,17 +112,17 @@ class MailformController extends Controller
     {
         if ($form === null || !$form->name)
         {
-            throw new Exception('Ongeldig formulier.');
+            throw new IncompleteData('Ongeldig formulier.');
         }
 
         if ($form->sendConfirmation && empty($post->getEmail('E-mailadres')))
         {
-            throw new Exception('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
+            throw new IncompleteData('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
         }
 
         if (strcasecmp($post->getAlphaNum('antispam'), $form->antiSpamAnswer) !== 0)
         {
-            throw new Exception('U heeft de antispamvraag niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
+            throw new IncompleteData('U heeft de antispamvraag niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
         }
 
         $mailBody = '';

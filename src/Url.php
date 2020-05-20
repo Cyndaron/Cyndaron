@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\Error\IncompleteData;
 use Cyndaron\Module\UrlProvider;
 use Exception;
 
@@ -51,7 +52,7 @@ class Url
     {
         if ($name === '' || $this->url === '')
         {
-            throw new Exception('Cannot create friendly URL with no name or no URL!');
+            throw new IncompleteData('Cannot create friendly URL with no name or no URL!');
         }
         if (DBConnection::doQuery('INSERT INTO friendlyurls(name,target) VALUES (?,?)', [$name, $this->url]) === false)
         {

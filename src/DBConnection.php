@@ -2,10 +2,10 @@
 
 namespace Cyndaron;
 
+use Cyndaron\Error\BootFailure;
 use PDO;
 use PDOException;
 use PDOStatement;
-use RuntimeException;
 
 /**
  * Zorgt voor verbinding met de database.
@@ -95,7 +95,7 @@ class DBConnection
         catch(PDOException $e)
         {
             error_log($e);
-            throw new RuntimeException('Kan niet verbinden met database!');
+            throw new BootFailure('Kan niet verbinden met database!');
         }
     }
 

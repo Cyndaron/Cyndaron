@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\Error\BootFailure;
 use RuntimeException;
 
 class Kernel
@@ -48,7 +49,7 @@ class Kernel
         $settingsFile = $this->getSettingsFile();
         if ($settingsFile === null)
         {
-            throw new RuntimeException('Geen instellingenbestand gevonden!');
+            throw new BootFailure('Geen instellingenbestand gevonden!');
         }
 
         $this->connectToDatabase($settingsFile);

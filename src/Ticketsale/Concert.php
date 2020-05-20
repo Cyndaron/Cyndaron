@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use Exception;
 
@@ -34,7 +35,7 @@ class Concert extends Model
     {
         if (!$this->id)
         {
-            throw new Exception('No ID!');
+            throw new IncompleteData('No ID!');
         }
 
         $foundEnoughSeats = false;
