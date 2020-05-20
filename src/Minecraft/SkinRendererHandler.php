@@ -30,6 +30,29 @@ use Cyndaron\Template\Template;
 
 class SkinRendererHandler
 {
+    public const ALL_FACES = [
+        'back',
+        'right',
+        'top',
+        'front',
+        'left',
+        'bottom',
+    ];
+
+    public const VISIBLE_FACES_FORMAT = [
+        'front' => [],
+        'back' => [],
+    ];
+
+    public const CUBE_FACES_FORMAT = [
+        'front' => [],
+        'back' => [],
+        'top' => [],
+        'bottom' => [],
+        'right' => [],
+        'left' => [],
+    ];
+    
     public static float $cos_alpha;
     public static float $sin_alpha;
     public static float $cos_omega;
@@ -140,27 +163,13 @@ class SkinRendererHandler
 
         $times[] = ['Angle-Calculations', $this->microtime_float()];
 
-        $visible_faces_format = [
-            'front' => [],
-            'back' => [],
-        ];
-
         $visible_faces = [
-            'head' => $visible_faces_format,
-            'torso' => $visible_faces_format,
-            'rightArm' => $visible_faces_format,
-            'leftArm' => $visible_faces_format,
-            'rightLeg' => $visible_faces_format,
-            'leftLeg' => $visible_faces_format,
-        ];
-
-        $all_faces = [
-            'back',
-            'right',
-            'top',
-            'front',
-            'left',
-            'bottom',
+            'head' => self::VISIBLE_FACES_FORMAT,
+            'torso' => self::VISIBLE_FACES_FORMAT,
+            'rightArm' => self::VISIBLE_FACES_FORMAT,
+            'leftArm' => self::VISIBLE_FACES_FORMAT,
+            'rightLeg' => self::VISIBLE_FACES_FORMAT,
+            'leftLeg' => self::VISIBLE_FACES_FORMAT,
         ];
 
         // Loop each preProject and Project then calculate the visible faces for each - also display
@@ -180,7 +189,7 @@ class SkinRendererHandler
                 }
             }
             $faceFormat['back'] = $cube_max_depth_faces->getPlaces();
-            $faceFormat['front'] = array_diff($all_faces, $faceFormat['back']);
+            $faceFormat['front'] = array_diff(self::ALL_FACES, $faceFormat['back']);
         }
 
         unset($faceFormat);
@@ -197,26 +206,18 @@ class SkinRendererHandler
 
         }
         $back_faces = $cube_max_depth_faces->getPlaces();
-        $front_faces = array_diff($all_faces, $back_faces);
+        $front_faces = array_diff(self::ALL_FACES, $back_faces);
 
         $times[] = ['Determination-of-faces', $this->microtime_float()];
 
-        $cube_faces_array = [
-            'front' => [],
-            'back' => [],
-            'top' => [],
-            'bottom' => [],
-            'right' => [],
-            'left' => [],
-        ];
         $polygons = [
-            'helmet' => $cube_faces_array,
-            'head' => $cube_faces_array,
-            'torso' => $cube_faces_array,
-            'rightArm' => $cube_faces_array,
-            'leftArm' => $cube_faces_array,
-            'rightLeg' => $cube_faces_array,
-            'leftLeg' => $cube_faces_array,
+            'helmet' => self::CUBE_FACES_FORMAT,
+            'head' => self::CUBE_FACES_FORMAT,
+            'torso' => self::CUBE_FACES_FORMAT,
+            'rightArm' => self::CUBE_FACES_FORMAT,
+            'leftArm' => self::CUBE_FACES_FORMAT,
+            'rightLeg' => self::CUBE_FACES_FORMAT,
+            'leftLeg' => self::CUBE_FACES_FORMAT,
         ];
         $volume_points = [];
 
