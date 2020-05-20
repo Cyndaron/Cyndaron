@@ -5,9 +5,9 @@ use Cyndaron\DBConnection;
 use Cyndaron\Page;
 
 
-class LedenPagina extends Page
+class MembersPage extends Page
 {
-    private array $level = [
+    private const LEVELS = [
         'In de Goelag',
         'Aspirant-lid',
         'Lid',
@@ -15,7 +15,7 @@ class LedenPagina extends Page
         'Medebeheerder',
         'Eeuwige Dictator en Geliefde Leider van TXcraft',
     ];
-    private array $pageLevels = [
+    private const PAGE_LEVELS = [
         'In de Goelag',
         'Aspirant-leden',
         'Leden',
@@ -28,12 +28,11 @@ class LedenPagina extends Page
         $this->addScript('/src/Minecraft/js/memberpage.js');
         $this->addCss('/src/Minecraft/css/memberpage.min.css');
 
-        $members = DBConnection::doQueryAndFetchAll('SELECT * FROM minecraft_members ORDER BY level DESC, userName ASC');
-
+        $members = Member::fetchAll([], [], 'ORDER BY level DESC, userName ASC');
         $this->addTemplateVars([
             'members' => $members,
-            'pageLevels' => $this->pageLevels,
-            'level' => $this->level,
+            'pageLevels' => self::PAGE_LEVELS,
+            'levels' => self::LEVELS,
         ]);
     }
 }

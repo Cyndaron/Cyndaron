@@ -42,7 +42,7 @@ class MinecraftController extends Controller
 
     public function members(): Response
     {
-        $page = new LedenPagina();
+        $page = new MembersPage();
         return new Response($page->render());
     }
 
