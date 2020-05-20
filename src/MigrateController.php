@@ -59,32 +59,6 @@ class MigrateController extends Controller
     private function migrate60(): bool
     {
         return false;
-
-//        DBConnection::doQuery("RENAME TABLE gebruikers TO users;");
-//        DBConnection::doQuery("ALTER TABLE `users` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-//        DBConnection::doQuery("ALTER TABLE `users` CHANGE `gebruikersnaam` `username` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;");
-//        DBConnection::doQuery("ALTER TABLE `users` CHANGE `wachtwoord` `password` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;");
-//        DBConnection::doQuery("ALTER TABLE `users` CHANGE `niveau` `level` INT(1) NOT NULL;");
-
-//        if (!User::isAdmin())
-//        {
-//            return false;
-//        }
-
-//        $sql = file_get_contents(__DIR__ . '/Migrate60.sql');
-//        DBConnection::doQuery($sql);
-
-//        Setting::set('ticketsale_reservedSeatsDescription',
-//            'Alle plaatsen in het middenschip van de kerk verkopen wij met een stoelnummer; d.w.z. al deze plaatsen worden
-//            verkocht als gereserveerde plaats. De stoelnummers lopen van 1 t/m circa %d. Het is een doorlopende reeks,
-//            dus dit keer geen rijnummer. Aan het einde van een rij verspringt het stoelnummer naar de stoel daarachter.
-//            De nummers vormen een soort heen en weer gaande slinger door het hele middenschip heen. Het kan dus gebeuren
-//            dat u een paar kaarten koopt, waarbij de nummering verspringt naar de rij daarachter. Maar wel zo dat de
-//            stoelen dus direct bij elkaar staan.
-//            Vrije plaatsen zijn: de zijvakken en de balkons.');
-
-//        $frontPage = DBConnection::doQueryAndFetchOne('SELECT link FROM menu WHERE id=(SELECT MIN(id) FROM menu)');
-//        Setting::set('frontPage', $frontPage);
     }
 }
 
