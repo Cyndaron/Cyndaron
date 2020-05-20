@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Page;
 
 

@@ -8,7 +8,6 @@ use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Model;
 use Cyndaron\Template\ViewHelpers;
-use Cyndaron\Util;
 
 class Hour extends Model
 {

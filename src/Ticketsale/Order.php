@@ -6,7 +6,6 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
-use \Exception;
 
 class Order extends Model
 {

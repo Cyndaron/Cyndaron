@@ -4,7 +4,6 @@ namespace Cyndaron;
 use Cyndaron\Error\DatabaseError;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Module\UrlProvider;
-use Exception;
 
 class Url
 {

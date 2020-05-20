@@ -2,7 +2,6 @@
 
 namespace Cyndaron\Template;
 
-use Cyndaron\Util;
 use Pine\BladeFilters\BladeFilters;
 
 class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider

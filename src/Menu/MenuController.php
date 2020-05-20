@@ -7,7 +7,6 @@ use Cyndaron\Controller;
 use Cyndaron\Error\DatabaseError;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
-use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
