@@ -12,7 +12,7 @@ class QueryBits
 
     public function get(int $index, $fallback = null): ?string
     {
-        if ($this->hasIndex($index))
+        if (!$this->hasIndex($index))
             return $fallback;
 
         return $this->vars[$index];
