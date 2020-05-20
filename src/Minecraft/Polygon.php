@@ -144,14 +144,13 @@ class Polygon
 
     public function project(): void
     {
-        foreach ($this->_dots as &$dot)
+        foreach ($this->_dots as $dot)
         {
             if (!$dot->isProjected())
             {
                 $dot->project();
             }
         }
-        unset($dot);
         $this->_isProjected = true;
     }
 

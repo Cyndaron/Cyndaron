@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Template\Template;
 
@@ -167,8 +166,6 @@ class SkinRendererHandler
         // Loop each preProject and Project then calculate the visible faces for each - also display
         foreach ($visible_faces as $faceName => &$faceFormat)
         {
-            unset($cube_max_depth_faces, $cubePoints);
-
             $cubePoints = $this->generateCubePoints();
             $cube_max_depth_faces = $cubePoints[0];
 
@@ -186,7 +183,7 @@ class SkinRendererHandler
             $faceFormat['front'] = array_diff($all_faces, $faceFormat['back']);
         }
 
-        unset($cube_max_depth_faces, $faceFormat);
+        unset($faceFormat);
         $cubePoints = $this->generateCubePoints();
         $cube_max_depth_faces = $cubePoints[0];
 
