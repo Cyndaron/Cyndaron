@@ -1,41 +1,14 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-/**
- * Class SkinRenderer
- */
-class SkinRenderer
+abstract class SkinRenderer
 {
-    public const SECONDS_TO_CACHE = 604800; // Cache for 7 days
-    public const FALLBACK_IMAGE = __DIR__ . '/char.png';
+    public $skinSource;
 
-    private ?string $url;
-
-    public function __construct(?string $skinUrl)
+    public function __construct(Skin $skin)
     {
-        $this->url = $skinUrl;
+        $this->skinSource = $skin->getSkinOrFallback();
     }
 
-    /**
-     * @return resource
-     */
-    public function getSkinOrFallback()
-    {
-        if ($this->url === null || trim($this->url) === '')
-        {
-            $img_png = imagecreatefrompng(self::FALLBACK_IMAGE);
-        }
-        else
-        {
-            $img_png = imagecreatefrompng($this->url);
-            if (!$img_png)
-            {
-                $img_png = imagecreatefrompng(self::FALLBACK_IMAGE);
-            }
-        }
-
-        imagealphablending($img_png, true);
-        imagesavealpha($img_png, true);
-        return $img_png;
-    }
+    abstract public function output(): string;
 }
