@@ -65,6 +65,7 @@ class Model
         }
 
         /** @noinspection SqlResolve */
+        /** @noinspection SqlIdentifier */
         $record = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM ' . static::TABLE . ' WHERE id = ?', [$this->id]);
         if ($record === false)
         {
@@ -263,6 +264,7 @@ class Model
 
     public static function deleteById(int $id): bool
     {
+        /** @noinspection SqlResolve */
         DBConnection::doQuery(sprintf('DELETE FROM %s WHERE id = ?', static::TABLE), [$id]);
 
         return true;

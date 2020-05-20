@@ -101,6 +101,7 @@ class DBConnection
         }
         catch(PDOException $e)
         {
+            /** @noinspection ForgottenDebugOutputInspection */
             error_log($e);
             throw new BootFailure('Kan niet verbinden met database!');
         }

@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpUnusedParameterInspection */
+<?php
 declare (strict_types = 1);
 
 namespace Cyndaron\User;
@@ -201,6 +201,7 @@ EOT;
         }
 
         $this->password = $result;
+        return true;
     }
 
     public static function login(string $identification, string $password): string

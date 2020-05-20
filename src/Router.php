@@ -149,6 +149,7 @@ class Router
         }
         catch (\Exception $e)
         {
+            /** @noinspection ForgottenDebugOutputInspection */
             error_log($e->getMessage());
             if ($this->isApiCall)
             {

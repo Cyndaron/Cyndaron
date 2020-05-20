@@ -34,6 +34,7 @@ abstract class SkinRenderer
     public const TORSO_WIDTH = 8;
 
     protected Skin $skin;
+    /** @var resource */
     protected $skinSource;
     
     protected float $alpha;

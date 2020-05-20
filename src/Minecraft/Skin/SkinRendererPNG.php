@@ -5,6 +5,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SkinRendererPNG extends SkinRenderer
 {
+    /** @var resource */
     protected $image;
 
     protected function setupTarget(): void

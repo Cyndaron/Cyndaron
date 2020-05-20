@@ -34,7 +34,7 @@ class SystemPage extends Page
         }
     }
 
-    public function showConfigPage()
+    public function showConfigPage(): void
     {
         $this->addScript('/src/System/SystemPage.js');
 
@@ -64,7 +64,7 @@ class SystemPage extends Page
         $this->templateVars['darkMenu'] = ($menuTheme === 'dark') ? 'selected' : '';
     }
 
-    public function showPHPInfo()
+    public function showPHPInfo(): void
     {
         // Prevent phpinfo() from writing directly to the screen (we want to change the output first)
         ob_start();
@@ -88,7 +88,7 @@ class SystemPage extends Page
         $this->templateVars['phpinfo'] = $phpinfo;
     }
 
-    public function showAboutProduct()
+    public function showAboutProduct(): void
     {
         $this->templateVars += [
             'productName' => CyndaronInfo::PRODUCT_NAME,

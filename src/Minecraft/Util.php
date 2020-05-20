@@ -29,6 +29,7 @@ class Util
         'o' => 'font-style: italic;',
     ];
 
+    /** @noinspection NotOptimalRegularExpressionsInspection */
     public static function mineToWeb($minetext): string
     {
         preg_match_all('/[^§&]*[^§&]|[§&][0-9a-z][^§&]*/', $minetext, $brokenupstrings);

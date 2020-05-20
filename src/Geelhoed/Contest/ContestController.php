@@ -168,6 +168,7 @@ class ContestController extends Controller
             {
                 $message .= ' $contestMember is null.';
             }
+            /** @noinspection ForgottenDebugOutputInspection */
             error_log($message);
             return new JsonResponse(['error' => 'Could not find payment!'], Response::HTTP_NOT_FOUND);
         }
