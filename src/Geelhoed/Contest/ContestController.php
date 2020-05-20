@@ -252,7 +252,9 @@ class ContestController extends Controller
             $column = chr(ord('A') + $i);
             $dimension = $sheet->getColumnDimension($column);
             if ($dimension)
+            {
                 $dimension->setAutoSize(true);
+            }
         }
 
         $httpHeaders = [

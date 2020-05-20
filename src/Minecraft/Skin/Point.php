@@ -10,7 +10,7 @@ class Point
     private array $_destCoord = [];
     private bool $_isProjected = false;
     private bool $_isPreProjected = false;
-    
+
     private float $sinAlpha;
     private float $cosAlpha;
     private float $sinOmega;
@@ -28,7 +28,7 @@ class Point
         $this->cosAlpha = cos($alpha);
         $this->sinOmega = sin($omega);
         $this->cosOmega = cos($omega);
-        
+
         if (count($originCoord) === 3)
         {
             $this->_originCoord = [

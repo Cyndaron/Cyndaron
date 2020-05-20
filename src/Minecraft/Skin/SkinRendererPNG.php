@@ -17,7 +17,7 @@ class SkinRendererPNG extends SkinRenderer
         $trans_colour = imagecolorallocatealpha($this->image, 0, 0, 0, 127);
         imagefill($this->image, 0, 0, $trans_colour);
     }
-    
+
     protected function addPolygon(Polygon $poly): void
     {
         $poly->addPngPolygon($this->image, static::$minX, static::$minY, $this->parameters->ratio);

@@ -107,7 +107,7 @@ class DBConnection
         }
     }
 
-    public static function getPdo(): PDO
+    public static function getPDO(): PDO
     {
         return static::$pdo;
     }

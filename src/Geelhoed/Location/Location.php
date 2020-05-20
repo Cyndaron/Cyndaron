@@ -24,7 +24,9 @@ class Location extends Model
     public function getHours(?int $departmentId = null): array
     {
         if ($departmentId !== null)
+        {
             return Hour::fetchAll(['locationId = ?', 'departmentId = ?'], [$this->id, $departmentId], 'ORDER BY `day`, `from`');
+        }
 
         return Hour::fetchAll(['locationId = ?'], [$this->id], 'ORDER BY `day`, `from`');
     }

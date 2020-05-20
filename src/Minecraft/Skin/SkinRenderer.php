@@ -36,7 +36,7 @@ abstract class SkinRenderer
     protected Skin $skin;
     /** @var resource */
     protected $skinSource;
-    
+
     protected float $alpha;
     protected float $omega;
     protected int $width;
@@ -173,7 +173,7 @@ abstract class SkinRenderer
 
         return $this->output();
     }
-    
+
     public function determinePartsAngles(): void
     {
         // Head, Helmet, Torso, Arms, Legs
@@ -230,7 +230,7 @@ abstract class SkinRenderer
             'cos_omega' => cos($omega_left_leg),
             'sin_omega' => sin($omega_left_leg),
         ];
-        
+
         $this->partsAngles = $parts_angles;
 
         $this->times[] = ['Angle-Calculations', $this->microtime_float()];
@@ -1194,7 +1194,7 @@ abstract class SkinRenderer
 
         return $polygons;
     }
-    
+
     private function determinePolygons(): array
     {
         return [

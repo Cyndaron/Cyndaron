@@ -31,7 +31,7 @@ class Blade implements FactoryContract
 
     public function __construct(array $viewPaths, string $cachePath, ContainerInterface $container = null)
     {
-        $this->container = $container ?: new Container;
+        $this->container = $container ?: new Container();
 
         $this->setupContainer($viewPaths, $cachePath);
         /** @noinspection PhpParamsInspection */
@@ -112,11 +112,11 @@ class Blade implements FactoryContract
     protected function setupContainer(array $viewPaths, string $cachePath): void
     {
         $this->container->bindIf('files', static function () {
-            return new Filesystem;
+            return new Filesystem();
         }, true);
 
         $this->container->bindIf('events', static function () {
-            return new Dispatcher;
+            return new Dispatcher();
         }, true);
 
         $this->container->bindIf('config', static function () use ($viewPaths, $cachePath) {

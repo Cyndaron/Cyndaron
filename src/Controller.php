@@ -63,7 +63,9 @@ class Controller
                 break;
             default:
                 if ($this->isApiCall)
+                {
                     return new JsonResponse(['error' => 'Unacceptable request method!'], Response::HTTP_METHOD_NOT_ALLOWED, ['allow' => 'GET, POST']);
+                }
 
                 $page = new Page('Verkeerde aanvraag', 'U kunt geen aanvraag doen met deze methode.');
                 return new Response($page->render(), Response::HTTP_BAD_REQUEST);

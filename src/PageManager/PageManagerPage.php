@@ -13,7 +13,7 @@ use Cyndaron\Template\Template;
 class PageManagerPage extends Page
 {
     private static array $pageTypes = [];
-    
+
     public function __construct(string $currentPage)
     {
         $this->addScript('/src/PageManager/PageManagerPage.js');

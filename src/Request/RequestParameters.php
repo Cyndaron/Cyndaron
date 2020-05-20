@@ -168,7 +168,9 @@ class RequestParameters
     {
         $preFilter = $this->getUnfilteredString($name);
         if ($preFilter === '')
+        {
             return $default;
+        }
 
         return preg_replace('/[^0-9:\-] /', '', $preFilter);
     }

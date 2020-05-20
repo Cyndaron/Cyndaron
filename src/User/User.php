@@ -104,7 +104,7 @@ EOT;
 
         $newPassword = $this->generatePassword();
 
-        $pdo = DBConnection::getPdo();
+        $pdo = DBConnection::getPDO();
         $prep = $pdo->prepare('UPDATE users SET password=? WHERE id =?');
         $prep->execute([$this->password, $this->id]);
 
@@ -276,7 +276,9 @@ EOT;
     {
         $ret = $this->firstName . ' ' . $this->tussenvoegsel;
         if (substr($this->tussenvoegsel, -1) !== "'")
+        {
             $ret .= ' ';
+        }
         $ret .= $this->lastName;
 
         return $ret;
@@ -327,11 +329,15 @@ EOT;
     public function hasRight(string $right): bool
     {
         if ($this->level === UserLevel::ADMIN)
+        {
             return true;
+        }
 
         $records = DBConnection::doQueryAndFetchAll('SELECT * FROM user_rights WHERE `userId` = ? AND `right` = ?', [$this->id, $right]);
         if (count($records) > 0)
+        {
             return true;
+        }
 
         return false;
     }

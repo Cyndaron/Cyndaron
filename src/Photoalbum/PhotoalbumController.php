@@ -41,7 +41,7 @@ class PhotoalbumController extends Controller
 
     public function add(RequestParameters $post): JsonResponse
     {
-        $name = $post->getHtml('name');
+        $name = $post->getHTML('name');
         Photoalbum::create($name);
 
         return new JsonResponse();

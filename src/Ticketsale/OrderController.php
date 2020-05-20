@@ -90,7 +90,7 @@ class OrderController extends Controller
                 $payForDelivery = false;
                 $deliveryByMember = false;
             }
-            else if ($deliveryByMember)
+            elseif ($deliveryByMember)
             {
                 $payForDelivery = false;
             }

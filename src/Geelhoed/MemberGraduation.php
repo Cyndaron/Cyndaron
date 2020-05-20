@@ -23,7 +23,7 @@ class MemberGraduation extends Model
     {
         return static::fetchAll(['memberId = ?'], [$member->id], 'ORDER BY date');
     }
-    
+
     public function getGraduation(): Graduation
     {
         if (!array_key_exists($this->graduationId, static::$graduationCache))

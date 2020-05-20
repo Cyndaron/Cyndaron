@@ -102,21 +102,21 @@ class Photo
         $orientation = $image->getImageOrientation();
 
         switch($orientation) {
-            case imagick::ORIENTATION_BOTTOMRIGHT:
-                $image->rotateimage('#000', 180);
+            case Imagick::ORIENTATION_BOTTOMRIGHT:
+                $image->rotateImage('#000', 180);
                 break;
 
-            case imagick::ORIENTATION_RIGHTTOP:
-                $image->rotateimage('#000', 90);
+            case Imagick::ORIENTATION_RIGHTTOP:
+                $image->rotateImage('#000', 90);
                 break;
 
-            case imagick::ORIENTATION_LEFTBOTTOM:
-                $image->rotateimage('#000', -90);
+            case Imagick::ORIENTATION_LEFTBOTTOM:
+                $image->rotateImage('#000', -90);
                 break;
         }
 
         // Now that it's auto-rotated, make sure the EXIF data is correct in case the EXIF gets saved with the image!
-        $image->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
+        $image->setImageOrientation(Imagick::ORIENTATION_TOPLEFT);
     }
 
     public static function deleteByAlbumAndFilename(Photoalbum $album, string $filename): int

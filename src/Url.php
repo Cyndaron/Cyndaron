@@ -74,7 +74,7 @@ class Url
         {
             $classname = static::$urlProviders[$linkParts[0]];
             /** @var UrlProvider $class */
-            $class = new $classname;
+            $class = new $classname();
             $result = $class->url($linkParts);
 
             if ($result !== null)

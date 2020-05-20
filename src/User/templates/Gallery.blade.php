@@ -20,7 +20,7 @@
                     </b>
                     <br /><br />
                     {{ $member->role }}
-                    
+
                     @if ($member->comments)
                         <br>
                         {{ $member->comments }}

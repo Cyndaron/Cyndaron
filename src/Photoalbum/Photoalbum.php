@@ -29,7 +29,9 @@ class Photoalbum extends ModelWithCategory
     public static function create(string $name, string $notes = '', bool $showBreadcrumbs = false)
     {
         if ($name === '')
+        {
             throw new IncompleteData('Empty photo album name!');
+        }
 
         $id = DBConnection::doQuery('INSERT INTO photoalbums(`name`,`notes`,`showBreadcrumbs`) VALUES (?,?,?);', [$name, $notes,(int)$showBreadcrumbs]);
         if ($id !== false)

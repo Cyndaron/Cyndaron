@@ -220,7 +220,9 @@ class Page
                 $class = ($i === 0 && $count > 1) ? 'breadcrumb-main-item' : 'breadcrumb-item';
                 $title .= sprintf('<span class="%s">%s</span>', $class, $titleParts[$i]);
                 if ($i !== $count - 1)
+                {
                     $title .= '<span class="breadcrumb-separator"> // </span>';
+                }
             }
         }
 

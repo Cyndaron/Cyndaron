@@ -9,7 +9,7 @@ class SkinRendererSVG extends SkinRenderer
     private Template $template;
     private array $templateVars = [];
 
-    public function setupTarget(): void
+    protected function setupTarget(): void
     {
         $width = static::$maxX - static::$minX;
         $height = static::$maxY - static::$minY;

@@ -50,7 +50,7 @@ class StaticPageModel extends ModelWithCategory
         }
         if ($this->enableComments && $author && $reactie && ($antispam === 'acht' || $antispam === '8'))
         {
-            $prep = DBConnection::getPdo()->prepare('INSERT INTO sub_replies(subId, author, text) VALUES (?, ?, ?)');
+            $prep = DBConnection::getPDO()->prepare('INSERT INTO sub_replies(subId, author, text) VALUES (?, ?, ?)');
             $prep->execute([$this->id, $author, $reactie]);
             return true;
         }
@@ -60,7 +60,9 @@ class StaticPageModel extends ModelWithCategory
     public function getTagList(): array
     {
         if (empty($this->tags))
+        {
             return [];
+        }
 
         return explode(';', strtolower($this->tags));
     }

@@ -38,7 +38,9 @@ class Contest extends Model
         foreach ($this->getContestMembers() as $contestMember)
         {
             if ($contestMember->getMember()->id === $member->id)
+            {
                 return true;
+            }
         }
 
         return false;

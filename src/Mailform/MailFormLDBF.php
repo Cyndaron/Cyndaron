@@ -41,7 +41,9 @@ class MailFormLDBF
         {
             $requestVarName = $templateVar;
             if ($templateVar === 'emailadres')
+            {
                 $requestVarName = 'E-mailadres';
+            }
 
             $templateVars[$templateVar] = $post->getHTML($requestVarName);
         }

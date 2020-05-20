@@ -60,7 +60,7 @@ class EditorController extends Controller
         foreach (static::$internalLinkTypes as $internalLinkType)
         {
             /** @var Linkable $class */
-            $class = new $internalLinkType;
+            $class = new $internalLinkType();
             $internalLinks = array_merge($internalLinks, $class->getList());
         }
         usort($internalLinks, static function (array $link1, array $link2) {

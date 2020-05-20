@@ -178,14 +178,18 @@ Stichting Bijzondere Koorprojecten';
                 return 'Nieuw';
             case self::APPROVAL_APPROVED:
                 if ($this->isPaid)
+                {
                     return 'Toegelaten, betaald';
-                else
-                    return 'Toegelaten, niet betaald';
+                }
+                return 'Toegelaten, niet betaald';
+
             case self::APPROVAL_DISAPPROVED:
                 if ($this->isPaid)
+                {
                     return 'Afgewezen, betaald';
-                else
-                    return 'Afgewezen, niet betaald';
+                }
+
+                return 'Afgewezen, niet betaald';
         }
         return 'Onbekend';
     }
@@ -213,7 +217,7 @@ Stichting Bijzondere Koorprojecten';
 
             $text = 'Beste koorzanger,
 
-Nogmaals dank voor je belangstelling voor ' . $event->name . '. Inmiddels zijn alle aanmeldingen bekeken en kunnen we je met plezier melden dat je bent geplaatst op de deelnemerslijst. Die plaatsing wordt definitief na ontvangst van de bijdrage in de kosten ad ' . \Cyndaron\Template\ViewHelpers::formatEuro($registrationTotal) . '. Wij vragen je dat binnen twee weken te doen waarna je bericht krijgt van de definitieve plaatsing. 
+Nogmaals dank voor je belangstelling voor ' . $event->name . '. Inmiddels zijn alle aanmeldingen bekeken en kunnen we je met plezier melden dat je bent geplaatst op de deelnemerslijst. Die plaatsing wordt definitief na ontvangst van de bijdrage in de kosten ad ' . ViewHelpers::formatEuro($registrationTotal) . '. Wij vragen je dat binnen twee weken te doen waarna je bericht krijgt van de definitieve plaatsing.
 
 Gebruik bij het betalen de volgende gegevens:
    Rekeningnummer: NL72 RABO 0342 0672 22 t.n.v. Bijzondere Koorprojecten

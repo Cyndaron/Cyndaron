@@ -69,7 +69,9 @@ class Member extends Model
         DBConnection::doQuery('DELETE FROM geelhoed_members_hours WHERE memberId = ?', [$this->id]);
 
         if (empty($hours))
+        {
             return;
+        }
 
         $sql = 'INSERT INTO geelhoed_members_hours(memberId, hourId) VALUES ';
         foreach ($hours as $hour)
@@ -172,22 +174,22 @@ class Member extends Model
         {
             $sport = reset($sports);
             if ($isSenior)
-                return $sport->seniorFee;
-            else
-                return $sport->juniorFee;
-        }
-        else
-        {
-            $highestFee = 0.00;
-            foreach ($sports as $sport)
             {
-                $fee = $isSenior ? $sport->seniorFee : $sport->juniorFee;
-                if ($fee > $highestFee)
-                    $highestFee = $fee;
+                return $sport->seniorFee;
             }
 
-            return $highestFee + 5.00;
+            return $sport->juniorFee;
         }
+
+        $highestFee = 0.00;
+        foreach ($sports as $sport)
+        {
+            $fee = $isSenior ? $sport->seniorFee : $sport->juniorFee;
+            if ($fee > $highestFee)
+                $highestFee = $fee;
+        }
+
+        return $highestFee + 5.00;
     }
 
     /**
@@ -264,18 +266,26 @@ class Member extends Model
     public static function loadFromLoggedInUser(): ?self
     {
         if (!empty($_SESSION['geelhoedMemberProfile']))
+        {
             return $_SESSION['geelhoedMemberProfile'];
+        }
 
         if (!User::isLoggedIn())
+        {
             return null;
+        }
 
         $profile = $_SESSION['profile'];
         if ($profile === null)
+        {
             return null;
+        }
 
         $member = self::loadFromProfile($profile);
         if ($member !== null)
+        {
             $_SESSION['geelhoedMemberProfile'] = $member;
+        }
 
         return $member;
     }

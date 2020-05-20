@@ -29,7 +29,7 @@ class Server extends Model
     public string $motd;
     public int $onlinePlayers;
     public int $maxPlayers;
-    
+
     public function retrieveInfo(): bool
     {
         $socket = @stream_socket_client(sprintf('tcp://%s:%u', $this->hostname, $this->port), $errno, $errstr, 1);

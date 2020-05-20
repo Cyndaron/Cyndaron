@@ -72,7 +72,7 @@ class MenuItem extends Model
         return strpos($this->link, '/category/') === 0 && $this->isDropdown;
     }
 
-    public function getSubMenu(): array
+    public function getSubmenu(): array
     {
         $id = (int)str_replace('/category/', '', $this->link);
         $pagesInCategory = DBConnection::doQueryAndFetchAll("
