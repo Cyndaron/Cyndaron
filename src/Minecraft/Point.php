@@ -10,13 +10,25 @@ class Point
     private array $_destCoord = [];
     private bool $_isProjected = false;
     private bool $_isPreProjected = false;
+    
+    private float $sinAlpha;
+    private float $cosAlpha;
+    private float $sinOmega;
+    private float $cosOmega;
 
     /**
      * Point constructor.
-     * @param $originCoord
+     * @param array $originCoord
+     * @param float $alpha
+     * @param float $omega
      */
-    public function __construct(array $originCoord)
+    public function __construct(array $originCoord, float $alpha, float $omega)
     {
+        $this->sinAlpha = sin($alpha);
+        $this->cosAlpha = cos($alpha);
+        $this->sinOmega = sin($omega);
+        $this->cosOmega = cos($omega);
+        
         if (count($originCoord) === 3)
         {
             $this->_originCoord = [
@@ -33,18 +45,13 @@ class Point
 
     public function project(): void
     {
-        $cos_alpha = SkinRendererHandler::$cos_alpha;
-        $sin_alpha = SkinRendererHandler::$sin_alpha;
-        $cos_omega = SkinRendererHandler::$cos_omega;
-        $sin_omega = SkinRendererHandler::$sin_omega;
-
         // 1, 0, 1, 0
         $x = $this->_originCoord['x'];
         $y = $this->_originCoord['y'];
         $z = $this->_originCoord['z'];
-        $this->_destCoord['x'] = $x * $cos_omega + $z * $sin_omega;
-        $this->_destCoord['y'] = $x * $sin_alpha * $sin_omega + $y * $cos_alpha - $z * $sin_alpha * $cos_omega;
-        $this->_destCoord['z'] = -$x * $cos_alpha * $sin_omega + $y * $sin_alpha + $z * $cos_alpha * $cos_omega;
+        $this->_destCoord['x'] = $x * $this->cosOmega + $z * $this->sinOmega;
+        $this->_destCoord['y'] = $x * $this->sinAlpha * $this->sinOmega + $y * $this->cosAlpha - $z * $this->sinAlpha * $this->cosOmega;
+        $this->_destCoord['z'] = -$x * $this->cosAlpha * $this->sinOmega + $y * $this->sinAlpha + $z * $this->cosAlpha * $this->cosOmega;
         $this->_isProjected = true;
         SkinRendererHandler::$minX = min(SkinRendererHandler::$minX, $this->_destCoord['x']);
         SkinRendererHandler::$maxX = max(SkinRendererHandler::$maxX, $this->_destCoord['x']);
