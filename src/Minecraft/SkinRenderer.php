@@ -9,19 +9,25 @@ class SkinRenderer
     public const SECONDS_TO_CACHE = 604800; // Cache for 7 days
     public const FALLBACK_IMAGE = __DIR__ . '/char.png';
 
+    private ?string $url;
+
+    public function __construct(?string $skinUrl)
+    {
+        $this->url = $skinUrl;
+    }
+
     /**
-     * @param string $skinUrl
      * @return resource
      */
-    public static function getSkinOrFallback($skinUrl)
+    public function getSkinOrFallback()
     {
-        if (trim($skinUrl) === '')
+        if ($this->url === null || trim($this->url) === '')
         {
             $img_png = imagecreatefrompng(self::FALLBACK_IMAGE);
         }
         else
         {
-            $img_png = imagecreatefrompng($skinUrl);
+            $img_png = imagecreatefrompng($this->url);
             if (!$img_png)
             {
                 $img_png = imagecreatefrompng(self::FALLBACK_IMAGE);

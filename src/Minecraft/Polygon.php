@@ -12,9 +12,9 @@ class Polygon
     private array $_dots;
 
     /**
-     * @var int
+     * @var RGBA
      */
-    private int $_colour;
+    private RGBA $_colour;
 
     /**
      * @var bool
@@ -29,9 +29,9 @@ class Polygon
     /**
      * Polygon constructor.
      * @param Point[] $dots
-     * @param int $colour
+     * @param RGBA $colour
      */
-    public function __construct($dots, $colour)
+    public function __construct(array $dots, RGBA $colour)
     {
         $this->_dots = $dots;
         $this->_colour = $colour;
@@ -67,10 +67,10 @@ class Polygon
     public function getSvgPolygon($ratio): string
     {
         $points_2d = '';
-        $r = ($this->_colour >> 16) & 0xFF;
-        $g = ($this->_colour >> 8) & 0xFF;
-        $b = $this->_colour & 0xFF;
-        $vR = (127 - (($this->_colour & 0x7F000000) >> 24)) / 127;
+        $r = $this->_colour->red;
+        $g = $this->_colour->green;
+        $b = $this->_colour->blue;
+        $vR = (127 - ($this->_colour->alpha & 0x7F)) / 127;
         if ($vR === 0)
         {
             return '';
@@ -94,10 +94,10 @@ class Polygon
     {
         $points_2d = [];
         $nb_points = 0;
-        $r = ($this->_colour >> 16) & 0xFF;
-        $g = ($this->_colour >> 8) & 0xFF;
-        $b = $this->_colour & 0xFF;
-        $vR = (127 - (($this->_colour & 0x7F000000) >> 24)) / 127;
+        $r = $this->_colour->red;
+        $g = $this->_colour->green;
+        $b = $this->_colour->blue;
+        $vR = (127 - ($this->_colour->alpha & 0x7F)) / 127;
         if ($vR === 0)
         {
             return;

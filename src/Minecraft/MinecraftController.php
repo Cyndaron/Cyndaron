@@ -50,7 +50,10 @@ class MinecraftController extends Controller
     {
         ob_start();
         $get = new RequestParameters($_GET);
-        new SkinRendererHandler($get);
+        $format = $get->getSimpleString('format');
+        $username = $get->getSimpleString('user');
+        $member = Member::loadByUsername($username);
+        new SkinRendererHandler($member, $format, $get);
         return new Response(ob_get_clean());
     }
 
