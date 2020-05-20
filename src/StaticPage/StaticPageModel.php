@@ -3,23 +3,17 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
-use Cyndaron\Model;
+use Cyndaron\ModelWithCategory;
 use Cyndaron\Template\ViewHelpers;
 use Cyndaron\Url;
-use Cyndaron\Util;
-use Exception;
 
-class StaticPageModel extends Model
+class StaticPageModel extends ModelWithCategory
 {
     public const TABLE = 'subs';
     public const TABLE_FIELDS = ['name', 'text', 'enableComments', 'categoryId', 'showBreadcrumbs', 'tags'];
-    public const HAS_CATEGORY = true;
 
-    public string $name = '';
     public string $text = '';
     public bool $enableComments = false;
-    public ?int $categoryId = null;
-    public bool $showBreadcrumbs = false;
     public string $tags = '';
 
     public function delete(): void

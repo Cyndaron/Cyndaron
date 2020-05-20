@@ -196,7 +196,7 @@ class Page
     {
         $title = '';
         $titleParts = [$this->title];
-        if ($this->model !== null && $this->model::HAS_CATEGORY)
+        if ($this->model instanceof ModelWithCategory)
         {
             $titleParts = [];
             if ($this->model->showBreadcrumbs && $this->model->categoryId)

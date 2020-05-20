@@ -5,16 +5,14 @@ namespace Cyndaron\Photoalbum;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
-use Cyndaron\Model;
+use Cyndaron\ModelWithCategory;
 use Cyndaron\Url;
 use Cyndaron\Util;
-use Exception;
 
-class Photoalbum extends Model
+class Photoalbum extends ModelWithCategory
 {
     public const TABLE = 'photoalbums';
     public const TABLE_FIELDS = ['name', 'notes', 'categoryId', 'showBreadcrumbs', 'hideFromOverview', 'viewMode'];
-    public const HAS_CATEGORY = true;
 
     public const VIEWMODE_REGULAR = 0;
     public const VIEWMODE_PORTFOLIO = 1;
@@ -24,10 +22,7 @@ class Photoalbum extends Model
         self::VIEWMODE_PORTFOLIO => 'Portfolio',
     ];
 
-    public string $name = '';
     public string $notes = '';
-    public ?int $categoryId = null;
-    public bool $showBreadcrumbs = false;
     public bool $hideFromOverview = false;
     public int $viewMode = self::VIEWMODE_REGULAR;
 

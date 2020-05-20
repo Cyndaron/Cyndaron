@@ -1,13 +1,12 @@
 <?php
 namespace Cyndaron\Category;
 
-use Cyndaron\Model;
+use Cyndaron\ModelWithCategory;
 
-class Category extends Model
+class Category extends ModelWithCategory
 {
     public const TABLE = 'categories';
     public const TABLE_FIELDS = ['name', 'description', 'viewMode', 'categoryId', 'showBreadcrumbs'];
-    public const HAS_CATEGORY = true;
 
     public const VIEWMODE_REGULAR = 0;
     public const VIEWMODE_TITLES = 1;
@@ -23,9 +22,6 @@ class Category extends Model
         self::VIEWMODE_HORIZONTAL => 'Horizontaal',
     ];
 
-    public string $name = '';
     public string $description = '';
     public int $viewMode = self::VIEWMODE_REGULAR;
-    public ?int $categoryId = null;
-    public bool $showBreadcrumbs = false;
 }
