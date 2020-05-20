@@ -16,6 +16,12 @@ class DBConnection
     private static array $statementError = [];
     private static string $errorQuery = '';
 
+    /**
+     * @param string $query
+     * @param array $vars
+     * @param callable $functionOnSuccess
+     * @return mixed
+     */
     private static function executeQuery(string $query, array $vars, callable $functionOnSuccess)
     {
         $prep = static::$pdo->prepare($query);
@@ -27,7 +33,7 @@ class DBConnection
             return false;
         }
 
-        return call_user_func($functionOnSuccess, $prep, $result);
+        return $functionOnSuccess($prep, $result);
     }
 
     /**
