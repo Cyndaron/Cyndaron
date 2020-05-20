@@ -20,7 +20,7 @@ class TemplateFinder
             return $name;
         }
 
-        // First, look in the global folder;
+        // First, look in the global folder.
         $template = $this->searchPath('src/templates/', $name);
 
         // If the template is not present in the global folder, look in the module templates.
