@@ -194,20 +194,20 @@ class Router
         $frontPage = $this->getFrontpageUrl();
         if ($frontPage->equals(new Url($_SERVER['REQUEST_URI'])))
         {
-            return new RedirectResponse('/');
+            return new RedirectResponse('/', Response::HTTP_MOVED_PERMANENTLY);
 
         }
         // Redirect if a friendly url exists for the requested unfriendly url
         if ($_SERVER['REQUEST_URI'] !== '/' && $url = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target = ?', [$_SERVER['REQUEST_URI']]))
         {
-            return new RedirectResponse("/$url");
+            return new RedirectResponse("/$url", Response::HTTP_MOVED_PERMANENTLY);
 
         }
         if (array_key_exists($request, self::OLD_URLS))
         {
             $url = self::OLD_URLS[$request]['url'];
             $id = (int)$_GET(self::OLD_URLS[$request]['id']);
-            return new RedirectResponse("${url}${id}");
+            return new RedirectResponse("${url}${id}", Response::HTTP_MOVED_PERMANENTLY);
 
         }
         if ($request === 'verwerkmailformulier.php')
