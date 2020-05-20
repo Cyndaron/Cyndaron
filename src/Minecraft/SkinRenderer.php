@@ -28,6 +28,11 @@ abstract class SkinRenderer
         'left' => [],
     ];
 
+    public const LEG_LENGTH = 12;
+    public const ARM_LENGTH = 12;
+    public const TORSO_LENGTH = 12;
+    public const TORSO_WIDTH = 8;
+
     protected Skin $skin;
     protected $skinSource;
     
@@ -628,11 +633,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volume_points[$i][$j][0]))
                 {
-                    $volume_points[$i][$j][0] = new Point(['x' => $i, 'y' => $j + 8 * $this->hdRatio, 'z' => 0], $this->alpha, $this->omega);
+                    $volume_points[$i][$j][0] = new Point(['x' => $i, 'y' => $j + self::TORSO_WIDTH * $this->hdRatio, 'z' => 0], $this->alpha, $this->omega);
                 }
                 if (!isset($volume_points[$i][$j][4 * $this->hdRatio]))
                 {
-                    $volume_points[$i][$j][4 * $this->hdRatio] = new Point(['x' => $i, 'y' => $j + 8 * $this->hdRatio, 'z' => 4 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volume_points[$i][$j][4 * $this->hdRatio] = new Point(['x' => $i, 'y' => $j + self::TORSO_WIDTH * $this->hdRatio, 'z' => 4 * $this->hdRatio], $this->alpha, $this->omega);
                 }
             }
         }
@@ -642,11 +647,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volume_points[0][$j][$faceName]))
                 {
-                    $volume_points[0][$j][$faceName] = new Point(['x' => 0, 'y' => $j + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volume_points[0][$j][$faceName] = new Point(['x' => 0, 'y' => $j + self::TORSO_WIDTH * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
                 }
-                if (!isset($volume_points[8 * $this->hdRatio][$j][$faceName]))
+                if (!isset($volume_points[self::TORSO_WIDTH * $this->hdRatio][$j][$faceName]))
                 {
-                    $volume_points[8 * $this->hdRatio][$j][$faceName] = new Point(['x' => 8 * $this->hdRatio, 'y' => $j + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volume_points[self::TORSO_WIDTH * $this->hdRatio][$j][$faceName] = new Point(['x' => self::TORSO_WIDTH * $this->hdRatio, 'y' => $j + self::TORSO_WIDTH * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
                 }
             }
         }
@@ -656,19 +661,19 @@ abstract class SkinRenderer
             {
                 if (!isset($volume_points[$i][0][$faceName]))
                 {
-                    $volume_points[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0 + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volume_points[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0 + self::TORSO_WIDTH * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
                 }
-                if (!isset($volume_points[$i][12 * $this->hdRatio][$faceName]))
+                if (!isset($volume_points[$i][self::TORSO_LENGTH * $this->hdRatio][$faceName]))
                 {
-                    $volume_points[$i][12 * $this->hdRatio][$faceName] = new Point(['x' => $i, 'y' => 12 * $this->hdRatio + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volume_points[$i][self::TORSO_LENGTH * $this->hdRatio][$faceName] = new Point(['x' => $i, 'y' => self::TORSO_LENGTH * $this->hdRatio + self::TORSO_WIDTH * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
                 }
             }
         }
 
         $polygons = self::CUBE_FACES_FORMAT;
-        for ($i = 0; $i < 8 * $this->hdRatio; $i++)
+        for ($i = 0; $i < self::TORSO_WIDTH * $this->hdRatio; $i++)
         {
-            for ($j = 0; $j < 12 * $this->hdRatio; $j++)
+            for ($j = 0; $j < self::TORSO_LENGTH * $this->hdRatio; $j++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, (40 * $this->hdRatio - 1) - $i, 20 * $this->hdRatio + $j));
                 $polygons['back'][] = new Polygon([
@@ -687,7 +692,7 @@ abstract class SkinRenderer
                 ], $rgba);
             }
         }
-        for ($j = 0; $j < 12 * $this->hdRatio; $j++)
+        for ($j = 0; $j < self::TORSO_LENGTH * $this->hdRatio; $j++)
         {
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
@@ -701,14 +706,14 @@ abstract class SkinRenderer
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, (32 * $this->hdRatio - 1) - $faceName, 20 * $this->hdRatio + $j));
                 $polygons['left'][] = new Polygon([
-                    $volume_points[8 * $this->hdRatio][$j][$faceName],
-                    $volume_points[8 * $this->hdRatio][$j][$faceName + 1],
-                    $volume_points[8 * $this->hdRatio][$j + 1][$faceName + 1],
-                    $volume_points[8 * $this->hdRatio][$j + 1][$faceName],
+                    $volume_points[self::TORSO_WIDTH * $this->hdRatio][$j][$faceName],
+                    $volume_points[self::TORSO_WIDTH * $this->hdRatio][$j][$faceName + 1],
+                    $volume_points[self::TORSO_WIDTH * $this->hdRatio][$j + 1][$faceName + 1],
+                    $volume_points[self::TORSO_WIDTH * $this->hdRatio][$j + 1][$faceName],
                 ], $rgba);
             }
         }
-        for ($i = 0; $i < 8 * $this->hdRatio; $i++)
+        for ($i = 0; $i < self::TORSO_WIDTH * $this->hdRatio; $i++)
         {
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
@@ -722,10 +727,10 @@ abstract class SkinRenderer
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 28 * $this->hdRatio + $i, (20 * $this->hdRatio - 1) - $faceName));
                 $polygons['bottom'][] = new Polygon([
-                    $volume_points[$i][12 * $this->hdRatio][$faceName],
-                    $volume_points[$i + 1][12 * $this->hdRatio][$faceName],
-                    $volume_points[$i + 1][12 * $this->hdRatio][$faceName + 1],
-                    $volume_points[$i][12 * $this->hdRatio][$faceName + 1],
+                    $volume_points[$i][self::TORSO_LENGTH * $this->hdRatio][$faceName],
+                    $volume_points[$i + 1][self::TORSO_LENGTH * $this->hdRatio][$faceName],
+                    $volume_points[$i + 1][self::TORSO_LENGTH * $this->hdRatio][$faceName + 1],
+                    $volume_points[$i][self::TORSO_LENGTH * $this->hdRatio][$faceName + 1],
                 ], $rgba);
             }
         }
@@ -772,9 +777,9 @@ abstract class SkinRenderer
                 {
                     $volume_points[$i][0][$faceName] = new Point(['x' => $i - 4 * $this->hdRatio, 'y' => 0 + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
                 }
-                if (!isset($volume_points[$i][12 * $this->hdRatio][$faceName]))
+                if (!isset($volume_points[$i][self::ARM_LENGTH * $this->hdRatio][$faceName]))
                 {
-                    $volume_points[$i][12 * $this->hdRatio][$faceName] = new Point(['x' => $i - 4 * $this->hdRatio, 'y' => 12 * $this->hdRatio + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volume_points[$i][self::ARM_LENGTH * $this->hdRatio][$faceName] = new Point(['x' => $i - 4 * $this->hdRatio, 'y' => self::ARM_LENGTH * $this->hdRatio + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
                 }
             }
         }
@@ -782,7 +787,7 @@ abstract class SkinRenderer
         $polygons = self::CUBE_FACES_FORMAT;
         for ($i = 0; $i < 4 * $this->hdRatio; $i++)
         {
-            for ($j = 0; $j < 12 * $this->hdRatio; $j++)
+            for ($j = 0; $j < self::ARM_LENGTH * $this->hdRatio; $j++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, (56 * $this->hdRatio - 1) - $i, 20 * $this->hdRatio + $j));
                 $polygons['back'][] = new Polygon([
@@ -801,7 +806,7 @@ abstract class SkinRenderer
                 ], $rgba);
             }
         }
-        for ($j = 0; $j < 12 * $this->hdRatio; $j++)
+        for ($j = 0; $j < self::ARM_LENGTH * $this->hdRatio; $j++)
         {
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
@@ -836,10 +841,10 @@ abstract class SkinRenderer
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 48 * $this->hdRatio + $i, (20 * $this->hdRatio - 1) - $faceName));
                 $polygons['bottom'][] = new Polygon([
-                    $volume_points[$i][12 * $this->hdRatio][$faceName],
-                    $volume_points[$i + 1][12 * $this->hdRatio][$faceName],
-                    $volume_points[$i + 1][12 * $this->hdRatio][$faceName + 1],
-                    $volume_points[$i][12 * $this->hdRatio][$faceName + 1],
+                    $volume_points[$i][self::ARM_LENGTH * $this->hdRatio][$faceName],
+                    $volume_points[$i + 1][self::ARM_LENGTH * $this->hdRatio][$faceName],
+                    $volume_points[$i + 1][self::ARM_LENGTH * $this->hdRatio][$faceName + 1],
+                    $volume_points[$i][self::ARM_LENGTH * $this->hdRatio][$faceName + 1],
                 ], $rgba);
             }
         }
@@ -886,9 +891,9 @@ abstract class SkinRenderer
                 {
                     $volume_points[$i][0][$faceName] = new Point(['x' => $i + 8 * $this->hdRatio, 'y' => 0 + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
                 }
-                if (!isset($volume_points[$i][12 * $this->hdRatio][$faceName]))
+                if (!isset($volume_points[$i][self::ARM_LENGTH * $this->hdRatio][$faceName]))
                 {
-                    $volume_points[$i][12 * $this->hdRatio][$faceName] = new Point(['x' => $i + 8 * $this->hdRatio, 'y' => 12 * $this->hdRatio + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volume_points[$i][self::ARM_LENGTH * $this->hdRatio][$faceName] = new Point(['x' => $i + 8 * $this->hdRatio, 'y' => self::ARM_LENGTH * $this->hdRatio + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
                 }
             }
         }
@@ -896,7 +901,7 @@ abstract class SkinRenderer
         $polygons = self::CUBE_FACES_FORMAT;
         for ($i = 0; $i < 4 * $this->hdRatio; $i++)
         {
-            for ($j = 0; $j < 12 * $this->hdRatio; $j++)
+            for ($j = 0; $j < self::ARM_LENGTH * $this->hdRatio; $j++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, (56 * $this->hdRatio - 1) - ((4 * $this->hdRatio - 1) - $i), 20 * $this->hdRatio + $j));
                 $polygons['back'][] = new Polygon([
@@ -915,7 +920,7 @@ abstract class SkinRenderer
                 ], $rgba);
             }
         }
-        for ($j = 0; $j < 12 * $this->hdRatio; $j++)
+        for ($j = 0; $j < self::ARM_LENGTH * $this->hdRatio; $j++)
         {
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
@@ -950,10 +955,10 @@ abstract class SkinRenderer
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 48 * $this->hdRatio + ((4 * $this->hdRatio - 1) - $i), (20 * $this->hdRatio - 1) - $faceName));
                 $polygons['bottom'][] = new Polygon([
-                    $volume_points[$i][12 * $this->hdRatio][$faceName],
-                    $volume_points[$i + 1][12 * $this->hdRatio][$faceName],
-                    $volume_points[$i + 1][12 * $this->hdRatio][$faceName + 1],
-                    $volume_points[$i][12 * $this->hdRatio][$faceName + 1],
+                    $volume_points[$i][self::ARM_LENGTH * $this->hdRatio][$faceName],
+                    $volume_points[$i + 1][self::ARM_LENGTH * $this->hdRatio][$faceName],
+                    $volume_points[$i + 1][self::ARM_LENGTH * $this->hdRatio][$faceName + 1],
+                    $volume_points[$i][self::ARM_LENGTH * $this->hdRatio][$faceName + 1],
                 ], $rgba);
             }
         }
@@ -1000,9 +1005,9 @@ abstract class SkinRenderer
                 {
                     $volume_points[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0 + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
                 }
-                if (!isset($volume_points[$i][12 * $this->hdRatio][$faceName]))
+                if (!isset($volume_points[$i][self::LEG_LENGTH * $this->hdRatio][$faceName]))
                 {
-                    $volume_points[$i][12 * $this->hdRatio][$faceName] = new Point(['x' => $i, 'y' => 12 * $this->hdRatio + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volume_points[$i][self::LEG_LENGTH * $this->hdRatio][$faceName] = new Point(['x' => $i, 'y' => self::LEG_LENGTH * $this->hdRatio + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
                 }
             }
         }
@@ -1010,7 +1015,7 @@ abstract class SkinRenderer
         $polygons = self::CUBE_FACES_FORMAT;
         for ($i = 0; $i < 4 * $this->hdRatio; $i++)
         {
-            for ($j = 0; $j < 12 * $this->hdRatio; $j++)
+            for ($j = 0; $j < self::LEG_LENGTH * $this->hdRatio; $j++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, (16 * $this->hdRatio - 1) - $i, 20 * $this->hdRatio + $j));
                 $polygons['back'][] = new Polygon([
@@ -1029,7 +1034,7 @@ abstract class SkinRenderer
                 ], $rgba);
             }
         }
-        for ($j = 0; $j < 12 * $this->hdRatio; $j++)
+        for ($j = 0; $j < self::LEG_LENGTH * $this->hdRatio; $j++)
         {
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
@@ -1041,7 +1046,7 @@ abstract class SkinRenderer
                     $volume_points[0][$j + 1][$faceName],
                 ], $rgba);
 
-                $rgba = new RGBA(imagecolorat($this->skinSource, (12 * $this->hdRatio - 1) - $faceName, 20 * $this->hdRatio + $j));
+                $rgba = new RGBA(imagecolorat($this->skinSource, (self::LEG_LENGTH * $this->hdRatio - 1) - $faceName, 20 * $this->hdRatio + $j));
                 $polygons['left'][] = new Polygon([
                     $volume_points[4 * $this->hdRatio][$j][$faceName],
                     $volume_points[4 * $this->hdRatio][$j][$faceName + 1],
@@ -1064,10 +1069,10 @@ abstract class SkinRenderer
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 8 * $this->hdRatio + $i, (20 * $this->hdRatio - 1) - $faceName));
                 $polygons['bottom'][] = new Polygon([
-                    $volume_points[$i][12 * $this->hdRatio][$faceName],
-                    $volume_points[$i + 1][12 * $this->hdRatio][$faceName],
-                    $volume_points[$i + 1][12 * $this->hdRatio][$faceName + 1],
-                    $volume_points[$i][12 * $this->hdRatio][$faceName + 1],
+                    $volume_points[$i][self::LEG_LENGTH * $this->hdRatio][$faceName],
+                    $volume_points[$i + 1][self::LEG_LENGTH * $this->hdRatio][$faceName],
+                    $volume_points[$i + 1][self::LEG_LENGTH * $this->hdRatio][$faceName + 1],
+                    $volume_points[$i][self::LEG_LENGTH * $this->hdRatio][$faceName + 1],
                 ], $rgba);
             }
         }
@@ -1114,9 +1119,9 @@ abstract class SkinRenderer
                 {
                     $volume_points[$i][0][$faceName] = new Point(['x' => $i + 4 * $this->hdRatio, 'y' => 0 + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
                 }
-                if (!isset($volume_points[$i][12 * $this->hdRatio][$faceName]))
+                if (!isset($volume_points[$i][self::LEG_LENGTH * $this->hdRatio][$faceName]))
                 {
-                    $volume_points[$i][12 * $this->hdRatio][$faceName] = new Point(['x' => $i + 4 * $this->hdRatio, 'y' => 12 * $this->hdRatio + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volume_points[$i][self::LEG_LENGTH * $this->hdRatio][$faceName] = new Point(['x' => $i + 4 * $this->hdRatio, 'y' => self::LEG_LENGTH * $this->hdRatio + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
                 }
             }
         }
@@ -1124,7 +1129,7 @@ abstract class SkinRenderer
         $polygons = self::CUBE_FACES_FORMAT;
         for ($i = 0; $i < 4 * $this->hdRatio; $i++)
         {
-            for ($j = 0; $j < 12 * $this->hdRatio; $j++)
+            for ($j = 0; $j < self::LEG_LENGTH * $this->hdRatio; $j++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, (16 * $this->hdRatio - 1) - ((4 * $this->hdRatio - 1) - $i), 20 * $this->hdRatio + $j));
                 $polygons['back'][] = new Polygon([
@@ -1143,7 +1148,7 @@ abstract class SkinRenderer
                 ], $rgba);
             }
         }
-        for ($j = 0; $j < 12 * $this->hdRatio; $j++)
+        for ($j = 0; $j < self::LEG_LENGTH * $this->hdRatio; $j++)
         {
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
@@ -1155,7 +1160,7 @@ abstract class SkinRenderer
                     $volume_points[0][$j + 1][$faceName],
                 ], $rgba);
 
-                $rgba = new RGBA(imagecolorat($this->skinSource, (12 * $this->hdRatio - 1) - ((4 * $this->hdRatio - 1) - $faceName), 20 * $this->hdRatio + $j));
+                $rgba = new RGBA(imagecolorat($this->skinSource, (self::LEG_LENGTH * $this->hdRatio - 1) - ((4 * $this->hdRatio - 1) - $faceName), 20 * $this->hdRatio + $j));
                 $polygons['left'][] = new Polygon([
                     $volume_points[4 * $this->hdRatio][$j][$faceName],
                     $volume_points[4 * $this->hdRatio][$j][$faceName + 1],
@@ -1178,10 +1183,10 @@ abstract class SkinRenderer
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 8 * $this->hdRatio + ((4 * $this->hdRatio - 1) - $i), (20 * $this->hdRatio - 1) - $faceName));
                 $polygons['bottom'][] = new Polygon([
-                    $volume_points[$i][12 * $this->hdRatio][$faceName],
-                    $volume_points[$i + 1][12 * $this->hdRatio][$faceName],
-                    $volume_points[$i + 1][12 * $this->hdRatio][$faceName + 1],
-                    $volume_points[$i][12 * $this->hdRatio][$faceName + 1],
+                    $volume_points[$i][self::LEG_LENGTH * $this->hdRatio][$faceName],
+                    $volume_points[$i + 1][self::LEG_LENGTH * $this->hdRatio][$faceName],
+                    $volume_points[$i + 1][self::LEG_LENGTH * $this->hdRatio][$faceName + 1],
+                    $volume_points[$i][self::LEG_LENGTH * $this->hdRatio][$faceName + 1],
                 ], $rgba);
             }
         }
