@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Mailform;
 
 use Cyndaron\Controller;
+use Cyndaron\Error\DatabaseError;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
@@ -96,7 +97,7 @@ class MailformController extends Controller
 
         if (!$mailSent)
         {
-            throw new Exception('Wegens een technisch probleem is het versturen van de e-mail niet gelukt.');
+            throw new DatabaseError('Wegens een technisch probleem is het versturen van de e-mail niet gelukt.');
         }
 
         return true;
@@ -158,6 +159,6 @@ class MailformController extends Controller
             return true;
         }
 
-        throw new Exception('Wegens een technisch probleem is het versturen niet gelukt.');
+        throw new DatabaseError('Wegens een technisch probleem is het versturen niet gelukt.');
     }
 }

@@ -5,6 +5,7 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
+use Cyndaron\Error\DatabaseError;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
@@ -86,7 +87,7 @@ class RegistrationController extends Controller
         {
             $message = 'De volgende velden zijn niet goed ingevuld of niet goed aangekomen: ';
             $message .= implode(', ', $errorFields) . '.';
-            throw new Exception($message);
+            throw new IncompleteData($message);
         }
 
         $registrationTicketTypes = [];
@@ -138,7 +139,7 @@ class RegistrationController extends Controller
         if (!$registration->save())
         {
             $msg = var_export(DBConnection::errorInfo(), true);
-            throw new Exception($msg . 'Opslaan aanmelding mislukt!');
+            throw new DatabaseError($msg . 'Opslaan aanmelding mislukt!');
         }
 
         foreach ($ticketTypes as $ticketType)
@@ -154,7 +155,7 @@ class RegistrationController extends Controller
                 $result = $ott->save();
                 if ($result === false)
                 {
-                    throw new Exception('Opslaan kaarttypen mislukt!');
+                    throw new DatabaseError('Opslaan kaarttypen mislukt!');
                 }
             }
         }

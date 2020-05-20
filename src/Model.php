@@ -2,6 +2,7 @@
 
 namespace Cyndaron;
 
+use Cyndaron\Error\ImproperSubclassing;
 use Cyndaron\Error\IncompleteData;
 use Exception;
 use ReflectionProperty;
@@ -177,11 +178,11 @@ class Model
     {
         if (empty(static::TABLE))
         {
-            throw new Exception('TABLE not properly set!');
+            throw new ImproperSubclassing('TABLE not properly set!');
         }
         if (empty(static::TABLE_FIELDS))
         {
-            throw new Exception('TABLE_FIELDS not properly set!');
+            throw new ImproperSubclassing('TABLE_FIELDS not properly set!');
         }
 
         // Create new

@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Menu;
 
 use Cyndaron\Controller;
+use Cyndaron\Error\DatabaseError;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Exception;
@@ -32,7 +33,7 @@ class MenuController extends Controller
 
         if (!$menuItem->save())
         {
-            throw new Exception('Cannot add menu item!');
+            throw new DatabaseError('Cannot add menu item!');
         }
 
         return new JsonResponse();
@@ -51,7 +52,7 @@ class MenuController extends Controller
 
         if (!$menuItem->save())
         {
-            throw new Exception('Could not edit menu item!');
+            throw new DatabaseError('Could not edit menu item!');
         }
 
         return new JsonResponse();

@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\Error\DatabaseError;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Module\UrlProvider;
 use Exception;
@@ -56,7 +57,7 @@ class Url
         }
         if (DBConnection::doQuery('INSERT INTO friendlyurls(name,target) VALUES (?,?)', [$name, $this->url]) === false)
         {
-            throw new Exception('Could not insert friendly URL! Is the URL unique?');
+            throw new DatabaseError('Could not insert friendly URL! Is the URL unique?');
         }
     }
 
