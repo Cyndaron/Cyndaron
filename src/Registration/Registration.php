@@ -7,6 +7,7 @@ use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use Cyndaron\Setting;
 use Cyndaron\Template\Template;
+use Cyndaron\Template\ViewHelpers;
 use \Exception;
 
 class Registration extends Model
@@ -212,11 +213,11 @@ Stichting Bijzondere Koorprojecten';
 
             $text = 'Beste koorzanger,
 
-Nogmaals dank voor je belangstelling voor ' . $event->name . '. Inmiddels zijn alle aanmeldingen bekeken en kunnen we je met plezier melden dat je bent geplaatst op de deelnemerslijst. Die plaatsing wordt definitief na ontvangst van de bijdrage in de kosten ad ' . Util::formatEuro($registrationTotal) . '. Wij vragen je dat binnen twee weken te doen waarna je bericht krijgt van de definitieve plaatsing. 
+Nogmaals dank voor je belangstelling voor ' . $event->name . '. Inmiddels zijn alle aanmeldingen bekeken en kunnen we je met plezier melden dat je bent geplaatst op de deelnemerslijst. Die plaatsing wordt definitief na ontvangst van de bijdrage in de kosten ad ' . \Cyndaron\Template\ViewHelpers::formatEuro($registrationTotal) . '. Wij vragen je dat binnen twee weken te doen waarna je bericht krijgt van de definitieve plaatsing. 
 
 Gebruik bij het betalen de volgende gegevens:
    Rekeningnummer: NL72 RABO 0342 0672 22 t.n.v. Bijzondere Koorprojecten
-   Bedrag: ' . Util::formatEuro($registrationTotal) . '
+   Bedrag: ' . ViewHelpers::formatEuro($registrationTotal) . '
    Onder vermelding van: aanmeldingsnummer ' . $this->id . '
 
 We kijken uit naar plezierige repetities en een mooi concert!

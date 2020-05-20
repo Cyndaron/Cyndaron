@@ -7,5 +7,5 @@
         $i = (strlen($i) === 1) ? $i = '0' . $i : $i;
         $sel = ($i === $selectedMonth) ? 'selected' : '';
     @endphp
-    <option value="{{ $i }}" {{ $sel }}>{{ \Cyndaron\Util::getMonth($i) }}</option>
+    <option value="{{ $i }}" {{ $sel }}>{{ \Cyndaron\Template\ViewHelpers::getDutchMonth($i) }}</option>
 @endfor

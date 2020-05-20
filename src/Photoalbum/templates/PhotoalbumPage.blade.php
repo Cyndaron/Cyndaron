@@ -20,7 +20,7 @@
     @if ($numEntries === 0)
         <div class="alert alert-info">Dit album is leeg.</div>
     @else
-        {!! \Cyndaron\Util::parseText($model->notes) !!}
+        {!! \Cyndaron\Template\ViewHelpers::parseText($model->notes) !!}
 
         @if ($numEntries === 1)
             <p>Dit album bevat 1 foto. Klik op de verkleinde foto om een vergroting te zien.</p>

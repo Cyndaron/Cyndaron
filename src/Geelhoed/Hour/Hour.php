@@ -7,6 +7,7 @@ use Cyndaron\Geelhoed\Department;
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Model;
+use Cyndaron\Template\ViewHelpers;
 use Cyndaron\Util;
 
 class Hour extends Model
@@ -53,7 +54,7 @@ class Hour extends Model
 
     public function getRange(): string
     {
-        return sprintf('%s – %s', Util::filterHm($this->from), Util::filterHm($this->until));
+        return sprintf('%s – %s', ViewHelpers::filterHm($this->from), ViewHelpers::filterHm($this->until));
     }
 
     /**

@@ -12,19 +12,19 @@ class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
         parent::register();
 
         BladeFilters::macro('euro', static function ($value) {
-            return Util::formatEuro($value);
+            return ViewHelpers::formatEuro($value);
         });
         BladeFilters::macro('hm', static function ($value) {
-            return Util::filterHm($value);
+            return ViewHelpers::filterHm($value);
         });
         BladeFilters::macro('dmy', static function ($value) {
-            return Util::filterDutchDate($value);
+            return ViewHelpers::filterDutchDate($value);
         });
         BladeFilters::macro('dmyHm', static function ($value) {
-            return Util::filterDutchDateTime($value);
+            return ViewHelpers::filterDutchDateTime($value);
         });
         BladeFilters::macro('boolToText', static function($value) {
-            return Util::boolToText($value ?? false);
+            return ViewHelpers::boolToText($value ?? false);
         });
     }
 

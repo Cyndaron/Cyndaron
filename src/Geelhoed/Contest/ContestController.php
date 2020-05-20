@@ -7,6 +7,7 @@ use Cyndaron\Geelhoed\PageManagerTabs;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Setting;
+use Cyndaron\Template\ViewHelpers;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util;
@@ -242,7 +243,7 @@ class ContestController extends Controller
             $sheet->setCellValue("B{$row}", $contestMember->getGraduation()->name);
             $sheet->setCellValue("C{$row}", $contestMember->weight);
             $sheet->setCellValue("D{$row}", $member->jbnNumber);
-            $sheet->setCellValue("E{$row}", Util::boolToText($contestMember->isPaid));
+            $sheet->setCellValue("E{$row}", ViewHelpers::boolToText($contestMember->isPaid));
 
             $row++;
         }
@@ -260,7 +261,7 @@ class ContestController extends Controller
             'cache-control' => 'max-age=0'
         ];
 
-        return new Response(Util::spreadsheetToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
+        return new Response(ViewHelpers::spreadsheetToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
     }
 
     public function removeSubscription(RequestParameters $post): JsonResponse

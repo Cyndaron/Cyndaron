@@ -7,6 +7,7 @@ use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Template\ViewHelpers;
 use Cyndaron\User\UserLevel;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -260,7 +261,7 @@ Na betaling zullen uw kaarten ' . $opstuurtekst . '.' . $voor_u_reserveerde_plaa
 
 Gebruik bij het betalen de volgende gegevens:
    Rekeningnummer: NL06INGB0000545925 t.n.v. Vlissingse Oratorium Vereniging
-   Bedrag: ' . Util::formatEuro($total) . '
+   Bedrag: ' . ViewHelpers::formatEuro($total) . '
    Onder vermelding van: bestellingsnummer ' . $orderId . '
 
 
@@ -275,16 +276,16 @@ Kaartsoorten:
         {
             if ($orderTicketTypes[$ticketType['id']] > 0)
             {
-                $text .= '   ' . $ticketType['name'] . ': ' . $orderTicketTypes[$ticketType['id']] . ' à ' . Util::formatEuro((float)$ticketType['price']) . PHP_EOL;
+                $text .= '   ' . $ticketType['name'] . ': ' . $orderTicketTypes[$ticketType['id']] . ' à ' . ViewHelpers::formatEuro((float)$ticketType['price']) . PHP_EOL;
             }
         }
         if (!$concert->forcedDelivery)
         {
-            $text .= PHP_EOL . 'Kaarten bezorgen: ' . Util::boolToText($delivery);
+            $text .= PHP_EOL . 'Kaarten bezorgen: ' . ViewHelpers::boolToText($delivery);
         }
 
         $text .= PHP_EOL . 'Gereserveerde plaatsen: ' . $reserveSeats === 1 ? 'Ja' : 'Nee' . PHP_EOL;
-        $text .= 'Totaalbedrag: ' . Util::formatEuro($total) . '
+        $text .= 'Totaalbedrag: ' . ViewHelpers::formatEuro($total) . '
 
 Achternaam: ' . $lastName . '
 Voorletters: ' . $initials . PHP_EOL . PHP_EOL;

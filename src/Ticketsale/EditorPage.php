@@ -3,6 +3,8 @@ declare (strict_types = 1);
 
 namespace Cyndaron\Ticketsale;
 
+use Cyndaron\Template\ViewHelpers;
+
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'concert';
@@ -21,8 +23,8 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
             $this->contentTitle = $this->model->name;
         }
 
-        $this->templateVars['deliveryCost'] = Util::formatCurrency($this->model->deliveryCost ?? 1.5);
-        $this->templateVars['reservedSeatCharge'] = Util::formatCurrency($this->model->reservedSeatCharge ?? 5.0);
+        $this->templateVars['deliveryCost'] = ViewHelpers::formatCurrency($this->model->deliveryCost ?? 1.5);
+        $this->templateVars['reservedSeatCharge'] = ViewHelpers::formatCurrency($this->model->reservedSeatCharge ?? 5.0);
         $this->templateVars['numFreeSeats'] = $this->model->numFreeSeats ?? 250;
         $this->templateVars['numReservedSeats'] = $this->model->numReservedSeats ?? 270;
         $this->templateVars['descriptionWhenClosed'] = $this->model->descriptionWhenClosed ?? '';

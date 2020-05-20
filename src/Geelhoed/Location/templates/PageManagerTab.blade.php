@@ -21,7 +21,7 @@
                 {{ $location->getName() }}
                 @foreach ($location->getHours() as $hour)
                     <br>
-                    {{ \Cyndaron\Util::getWeekday($hour->day) }} {{ $hour->from|hm }} - {{ $hour->until|hm }}: {{ $hour->description }} ({{ $hour->getSportName() }}) (<a href="/hour/memberList/{{ $hour->id }}">ledenlijst</a>)
+                    {{ \Cyndaron\Template\ViewHelpers::getDutchWeekday($hour->day) }} {{ $hour->from|hm }} - {{ $hour->until|hm }}: {{ $hour->description }} ({{ $hour->getSportName() }}) (<a href="/hour/memberList/{{ $hour->id }}">ledenlijst</a>)
                 @endforeach
             </td>
             <td>

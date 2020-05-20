@@ -117,13 +117,13 @@
                     </td>
                     <td>
                         @foreach ($member->getHours() as $hour)
-                            {{ \Cyndaron\Util::getWeekday($hour->day) }} {{ $hour->from|hm }} - {{ $hour->until|hm }} ({{ $hour->getSportName() }}, {{ $hour->getLocation()->getName() }})
+                            {{ \Cyndaron\Template\ViewHelpers::getDutchWeekday($hour->day) }} {{ $hour->from|hm }} - {{ $hour->until|hm }} ({{ $hour->getSportName() }}, {{ $hour->getLocation()->getName() }})
                             @if (!$loop->last) <br>@endif
                         @endforeach
                     </td>
                     <td>
                         {{ $member->iban }}<br>
-                        <abbr title="Voor kwartaal dat begint op {{ \Cyndaron\Util::getStartOfNextQuarter()->format('d-m-Y') }}">Kw.bedrag: </abbr>{{ \Cyndaron\Util::formatEuro($member->getQuarterlyFee()) }}
+                        <abbr title="Voor kwartaal dat begint op {{ \Cyndaron\Util::getStartOfNextQuarter()->format('d-m-Y') }}">Kw.bedrag: </abbr>{{ \Cyndaron\Template\ViewHelpers::formatEuro($member->getQuarterlyFee()) }}
                     </td>
                     <td>
                         @if ($member->isContestant)<abbr title="Wedstrijdjudoka">W</abbr><br>@endif
@@ -238,7 +238,7 @@
                             <div id="collapse{{ $location->id }}" class="collapse" aria-labelledby="heading{{ $location->id }}" data-parent="#accordion">
                                 <div class="card-body">
                                     @foreach ($hours as $hour)
-                                        @php $weekday = \Cyndaron\Util::getWeekday($hour->day) @endphp
+                                        @php $weekday = \Cyndaron\Template\ViewHelpers::getDutchWeekday($hour->day) @endphp
                                         @include('Widget/Form/Checkbox', ['id' => "hour-{$hour->id}", 'label' => "{$weekday}, {$hour->getRange()} {$hour->getSportName()}"])
                                     @endforeach
                                 </div>

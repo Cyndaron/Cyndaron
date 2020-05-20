@@ -3,7 +3,7 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Util;
+use Cyndaron\Template\ViewHelpers;
 
 class StaticPage extends Page
 {
@@ -19,7 +19,7 @@ class StaticPage extends Page
 
         $this->addTemplateVars([
             'model' => $this->model,
-            'text' => Util::parseText($this->model->text),
+            'text' => ViewHelpers::parseText($this->model->text),
             'replies' => $replies,
         ]);
     }

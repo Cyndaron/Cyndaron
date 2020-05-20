@@ -4,6 +4,7 @@ namespace Cyndaron;
 
 use Cyndaron\Category\Category;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Template\ViewHelpers;
 use Cyndaron\User\User;
 
 /*
@@ -91,7 +92,7 @@ class Page
 
         $jumboContents = Setting::get('jumboContents');
         $this->templateVars['showJumbo'] = $this->isFrontPage() && Setting::get('frontPageIsJumbo') && $jumboContents;
-        $this->templateVars['jumboContents'] = Util::parseText($jumboContents);
+        $this->templateVars['jumboContents'] = ViewHelpers::parseText($jumboContents);
 
         $this->templateVars['pageCaptionClasses'] = '';
         if ($this->isFrontPage())

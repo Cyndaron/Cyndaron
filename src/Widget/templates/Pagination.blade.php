@@ -2,7 +2,7 @@
     <div class="lettermenu">
         <ul class="pagination">
             @php $lastPageNum = 0 @endphp
-            @foreach (\Cyndaron\Util::determinePages($numPages, $currentPage) as $i)
+            @foreach (\Cyndaron\Template\ViewHelpers::determinePages($numPages, $currentPage) as $i)
                 @if ($i > $numPages)
                     @break;
                 @endif

@@ -14,7 +14,7 @@
                 <a href="/location/view/{{ $location->id }}">Meer informatie</a>
 
                 @foreach ($location->getHoursSortedByWeekday() as $weekDay => $hours)
-                    <h4>{{ \Cyndaron\Util::getWeekday($weekDay) }}</h4>
+                    <h4>{{ \Cyndaron\Template\ViewHelpers::getDutchWeekday($weekDay) }}</h4>
 
                     <table class="table table-striped table-bordered location-overview">
                         <thead>

@@ -30,7 +30,7 @@
                     <td>{{ $contestMember->getGraduation()->name }}</td>
                     <td>{{ $contestMember->weight }}</td>
                     <td>{{ $member->jbnNumber }}</td>
-                    <td>{{ \Cyndaron\Util::boolToText($contestMember->isPaid) }}</td>
+                    <td>{{ \Cyndaron\Template\ViewHelpers::boolToText($contestMember->isPaid) }}</td>
                     <td>
                         <button class="btn btn-danger gcsm-delete" data-id="{{ $contestMember->id }}" title="Deze inschrijving verwijderen"><span class="glyphicon glyphicon-trash"></span></button>
                     </td>

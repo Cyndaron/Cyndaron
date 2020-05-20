@@ -16,4 +16,4 @@ Voorkeur koor I/II: {{ $registration->choirPreference }}
 @endif
 @endforeach
 
-Totaalbedrag: {{ \Cyndaron\Util::formatEuro($registrationTotal) }}
+Totaalbedrag: {{ \Cyndaron\Template\ViewHelpers::formatEuro($registrationTotal) }}

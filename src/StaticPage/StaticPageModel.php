@@ -4,6 +4,7 @@ namespace Cyndaron\StaticPage;
 use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
+use Cyndaron\Template\ViewHelpers;
 use Cyndaron\Url;
 use Cyndaron\Util;
 use Exception;
@@ -83,7 +84,7 @@ class StaticPageModel extends Model
 
     public function getBlurb(): string
     {
-        return html_entity_decode(Util::wordlimit(trim($this->text), 30));
+        return html_entity_decode(ViewHelpers::wordlimit(trim($this->text), 30));
     }
 
     public function getImage(): string

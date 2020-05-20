@@ -6,7 +6,7 @@
     if (!isset($size))
         $size = 20;
 
-    [$icon, $btnClass] = \Cyndaron\Util::getButtonIconAndClass($kind);
+    [$icon, $btnClass] = \Cyndaron\Template\ViewHelpers::getButtonIconAndClass($kind);
 
     if ($size === 16)
     {
