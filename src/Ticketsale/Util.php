@@ -9,10 +9,7 @@ class Util extends \Cyndaron\Util
 
     public static function postcodeQualifiesForFreeDelivery(int $postcode): bool
     {
-        if ($postcode >= 4330 && $postcode <= 4399)
-            return true;
-        else
-            return false;
+        return ($postcode >= 4330 && $postcode <= 4399);
     }
 
     public static function drawPageManagerTab(): string

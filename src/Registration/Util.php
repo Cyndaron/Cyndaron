@@ -16,7 +16,9 @@ class Util extends \Cyndaron\Util
         $age = date('Y') - $birthYear;
 
         if ($age < 12)
+        {
             return 'Niet opgegeven';
+        }
 
         static $ageRanges = [
             [12, 25], [26, 50], [51, 65], [66, 70], [71, 75], [76, 80]
@@ -24,7 +26,9 @@ class Util extends \Cyndaron\Util
         foreach ($ageRanges as $ageRange)
         {
             if ($age >= $ageRange[0] && $age <= $ageRange[1])
+            {
                 return "$ageRange[0] - $ageRange[1]";
+            }
         }
 
         return '81+';

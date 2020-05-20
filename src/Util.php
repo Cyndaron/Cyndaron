@@ -26,6 +26,19 @@ class Util
     protected const MONTHS = ['', 'januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
     protected const WEEKDAYS = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
 
+    protected const BUTTON_TYPE_TO_ICON = [
+        'new' => 'plus',
+        'edit' => 'pencil',
+        'delete' => 'trash',
+        'lastversion' => 'lastversion',
+        'addtomenu' => 'bookmark',
+    ];
+
+    protected const BUTTON_TYPE_TO_CLASS = [
+         'new'=> 'btn-success',
+         'delete' => 'btn-danger',
+    ];
+
     /**
      * Zet een maandnummer om in de naam.
      * Bijvoorbeeld: 1 -> januari.
@@ -217,32 +230,20 @@ class Util
         return sprintf('%s om %s', static::filterDutchDate($date), date('H:i', strtotime($date)));
     }
 
-    public static function getButtonIconAndClass(string $kind): array
+    public static function getButtonIconAndClass(string $type): array
     {
-        $btnClass = 'btn-outline-cyndaron';
-
-        switch ($kind)
+        $icon = $type;
+        if (array_key_exists($type, self::BUTTON_TYPE_TO_ICON))
         {
-            case 'new':
-                $icon = 'plus';
-                $btnClass = 'btn-success';
-                break;
-            case 'edit':
-                $icon = 'pencil';
-                break;
-            case 'delete':
-                $icon = 'trash';
-                $btnClass = 'btn-danger';
-                break;
-            case 'lastversion':
-                $icon = 'lastversion';
-                break;
-            case 'addtomenu':
-                $icon = 'bookmark';
-                break;
-            default:
-                $icon = $kind;
+            $icon = self::BUTTON_TYPE_TO_ICON[$type];
         }
+
+        $btnClass = 'btn-outline-cyndaron';
+        if (array_key_exists($type, self::BUTTON_TYPE_TO_CLASS))
+        {
+            $btnClass .= ' ' . self::BUTTON_TYPE_TO_CLASS[$type];
+        }
+
         return [$icon, $btnClass];
     }
 
