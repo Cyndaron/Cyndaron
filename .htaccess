@@ -28,19 +28,19 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?page=$1 [QSA,NC,L]
 
 <ifModule mod_headers.c>
-Header always set Cache-Control "max-age=604800"
+Header set Cache-Control "max-age=604800"
 
 # 1 year
 <FilesMatch "\.(ico|gif|jpg|jpeg|png|flv|pdf)$">
-  Header always set Cache-Control "max-age=29030400"
+  Header set Cache-Control "max-age=29030400"
 </FilesMatch>
 # 1 week
 <FilesMatch "\.(js|css|swf)$">
-  Header always set Cache-Control "max-age=604800"
+  Header set Cache-Control "max-age=604800"
 </FilesMatch>
 # 45 min
 <FilesMatch "\.(html|htm|txt|php)$">
-  Header always set Cache-Control "max-age=2700"
+  Header set Cache-Control "max-age=2700"
 </FilesMatch>
 </ifModule>
 

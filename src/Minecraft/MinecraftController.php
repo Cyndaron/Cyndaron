@@ -48,13 +48,13 @@ class MinecraftController extends Controller
 
     public function skin(): Response
     {
-        ob_start();
         $get = new RequestParameters($_GET);
         $format = $get->getSimpleString('format');
         $username = $get->getSimpleString('user');
         $member = Member::loadByUsername($username);
-        new SkinRendererHandler($member, $format, $get);
-        return new Response(ob_get_clean());
+
+        $handler = new SkinRendererHandler($member, $format, $get);
+        return $handler->draw();
     }
 
     public function status(): Response

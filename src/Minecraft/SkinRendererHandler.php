@@ -3,6 +3,7 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Template\Template;
+use Symfony\Component\HttpFoundation\Response;
 
 /* ***** MINECRAFT 3D Skin Generator *****
  * The contents of this project were first developed by Pierre Gros on 17th April 2012.
@@ -58,14 +59,30 @@ class SkinRendererHandler
     public static int $minY = 0;
     public static int $maxY = 0;
 
+    private Member $user;
+    private string $format;
+    private RequestParameters $get;
+
+    private int $ratio;
+
     // TODO: move RequestParameters to Controller.
     public function __construct(Member $user, string $format, RequestParameters $get)
     {
+        $this->user = $user;
+        $this->format = $format;
+        $this->get = $get;
+
+        $this->ratio = max($get->getInt('ratio'), 2);
+    }
+
+    public function draw(): Response
+    {
         $times = [];
+        $headers = [];
 
         $times[] = ['Start', $this->microtime_float()];
 
-        $renderer = new SkinRenderer($user->skinUrl);
+        $renderer = new SkinRenderer($this->user->skinUrl);
         $img_png = $renderer->getSkinOrFallback();
 
         $width = imagesx($img_png);
@@ -87,9 +104,9 @@ class SkinRendererHandler
 
         $times[] = ['Download-Image', $this->microtime_float()];
 
-        $vertical_rotation = $get->getInt('vr');
-        $horizontal_rotation = $get->getInt('hr');
-        $display_hair = $user->renderAvatarHair;
+        $vertical_rotation = $this->get->getInt('vr');
+        $horizontal_rotation = $this->get->getInt('hr');
+        $display_hair = $this->user->renderAvatarHair;
 
         // Rotation variables in radians (3D Rendering)
         $alpha = deg2rad($vertical_rotation); // Vertical rotation on the X axis.
@@ -104,7 +121,7 @@ class SkinRendererHandler
             'sin_omega' => sin(0),
         ];
         $alpha_head = 0;
-        $omega_head = deg2rad((float)$get->getInt('hrh'));
+        $omega_head = deg2rad((float)$this->get->getInt('hrh'));
         $parts_angles['head'] = [
             'cos_alpha' => cos($alpha_head),
             'sin_alpha' => sin($alpha_head),
@@ -117,7 +134,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_head),
             'sin_omega' => sin($omega_head),
         ];
-        $alpha_right_arm = deg2rad((float)$get->getInt('vrra'));
+        $alpha_right_arm = deg2rad((float)$this->get->getInt('vrra'));
         $omega_right_arm = 0;
         $parts_angles['rightArm'] = [
             'cos_alpha' => cos($alpha_right_arm),
@@ -125,7 +142,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_right_arm),
             'sin_omega' => sin($omega_right_arm),
         ];
-        $alpha_left_arm = deg2rad((float)$get->getInt('vrla'));
+        $alpha_left_arm = deg2rad((float)$this->get->getInt('vrla'));
         $omega_left_arm = 0;
         $parts_angles['leftArm'] = [
             'cos_alpha' => cos($alpha_left_arm),
@@ -133,7 +150,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_left_arm),
             'sin_omega' => sin($omega_left_arm),
         ];
-        $alpha_right_leg = deg2rad((float)$get->getInt('vrrl'));
+        $alpha_right_leg = deg2rad((float)$this->get->getInt('vrrl'));
         $omega_right_leg = 0;
         $parts_angles['rightLeg'] = [
             'cos_alpha' => cos($alpha_right_leg),
@@ -141,7 +158,7 @@ class SkinRendererHandler
             'cos_omega' => cos($omega_right_leg),
             'sin_omega' => sin($omega_right_leg),
         ];
-        $alpha_left_leg = deg2rad((float)$get->getInt('vrll'));
+        $alpha_left_leg = deg2rad((float)$this->get->getInt('vrll'));
         $omega_left_leg = 0;
         $parts_angles['leftLeg'] = [
             'cos_alpha' => cos($alpha_left_leg),
@@ -1040,24 +1057,21 @@ class SkinRendererHandler
         $width = static::$maxX - static::$minX;
         $height = static::$maxY - static::$minY;
 
-        // Handle the ratio
-        $min_ratio = 2;
-        $ratio = $get->getInt('ratio');
-        $ratio = ($ratio < $min_ratio) ? $min_ratio : $ratio;
+        $ratio = $this->ratio;
 
         if (SkinRenderer::SECONDS_TO_CACHE > 0)
         {
             $ts = gmdate('D, d M Y H:i:s', time() + SkinRenderer::SECONDS_TO_CACHE) . ' GMT';
-            header('Expires: ' . $ts);
-            header('Pragma: cache');
-            header('Cache-Control: max-age=' . SkinRenderer::SECONDS_TO_CACHE);
+            $headers['Expires'] = $ts;
+            $headers['Pragma'] = 'cache';
+            $headers['Cache-Control'] = 'max-age=' . SkinRenderer::SECONDS_TO_CACHE;
         }
 
         $svgTemplate = null;
         $svgTemplateVars = [];
 
         $image = null;
-        if ($format === 'svg')
+        if ($this->format === 'svg')
         {
             $svgTemplate = new Template();
             $svgTemplateVars = [
@@ -1154,7 +1168,7 @@ class SkinRendererHandler
                 {
                     foreach ($polygons[$piece][$face] as $poly)
                     {
-                        if ($format === 'svg')
+                        if ($this->format === 'svg')
                         {
                             $svgTemplateVars['contents'] .= $poly->getSvgPolygon(1);
                         }
@@ -1169,7 +1183,7 @@ class SkinRendererHandler
 
         $times[] = ['Display-image', $this->microtime_float()];
 
-        if ($format === 'svg')
+        if ($this->format === 'svg')
         {
             $svgTemplateVars['remarks'] = '';
             for ($i = 1, $iMax = count($times); $i < $iMax; $i++)
@@ -1178,20 +1192,23 @@ class SkinRendererHandler
             }
             $svgTemplateVars['remarks'] .= '<!-- TOTAL : ' . ($times[count($times) - 1][1] - $times[0][1]) * 1000 . 'ms -->' . "\n";
 
-            header('Content-Type: image/svg+xml');
-            echo $svgTemplate->render('Minecraft/SkinSVG', $svgTemplateVars);
+            $headers['Content-Type'] = 'image/svg+xml';
+            return new Response($svgTemplate->render('Minecraft/SkinSVG', $svgTemplateVars), Response::HTTP_OK, $headers);
         }
         else
         {
-            header('Content-type: image/png');
+            $headers['Content-Type'] = 'image/png';
 
+            ob_start();
             imagepng($image);
+            $contents = ob_get_clean();
             imagedestroy($image);
             for ($i = 1, $iMax = count($times); $i < $iMax; $i++)
             {
-                header('generation-time-' . $i . '-' . $times[$i][0] . ': ' . ($times[$i][1] - $times[$i - 1][1]) * 1000 . 'ms');
+                $headers['generation-time-' . $i . '-' . $times[$i][0]] = ($times[$i][1] - $times[$i - 1][1]) * 1000 . 'ms';
             }
-            header('generation-time-' . count($times) . '-TOTAL: ' . ($times[count($times) - 1][1] - $times[0][1]) * 1000 . 'ms');
+            $headers['generation-time-' . count($times) . '-TOTAL'] = ($times[count($times) - 1][1] - $times[0][1]) * 1000 . 'ms';
+            return new Response($contents, Response::HTTP_OK, $headers);
         }
     }
 
