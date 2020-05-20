@@ -1,5 +1,5 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
@@ -28,8 +28,8 @@ class Concert extends Model
     /**
      * @param int $orderId
      * @param int $numTickets
-     * @return array|null Which seats were reserved, if there were enough, null otherwise
      * @throws Exception
+     * @return array|null Which seats were reserved, if there were enough, null otherwise
      */
     public function reserveSeats(int $orderId, int $numTickets): ?array
     {

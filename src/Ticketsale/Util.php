@@ -16,6 +16,5 @@ class Util extends \Cyndaron\Util
     {
         $templateVars = ['concerts' => Concert::fetchAll()];
         return (new Template())->render('Ticketsale/PageManagerTab', $templateVars);
-
     }
 }

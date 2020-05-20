@@ -39,7 +39,7 @@ class MemberController extends Controller
             }
 
             $list = [];
-            foreach($member->getMemberGraduations() as $memberGraduation)
+            foreach ($member->getMemberGraduations() as $memberGraduation)
             {
                 $graduation = $memberGraduation->getGraduation();
                 $description = "{$graduation->getSport()->name}: {$graduation->name} ({$memberGraduation->date})";
@@ -68,7 +68,8 @@ class MemberController extends Controller
     {
         $memberId = $post->getInt('id');
 
-        if ($memberId > 0) // Edit existing
+        // Edit existing
+        if ($memberId > 0)
         {
             $member = Member::loadFromDatabase($memberId);
             if ($member === null)
@@ -98,7 +99,7 @@ class MemberController extends Controller
         }
 
         $newGraduationId = $post->getInt('new-graduation-id');
-        $newGraduationDate = $post->getDate( 'new-graduation-date');
+        $newGraduationDate = $post->getDate('new-graduation-date');
         if ($newGraduationId && $newGraduationDate)
         {
             $mg = new MemberGraduation();

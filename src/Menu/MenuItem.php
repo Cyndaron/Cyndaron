@@ -1,5 +1,5 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Cyndaron\Menu;
 
@@ -21,7 +21,8 @@ class MenuItem extends Model
 
     public function save(): bool
     {
-        if (!$this->priority) {
+        if (!$this->priority)
+        {
             $priority = DBConnection::doQueryAndFetchOne('SELECT MAX(priority) FROM menu WHERE id <> ?', [$this->id]) + 1;
             $this->priority = $priority;
         }
@@ -75,7 +76,8 @@ class MenuItem extends Model
     public function getSubmenu(): array
     {
         $id = (int)str_replace('/category/', '', $this->link);
-        $pagesInCategory = DBConnection::doQueryAndFetchAll("
+        $pagesInCategory = DBConnection::doQueryAndFetchAll(
+            "
             SELECT * FROM
             (
                 SELECT 'sub' AS type, id, name FROM subs WHERE categoryId=?
@@ -85,7 +87,8 @@ class MenuItem extends Model
                 SELECT 'category' AS type, id, name FROM categories WHERE categoryId=?
             ) AS one
             ORDER BY name ASC;",
-            [$id, $id, $id]);
+            [$id, $id, $id]
+        );
 
         $items = [];
         foreach ($pagesInCategory as $page)

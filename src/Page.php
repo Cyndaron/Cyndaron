@@ -1,4 +1,5 @@
-<?php /** @noinspection PhpIncludeInspection */
+<?php
+/** @noinspection PhpIncludeInspection */
 
 namespace Cyndaron;
 
@@ -238,5 +239,4 @@ class Page
     {
         $this->templateVars = array_merge($this->templateVars, $vars);
     }
-
 }

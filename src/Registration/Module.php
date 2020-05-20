@@ -8,7 +8,6 @@ use Cyndaron\Module\Routes;
 
 class Module implements Routes, Datatypes
 {
-
     public function routes(): array
     {
         return [

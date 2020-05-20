@@ -1,5 +1,5 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Cyndaron\User;
 
@@ -312,13 +312,11 @@ EOT;
                 {
                     $username .= random_int(10000, 99999);
                 }
-
             }
             $this->username = $username;
         }
 
         return parent::save();
-
     }
 
     public function canLogin(): bool

@@ -5,5 +5,4 @@ use Exception;
 
 class ImproperSubclassing extends Exception
 {
-
 }

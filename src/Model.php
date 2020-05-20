@@ -24,8 +24,8 @@ class Model
 
     /**
      * @param int $id
-     * @return static|null
      * @throws Exception
+     * @return static|null
      */
     public static function loadFromDatabase(int $id): ?Model
     {
@@ -238,8 +238,8 @@ class Model
      * @param string $property
      * @param string $var
      *
-     * @return string|int|bool
      * @throws \ReflectionException
+     * @return string|int|bool
      */
     public static function mangleVarForProperty(string $property, string $var)
     {
@@ -255,7 +255,7 @@ class Model
         {
             case 'int':
                 return (int)$var;
-            case 'bool';
+            case 'bool':
                 return (bool)(int)$var;
         }
 

@@ -23,8 +23,8 @@ class RequestParameters
 
     /**
      * @param mixed $parameter
-     * @return mixed|null
      * @throws \Exception
+     * @return mixed|null
      */
     public function stripInvalidCharacters($parameter)
     {
@@ -38,7 +38,7 @@ class RequestParameters
         elseif (is_string($parameter))
         {
             // This will strip out invalid UTF-8.
-            $parameter = mb_convert_encoding($parameter , 'UTF-8', 'UTF-8');
+            $parameter = mb_convert_encoding($parameter, 'UTF-8', 'UTF-8');
             // Remove control codes, except for \r and \n.
             $parameter = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $parameter);
         }
@@ -125,7 +125,7 @@ class RequestParameters
 
     public function getPhone(string $name, string $default = ''): string
     {
-        return preg_replace('/[^0-9+\- ]/','', $this->getUnfilteredString($name, $default));
+        return preg_replace('/[^0-9+\- ]/', '', $this->getUnfilteredString($name, $default));
     }
 
     public function getUrl(string $name, string $default = ''): string
@@ -157,7 +157,7 @@ class RequestParameters
     {
         $value = $this->getUnfilteredString($name, $default);
         // Remove <script> tags
-        $value = preg_replace("/<script.*?>.*?<\/script>/ims",'', $value);
+        $value = preg_replace("/<script.*?>.*?<\/script>/ims", '', $value);
         // Remove onLoad/onClick/... attributes
         $value = preg_replace('/\bon\w+=\S+(?=.*>)/', '', $value);
 

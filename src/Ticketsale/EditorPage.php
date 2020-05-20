@@ -1,5 +1,5 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
@@ -29,5 +29,4 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
         $this->templateVars['numReservedSeats'] = $this->model->numReservedSeats ?? 270;
         $this->templateVars['descriptionWhenClosed'] = $this->model->descriptionWhenClosed ?? '';
     }
-
 }

@@ -69,7 +69,7 @@ abstract class EditorSavePage
         }
 
         $image = str_replace('base64,', '', $image);
-        $image = base64_decode(str_replace(' ', '+', $image));
+        $image = base64_decode(str_replace(' ', '+', $image), true);
         $uploadDir = 'afb/via-editor/';
         $destinationFilename = $uploadDir . date('c') . '-' . md5($image) . '.' . $extensie;
         Util::createDir($uploadDir);
@@ -83,4 +83,3 @@ abstract class EditorSavePage
         return $this->returnUrl;
     }
 }
-

@@ -5,5 +5,4 @@ use RuntimeException;
 
 class IncompleteData extends RuntimeException
 {
-
 }

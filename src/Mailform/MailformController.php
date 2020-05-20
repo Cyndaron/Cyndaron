@@ -1,5 +1,5 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
@@ -24,7 +24,7 @@ class MailformController extends Controller
 
     public function checkCSRFToken(string $token): bool
     {
-        if (in_array($this->action, ['process', 'process-ldbf']))
+        if (in_array($this->action, ['process', 'process-ldbf'], true))
         {
             return true;
         }
@@ -34,8 +34,8 @@ class MailformController extends Controller
 
     /**
      * @param RequestParameters $post
-     * @return Response
      * @throws Exception
+     * @return Response
      */
     public function process(RequestParameters $post): Response
     {
@@ -72,7 +72,6 @@ class MailformController extends Controller
             $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
             return new Response($page->render());
         }
-
         catch (Exception $e)
         {
             $page = new Page('Formulier versturen mislukt', $e->getMessage());
@@ -106,8 +105,8 @@ class MailformController extends Controller
     /**
      * @param Mailform $form
      * @param RequestParameters $post
-     * @return bool
      * @throws Exception
+     * @return bool
      */
     public function processHelper(Mailform $form, RequestParameters $post): bool
     {

@@ -46,8 +46,8 @@ class Member extends Model
     }
 
     /**
-     * @return Hour[]
      * @throws \Exception
+     * @return Hour[]
      */
     public function getHours(): array
     {
@@ -125,8 +125,8 @@ class Member extends Model
     }
 
     /**
-     * @return Sport[]
      * @throws \Exception
+     * @return Sport[]
      */
     public function getSports(): array
     {
@@ -159,8 +159,8 @@ class Member extends Model
     /**
      * Calculate monthly total from the start of the next quarter.
      *
-     * @return float
      * @throws \Exception
+     * @return float
      */
     public function getMonthlyFee(): float
     {
@@ -186,7 +186,9 @@ class Member extends Model
         {
             $fee = $isSenior ? $sport->seniorFee : $sport->juniorFee;
             if ($fee > $highestFee)
+            {
                 $highestFee = $fee;
+            }
         }
 
         return $highestFee + 5.00;
@@ -195,8 +197,8 @@ class Member extends Model
     /**
      * Calculate quarterly total from the start of the next quarter.
      *
-     * @return float
      * @throws \Exception
+     * @return float
      */
     public function getQuarterlyFee(): float
     {

@@ -11,9 +11,9 @@ class ViewFinder extends FileViewFinder
      *
      * @param  string  $name
      * @param  array   $paths
+     * @throws InvalidArgumentException
      * @return string
      *
-     * @throws InvalidArgumentException
      */
     protected function findInPaths($name, $paths): string
     {
@@ -24,7 +24,8 @@ class ViewFinder extends FileViewFinder
         $templateFinder = new TemplateFinder();
         $path = $templateFinder->path($name);
 
-        if ($path !== null) {
+        if ($path !== null)
+        {
             return $path;
         }
 

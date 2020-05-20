@@ -22,7 +22,8 @@ class PhotoalbumCaption extends Model
     {
         $obj = null;
         $result = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM photoalbum_captions WHERE hash=?', [$hash]);
-        if ($result !== null && $result !== false) {
+        if ($result !== null && $result !== false)
+        {
             $obj = new static();
             $obj->id = $result['id'];
             $obj->updateFromArray($result);

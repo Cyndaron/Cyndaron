@@ -1,5 +1,5 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
@@ -128,10 +128,12 @@ class OrderController extends Controller
         $city = $post->getSimpleString('city');
         $comments = $post->getSimpleString('comments');
 
-        $result = DBConnection::doQuery('INSERT INTO ticketsale_orders
+        $result = DBConnection::doQuery(
+            'INSERT INTO ticketsale_orders
             (`concertId`, `lastName`, `initials`, `email`, `street`, `postcode`, `city`, `delivery`,               `hasReservedSeats`, `deliveryByMember`,      `deliveryMemberName`, `addressIsAbroad`,      `comments`) VALUES
             (?,           ?,          ?,          ?,       ?,        ?,          ?,      ?,                        ?,                  ?,                       ?,                    ?,                      ?)',
-            [$concertId,  $lastName,  $initials,  $email,  $street,  $postcode,  $city, ($payForDelivery ? 1 : 0), $reserveSeats,      (int)$deliveryByMember,  $deliveryMemberName,  (int)$addressIsAbroad,  $comments]);
+            [$concertId,  $lastName,  $initials,  $email,  $street,  $postcode,  $city, ($payForDelivery ? 1 : 0), $reserveSeats,      (int)$deliveryByMember,  $deliveryMemberName,  (int)$addressIsAbroad,  $comments]
+        );
         if ($result === false)
         {
             throw new InvalidOrder('Opslaan bestelling mislukt!');
@@ -144,7 +146,8 @@ class OrderController extends Controller
             {
                 $result = DBConnection::doQuery(
                     'INSERT INTO ticketsale_orders_tickettypes(`orderId`, `tickettypeId`, `amount`) VALUES(?, ?, ?)',
-                    [$orderId, $ticketType['id'], $order_tickettypes[$ticketType['id']]]);
+                    [$orderId, $ticketType['id'], $order_tickettypes[$ticketType['id']]]
+                );
                 if ($result === false)
                 {
                     throw new InvalidOrder('Opslaan kaarttypen mislukt!');

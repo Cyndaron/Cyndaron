@@ -1,5 +1,5 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Cyndaron\Photoalbum;
 
@@ -56,7 +56,8 @@ class Photoalbum extends ModelWithCategory
         if ($dirArray = @scandir("./fotoalbums/$this->id"))
         {
             natsort($dirArray);
-            $ret = array_values(array_filter($dirArray, static function($value) {
+            $ret = array_values(array_filter($dirArray, static function($value)
+            {
                 return substr($value, 0, 1) !== '.';
             }));
         }

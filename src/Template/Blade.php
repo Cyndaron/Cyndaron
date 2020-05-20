@@ -39,7 +39,8 @@ class Blade implements FactoryContract
 
         $this->factory = $this->container->get('view');
         $this->compiler = $this->container->get('blade.compiler');
-        $this->compiler->extend(function ($view) {
+        $this->compiler->extend(function($view)
+        {
             return $this->container[BladeFiltersCompiler::class]->compile($view);
         });
     }
@@ -111,15 +112,18 @@ class Blade implements FactoryContract
 
     protected function setupContainer(array $viewPaths, string $cachePath): void
     {
-        $this->container->bindIf('files', static function () {
+        $this->container->bindIf('files', static function()
+        {
             return new Filesystem();
         }, true);
 
-        $this->container->bindIf('events', static function () {
+        $this->container->bindIf('events', static function()
+        {
             return new Dispatcher();
         }, true);
 
-        $this->container->bindIf('config', static function () use ($viewPaths, $cachePath) {
+        $this->container->bindIf('config', static function() use ($viewPaths, $cachePath)
+        {
             return [
                 'view.paths' => $viewPaths,
                 'view.compiled' => $cachePath,

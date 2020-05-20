@@ -5,5 +5,4 @@ namespace Cyndaron\Ticketsale;
 
 class InvalidOrder extends \Exception
 {
-
 }

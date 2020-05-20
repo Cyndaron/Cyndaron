@@ -61,4 +61,3 @@ class MigrateController extends Controller
         return false;
     }
 }
-

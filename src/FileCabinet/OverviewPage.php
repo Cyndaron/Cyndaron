@@ -60,7 +60,8 @@ class OverviewPage extends Page
 
             if ($orderBy === 'date')
             {
-                usort($dirArray, static function ($file1, $file2) {
+                usort($dirArray, static function($file1, $file2)
+                {
                     return filectime(self::PATH . $file1) <=> filectime(self::PATH . $file2);
                 });
             }

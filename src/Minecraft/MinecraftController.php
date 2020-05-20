@@ -1,5 +1,5 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Cyndaron\Minecraft;
 
@@ -39,7 +39,8 @@ class MinecraftController extends Controller
         return new Response(
             $proxy->getContents(),
             Response::HTTP_OK,
-            ['content-type' => $proxy->getContentType()]);
+            ['content-type' => $proxy->getContentType()]
+        );
     }
 
     public function members(): Response

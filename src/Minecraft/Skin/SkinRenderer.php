@@ -110,7 +110,6 @@ abstract class SkinRenderer
             {
                 $cube_max_depth_faces = $cubePoint;
             }
-
         }
         $back_faces = $cube_max_depth_faces->getPlaces();
         $front_faces = array_diff(self::ALL_FACES, $back_faces);

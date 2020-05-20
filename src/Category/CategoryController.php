@@ -1,5 +1,5 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Cyndaron\Category;
 
@@ -58,7 +58,8 @@ class CategoryController extends Controller
         $category = new Category(null);
         $category->name = $post->getHTML('name');
         $result = $category->save();
-        if ($result === false) {
+        if ($result === false)
+        {
             $return = DBConnection::errorInfo();
         }
 
@@ -111,5 +112,4 @@ class CategoryController extends Controller
 
         return new JsonResponse();
     }
-
 }

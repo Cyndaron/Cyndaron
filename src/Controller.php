@@ -1,5 +1,5 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Cyndaron;
 
@@ -49,7 +49,7 @@ class Controller
         $getRoutes = ($this->isApiCall && !empty($this->apiGetRoutes)) ? $this->apiGetRoutes : $this->getRoutes;
         $postRoutes = ($this->isApiCall && !empty($this->apiPostRoutes)) ? $this->apiPostRoutes : $this->postRoutes;
 
-        switch($_SERVER['REQUEST_METHOD'])
+        switch ($_SERVER['REQUEST_METHOD'])
         {
             case 'GET':
                 $routesTable = $getRoutes;

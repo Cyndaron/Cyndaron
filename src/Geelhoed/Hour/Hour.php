@@ -58,8 +58,8 @@ class Hour extends Model
 
     /**
      * @param int $id
-     * @return static|null
      * @throws \Exception
+     * @return static|null
      */
     public static function loadFromDatabase(int $id): ?Model
     {

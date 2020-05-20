@@ -1,5 +1,5 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
@@ -53,8 +53,8 @@ class RegistrationController extends Controller
 
     /**
      * @param RequestParameters $post
-     * @return bool
      * @throws Exception
+     * @return bool
      */
     private function processRegistration(RequestParameters $post): bool
     {
@@ -106,7 +106,7 @@ class RegistrationController extends Controller
         $registration->vocalRange = $post->getSimpleString('vocalRange');
         $registration->registrationGroup = $post->getInt('registrationGroup');
         $registration->birthYear = $post->getInt('birthYear') ?: null;
-        $registration->lunch = $post->getBool( 'lunch');
+        $registration->lunch = $post->getBool('lunch');
         if ($registration->lunch)
         {
             $registration->lunchType = $post->getSimpleString('lunchType');

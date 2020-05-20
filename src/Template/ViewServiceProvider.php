@@ -10,19 +10,24 @@ class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
     {
         parent::register();
 
-        BladeFilters::macro('euro', static function ($value) {
+        BladeFilters::macro('euro', static function($value)
+        {
             return ViewHelpers::formatEuro($value);
         });
-        BladeFilters::macro('hm', static function ($value) {
+        BladeFilters::macro('hm', static function($value)
+        {
             return ViewHelpers::filterHm($value);
         });
-        BladeFilters::macro('dmy', static function ($value) {
+        BladeFilters::macro('dmy', static function($value)
+        {
             return ViewHelpers::filterDutchDate($value);
         });
-        BladeFilters::macro('dmyHm', static function ($value) {
+        BladeFilters::macro('dmyHm', static function($value)
+        {
             return ViewHelpers::filterDutchDateTime($value);
         });
-        BladeFilters::macro('boolToText', static function($value) {
+        BladeFilters::macro('boolToText', static function($value)
+        {
             return ViewHelpers::boolToText($value ?? false);
         });
     }
@@ -34,7 +39,8 @@ class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
      */
     public function registerViewFinder(): void
     {
-        $this->app->bind('view.finder', static function ($app) {
+        $this->app->bind('view.finder', static function($app)
+        {
             return new ViewFinder($app['files'], $app['config']['view.paths']);
         });
     }

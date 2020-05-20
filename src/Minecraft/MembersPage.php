@@ -3,7 +3,6 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Page;
 
-
 class MembersPage extends Page
 {
     private const LEVELS = [

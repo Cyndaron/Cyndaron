@@ -1,4 +1,5 @@
-<?php /** @noinspection PhpUnusedParameterInspection */
+<?php
+/** @noinspection PhpUnusedParameterInspection */
 
 namespace Cyndaron;
 
@@ -43,7 +44,8 @@ class DBConnection
      */
     public static function doQuery(string $query, array $vars = [])
     {
-        $result = static::executeQuery($query, $vars, static function(PDOStatement $prep, $result) {
+        $result = static::executeQuery($query, $vars, static function(PDOStatement $prep, $result)
+        {
             return static::$pdo->lastInsertId();
         });
         return ($result === false) ? false : (int)$result;
@@ -56,14 +58,16 @@ class DBConnection
      */
     public static function doQueryAndFetchAll(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result) {
+        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result)
+        {
             return $prep->fetchAll(PDO::FETCH_ASSOC);
         });
     }
 
     public static function doQueryAndReturnFetchable(string $query, array $vars = []): PDOStatement
     {
-        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result) {
+        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result)
+        {
             return $prep;
         });
     }
@@ -75,14 +79,16 @@ class DBConnection
      */
     public static function doQueryAndFetchFirstRow(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result) {
+        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result)
+        {
             return $prep->fetch(PDO::FETCH_ASSOC);
         });
     }
 
     public static function doQueryAndFetchOne(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, static function(PDOStatement$prep, $result) {
+        return static::executeQuery($query, $vars, static function(PDOStatement$prep, $result)
+        {
             return $prep->fetchColumn();
         });
     }
@@ -99,7 +105,7 @@ class DBConnection
             static::$pdo = @new PDO($dbmethode . ':host=' . $dbplek . ';dbname=' . $dbnaam . ';charset=utf8mb4', $dbuser, $dbpass);
             static::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
-        catch(PDOException $e)
+        catch (PDOException $e)
         {
             /** @noinspection ForgottenDebugOutputInspection */
             error_log($e);

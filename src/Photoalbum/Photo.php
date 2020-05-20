@@ -101,7 +101,7 @@ class Photo
     {
         $orientation = $image->getImageOrientation();
 
-        switch($orientation) {
+        switch ($orientation) {
             case Imagick::ORIENTATION_BOTTOMRIGHT:
                 $image->rotateImage('#000', 180);
                 break;

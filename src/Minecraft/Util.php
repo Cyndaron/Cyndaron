@@ -82,7 +82,6 @@ class Util
                 {
                     $returnstring .= $individual;
                 }
-
             }
         }
 
