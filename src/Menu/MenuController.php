@@ -8,6 +8,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class MenuController extends Controller
 {
@@ -39,7 +40,7 @@ class MenuController extends Controller
 
     protected function editItem(RequestParameters $post): JsonResponse
     {
-        $index = $this->queryBits->getInt(2);
+        $index = $this->queryBits->getNullableInt(2);
         $menuItem = new MenuItem($index);
         $menuItem->load();
         $menuItem->link = $post->getUrl('link');
@@ -59,6 +60,10 @@ class MenuController extends Controller
     protected function deleteItem(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $menuItem = new MenuItem($id);
         $menuItem->delete();
 

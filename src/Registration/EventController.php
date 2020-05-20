@@ -20,6 +20,10 @@ class EventController extends Controller
     protected function getEventInfo(): JsonResponse
     {
         $eventId = $this->queryBits->getInt(2);
+        if ($eventId < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $event = new Event($eventId);
         $event->load();
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM registration_tickettypes WHERE eventId=? ORDER BY price DESC', [$eventId]);
@@ -38,6 +42,10 @@ class EventController extends Controller
     protected function register(): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $event = Event::loadFromDatabase($id);
         $page = new RegistrationPage($event);
         return new Response($page->render());
@@ -46,6 +54,10 @@ class EventController extends Controller
     protected function viewRegistrations(): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $event = Event::loadFromDatabase($id);
         $page = new EventRegistrationOverviewPage($event);
         return new Response($page->render());

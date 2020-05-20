@@ -22,6 +22,10 @@ class MinecraftController extends Controller
     public function dynmapProxy(): Response
     {
         $serverId = $this->queryBits->getInt(2);
+        if ($serverId < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $server = Server::loadFromDatabase($serverId);
         if ($server === null)
         {

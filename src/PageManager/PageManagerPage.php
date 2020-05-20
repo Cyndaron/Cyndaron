@@ -14,7 +14,7 @@ class PageManagerPage extends Page
 {
     private static array $pageTypes = [];
     
-    public function __construct($currentPage)
+    public function __construct(string $currentPage)
     {
         $this->addScript('/src/PageManager/PageManagerPage.js');
         parent::__construct('Paginaoverzicht');

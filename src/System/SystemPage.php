@@ -8,7 +8,7 @@ use Cyndaron\Setting;
 
 class SystemPage extends Page
 {
-    public function __construct($currentPage)
+    public function __construct(string $currentPage)
     {
         $this->template = 'System/' . ucfirst($currentPage);
         parent::__construct('Systeembeheer');

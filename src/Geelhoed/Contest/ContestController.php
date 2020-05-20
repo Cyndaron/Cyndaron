@@ -57,6 +57,10 @@ class ContestController extends Controller
     public function view(): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $contest = Contest::loadFromDatabase($id);
         if ($contest === null)
         {
@@ -71,6 +75,10 @@ class ContestController extends Controller
     public function subscribe(RequestParameters $post): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $contest = Contest::loadFromDatabase($id);
         if (!$contest)
         {
@@ -193,6 +201,10 @@ class ContestController extends Controller
     public function subscriptionList(): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $contest = Contest::loadFromDatabase($id);
         $page = new SubscriptionListPage($contest);
         return new Response($page->render());
@@ -201,6 +213,10 @@ class ContestController extends Controller
     public function subScriptionListExcel(): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $contest = Contest::loadFromDatabase($id);
         if ($contest === null)
         {

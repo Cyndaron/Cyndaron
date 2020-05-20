@@ -25,8 +25,8 @@ class Concert extends Model
     public int $numReservedSeats = 270;
 
     /**
+     * @param int $orderId
      * @param int $numTickets
-     * @param $orderId
      * @return array|null Which seats were reserved, if there were enough, null otherwise
      * @throws Exception
      */

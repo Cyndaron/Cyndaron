@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron\Ticketsale;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Template\Template;
 
 class Util extends \Cyndaron\Util
@@ -14,11 +13,6 @@ class Util extends \Cyndaron\Util
             return true;
         else
             return false;
-    }
-
-    public static function getLatestConcertId(): ?int
-    {
-        return DBConnection::doQueryAndFetchOne('SELECT MAX(id) FROM ticketsale_concerts');
     }
 
     public static function drawPageManagerTab(): string

@@ -9,6 +9,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class FriendlyUrlController extends Controller
 {
@@ -29,7 +30,11 @@ class FriendlyUrlController extends Controller
 
     public function addToMenu(): JsonResponse
     {
-        $name = $this->queryBits->get(3);
+        $name = $this->queryBits->getString(3);
+        if ($name === '')
+        {
+            return new JsonResponse(['error' => 'No link specified!'], Response::HTTP_BAD_REQUEST);
+        }
         $menuItem = new MenuItem();
         $menuItem->link = '/' . $name;
         $menuItem->save();
@@ -39,9 +44,13 @@ class FriendlyUrlController extends Controller
 
     public function delete(): JsonResponse
     {
-        $name = $this->queryBits->get(2);
-        Url::deleteFriendlyUrl($name);
+        $name = $this->queryBits->getString(2);
+        if ($name === '')
+        {
+            return new JsonResponse(['error' => 'No link specified!'], Response::HTTP_BAD_REQUEST);
+        }
 
+        Url::deleteFriendlyUrl($name);
         return new JsonResponse();
     }
 }

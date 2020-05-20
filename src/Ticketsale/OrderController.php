@@ -310,6 +310,10 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
     public function delete(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->delete();
@@ -320,6 +324,10 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
     public function setIsPaid(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->setIsPaid();
@@ -330,6 +338,10 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
     public function setIsSent(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         /** @var Order $order */
         $order = Order::loadFromDatabase($id);
         $order->setIsSent();

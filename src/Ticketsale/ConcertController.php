@@ -5,6 +5,7 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
+use Cyndaron\Page;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +22,10 @@ class ConcertController extends Controller
     protected function getConcertInfo(): JsonResponse
     {
         $concertId = $this->queryBits->getInt(2);
+        if ($concertId < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $concert = new Concert($concertId);
         $concert->load();
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
@@ -46,6 +51,11 @@ class ConcertController extends Controller
     protected function order(): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            $page = new Page('Fout', 'Incorrect ID!');
+            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+        }
         $page = new OrderTicketsPage($id);
         return new Response($page->render());
     }
@@ -53,6 +63,11 @@ class ConcertController extends Controller
     protected function viewOrders(): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            $page = new Page('Fout', 'Incorrect ID!');
+            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+        }
         $concert = Concert::loadFromDatabase($id);
         $page = new ConcertOrderOverviewPage($concert);
         return new Response($page->render());
@@ -61,6 +76,11 @@ class ConcertController extends Controller
     protected function viewReservedSeats(): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            $page = new Page('Fout', 'Incorrect ID!');
+            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+        }
         $concert = Concert::loadFromDatabase($id);
         $page = new ShowReservedSeats($concert);
         return new Response($page->render());

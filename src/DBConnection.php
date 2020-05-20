@@ -30,13 +30,24 @@ class DBConnection
         return call_user_func($functionOnSuccess, $prep, $result);
     }
 
+    /**
+     * @param string $query
+     * @param array $vars
+     * @return int|false
+     */
     public static function doQuery(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result) {
+        $result = static::executeQuery($query, $vars, static function(PDOStatement $prep, $result) {
             return static::$pdo->lastInsertId();
         });
+        return ($result === false) ? false : (int)$result;
     }
 
+    /**
+     * @param string $query
+     * @param array $vars
+     * @return array|false
+     */
     public static function doQueryAndFetchAll(string $query, array $vars = [])
     {
         return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result) {
@@ -51,6 +62,11 @@ class DBConnection
         });
     }
 
+    /**
+     * @param string $query
+     * @param array $vars
+     * @return array|false
+     */
     public static function doQueryAndFetchFirstRow(string $query, array $vars = [])
     {
         return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result) {

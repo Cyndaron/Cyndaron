@@ -9,6 +9,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class MemberController extends Controller
 {
@@ -23,6 +24,10 @@ class MemberController extends Controller
     public function get(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $ret = [];
 
         if ($member = Member::loadFromDatabase($id))
@@ -50,6 +55,10 @@ class MemberController extends Controller
     public function removeGraduation(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         MemberGraduation::deleteById($id);
 
         return new JsonResponse();

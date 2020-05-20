@@ -50,6 +50,10 @@ class PhotoalbumController extends Controller
     public function addPhoto(): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
 
         $album = Photoalbum::loadFromDatabase($id);
         if ($album === null)
@@ -64,6 +68,10 @@ class PhotoalbumController extends Controller
     public function addToMenu(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
 
         $menuItem = new MenuItem();
         $menuItem->link = '/photoalbum/' . $id;
@@ -75,6 +83,10 @@ class PhotoalbumController extends Controller
     public function delete(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
 
         $obj = new Photoalbum($id);
         $obj->delete();
@@ -85,13 +97,22 @@ class PhotoalbumController extends Controller
     public function deletePhoto(): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
 
         $album = Photoalbum::loadFromDatabase($id);
         if ($album === null)
         {
             throw new \Exception('Photo album not found!');
         }
-        $filename = $this->queryBits->get(3);
+        $filename = $this->queryBits->getString(3);
+        if ($filename === '')
+        {
+            $page = new Page('Fout bij verwijderen foto', 'Geen bestandsnaam opgegeven!');
+            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+        }
         Photo::deleteByAlbumAndFilename($album, $filename);
 
         return new RedirectResponse("/photoalbum/{$album->id}");
@@ -100,6 +121,10 @@ class PhotoalbumController extends Controller
     public function edit(RequestParameters $post): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
 
         $album = Photoalbum::loadFromDatabase($id);
         if ($album === null)

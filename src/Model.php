@@ -7,7 +7,7 @@ use ReflectionProperty;
 
 class Model
 {
-    public const TABLE = null;
+    public const TABLE = '';
     public const HAS_CATEGORY = false;
     // Override to include the fields for that particular model
     public const TABLE_FIELDS = [];
@@ -268,7 +268,7 @@ class Model
     }
 
     /**
-     * @return static[];
+     * @return static[]
      */
     public static function fetchAllForSelect(): array
     {

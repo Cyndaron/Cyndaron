@@ -10,6 +10,7 @@ use Cyndaron\Setting;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util;
 use Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class MailformController extends Controller
@@ -37,6 +38,10 @@ class MailformController extends Controller
     public function process(RequestParameters $post): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $form = Mailform::loadFromDatabase($id);
 
         try

@@ -15,7 +15,7 @@ class SystemController extends Controller
 
     protected function routeGet(): Response
     {
-        $currentPage = $this->queryBits->get(1, 'config');
+        $currentPage = $this->queryBits->getString(1, 'config');
         $page = new SystemPage($currentPage);
         return new Response($page->render());
     }

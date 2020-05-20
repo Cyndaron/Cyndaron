@@ -25,7 +25,7 @@ class Graduation extends Model
 
     /**
      * @param Sport $sport
-     * @return self[];
+     * @return self[]
      */
     public static function fetchAllBySport(Sport $sport): array
     {

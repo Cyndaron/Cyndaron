@@ -21,18 +21,18 @@ class EditorController extends Controller
 
     protected function routeGet(): Response
     {
-        $type = $this->queryBits->get(1);
+        $type = $this->queryBits->getString(1);
         if (!array_key_exists($type, static::$editorPages))
         {
             throw new \Exception('Onbekend paginatype!');
         }
 
         $class = static::$editorPages[$type];
-        $id = $this->queryBits->getInt(2);
-        $previous = $this->queryBits->get(3) === 'previous';
+        $id = $this->queryBits->getNullableInt(2);
+        $previous = $this->queryBits->getString(3) === 'previous';
         /** @var Page $editorPage */
         $editorPage = new $class($this->getInternalLinks(), $id, $previous);
-        $hash = $this->queryBits->get(3) ?? '';
+        $hash = $this->queryBits->getString(3);
         $hash = strlen($hash) > 20 ? $hash : '';
         $editorPage->addTemplateVar('hash', $hash);
         return new Response($editorPage->render());
@@ -40,13 +40,13 @@ class EditorController extends Controller
 
     protected function routePost(RequestParameters $post): Response
     {
-        $type = $this->queryBits->get(1);
+        $type = $this->queryBits->getString(1);
         if (!array_key_exists($type, static::$savePages))
         {
             throw new \Exception('Onbekend paginatype!');
         }
 
-        $id = $this->queryBits->getInt(2);
+        $id = $this->queryBits->getNullableInt(2);
 
         $class = static::$savePages[$type];
         /** @var EditorSavePage $editorSavePage */

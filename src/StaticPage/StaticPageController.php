@@ -23,6 +23,10 @@ class StaticPageController extends Controller
     protected function routeGet(): Response
     {
         $id = $this->queryBits->getInt(1);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $model = StaticPageModel::loadFromDatabase($id);
         if ($model === null)
         {
@@ -36,6 +40,10 @@ class StaticPageController extends Controller
     protected function addToMenu(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $menuItem = new MenuItem();
         $menuItem->link = '/sub/' . $id;
         $menuItem->save();
@@ -45,6 +53,10 @@ class StaticPageController extends Controller
     protected function delete(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $model = new StaticPageModel($id);
         $model->delete();
         return new JsonResponse();
@@ -53,6 +65,10 @@ class StaticPageController extends Controller
     protected function react(RequestParameters $post): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $model = StaticPageModel::loadFromDatabase($id);
         if ($model === null)
         {

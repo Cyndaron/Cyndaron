@@ -179,9 +179,9 @@ class Util
 
     public static function getStartOfNextQuarter(): \DateTimeImmutable
     {
-        $year = date('Y');
+        $year = (int)date('Y');
         $nextYear = $year + 1;
-        $currentQuarter = floor((date('m') - 1) / 3) + 1;
+        $currentQuarter = floor(((int)date('m') - 1) / 3) + 1;
 
         switch ($currentQuarter)
         {
@@ -207,7 +207,7 @@ class Util
     public static function filterDutchDate(string $date): string
     {
         $day = date('j');
-        $month = static::getMonth(date('m', strtotime($date)));
+        $month = static::getMonth((int)date('m', strtotime($date)));
         $year = date('Y');
         return sprintf('%s %s %s', $day, $month, $year);
     }

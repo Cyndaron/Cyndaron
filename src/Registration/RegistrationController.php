@@ -190,6 +190,10 @@ class RegistrationController extends Controller
     public function delete(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         /** @var Registration $registration */
         $registration = Registration::loadFromDatabase($id);
         $registration->delete();
@@ -200,6 +204,10 @@ class RegistrationController extends Controller
     public function setApprovalStatus(RequestParameters $post): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         /** @var Registration $registration */
         $registration = Registration::loadFromDatabase($id);
         $status = $post->getInt('status');
@@ -219,6 +227,10 @@ class RegistrationController extends Controller
     public function setIsPaid(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         /** @var Registration $registration */
         $registration = Registration::loadFromDatabase($id);
         $registration->setIsPaid();

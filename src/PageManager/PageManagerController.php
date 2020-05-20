@@ -13,7 +13,7 @@ class PageManagerController extends Controller
 
     protected function routeGet(): Response
     {
-        $currentPage = $this->queryBits->get(1, 'sub');
+        $currentPage = $this->queryBits->getString(1, 'sub');
         $page = new PageManagerPage($currentPage);
         return new Response($page->render());
     }

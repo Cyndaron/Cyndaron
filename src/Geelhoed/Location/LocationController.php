@@ -4,6 +4,7 @@ namespace Cyndaron\Geelhoed\Location;
 use Cyndaron\Controller;
 use Cyndaron\Page;
 use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class LocationController extends Controller
@@ -16,6 +17,10 @@ class LocationController extends Controller
     public function view(): Response
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $location = Location::loadFromDatabase($id);
 
         if (!$location)

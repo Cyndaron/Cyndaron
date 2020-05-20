@@ -117,9 +117,9 @@ class UserController extends Controller
     protected function edit(RequestParameters $post): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
-        if ($id === null)
+        if ($id < 1)
         {
-            return new JsonResponse(['error' => 'No ID specified!', Response::HTTP_BAD_REQUEST]);
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
         $user = User::loadFromDatabase($id);
@@ -150,9 +150,9 @@ class UserController extends Controller
     protected function delete(): JsonResponse
     {
         $userId = $this->queryBits->getInt(2);
-        if ($userId === null)
+        if ($userId < 1)
         {
-            return new JsonResponse(['error' => 'No ID specified!'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
         $user = new User($userId);
@@ -164,9 +164,9 @@ class UserController extends Controller
     protected function resetPassword(): JsonResponse
     {
         $userId = $this->queryBits->getInt(2);
-        if ($userId === null)
+        if ($userId < 1)
         {
-            return new JsonResponse(['error' => 'ID not specified!'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
         $user = new User($userId);
@@ -179,7 +179,7 @@ class UserController extends Controller
     protected function changeAvatar(): Response
     {
         $userId = $this->queryBits->getInt(2);
-        if ($userId === null)
+        if ($userId < 1)
         {
             $page = new Page('Fout bij veranderen avatar', 'Onbekende fout.');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);

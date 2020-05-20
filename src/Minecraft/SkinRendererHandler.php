@@ -1158,7 +1158,7 @@ class SkinRendererHandler
     }
 
     /**
-     * @return CubePoint[];
+     * @return CubePoint[]
      */
     private function generateCubePoints(): array
     {

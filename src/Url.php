@@ -92,6 +92,9 @@ class Url
 
     public static function addUrlProvider(string $urlBase, string $class): void
     {
-        static::$urlProviders[$urlBase] = $class;
+        if (in_array(UrlProvider::class, class_implements($class), true))
+        {
+            static::$urlProviders[$urlBase] = $class;
+        }
     }
 }

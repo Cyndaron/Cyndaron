@@ -23,7 +23,7 @@ class CategoryController extends Controller
 
     protected function routeGet(): Response
     {
-        $id = $this->queryBits->getInt(1);
+        $id = $this->queryBits->getString(1);
 
         if ($id === '0' || $id === 'fotoboeken')
         {
@@ -32,14 +32,19 @@ class CategoryController extends Controller
         }
         if ($id === 'tag')
         {
-            $tag = $this->queryBits->get(2);
+            $tag = $this->queryBits->getString(2);
+            if ($tag === '')
+            {
+                $page = new Page('Foute aanvraag', 'Lege tag ontvangen.');
+                return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            }
             $page = new TagIndexPage($tag);
             return new Response($page->render());
         }
-        if ($id < 0)
+        if ($id === '' || $id < 0)
         {
             $page = new Page('Foute aanvraag', 'Incorrecte parameter ontvangen.');
-            return new Response($page->render());
+            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
 
         $category = Category::loadFromDatabase((int)$id);
@@ -63,6 +68,10 @@ class CategoryController extends Controller
     public function addToMenu(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $return = [];
         $menuItem = new MenuItem();
         $menuItem->link = '/category/' . $id;
@@ -78,6 +87,10 @@ class CategoryController extends Controller
     public function delete(): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $category = new Category($id);
         $category->delete();
 
@@ -87,6 +100,10 @@ class CategoryController extends Controller
     public function edit(RequestParameters $post): JsonResponse
     {
         $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
         $category = new Category($id);
         $category->load();
         $category->name = $post->getHTML('name');
