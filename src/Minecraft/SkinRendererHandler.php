@@ -164,15 +164,340 @@ class SkinRendererHandler
 
         $times[] = ['Determination-of-faces', $this->microtime_float()];
 
-        $polygons = [
-            'helmet' => self::CUBE_FACES_FORMAT,
-            'head' => self::CUBE_FACES_FORMAT,
-            'torso' => self::CUBE_FACES_FORMAT,
-            'rightArm' => self::CUBE_FACES_FORMAT,
-            'leftArm' => self::CUBE_FACES_FORMAT,
-            'rightLeg' => self::CUBE_FACES_FORMAT,
-            'leftLeg' => self::CUBE_FACES_FORMAT,
+        $polygons = $this->determinePolygons($img_png, $hd_ratio, $alpha, $omega, $display_hair);
+
+        $times[] = ['Polygon-generation', $this->microtime_float()];
+
+        $this->rotateMembers($polygons, $parts_angles, $display_hair);
+
+        $times[] = ['Members-rotation', $this->microtime_float()];
+
+        foreach ($polygons as $piece)
+        {
+            foreach ($piece as $face)
+            {
+                foreach ($face as $poly)
+                {
+                    if (!$poly->isProjected())
+                    {
+                        $poly->project();
+                    }
+                }
+            }
+        }
+
+        $times[] = ['Projection-plan', $this->microtime_float()];
+
+        $width = static::$maxX - static::$minX;
+        $height = static::$maxY - static::$minY;
+
+        $ratio = $this->ratio;
+
+        if (SkinRenderer::SECONDS_TO_CACHE > 0)
+        {
+            $ts = gmdate('D, d M Y H:i:s', time() + SkinRenderer::SECONDS_TO_CACHE) . ' GMT';
+            $headers['Expires'] = $ts;
+            $headers['Pragma'] = 'cache';
+            $headers['Cache-Control'] = 'max-age=' . SkinRenderer::SECONDS_TO_CACHE;
+        }
+
+        $svgTemplate = null;
+        $svgTemplateVars = [];
+
+        $image = null;
+        if ($this->format === 'svg')
+        {
+            $svgTemplate = new Template();
+            $svgTemplateVars = [
+                'minX' => static::$minX,
+                'minY' => static::$minY,
+                'width' => $width,
+                'height' => $height,
+                'contents' => '',
+            ];
+        }
+        else
+        {
+            $image = imagecreatetruecolor($ratio * $width + 1, $ratio * $height + 1);
+            imagesavealpha($image, true);
+            $trans_colour = imagecolorallocatealpha($image, 0, 0, 0, 127);
+            imagefill($image, 0, 0, $trans_colour);
+        }
+
+        $displayOrder = $this->determineDisplayOrder($front_faces, $back_faces, $visible_faces);
+
+        $times[] = ['Calculated-display-faces', $this->microtime_float()];
+
+        foreach ($displayOrder as $pieces)
+        {
+            foreach ($pieces as $piece => $faces)
+            {
+                foreach ($faces as $face)
+                {
+                    foreach ($polygons[$piece][$face] as $poly)
+                    {
+                        if ($this->format === 'svg')
+                        {
+                            $svgTemplateVars['contents'] .= $poly->getSvgPolygon(1);
+                        }
+                        else
+                        {
+                            $poly->addPngPolygon($image, static::$minX, static::$minY, $ratio);
+                        }
+                    }
+                }
+            }
+        }
+
+        $times[] = ['Display-image', $this->microtime_float()];
+
+        if ($this->format === 'svg')
+        {
+            $svgTemplateVars['remarks'] = '';
+            for ($i = 1, $iMax = count($times); $i < $iMax; $i++)
+            {
+                $svgTemplateVars['remarks'] .= '<!-- ' . ($times[$i][1] - $times[$i - 1][1]) * 1000 . 'ms : ' . $times[$i][0] . ' -->' . "\n";
+            }
+            $svgTemplateVars['remarks'] .= '<!-- TOTAL : ' . ($times[count($times) - 1][1] - $times[0][1]) * 1000 . 'ms -->' . "\n";
+
+            $headers['Content-Type'] = 'image/svg+xml';
+            return new Response($svgTemplate->render('Minecraft/SkinSVG', $svgTemplateVars), Response::HTTP_OK, $headers);
+        }
+        else
+        {
+            $headers['Content-Type'] = 'image/png';
+
+            ob_start();
+            imagepng($image);
+            $contents = ob_get_clean();
+            imagedestroy($image);
+            for ($i = 1, $iMax = count($times); $i < $iMax; $i++)
+            {
+                $headers['generation-time-' . $i . '-' . $times[$i][0]] = ($times[$i][1] - $times[$i - 1][1]) * 1000 . 'ms';
+            }
+            $headers['generation-time-' . count($times) . '-TOTAL'] = ($times[count($times) - 1][1] - $times[0][1]) * 1000 . 'ms';
+            return new Response($contents, Response::HTTP_OK, $headers);
+        }
+    }
+
+    /**
+     * Returns timing in microseconds - used to calculate time taken to process images
+     * @return float
+     */
+    private function microtime_float(): float
+    {
+        $micro = explode(' ', microtime());
+        return (float)$micro[0] + (float)$micro[1];
+    }
+
+    /**
+     * @return CubePoint[]
+     */
+    private function generateCubePoints($alpha, $omega): array
+    {
+        $cubePoints = [];
+        $cubePoints[0] = new CubePoint(new Point(['x' => 0, 'y' => 0, 'z' => 0], $alpha, $omega), ['back', 'right', 'top']);
+        $cubePoints[1] = new CubePoint(new Point(['x' => 0, 'y' => 0, 'z' => 1], $alpha, $omega), ['front', 'right', 'top']);
+        $cubePoints[2] = new CubePoint(new Point(['x' => 0, 'y' => 1, 'z' => 0], $alpha, $omega), ['back', 'right', 'bottom']);
+        $cubePoints[3] = new CubePoint(new Point(['x' => 0, 'y' => 1, 'z' => 1], $alpha, $omega), ['front', 'right', 'bottom']);
+        $cubePoints[4] = new CubePoint(new Point(['x' => 1, 'y' => 0, 'z' => 0], $alpha, $omega), ['back', 'left', 'top']);
+        $cubePoints[5] = new CubePoint(new Point(['x' => 1, 'y' => 0, 'z' => 1], $alpha, $omega), ['front', 'left', 'top']);
+        $cubePoints[6] = new CubePoint(new Point(['x' => 1, 'y' => 1, 'z' => 0], $alpha, $omega), ['back', 'left', 'bottom']);
+        $cubePoints[7] = new CubePoint(new Point(['x' => 1, 'y' => 1, 'z' => 1], $alpha, $omega), ['front', 'left', 'bottom']);
+        return $cubePoints;
+    }
+
+    private function determineDisplayOrder($frontFaces, $backFaces, $visibleFaces): array
+    {
+        $display_order = [];
+        if (in_array('top', $frontFaces, true))
+        {
+            if (in_array('right', $frontFaces, true))
+            {
+                $display_order[] = ['leftLeg' => $backFaces];
+                $display_order[] = ['leftLeg' => $visibleFaces['leftLeg']['front']];
+                $display_order[] = ['rightLeg' => $backFaces];
+                $display_order[] = ['rightLeg' => $visibleFaces['rightLeg']['front']];
+                $display_order[] = ['leftArm' => $backFaces];
+                $display_order[] = ['leftArm' => $visibleFaces['leftArm']['front']];
+                $display_order[] = ['torso' => $backFaces];
+                $display_order[] = ['torso' => $visibleFaces['torso']['front']];
+                $display_order[] = ['rightArm' => $backFaces];
+                $display_order[] = ['rightArm' => $visibleFaces['rightArm']['front']];
+            }
+            else
+            {
+                $display_order[] = ['rightLeg' => $backFaces];
+                $display_order[] = ['rightLeg' => $visibleFaces['rightLeg']['front']];
+                $display_order[] = ['leftLeg' => $backFaces];
+                $display_order[] = ['leftLeg' => $visibleFaces['leftLeg']['front']];
+                $display_order[] = ['rightArm' => $backFaces];
+                $display_order[] = ['rightArm' => $visibleFaces['rightArm']['front']];
+                $display_order[] = ['torso' => $backFaces];
+                $display_order[] = ['torso' => $visibleFaces['torso']['front']];
+                $display_order[] = ['leftArm' => $backFaces];
+                $display_order[] = ['leftArm' => $visibleFaces['leftArm']['front']];
+            }
+            $display_order[] = ['helmet' => $backFaces];
+            $display_order[] = ['head' => $backFaces];
+            $display_order[] = ['head' => $visibleFaces['head']['front']];
+            $display_order[] = ['helmet' => $visibleFaces['head']['front']];
+        }
+        else
+        {
+            $display_order[] = ['helmet' => $backFaces];
+            $display_order[] = ['head' => $backFaces];
+            $display_order[] = ['head' => $visibleFaces['head']['front']];
+            $display_order[] = ['helmet' => $visibleFaces['head']['front']];
+            if (in_array('right', $frontFaces, true))
+            {
+                $display_order[] = ['leftArm' => $backFaces];
+                $display_order[] = ['leftArm' => $visibleFaces['leftArm']['front']];
+                $display_order[] = ['torso' => $backFaces];
+                $display_order[] = ['torso' => $visibleFaces['torso']['front']];
+                $display_order[] = ['rightArm' => $backFaces];
+                $display_order[] = ['rightArm' => $visibleFaces['rightArm']['front']];
+                $display_order[] = ['leftLeg' => $backFaces];
+                $display_order[] = ['leftLeg' => $visibleFaces['leftLeg']['front']];
+                $display_order[] = ['rightLeg' => $backFaces];
+                $display_order[] = ['rightLeg' => $visibleFaces['rightLeg']['front']];
+            }
+            else
+            {
+                $display_order[] = ['rightArm' => $backFaces];
+                $display_order[] = ['rightArm' => $visibleFaces['rightArm']['front']];
+                $display_order[] = ['torso' => $backFaces];
+                $display_order[] = ['torso' => $visibleFaces['torso']['front']];
+                $display_order[] = ['leftArm' => $backFaces];
+                $display_order[] = ['leftArm' => $visibleFaces['leftArm']['front']];
+                $display_order[] = ['rightLeg' => $backFaces];
+                $display_order[] = ['rightLeg' => $visibleFaces['rightLeg']['front']];
+                $display_order[] = ['leftLeg' => $backFaces];
+                $display_order[] = ['leftLeg' => $visibleFaces['leftLeg']['front']];
+            }
+        }
+
+        return $display_order;
+    }
+
+    private function determinePartsAngles(): array
+    {
+        // Head, Helmet, Torso, Arms, Legs
+        $parts_angles = [];
+        $parts_angles['torso'] = [
+            'cos_alpha' => cos(0),
+            'sin_alpha' => sin(0),
+            'cos_omega' => cos(0),
+            'sin_omega' => sin(0),
         ];
+        $alpha_head = 0;
+        $omega_head = deg2rad((float)$this->get->getInt('hrh'));
+        $parts_angles['head'] = [
+            'cos_alpha' => cos($alpha_head),
+            'sin_alpha' => sin($alpha_head),
+            'cos_omega' => cos($omega_head),
+            'sin_omega' => sin($omega_head),
+        ];
+        $parts_angles['helmet'] = [
+            'cos_alpha' => cos($alpha_head),
+            'sin_alpha' => sin($alpha_head),
+            'cos_omega' => cos($omega_head),
+            'sin_omega' => sin($omega_head),
+        ];
+        $alpha_right_arm = deg2rad((float)$this->get->getInt('vrra'));
+        $omega_right_arm = 0;
+        $parts_angles['rightArm'] = [
+            'cos_alpha' => cos($alpha_right_arm),
+            'sin_alpha' => sin($alpha_right_arm),
+            'cos_omega' => cos($omega_right_arm),
+            'sin_omega' => sin($omega_right_arm),
+        ];
+        $alpha_left_arm = deg2rad((float)$this->get->getInt('vrla'));
+        $omega_left_arm = 0;
+        $parts_angles['leftArm'] = [
+            'cos_alpha' => cos($alpha_left_arm),
+            'sin_alpha' => sin($alpha_left_arm),
+            'cos_omega' => cos($omega_left_arm),
+            'sin_omega' => sin($omega_left_arm),
+        ];
+        $alpha_right_leg = deg2rad((float)$this->get->getInt('vrrl'));
+        $omega_right_leg = 0;
+        $parts_angles['rightLeg'] = [
+            'cos_alpha' => cos($alpha_right_leg),
+            'sin_alpha' => sin($alpha_right_leg),
+            'cos_omega' => cos($omega_right_leg),
+            'sin_omega' => sin($omega_right_leg),
+        ];
+        $alpha_left_leg = deg2rad((float)$this->get->getInt('vrll'));
+        $omega_left_leg = 0;
+        $parts_angles['leftLeg'] = [
+            'cos_alpha' => cos($alpha_left_leg),
+            'sin_alpha' => sin($alpha_left_leg),
+            'cos_omega' => cos($omega_left_leg),
+            'sin_omega' => sin($omega_left_leg),
+        ];
+
+        return $parts_angles;
+    }
+
+    private function rotateMembers(array &$polygons, array $parts_angles, bool $displayHair): void
+    {
+        foreach ($polygons['head'] as $face)
+        {
+            foreach ($face as $poly)
+            {
+                /** @var Polygon $poly */
+                $poly->preProject(4, 8, 2, $parts_angles['head']['cos_alpha'], $parts_angles['head']['sin_alpha'], $parts_angles['head']['cos_omega'], $parts_angles['head']['sin_omega']);
+            }
+        }
+        if ($displayHair)
+        {
+            foreach ($polygons['helmet'] as $face)
+            {
+                foreach ($face as $poly)
+                {
+                    /** @var Polygon $poly */
+                    $poly->preProject(4, 8, 2, $parts_angles['head']['cos_alpha'], $parts_angles['head']['sin_alpha'], $parts_angles['head']['cos_omega'], $parts_angles['head']['sin_omega']);
+                }
+            }
+        }
+
+        foreach ($polygons['rightArm'] as $face)
+        {
+            foreach ($face as $poly)
+            {
+                /** @var Polygon $poly */
+                $poly->preProject(-2, 8, 2, $parts_angles['rightArm']['cos_alpha'], $parts_angles['rightArm']['sin_alpha'], $parts_angles['rightArm']['cos_omega'], $parts_angles['rightArm']['sin_omega']);
+            }
+        }
+        foreach ($polygons['leftArm'] as $face)
+        {
+            /** @var Polygon $poly */
+            foreach ($face as $poly)
+            {
+                $poly->preProject(10, 8, 2, $parts_angles['leftArm']['cos_alpha'], $parts_angles['leftArm']['sin_alpha'], $parts_angles['leftArm']['cos_omega'], $parts_angles['leftArm']['sin_omega']);
+            }
+        }
+        foreach ($polygons['rightLeg'] as $face)
+        {
+            /** @var Polygon $poly */
+            foreach ($face as $poly)
+            {
+                $poly->preProject(2, 20, ($parts_angles['rightLeg']['sin_alpha'] < 0 ? 0 : 4), $parts_angles['rightLeg']['cos_alpha'], $parts_angles['rightLeg']['sin_alpha'], $parts_angles['rightLeg']['cos_omega'], $parts_angles['rightLeg']['sin_omega']);
+            }
+        }
+        foreach ($polygons['leftLeg'] as $face)
+        {
+            /** @var Polygon $poly */
+            foreach ($face as $poly)
+            {
+                $poly->preProject(6, 20, ($parts_angles['leftLeg']['sin_alpha'] < 0 ? 0 : 4), $parts_angles['leftLeg']['cos_alpha'], $parts_angles['leftLeg']['sin_alpha'], $parts_angles['leftLeg']['cos_omega'], $parts_angles['leftLeg']['sin_omega']);
+            }
+        }
+    }
+
+    private function determinePolygons($img_png, $hd_ratio, $alpha, $omega, bool $display_hair): array
+    {
         $volume_points = [];
 
         // HEAD
@@ -218,6 +543,16 @@ class SkinRendererHandler
                 }
             }
         }
+
+        $polygons = [
+            'helmet' => self::CUBE_FACES_FORMAT,
+            'head' => self::CUBE_FACES_FORMAT,
+            'torso' => self::CUBE_FACES_FORMAT,
+            'rightArm' => self::CUBE_FACES_FORMAT,
+            'leftArm' => self::CUBE_FACES_FORMAT,
+            'rightLeg' => self::CUBE_FACES_FORMAT,
+            'leftLeg' => self::CUBE_FACES_FORMAT,
+        ];
         for ($i = 0; $i < 8 * $hd_ratio; $i++)
         {
             for ($j = 0; $j < 8 * $hd_ratio; $j++)
@@ -928,333 +1263,6 @@ class SkinRendererHandler
             }
         }
 
-        $times[] = ['Polygon-generation', $this->microtime_float()];
-
-        $this->rotateMembers($polygons, $parts_angles, $display_hair);
-
-        $times[] = ['Members-rotation', $this->microtime_float()];
-
-        foreach ($polygons as $piece)
-        {
-            foreach ($piece as $face)
-            {
-                foreach ($face as $poly)
-                {
-                    if (!$poly->isProjected())
-                    {
-                        $poly->project();
-                    }
-                }
-            }
-        }
-
-        $times[] = ['Projection-plan', $this->microtime_float()];
-
-        $width = static::$maxX - static::$minX;
-        $height = static::$maxY - static::$minY;
-
-        $ratio = $this->ratio;
-
-        if (SkinRenderer::SECONDS_TO_CACHE > 0)
-        {
-            $ts = gmdate('D, d M Y H:i:s', time() + SkinRenderer::SECONDS_TO_CACHE) . ' GMT';
-            $headers['Expires'] = $ts;
-            $headers['Pragma'] = 'cache';
-            $headers['Cache-Control'] = 'max-age=' . SkinRenderer::SECONDS_TO_CACHE;
-        }
-
-        $svgTemplate = null;
-        $svgTemplateVars = [];
-
-        $image = null;
-        if ($this->format === 'svg')
-        {
-            $svgTemplate = new Template();
-            $svgTemplateVars = [
-                'minX' => static::$minX,
-                'minY' => static::$minY,
-                'width' => $width,
-                'height' => $height,
-                'contents' => '',
-            ];
-        }
-        else
-        {
-            $image = imagecreatetruecolor($ratio * $width + 1, $ratio * $height + 1);
-            imagesavealpha($image, true);
-            $trans_colour = imagecolorallocatealpha($image, 0, 0, 0, 127);
-            imagefill($image, 0, 0, $trans_colour);
-        }
-
-        $displayOrder = $this->determineDisplayOrder($front_faces, $back_faces, $visible_faces);
-
-        $times[] = ['Calculated-display-faces', $this->microtime_float()];
-
-        foreach ($displayOrder as $pieces)
-        {
-            foreach ($pieces as $piece => $faces)
-            {
-                foreach ($faces as $face)
-                {
-                    foreach ($polygons[$piece][$face] as $poly)
-                    {
-                        if ($this->format === 'svg')
-                        {
-                            $svgTemplateVars['contents'] .= $poly->getSvgPolygon(1);
-                        }
-                        else
-                        {
-                            $poly->addPngPolygon($image, static::$minX, static::$minY, $ratio);
-                        }
-                    }
-                }
-            }
-        }
-
-        $times[] = ['Display-image', $this->microtime_float()];
-
-        if ($this->format === 'svg')
-        {
-            $svgTemplateVars['remarks'] = '';
-            for ($i = 1, $iMax = count($times); $i < $iMax; $i++)
-            {
-                $svgTemplateVars['remarks'] .= '<!-- ' . ($times[$i][1] - $times[$i - 1][1]) * 1000 . 'ms : ' . $times[$i][0] . ' -->' . "\n";
-            }
-            $svgTemplateVars['remarks'] .= '<!-- TOTAL : ' . ($times[count($times) - 1][1] - $times[0][1]) * 1000 . 'ms -->' . "\n";
-
-            $headers['Content-Type'] = 'image/svg+xml';
-            return new Response($svgTemplate->render('Minecraft/SkinSVG', $svgTemplateVars), Response::HTTP_OK, $headers);
-        }
-        else
-        {
-            $headers['Content-Type'] = 'image/png';
-
-            ob_start();
-            imagepng($image);
-            $contents = ob_get_clean();
-            imagedestroy($image);
-            for ($i = 1, $iMax = count($times); $i < $iMax; $i++)
-            {
-                $headers['generation-time-' . $i . '-' . $times[$i][0]] = ($times[$i][1] - $times[$i - 1][1]) * 1000 . 'ms';
-            }
-            $headers['generation-time-' . count($times) . '-TOTAL'] = ($times[count($times) - 1][1] - $times[0][1]) * 1000 . 'ms';
-            return new Response($contents, Response::HTTP_OK, $headers);
-        }
-    }
-
-    /**
-     * Returns timing in microseconds - used to calculate time taken to process images
-     * @return float
-     */
-    private function microtime_float(): float
-    {
-        $micro = explode(' ', microtime());
-        return (float)$micro[0] + (float)$micro[1];
-    }
-
-    /**
-     * @return CubePoint[]
-     */
-    private function generateCubePoints($alpha, $omega): array
-    {
-        $cubePoints = [];
-        $cubePoints[0] = new CubePoint(new Point(['x' => 0, 'y' => 0, 'z' => 0], $alpha, $omega), ['back', 'right', 'top']);
-        $cubePoints[1] = new CubePoint(new Point(['x' => 0, 'y' => 0, 'z' => 1], $alpha, $omega), ['front', 'right', 'top']);
-        $cubePoints[2] = new CubePoint(new Point(['x' => 0, 'y' => 1, 'z' => 0], $alpha, $omega), ['back', 'right', 'bottom']);
-        $cubePoints[3] = new CubePoint(new Point(['x' => 0, 'y' => 1, 'z' => 1], $alpha, $omega), ['front', 'right', 'bottom']);
-        $cubePoints[4] = new CubePoint(new Point(['x' => 1, 'y' => 0, 'z' => 0], $alpha, $omega), ['back', 'left', 'top']);
-        $cubePoints[5] = new CubePoint(new Point(['x' => 1, 'y' => 0, 'z' => 1], $alpha, $omega), ['front', 'left', 'top']);
-        $cubePoints[6] = new CubePoint(new Point(['x' => 1, 'y' => 1, 'z' => 0], $alpha, $omega), ['back', 'left', 'bottom']);
-        $cubePoints[7] = new CubePoint(new Point(['x' => 1, 'y' => 1, 'z' => 1], $alpha, $omega), ['front', 'left', 'bottom']);
-        return $cubePoints;
-    }
-
-    private function determineDisplayOrder($frontFaces, $backFaces, $visibleFaces): array
-    {
-        $display_order = [];
-        if (in_array('top', $frontFaces, true))
-        {
-            if (in_array('right', $frontFaces, true))
-            {
-                $display_order[] = ['leftLeg' => $backFaces];
-                $display_order[] = ['leftLeg' => $visibleFaces['leftLeg']['front']];
-                $display_order[] = ['rightLeg' => $backFaces];
-                $display_order[] = ['rightLeg' => $visibleFaces['rightLeg']['front']];
-                $display_order[] = ['leftArm' => $backFaces];
-                $display_order[] = ['leftArm' => $visibleFaces['leftArm']['front']];
-                $display_order[] = ['torso' => $backFaces];
-                $display_order[] = ['torso' => $visibleFaces['torso']['front']];
-                $display_order[] = ['rightArm' => $backFaces];
-                $display_order[] = ['rightArm' => $visibleFaces['rightArm']['front']];
-            }
-            else
-            {
-                $display_order[] = ['rightLeg' => $backFaces];
-                $display_order[] = ['rightLeg' => $visibleFaces['rightLeg']['front']];
-                $display_order[] = ['leftLeg' => $backFaces];
-                $display_order[] = ['leftLeg' => $visibleFaces['leftLeg']['front']];
-                $display_order[] = ['rightArm' => $backFaces];
-                $display_order[] = ['rightArm' => $visibleFaces['rightArm']['front']];
-                $display_order[] = ['torso' => $backFaces];
-                $display_order[] = ['torso' => $visibleFaces['torso']['front']];
-                $display_order[] = ['leftArm' => $backFaces];
-                $display_order[] = ['leftArm' => $visibleFaces['leftArm']['front']];
-            }
-            $display_order[] = ['helmet' => $backFaces];
-            $display_order[] = ['head' => $backFaces];
-            $display_order[] = ['head' => $visibleFaces['head']['front']];
-            $display_order[] = ['helmet' => $visibleFaces['head']['front']];
-        }
-        else
-        {
-            $display_order[] = ['helmet' => $backFaces];
-            $display_order[] = ['head' => $backFaces];
-            $display_order[] = ['head' => $visibleFaces['head']['front']];
-            $display_order[] = ['helmet' => $visibleFaces['head']['front']];
-            if (in_array('right', $frontFaces, true))
-            {
-                $display_order[] = ['leftArm' => $backFaces];
-                $display_order[] = ['leftArm' => $visibleFaces['leftArm']['front']];
-                $display_order[] = ['torso' => $backFaces];
-                $display_order[] = ['torso' => $visibleFaces['torso']['front']];
-                $display_order[] = ['rightArm' => $backFaces];
-                $display_order[] = ['rightArm' => $visibleFaces['rightArm']['front']];
-                $display_order[] = ['leftLeg' => $backFaces];
-                $display_order[] = ['leftLeg' => $visibleFaces['leftLeg']['front']];
-                $display_order[] = ['rightLeg' => $backFaces];
-                $display_order[] = ['rightLeg' => $visibleFaces['rightLeg']['front']];
-            }
-            else
-            {
-                $display_order[] = ['rightArm' => $backFaces];
-                $display_order[] = ['rightArm' => $visibleFaces['rightArm']['front']];
-                $display_order[] = ['torso' => $backFaces];
-                $display_order[] = ['torso' => $visibleFaces['torso']['front']];
-                $display_order[] = ['leftArm' => $backFaces];
-                $display_order[] = ['leftArm' => $visibleFaces['leftArm']['front']];
-                $display_order[] = ['rightLeg' => $backFaces];
-                $display_order[] = ['rightLeg' => $visibleFaces['rightLeg']['front']];
-                $display_order[] = ['leftLeg' => $backFaces];
-                $display_order[] = ['leftLeg' => $visibleFaces['leftLeg']['front']];
-            }
-        }
-
-        return $display_order;
-    }
-
-    private function determinePartsAngles(): array
-    {
-        // Head, Helmet, Torso, Arms, Legs
-        $parts_angles = [];
-        $parts_angles['torso'] = [
-            'cos_alpha' => cos(0),
-            'sin_alpha' => sin(0),
-            'cos_omega' => cos(0),
-            'sin_omega' => sin(0),
-        ];
-        $alpha_head = 0;
-        $omega_head = deg2rad((float)$this->get->getInt('hrh'));
-        $parts_angles['head'] = [
-            'cos_alpha' => cos($alpha_head),
-            'sin_alpha' => sin($alpha_head),
-            'cos_omega' => cos($omega_head),
-            'sin_omega' => sin($omega_head),
-        ];
-        $parts_angles['helmet'] = [
-            'cos_alpha' => cos($alpha_head),
-            'sin_alpha' => sin($alpha_head),
-            'cos_omega' => cos($omega_head),
-            'sin_omega' => sin($omega_head),
-        ];
-        $alpha_right_arm = deg2rad((float)$this->get->getInt('vrra'));
-        $omega_right_arm = 0;
-        $parts_angles['rightArm'] = [
-            'cos_alpha' => cos($alpha_right_arm),
-            'sin_alpha' => sin($alpha_right_arm),
-            'cos_omega' => cos($omega_right_arm),
-            'sin_omega' => sin($omega_right_arm),
-        ];
-        $alpha_left_arm = deg2rad((float)$this->get->getInt('vrla'));
-        $omega_left_arm = 0;
-        $parts_angles['leftArm'] = [
-            'cos_alpha' => cos($alpha_left_arm),
-            'sin_alpha' => sin($alpha_left_arm),
-            'cos_omega' => cos($omega_left_arm),
-            'sin_omega' => sin($omega_left_arm),
-        ];
-        $alpha_right_leg = deg2rad((float)$this->get->getInt('vrrl'));
-        $omega_right_leg = 0;
-        $parts_angles['rightLeg'] = [
-            'cos_alpha' => cos($alpha_right_leg),
-            'sin_alpha' => sin($alpha_right_leg),
-            'cos_omega' => cos($omega_right_leg),
-            'sin_omega' => sin($omega_right_leg),
-        ];
-        $alpha_left_leg = deg2rad((float)$this->get->getInt('vrll'));
-        $omega_left_leg = 0;
-        $parts_angles['leftLeg'] = [
-            'cos_alpha' => cos($alpha_left_leg),
-            'sin_alpha' => sin($alpha_left_leg),
-            'cos_omega' => cos($omega_left_leg),
-            'sin_omega' => sin($omega_left_leg),
-        ];
-
-        return $parts_angles;
-    }
-
-    private function rotateMembers(array &$polygons, array $parts_angles, bool $displayHair): void
-    {
-        foreach ($polygons['head'] as $face)
-        {
-            foreach ($face as $poly)
-            {
-                /** @var Polygon $poly */
-                $poly->preProject(4, 8, 2, $parts_angles['head']['cos_alpha'], $parts_angles['head']['sin_alpha'], $parts_angles['head']['cos_omega'], $parts_angles['head']['sin_omega']);
-            }
-        }
-        if ($displayHair)
-        {
-            foreach ($polygons['helmet'] as $face)
-            {
-                foreach ($face as $poly)
-                {
-                    /** @var Polygon $poly */
-                    $poly->preProject(4, 8, 2, $parts_angles['head']['cos_alpha'], $parts_angles['head']['sin_alpha'], $parts_angles['head']['cos_omega'], $parts_angles['head']['sin_omega']);
-                }
-            }
-        }
-
-        foreach ($polygons['rightArm'] as $face)
-        {
-            foreach ($face as $poly)
-            {
-                /** @var Polygon $poly */
-                $poly->preProject(-2, 8, 2, $parts_angles['rightArm']['cos_alpha'], $parts_angles['rightArm']['sin_alpha'], $parts_angles['rightArm']['cos_omega'], $parts_angles['rightArm']['sin_omega']);
-            }
-        }
-        foreach ($polygons['leftArm'] as $face)
-        {
-            /** @var Polygon $poly */
-            foreach ($face as $poly)
-            {
-                $poly->preProject(10, 8, 2, $parts_angles['leftArm']['cos_alpha'], $parts_angles['leftArm']['sin_alpha'], $parts_angles['leftArm']['cos_omega'], $parts_angles['leftArm']['sin_omega']);
-            }
-        }
-        foreach ($polygons['rightLeg'] as $face)
-        {
-            /** @var Polygon $poly */
-            foreach ($face as $poly)
-            {
-                $poly->preProject(2, 20, ($parts_angles['rightLeg']['sin_alpha'] < 0 ? 0 : 4), $parts_angles['rightLeg']['cos_alpha'], $parts_angles['rightLeg']['sin_alpha'], $parts_angles['rightLeg']['cos_omega'], $parts_angles['rightLeg']['sin_omega']);
-            }
-        }
-        foreach ($polygons['leftLeg'] as $face)
-        {
-            /** @var Polygon $poly */
-            foreach ($face as $poly)
-            {
-                $poly->preProject(6, 20, ($parts_angles['leftLeg']['sin_alpha'] < 0 ? 0 : 4), $parts_angles['leftLeg']['cos_alpha'], $parts_angles['leftLeg']['sin_alpha'], $parts_angles['leftLeg']['cos_omega'], $parts_angles['leftLeg']['sin_omega']);
-            }
-        }
+        return $polygons;
     }
 }
