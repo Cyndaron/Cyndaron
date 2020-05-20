@@ -45,7 +45,7 @@ class Router
         'toonsub.php' => ['url' => '/sub/', 'id' => 'id'],
     ];
 
-    public function __construct()
+    public function route(): void
     {
         if (empty($_SESSION))
         {
@@ -54,43 +54,35 @@ class Router
 
         $request = (new RequestParameters($_GET))->getUrl('page') ?: '/';
         $this->updateRequestVars($request);
+        $cspHeader = $this->getCSPHeader();
 
         $redirect = $this->blockPathTraversal($request);
         if ($redirect !== null)
         {
+            $redirect->headers->set('Content-Security-Policy', $cspHeader);
             $redirect->send();
             return;
         }
 
-        $this->sendCSPHeader();
-
         $redirect = $this->redirectOldUrls($request);
         if ($redirect !== null)
         {
+            $redirect->headers->set('Content-Security-Policy', $cspHeader);
             $redirect->send();
             return;
         }
 
         $this->loadModules();
-
-        // Frontpage
-        if ($this->requestVars[0] === '')
-        {
-            $frontpage = $this->getFrontpageUrl();
-            $this->updateRequestVars((string)$frontpage);
-        }
-        // Known friendly URL
-        elseif ($url = DBConnection::doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$request]))
-        {
-            $this->updateRequestVars($this->rewriteFriendlyUrl(new Url($url)));
-        }
+        $this->rewriteFriendlyUrls($request);
 
         if (!array_key_exists($this->requestVars[0], $this->endpoints))
         {
             $this->updateRequestVars('/error/404');
         }
 
-        $this->routeEndpoint();
+        $response = $this->routeEndpoint();
+        $response->headers->set('Content-Security-Policy', $cspHeader);
+        $response->send();
     }
 
     private function routeFoundNowCheckLogin(): ?RedirectResponse
@@ -118,7 +110,7 @@ class Router
         return null;
     }
 
-    private function routeEndpoint(): void
+    private function routeEndpoint(): Response
     {
         $ret = $this->routeFoundNowCheckLogin();
 
@@ -131,7 +123,7 @@ class Router
             $ret = $this->getResponse($route);
         }
 
-        $ret->send();
+        return $ret;
     }
 
     private function getResponse(Controller $route): Response
@@ -228,7 +220,7 @@ class Router
         return new Url(Setting::get('frontPage') ?: '');
     }
 
-    private function sendCSPHeader(): void
+    private function getCSPHeader(): string
     {
         $scriptSrc = "'self'";
 
@@ -239,7 +231,7 @@ class Router
             $scriptSrc .= " 'unsafe-inline'";
         }
 
-        header("Content-Security-Policy: upgrade-insecure-requests; script-src $scriptSrc; font-src 'self'; base-uri 'none'; object-src 'none'");
+        return "upgrade-insecure-requests; script-src $scriptSrc; font-src 'self'; base-uri 'none'; object-src 'none'";
     }
 
     /**
@@ -324,5 +316,23 @@ class Router
     public static function referrer()
     {
         return filter_input(INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL);
+    }
+
+    /**
+     * @param string $request
+     */
+    private function rewriteFriendlyUrls(string $request): void
+    {
+        // Frontpage
+        if ($this->requestVars[0] === '')
+        {
+            $frontpage = $this->getFrontpageUrl();
+            $this->updateRequestVars((string)$frontpage);
+        }
+        // Known friendly URL
+        elseif ($url = DBConnection::doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$request]))
+        {
+            $this->updateRequestVars($this->rewriteFriendlyUrl(new Url($url)));
+        }
     }
 }

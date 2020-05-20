@@ -44,7 +44,7 @@ class Controller
         return true;
     }
 
-    public function route(RequestParameters $post)
+    public function route(RequestParameters $post): Response
     {
         $getRoutes = ($this->isApiCall && !empty($this->apiGetRoutes)) ? $this->apiGetRoutes : $this->getRoutes;
         $postRoutes = ($this->isApiCall && !empty($this->apiPostRoutes)) ? $this->apiPostRoutes : $this->postRoutes;
@@ -77,7 +77,11 @@ class Controller
             if (!$hasRight)
             {
                 $level = $route['level'] ?? UserLevel::ADMIN;
-                $this->checkUserLevelOrDie($level);
+                $response = $this->checkUserLevel($level);
+                if ($response !== null)
+                {
+                    return $response;
+                }
             }
 
             $function = $route['function'];
@@ -90,7 +94,12 @@ class Controller
             return new JsonResponse(['error' => 'Route not found!'], Response::HTTP_NOT_FOUND);
         }
 
-        $this->checkUserLevelOrDie($oldMinLevel);
+        $response = $this->checkUserLevel($oldMinLevel);
+        if ($response !== null)
+        {
+            return $response;
+        }
+
         return $this->$oldRouteFunction($post);
     }
 
@@ -105,7 +114,11 @@ class Controller
         return new Response('Route niet gevonden!', Response::HTTP_NOT_FOUND);
     }
 
-    public function checkUserLevelOrDie(int $requiredLevel): void
+    /**
+     * @param int $requiredLevel
+     * @return Response|null A Response if the user level is insufficient, null otherwise.
+     */
+    public function checkUserLevel(int $requiredLevel): ?Response
     {
         if ($requiredLevel > UserLevel::ANONYMOUS && !User::isLoggedIn())
         {
@@ -114,16 +127,14 @@ class Controller
             User::addNotification('U moet inloggen om deze pagina te bekijken');
             $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
 
-            $response = new RedirectResponse('/user/login', );
-            $response->send();
-            die();
+            return new RedirectResponse('/user/login', );
         }
         if (User::getLevel() < $requiredLevel)
         {
-            $response = new Response('Insufficient user rights!', Response::HTTP_FORBIDDEN);
-            $response->send();
-            die();
+            return new Response('Insufficient user rights!', Response::HTTP_FORBIDDEN);
         }
+
+        return null;
     }
 
     public function setQueryBits(QueryBits $queryBits): void

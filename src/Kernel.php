@@ -57,7 +57,8 @@ class Kernel
 
     protected function handleRequest(): void
     {
-        new Router();
+        $route = new Router();
+        $route->route();
     }
 
     /**

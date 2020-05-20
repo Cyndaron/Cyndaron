@@ -39,7 +39,12 @@ class UserController extends Controller
     {
         // Has to be done here because you cannot specify the expression during member variable initialization.
         $minLevel = (int)Setting::get('userGalleryMinLevel') ?: UserLevel::ADMIN;
-        $this->checkUserLevelOrDie($minLevel);
+        $response = $this->checkUserLevel($minLevel);
+        if ($response !== null)
+        {
+            return $response;
+        }
+
         $page = new Gallery();
         return new Response($page->render());
     }

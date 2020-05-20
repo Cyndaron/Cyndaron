@@ -24,7 +24,7 @@ class ErrorController extends Controller
     ];
 
     // Overridden, since both GET and POST requests may end up here, and checking user rights is not necessary.
-    public function route(RequestParameters $post)
+    public function route(RequestParameters $post): Response
     {
         if (!array_key_exists($this->action, static::KNOWN_ERRORS))
         {
@@ -33,8 +33,8 @@ class ErrorController extends Controller
         }
 
         $error = static::KNOWN_ERRORS[$this->action];
-        header($error['httpStatus']);
+        $statusCode = (int)$this->action;
         $page = new Page($error['pageTitle'], $error['notification']);
-        return new Response($page->render());
+        return new Response($page->render(), $statusCode);
     }
 }
