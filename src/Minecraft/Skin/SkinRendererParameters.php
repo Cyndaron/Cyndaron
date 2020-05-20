@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Minecraft;
+namespace Cyndaron\Minecraft\Skin;
 
 use Cyndaron\Request\RequestParameters;
 

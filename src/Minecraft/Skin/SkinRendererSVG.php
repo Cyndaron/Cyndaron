@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Minecraft;
+namespace Cyndaron\Minecraft\Skin;
 
 use Cyndaron\Template\Template;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,6 +39,6 @@ class SkinRendererSVG extends SkinRenderer
         $this->templateVars['remarks'] .= '<!-- TOTAL : ' . ($this->times[count($this->times) - 1][1] - $this->times[0][1]) * 1000 . 'ms -->' . "\n";
 
         $this->headers['Content-Type'] = 'image/svg+xml';
-        return new Response($this->template->render('Minecraft/SkinSVG', $this->templateVars), Response::HTTP_OK, $this->headers);
+        return new Response($this->template->render('Minecraft/Skin/SkinSVG', $this->templateVars), Response::HTTP_OK, $this->headers);
     }
 }

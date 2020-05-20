@@ -5,6 +5,8 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Controller;
 use Cyndaron\Minecraft\Dynmap\DynmapProxy;
+use Cyndaron\Minecraft\Skin\SkinRendererHandler;
+use Cyndaron\Minecraft\Skin\SkinRendererParameters;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;

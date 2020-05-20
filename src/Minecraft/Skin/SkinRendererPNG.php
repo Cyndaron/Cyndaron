@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Minecraft;
+namespace Cyndaron\Minecraft\Skin;
 
 use Symfony\Component\HttpFoundation\Response;
 

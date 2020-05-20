@@ -1,7 +1,7 @@
 <?php
-namespace Cyndaron\Minecraft;
+namespace Cyndaron\Minecraft\Skin;
 
-use Cyndaron\Request\RequestParameters;
+use Cyndaron\Minecraft\Member;
 use Symfony\Component\HttpFoundation\Response;
 
 /* ***** MINECRAFT 3D Skin Generator *****
