@@ -3,6 +3,7 @@ declare (strict_types = 1);
 
 namespace Cyndaron;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;

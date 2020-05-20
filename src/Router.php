@@ -10,6 +10,7 @@ use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerPage;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Symfony\Component\HttpFoundation\JsonResponse;

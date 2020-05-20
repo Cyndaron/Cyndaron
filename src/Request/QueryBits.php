@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\Request;
 
 class QueryBits
 {

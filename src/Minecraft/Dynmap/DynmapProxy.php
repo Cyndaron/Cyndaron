@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace Cyndaron\Minecraft\Dynmap;
 
 use Cyndaron\Minecraft\Server;
-use Cyndaron\QueryBits;
+use Cyndaron\Request\QueryBits;
 class DynmapProxy
 {
     private string $contents;
