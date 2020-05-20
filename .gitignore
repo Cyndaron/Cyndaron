@@ -16,3 +16,4 @@ uploads/
 extra-head.php
 extra-body-start.php
 extra-body-end.php
+.php_cs.cache
