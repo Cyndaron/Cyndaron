@@ -24,6 +24,7 @@ return PhpCsFixer\Config::create()
             'position_after_anonymous_constructs' => 'next',
         ],
         'constant_case' => ['case' => 'lower'],
+        'function_declaration' => ['closure_function_spacing' => 'none'],
         'linebreak_after_opening_tag' => true,
         'phpdoc_order' => true,
         'strict_param' => true,
