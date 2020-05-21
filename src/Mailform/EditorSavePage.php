@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 
@@ -27,8 +26,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         }
         else
         {
-            $errorInfo = var_export(DBConnection::errorInfo(), true);
-            User::addNotification('Opslaan mailformulier mislukt: ' . $errorInfo);
+            User::addNotification('Opslaan mailformulier mislukt');
         }
 
         $this->returnUrl = '/pagemanager/mailform';

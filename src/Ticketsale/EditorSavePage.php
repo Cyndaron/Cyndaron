@@ -31,8 +31,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         }
         else
         {
-            $errorInfo = var_export(DBConnection::errorInfo(), true);
-            User::addNotification('Fout bij opslaan concert: ' . $errorInfo);
+            User::addNotification('Fout bij opslaan concert');
         }
 
         $this->returnUrl = '/concert/order/' . $this->id;

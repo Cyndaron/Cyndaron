@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron\StaticPage;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 
@@ -36,8 +35,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         }
         else
         {
-            $error = var_export(DBConnection::errorInfo(), true);
-            User::addNotification('Pagina opslaan mislukt: ' . $error);
+            User::addNotification('Pagina opslaan mislukt');
         }
     }
 }

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 
@@ -33,8 +32,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         }
         else
         {
-            $errorInfo = var_export(DBConnection::errorInfo(), true);
-            User::addNotification('Fout bij opslaan evenement: ' . $errorInfo);
+            User::addNotification('Fout bij opslaan evenement');
         }
 
         $this->returnUrl = '/event/register/' . $event->id;

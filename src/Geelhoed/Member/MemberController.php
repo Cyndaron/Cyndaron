@@ -2,7 +2,6 @@
 namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\Controller;
-use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Request\RequestParameters;
@@ -89,13 +88,13 @@ class MemberController extends Controller
         $user = $this->updateUserFields($user, $post);
         if (!$user->save())
         {
-            throw new \Exception('Error saving user record: ' . var_export(DBConnection::errorInfo(), true));
+            return new JsonResponse(['error' => 'Error saving user record!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $member = $this->updateMemberFields($user, $member, $post);
         if (!$member->save())
         {
-            throw new \Exception('Error saving member record: ' . var_export(DBConnection::errorInfo(), true));
+            return new JsonResponse(['error' => 'Error saving member record!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $newGraduationId = $post->getInt('new-graduation-id');

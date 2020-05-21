@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Category;
 
 use Cyndaron\Controller;
-use Cyndaron\DBConnection;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
@@ -60,7 +59,7 @@ class CategoryController extends Controller
         $result = $category->save();
         if ($result === false)
         {
-            $return = DBConnection::errorInfo();
+            return new JsonResponse(['error' => 'Could not save category!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return new JsonResponse($return);
@@ -79,7 +78,7 @@ class CategoryController extends Controller
         $result = $menuItem->save();
         if ($result === false)
         {
-            $return = DBConnection::errorInfo();
+            return new JsonResponse(['error' => 'Could not save menu item!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return new JsonResponse($return);

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Registration;
 
 use Cyndaron\Controller;
-use Cyndaron\DBConnection;
 use Cyndaron\Error\DatabaseError;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Page;
@@ -138,8 +137,7 @@ class RegistrationController extends Controller
 
         if (!$registration->save())
         {
-            $msg = var_export(DBConnection::errorInfo(), true);
-            throw new DatabaseError($msg . 'Opslaan aanmelding mislukt!');
+            throw new DatabaseError('Opslaan aanmelding mislukt!');
         }
 
         foreach ($ticketTypes as $ticketType)
