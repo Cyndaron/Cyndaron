@@ -10,7 +10,7 @@ class EventTicketType extends Model
 
     public int $eventId;
     public string $name;
-    public string $price;
+    public float $price;
     public bool $discountPer5 = false;
 
     /**

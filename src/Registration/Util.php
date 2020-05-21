@@ -13,7 +13,7 @@ class Util extends \Cyndaron\Util
 
     public static function birthYearToCategory(int $birthYear): string
     {
-        $age = date('Y') - $birthYear;
+        $age = (int)date('Y') - $birthYear;
 
         if ($age < 12)
         {

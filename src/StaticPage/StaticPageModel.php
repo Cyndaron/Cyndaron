@@ -86,6 +86,6 @@ class StaticPageModel extends ModelWithCategory
     public function getImage(): string
     {
         preg_match('/<img.*?src="(.*?)".*?>/si', $this->text, $match);
-        return $page['image'] = $match[1] ?? '';
+        return $match[1] ?? '';
     }
 }
