@@ -51,25 +51,30 @@ function decrease(vak)
     }
 }
 
-function checkForm()
+function checkGeneralFormFields()
 {
     if (document.getElementById('antispam').value.toUpperCase() !== 'VLISSINGEN')
         return false;
 
-    if (document.getElementById('prijsvak').innerHTML === "€&nbsp;0,00")
+    let priceHtml = document.getElementById('prijsvak').innerHTML;
+
+    if (priceHtml === "€&nbsp;0,00" || priceHtml === "€&nbsp;-")
         return false;
 
-    if (document.getElementById('prijsvak').innerHTML === "€&nbsp;-")
-        return false;
+    return true;
+}
 
+function checkNameAndEmail()
+{
     let lastName = document.getElementById('lastName').value;
     let initials = document.getElementById('initials').value;
     let email = document.getElementById('email').value;
-    let deliveryByMember = document.getElementById('deliveryByMember').checked;
 
-    if(!(lastName.length > 0 && initials.length > 0 && email.length > 0))
-        return false;
+     return (lastName.length > 0 && initials.length > 0 && email.length > 0)
+}
 
+function checkAddressInfo(deliveryByMember)
+{
     if (document.getElementById('bezorgen').checked || (forcedDelivery && !deliveryByMember))
     {
         let street = document.getElementById('street').value;
@@ -80,10 +85,27 @@ function checkForm()
             return false;
     }
 
-    if (deliveryByMember && document.getElementById('deliveryMemberName').value.length < 2)
-        return false;
+    return true;
+}
 
-    if (addressIsAbroad && document.getElementById('deliveryMemberName').value.length < 2)
+function checkForm()
+{
+    if (!checkGeneralFormFields)
+    {
+        return false;
+    }
+    if (!checkNameAndEmail())
+    {
+        return false;
+    }
+
+    let deliveryByMember = document.getElementById('deliveryByMember').checked;
+    if (!checkAddressInfo(deliveryByMember))
+    {
+        return false;
+    }
+
+    if ((deliveryByMember || addressIsAbroad) && document.getElementById('deliveryMemberName').value.length < 2)
         return false;
 
     return true;
