@@ -7,10 +7,10 @@ use Cyndaron\Setting;
 
 class EventRegistrationOverviewPage extends Page
 {
+    public const TOTALS_FORMAT = [0 => ['amount' => 0, 'num' => 0], 1 => ['amount' => 0, 'num' => 0]];
+
     public function __construct(Event $event)
     {
-        $ticketTypesByRegistration = [];
-
         switch (Setting::get('organisation'))
         {
             case 'Vlissingse Oratorium Vereniging':
@@ -23,20 +23,25 @@ class EventRegistrationOverviewPage extends Page
 
         $ticketTypes = EventTicketType::loadByEvent($event);
         $registrations = Registration::loadByEvent($event);
-        $boughtTicketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM `registration_orders_tickettypes`');
-        $defData = [0 => ['amount' => 0, 'num' => 0], 1 => ['amount' => 0, 'num' => 0]];
-        $totals = [
-            'Alt' => $defData,
-            'Bas' => $defData,
-            'Sopraan' => $defData,
-            'Tenor' => $defData,
-            'Totaal' => $defData,
-        ];
 
         $this->addScript('/src/Registration/js/EventOrderOverviewPage.js');
 
         parent::__construct('Overzicht aanmeldingen: ' . $event->name);
 
+        $ticketTypesByRegistration = $this->getTicketTypesByRegistration();
+        $totals = $this->calculateTotals($registrations, $ticketTypesByRegistration);
+
+        $this->addTemplateVars(compact('event', 'ticketTypes', 'ticketTypesByRegistration', 'registrations', 'totals'));
+    }
+
+    /**
+     * @return array
+     */
+    private function getTicketTypesByRegistration(): array
+    {
+        $boughtTicketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM `registration_orders_tickettypes`');
+
+        $ticketTypesByRegistration = [];
         foreach ($boughtTicketTypes as $boughtTicketType)
         {
             $registrationId = $boughtTicketType['registrationId'];
@@ -48,6 +53,23 @@ class EventRegistrationOverviewPage extends Page
 
             $ticketTypesByRegistration[$registrationId][$ticketType] = $boughtTicketType['amount'];
         }
+        return $ticketTypesByRegistration;
+    }
+
+    /**
+     * @param Registration[] $registrations
+     * @param array $ticketTypesByRegistration
+     * @return array
+     */
+    private function calculateTotals(array $registrations, array $ticketTypesByRegistration): array
+    {
+        $totals = [
+            'Alt' => self::TOTALS_FORMAT,
+            'Bas' => self::TOTALS_FORMAT,
+            'Sopraan' => self::TOTALS_FORMAT,
+            'Tenor' => self::TOTALS_FORMAT,
+            'Totaal' => self::TOTALS_FORMAT,
+        ];
         foreach ($registrations as $registration)
         {
             if ($registration->vocalRange)
@@ -64,6 +86,6 @@ class EventRegistrationOverviewPage extends Page
             $totals['Totaal'][1]['amount'] += $totals[$vocalRange][1]['amount'];
         }
 
-        $this->addTemplateVars(compact('event', 'ticketTypes', 'ticketTypesByRegistration', 'registrations', 'totals'));
+        return $totals;
     }
 }
