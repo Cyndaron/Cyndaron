@@ -28,19 +28,7 @@ class TemplateFinder
         // If the template is not present in the global folder, look in the module templates.
         if ($template === null)
         {
-            $parts = explode('/', $name);
-            if (count($parts) > 1)
-            {
-                $name = array_pop($parts);
-                $module = implode('/', $parts);
-
-                $template = $this->searchPath('src/' . $module . '/templates/', $name);
-                // If the template is not present in the module templates, look in the vendor packages.
-                if ($template === null)
-                {
-                    $template = $this->searchPath('vendor/' . $module . '/templates/', $name);
-                }
-            }
+            $template = $this->searchSrcAndVendor($name);
         }
 
         return $template;
@@ -69,5 +57,29 @@ class TemplateFinder
         }
 
         return null;
+    }
+
+    /**
+     * @param string $name
+     * @return string|null
+     */
+    private function searchSrcAndVendor(string $name): ?string
+    {
+        $template = null;
+        $parts = explode('/', $name);
+        if (count($parts) > 1)
+        {
+            $name = array_pop($parts);
+            $module = implode('/', $parts);
+
+            $template = $this->searchPath('src/' . $module . '/templates/', $name);
+            // If the template is not present in the module templates, look in the vendor packages.
+            if ($template === null)
+            {
+                $template = $this->searchPath('vendor/' . $module . '/templates/', $name);
+            }
+        }
+
+        return $template;
     }
 }
