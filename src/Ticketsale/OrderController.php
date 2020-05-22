@@ -6,6 +6,7 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
+use Cyndaron\PlainTextMail;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Template\ViewHelpers;
 use Cyndaron\User\UserLevel;
@@ -308,7 +309,8 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
             }
         }
 
-        return Util::mail($email, 'Bestelling concertkaarten', $text);
+        $mail = new PlainTextMail($email, 'Bestelling concertkaarten', $text);
+        return $mail->send();
     }
 
     public function delete(): JsonResponse

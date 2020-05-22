@@ -38,27 +38,6 @@ class Util
         return bin2hex(random_bytes($length));
     }
 
-    public static function mail(string $to, string $subject, string $message, string $fromAddress = null, string $fromName = null): bool
-    {
-        if (empty($fromAddress))
-        {
-            $fromAddress = static::getNoreplyAddress();
-        }
-        if (empty($fromName))
-        {
-            $fromName = Setting::get('organisation') ?: Setting::get('siteName');
-        }
-
-        $additionalHeaders = [
-            'From' => "\"$fromName\" <$fromAddress>",
-            'Content-Type' => 'text/plain; charset="UTF-8"',
-        ];
-        // Set the envelope sender. This is often needed to make DMARC checks pass if multiple domains send mail from the same server.
-        $additionalParameters = "-f$fromAddress";
-
-        return mail($to, $subject, $message, $additionalHeaders, $additionalParameters);
-    }
-
     public static function getDomain(): string
     {
         return str_replace(['www.', 'http://', 'https://', '/'], '', $_SERVER['HTTP_HOST']);

@@ -6,6 +6,7 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
+use Cyndaron\PlainTextMail;
 
 class Order extends Model
 {
@@ -44,7 +45,8 @@ class Order extends Model
             $text .= 'Uw kaarten zullen op de avond van het concert voor u klaarliggen bij de kassa.';
         }
 
-        return Util::mail($this->email, 'Betalingsbevestiging', $text);
+        $mail = new PlainTextMail($this->email, 'Betalingsbevestiging', $text);
+        return $mail->send();
     }
 
     public function setIsSent(): bool
