@@ -55,7 +55,8 @@ class Server extends Model
 
         $this->isOnline = true;
         [$this->protocolVersion, $this->gameVersion, $this->motd, $this->onlinePlayers, $this->maxPlayers] = $data;
-        $this->motd = Util::mineToWeb($this->motd);
+        $motd = new MinecraftString($this->motd);
+        $this->motd = $motd->toHtml();
 
         return true;
     }

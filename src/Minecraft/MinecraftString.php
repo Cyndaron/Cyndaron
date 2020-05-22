@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-class Util
+class MinecraftString
 {
     public const MINECRAFT_COLOUR_CODES = [
         '0' => '#000000',
@@ -29,10 +29,16 @@ class Util
         'o' => 'font-style: italic;',
     ];
 
-    /** @noinspection NotOptimalRegularExpressionsInspection */
-    public static function mineToWeb($minetext): string
+    private string $source;
+
+    public function __construct(string $source)
     {
-        preg_match_all('/[^§&]*[^§&]|[§&][0-9a-z][^§&]*/', $minetext, $brokenupstrings);
+        $this->source = $source;
+    }
+
+    public function toHtml()
+    {
+        preg_match_all('/[^§&]*[^§&]|[§&][0-9a-z][^§&]*/', $this->source, $brokenupstrings);
         $returnstring = '';
         foreach ($brokenupstrings as $results)
         {
