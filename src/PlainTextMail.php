@@ -23,7 +23,7 @@ class PlainTextMail
     public function send(): bool
     {
         $additionalHeaders = [
-            'From' => sprintf( '%s <%s>', $this->fromName, $this->fromAddress),
+            'From' => sprintf('%s <%s>', $this->fromName, $this->fromAddress),
             'Content-Type' => 'text/plain; charset="UTF-8"',
         ];
         // Set the envelope sender. This is often needed to make DMARC checks pass if multiple domains send mail from the same server.
