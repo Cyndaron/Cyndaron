@@ -45,31 +45,37 @@ class OverviewPage extends Page
      */
     private function getFileList(string $orderBy): array
     {
-        $dirArray = [];
-        if ($dir = @opendir(self::PATH))
+        if (!($dir = @opendir(self::PATH)))
         {
-            while ($filename = readdir($dir))
-            {
-                // Hide hidden files, HTML files and PHP files
-                if ((substr($filename, 0, 1) !== '.') && (substr($filename, -4) !== 'html') && (substr($filename, -3) !== 'php'))
-                {
-                    $dirArray[] = $filename;
-                }
-            }
-            closedir($dir);
+            return [];
+        }
 
-            if ($orderBy === 'date')
+        $dirArray = [];
+        while ($filename = readdir($dir))
+        {
+            // Hide hidden files, HTML files and PHP files
+            if ((substr($filename, 0, 1) !== '.') && (substr($filename, -4) !== 'html') && (substr($filename, -3) !== 'php'))
             {
-                usort($dirArray, static function($file1, $file2)
-                {
-                    return filectime(self::PATH . $file1) <=> filectime(self::PATH . $file2);
-                });
-            }
-            else
-            {
-                natsort($dirArray);
+                $dirArray[] = $filename;
             }
         }
+        closedir($dir);
+
+        $this->sortFileList($dirArray, $orderBy);
         return $dirArray;
+    }
+
+    private function sortFileList(array &$fileList, string $orderBy): void
+    {
+        if ($orderBy === 'date')
+        {
+            usort($fileList, static function ($file1, $file2) {
+                return filectime(self::PATH . $file1) <=> filectime(self::PATH . $file2);
+            });
+        }
+        else
+        {
+            natsort($fileList);
+        }
     }
 }
