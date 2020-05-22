@@ -6,30 +6,22 @@ use Pine\BladeFilters\BladeFilters;
 
 class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
 {
+    public const FILTERS = [
+        'euro' => ViewHelpers::class . '::formatEuro',
+        'hm' => ViewHelpers::class . '::filterHm',
+        'dmy' => ViewHelpers::class . '::filterDutchDate',
+        'dmyHm' => ViewHelpers::class . '::filterDutchDateTime',
+        'boolToText' => ViewHelpers::class . '::boolToText',
+    ];
+
     public function register(): void
     {
         parent::register();
 
-        BladeFilters::macro('euro', static function($value)
+        foreach (self::FILTERS as $filterName => $function)
         {
-            return ViewHelpers::formatEuro($value);
-        });
-        BladeFilters::macro('hm', static function($value)
-        {
-            return ViewHelpers::filterHm($value);
-        });
-        BladeFilters::macro('dmy', static function($value)
-        {
-            return ViewHelpers::filterDutchDate($value);
-        });
-        BladeFilters::macro('dmyHm', static function($value)
-        {
-            return ViewHelpers::filterDutchDateTime($value);
-        });
-        BladeFilters::macro('boolToText', static function($value)
-        {
-            return ViewHelpers::boolToText($value ?? false);
-        });
+            BladeFilters::macro($filterName, $function);
+        }
     }
 
     /**

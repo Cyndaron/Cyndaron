@@ -78,7 +78,7 @@ class ViewHelpers
         return '€ ' . static::formatCurrency($amount);
     }
 
-    public static function boolToText(bool $bool): string
+    public static function boolToText(?bool $bool): string
     {
         return $bool ? 'Ja' : 'Nee';
     }
