@@ -38,18 +38,20 @@ class MinecraftString
 
     public function toHtml()
     {
-        preg_match_all('/[^§&]*[^§&]|[§&][0-9a-z][^§&]*/', $this->source, $brokenupstrings);
+        $paragraphSignLength = strlen('§');
+
+        preg_match_all('/[^§&]*[^§&]|[§&][0-9a-z][^§&]*/u', $this->source, $brokenupstrings);
         $returnstring = '';
         foreach ($brokenupstrings as $results)
         {
             $ending = '';
             foreach ($results as $individual)
             {
-                $code = preg_split("/[&§][0-9a-z]/", $individual);
-                preg_match("/[&§][0-9a-z]/", $individual, $prefix);
+                $code = preg_split("/[&§][0-9a-z]/u", $individual);
+                preg_match("/[&§][0-9a-z]/u", $individual, $prefix);
                 if (isset($prefix[0]))
                 {
-                    $actualcode = substr($prefix[0], 1);
+                    $actualcode = substr($prefix[0], $paragraphSignLength);
                     if (array_key_exists($actualcode, self::MINECRAFT_COLOUR_CODES))
                     {
                         $returnstring .= sprintf('<span style="color:%s">', self::MINECRAFT_COLOUR_CODES[$actualcode]);
@@ -57,7 +59,7 @@ class MinecraftString
                     }
                     elseif (array_key_exists($actualcode, self::MINECRAFT_FORMATTING_CODES))
                     {
-                        if (strlen($individual) > 2)
+                        if (strlen($individual) > $paragraphSignLength + 1)
                         {
                             $returnstring .= sprintf('<span style="%s">', self::MINECRAFT_FORMATTING_CODES[$actualcode]);
                             $ending = '</span>' . $ending;
@@ -77,7 +79,7 @@ class MinecraftString
                     if (isset($code[1]))
                     {
                         $returnstring .= $code[1];
-                        if (isset($ending) && strlen($individual) > 2)
+                        if (isset($ending) && strlen($individual) > $paragraphSignLength + 1)
                         {
                             $returnstring .= $ending;
                             $ending = '';
