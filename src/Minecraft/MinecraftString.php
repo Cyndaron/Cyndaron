@@ -30,69 +30,90 @@ class MinecraftString
     ];
 
     private string $source;
+    private string $outputString;
+    private int $paragraphSignLength;
+    private string $ending = '';
 
     public function __construct(string $source)
     {
         $this->source = $source;
+        $this->outputString = '';
+        $this->paragraphSignLength = strlen('§');
     }
 
-    public function toHtml()
+    public function toHtml(): string
     {
-        $paragraphSignLength = strlen('§');
-
         preg_match_all('/[^§&]*[^§&]|[§&][0-9a-z][^§&]*/u', $this->source, $brokenupstrings);
-        $returnstring = '';
         foreach ($brokenupstrings as $results)
         {
-            $ending = '';
+            $this->ending = '';
             foreach ($results as $individual)
             {
-                $code = preg_split("/[&§][0-9a-z]/u", $individual);
-                preg_match("/[&§][0-9a-z]/u", $individual, $prefix);
-                if (isset($prefix[0]))
-                {
-                    $actualcode = substr($prefix[0], $paragraphSignLength);
-                    if (array_key_exists($actualcode, self::MINECRAFT_COLOUR_CODES))
-                    {
-                        $returnstring .= sprintf('<span style="color:%s">', self::MINECRAFT_COLOUR_CODES[$actualcode]);
-                        $ending .= '</span>';
-                    }
-                    elseif (array_key_exists($actualcode, self::MINECRAFT_FORMATTING_CODES))
-                    {
-                        if (strlen($individual) > $paragraphSignLength + 1)
-                        {
-                            $returnstring .= sprintf('<span style="%s">', self::MINECRAFT_FORMATTING_CODES[$actualcode]);
-                            $ending = '</span>' . $ending;
-                        }
-                        else
-                        {
-                            $returnstring .= $ending;
-                            $ending = '';
-                        }
-                    }
-                    elseif ($actualcode === 'r')
-                    {
-                        $returnstring .= $ending;
-                        $ending = '';
-                    }
-
-                    if (isset($code[1]))
-                    {
-                        $returnstring .= $code[1];
-                        if (isset($ending) && strlen($individual) > $paragraphSignLength + 1)
-                        {
-                            $returnstring .= $ending;
-                            $ending = '';
-                        }
-                    }
-                }
-                else
-                {
-                    $returnstring .= $individual;
-                }
+                $this->processBlock($individual);
             }
         }
 
-        return $returnstring;
+        return $this->outputString;
+    }
+
+    private function processBlock($block): void
+    {
+        $code = preg_split("/[&§][0-9a-z]/u", $block);
+        // This can be null if the text to format is preceeded by multiple formatting codes,
+        // e.g. one for colour and one for text decoration.
+        $textAfterFormatting = $code[1] ?? null;
+        preg_match("/[&§][0-9a-z]/u", $block, $prefix);
+        // If set, this will be a value like "§a".
+        $formattingCode = $prefix[0] ?? null;
+        if ($formattingCode !== null)
+        {
+            $this->processFormattingCode($formattingCode, strlen($block));
+
+            if ($textAfterFormatting !== null)
+            {
+                $this->outputString .= $code[1];
+                if (strlen($block) > $this->paragraphSignLength + 1)
+                {
+                    $this->outputString .= $this->ending;
+                    $this->ending = '';
+                }
+            }
+        }
+        else
+        {
+            $this->outputString .= $block;
+        }
+    }
+
+    /**
+     * @param string $code The formatting code, e.g. “§a".
+     * @param int $blockLength
+     */
+    private function processFormattingCode(string $code, int $blockLength): void
+    {
+        $actualcode = substr($code, $this->paragraphSignLength);
+        if (array_key_exists($actualcode, self::MINECRAFT_COLOUR_CODES))
+        {
+            $this->outputString .= sprintf('<span style="color:%s;">', self::MINECRAFT_COLOUR_CODES[$actualcode]);
+            $this->ending .= '</span>';
+        }
+        elseif (array_key_exists($actualcode, self::MINECRAFT_FORMATTING_CODES))
+        {
+            if ($blockLength > $this->paragraphSignLength + 1)
+            {
+                $this->outputString .= sprintf('<span style="%s">', self::MINECRAFT_FORMATTING_CODES[$actualcode]);
+                $this->ending = '</span>' . $this->ending;
+            }
+            else
+            {
+                $this->outputString .= $this->ending;
+                $this->ending = '';
+            }
+        }
+        elseif ($actualcode === 'r')
+        {
+            $this->outputString .= $this->ending;
+            $this->ending = '';
+        }
     }
 }
