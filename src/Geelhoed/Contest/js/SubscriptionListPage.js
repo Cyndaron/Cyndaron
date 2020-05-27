@@ -2,7 +2,7 @@
 
 $(document).ready(function() {
     $('.gcsm-delete').on('click', function() {
-        let row = $(this).parent().parent();
+        let row = $(this).parent().parent().parent();
         let id = $(this).data('id');
         let csrfToken = $('#gcsm-table').data('csrf-token-delete');
         del('Weet u zeker dat u deze inschrijving wilt verwijderen?', function() {
