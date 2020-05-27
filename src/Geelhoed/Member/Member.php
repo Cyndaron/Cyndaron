@@ -218,7 +218,7 @@ class Member extends Model
         {
             $whereString = 'WHERE ' . implode(' AND ', $where);
         }
-        $results = DBConnection::doQueryAndFetchAll('SELECT * FROM `geelhoed_members` gm INNER JOIN `users` u on gm.userId = u.id ' . $whereString . ' ' . $afterWhere, $args);
+        $results = DBConnection::doQueryAndFetchAll('SELECT *,gm.id AS id FROM `geelhoed_members` gm INNER JOIN `users` u on gm.userId = u.id ' . $whereString . ' ' . $afterWhere, $args);
         $ret = [];
         if ($results)
         {
