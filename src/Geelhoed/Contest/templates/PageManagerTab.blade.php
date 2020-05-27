@@ -50,7 +50,7 @@
         <input type="hidden" id="gcm-edit-id" value="">
 
         @include('Widget/Form/BasicInput', ['id' => 'gcm-edit-name', 'label' => 'Naam', 'required' => true])
-        @include('Widget/Form/Textarea', ['gcm-edit-description', 'label' => 'Beschrijving'])
+        @include('Widget/Form/Textarea', ['id' => 'gcm-edit-description', 'label' => 'Beschrijving', 'placeholder' => '(Vul hier meer informatie over de wedstrijd in, zoals de weegtijden.)'])
         @include('Widget/Form/BasicInput', ['id' => 'gcm-edit-location', 'label' => 'Locatie', 'required' => true])
         @include('Widget/Form/Select', ['id' => 'gcm-edit-sportId', 'label' => 'Sport', 'required' => true, 'options' => \Cyndaron\Geelhoed\Sport::fetchAllForSelect()])
         @component('Widget/Form/FormWrapper', ['id' => 'gcm-edit-date', 'label' => 'Datum en tijd'])

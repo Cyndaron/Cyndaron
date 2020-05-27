@@ -33,6 +33,7 @@ class ContestController extends Controller
         'edit' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'createOrEdit'],
         'delete' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'delete'],
         'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook'],
+        'updatePaymentStatus' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'updatePaymentStatus'],
         'removeSubscription' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'removeSubscription'],
     ];
 
@@ -95,6 +96,7 @@ class ContestController extends Controller
         $contestMember->memberId = $member->id;
         $contestMember->graduationId = $post->getInt('graduationId');
         $contestMember->weight = $post->getInt('weight');
+        $contestMember->comments = $post->getSimpleString('comments');
         $contestMember->isPaid = false;
         if (!$contestMember->save())
         {
@@ -108,7 +110,17 @@ class ContestController extends Controller
             return new RedirectResponse("/contest/view/{$contest->id}");
         }
 
-        return $this->doMollieTransaction($contest, $contestMember);
+        try
+        {
+            $response = $this->doMollieTransaction($contest, $contestMember);
+        }
+        catch (\Exception $e)
+        {
+            User::addNotification('Je inschrijving is opgeslagen, maar de betaling is mislukt!');
+            $response = new RedirectResponse("/contest/view/{$contest->id}");
+        }
+
+        return $response;
     }
 
     private function doMollieTransaction(Contest $contest, ContestMember $contestMember)
@@ -227,7 +239,7 @@ class ContestController extends Controller
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $headers = ['Naam', 'Band', 'Gewicht', 'JBN-nummer', 'Betaald'];
+        $headers = ['Naam', 'Band', 'Gewicht', 'JBN-nummer', 'Betaald', 'Opmerkingen'];
         foreach ($headers as $key => $value)
         {
             $column = chr(ord('A') + $key);
@@ -244,6 +256,7 @@ class ContestController extends Controller
             $sheet->setCellValue("C{$row}", $contestMember->weight);
             $sheet->setCellValue("D{$row}", $member->jbnNumber);
             $sheet->setCellValue("E{$row}", ViewHelpers::boolToText($contestMember->isPaid));
+            $sheet->setCellValue("F{$row}", $contestMember->comments);
 
             $row++;
         }
@@ -257,9 +270,12 @@ class ContestController extends Controller
             }
         }
 
+        $date = date('Y-m-d', strtotime($contest->date));
+        $filename = str_replace('"', "'", "Deelnemers {$contest->name} ($date).xlsx");
+
         $httpHeaders = [
             'content-type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8',
-            'content-disposition' => 'attachment;filename="deelnemers.xlsx"',
+            'content-disposition' => 'attachment;filename="' . $filename . '"',
             'cache-control' => 'max-age=0'
         ];
 
@@ -323,6 +339,21 @@ class ContestController extends Controller
         {
             return new JsonResponse(['error' => 'Could not save contest!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        return new JsonResponse();
+    }
+
+    public function updatePaymentStatus(RequestParameters $post): JsonResponse
+    {
+        $id = $post->getInt('id');
+        $contestMember = ContestMember::loadFromDatabase($id);
+        if ($contestMember === null)
+        {
+            return new JsonResponse(['error' => 'Contest member does not exist!'], Response::HTTP_NOT_FOUND);
+        }
+
+        $contestMember->isPaid = $post->getBool('isPaid');
+        $contestMember->save();
 
         return new JsonResponse();
     }

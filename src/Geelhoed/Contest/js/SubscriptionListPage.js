@@ -13,4 +13,15 @@ $(document).ready(function() {
                 });
         });
     });
+
+    $('.gcsm-update-payment-status').on('click', function() {
+        let id = $(this).data('id');
+        let isPaid = $(this).data('is-paid');
+        let csrfToken = $('#gcsm-table').data('csrf-token-update-payment-status');
+
+        $.post('/api/contest/updatePaymentStatus', { id: id, isPaid: isPaid, csrfToken: csrfToken })
+            .done(function () {
+                location.reload();
+            });
+    });
 });
