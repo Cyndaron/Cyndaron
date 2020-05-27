@@ -127,7 +127,7 @@ class MemberController extends Controller
      * @param RequestParameters $post
      * @return User
      */
-    private function updateUserFields(User $user, RequestParameters $post): string
+    private function updateUserFields(User $user, RequestParameters $post): User
     {
         $user->username = $post->getSimpleString('username');
         $user->email = $post->getEmail('email') ?: null;
