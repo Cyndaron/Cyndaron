@@ -265,10 +265,7 @@ EOT;
 
     public static function logout(): void
     {
-        session_start();
-        session_destroy();
-
-        session_start();
+        @session_destroy();
         static::addNotification('U bent afgemeld.');
     }
 
