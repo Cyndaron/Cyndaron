@@ -22,6 +22,7 @@ class Photoalbum extends ModelWithCategory
         self::VIEWMODE_PORTFOLIO => 'Portfolio',
     ];
 
+
     public string $notes = '';
     public bool $hideFromOverview = false;
     public int $viewMode = self::VIEWMODE_REGULAR;
@@ -36,8 +37,10 @@ class Photoalbum extends ModelWithCategory
         $id = DBConnection::doQuery('INSERT INTO photoalbums(`name`,`notes`,`showBreadcrumbs`) VALUES (?,?,?);', [$name, $notes,(int)$showBreadcrumbs]);
         if ($id !== false)
         {
-            Util::createDir(__DIR__ . "/../../fotoalbums/${id}");
-            Util::createDir(__DIR__ . "/../../fotoalbums/${id}thumbnails");
+            $baseDir = self::getPhotoalbumsDir() . "/{$id}";
+            Util::createDir($baseDir);
+            Util::createDir("{$baseDir}/originals");
+            Util::createDir("{$baseDir}/thumbnails");
         }
 
         return $id;
@@ -53,7 +56,7 @@ class Photoalbum extends ModelWithCategory
     {
         $ret = [];
 
-        if ($dirArray = @scandir("./fotoalbums/$this->id"))
+        if ($dirArray = @scandir("./uploads/photoalbums/$this->id/originals"))
         {
             natsort($dirArray);
             $ret = array_values(array_filter($dirArray, static function($value)
@@ -67,11 +70,16 @@ class Photoalbum extends ModelWithCategory
 
     public function getLinkPrefix(): string
     {
-        return 'fotoalbums/' . $this->id . '/';
+        return 'uploads/photoalbums/' . $this->id . '/originals/';
     }
 
     public function getThumbnailPrefix(): string
     {
-        return 'fotoalbums/' . $this->id . 'thumbnails/';
+        return 'uploads/photoalbums/' . $this->id . '/thumbnails/';
+    }
+
+    public static function getPhotoalbumsDir(): string
+    {
+        return __DIR__ . '/../../uploads/photoalbums/';
     }
 }

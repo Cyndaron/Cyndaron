@@ -47,8 +47,9 @@ class Photo
 
     public static function create(Photoalbum $album): void
     {
-        $photoalbumPath = __DIR__ . '/../../fotoalbums/' . $album->id;
-        $photoalbumThumbnailsPath = $photoalbumPath . 'thumbnails';
+        $baseDir = __DIR__ . '/../../uploads/photoalbums/' . $album->id;
+        $photoalbumPath = $baseDir . '/originals';
+        $photoalbumThumbnailsPath = $baseDir . '/thumbnails';
 
         Util::createDir($photoalbumPath);
         Util::createDir($photoalbumThumbnailsPath);
@@ -123,13 +124,13 @@ class Photo
     {
         $numDeleted = 0;
 
-        $path = __DIR__ . "/../../fotoalbums/{$album->id}";
-        $mainPhoto = "$path/$filename";
+        $baseDir = __DIR__ . "/../../uploads/photoalbums/{$album->id}";
+        $mainPhoto = "$baseDir/originals/$filename";
         if (file_exists($mainPhoto) && unlink($mainPhoto))
         {
             $numDeleted++;
         }
-        $thumbnail = "{$path}thumbnails/$filename";
+        $thumbnail = "$baseDir/thumbnails/$filename";
         if (file_exists($thumbnail) && unlink($thumbnail))
         {
             $numDeleted++;
