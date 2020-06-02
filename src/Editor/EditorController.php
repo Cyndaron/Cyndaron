@@ -24,7 +24,7 @@ class EditorController extends Controller
         $type = $this->queryBits->getString(1);
         if (!array_key_exists($type, static::$editorPages))
         {
-            throw new \Exception('Onbekend paginatype!');
+            throw new \Exception('Onbekend paginatype: ' . $type);
         }
 
         $class = static::$editorPages[$type];
@@ -43,7 +43,7 @@ class EditorController extends Controller
         $type = $this->queryBits->getString(1);
         if (!array_key_exists($type, static::$savePages))
         {
-            throw new \Exception('Onbekend paginatype!');
+            throw new \Exception('Onbekend paginatype: ' . $type);
         }
 
         $id = $this->queryBits->getNullableInt(2);
