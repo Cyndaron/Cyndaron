@@ -26,7 +26,7 @@ abstract class EditorSavePage
             Url::deleteFriendlyUrl($oudeFriendlyUrl);
             $unfriendlyUrl->createFriendly($friendlyUrl);
             // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast
-            DBConnection::doQueryAndFetchOne('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oudeFriendlyUrl]);
+            DBConnection::doQuery('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oudeFriendlyUrl]);
         }
         if (!$this->returnUrl && isset($_SESSION['referrer']))
         {

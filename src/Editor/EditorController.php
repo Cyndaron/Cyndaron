@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Editor;
 
 use Cyndaron\Controller;
+use Cyndaron\DBConnection;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
@@ -50,8 +51,16 @@ class EditorController extends Controller
 
         $class = static::$savePages[$type];
         /** @var EditorSavePage $editorSavePage */
-        $editorSavePage = new $class($id, $post);
-        return new RedirectResponse($editorSavePage->getReturnUrl() ?: '/');
+        try
+        {
+            $editorSavePage = new $class($id, $post);
+            return new RedirectResponse($editorSavePage->getReturnUrl() ?: '/');
+        }
+        catch (\PDOException $e)
+        {
+            $page = new Page('Fout bij opslaan', $e->getFile() . ':' . $e->getLine() . ' ' . $e->getTraceAsString() . PHP_EOL . $e->getMessage() . ': ' . var_export(DBConnection::errorInfo(), true));
+            return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     protected function getInternalLinks(): array
