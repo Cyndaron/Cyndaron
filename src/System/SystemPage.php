@@ -79,9 +79,9 @@ class SystemPage extends Page
         preg_match("/<body(.*?)>(.*?)<\\/body>/si", $phpinfo, $match);
         $phpinfo = strtr($match[2], [
             // Remove centering
-            ['<div class="center"' => '<div'],
+            '<div class="center"' => '<div',
             // Enhance table layout
-            ['<table>' => '<table class="table">'],
+            '<table>' => '<table class="table">',
         ]);
         // Strip links (and with it, logos)
         $phpinfo = preg_replace('/<a href(.*?)>(.*?)<\/a>/', '', $phpinfo);
