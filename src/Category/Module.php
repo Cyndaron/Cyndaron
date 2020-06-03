@@ -22,6 +22,7 @@ class Module implements Datatypes, Routes, UrlProvider, Linkable
                 'singular' => 'Categorie',
                 'plural' => 'Categorieën',
                 'pageManagerTab' => self::class . '::pageManagerTab',
+                'pageManagerJS' => '/src/Category/js/PageManagerTab.js',
                 'editorPage' => EditorPage::class,
                 'editorSavePage' => EditorSavePage::class,
             ]),

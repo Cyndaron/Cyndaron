@@ -27,6 +27,12 @@ use Cyndaron\User\User;
 
 class Page
 {
+    public const DEFAULT_SCRIPTS = [
+        '/vendor/components/jquery/jquery.min.js',
+        '/vendor/twbs/bootstrap/dist/js/bootstrap.min.js',
+        '/sys/js/cyndaron.js',
+    ];
+
     protected string $extraMeta = '';
     protected string $title = '';
     protected array $extraScripts = [];
@@ -103,7 +109,7 @@ class Page
 
         $this->templateVars['pageCaption'] = $this->generateBreadcrumbs();
 
-        $this->templateVars['extraScripts'] = $this->extraScripts;
+        $this->templateVars['scripts'] = array_merge(self::DEFAULT_SCRIPTS, $this->extraScripts);
         $this->templateVars['extraCss'] = $this->extraCss;
 
         static $includes = [

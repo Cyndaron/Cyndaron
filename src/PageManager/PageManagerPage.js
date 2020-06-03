@@ -27,44 +27,4 @@ $(document).ready(function () {
             location.reload();
         });
     });
-
-    $('#pm-create-category').on('click', function () {
-        let name = $('#pm-category-new-name').val();
-        if (!name) {
-            return;
-        }
-        let csrfToken = $(this).data('csrf-token');
-        let data = {
-            name: name,
-            csrfToken: csrfToken
-        };
-        $.post('/api/category/add', data).done(function() {
-            location.reload();
-        });
-    });
-
-    $('#pm-create-photoalbum').on('click', function () {
-        let csrfToken = $(this).data('csrf-token');
-        let data = {
-            name: $('#pm-photoalbum-new-name').val(),
-            csrfToken: csrfToken
-        };
-        $.post('/api/photoalbum/add', data).done(function() {
-            location.reload();
-        });
-    });
-
-    $('#pm-create-friendlyurl').on('click', function () {
-        let csrfToken = $(this).data('csrf-token');
-        let data = {
-            name: $('#pm-friendlyurl-new-name').val(),
-            target:   $('#pm-friendlyurl-new-target').val(),
-            csrfToken: csrfToken
-        };
-        $.post('/api/friendlyurl/add', data, null, 'json').done(function() {
-            location.reload();
-        }).fail(function(result) {
-            alert('Kon de friendly URL niet toevoegen! Melding: ' + result.responseJSON.error);
-        });
-    });
 });

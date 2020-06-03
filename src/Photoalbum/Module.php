@@ -28,6 +28,7 @@ class Module implements Datatypes, Routes, UrlProvider, Linkable
                 'singular' => 'Fotoalbum',
                 'plural' => 'Fotoalbums',
                 'pageManagerTab' => self::class . '::pageManagerTab',
+                'pageManagerJS' => '/src/Photoalbum/js/PageManagerTab.js',
                 'editorPage' => EditorPage::class,
                 'editorSavePage' => EditorSavePage::class,
             ]),

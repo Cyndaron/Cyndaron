@@ -10,6 +10,7 @@ class Datatype
     public string $editorPage;
     public string $editorSavePage;
     public string $pageManagerTab;
+    public string $pageManagerJS;
 
     public static function fromArray(array $array): self
     {

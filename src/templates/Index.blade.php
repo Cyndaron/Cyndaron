@@ -98,11 +98,8 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="/vendor/components/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/sys/js/cyndaron.js"></script>
-    @foreach ($extraScripts as $extraScript)
-        <script type="text/javascript" src="{{ $extraScript }}"></script>
+    @foreach ($scripts as $script)
+        <script type="text/javascript" src="{{ $script }}"></script>
     @endforeach
 
     {!! $extraBodyEnd !!}

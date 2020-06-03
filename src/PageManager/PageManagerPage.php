@@ -25,14 +25,18 @@ class PageManagerPage extends Page
             $pageTabs[$pageType] = $data['name'];
         }
 
-        $function = static::$pageTypes[$currentPage]['tabDraw'];
-        $tabContents = $function();
+        $pageDef = static::$pageTypes[$currentPage];
+        $tabContents = $pageDef['tabDraw']();
 
         $this->addTemplateVars([
             'pageTabs' => $pageTabs,
             'currentPage' => $currentPage,
             'tabContents' => $tabContents,
         ]);
+        if (!empty($pageDef['js']))
+        {
+            $this->addScript($pageDef['js']);
+        }
     }
 
     /**

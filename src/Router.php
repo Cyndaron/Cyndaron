@@ -297,7 +297,13 @@ class Router
                     }
                     if (isset($definition->pageManagerTab))
                     {
-                        PageManagerPage::addPageType([$dataTypeName => ['name' => $definition->plural, 'tabDraw' => $definition->pageManagerTab]]);
+                        PageManagerPage::addPageType([
+                            $dataTypeName => [
+                                'name' => $definition->plural,
+                                'tabDraw' => $definition->pageManagerTab,
+                                'js' => $definition->pageManagerJS ?? null,
+                            ]
+                        ]);
                     }
                     if ($module instanceof UrlProvider)
                     {

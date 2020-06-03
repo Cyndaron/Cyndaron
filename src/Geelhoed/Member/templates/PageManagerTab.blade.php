@@ -256,5 +256,3 @@
         @endslot
     @endcomponent
 </form>
-
-<script src="/src/Geelhoed/Member/js/PageManagerTab.js" defer></script>

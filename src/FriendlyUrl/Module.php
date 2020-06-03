@@ -20,6 +20,7 @@ class Module implements Datatypes, Routes
                 'singular' => 'Friendly URL',
                 'plural' => 'Friendly URL\'s',
                 'pageManagerTab' => self::class . '::pageManagerTab',
+                'pageManagerJS' => '/src/FriendlyUrl/js/PageManagerTab.js',
             ]),
         ];
     }

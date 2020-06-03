@@ -30,6 +30,7 @@ class Module implements Datatypes, Routes, UrlProvider
                 'singular' => 'Lid',
                 'plural' => 'Leden',
                 'pageManagerTab' => PageManagerTabs::class . '::membersTab',
+                'pageManagerJS' => '/src/Geelhoed/Member/js/PageManagerTab.js',
             ]),
             'contest' => Datatype::fromArray([
                 'singular' => 'Wedstrijd',
