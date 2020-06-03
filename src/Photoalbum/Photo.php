@@ -8,6 +8,7 @@ class Photo
 {
     public const THUMBNAIL_WIDTH = 270;
     public const THUMBNAIL_HEIGHT = 200;
+    public const MAX_DIMENSION = 1024;
 
     public string $filename;
     public string $hash;
@@ -77,7 +78,10 @@ class Photo
     {
         $image = new Imagick($filename);
         static::autoRotate($image);
-        $image->scaleImage(1024, 1024, true);
+        if ($image->getImageWidth() > self::MAX_DIMENSION || $image->getImageHeight() > MAX_DIMENSION)
+        {
+            $image->scaleImage(self::MAX_DIMENSION, self::MAX_DIMENSION, true);
+        }
         return $image->writeImage($filename);
     }
 
