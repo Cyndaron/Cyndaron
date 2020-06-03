@@ -45,7 +45,7 @@ class Photo
         return $this->album->getThumbnailPrefix() . $this->filename;
     }
 
-    public static function create(Photoalbum $album): void
+    public static function create(Photoalbum $album, string $tmpName, string $proposedName): void
     {
         $baseDir = __DIR__ . '/../../uploads/photoalbums/' . $album->id;
         $photoalbumPath = $baseDir . '/originals';
@@ -54,8 +54,7 @@ class Photo
         Util::createDir($photoalbumPath);
         Util::createDir($photoalbumThumbnailsPath);
 
-        $origname = $_FILES['newFile']['name'];
-        $filename =  "$photoalbumPath/$origname";
+        $filename =  "$photoalbumPath/$proposedName";
         while (file_exists($filename))
         {
             $filename = $photoalbumPath . '/_' . basename($filename);
@@ -63,7 +62,7 @@ class Photo
 
         $filenameThumb = "$photoalbumThumbnailsPath/" . basename($filename);
 
-        if (!move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
+        if (!move_uploaded_file($tmpName, $filename))
         {
             throw new \Exception('Kon foto niet uploaden!');
         }

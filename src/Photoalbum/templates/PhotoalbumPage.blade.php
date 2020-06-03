@@ -10,7 +10,7 @@
     @if ($isAdmin)
         <form method="post" action="/photoalbum/addPhoto/{{ $model->id }}" enctype="multipart/form-data">
             <label for="newFile">Foto toevoegen:</label>
-            <input type="file" id="newFile" name="newFile" required>
+            <input type="file" id="newFile" name="newFiles[]" multiple required>
             <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('photoalbum', 'addPhoto') }}">
             <input class="btn btn-primary" type="submit" value="Uploaden">
         </form>

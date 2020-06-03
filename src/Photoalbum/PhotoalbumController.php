@@ -60,7 +60,14 @@ class PhotoalbumController extends Controller
         {
             throw new \Exception('Photo album not found!');
         }
-        Photo::create($album);
+        $numPhotos = count($_FILES['newFiles']['name']);
+        for ($i = 0; $i < $numPhotos; $i++)
+        {
+            if (!$_FILES['newFiles']['error'][$i])
+            {
+                Photo::create($album, $_FILES['newFiles']['tmp_name'][$i], $_FILES['newFiles']['name'][$i]);
+            }
+        }
 
         return new RedirectResponse("/photoalbum/{$album->id}");
     }
