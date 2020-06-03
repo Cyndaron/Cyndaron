@@ -8,6 +8,7 @@ use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerPage;
+use Cyndaron\Template\Template;
 
 class Module implements Datatypes, Routes, UrlProvider, Linkable
 {
@@ -26,7 +27,7 @@ class Module implements Datatypes, Routes, UrlProvider, Linkable
             'photoalbum' => Datatype::fromArray([
                 'singular' => 'Fotoalbum',
                 'plural' => 'Fotoalbums',
-                'pageManagerTab' => PageManagerPage::class . '::showPhotoalbums',
+                'pageManagerTab' => self::class . '::pageManagerTab',
                 'editorPage' => EditorPage::class,
                 'editorSavePage' => EditorSavePage::class,
             ]),
@@ -52,5 +53,11 @@ class Module implements Datatypes, Routes, UrlProvider, Linkable
     public function getList(): array
     {
         return DBConnection::doQueryAndFetchAll('SELECT CONCAT(\'/photoalbum/\', id) AS link, CONCAT(\'Fotoalbum: \', name) AS name FROM photoalbums');
+    }
+
+    public static function pageManagerTab(): string
+    {
+        $templateVars = ['photoalbums' => Photoalbum::fetchAll([], [], 'ORDER BY name')];
+        return (new Template())->render('Photoalbum/PageManagerTab', $templateVars);
     }
 }

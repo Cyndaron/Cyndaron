@@ -8,6 +8,7 @@ use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerPage;
+use Cyndaron\Template\Template;
 
 class Module implements Datatypes, Routes, UrlProvider, Linkable
 {
@@ -20,7 +21,7 @@ class Module implements Datatypes, Routes, UrlProvider, Linkable
             'category' => Datatype::fromArray([
                 'singular' => 'Categorie',
                 'plural' => 'Categorieën',
-                'pageManagerTab' => PageManagerPage::class . '::showCategories',
+                'pageManagerTab' => self::class . '::pageManagerTab',
                 'editorPage' => EditorPage::class,
                 'editorSavePage' => EditorSavePage::class,
             ]),
@@ -51,5 +52,11 @@ class Module implements Datatypes, Routes, UrlProvider, Linkable
     public function getList(): array
     {
         return DBConnection::doQueryAndFetchAll('SELECT CONCAT(\'/category/\', id) AS link, CONCAT(\'Categorie: \', name) AS name FROM categories');
+    }
+
+    public static function pageManagerTab(): string
+    {
+        $templateVars = ['categories' => Category::fetchAll([], [], 'ORDER BY name')];
+        return (new Template())->render('Category/PageManagerTab', $templateVars);
     }
 }

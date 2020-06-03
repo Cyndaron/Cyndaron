@@ -1,10 +1,12 @@
 <?php
 namespace Cyndaron\FriendlyUrl;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 use Cyndaron\PageManager\PageManagerPage;
+use Cyndaron\Template\Template;
 
 class Module implements Datatypes, Routes
 {
@@ -17,7 +19,7 @@ class Module implements Datatypes, Routes
             'friendlyurl' => Datatype::fromArray([
                 'singular' => 'Friendly URL',
                 'plural' => 'Friendly URL\'s',
-                'pageManagerTab' => PageManagerPage::class . '::showFriendlyUrls',
+                'pageManagerTab' => self::class . '::pageManagerTab',
             ]),
         ];
     }
@@ -30,5 +32,11 @@ class Module implements Datatypes, Routes
         return [
             'friendlyurl' => FriendlyUrlController::class,
         ];
+    }
+
+    public static function pageManagerTab(): string
+    {
+        $templateVars = ['friendlyUrls' => DBConnection::doQueryAndFetchAll('SELECT * FROM friendlyurls ORDER BY name ASC;')];
+        return (new Template())->render('FriendlyUrl/PageManagerTab', $templateVars);
     }
 }

@@ -5,6 +5,7 @@ use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 use Cyndaron\PageManager\PageManagerPage;
+use Cyndaron\Template\Template;
 
 class Module implements Datatypes, Routes
 {
@@ -17,7 +18,7 @@ class Module implements Datatypes, Routes
             'mailform' => Datatype::fromArray([
                 'singular' => 'Mailformulier',
                 'plural' => 'Mailformulieren',
-                'pageManagerTab' => PageManagerPage::class . '::showMailforms',
+                'pageManagerTab' => self::class . '::pageManagerTab',
                 'editorPage' => EditorPage::class,
                 'editorSavePage' => EditorSavePage::class,
             ]),
@@ -32,5 +33,11 @@ class Module implements Datatypes, Routes
         return [
             'mailform' => MailformController::class,
         ];
+    }
+
+    public static function pageManagerTab(): string
+    {
+        $templateVars = ['mailforms' => Mailform::fetchAll([], [], 'ORDER BY name')];
+        return (new Template())->render('Mailform/PageManagerTab', $templateVars);
     }
 }
