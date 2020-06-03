@@ -17,6 +17,7 @@ class SystemPage extends Page
         $this->templateVars['pageTabs'] = [
             'config' => 'Configuratie',
             'phpinfo' => 'PHP-info',
+            'checks' => 'Checks',
             'about' => 'Over ' . CyndaronInfo::PRODUCT_NAME,
         ];
 
@@ -27,6 +28,9 @@ class SystemPage extends Page
                 break;
             case 'phpinfo':
                 $this->showPHPInfo();
+                break;
+            case 'checks':
+                $this->showChecks();
                 break;
             case 'config':
             default:
@@ -96,5 +100,47 @@ class SystemPage extends Page
             'productCodename' => CyndaronInfo::PRODUCT_CODENAME,
             'engineVersion' => CyndaronInfo::ENGINE_VERSION,
         ];
+    }
+
+    public function showChecks(): void
+    {
+        $folderResults = $this->checkFolderRights();
+
+        $this->templateVars += [
+            'folderResults' => $folderResults,
+        ];
+    }
+
+    /**
+     * Checks if folders that need write rights have them,
+     * and that folders that shouldn't be writable don't.
+     *
+     * @return array
+     */
+    private function checkFolderRights(): array
+    {
+        $writableFolders = [
+            '/cache',
+            '/uploads',
+        ];
+        $unWriteableFolders = [
+            '/contrib',
+            '/sql',
+            '/src',
+            '/sys',
+            '/vendor',
+        ];
+        $folderResults = [];
+        foreach ($writableFolders as $folder)
+        {
+            $folderResults[$folder] = is_writable(__DIR__ . '/../..' . $folder);
+        }
+        foreach ($unWriteableFolders as $folder)
+        {
+            $folderResults[$folder] = !is_writable(__DIR__ . '/../..' . $folder);
+        }
+
+        ksort($folderResults);
+        return $folderResults;
     }
 }
