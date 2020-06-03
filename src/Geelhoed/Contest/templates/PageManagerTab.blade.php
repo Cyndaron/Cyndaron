@@ -81,5 +81,3 @@
         <button type="button" class="btn btn-outline-cyndaron" data-toggle="modal" data-target="#gcm-edit-dialog">Annuleren</button>
     @endslot
 @endcomponent
-
-<script src="/src/Geelhoed/Contest/js/ContestManager.js" defer></script>

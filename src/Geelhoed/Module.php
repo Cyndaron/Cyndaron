@@ -36,6 +36,7 @@ class Module implements Datatypes, Routes, UrlProvider
                 'singular' => 'Wedstrijd',
                 'plural' => 'Wedstrijden',
                 'pageManagerTab' => PageManagerTabs::class . '::contestsTab',
+                'pageManagerJS' => '/src/Geelhoed/Contest/js/ContestManager.js',
             ]),
         ];
     }
