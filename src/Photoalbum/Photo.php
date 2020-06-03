@@ -85,10 +85,7 @@ class Photo
     {
         $image = new Imagick($filename);
         static::autoRotate($image);
-        $image->scaleImage(self::THUMBNAIL_WIDTH, self::THUMBNAIL_HEIGHT);
-        $x = ($image->getImageWidth() - self::THUMBNAIL_WIDTH) / 2;
-        $y = ($image->getImageHeight() - self::THUMBNAIL_HEIGHT) / 2;
-        $image->cropImage(self::THUMBNAIL_WIDTH, self::THUMBNAIL_HEIGHT, $x, $y);
+        $image->cropThumbnailImage(self::THUMBNAIL_WIDTH, self::THUMBNAIL_HEIGHT);
         return $image->writeImage($filename);
     }
 
