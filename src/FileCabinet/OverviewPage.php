@@ -7,7 +7,7 @@ use Cyndaron\User\User;
 
 class OverviewPage extends Page
 {
-    private const PATH = './bestandenkast/';
+    private const PATH = './uploads/filecabinet/';
 
     public function __construct()
     {

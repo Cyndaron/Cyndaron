@@ -19,7 +19,7 @@
     <ul>
         @foreach ($files as $filename)
             <li>
-                <a href="/bestandenkast/{{ rawurlencode($filename) }}">{{ pathinfo($filename, PATHINFO_FILENAME) }}</a>
+                <a href="/uploads/filecabinet/{{ rawurlencode($filename) }}">{{ pathinfo($filename, PATHINFO_FILENAME) }}</a>
                 @if ($isAdmin)
                     <form method="post" action="/filecabinet/deleteItem" style="display: inline">
                         <input type="hidden" name="csrfToken" value="{{ $deleteCsrfToken }}">

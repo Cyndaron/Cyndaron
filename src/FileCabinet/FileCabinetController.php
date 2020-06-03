@@ -25,7 +25,7 @@ class FileCabinetController extends Controller
 
     protected function addItem(): Response
     {
-        $filename = './bestandenkast/' . basename($_FILES['newFile']['name']);
+        $filename = './uploads/filecabinet/' . basename($_FILES['newFile']['name']);
         if (move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
         {
             User::addNotification('Bestand geüpload');
@@ -41,7 +41,7 @@ class FileCabinetController extends Controller
     protected function deleteItem(RequestParameters $post): Response
     {
         $filename = $post->getFilename('filename');
-        $fullPath = "./bestandenkast/$filename";
+        $fullPath = "./uploads/filecabinet/$filename";
         if ($filename !== 'include.html' && file_exists($fullPath))
         {
             if (@unlink($fullPath))
