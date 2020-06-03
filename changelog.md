@@ -1,5 +1,6 @@
 Versie 6.1/7.0 (in ontwikkeling)
 - Technisch: algehele refactor waarbij veel functies zijn opgesplitst en meer met objecten is gewerkt.
+- Technisch: alle uploads komen nu in de map /uploads.
 - Technisch: alle widgets zijn naar Blade geconverteerd.
 - Technisch: controllermethodes geven nu een Response terug in plaats van zelf te echoën.
 - Technisch: nieuw inputframework.
