@@ -5,6 +5,7 @@ namespace Cyndaron\Minecraft\Dynmap;
 
 use Cyndaron\Minecraft\Server;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Router;
 
 class DynmapProxy
 {
@@ -69,7 +70,7 @@ class DynmapProxy
 
         if ($link === '' || $link === '/')
         {
-            $contents = file_get_contents(__DIR__ . '/index.html');
+            $contents = str_replace('%nonce%', Router::getScriptNonce(), file_get_contents(__DIR__ . '/index.html'));
         }
         else
         {

@@ -4,6 +4,7 @@ Versie 6.1/7.0 (in ontwikkeling)
 - Technisch: alle uploads komen nu in de map /uploads.
 - Technisch: alle widgets zijn naar Blade geconverteerd.
 - Technisch: controllermethodes geven nu een Response terug in plaats van zelf te echoën.
+- Technisch: een nonce is nu vereist bij script-tags.
 - Technisch: nieuw inputframework.
 - Technisch: scripttags en inline JavaScript worden nu gefilterd uit strings (#11).
 

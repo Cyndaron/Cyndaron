@@ -220,13 +220,17 @@ class Router
 
     private function getCSPHeader(): string
     {
-        $scriptSrc = "'self'";
 
         // Unfortunately, CKeditor still needs inline scripting. Only allow this on editor pages,
         // in order to prevent degrading the security of the rest of the system.
         if ($this->requestVars[0] === 'editor')
         {
-            $scriptSrc .= " 'unsafe-inline'";
+            $scriptSrc = "'self' 'unsafe-inline'";
+        }
+        else
+        {
+            $nonce = self::getScriptNonce();
+            $scriptSrc = "'self' 'nonce-{$nonce}' 'strict-dynamic'";
         }
 
         return "upgrade-insecure-requests; script-src $scriptSrc; font-src 'self'; base-uri 'none'; object-src 'none'";
@@ -339,5 +343,16 @@ class Router
         {
             $this->updateRequestVars($this->rewriteFriendlyUrl(new Url($url)));
         }
+    }
+
+    public static function getScriptNonce(): string
+    {
+        static $nonce;
+        if (empty($nonce))
+        {
+            $nonce = Util::generateToken(16);
+        }
+
+        return $nonce;
     }
 }
