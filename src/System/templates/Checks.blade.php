@@ -21,5 +21,23 @@
                 @endforeach
             </tbody>
         </table>
+
+        <h3>Instellingen</h3>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Instelling</th>
+                    <th>Waarde</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($settings as $setting => $value)
+                    <tr>
+                        <td>{{ $setting }}</td>
+                        <td>{{ $value }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 @endsection

@@ -105,9 +105,11 @@ class SystemPage extends Page
     public function showChecks(): void
     {
         $folderResults = $this->checkFolderRights();
+        $settings = $this->getSettings();
 
         $this->templateVars += [
             'folderResults' => $folderResults,
+            'settings' => $settings,
         ];
     }
 
@@ -142,5 +144,21 @@ class SystemPage extends Page
 
         ksort($folderResults);
         return $folderResults;
+    }
+
+    private function getSettings(): array
+    {
+        $settings = [
+            'post_max_size',
+            'upload_max_filesize',
+        ];
+
+        $ret = [];
+        foreach ($settings as $setting)
+        {
+            $ret[$setting] = ini_get($setting);
+        }
+
+        return $ret;
     }
 }
