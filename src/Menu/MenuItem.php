@@ -46,21 +46,24 @@ class MenuItem extends Model
         {
             return '/';
         }
+
+        $link = $this->link;
         // For dropdowns, this is not necessary and it makes detection harder down the line.
         if (!$this->isDropdown)
         {
             $url = new Url($this->link);
-            return $url->getFriendly();
+            $link = $url->getFriendly();
         }
 
-        return $this->link;
+        // Ensure there is a slash in front.
+        return '/' . ltrim($link, '/');
     }
 
     public function isCurrentPage(): bool
     {
         $link = $this->getLink();
         // The first comparison checks if the homepage has been requested.
-        if (($link === '/' && $_SERVER['REQUEST_URI'] === '/') || $link === basename(substr($_SERVER['REQUEST_URI'], 1)))
+        if (($link === '/' && $_SERVER['REQUEST_URI'] === '/') || $link === $_SERVER['REQUEST_URI'])
         {
             return true;
         }
