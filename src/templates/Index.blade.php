@@ -46,7 +46,7 @@
     {!! $extraHead !!}
 </head>
 <body class="cyndaron {{ \Cyndaron\Util::slug($title) }}" data-articleColor="{{ $articleColor }}">
-    {!! $extraHeadStart ?? '' !!}
+    {!! $extraBodyStart ?? '' !!}
 
     <div class="paginacontainer">
         <header class="menucontainer">
