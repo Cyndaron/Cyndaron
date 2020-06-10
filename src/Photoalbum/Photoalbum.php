@@ -6,6 +6,7 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\ModelWithCategory;
+use Cyndaron\Template\ViewHelpers;
 use Cyndaron\Url;
 use Cyndaron\Util;
 
@@ -81,5 +82,17 @@ class Photoalbum extends ModelWithCategory
     public static function getPhotoalbumsDir(): string
     {
         return __DIR__ . '/../../uploads/photoalbums/';
+    }
+
+    public function getBlurb(): string
+    {
+        return html_entity_decode(ViewHelpers::wordlimit(trim($this->notes), 30));
+    }
+
+    public function getImage(): string
+    {
+        $photos = $this->getPhotos();
+        $photo1 = reset($photos);
+        return $this->getLinkPrefix() . $photo1;
     }
 }

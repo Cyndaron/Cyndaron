@@ -2,6 +2,8 @@
 namespace Cyndaron\Category;
 
 use Cyndaron\ModelWithCategory;
+use Cyndaron\Template\ViewHelpers;
+use Cyndaron\Url;
 
 class Category extends ModelWithCategory
 {
@@ -24,4 +26,21 @@ class Category extends ModelWithCategory
 
     public string $description = '';
     public int $viewMode = self::VIEWMODE_REGULAR;
+
+    public function getFriendlyUrl(): string
+    {
+        $url = new Url('/category/' . $this->id);
+        return $url->getFriendly();
+    }
+
+    public function getBlurb(): string
+    {
+        return html_entity_decode(ViewHelpers::wordlimit(trim($this->description), 30));
+    }
+
+    public function getImage(): string
+    {
+        preg_match('/<img.*?src="(.*?)".*?>/si', $this->description, $match);
+        return $match[1] ?? '';
+    }
 }
