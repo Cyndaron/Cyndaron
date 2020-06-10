@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\Template\ViewHelpers;
+
 abstract class ModelWithCategory extends Model
 {
     public string $name = '';
@@ -9,7 +11,16 @@ abstract class ModelWithCategory extends Model
 
     abstract public function getFriendlyUrl(): string;
 
-    abstract public function getBlurb(): string;
+    public function getBlurb(): string
+    {
+        return html_entity_decode(ViewHelpers::wordlimit(trim($this->getText()), 30));
+    }
 
-    abstract public function getImage(): string;
+    abstract public function getText(): string;
+
+    public function getImage(): string
+    {
+        preg_match('/<img.*?src="(.*?)".*?>/si', $this->getText(), $match);
+        return $match[1] ?? '';
+    }
 }

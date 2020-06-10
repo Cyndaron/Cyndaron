@@ -33,14 +33,8 @@ class Category extends ModelWithCategory
         return $url->getFriendly();
     }
 
-    public function getBlurb(): string
+    public function getText(): string
     {
-        return html_entity_decode(ViewHelpers::wordlimit(trim($this->description), 30));
-    }
-
-    public function getImage(): string
-    {
-        preg_match('/<img.*?src="(.*?)".*?>/si', $this->description, $match);
-        return $match[1] ?? '';
+        return $this->description;
     }
 }

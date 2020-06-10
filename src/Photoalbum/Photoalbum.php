@@ -84,9 +84,9 @@ class Photoalbum extends ModelWithCategory
         return __DIR__ . '/../../uploads/photoalbums/';
     }
 
-    public function getBlurb(): string
+    public function getText(): string
     {
-        return html_entity_decode(ViewHelpers::wordlimit(trim($this->notes), 30));
+        return $this->notes;
     }
 
     public function getImage(): string
