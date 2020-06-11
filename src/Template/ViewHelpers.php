@@ -20,7 +20,7 @@ class ViewHelpers
     ];
 
     protected const BUTTON_TYPE_TO_CLASS = [
-        'new'=> 'btn-success',
+        'new' => 'btn-success',
         'delete' => 'btn-danger',
     ];
 
@@ -113,7 +113,7 @@ class ViewHelpers
         $btnClass = 'btn-outline-cyndaron';
         if (array_key_exists($type, self::BUTTON_TYPE_TO_CLASS))
         {
-            $btnClass .= ' ' . self::BUTTON_TYPE_TO_CLASS[$type];
+            $btnClass = self::BUTTON_TYPE_TO_CLASS[$type];
         }
 
         return [$icon, $btnClass];
