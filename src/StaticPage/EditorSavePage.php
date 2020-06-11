@@ -20,6 +20,8 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $model = new StaticPageModel($this->id);
         $model->loadIfIdIsSet();
         $model->name = $titel;
+        $model->image = $post->getUrl('image');
+        $model->blurb = $post->getHTML('blurb');
         $model->text = $text;
         $model->enableComments = $enableComments;
         $model->showBreadcrumbs = $showBreadcrumbs;

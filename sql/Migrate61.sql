@@ -19,3 +19,7 @@ ALTER TABLE `user_rights`
 ALTER TABLE `user_rights`
     ADD CONSTRAINT `user_rights_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
+
+ALTER TABLE `categories` ADD `image` VARCHAR(100) NOT NULL AFTER `name`, ADD `blurb` VARCHAR(400) NOT NULL AFTER `image`;
+ALTER TABLE `subs` ADD `image` VARCHAR(100) NOT NULL AFTER `name`, ADD `blurb` VARCHAR(400) NOT NULL AFTER `image`;
+ALTER TABLE `photoalbums` ADD `image` VARCHAR(100) NOT NULL AFTER `name`, ADD `blurb` VARCHAR(400) NOT NULL AFTER `image`;

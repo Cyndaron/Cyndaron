@@ -13,6 +13,8 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $photoalbum = new Photoalbum($this->id);
         $photoalbum->loadIfIdIsSet();
         $photoalbum->name = $post->getHTML('titel');
+        $photoalbum->image = $post->getUrl('image');
+        $photoalbum->blurb = $post->getHTML('blurb');
         $photoalbum->notes = $this->parseTextForInlineImages($post->getHTML('artikel'));
         $photoalbum->categoryId = $post->getInt('categoryId');
         $photoalbum->showBreadcrumbs = $post->getBool('showBreadcrumbs');

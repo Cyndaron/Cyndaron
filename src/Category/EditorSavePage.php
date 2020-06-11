@@ -15,6 +15,8 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $category = new Category($this->id);
         $category->loadIfIdIsSet();
         $category->name = $post->getHTML('titel');
+        $category->image = $post->getUrl('image');
+        $category->blurb = $post->getHTML('blurb');
         $category->description = $this->parseTextForInlineImages($post->getHTML('artikel'));
         $category->viewMode = $post->getInt('viewMode');
         $category->categoryId = ($categoryId === 0) ? null : $categoryId;

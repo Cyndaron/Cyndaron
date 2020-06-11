@@ -3,6 +3,7 @@ namespace Cyndaron\Editor;
 
 use Cyndaron\Category\Category;
 use Cyndaron\DBConnection;
+use Cyndaron\ModelWithCategory;
 use Cyndaron\Page;
 use Cyndaron\Setting;
 use Cyndaron\Url;
@@ -54,6 +55,8 @@ abstract class EditorPage extends Page
         $this->templateVars['friendlyUrlPrefix'] = "https://{$_SERVER['HTTP_HOST']}/";
         $this->templateVars['article'] = $this->content;
         $this->templateVars['model'] = $this->model;
+        $this->templateVars['image'] = ($this->model instanceof ModelWithCategory) ? $this->model->image : '';
+        $this->templateVars['blurb'] = ($this->model instanceof ModelWithCategory) ? $this->model->blurb : '';
 
         $this->templateVars['internalLinks'] = $internalLinks;
 

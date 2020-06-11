@@ -17,9 +17,10 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
         $viewMode = 0;
         if ($this->id)
         {
-            $this->content = DBConnection::doQueryAndFetchOne('SELECT description FROM categories WHERE id=?', [$this->id]);
-            $this->contentTitle = DBConnection::doQueryAndFetchOne('SELECT name FROM categories WHERE id=?', [$this->id]);
-            $viewMode = (int)DBConnection::doQueryAndFetchOne('SELECT viewMode FROM categories WHERE id=?', [$this->id]);
+            $this->model = Category::loadFromDatabase($this->id);
+            $this->content = $this->model->description ?? '';
+            $this->contentTitle = $this->model->name ?? '';
+            $viewMode = ($this->model->viewMode) ?? Category::VIEWMODE_REGULAR;
         }
 
         $id = 'viewMode';

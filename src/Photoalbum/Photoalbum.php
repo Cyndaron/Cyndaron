@@ -13,7 +13,7 @@ use Cyndaron\Util;
 class Photoalbum extends ModelWithCategory
 {
     public const TABLE = 'photoalbums';
-    public const TABLE_FIELDS = ['name', 'notes', 'categoryId', 'showBreadcrumbs', 'hideFromOverview', 'viewMode'];
+    public const TABLE_FIELDS = ['name', 'image', 'blurb', 'notes', 'categoryId', 'showBreadcrumbs', 'hideFromOverview', 'viewMode'];
 
     public const VIEWMODE_REGULAR = 0;
     public const VIEWMODE_PORTFOLIO = 1;
@@ -22,7 +22,6 @@ class Photoalbum extends ModelWithCategory
         self::VIEWMODE_REGULAR => 'Fotoalbum',
         self::VIEWMODE_PORTFOLIO => 'Portfolio',
     ];
-
 
     public string $notes = '';
     public bool $hideFromOverview = false;
@@ -91,6 +90,12 @@ class Photoalbum extends ModelWithCategory
 
     public function getImage(): string
     {
+        $image = parent::getImage();
+        if ($image)
+        {
+            return $image;
+        }
+
         $photos = $this->getPhotos();
         $photo1 = reset($photos);
         return $this->getLinkPrefix() . $photo1;

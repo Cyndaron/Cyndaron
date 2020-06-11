@@ -31,6 +31,11 @@
             </div>
         @endif
 
+        @if ($hasCategory)
+            @include('Widget/Form/BasicInput', ['id' => 'image', 'label' => 'Afbeelding', 'type' => 'text', 'value' => $image])
+            @include('Widget/Form/BasicInput', ['id' => 'blurb', 'label' => 'Korte samenvatting', 'type' => 'text', 'value' => $blurb])
+        @endif
+
         <textarea id="ckeditor-parent" name="artikel" rows="25" cols="125">{{ $article }}</textarea>
 
         <div class="form-group row">
