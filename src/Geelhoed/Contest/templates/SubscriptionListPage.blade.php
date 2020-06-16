@@ -17,6 +17,8 @@
             <tr>
                 <th></th>
                 <th>Naam</th>
+                <th>Adres</th>
+                <th>Geboortedatum</th>
                 <th>Band</th>
                 <th>Gewicht</th>
                 <th>JBN-nummer</th>
@@ -28,9 +30,15 @@
         <tbody>
             @foreach ($contest->getContestMembers() as $contestMember)
                 @php $member = $contestMember->getMember() @endphp
+                @php $profile = $member->getProfile() @endphp
                 <tr>
                     <td></td>
-                    <td>{{ $member->getProfile()->getFullName() }}</td>
+                    <td>{{ $profile->getFullName() }}</td>
+                    <td>
+                        {{ $profile->street }} {{ $profile->houseNumber }} {{ $profile->houseNumberAddition }}<br>
+                        {{ $profile->postalCode }} {{ $profile->city }}
+                    </td>
+                    <td>@if ($profile->dateOfBirth){{ date('d-m-Y', strtotime($profile->dateOfBirth)) }}@endif</td>
                     <td>{{ $contestMember->getGraduation()->name }}</td>
                     <td>{{ $contestMember->weight }}</td>
                     <td>{{ $member->jbnNumber }}</td>
