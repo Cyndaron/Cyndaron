@@ -545,3 +545,16 @@ button.aantalKaarten
     border-top: 0;
     padding: 15px;
 }
+
+.navbar-right
+{
+    flex-direction: row;
+}
+
+@media (max-width: 767px)
+{
+    .navbar-right .nav-item + .nav-item
+    {
+        margin-left: 20px;
+    }
+}
