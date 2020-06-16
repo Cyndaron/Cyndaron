@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Location;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Model;
 
@@ -58,5 +59,21 @@ class Location extends Model
     {
         $urlData = [$this->street, $this->houseNumber, $this->postalCode, $this->city];
         return 'https://www.google.nl/maps/place/' . urlencode(implode(' ', $urlData));
+    }
+
+    /**
+     * Get all the cities where we have lessons.
+     *
+     * @return array
+     */
+    public static function getCities(): array
+    {
+        $ret = [];
+        $results = DBConnection::doQueryAndFetchAll('SELECT DISTINCT city FROM geelhoed_locations ORDER BY city');
+        foreach ($results as $result)
+        {
+            $ret[] = $result['city'];
+        }
+        return $ret;
     }
 }
