@@ -48,35 +48,38 @@
 <body class="cyndaron {{ \Cyndaron\Util::slug($title) }}" data-articleColor="{{ $articleColor }}">
     {!! $extraBodyStart ?? '' !!}
 
-    <div class="paginacontainer">
-        <header class="menucontainer">
-            {!! $menu !!}
+    <header class="container menu-container">
+        {!! $menu !!}
+    </header>
+
+    @if ($showJumbo)
+        <div class="container welkom-jumbo">
+            {!! $jumboContents !!}
+        </div>
+    @endif
+    @if (!empty($pageImage))
+        <header id="page-image">
+            <img src="{{ $pageImage }}" alt="">
         </header>
+    @endif
 
-        @if ($showJumbo)
-            <div class="welkom-jumbo">
-                {!! $jumboContents !!}
+    <main class="container main-content-container">
+        <article class="main-content">
+            <div class="page-title {{ $pageCaptionClasses }}">
+                <h1>{!! $pageCaption !!}</h1>
+                @if ($isAdmin)
+                    <div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">
+                        @section ('titleControls')@show
+                    </div>
+                @endif
             </div>
-        @endif
 
-        <main class="main-content-container">
-            <article class="main-content">
-                <div class="page-title {{ $pageCaptionClasses }}">
-                    <h1>{!! $pageCaption !!}</h1>
-                    @if ($isAdmin)
-                        <div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">
-                            @section ('titleControls')@show
-                        </div>
-                    @endif
-                </div>
+            @section ('contents')
+                {!! $contents !!}
+            @show
 
-                @section ('contents')
-                    {!! $contents !!}
-                @show
-
-            </article>
-        </main>
-    </div>
+        </article>
+    </main>
 
     <div id="confirm-dangerous" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">

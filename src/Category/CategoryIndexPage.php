@@ -24,6 +24,7 @@ class CategoryIndexPage extends Page
             'pages' => array_merge($subs, $categories),
             'tags' => $this->getTags($subs),
             'portfolioContent' => $this->getPortfolioContent(),
+            'pageImage' => $this->model->getImage(),
         ]);
     }
 
