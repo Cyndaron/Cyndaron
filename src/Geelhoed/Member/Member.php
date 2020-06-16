@@ -250,6 +250,24 @@ class Member extends Model
                 $ret[] = $obj;
             }
         }
+        usort($ret, static function(Member $m1, Member $m2)
+        {
+            $p1 = $m1->getProfile();
+            $p2 = $m2->getProfile();
+            $lastname = $p1->lastName <=> $p2->lastName;
+            if ($lastname !== 0)
+            {
+                return $lastname;
+            }
+
+            $tussenvoegsel = $p1->tussenvoegsel <=> $p2->tussenvoegsel;
+            if ($tussenvoegsel !== 0)
+            {
+                return $tussenvoegsel;
+            }
+
+            return $p1->firstName <=> $p2->firstName;
+        });
 
         return $ret;
     }

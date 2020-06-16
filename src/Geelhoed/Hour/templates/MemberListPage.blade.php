@@ -12,11 +12,32 @@
 
     <h2>Leden op deze training:</h2>
     <table class="table table-bordered table-striped">
-        @foreach ($members as $member)
+        <thead>
             <tr>
-                <td>{{ $member->getProfile()->getFullName() }}</td>
+                <th>Naam</th>
+                <th>Leeftijd</th>
+                <th>Telefoonnummer(s)</th>
             </tr>
-        @endforeach
+        </thead>
+        <tbody>
+            @foreach ($members as $member)
+                @php $profile = $member->getProfile() @endphp
+                <tr>
+                    <td>{{ $profile->getFullName() }}</td>
+                    <td>
+                        @if (!empty($profile->dateOfBirth))
+                            {{ $profile->getAge() }}
+                            @if (date('m-d') === date('m-d', strtotime($profile->dateOfBirth))) (jarig) @endif
+                        @endif
+                    </td>
+                    <td>
+                        @foreach ($member->getPhoneNumbers() as $phoneNumber)
+                            <a href="tel:{{ $phoneNumber }}">{{ $phoneNumber }}</a>@if (!$loop->last), @endif
+                        @endforeach
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
     </table>
 
     <h2>Trainingen op deze locatie</h2>

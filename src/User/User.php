@@ -8,6 +8,7 @@ use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use Cyndaron\Setting;
 use Cyndaron\Util;
+use DateTime;
 use Exception;
 use finfo;
 
@@ -340,5 +341,14 @@ EOT;
     public static function getLoggedIn(): ?self
     {
         return $_SESSION['profile'] ?? null;
+    }
+
+
+    public function getAge(): int
+    {
+        $date = new DateTime($this->dateOfBirth);
+        $now = new DateTime();
+        $interval = $now->diff($date);
+        return $interval->y;
     }
 }
