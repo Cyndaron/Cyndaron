@@ -160,7 +160,7 @@ class MemberController extends Controller
         /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $member->userId = $user->id;
         $member->parentEmail = $post->getEmail('parentEmail');
-        $member->phoneNumbers = $post->getSimpleString('phoneNumber');
+        $member->phoneNumbers = $post->getSimpleString('phoneNumbers');
         $member->isContestant = $post->getBool('isContestant');
         $member->paymentMethod = $post->getSimpleString('paymentMethod');
         $member->iban = $post->getSimpleString('iban');
