@@ -28,11 +28,11 @@
         <div class="category-blockview">
             @foreach ($pages as $page)
                 <div class="category-block">
-                    <a href="{{ $page->getFriendlyUrl() }}">
+                    <a class="category-block-image" href="{{ $page->getFriendlyUrl() }}">
                         <img src="{{ $page->getPreviewImage() }}" alt=""/>
                     </a>
                     <h3><a href="{{ $page->getFriendlyUrl() }}">{{ $page->name }}</a></h3>
-                    <a href="{{ $page->getFriendlyUrl() }}">{{ $page->getBlurb() }}</a>
+                    <a class="category-block-link" href="{{ $page->getFriendlyUrl() }}">{{ $page->getBlurb() }}</a>
                 </div>
             @endforeach
         </div>
@@ -41,11 +41,11 @@
             <h2>{{ $albumname }}</h2>
             @foreach ($albumcontent as $page)
                 <div class="category-block">
-                    <a href="{{ $page->getFriendlyUrl() }}">
+                    <a class="category-block-image" href="{{ $page->getFriendlyUrl() }}">
                         <img src="{{ $page->getPreviewImage() }}" alt=""/>
                     </a>
                     <h3><a href="{{ $page->getFriendlyUrl() }}">{{ $page->name }}</a></h3>
-                    <a href="{{ $page->getFriendlyUrl() }}">{{ $page->getBlurb() }}</a>
+                    <a class="category-block-link" href="{{ $page->getFriendlyUrl() }}">{{ $page->getBlurb() }}</a>
                 </div>
             @endforeach
         @endforeach
@@ -58,7 +58,7 @@
                         <a href="{{ $page->getFriendlyUrl() }}">{{ $page->getBlurb() }}</a>
                     </div>
                     <div class="category-block-right">
-                        <a href="{{ $page->getFriendlyUrl() }}">
+                        <a class="category-block-image" href="{{ $page->getFriendlyUrl() }}">
                             <img src="{{ $page->getPreviewImage() }}" alt=""/>
                         </a>
                     </div>
