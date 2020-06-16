@@ -7,7 +7,7 @@ use Cyndaron\Url;
 class Category extends ModelWithCategory
 {
     public const TABLE = 'categories';
-    public const TABLE_FIELDS = ['name', 'image', 'blurb', 'description', 'viewMode', 'categoryId', 'showBreadcrumbs'];
+    public const TABLE_FIELDS = ['name', 'image', 'previewImage', 'blurb', 'description', 'viewMode', 'categoryId', 'showBreadcrumbs'];
 
     public const VIEWMODE_REGULAR = 0;
     public const VIEWMODE_TITLES = 1;

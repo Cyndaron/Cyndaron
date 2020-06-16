@@ -10,7 +10,7 @@ use Cyndaron\Url;
 class StaticPageModel extends ModelWithCategory
 {
     public const TABLE = 'subs';
-    public const TABLE_FIELDS = ['name', 'image', 'blurb', 'text', 'enableComments', 'categoryId', 'showBreadcrumbs', 'tags'];
+    public const TABLE_FIELDS = ['name', 'image', 'previewImage', 'blurb', 'text', 'enableComments', 'categoryId', 'showBreadcrumbs', 'tags'];
 
     public string $text = '';
     public bool $enableComments = false;
