@@ -7,6 +7,7 @@ abstract class ModelWithCategory extends Model
 {
     public string $name = '';
     public string $image = '';
+    public string $previewImage = '';
     public string $blurb = '';
     public ?int $categoryId = null;
     public bool $showBreadcrumbs = false;
@@ -23,12 +24,11 @@ abstract class ModelWithCategory extends Model
 
     public function getImage(): string
     {
-        if ($this->image)
-        {
-            return $this->image;
-        }
+        return $this->image;
+    }
 
-        preg_match('/<img.*?src="(.*?)".*?>/si', $this->getText(), $match);
-        return $match[1] ?? '';
+    public function getPreviewImage(): string
+    {
+        return $this->previewImage ?: $this->getImage();
     }
 }

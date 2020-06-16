@@ -23,3 +23,7 @@ COMMIT;
 ALTER TABLE `categories` ADD `image` VARCHAR(100) NOT NULL AFTER `name`, ADD `blurb` VARCHAR(400) NOT NULL AFTER `image`;
 ALTER TABLE `subs` ADD `image` VARCHAR(100) NOT NULL AFTER `name`, ADD `blurb` VARCHAR(400) NOT NULL AFTER `image`;
 ALTER TABLE `photoalbums` ADD `image` VARCHAR(100) NOT NULL AFTER `name`, ADD `blurb` VARCHAR(400) NOT NULL AFTER `image`;
+
+ALTER TABLE `categories` ADD `previewImage` VARCHAR(100) NOT NULL AFTER `image`;
+ALTER TABLE `subs` ADD `previewImage` VARCHAR(100) NOT NULL AFTER `image`;
+ALTER TABLE `photoalbums` ADD `previewImage` VARCHAR(100) NOT NULL AFTER `image`;

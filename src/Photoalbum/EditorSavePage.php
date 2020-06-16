@@ -14,6 +14,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $photoalbum->loadIfIdIsSet();
         $photoalbum->name = $post->getHTML('titel');
         $photoalbum->image = $post->getUrl('image');
+        $photoalbum->previewImage = $post->getUrl('previewImage');
         $photoalbum->blurb = $post->getHTML('blurb');
         $photoalbum->notes = $this->parseTextForInlineImages($post->getHTML('artikel'));
         $photoalbum->categoryId = $post->getInt('categoryId');

@@ -56,6 +56,7 @@ abstract class EditorPage extends Page
         $this->templateVars['article'] = $this->content;
         $this->templateVars['model'] = $this->model;
         $this->templateVars['image'] = ($this->model instanceof ModelWithCategory) ? $this->model->image : '';
+        $this->templateVars['previewImage'] = ($this->model instanceof ModelWithCategory) ? $this->model->previewImage : '';
         $this->templateVars['blurb'] = ($this->model instanceof ModelWithCategory) ? $this->model->blurb : '';
 
         $this->templateVars['internalLinks'] = $internalLinks;

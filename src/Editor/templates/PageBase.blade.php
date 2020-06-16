@@ -33,6 +33,7 @@
 
         @if ($hasCategory)
             @include('Widget/Form/BasicInput', ['id' => 'image', 'label' => 'Afbeelding', 'type' => 'text', 'value' => $image])
+            @include('Widget/Form/BasicInput', ['id' => 'previewImage', 'label' => 'Preview-afbeelding', 'type' => 'text', 'value' => $previewImage])
             @include('Widget/Form/BasicInput', ['id' => 'blurb', 'label' => 'Korte samenvatting', 'type' => 'text', 'value' => $blurb])
         @endif
 

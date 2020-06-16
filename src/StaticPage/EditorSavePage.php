@@ -21,6 +21,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $model->loadIfIdIsSet();
         $model->name = $titel;
         $model->image = $post->getUrl('image');
+        $model->previewImage = $post->getUrl('previewImage');
         $model->blurb = $post->getHTML('blurb');
         $model->text = $text;
         $model->enableComments = $enableComments;
