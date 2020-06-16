@@ -28,13 +28,13 @@ a:hover
     margin-bottom: 18px;
 }
 
-.inhoudcontainer
+.main-content-container
 {
     margin-top: 18px;
     margin-bottom: 18px;
 }
 
-.inhoud
+.main-content
 {
     padding: 13px 18px 13px 18px;
     border-radius: 4px;
@@ -42,13 +42,13 @@ a:hover
     overflow: hidden;
 }
 
-.paginatitel
+.page-title
 {
     border-bottom: 1px dotted;
     margin-bottom: 10px;
 }
 
-.paginatitel h1
+.page-title h1
 {
     display: inline;
     margin-right:8px;
@@ -528,7 +528,7 @@ button.aantalKaarten
 }
 
 /* Check the float bug */
-.inhoud img:not(.sys)
+.main-content img:not(.sys)
 {
     max-width: 100%;
     height: auto;

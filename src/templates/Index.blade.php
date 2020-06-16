@@ -32,7 +32,7 @@
             .menu { background-image: url('{{ $menuBackground }}'); }
         @endif
         @if ($articleColor)
-            .inhoud { background-color: {{ $articleColor }}; }
+            .main-content { background-color: {{ $articleColor }}; }
         @endif
         @if ($accentColor)
             a { color: {{ $accentColor }}; }
@@ -59,9 +59,9 @@
             </div>
         @endif
 
-        <main class="inhoudcontainer">
-            <article class="inhoud">
-                <div class="paginatitel {{ $pageCaptionClasses }}">
+        <main class="main-content-container">
+            <article class="main-content">
+                <div class="page-title {{ $pageCaptionClasses }}">
                     <h1>{!! $pageCaption !!}</h1>
                     @if ($isAdmin)
                         <div class="btn-group" style="vertical-align: bottom; margin-bottom: 3px;">
