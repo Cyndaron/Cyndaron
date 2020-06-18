@@ -157,12 +157,13 @@ class Member extends Model
     }
 
     /**
-     * Calculate monthly total from the start of the next quarter.
+     * Calculate monthly total from the start of the next quarter,
+     * without gezinskorting.
      *
      * @throws \Exception
      * @return float
      */
-    public function getMonthlyFee(): float
+    public function getMonthlyFeeRaw(): float
     {
         $isSenior = $this->isSenior();
         $sports = $this->getSports();
@@ -192,6 +193,64 @@ class Member extends Model
         }
 
         return $highestFee + 5.00;
+    }
+
+    /**
+     * Calculate monthly total from the start of the next quarter.
+     *
+     * @throws \Exception
+     * @return float
+     */
+    public function getMonthlyFee(): float
+    {
+        $currentProfile = $this->getProfile();
+        $membersOnSameAddress = self::fetchAll(
+            ['street = ?', 'houseNumber = ?', 'houseNumberAddition = ?', 'city = ?'],
+            [$currentProfile->street, $currentProfile->houseNumber, $currentProfile->houseNumberAddition, $currentProfile->city]);
+
+        if (count($membersOnSameAddress) === 1)
+        {
+            return $this->getMonthlyFeeRaw();
+        }
+
+        $feesOnThisAddress = [];
+        foreach ($membersOnSameAddress as $member)
+        {
+            $feesOnThisAddress[$member->id] = $member->getMonthlyFeeRaw();
+        }
+
+        // Sort fees, with the highest coming first.
+        uasort($feesOnThisAddress, static function(float $fee1, float $fee2)
+        {
+            return $fee2 <=> $fee1;
+        });
+
+        $currentMemberIndex = 0;
+        foreach ($feesOnThisAddress as $memberId => $fee)
+        {
+            if ($memberId === $this->id)
+            {
+                switch ($currentMemberIndex)
+                {
+                    case 0:
+                        return $fee;
+                    case 1:
+                        return $fee * 0.9;
+                    case 2:
+                        return $fee * 0.8;
+                    case 3:
+                        return $fee * 0.7;
+                    case 4:
+                    default:
+                        return $fee * 0.6;
+                }
+            }
+            $currentMemberIndex++;
+        }
+
+        // Shouldn't happen, but in case it does, assume full price.
+        return $this->getMonthlyFeeRaw();
+
     }
 
     /**
