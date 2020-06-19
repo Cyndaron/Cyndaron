@@ -16,6 +16,7 @@ class MemberController extends Controller
         'get' => ['level' => UserLevel::ADMIN, 'function' => 'get'],
     ];
     protected array $apiPostRoutes = [
+        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
         'removeGraduation' => ['level' => UserLevel::ADMIN, 'function' => 'removeGraduation'],
         'save' => ['level' => UserLevel::ADMIN, 'function' => 'save']
     ];
@@ -176,5 +177,22 @@ class MemberController extends Controller
         $member->jbnNumberLocation = $post->getSimpleString('jbnNumberLocation');
 
         return $member;
+    }
+
+    public function delete(): JsonResponse
+    {
+        $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
+        $member = Member::loadFromDatabase($id);
+        Member::deleteById($id);
+        if ($member !== null && $member->userId > 0)
+        {
+            User::deleteById($member->userId);
+        }
+
+        return new JsonResponse();
     }
 }
