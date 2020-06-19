@@ -83,7 +83,8 @@
             @php /** @var \Cyndaron\Geelhoed\Member\Member[] $members */ @endphp
             @foreach ($members as $member)
                 @php $profile = $member->getProfile() @endphp
-                <tr class="geelhoed-member-entry"
+                <tr id="pm-row-member-{{ $member->id }}"
+                    class="geelhoed-member-entry"
                     data-iban="{{ $member->iban }}"
                     data-gender="{{ $profile->gender ?? '' }}"
                     data-temporaryStop="{{ (int)$member->temporaryStop }}"
