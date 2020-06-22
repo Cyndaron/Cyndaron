@@ -22,6 +22,7 @@ class StaticPage extends Page
             'model' => $this->model,
             'text' => ViewHelpers::parseText($this->model->text),
             'replies' => $replies,
+            'pageImage' => $this->model->getImage(),
         ]);
     }
 }

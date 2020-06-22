@@ -21,6 +21,7 @@ class PhotoalbumPage extends Page
             $photos = Photo::fetchAllByAlbum($this->model);
             $this->templateVars['model'] = $this->model;
             $this->templateVars['photos'] = $photos;
+            $this->templateVars['pageImage'] = $this->model->getImage();
         }
     }
 
