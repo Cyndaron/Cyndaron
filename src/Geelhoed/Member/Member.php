@@ -206,7 +206,8 @@ class Member extends Model
         $currentProfile = $this->getProfile();
         $membersOnSameAddress = self::fetchAll(
             ['street = ?', 'houseNumber = ?', 'houseNumberAddition = ?', 'city = ?'],
-            [$currentProfile->street, $currentProfile->houseNumber, $currentProfile->houseNumberAddition, $currentProfile->city]);
+            [$currentProfile->street, $currentProfile->houseNumber, $currentProfile->houseNumberAddition, $currentProfile->city]
+        );
 
         if (count($membersOnSameAddress) === 1)
         {
@@ -250,7 +251,6 @@ class Member extends Model
 
         // Shouldn't happen, but in case it does, assume full price.
         return $this->getMonthlyFeeRaw();
-
     }
 
     /**

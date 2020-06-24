@@ -30,13 +30,14 @@ class FriendlyUrlController extends Controller
 
     public function addToMenu(): JsonResponse
     {
-        $name = $this->queryBits->getString(3);
-        if ($name === '')
+        $id = $this->queryBits->getInt(2);
+        $entry = FriendlyUrl::loadFromDatabase($id);
+        if ($entry === null)
         {
             return new JsonResponse(['error' => 'No link specified!'], Response::HTTP_BAD_REQUEST);
         }
         $menuItem = new MenuItem();
-        $menuItem->link = '/' . $name;
+        $menuItem->link = '/' . $entry->name;
         $menuItem->save();
 
         return new JsonResponse();
@@ -44,13 +45,8 @@ class FriendlyUrlController extends Controller
 
     public function delete(): JsonResponse
     {
-        $name = $this->queryBits->getString(2);
-        if ($name === '')
-        {
-            return new JsonResponse(['error' => 'No link specified!'], Response::HTTP_BAD_REQUEST);
-        }
-
-        Url::deleteFriendlyUrl($name);
+        $id = $this->queryBits->getInt(2);
+        FriendlyUrl::deleteById($id);
         return new JsonResponse();
     }
 }

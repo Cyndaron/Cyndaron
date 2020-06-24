@@ -37,7 +37,7 @@ class Module implements Datatypes, Routes
 
     public static function pageManagerTab(): string
     {
-        $templateVars = ['friendlyUrls' => DBConnection::doQueryAndFetchAll('SELECT * FROM friendlyurls ORDER BY name ASC;')];
+        $templateVars = ['friendlyUrls' => FriendlyUrl::fetchAll([], [], 'ORDER BY name')];
         return (new Template())->render('FriendlyUrl/PageManagerTab', $templateVars);
     }
 }

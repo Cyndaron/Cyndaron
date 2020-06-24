@@ -17,19 +17,20 @@
         </tr>
     </thead>
     <tbody>
+        @php /** @var \Cyndaron\FriendlyUrl\FriendlyUrl[] $friendlyUrls */@endphp
         @foreach ($friendlyUrls as $friendlyurl)
-        <tr id="pm-row-friendlyurl-{{ $friendlyurl['name'] }}">
-            <td>{{ $loop->iteration }}</td>
+        <tr id="pm-row-friendlyurl-{{ $friendlyurl->id }}">
+            <td>{{ $friendlyurl->id }}</td>
             <td>
-                <strong>{{ $friendlyurl['name'] }}</strong>
+                <strong>{{ $friendlyurl->name }}</strong>
             </td>
             <td>
-                {{ $friendlyurl['target'] }}
+                {{ $friendlyurl->target }}
             </td>
             <td>
                 <div class="btn-group">
-                    <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="friendlyurl" data-id="{{ $friendlyurl['name'] }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('friendlyurl', 'delete') }}"><span class="glyphicon glyphicon-trash" title="Verwijder deze friendly URL"></span></button>
-                    <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="friendlyurl" data-id="{{ $friendlyurl['name'] }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('friendlyurl', 'addtomenu') }}"><span class="glyphicon glyphicon-bookmark" title="Voeg deze friendly URL toe aan het menu"></span></button>
+                    <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="friendlyurl" data-id="{{ $friendlyurl->id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('friendlyurl', 'delete') }}"><span class="glyphicon glyphicon-trash" title="Verwijder deze friendly URL"></span></button>
+                    <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="friendlyurl" data-id="{{ $friendlyurl->id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('friendlyurl', 'addtomenu') }}"><span class="glyphicon glyphicon-bookmark" title="Voeg deze friendly URL toe aan het menu"></span></button>
                 </div>
             </td>
         </tr>
