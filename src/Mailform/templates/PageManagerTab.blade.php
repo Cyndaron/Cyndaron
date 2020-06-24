@@ -14,7 +14,7 @@
     </thead>
     <tbody>
         @foreach ($mailforms as $mailform)
-        <tr>
+        <tr id="pm-row-mailform-{{ $mailform->id }}">
             <td>{{ $mailform->id }}</td>
             <td>
                 {{ $mailform->name }}

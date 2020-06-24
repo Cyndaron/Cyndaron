@@ -21,6 +21,9 @@ class MailformController extends Controller
         'process' => ['level' => UserLevel::ANONYMOUS, 'function' => 'process'],
         'process-ldbf' => ['level' => UserLevel::ANONYMOUS, 'function' => 'processLDBF'],
     ];
+    protected array $apiPostRoutes = [
+        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
+    ];
 
     public function checkCSRFToken(string $token): bool
     {
@@ -159,5 +162,23 @@ class MailformController extends Controller
         }
 
         throw new DatabaseError('Wegens een technisch probleem is het versturen niet gelukt.');
+    }
+
+    /**
+     * @return JsonResponse
+     * @throws Exception
+     *
+     */
+    public function delete(): JsonResponse
+    {
+        $id = $this->queryBits->getInt(2);
+        $mailform = Mailform::loadFromDatabase($id);
+        if ($mailform === null)
+        {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $mailform->delete();
+        return new JsonResponse();
     }
 }
