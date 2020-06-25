@@ -27,3 +27,43 @@ ALTER TABLE `photoalbums` ADD `image` VARCHAR(100) NOT NULL AFTER `name`, ADD `b
 ALTER TABLE `categories` ADD `previewImage` VARCHAR(100) NOT NULL AFTER `image`;
 ALTER TABLE `subs` ADD `previewImage` VARCHAR(100) NOT NULL AFTER `image`;
 ALTER TABLE `photoalbums` ADD `previewImage` VARCHAR(100) NOT NULL AFTER `image`;
+
+
+CREATE TABLE `category_categories` (
+       `id` int NOT NULL,
+       `categoryId` int NOT NULL,
+       `priority` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `category_categories` ADD FOREIGN KEY (`id`) REFERENCES `categories`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `category_categories` ADD FOREIGN KEY (`categoryId`) REFERENCES `categories`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE `category_categories` ADD UNIQUE( `id`, `categoryId`);
+
+CREATE TABLE `sub_categories` (
+       `id` int NOT NULL,
+       `categoryId` int NOT NULL,
+       `priority` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `sub_categories` ADD FOREIGN KEY (`id`) REFERENCES `subs`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `sub_categories` ADD FOREIGN KEY (`categoryId`) REFERENCES `categories`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE `sub_categories` ADD UNIQUE( `id`, `categoryId`);
+
+CREATE TABLE `photoalbum_categories` (
+      `id` int NOT NULL,
+      `categoryId` int NOT NULL,
+      `priority` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `photoalbum_categories` ADD FOREIGN KEY (`id`) REFERENCES `photoalbums`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `photoalbum_categories` ADD FOREIGN KEY (`categoryId`) REFERENCES `categories`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE `photoalbum_categories` ADD UNIQUE( `id`, `categoryId`);
+
+INSERT INTO category_categories(id,categoryId) SELECT id,categoryId FROM `categories` WHERE categoryId IS NOT NULL AND categoryId <> 0;
+INSERT INTO sub_categories(id,categoryId) SELECT id,categoryId FROM `subs` WHERE categoryId IS NOT NULL AND categoryId <> 0;
+INSERT INTO photoalbum_categories(id,categoryId) SELECT id,categoryId FROM `photoalbums` WHERE categoryId IS NOT NULL AND categoryId <> 0;
+
+ALTER TABLE categories DROP FOREIGN KEY categories_ibfk_1;
+ALTER TABLE `categories` DROP `categoryId`;
+ALTER TABLE `subs` DROP `categoryId`;
+ALTER TABLE `photoalbums` DROP `categoryId`;

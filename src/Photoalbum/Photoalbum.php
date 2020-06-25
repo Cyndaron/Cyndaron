@@ -13,7 +13,8 @@ use Cyndaron\Util;
 class Photoalbum extends ModelWithCategory
 {
     public const TABLE = 'photoalbums';
-    public const TABLE_FIELDS = ['name', 'image', 'previewImage', 'blurb', 'notes', 'categoryId', 'showBreadcrumbs', 'hideFromOverview', 'viewMode'];
+    public const CATEGORY_TABLE = 'photoalbum_categories';
+    public const TABLE_FIELDS = ['name', 'image', 'previewImage', 'blurb', 'notes', 'showBreadcrumbs', 'hideFromOverview', 'viewMode'];
 
     public const VIEWMODE_REGULAR = 0;
     public const VIEWMODE_PORTFOLIO = 1;

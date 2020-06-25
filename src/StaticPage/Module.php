@@ -55,7 +55,7 @@ class Module implements Datatypes, Routes, UrlProvider, Linkable
         $templateVars = [];
 
         /** @noinspection SqlResolve */
-        $subs = DBConnection::doQueryAndFetchAll('SELECT id, name, "Zonder categorie" AS category FROM subs WHERE categoryId NOT IN (SELECT id FROM categories) UNION (SELECT s.id AS id, s.name AS name, c.name AS category FROM subs AS s,categories AS c WHERE s.categoryId=c.id ORDER BY category, name, id ASC);');
+        $subs = DBConnection::doQueryAndFetchAll('SELECT id, name, "Zonder categorie" AS category FROM subs WHERE id NOT IN (SELECT id FROM sub_categories) UNION (SELECT s.id AS id, s.name AS name, c.name AS category FROM subs AS s,categories AS c WHERE c.id IN (SELECT categoryId FROM sub_categories WHERE id = s.id) ORDER BY category, name, id ASC);');
         $subsPerCategory = [];
 
         foreach ($subs as $sub)

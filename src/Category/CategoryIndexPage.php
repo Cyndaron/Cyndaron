@@ -14,8 +14,8 @@ class CategoryIndexPage extends Page
 
         parent::__construct($this->model->name);
 
-        $subs = StaticPageModel::fetchAll(['categoryId= ?'], [$category->id], 'ORDER BY id DESC');
-        $categories = Category::fetchAll(['categoryId= ?'], [$category->id], 'ORDER BY id DESC');
+        $subs = StaticPageModel::fetchAllByCategory($category, 'ORDER BY id DESC');
+        $categories = Category::fetchAllByCategory($category, 'ORDER BY id DESC');
 
         $this->addTemplateVars([
             'type' => 'subs',
@@ -52,10 +52,10 @@ class CategoryIndexPage extends Page
 
         if ($this->model->viewMode === Category::VIEWMODE_PORTFOLIO)
         {
-            $subCategories = Category::fetchAll(['categoryId = ?'], [$this->model->id]);
+            $subCategories = Category::fetchAllByCategory($this->model);
             foreach ($subCategories as $subCategory)
             {
-                $subs = StaticPageModel::fetchAll(['categoryId = ?'], [$subCategory->id], 'ORDER BY id DESC');
+                $subs = StaticPageModel::fetchAllByCategory($this->model, 'ORDER BY id DESC');
                 $portfolioContent[$subCategory->name] = $subs;
             }
         }

@@ -206,11 +206,13 @@ class Page
         if ($this->model instanceof ModelWithCategory)
         {
             $titleParts = [];
-            if ($this->model->showBreadcrumbs && $this->model->categoryId)
+            if ($this->model->showBreadcrumbs)
             {
-                /** @var Category $category */
-                $category = Category::loadFromDatabase((int)$this->model->categoryId);
-                $titleParts[] = $category->name;
+                $category = $this->model->getFirstCategory();
+                if ($category !== null)
+                {
+                    $titleParts[] = $category->name;
+                }
             }
             $titleParts[] = $this->model->name;
         }

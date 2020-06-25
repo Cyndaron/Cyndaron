@@ -92,18 +92,32 @@ class Model
             $whereString = 'WHERE ' . implode(' AND ', $where);
         }
         $results = DBConnection::doQueryAndFetchAll('SELECT * FROM ' . static::TABLE . ' ' . $whereString . ' ' . $afterWhere, $args);
+        return self::DBResultsToModels($results);
+    }
+
+    protected static function DBResultsToModels(array $results): array
+    {
         $ret = [];
         if ($results)
         {
             foreach ($results as $result)
             {
-                $obj = new static((int)$result['id']);
-                $obj->updateFromArray($result);
-                $ret[] = $obj;
+                $ret[] = static::DBResultToModel($result);
             }
         }
 
         return $ret;
+    }
+
+    /**
+     * @param array $result
+     * @return static
+     */
+    protected static function DBResultToModel(array $result): self
+    {
+        $obj = new static((int)$result['id']);
+        $obj->updateFromArray($result);
+        return $obj;
     }
 
     /**

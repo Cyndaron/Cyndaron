@@ -10,8 +10,6 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 
     protected function prepare(RequestParameters $post)
     {
-        $categoryId = $post->getInt('categoryId');
-
         $category = new Category($this->id);
         $category->loadIfIdIsSet();
         $category->name = $post->getHTML('titel');
@@ -20,8 +18,8 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $category->blurb = $post->getHTML('blurb');
         $category->description = $this->parseTextForInlineImages($post->getHTML('artikel'));
         $category->viewMode = $post->getInt('viewMode');
-        $category->categoryId = ($categoryId === 0) ? null : $categoryId;
         $category->showBreadcrumbs = $post->getBool('showBreadcrumbs');
+        $this->saveCategories($category, $post);
         $category->save();
 
         User::addNotification('Categorie bewerkt.');

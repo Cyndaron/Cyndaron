@@ -63,17 +63,20 @@ abstract class EditorPage extends Page
 
         if (static::HAS_CATEGORY)
         {
+            $this->templateVars['categories'] = Category::fetchAll([], [], 'ORDER BY name');
+            $this->templateVars['selectedCategories'] = [];
             if ($this->id)
             {
-                /** @noinspection SqlResolve */
-                $this->templateVars['categoryId'] = (int)DBConnection::doQueryAndFetchOne('SELECT categoryId FROM ' . static::TABLE . ' WHERE id= ?', [$this->id]);
+                $categories = $this->model->getCategories();
+                foreach ($categories as $category)
+                {
+                    $this->templateVars['selectedCategories'][$category->id] = 1;
+                }
             }
             else
             {
-                $this->templateVars['categoryId'] = (int)Setting::get('defaultCategory');
+                $this->templateVars['selectedCategories'][Setting::get('defaultCategory')] = 1;
             }
-
-            $this->templateVars['categories'] = Category::fetchAll([], [], 'ORDER BY name');
 
             $showBreadcrumbs = false;
             if ($this->id)

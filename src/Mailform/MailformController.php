@@ -165,8 +165,8 @@ class MailformController extends Controller
     }
 
     /**
-     * @return JsonResponse
      * @throws Exception
+     * @return JsonResponse
      *
      */
     public function delete(): JsonResponse

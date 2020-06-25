@@ -150,7 +150,7 @@ class Router
         catch (\Exception $e)
         {
             /** @noinspection ForgottenDebugOutputInspection */
-            error_log($e->getMessage());
+            error_log($e->__toString());
             if ($this->isApiCall)
             {
                 return new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);

@@ -1,7 +1,9 @@
 <?php
 namespace Cyndaron\Editor;
 
+use Cyndaron\Category\Category;
 use Cyndaron\DBConnection;
+use Cyndaron\ModelWithCategory;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
 use Cyndaron\Util;
@@ -81,5 +83,21 @@ abstract class EditorSavePage
     public function getReturnUrl(): string
     {
         return $this->returnUrl;
+    }
+
+    protected function saveCategories(ModelWithCategory $model, RequestParameters $post): void
+    {
+        foreach (Category::fetchAll() as $category)
+        {
+            $selected = $post->getBool('category-' . $category->id);
+            if ($selected)
+            {
+                $model->addCategory($category);
+            }
+            else
+            {
+                $model->removeCategory($category);
+            }
+        }
     }
 }

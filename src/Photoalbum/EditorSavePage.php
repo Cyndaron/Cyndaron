@@ -17,10 +17,10 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $photoalbum->previewImage = $post->getUrl('previewImage');
         $photoalbum->blurb = $post->getHTML('blurb');
         $photoalbum->notes = $this->parseTextForInlineImages($post->getHTML('artikel'));
-        $photoalbum->categoryId = $post->getInt('categoryId');
         $photoalbum->showBreadcrumbs = $post->getBool('showBreadcrumbs');
         $photoalbum->hideFromOverview = $post->getBool('hideFromOverview');
         $photoalbum->viewMode = $post->getInt('viewMode');
+        $this->saveCategories($photoalbum, $post);
         $photoalbum->save();
 
         User::addNotification('Fotoalbum bewerkt.');

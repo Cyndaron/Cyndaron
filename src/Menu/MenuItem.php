@@ -83,11 +83,11 @@ class MenuItem extends Model
             "
             SELECT * FROM
             (
-                SELECT 'sub' AS type, id, name FROM subs WHERE categoryId=?
+                SELECT 'sub' AS type, id, name FROM subs WHERE id IN (SELECT id FROM sub_categories WHERE categoryId = ?)
                 UNION
-                SELECT 'photoalbum' AS type, id, name FROM photoalbums WHERE categoryId=?
+                SELECT 'photoalbum' AS type, id, name FROM photoalbums WHERE id IN (SELECT id FROM photoalbum_categories WHERE categoryId = ?)
                 UNION
-                SELECT 'category' AS type, id, name FROM categories WHERE categoryId=?
+                SELECT 'category' AS type, id, name FROM categories WHERE id IN (SELECT id FROM category_categories WHERE categoryId = ?)
             ) AS one
             ORDER BY name ASC;",
             [$id, $id, $id]

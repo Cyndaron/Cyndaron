@@ -14,7 +14,6 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $text = $this->parseTextForInlineImages($post->getHTML('artikel'));
         $enableComments = $post->getBool('enableComments');
         $showBreadcrumbs = $post->getBool('showBreadcrumbs');
-        $categoryId = $post->getInt('categoryId');
         $tags = trim($post->getSimpleString('tags'), "; \t\n\r\0\x0B");
 
         $model = new StaticPageModel($this->id);
@@ -26,8 +25,8 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $model->text = $text;
         $model->enableComments = $enableComments;
         $model->showBreadcrumbs = $showBreadcrumbs;
-        $model->categoryId = $categoryId;
         $model->tags = $tags;
+        $this->saveCategories($model, $post);
 
         if ($model->save())
         {

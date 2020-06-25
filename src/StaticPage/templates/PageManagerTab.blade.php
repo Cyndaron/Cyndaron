@@ -21,7 +21,6 @@
                 // TODO: Get rid of this disgrace.
                 $vvsub = \Cyndaron\DBConnection::doQueryAndFetchFirstRow('SELECT * FROM sub_backups WHERE id= ?', [$id]);
                 $hasLastVersion = !empty($vvsub);
-                $name = strtr($name, [' ' => '&nbsp;']);
             @endphp
 
             <tr id="pm-row-sub-{{ $id }}">
