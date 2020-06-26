@@ -32,7 +32,7 @@
                         <img src="{{ $page->getPreviewImage() }}" alt=""/>
                     </a>
                     <h3><a href="{{ $page->getFriendlyUrl() }}">{{ $page->name }}</a></h3>
-                    <a class="category-block-link" href="{{ $page->getFriendlyUrl() }}">{{ $page->getBlurb() }}</a>
+                    <a class="category-block-link" href="{{ $page->getFriendlyUrl() }}">{{ $page->blurb }}</a>
                 </div>
             @endforeach
         </div>
