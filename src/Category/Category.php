@@ -64,13 +64,13 @@ class Category extends ModelWithCategory
         {
             usort($ret, static function(ModelWithCategory $m1, ModelWithCategory $m2)
             {
-                // Highest priority first.
-                $prio = ($m2->priority <=> $m1->priority);
+                $prio = ($m1->priority <=> $m2->priority);
                 if ($prio !== 0)
                 {
                     return $prio;
                 }
 
+                // In the case of the same priority: newest first.
                 return strtotime($m2->created) <=> strtotime($m1->created);
             });
         }
