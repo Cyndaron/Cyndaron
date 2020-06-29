@@ -89,7 +89,7 @@ abstract class ModelWithCategory extends Model
     public static function fetchAllByCategory(Category $category, string $afterWhere = ''): array
     {
         $tableName = static::CATEGORY_TABLE;
-        $entries = DBConnection::doQueryAndFetchAll("SELECT * FROM {$tableName} WHERE categoryId = ? " . $afterWhere, [$category->id]);
+        $entries = DBConnection::doQueryAndFetchAll("SELECT DISTINCT id, priority FROM {$tableName} WHERE categoryId = ? " . $afterWhere, [$category->id]);
         $ret = [];
         foreach ($entries as $entry)
         {
