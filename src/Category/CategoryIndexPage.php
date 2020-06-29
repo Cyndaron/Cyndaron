@@ -15,13 +15,12 @@ class CategoryIndexPage extends Page
         parent::__construct($this->model->name);
 
         $subs = StaticPageModel::fetchAllByCategory($category, 'ORDER BY id DESC');
-        $categories = Category::fetchAllByCategory($category, 'ORDER BY id DESC');
 
         $this->addTemplateVars([
             'type' => 'subs',
             'model' => $this->model,
             'viewMode' => $this->model->viewMode,
-            'pages' => array_merge($subs, $categories),
+            'pages' => $category->getUnderlyingPages(),
             'tags' => $this->getTags($subs),
             'portfolioContent' => $this->getPortfolioContent(),
             'pageImage' => $this->model->getImage(),

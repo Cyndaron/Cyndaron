@@ -2,6 +2,8 @@
 namespace Cyndaron\Category;
 
 use Cyndaron\ModelWithCategory;
+use Cyndaron\Photoalbum\Photoalbum;
+use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url;
 
 class Category extends ModelWithCategory
@@ -36,5 +38,43 @@ class Category extends ModelWithCategory
     public function getText(): string
     {
         return $this->description;
+    }
+
+    /**
+     * @param string $orderBy
+     * @throws \Exception
+     * @return ModelWithCategory[]
+     */
+    public function getUnderlyingPages(string $orderBy = ''): array
+    {
+        $ret = array_merge(
+            StaticPageModel::fetchAllByCategory($this),
+            self::fetchAllByCategory($this),
+            Photoalbum::fetchAllByCategory($this),
+        );
+
+        if ($orderBy === 'name')
+        {
+            usort($ret, static function(ModelWithCategory $m1, ModelWithCategory $m2)
+            {
+                return strcasecmp($m1->name, $m2->name);
+            });
+        }
+        else
+        {
+            usort($ret, static function(ModelWithCategory $m1, ModelWithCategory $m2)
+            {
+                // Highest priority first.
+                $prio = ($m2->priority <=> $m1->priority);
+                if ($prio !== 0)
+                {
+                    return $prio;
+                }
+
+                return strtotime($m2->created) <=> strtotime($m1->created);
+            });
+        }
+
+        return $ret;
     }
 }

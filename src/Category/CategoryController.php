@@ -4,18 +4,27 @@ declare(strict_types=1);
 namespace Cyndaron\Category;
 
 use Cyndaron\Controller;
+use Cyndaron\DBConnection;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\ModelWithCategory;
 use Cyndaron\Page;
+use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends Controller
 {
+    protected array $apiGetRoutes = [
+        'underlyingPages' => ['level' => UserLevel::ANONYMOUS, 'function' => 'underlyingPages'],
+    ];
+
     protected array $apiPostRoutes = [
         'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
         'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
+        'changeOrder' => ['level' => UserLevel::ADMIN, 'function' => 'changeOrder'],
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
     ];
@@ -110,5 +119,81 @@ class CategoryController extends Controller
         $category->save();
 
         return new JsonResponse();
+    }
+
+    public function changeOrder(RequestParameters $post): JsonResponse
+    {
+        $categoryId = $this->queryBits->getInt(2);
+        if ($categoryId < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
+        $category = Category::loadFromDatabase($categoryId);
+        if ($category === null)
+        {
+            return new JsonResponse(['error' => 'Category does not exist!'], Response::HTTP_NOT_FOUND);
+        }
+
+        foreach ($post->getKeys() as $fieldName)
+        {
+            if (strpos($fieldName, '-') === false)
+            {
+                continue;
+            }
+
+            [$type, $id] = explode('-', $fieldName);
+            $priority = $post->getInt($fieldName);
+
+            switch ($type)
+            {
+                case 'sub':
+                    DBConnection::doQuery('REPLACE INTO sub_categories(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
+                    break;
+                case 'category':
+                    DBConnection::doQuery('REPLACE INTO category_categories(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
+                    break;
+                case 'photoalbum':
+                    DBConnection::doQuery('REPLACE INTO photoalbum_categories(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
+                    break;
+            }
+        }
+
+        return new JsonResponse();
+    }
+
+    public function underlyingPages(): JsonResponse
+    {
+        $categoryId = $this->queryBits->getInt(2);
+        if ($categoryId < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
+        $category = Category::loadFromDatabase($categoryId);
+        if ($category === null)
+        {
+            return new JsonResponse(['error' => 'Category does not exist!'], Response::HTTP_NOT_FOUND);
+        }
+
+        $underlyingPages = $category->getUnderlyingPages('name');
+        array_walk($underlyingPages, static function(ModelWithCategory $model)
+        {
+            $class = 'unknown';
+            switch (get_class($model))
+            {
+                case StaticPageModel::class:
+                    $class = 'sub';
+                    break;
+                case Category::class:
+                    $class = 'category';
+                    break;
+                case Photoalbum::class:
+                    $class = 'photoalbum';
+                    break;
+            }
+            /** @noinspection PhpUndefinedFieldInspection */
+            $model->type = $class;
+        });
+
+        return new JsonResponse($underlyingPages);
     }
 }
