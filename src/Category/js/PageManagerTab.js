@@ -21,6 +21,7 @@ $(document).ready(function () {
         $('#pm-change-order-category-id').val(categoryId);
 
         let container = $('#pm-change-order-form-container');
+        container.html('');
 
         $.get('/api/category/underlyingPages/' + categoryId, {}, null, 'json')
             .done(function (data) {
