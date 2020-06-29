@@ -102,7 +102,7 @@
     </div>
 
     @foreach ($scripts as $script)
-        <script type="text/javascript" src="{{ $script }}" nonce="{{ \Cyndaron\Router::getScriptNonce() }}"></script>
+        <script type="text/javascript" src="{{ $script }}?r={{ \Cyndaron\CyndaronInfo::ENGINE_VERSION }}" nonce="{{ \Cyndaron\Router::getScriptNonce() }}"></script>
     @endforeach
 
     {!! $extraBodyEnd !!}
