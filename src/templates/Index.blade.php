@@ -10,6 +10,7 @@
     <meta name="application-name" content="{{ $websiteName }}">
     <title>{{ $title }} - {{ $websiteName }}</title>
 
+    <link href="/vendor/twbs/bootstrap/dist/css/bootstrap-reboot.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
     <link href="/vendor/twbs/bootstrap/dist/css/bootstrap.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
     <link href="/contrib/Glyphicons/css/glyphicons.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
     <link href="/css/lightbox.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />

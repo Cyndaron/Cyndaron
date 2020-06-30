@@ -6,7 +6,7 @@
 CKEDITOR.editorConfig = function( config ) {
 	config.language = 'nl';
 	config.uiColor = geefInstelling('artikelkleur');
-	config.contentsCss = ['/contrib/Normalize/normalize.css', '/vendor/twbs/bootstrap/dist/css/bootstrap.min.css', '/css/cyndaron.css', '/user.css'];
+	config.contentsCss = ['/vendor/twbs/bootstrap/dist/css/bootstrap-reboot.min.css', '/vendor/twbs/bootstrap/dist/css/bootstrap.min.css', '/css/cyndaron.css', '/user.css'];
 	config.allowedContent = true;
 	config.disallowedContent = 'table[cellspacing,cellpadding,border]';
 };
