@@ -91,15 +91,25 @@ class ViewHelpers
 
     public static function filterDutchDate(string $date): string
     {
-        $day = date('j');
-        $month = self::getDutchMonth((int)date('m', strtotime($date)));
-        $year = date('Y');
+        $timestamp = strtotime($date);
+        if ($timestamp === false)
+        {
+            return 'Ongeldige datum';
+        }
+        $day = date('j', $timestamp);
+        $month = self::getDutchMonth((int)date('m', $timestamp));
+        $year = date('Y', $timestamp);
         return sprintf('%s %s %s', $day, $month, $year);
     }
 
     public static function filterDutchDateTime(string $date): string
     {
-        return sprintf('%s om %s', self::filterDutchDate($date), date('H:i', strtotime($date)));
+        $timestamp = strtotime($date);
+        if ($timestamp === false)
+        {
+            return 'Ongeldige datum en tijd';
+        }
+        return sprintf('%s om %s', self::filterDutchDate($date), date('H:i', $timestamp));
     }
 
     /**
@@ -128,7 +138,7 @@ class ViewHelpers
         ob_start();
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
-        return ob_get_clean();
+        return ob_get_clean() ?: '';
     }
 
     public static function parseText(string $text): string

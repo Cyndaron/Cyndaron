@@ -53,7 +53,7 @@ class Module implements Datatypes, Routes, UrlProvider, Linkable
 
     public function getList(): array
     {
-        return DBConnection::doQueryAndFetchAll('SELECT CONCAT(\'/photoalbum/\', id) AS link, CONCAT(\'Fotoalbum: \', name) AS name FROM photoalbums');
+        return DBConnection::doQueryAndFetchAll('SELECT CONCAT(\'/photoalbum/\', id) AS link, CONCAT(\'Fotoalbum: \', name) AS name FROM photoalbums') ?: [];
     }
 
     public static function pageManagerTab(): string

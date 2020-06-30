@@ -97,16 +97,18 @@ abstract class EditorPage extends Page
             $pageHeaderDir = Util::UPLOAD_DIR . '/images/page-header';
             if (is_dir($pageHeaderDir))
             {
-                $pageHeaderImages = array_filter(scandir($pageHeaderDir), static function ($filename) {
-                    return substr($filename, 0,1) !== '.';
+                $pageHeaderImages = array_filter(scandir($pageHeaderDir), static function($filename)
+                {
+                    return substr($filename, 0, 1) !== '.';
                 });
             }
             $pagePreviewImages = [];
             $pagePreviewDir = Util::UPLOAD_DIR . '/images/page-preview';
             if (is_dir($pagePreviewDir))
             {
-                $pagePreviewImages = array_filter(scandir($pagePreviewDir), static function ($filename) {
-                    return substr($filename, 0,1) !== '.';
+                $pagePreviewImages = array_filter(scandir($pagePreviewDir), static function($filename)
+                {
+                    return substr($filename, 0, 1) !== '.';
                 });
             }
 

@@ -38,7 +38,7 @@ class ConcertOrderOverviewPage extends Page
     {
         $boughtTicketTypesQuery = 'SELECT orderId,tickettypeId,amount
                     FROM     `ticketsale_orders_tickettypes`';
-        $boughtTicketTypes = DBConnection::doQueryAndFetchAll($boughtTicketTypesQuery, [$concert->id]);
+        $boughtTicketTypes = DBConnection::doQueryAndFetchAll($boughtTicketTypesQuery, [$concert->id]) ?: [];
 
         $ticketTypesByOrder = [];
         foreach ($boughtTicketTypes as $boughtTicketType)

@@ -75,6 +75,10 @@ class SystemPage extends Page
         ob_start();
         phpinfo();
         $phpinfo = ob_get_clean();
+        if ($phpinfo === false)
+        {
+            throw new \Exception('Error retrieving PHPinfo!');
+        }
 
         // We only want the innerhtml of the body.
         preg_match("/<body(.*?)>(.*?)<\\/body>/si", $phpinfo, $match);

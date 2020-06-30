@@ -301,7 +301,7 @@ EOT;
             return null;
         }
 
-        return \DateTimeImmutable::createFromFormat('!Y-m-d', $this->dateOfBirth);
+        return \DateTimeImmutable::createFromFormat('!Y-m-d', $this->dateOfBirth) ?: null;
     }
 
     public function save(): bool
@@ -313,11 +313,11 @@ EOT;
             // Last resort!
             if ($username === '')
             {
-                $username = random_int(10000, 99999);
+                $username = (string)random_int(10000, 99999);
             }
             else
             {
-                $existing = DBConnection::doQueryAndFetchAll('SELECT * FROM users WHERE username = ?', [$username]);
+                $existing = self::fetchAll(['username = ?'], [$username]);
                 if (count($existing) > 0)
                 {
                     $username .= random_int(10000, 99999);
@@ -342,7 +342,7 @@ EOT;
         }
 
         $records = DBConnection::doQueryAndFetchAll('SELECT * FROM user_rights WHERE `userId` = ? AND `right` = ?', [$this->id, $right]);
-        if (count($records) > 0)
+        if ($records !== false && count($records) > 0)
         {
             return true;
         }

@@ -8,15 +8,15 @@ class Setting
 
     /**
      * @param string $name
-     * @return string|false
+     * @return string
      */
-    public static function get(string $name)
+    public static function get(string $name): string
     {
         $connection = DBConnection::getPDO();
         $setting = $connection->prepare('SELECT value FROM settings WHERE name= ?');
         $setting->execute([$name]);
 
-        return $setting->fetchColumn();
+        return $setting->fetchColumn() ?: '';
     }
 
     public static function set(string $name, string $value): void

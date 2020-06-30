@@ -18,16 +18,19 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
         $tags = '';
         if ($this->id)
         {
-            $this->model = StaticPageModel::loadFromDatabase($this->id);
+            $staticPage = StaticPageModel::loadFromDatabase($this->id);
+            $this->model = $staticPage;
             $table = ($this->vvstring) ? 'sub_backups' : self::TABLE;
             /** @noinspection SqlResolve */
             $this->content = DBConnection::doQueryAndFetchOne('SELECT text FROM ' . $table . ' WHERE id=?', [$this->id]);
             /** @noinspection SqlResolve */
             $this->contentTitle = DBConnection::doQueryAndFetchOne('SELECT name FROM ' . $table . ' WHERE id=?', [$this->id]);
 
-            $sub = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM subs WHERE id=?', [$this->id]);
-            $enableComments = (bool)$sub['enableComments'];
-            $tags = $sub['tags'];
+            if ($staticPage !== null)
+            {
+                $enableComments = $staticPage->enableComments;
+                $tags = $staticPage->tags;
+            }
         }
 
         $this->templateVars['enableComments'] = $enableComments;
