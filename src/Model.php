@@ -159,7 +159,7 @@ class Model
         return $sub;
     }
 
-    public function updateFromArray($newArray): bool
+    public function updateFromArray(array $newArray): bool
     {
         $couldUpdateAll = true;
         foreach (self::getExtendedTableFields() as $tableField)
@@ -234,6 +234,10 @@ class Model
         return $result !== false;
     }
 
+    /**
+     * @param mixed $var
+     * @return string|null
+     */
     private function mangleVar($var): ?string
     {
         if ($var === null)

@@ -56,7 +56,7 @@ class MinecraftString
         return $this->outputString;
     }
 
-    private function processBlock($block): void
+    private function processBlock(string $block): void
     {
         $code = preg_split("/[&§][0-9a-z]/u", $block);
         // This can be null if the text to format is preceeded by multiple formatting codes,

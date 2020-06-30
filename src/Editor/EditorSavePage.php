@@ -15,6 +15,8 @@ abstract class EditorSavePage
     protected ?int $id = null;
     protected string $returnUrl = '';
 
+    public const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
+
     public function __construct(?int $id, RequestParameters $post)
     {
         $this->id = $id;
@@ -36,7 +38,7 @@ abstract class EditorSavePage
         }
     }
 
-    abstract protected function prepare(RequestParameters $post);
+    abstract protected function prepare(RequestParameters $post): void;
 
     protected function parseTextForInlineImages(string $text): string
     {
@@ -48,23 +50,23 @@ abstract class EditorSavePage
         return $result;
     }
 
-    protected static function extractImages($matches): string
+    protected static function extractImages(string $matches): string
     {
         [$type, $image] = explode(';', $matches[2]);
 
         switch ($type)
         {
             case 'image/gif':
-                $extensie = 'gif';
+                $extension = 'gif';
                 break;
             case 'image/jpeg':
-                $extensie = 'jpg';
+                $extension = 'jpg';
                 break;
             case 'image/png':
-                $extensie = 'png';
+                $extension = 'png';
                 break;
             case 'image/bmp':
-                $extensie = 'bmp';
+                $extension = 'bmp';
                 break;
             default:
                 return 'src="' . $matches[0] . '"';
@@ -72,12 +74,11 @@ abstract class EditorSavePage
 
         $image = str_replace('base64,', '', $image);
         $image = base64_decode(str_replace(' ', '+', $image), true);
-        $uploadDir = 'uploads/images/via-editor/';
-        $destinationFilename = $uploadDir . date('c') . '-' . md5($image) . '.' . $extensie;
-        Util::createDir($uploadDir);
+        $destinationFilename = self::IMAGE_DIR . date('c') . '-' . md5($image) . '.' . $extension;
+        Util::createDir(self::IMAGE_DIR);
         file_put_contents($destinationFilename, $image);
 
-        return 'src="/' . $destinationFilename . '"';
+        return 'src="' . Util::filenameToUrl($destinationFilename) . '"';
     }
 
     public function getReturnUrl(): string

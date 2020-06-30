@@ -123,7 +123,7 @@ class ContestController extends Controller
         return $response;
     }
 
-    private function doMollieTransaction(Contest $contest, ContestMember $contestMember)
+    private function doMollieTransaction(Contest $contest, ContestMember $contestMember): Response
     {
         $apiKey = Setting::get('mollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();

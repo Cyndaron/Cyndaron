@@ -59,16 +59,16 @@ class Point
         SkinRenderer::$maxY = max(SkinRenderer::$maxY, $this->_destCoord['y']);
     }
 
-    public function preProject($dx, $dy, $dz, $cos_alpha, $sin_alpha, $cos_omega, $sin_omega): void
+    public function preProject(int $dx, int $dy, int $dz, float $cosAlpha, float $sinAlpha, float $cosOmega, float $sinOmega): void
     {
         if (!$this->_isPreProjected)
         {
             $x = $this->_originCoord['x'] - $dx;
             $y = $this->_originCoord['y'] - $dy;
             $z = $this->_originCoord['z'] - $dz;
-            $this->_originCoord['x'] = $x * $cos_omega + $z * $sin_omega + $dx;
-            $this->_originCoord['y'] = $x * $sin_alpha * $sin_omega + $y * $cos_alpha - $z * $sin_alpha * $cos_omega + $dy;
-            $this->_originCoord['z'] = -$x * $cos_alpha * $sin_omega + $y * $sin_alpha + $z * $cos_alpha * $cos_omega + $dz;
+            $this->_originCoord['x'] = $x * $cosOmega + $z * $sinOmega + $dx;
+            $this->_originCoord['y'] = $x * $sinAlpha * $sinOmega + $y * $cosAlpha - $z * $sinAlpha * $cosOmega + $dy;
+            $this->_originCoord['z'] = -$x * $cosAlpha * $sinOmega + $y * $sinAlpha + $z * $cosAlpha * $cosOmega + $dz;
             $this->_isPreProjected = true;
         }
     }

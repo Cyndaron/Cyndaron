@@ -12,7 +12,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
 
     protected string $template = '';
 
-    protected function prepare()
+    protected function prepare(): void
     {
         $viewMode = 0;
         if ($this->id)

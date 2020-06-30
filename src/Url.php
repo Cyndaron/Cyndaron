@@ -8,6 +8,7 @@ use Cyndaron\Module\UrlProvider;
 class Url
 {
     private string $url;
+    /** @var string[] $urlProviders */
     protected static array $urlProviders = [];
 
     public function __construct(string $url)

@@ -262,7 +262,7 @@ abstract class SkinRenderer
         return $cubePoints;
     }
 
-    private function determineDisplayOrder($frontFaces, $backFaces, $visibleFaces): array
+    private function determineDisplayOrder(array $frontFaces, array $backFaces, array $visibleFaces): array
     {
         $display_order = [];
         if (in_array('top', $frontFaces, true))

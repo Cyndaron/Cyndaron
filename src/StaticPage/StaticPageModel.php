@@ -58,6 +58,9 @@ class StaticPageModel extends ModelWithCategory
         return false;
     }
 
+    /**
+     * @return string[]
+     */
     public function getTagList(): array
     {
         if (empty($this->tags))
@@ -68,6 +71,9 @@ class StaticPageModel extends ModelWithCategory
         return explode(';', strtolower($this->tags));
     }
 
+    /**
+     * @param string[] $tags
+     */
     public function setTagList(array $tags): void
     {
         $this->tags = implode(';', $tags);

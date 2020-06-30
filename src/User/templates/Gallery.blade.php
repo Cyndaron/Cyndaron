@@ -3,7 +3,7 @@
 @section('contents')
     <table class="ledenlijst">
         @foreach ($members as $member)
-            @php $avatar = $member->avatar ? '/' . \Cyndaron\User\User::AVATAR_DIR . "/{$member->avatar}" : $fallbackImage @endphp
+            @php $avatar = $member->getAvatarUrl() @endphp
             <tr>
                 <td>
                     <img style="height: 150px;" alt="" src="{{ $avatar }}"/>

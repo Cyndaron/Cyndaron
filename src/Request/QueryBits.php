@@ -10,6 +10,11 @@ class QueryBits
         $this->vars = $vars;
     }
 
+    /**
+     * @param int $index
+     * @param mixed|null $fallback
+     * @return string|null
+     */
     public function get(int $index, $fallback = null): ?string
     {
         if (!$this->hasIndex($index))

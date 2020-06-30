@@ -8,7 +8,7 @@ use Cyndaron\User\User;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
-    protected function prepare(RequestParameters $post)
+    protected function prepare(RequestParameters $post): void
     {
         $event = new Event($this->id);
         $event->loadIfIdIsSet();

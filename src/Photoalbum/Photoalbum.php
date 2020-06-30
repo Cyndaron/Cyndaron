@@ -28,7 +28,7 @@ class Photoalbum extends ModelWithCategory
     public bool $hideFromOverview = false;
     public int $viewMode = self::VIEWMODE_REGULAR;
 
-    public static function create(string $name, string $notes = '', bool $showBreadcrumbs = false)
+    public static function create(string $name, string $notes = '', bool $showBreadcrumbs = false): ?int
     {
         if ($name === '')
         {
@@ -44,7 +44,7 @@ class Photoalbum extends ModelWithCategory
             Util::createDir("{$baseDir}/thumbnails");
         }
 
-        return $id;
+        return $id ?: null;
     }
 
     public function getFriendlyUrl(): string
@@ -71,12 +71,12 @@ class Photoalbum extends ModelWithCategory
 
     public function getLinkPrefix(): string
     {
-        return 'uploads/photoalbums/' . $this->id . '/originals/';
+        return self::getPhotoalbumsDir() . $this->id . '/originals/';
     }
 
     public function getThumbnailPrefix(): string
     {
-        return 'uploads/photoalbums/' . $this->id . '/thumbnails/';
+        return self::getPhotoalbumsDir() . $this->id . '/thumbnails/';
     }
 
     public static function getPhotoalbumsDir(): string

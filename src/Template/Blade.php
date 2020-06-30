@@ -29,6 +29,12 @@ class Blade implements FactoryContract
 
     private BladeCompiler $compiler;
 
+    /**
+     * Blade constructor.
+     * @param string[] $viewPaths
+     * @param string $cachePath
+     * @param ContainerInterface|null $container
+     */
     public function __construct(array $viewPaths, string $cachePath, ContainerInterface $container = null)
     {
         $this->container = $container ?: new Container();

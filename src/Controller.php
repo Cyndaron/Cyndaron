@@ -20,9 +20,13 @@ class Controller
     protected int $minLevelGet = UserLevel::ANONYMOUS;
     protected int $minLevelPost = UserLevel::ADMIN;
 
+    /** @var array[] $getRoutes */
     protected array $getRoutes = [];
+    /** @var array[] $postRoutes */
     protected array $postRoutes = [];
+    /** @var array[] $apiGetRoutes */
     protected array $apiGetRoutes = [];
+    /** @var array[] $apiPostRoutes */
     protected array $apiPostRoutes = [];
 
     protected QueryBits $queryBits;

@@ -11,7 +11,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
 
     protected string $template = '';
 
-    protected function prepare()
+    protected function prepare(): void
     {
         if ($this->id)
         {

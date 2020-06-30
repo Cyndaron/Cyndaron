@@ -8,7 +8,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'sub';
 
-    protected function prepare(RequestParameters $post)
+    protected function prepare(RequestParameters $post): void
     {
         $titel = $post->getHTML('titel');
         $text = $this->parseTextForInlineImages($post->getHTML('artikel'));

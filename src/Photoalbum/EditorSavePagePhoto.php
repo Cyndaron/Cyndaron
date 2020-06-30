@@ -8,7 +8,7 @@ class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'photo';
 
-    protected function prepare(RequestParameters $post)
+    protected function prepare(RequestParameters $post): void
     {
         $hash = $post->getAlphaNum('hash');
         $caption = $this->parseTextForInlineImages($post->getHTML('artikel'));

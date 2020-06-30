@@ -20,7 +20,7 @@ class Util
 {
     public const UPLOAD_DIR = __DIR__ . '/../public_html/uploads';
 
-    public static function generatePassword($length = 10): string
+    public static function generatePassword(int $length = 10): string
     {
         $gencode = '';
         $letters = ['a', 'c', 'd', 'e', 'f', 'h', 'j', 'm', 'n', 'q', 'r', 't',
@@ -92,5 +92,16 @@ class Util
         }
 
         return \DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+    }
+
+    public static function filenameToUrl(string $filename)
+    {
+        if (strpos($filename, self::UPLOAD_DIR) === 0)
+        {
+            $parentDir = dirname(self::UPLOAD_DIR);
+            return substr($filename, strlen($parentDir));
+        }
+
+        return $filename;
     }
 }

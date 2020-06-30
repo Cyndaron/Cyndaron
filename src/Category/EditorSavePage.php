@@ -8,7 +8,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'category';
 
-    protected function prepare(RequestParameters $post)
+    protected function prepare(RequestParameters $post): void
     {
         $category = new Category($this->id);
         $category->loadIfIdIsSet();

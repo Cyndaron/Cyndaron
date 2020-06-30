@@ -89,13 +89,13 @@ abstract class ModelWithCategory extends Model
         return $ret;
     }
 
-    public function addCategory(Category $category)
+    public function addCategory(Category $category): void
     {
         $tableName = static::CATEGORY_TABLE;
         DBConnection::doQuery("INSERT IGNORE INTO {$tableName}(id, categoryId) VALUES (?, ?)", [$this->id, $category->id]);
     }
 
-    public function removeCategory(Category $category)
+    public function removeCategory(Category $category): void
     {
         $tableName = static::CATEGORY_TABLE;
         DBConnection::doQuery("DELETE FROM {$tableName} WHERE id = ? AND categoryId = ?", [$this->id, $category->id]);

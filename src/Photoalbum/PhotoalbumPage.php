@@ -8,7 +8,7 @@ use Cyndaron\Template\Template;
 
 class PhotoalbumPage extends Page
 {
-    public function __construct(Photoalbum $album, $viewMode = Photoalbum::VIEWMODE_REGULAR)
+    public function __construct(Photoalbum $album, int $viewMode = Photoalbum::VIEWMODE_REGULAR)
     {
         $this->model = $album;
         parent::__construct($album->name);

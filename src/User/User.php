@@ -17,7 +17,7 @@ class User extends Model
     public const TABLE = 'users';
     public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'initials', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city', 'dateOfBirth', 'notes'];
 
-    public const AVATAR_DIR = 'uploads/user/avatar';
+    public const AVATAR_DIR = Util::UPLOAD_DIR . '/user/avatar';
 
     public string $username = '';
     public string $password = '';
@@ -66,6 +66,9 @@ EOT;
         $_SESSION['notifications'][] = $content;
     }
 
+    /**
+     * @return string[]|null
+     */
     public static function getNotifications(): ?array
     {
         $return = @$_SESSION['notifications'];
@@ -163,7 +166,7 @@ EOT;
         );
     }
 
-    public static function getCSRFToken($module, $action): string
+    public static function getCSRFToken(string $module, string $action): string
     {
         if (empty($_SESSION['token']))
         {
@@ -182,7 +185,7 @@ EOT;
         return $_SESSION['token'][$module][$action];
     }
 
-    public static function checkToken($module, $action, $token): bool
+    public static function checkToken(string $module, string $action, string $token): bool
     {
         if (!empty($token) &&
             !empty($_SESSION['token'][$module][$action]) &&
@@ -350,5 +353,16 @@ EOT;
         $now = new DateTime();
         $interval = $now->diff($date);
         return $interval->y;
+    }
+
+    public function getAvatarUrl(): string
+    {
+        if (empty($this->avatar))
+        {
+            return '';
+        }
+
+        $filename = self::AVATAR_DIR . "/{$this->avatar}";
+        return Util::filenameToUrl($filename);
     }
 }

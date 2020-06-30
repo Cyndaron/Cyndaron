@@ -42,7 +42,7 @@ class Template
         return $result->render();
     }
 
-    public function templateExists($name): bool
+    public function templateExists(string $name): bool
     {
         return $this->templateFinder->path($name) !== null;
     }

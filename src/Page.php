@@ -180,14 +180,14 @@ class Page
         return $template->render($this->template, $this->templateVars);
     }
 
-    public function addScript($script): void
+    public function addScript(string $filename): void
     {
-        $this->extraScripts[] = $script;
+        $this->extraScripts[] = $filename;
     }
 
-    public function addCss($script): void
+    public function addCss(string $filename): void
     {
-        $this->extraCss[] = $script;
+        $this->extraCss[] = $filename;
     }
 
     public function getMenu(): array
@@ -238,6 +238,10 @@ class Page
         return $title;
     }
 
+    /**
+     * @param string $varName
+     * @param mixed $var
+     */
     public function addTemplateVar(string $varName, $var): void
     {
         $this->templateVars[$varName] = $var;

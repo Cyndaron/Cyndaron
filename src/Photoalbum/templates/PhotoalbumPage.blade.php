@@ -36,9 +36,9 @@
                 <a href="/{{ $photo->getFullPath() }}" data-lightbox="{{ $model->name }}" data-hash="{{ $photo->hash }}"
                     @if ($photo->caption) data-title="{{ $photo->caption->caption }}" @endif>
                     @if (file_exists($photo->getThumbnailPath()))
-                        <img class="thumb" alt="{{ $photo->filename }}" src="/uploads/photoalbums/{{ $model->id }}/thumbnails/{{ $photo->filename }}"/>
+                        <img class="thumb" alt="{{ $photo->filename }}" src="{{ \Cyndaron\Util::filenameToUrl($photo->getThumbnailPath()) }}"/>
                     @else
-                        <img class="thumb" alt="{{ $photo->filename }}" src="/uploads/photoalbums/{{ $model->id }}/originals/{{ $photo->filename }}" style="width:270px; height:200px"/>
+                        <img class="thumb" alt="{{ $photo->filename }}" src="{{ \Cyndaron\Util::filenameToUrl($photo->getFullPath()) }}" style="width:270px; height:200px"/>
                     @endif
                 </a>
 

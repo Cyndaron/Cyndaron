@@ -85,6 +85,11 @@ class DBConnection
         });
     }
 
+    /**
+     * @param string $query
+     * @param array $vars
+     * @return mixed
+     */
     public static function doQueryAndFetchOne(string $query, array $vars = [])
     {
         return static::executeQuery($query, $vars, static function(PDOStatement$prep, $result)
@@ -98,11 +103,11 @@ class DBConnection
         return ['pdo' => static::$pdo->errorInfo(), 'statement' => static::$statementError, 'query' => static::$errorQuery];
     }
 
-    public static function connect($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass): void
+    public static function connect(string $engine, string $host, string $databaseName, string $user, string $password): void
     {
         try
         {
-            static::$pdo = @new PDO($dbmethode . ':host=' . $dbplek . ';dbname=' . $dbnaam . ';charset=utf8mb4', $dbuser, $dbpass);
+            static::$pdo = @new PDO($engine . ':host=' . $host . ';dbname=' . $databaseName . ';charset=utf8mb4', $user, $password);
             static::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         catch (PDOException $e)

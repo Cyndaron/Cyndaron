@@ -10,7 +10,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'mailform';
 
-    protected function prepare(RequestParameters $post)
+    protected function prepare(RequestParameters $post): void
     {
         $mailform = new Mailform($this->id);
         $mailform->loadIfIdIsSet();

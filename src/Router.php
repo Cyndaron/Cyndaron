@@ -323,9 +323,9 @@ class Router
         }
     }
 
-    public static function referrer()
+    public static function referrer(): string
     {
-        return filter_input(INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL);
+        return filter_input(INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL) ?: '';
     }
 
     /**

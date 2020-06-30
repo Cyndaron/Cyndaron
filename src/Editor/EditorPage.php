@@ -89,5 +89,5 @@ abstract class EditorPage extends Page
         }
     }
 
-    abstract protected function prepare();
+    abstract protected function prepare(): void;
 }

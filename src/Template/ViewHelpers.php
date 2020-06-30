@@ -102,6 +102,10 @@ class ViewHelpers
         return sprintf('%s om %s', self::filterDutchDate($date), date('H:i', strtotime($date)));
     }
 
+    /**
+     * @param string $type
+     * @return string[]
+     */
     public static function getButtonIconAndClass(string $type): array
     {
         $icon = $type;

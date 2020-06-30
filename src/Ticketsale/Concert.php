@@ -29,7 +29,7 @@ class Concert extends Model
      * @param int $orderId
      * @param int $numTickets
      * @throws Exception
-     * @return array|null Which seats were reserved, if there were enough, null otherwise
+     * @return int[]|null Which seats were reserved, if there were enough, null otherwise
      */
     public function reserveSeats(int $orderId, int $numTickets): ?array
     {

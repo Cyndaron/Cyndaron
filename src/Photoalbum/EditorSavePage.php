@@ -8,7 +8,7 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'photoalbum';
 
-    protected function prepare(RequestParameters $post)
+    protected function prepare(RequestParameters $post): void
     {
         $photoalbum = new Photoalbum($this->id);
         $photoalbum->loadIfIdIsSet();

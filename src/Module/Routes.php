@@ -8,6 +8,8 @@ interface Routes
     /**
      * Additional routes in the form of
      * ['route' => Controller::class]
+     *
+     * @return string[]
      */
     public function routes(): array;
 }

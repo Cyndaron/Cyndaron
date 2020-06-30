@@ -154,11 +154,11 @@ class Polygon
         $this->_isProjected = true;
     }
 
-    public function preProject($dx, $dy, $dz, $cos_alpha, $sin_alpha, $cos_omega, $sin_omega): void
+    public function preProject(int $dx, int $dy, int $dz, float $cosAlpha, float $sinAlpha, float $cosOmega, float $sinOmega): void
     {
         foreach ($this->_dots as &$dot)
         {
-            $dot->preProject($dx, $dy, $dz, $cos_alpha, $sin_alpha, $cos_omega, $sin_omega);
+            $dot->preProject($dx, $dy, $dz, $cosAlpha, $sinAlpha, $cosOmega, $sinOmega);
         }
     }
 }
