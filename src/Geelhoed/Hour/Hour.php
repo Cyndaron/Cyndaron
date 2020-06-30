@@ -59,7 +59,7 @@ class Hour extends Model
     /**
      * @param int $id
      * @throws \Exception
-     * @return static|null
+     * @return Hour|null
      */
     public static function loadFromDatabase(int $id): ?Model
     {
@@ -68,6 +68,7 @@ class Hour extends Model
             return static::$cache[$id];
         }
 
+        /** @var static $object */
         $object = parent::loadFromDatabase($id);
         static::$cache[$id] = $object;
 

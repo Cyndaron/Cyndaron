@@ -62,9 +62,9 @@ class DynmapProxy
     /**
      * @param string $link
      * @param Server $server
-     * @return false|string
+     * @return string
      */
-    private function getFileContents(string $link, Server $server)
+    private function getFileContents(string $link, Server $server): string
     {
         $serverAddr = sprintf('http://%s:%d', $server->hostname, $server->dynmapPort);
 

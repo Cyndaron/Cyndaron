@@ -11,16 +11,16 @@ class PhotoalbumPage extends Page
     public function __construct(Photoalbum $album, $viewMode = Photoalbum::VIEWMODE_REGULAR)
     {
         $this->model = $album;
-        parent::__construct($this->model->name);
+        parent::__construct($album->name);
 
         if ($viewMode === Photoalbum::VIEWMODE_REGULAR)
         {
             $this->addScript('/js/lightbox.min.js');
 
-            $photos = Photo::fetchAllByAlbum($this->model);
-            $this->templateVars['model'] = $this->model;
+            $photos = Photo::fetchAllByAlbum($album);
+            $this->templateVars['model'] = $album;
             $this->templateVars['photos'] = $photos;
-            $this->templateVars['pageImage'] = $this->model->getImage();
+            $this->templateVars['pageImage'] = $album->getImage();
         }
     }
 

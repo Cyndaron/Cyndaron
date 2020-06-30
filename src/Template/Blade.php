@@ -23,7 +23,7 @@ use Pine\BladeFilters\BladeFiltersCompiler;
  */
 class Blade implements FactoryContract
 {
-    protected ?Container $container;
+    protected ?ContainerInterface $container;
 
     private ? Factory $factory;
 

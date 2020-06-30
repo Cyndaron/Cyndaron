@@ -4,6 +4,11 @@ namespace Cyndaron;
 use Cyndaron\Category\Category;
 use Cyndaron\Template\ViewHelpers;
 
+/**
+ * Class ModelWithCategory
+ *
+ * @property string $type May be present as a helper for the category settings
+ */
 abstract class ModelWithCategory extends Model
 {
     public string $name = '';

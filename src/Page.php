@@ -226,7 +226,7 @@ class Page
         {
             for ($i = 0; $i < $count; $i++)
             {
-                $class = ($i === 0 && $count > 1) ? 'breadcrumb-main-item' : 'breadcrumb-item';
+                $class = ($i === 0) ? 'breadcrumb-main-item' : 'breadcrumb-item';
                 $title .= sprintf('<span class="%s">%s</span>', $class, $titleParts[$i]);
                 if ($i !== $count - 1)
                 {

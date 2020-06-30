@@ -8,7 +8,7 @@ class Graduation extends Model
     public const TABLE = 'geelhoed_graduations';
     public const TABLE_FIELDS = ['sportId', 'name'];
 
-    public string $sportId;
+    public int $sportId;
     public string $name;
 
     private static array $sportCache = [];

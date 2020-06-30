@@ -105,7 +105,7 @@ class OrderController extends Controller
             $payForDelivery = $post->getBool('bezorgen');
         }
         $deliveryPrice = $payForDelivery ? $concertObj->deliveryCost : 0.0;
-        $reserveSeats = $post->getBool('hasReservedSeats');
+        $reserveSeats = $post->getInt('hasReservedSeats');
         $toeslag_gereserveerde_plaats = $reserveSeats ? $concertObj->reservedSeatCharge : 0;
         $order_tickettypes = [];
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
@@ -288,7 +288,7 @@ Kaartsoorten:
             $text .= PHP_EOL . 'Kaarten bezorgen: ' . ViewHelpers::boolToText($delivery);
         }
 
-        $text .= PHP_EOL . 'Gereserveerde plaatsen: ' . $reserveSeats === 1 ? 'Ja' : 'Nee' . PHP_EOL;
+        $text .= PHP_EOL . 'Gereserveerde plaatsen: ' . ($reserveSeats === 1 ? 'Ja' : 'Nee') . PHP_EOL;
         $text .= 'Totaalbedrag: ' . ViewHelpers::formatEuro($total) . '
 
 Achternaam: ' . $lastName . '

@@ -56,7 +56,7 @@ class Concert extends Model
         $adjacentFreeSeats = 0;
         for ($stoel = 1; $stoel <= $this->numReservedSeats; $stoel++)
         {
-            if (isset($reservedSeats[$stoel]) && $reservedSeats[$stoel])
+            if (isset($reservedSeats[$stoel]) && $reservedSeats[$stoel] === true)
             {
                 $adjacentFreeSeats = 0;
             }

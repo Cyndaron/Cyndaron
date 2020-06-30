@@ -142,7 +142,7 @@ class ContestController extends Controller
             'webhookUrl' => "{$baseUrl}/api/contest/mollieWebhook",
         ]);
 
-        if (!$payment || !$payment->id)
+        if (!$payment->id)
         {
             $page = new Page('Fout bij inschrijven', 'Betaling niet gevonden!');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
@@ -169,17 +169,11 @@ class ContestController extends Controller
         $payment = $mollie->payments->get($id);
         $contestMember = ContestMember::fetch(['molliePaymentId = ?'], [$id]);
 
-        if (!$payment || !$contestMember)
+        if ($contestMember === null)
         {
             $message = sprintf('Poging tot updaten van transactie met id %s mislukt.', $id);
-            if ($payment === null)
-            {
-                $message .= ' $payment is null.';
-            }
-            if ($contestMember === null)
-            {
-                $message .= ' $contestMember is null.';
-            }
+            $message .= ' $contestMember is null.';
+
             /** @noinspection ForgottenDebugOutputInspection */
             error_log($message);
             return new JsonResponse(['error' => 'Could not find payment!'], Response::HTTP_NOT_FOUND);
@@ -265,10 +259,7 @@ class ContestController extends Controller
         {
             $column = chr(ord('A') + $i);
             $dimension = $sheet->getColumnDimension($column);
-            if ($dimension)
-            {
-                $dimension->setAutoSize(true);
-            }
+            $dimension->setAutoSize(true);
         }
 
         $date = date('Y-m-d', strtotime($contest->date));

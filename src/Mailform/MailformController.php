@@ -113,7 +113,7 @@ class MailformController extends Controller
      */
     public function processHelper(Mailform $form, RequestParameters $post): bool
     {
-        if ($form === null || !$form->name)
+        if (!$form->name)
         {
             throw new IncompleteData('Ongeldig formulier.');
         }

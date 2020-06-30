@@ -64,7 +64,7 @@ class RegistrationController extends Controller
 
         $eventId = $post->getInt('event_id');
 
-        /** @var Event $eventObj */
+        /** @var Event|null $eventObj */
         $eventObj = Event::loadFromDatabase($eventId);
         if ($eventObj === null)
         {
