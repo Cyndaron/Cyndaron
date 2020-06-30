@@ -33,7 +33,7 @@
             @foreach ($photos as $photo)
             <figure class="fotobadge">
 
-                <a href="/{{ $photo->getFullPath() }}" data-lightbox="{{ $model->name }}" data-hash="{{ $photo->hash }}"
+                <a href="/{{ \Cyndaron\Util::filenameToUrl($photo->getFullPath()) }}" data-lightbox="{{ $model->name }}" data-hash="{{ $photo->hash }}"
                     @if ($photo->caption) data-title="{{ $photo->caption->caption }}" @endif>
                     @if (file_exists($photo->getThumbnailPath()))
                         <img class="thumb" alt="{{ $photo->filename }}" src="{{ \Cyndaron\Util::filenameToUrl($photo->getThumbnailPath()) }}"/>

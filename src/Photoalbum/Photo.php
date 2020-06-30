@@ -82,7 +82,7 @@ class Photo
     {
         $image = new Imagick($filename);
         static::autoRotate($image);
-        if ($image->getImageWidth() > self::MAX_DIMENSION || $image->getImageHeight() > MAX_DIMENSION)
+        if ($image->getImageWidth() > self::MAX_DIMENSION || $image->getImageHeight() > self::MAX_DIMENSION)
         {
             $image->scaleImage(self::MAX_DIMENSION, self::MAX_DIMENSION, true);
         }
