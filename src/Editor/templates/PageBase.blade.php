@@ -32,8 +32,8 @@
         @endif
 
         @if ($hasCategory)
-            @include('Widget/Form/BasicInput', ['id' => 'image', 'label' => 'Afbeelding', 'type' => 'text', 'value' => $image])
-            @include('Widget/Form/BasicInput', ['id' => 'previewImage', 'label' => 'Preview-afbeelding', 'type' => 'text', 'value' => $previewImage])
+            @include('Widget/Form/BasicInput', ['id' => 'image', 'label' => 'Afbeelding', 'type' => 'text', 'value' => $image, 'datalist' => 'page-header-images'])
+            @include('Widget/Form/BasicInput', ['id' => 'previewImage', 'label' => 'Preview-afbeelding', 'type' => 'text', 'value' => $previewImage, 'datalist' => 'page-preview-images'])
             @include('Widget/Form/BasicInput', ['id' => 'blurb', 'label' => 'Korte samenvatting', 'type' => 'text', 'value' => $blurb])
         @endif
 
@@ -86,5 +86,21 @@
         <input type="submit" value="Opslaan" class="btn btn-primary"/>
         <a role="button" class="btn btn-outline-cyndaron" href="{{ $referrer }}">Annuleren</a>
     </form>
+
+    @if ($hasCategory)
+        <datalist id="page-header-images">
+            @foreach ($pageHeaderImages as $pageHeaderImage)
+                <option value="/uploads/images/page-header/{{ $pageHeaderImage }}">
+            @endforeach
+        </datalist>
+        <datalist id="page-preview-images">
+            @foreach ($pagePreviewImages as $pagePreviewImage)
+                <option value="/uploads/images/page-header/{{ $pagePreviewImage }}">
+            @endforeach
+            @foreach ($pageHeaderImages as $pageHeaderImage)
+                <option value="/uploads/images/page-preview/{{ $pageHeaderImage }}">
+            @endforeach
+        </datalist>
+    @endif
 
 @endsection

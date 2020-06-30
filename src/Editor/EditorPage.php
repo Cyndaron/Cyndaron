@@ -7,6 +7,7 @@ use Cyndaron\ModelWithCategory;
 use Cyndaron\Page;
 use Cyndaron\Setting;
 use Cyndaron\Url;
+use Cyndaron\Util;
 
 abstract class EditorPage extends Page
 {
@@ -91,6 +92,26 @@ abstract class EditorPage extends Page
             }
 
             $this->templateVars['showBreadcrumbs'] = $showBreadcrumbs;
+
+            $pageHeaderImages = [];
+            $pageHeaderDir = Util::UPLOAD_DIR . '/images/page-header';
+            if (is_dir($pageHeaderDir))
+            {
+                $pageHeaderImages = array_filter(scandir($pageHeaderDir), static function ($filename) {
+                    return substr($filename, 0,1) !== '.';
+                });
+            }
+            $pagePreviewImages = [];
+            $pagePreviewDir = Util::UPLOAD_DIR . '/images/page-preview';
+            if (is_dir($pagePreviewDir))
+            {
+                $pagePreviewImages = array_filter(scandir($pagePreviewDir), static function ($filename) {
+                    return substr($filename, 0,1) !== '.';
+                });
+            }
+
+            $this->templateVars['pageHeaderImages'] = $pageHeaderImages;
+            $this->templateVars['pagePreviewImages'] = $pagePreviewImages;
         }
     }
 
