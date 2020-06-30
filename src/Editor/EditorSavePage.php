@@ -16,6 +16,8 @@ abstract class EditorSavePage
     protected string $returnUrl = '';
 
     public const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
+    public const PAGE_HEADER_DIR = Util::UPLOAD_DIR . '/images/page-header';
+    public const PAGE_PREVIEW_DIR = Util::UPLOAD_DIR . '/images/page-preview';
 
     public function __construct(?int $id, RequestParameters $post)
     {
@@ -84,6 +86,32 @@ abstract class EditorSavePage
     public function getReturnUrl(): string
     {
         return $this->returnUrl;
+    }
+
+    protected function saveHeaderAndPreviewImage(ModelWithCategory $model, RequestParameters $post): void
+    {
+        $image = $post->getUrl('image');
+        if (!empty($_FILES['header-image-upload']['name']))
+        {
+            Util::ensureDirectoryExists(self::PAGE_HEADER_DIR);
+            $filename = self::PAGE_HEADER_DIR . '/' . $_FILES['header-image-upload']['name'];
+            if (move_uploaded_file($_FILES['header-image-upload']['tmp_name'], $filename))
+            {
+                $image = Util::filenameToUrl($filename);
+            }
+        }
+        $previewImage = $post->getUrl('previewImage');
+        if (!empty($_FILES['preview-image-upload']['name']))
+        {
+            Util::ensureDirectoryExists(self::PAGE_PREVIEW_DIR);
+            $filename = self::PAGE_PREVIEW_DIR . '/' . $_FILES['preview-image-upload']['name'];
+            if (move_uploaded_file($_FILES['preview-image-upload']['tmp_name'], $filename))
+            {
+                $previewImage = Util::filenameToUrl($filename);
+            }
+        }
+        $model->image = $image;
+        $model->previewImage = $previewImage;
     }
 
     protected function saveCategories(ModelWithCategory $model, RequestParameters $post): void

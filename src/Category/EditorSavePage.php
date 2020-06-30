@@ -3,6 +3,7 @@ namespace Cyndaron\Category;
 
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
+use Cyndaron\Util;
 
 class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
@@ -13,14 +14,13 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $category = new Category($this->id);
         $category->loadIfIdIsSet();
         $category->name = $post->getHTML('titel');
-        $category->image = $post->getUrl('image');
-        $category->previewImage = $post->getUrl('previewImage');
         $category->blurb = $post->getHTML('blurb');
         $category->description = $this->parseTextForInlineImages($post->getHTML('artikel'));
         $category->viewMode = $post->getInt('viewMode');
         $category->showBreadcrumbs = $post->getBool('showBreadcrumbs');
-        $this->saveCategories($category, $post);
+        $this->saveHeaderAndPreviewImage($category, $post);
         $category->save();
+        $this->saveCategories($category, $post);
 
         User::addNotification('Categorie bewerkt.');
         $this->returnUrl = '/category/' . $this->id;

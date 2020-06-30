@@ -19,17 +19,15 @@ class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $model = new StaticPageModel($this->id);
         $model->loadIfIdIsSet();
         $model->name = $titel;
-        $model->image = $post->getUrl('image');
-        $model->previewImage = $post->getUrl('previewImage');
         $model->blurb = $post->getHTML('blurb');
         $model->text = $text;
         $model->enableComments = $enableComments;
         $model->showBreadcrumbs = $showBreadcrumbs;
         $model->tags = $tags;
-        $this->saveCategories($model, $post);
-
+        $this->saveHeaderAndPreviewImage($model, $post);
         if ($model->save())
         {
+            $this->saveCategories($model, $post);
             $this->id = $model->id;
 
             User::addNotification('Pagina bewerkt.');

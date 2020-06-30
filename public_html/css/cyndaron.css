@@ -558,3 +558,8 @@ button.aantalKaarten
         margin-left: 20px;
     }
 }
+
+#header-image-upload, #preview-image-upload
+{
+    display: none;
+}

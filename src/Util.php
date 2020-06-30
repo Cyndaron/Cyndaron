@@ -104,4 +104,12 @@ class Util
 
         return $filename;
     }
+
+    public static function ensureDirectoryExists(string $dir): void
+    {
+        if (!mkdir($dir, 0777, true) && !is_dir($dir))
+        {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
+        }
+    }
 }

@@ -1,7 +1,7 @@
 @extends ('Index')
 
 @section ('contents')
-    <form name="bewerkartikel" method="post" action="{{ $saveUrl }}" class="form-horizontal">
+    <form name="bewerkartikel" method="post" action="{{ $saveUrl }}" class="form-horizontal" enctype="multipart/form-data">
 
         @if ($hasTitle)
             <div class="form-group row">
@@ -35,6 +35,13 @@
             @include('Widget/Form/BasicInput', ['id' => 'image', 'label' => 'Afbeelding', 'type' => 'text', 'value' => $image, 'datalist' => 'page-header-images'])
             @include('Widget/Form/BasicInput', ['id' => 'previewImage', 'label' => 'Preview-afbeelding', 'type' => 'text', 'value' => $previewImage, 'datalist' => 'page-preview-images'])
             @include('Widget/Form/BasicInput', ['id' => 'blurb', 'label' => 'Korte samenvatting', 'type' => 'text', 'value' => $blurb])
+
+            <label class="btn btn-primary" for="header-image-upload">Headerafbeelding uploaden...
+                    <input type="file" id="header-image-upload" name="header-image-upload">
+            </label>
+                <label class="btn btn-primary" for="preview-image-upload">Previewafbeelding uploaden...
+                    <input type="file" id="preview-image-upload" name="preview-image-upload">
+                </label>
         @endif
 
         <textarea id="ckeditor-parent" name="artikel" rows="25" cols="125">{{ $article }}</textarea>
