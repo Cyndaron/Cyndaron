@@ -16,6 +16,10 @@ class Photo
     public ?PhotoalbumCaption $caption = null;
     public string $link = '';
 
+    final public function __construct()
+    {
+    }
+
     /**
      * @param Photoalbum $album
      * @return self[]

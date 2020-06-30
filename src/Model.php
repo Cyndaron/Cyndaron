@@ -17,7 +17,7 @@ class Model
     public string $modified;
     public string $created;
 
-    public function __construct(?int $id = null)
+    final public function __construct(?int $id = null)
     {
         $this->id = $id;
     }
