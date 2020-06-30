@@ -16,7 +16,7 @@ class PhotoalbumPage extends Page
 
         if ($viewMode === Photoalbum::VIEWMODE_REGULAR)
         {
-            $this->addScript('/sys/js/lightbox.min.js');
+            $this->addScript('/js/lightbox.min.js');
 
             $photos = Photo::fetchAllByAlbum($this->model);
             $this->templateVars['model'] = $this->model;

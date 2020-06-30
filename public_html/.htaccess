@@ -25,6 +25,11 @@ RewriteRule ^$ index.php?page=/ [QSA,NC,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/(src|vendor)/.*\.(js|css|map|png|jpg|jpeg|gif|html)$
+RewriteRule ^(.*)$ asset/$1 [QSA,NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?page=$1 [QSA,NC,L]
 
 <ifModule mod_headers.c>

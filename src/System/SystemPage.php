@@ -5,6 +5,7 @@ use Cyndaron\Category\Category;
 use Cyndaron\CyndaronInfo;
 use Cyndaron\Page;
 use Cyndaron\Setting;
+use Cyndaron\Util;
 
 class SystemPage extends Page
 {
@@ -123,14 +124,23 @@ class SystemPage extends Page
     {
         $writableFolders = [
             '/cache',
-            '/uploads',
+            '/public_html/uploads',
         ];
         $unWriteableFolders = [
-            '/contrib',
+            '/public_html/asset',
+            '/public_html/contrib',
+            '/public_html/css',
+            '/public_html/icons',
+            '/public_html/js',
+            '/public_html/index.php',
+            '/public_html/user.css',
             '/sql',
             '/src',
-            '/sys',
             '/vendor',
+            '/config.php',
+            '/extra-body-start.php',
+            '/extra-body-end.php',
+            '/extra-head.php',
         ];
         $folderResults = [];
         foreach ($writableFolders as $folder)

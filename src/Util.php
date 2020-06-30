@@ -18,6 +18,8 @@ namespace Cyndaron;
 
 class Util
 {
+    public const UPLOAD_DIR = __DIR__ . '/../public_html/uploads';
+
     public static function generatePassword($length = 10): string
     {
         $gencode = '';

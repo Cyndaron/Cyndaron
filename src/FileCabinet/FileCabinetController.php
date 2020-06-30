@@ -7,6 +7,7 @@ use Cyndaron\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -25,7 +26,7 @@ class FileCabinetController extends Controller
 
     protected function addItem(): Response
     {
-        $filename = './uploads/filecabinet/' . basename($_FILES['newFile']['name']);
+        $filename = Util::UPLOAD_DIR . '/filecabinet/' . basename($_FILES['newFile']['name']);
         if (move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
         {
             User::addNotification('Bestand geüpload');
@@ -41,7 +42,7 @@ class FileCabinetController extends Controller
     protected function deleteItem(RequestParameters $post): Response
     {
         $filename = $post->getFilename('filename');
-        $fullPath = "./uploads/filecabinet/$filename";
+        $fullPath = Util::UPLOAD_DIR . "/filecabinet/$filename";
         if ($filename !== 'include.html' && file_exists($fullPath))
         {
             if (@unlink($fullPath))

@@ -34,7 +34,7 @@ abstract class EditorPage extends Page
 
         parent::__construct('Editor');
         $this->addScript('/vendor/ckeditor/ckeditor/ckeditor.js');
-        $this->addScript('/sys/js/editor.js');
+        $this->addScript('/js/editor.js');
 
         $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $this->id);
         $friendlyUrl = $unfriendlyUrl->getFriendly();

@@ -4,10 +4,11 @@ namespace Cyndaron\FileCabinet;
 use Cyndaron\Page;
 use Cyndaron\Setting;
 use Cyndaron\User\User;
+use Cyndaron\Util;
 
 class OverviewPage extends Page
 {
-    private const PATH = './uploads/filecabinet/';
+    private const PATH = Util::UPLOAD_DIR . '/filecabinet/';
 
     public function __construct()
     {

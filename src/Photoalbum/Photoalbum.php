@@ -57,7 +57,7 @@ class Photoalbum extends ModelWithCategory
     {
         $ret = [];
 
-        if ($dirArray = @scandir("./uploads/photoalbums/$this->id/originals"))
+        if ($dirArray = @scandir(Util::UPLOAD_DIR . "/photoalbums/$this->id/originals"))
         {
             natsort($dirArray);
             $ret = array_values(array_filter($dirArray, static function($value)
@@ -81,7 +81,7 @@ class Photoalbum extends ModelWithCategory
 
     public static function getPhotoalbumsDir(): string
     {
-        return __DIR__ . '/../../uploads/photoalbums/';
+        return Util::UPLOAD_DIR . '/photoalbums/';
     }
 
     public function getText(): string

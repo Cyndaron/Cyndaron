@@ -12,8 +12,8 @@
 
     <link href="/vendor/twbs/bootstrap/dist/css/bootstrap.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
     <link href="/contrib/Glyphicons/css/glyphicons.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
-    <link href="/sys/css/lightbox.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
-    <link href="/sys/css/cyndaron.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
+    <link href="/css/lightbox.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
+    <link href="/css/cyndaron.min.css?r={{ $version }}" type="text/css" rel="stylesheet" />
     <link href="/user.css?r={{ $version }}" type="text/css" rel="stylesheet" />
     @foreach ($extraCss as $extraCssScript)
         <link href="{{ $extraCssScript }}?r={{ $version }}" type="text/css" rel="stylesheet" />

@@ -1,9 +1,8 @@
 config.php
-user.css
+public_html/user.css
 cyn2
 afb/
 doc/
-fonts/
 muz/
 org/
 .idea/
@@ -11,8 +10,9 @@ bestandenkast/
 cache/
 .sass-cache/
 vendor/
-uploads/
+public_html/uploads/
 extra-head.php
 extra-body-start.php
 extra-body-end.php
 .php_cs.cache
+public_html/asset

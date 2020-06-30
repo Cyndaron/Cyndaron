@@ -30,7 +30,7 @@ class Page
     public const DEFAULT_SCRIPTS = [
         '/vendor/components/jquery/jquery.min.js',
         '/vendor/twbs/bootstrap/dist/js/bootstrap.min.js',
-        '/sys/js/cyndaron.js',
+        '/js/cyndaron.js',
     ];
 
     protected string $extraMeta = '';
