@@ -11,6 +11,7 @@ abstract class ModelWithCategory extends Model
     public string $previewImage = '';
     public string $blurb = '';
     public bool $showBreadcrumbs = false;
+    public bool $openInNewTab = false;
 
     // Saved in coupling table!
     public int $priority = 0;
@@ -66,6 +67,21 @@ abstract class ModelWithCategory extends Model
         }
 
         return $categories;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getCategoryIds(): array
+    {
+        $categories = $this->getCategories();
+        $ret = [];
+        foreach ($categories as $category)
+        {
+            $ret[] = $category->id;
+        }
+
+        return $ret;
     }
 
     public function addCategory(Category $category)

@@ -272,6 +272,7 @@ class Router
             \Cyndaron\Photoalbum\Module::class,
             \Cyndaron\FriendlyUrl\Module::class,
             \Cyndaron\Mailform\Module::class,
+            \Cyndaron\RichLink\Module::class,
         ];
 
         if (defined('MODULES'))

@@ -3,6 +3,7 @@ namespace Cyndaron\Category;
 
 use Cyndaron\ModelWithCategory;
 use Cyndaron\Photoalbum\Photoalbum;
+use Cyndaron\RichLink\RichLink;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url;
 
@@ -51,6 +52,7 @@ class Category extends ModelWithCategory
             StaticPageModel::fetchAllByCategory($this),
             self::fetchAllByCategory($this),
             Photoalbum::fetchAllByCategory($this),
+            RichLink::fetchAllByCategory($this),
         );
 
         if ($orderBy === 'name')
