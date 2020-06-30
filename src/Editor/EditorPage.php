@@ -65,7 +65,7 @@ abstract class EditorPage extends Page
         {
             $this->templateVars['categories'] = Category::fetchAll([], [], 'ORDER BY name');
             $this->templateVars['selectedCategories'] = [];
-            if ($this->id)
+            if ($this->id && $this->model instanceof ModelWithCategory)
             {
                 $categories = $this->model->getCategories();
                 foreach ($categories as $category)

@@ -23,6 +23,8 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
             $this->contentTitle = $this->model->name;
         }
 
+        assert($this->model instanceof Concert);
+
         $this->templateVars['deliveryCost'] = ViewHelpers::formatCurrency($this->model->deliveryCost ?? 1.5);
         $this->templateVars['reservedSeatCharge'] = ViewHelpers::formatCurrency($this->model->reservedSeatCharge ?? 5.0);
         $this->templateVars['numFreeSeats'] = $this->model->numFreeSeats ?? 250;

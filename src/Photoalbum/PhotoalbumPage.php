@@ -11,7 +11,6 @@ class PhotoalbumPage extends Page
     public function __construct(Photoalbum $album, $viewMode = Photoalbum::VIEWMODE_REGULAR)
     {
         $this->model = $album;
-        $this->model->load();
         parent::__construct($this->model->name);
 
         if ($viewMode === Photoalbum::VIEWMODE_REGULAR)

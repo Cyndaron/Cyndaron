@@ -49,7 +49,7 @@ class CategoryIndexPage extends Page
     {
         $portfolioContent = [];
 
-        if ($this->model->viewMode === Category::VIEWMODE_PORTFOLIO)
+        if ($this->model instanceof Category && $this->model->viewMode === Category::VIEWMODE_PORTFOLIO)
         {
             $subCategories = Category::fetchAllByCategory($this->model);
             foreach ($subCategories as $subCategory)
