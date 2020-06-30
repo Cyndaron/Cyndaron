@@ -33,6 +33,6 @@ class Module implements Routes, Datatypes
 
     public function getList(): array
     {
-        return DBConnection::doQueryAndFetchAll('SELECT CONCAT(\'/concert/order/\', id) AS link, CONCAT(\'Concert: \', name) AS name FROM ticketsale_concerts');
+        return DBConnection::doQueryAndFetchAll('SELECT CONCAT(\'/concert/order/\', id) AS link, CONCAT(\'Concert: \', name) AS name FROM ticketsale_concerts') ?: [];
     }
 }

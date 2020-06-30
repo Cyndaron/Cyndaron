@@ -11,13 +11,25 @@ use Cyndaron\PlainTextMail;
 class Order extends Model
 {
     public const TABLE = 'ticketsale_orders';
-    public const TABLE_FIELDS = ['concert_id', 'delivery', 'deliveryByMember', 'deliveryMemberName', 'email'];
+    public const TABLE_FIELDS = ['concertId', 'lastName', 'initials', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'delivery', 'isDelivered', 'hasReservedSeats', 'isPaid', 'deliveryByMember', 'deliveryMemberName', 'addressIsAbroad', 'comments'];
 
-    public int $concert_id;
-    public string $delivery;
+    public int $concertId;
+    public string $lastName = '';
+    public string $initials = '';
+    public string $email = '';
+    public string $street = '';
+    public int $houseNumber;
+    public string $houseNumberAddition = '';
+    public string $postcode;
+    public string $city;
+    public bool $delivery;
+    public bool $isDelivered = false;
+    public bool $hasReservedSeats = false;
+    public bool $isPaid = false;
     public bool $deliveryByMember;
-    public string $deliveryMemberName;
-    public string $email;
+    public string $deliveryMemberName = '';
+    public bool $addressIsAbroad = false;
+    public string $comments = '';
 
     public function setIsPaid(): bool
     {
@@ -26,8 +38,8 @@ class Order extends Model
             throw new IncompleteData('ID is null!');
         }
 
-        $concert = new Concert((int)$this->concert_id);
-        $concert->load();
+        /** @var Concert|null $concert */
+        $concert = Concert::loadFromDatabase($this->concertId);
 
         DBConnection::doQuery('UPDATE ticketsale_orders SET `isPaid`=1 WHERE id=?', [$this->id]);
 

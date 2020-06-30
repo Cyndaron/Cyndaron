@@ -28,7 +28,8 @@ class ConcertController extends Controller
         }
         $concert = new Concert($concertId);
         $concert->load();
-        $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
+        /** @var TicketType[]|null $ticketTypes */
+        $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concertId], 'ORDER BY price DESC');
 
         $answer = [
             'tickettypes' => [],
@@ -37,11 +38,11 @@ class ConcertController extends Controller
             'reservedSeatCharge' => $concert->reservedSeatCharge,
         ];
 
-        foreach ($ticketTypes as $kaartsoort)
+        foreach ($ticketTypes as $ticketType)
         {
             $answer['tickettypes'][] = [
-                'id' => $kaartsoort['id'],
-                'price' => $kaartsoort['price']
+                'id' => $ticketType->id,
+                'price' => $ticketType->price,
             ];
         }
 

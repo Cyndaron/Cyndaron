@@ -108,12 +108,13 @@ class OrderController extends Controller
         $reserveSeats = $post->getInt('hasReservedSeats');
         $toeslag_gereserveerde_plaats = $reserveSeats ? $concertObj->reservedSeatCharge : 0;
         $order_tickettypes = [];
-        $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concertId]);
+        /** @var TicketType[]|null $ticketTypes */
+        $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concertId], 'ORDER BY price DESC');
         foreach ($ticketTypes as $ticketType)
         {
-            $order_tickettypes[$ticketType['id']] = $post->getInt('tickettype-' . $ticketType['id']);
-            $totaalprijs += $order_tickettypes[$ticketType['id']] * ($ticketType['price'] + $deliveryPrice + $toeslag_gereserveerde_plaats);
-            $totaalAantalKaarten += $order_tickettypes[$ticketType['id']];
+            $order_tickettypes[$ticketType->id] = $post->getInt('tickettype-' . $ticketType->id);
+            $totaalprijs += $order_tickettypes[$ticketType->id] * ($ticketType->price + $deliveryPrice + $toeslag_gereserveerde_plaats);
+            $totaalAantalKaarten += $order_tickettypes[$ticketType->id];
         }
 
         if ($totaalprijs <= 0)
@@ -143,11 +144,11 @@ class OrderController extends Controller
 
         foreach ($ticketTypes as $ticketType)
         {
-            if ($order_tickettypes[$ticketType['id']] > 0)
+            if ($order_tickettypes[$ticketType->id] > 0)
             {
                 $result = DBConnection::doQuery(
                     'INSERT INTO ticketsale_orders_tickettypes(`orderId`, `tickettypeId`, `amount`) VALUES(?, ?, ?)',
-                    [$orderId, $ticketType['id'], $order_tickettypes[$ticketType['id']]]
+                    [$orderId, $ticketType->id, $order_tickettypes[$ticketType->id]]
                 );
                 if ($result === false)
                 {
@@ -223,7 +224,7 @@ class OrderController extends Controller
      * @param array|null $reservedSeats
      * @param float $total
      * @param int $orderId
-     * @param array $ticketTypes
+     * @param TicketType[] $ticketTypes
      * @param array $orderTicketTypes
      * @param string $lastName
      * @param string $initials
@@ -278,9 +279,9 @@ Kaartsoorten:
 ';
         foreach ($ticketTypes as $ticketType)
         {
-            if ($orderTicketTypes[$ticketType['id']] > 0)
+            if ($orderTicketTypes[$ticketType->id] > 0)
             {
-                $text .= '   ' . $ticketType['name'] . ': ' . $orderTicketTypes[$ticketType['id']] . ' à ' . ViewHelpers::formatEuro((float)$ticketType['price']) . PHP_EOL;
+                $text .= '   ' . $ticketType->name . ': ' . $orderTicketTypes[$ticketType->id] . ' à ' . ViewHelpers::formatEuro($ticketType->price) . PHP_EOL;
             }
         }
         if (!$concert->forcedDelivery)

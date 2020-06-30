@@ -11,14 +11,19 @@ class ShowReservedSeats
     {
         $bookedSeats = [];
 
-        $seatBookings = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$concert->id]);
+        $seatBookings = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$concert->id]) ?: [];
         foreach ($seatBookings as $currentBooking)
         {
-            $order = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM ticketsale_orders WHERE id=?', [$currentBooking['orderId']]);
+            /** @var Order|null $order */
+            $order = Order::loadFromDatabase($currentBooking['orderId']);
+            if ($order === null)
+            {
+                continue;
+            }
 
             for ($seat = $currentBooking['eerste_stoel']; $seat <= $currentBooking['laatste_stoel']; $seat++)
             {
-                $bookedSeats[$seat] = $order['initials'] . ' ' . $order['lastName'] . ' (' . $order['id'] . ')';
+                $bookedSeats[$seat] = $order->initials . ' ' . $order->lastName . ' (' . $order->id. ')';
             }
         }
 
