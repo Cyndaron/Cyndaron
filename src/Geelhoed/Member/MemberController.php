@@ -151,8 +151,8 @@ class MemberController extends Controller
     }
 
     /**
-     * @param $user
-     * @param $member
+     * @param User $user
+     * @param Member $member
      * @param RequestParameters $post
      * @return Member
      */

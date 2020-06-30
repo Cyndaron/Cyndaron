@@ -218,23 +218,23 @@ class OrderController extends Controller
      * @param bool $delivery
      * @param Concert $concert
      * @param bool $memberDelivery
-     * @param $deliveryMemberName
+     * @param string $deliveryMemberName
      * @param int $reserveSeats
      * @param array|null $reservedSeats
-     * @param $total
-     * @param $orderId
+     * @param float $total
+     * @param int $orderId
      * @param array $ticketTypes
      * @param array $orderTicketTypes
-     * @param $lastName
-     * @param $initials
-     * @param $street
-     * @param $postcode
-     * @param $city
-     * @param $comments
-     * @param $email
+     * @param string $lastName
+     * @param string $initials
+     * @param string $street
+     * @param string $postcode
+     * @param string $city
+     * @param string $comments
+     * @param string $email
      * @return bool
      */
-    private function sendMail(bool $delivery, Concert $concert, bool $memberDelivery, $deliveryMemberName, int $reserveSeats, ?array $reservedSeats, float $total, $orderId, array $ticketTypes, array $orderTicketTypes, $lastName, $initials, $street, $postcode, $city, $comments, $email): bool
+    private function sendMail(bool $delivery, Concert $concert, bool $memberDelivery, string $deliveryMemberName, int $reserveSeats, ?array $reservedSeats, float $total, int $orderId, array $ticketTypes, array $orderTicketTypes, string $lastName, string $initials, string $street, string $postcode, string $city, string $comments, string $email): bool
     {
         if ($delivery || ($concert->forcedDelivery && !$memberDelivery))
         {

@@ -85,7 +85,7 @@ class Polygon
     }
 
     /**
-     * @param $image
+     * @param resource $image
      * @param int $minX
      * @param int $minY
      * @param int $ratio
