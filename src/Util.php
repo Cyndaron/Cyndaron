@@ -94,7 +94,7 @@ class Util
         return \DateTimeImmutable::createFromFormat('!Y-m-d', $date);
     }
 
-    public static function filenameToUrl(string $filename)
+    public static function filenameToUrl(string $filename): string
     {
         if (strpos($filename, self::UPLOAD_DIR) === 0)
         {
