@@ -10,6 +10,7 @@ use Cyndaron\ModelWithCategory;
 use Cyndaron\Page;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\RichLink\RichLink;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -155,6 +156,9 @@ class CategoryController extends Controller
                 case 'photoalbum':
                     DBConnection::doQuery('REPLACE INTO photoalbum_categories(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
                     break;
+                case 'richlink':
+                    DBConnection::doQuery('REPLACE INTO richlink_category(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
+                    break;
             }
         }
 
@@ -188,6 +192,9 @@ class CategoryController extends Controller
                     break;
                 case Photoalbum::class:
                     $class = 'photoalbum';
+                    break;
+                case RichLink::class:
+                    $class = 'richlink';
                     break;
             }
             /** @noinspection PhpUndefinedFieldInspection */
