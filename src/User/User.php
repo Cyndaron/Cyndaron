@@ -121,6 +121,10 @@ EOT;
 
         $tmpName = $_FILES['avatarFile']['tmp_name'];
         $buffer = file_get_contents($tmpName);
+        if ($buffer === false)
+        {
+            throw new Exception('Kon de inhoud van de avatar niet lezen!');
+        }
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         $mimeType = $finfo->buffer($buffer);
         switch ($mimeType)
@@ -136,6 +140,11 @@ EOT;
                 break;
             default:
                 throw new Exception('Ongeldig bestandstype');
+        }
+
+        if ($avatarImg === false)
+        {
+            throw new Exception('Kon de bestandsinhoud niet verwerken!');
         }
 
         $filename = static::AVATAR_DIR . "/{$this->id}.png";
