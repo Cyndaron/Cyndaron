@@ -12,7 +12,7 @@ use DateTime;
 use Exception;
 use finfo;
 
-class User extends Model
+final class User extends Model
 {
     public const TABLE = 'users';
     public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'initials', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city', 'dateOfBirth', 'notes'];

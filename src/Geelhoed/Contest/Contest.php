@@ -5,7 +5,7 @@ use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Model;
 
-class Contest extends Model
+final class Contest extends Model
 {
     public const TABLE = 'geelhoed_contests';
     public const TABLE_FIELDS = ['name', 'description', 'location', 'sportId', 'date', 'registrationDeadline', 'price'];

@@ -11,7 +11,7 @@ use Cyndaron\Template\Template;
 use Cyndaron\Template\ViewHelpers;
 use \Exception;
 
-class Registration extends Model
+final class Registration extends Model
 {
     public const TABLE = 'registration_orders';
     public const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'participatedBefore', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid', 'currentChoir', 'choirPreference', 'approvalStatus', 'phone', 'choirExperience', 'performedBefore'];

@@ -7,7 +7,7 @@ use Cyndaron\ModelWithCategory;
 use Cyndaron\Template\ViewHelpers;
 use Cyndaron\Url;
 
-class StaticPageModel extends ModelWithCategory
+final class StaticPageModel extends ModelWithCategory
 {
     public const TABLE = 'subs';
     public const CATEGORY_TABLE = 'sub_categories';

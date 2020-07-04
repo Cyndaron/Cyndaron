@@ -7,7 +7,7 @@ use Cyndaron\RichLink\RichLink;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url;
 
-class Category extends ModelWithCategory
+final class Category extends ModelWithCategory
 {
     public const TABLE = 'categories';
     public const CATEGORY_TABLE = 'category_categories';

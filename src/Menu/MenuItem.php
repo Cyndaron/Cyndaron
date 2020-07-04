@@ -8,7 +8,7 @@ use Cyndaron\Model;
 use Cyndaron\Setting;
 use Cyndaron\Url;
 
-class MenuItem extends Model
+final class MenuItem extends Model
 {
     public const TABLE = 'menu';
     public const TABLE_FIELDS = ['link', 'alias', 'isDropdown', 'isImage', 'priority'];

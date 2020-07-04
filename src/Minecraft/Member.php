@@ -3,7 +3,7 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Model;
 
-class Member extends Model
+final class Member extends Model
 {
     public const TABLE = 'minecraft_members';
     public const TABLE_FIELDS = ['userName', 'uuid', 'realName', 'level', 'status', 'donor', 'skinUrl', 'renderAvatarHair', 'newRenderer'];

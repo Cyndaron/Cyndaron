@@ -3,7 +3,7 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\Model;
 
-class EventTicketType extends Model
+final class EventTicketType extends Model
 {
     public const TABLE = 'registration_tickettypes';
     public const TABLE_FIELDS = ['eventId', 'name', 'price', 'discountPer5'];

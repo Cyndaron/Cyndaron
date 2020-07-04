@@ -5,7 +5,7 @@ use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Model;
 
-class ContestMember extends Model
+final class ContestMember extends Model
 {
     public const TABLE = 'geelhoed_contests_members';
     public const TABLE_FIELDS = ['contestId', 'memberId', 'graduationId', 'weight', 'molliePaymentId', 'isPaid', 'comments'];

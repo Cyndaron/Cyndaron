@@ -7,7 +7,7 @@ use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Model;
 
-class Location extends Model
+final class Location extends Model
 {
     public const TABLE = 'geelhoed_locations';
     public const TABLE_FIELDS = ['name', 'street', 'houseNumber', 'postalCode', 'city'];

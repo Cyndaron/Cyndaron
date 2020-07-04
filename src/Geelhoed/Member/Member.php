@@ -12,7 +12,7 @@ use Cyndaron\Model;
 use Cyndaron\User\User;
 use Cyndaron\Util;
 
-class Member extends Model
+final class Member extends Model
 {
     public const TABLE = 'geelhoed_members';
     public const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'paymentProblem', 'paymentProblemNote', 'freeParticipation', 'temporaryStop', 'joinedAt', 'jbnNumber', 'jbnNumberLocation'];

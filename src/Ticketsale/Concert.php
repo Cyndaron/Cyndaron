@@ -8,7 +8,7 @@ use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use Exception;
 
-class Concert extends Model
+final class Concert extends Model
 {
     public const TABLE = 'ticketsale_concerts';
     public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats'];

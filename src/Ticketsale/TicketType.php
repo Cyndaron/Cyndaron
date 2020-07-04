@@ -5,7 +5,7 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\Model;
 
-class TicketType extends Model
+final class TicketType extends Model
 {
     public const TABLE = 'ticketsale_tickettypes';
     public const TABLE_FIELDS = ['concertId', 'name', 'price'];

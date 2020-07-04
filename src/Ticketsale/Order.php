@@ -8,7 +8,7 @@ use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use Cyndaron\PlainTextMail;
 
-class Order extends Model
+final class Order extends Model
 {
     public const TABLE = 'ticketsale_orders';
     public const TABLE_FIELDS = ['concertId', 'lastName', 'initials', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'delivery', 'isDelivered', 'hasReservedSeats', 'isPaid', 'deliveryByMember', 'deliveryMemberName', 'addressIsAbroad', 'comments'];

@@ -5,7 +5,7 @@ namespace Cyndaron\RichLink;
 
 use Cyndaron\ModelWithCategory;
 
-class RichLink extends ModelWithCategory
+final class RichLink extends ModelWithCategory
 {
     public const TABLE = 'richlink';
     public const CATEGORY_TABLE = 'richlink_category';

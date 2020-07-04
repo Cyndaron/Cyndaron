@@ -10,7 +10,7 @@ use Cyndaron\Template\ViewHelpers;
 use Cyndaron\Url;
 use Cyndaron\Util;
 
-class Photoalbum extends ModelWithCategory
+final class Photoalbum extends ModelWithCategory
 {
     public const TABLE = 'photoalbums';
     public const CATEGORY_TABLE = 'photoalbum_categories';

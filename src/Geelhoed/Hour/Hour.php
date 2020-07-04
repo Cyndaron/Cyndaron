@@ -9,7 +9,7 @@ use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Model;
 use Cyndaron\Template\ViewHelpers;
 
-class Hour extends Model
+final class Hour extends Model
 {
     public const TABLE = 'geelhoed_hours';
     public const TABLE_FIELDS = ['locationId', 'day', 'description', 'from', 'until', 'sportId', 'sportOverride', 'departmentId', 'notes'];

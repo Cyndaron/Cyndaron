@@ -3,7 +3,7 @@ namespace Cyndaron\Geelhoed;
 
 use Cyndaron\Model;
 
-class Graduation extends Model
+final class Graduation extends Model
 {
     public const TABLE = 'geelhoed_graduations';
     public const TABLE_FIELDS = ['sportId', 'name'];

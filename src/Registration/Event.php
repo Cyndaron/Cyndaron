@@ -6,7 +6,7 @@ namespace Cyndaron\Registration;
 use Cyndaron\Model;
 use Cyndaron\Setting;
 
-class Event extends Model
+final class Event extends Model
 {
     public const TABLE = 'registration_events';
     public const TABLE_FIELDS = ['name', 'openForRegistration', 'description', 'descriptionWhenClosed', 'registrationCost0', 'registrationCost1', 'registrationCost2', 'lunchCost', 'maxRegistrations', 'numSeats', 'requireApproval', 'performedPiece', 'termsAndConditions'];

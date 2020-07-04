@@ -3,7 +3,7 @@ namespace Cyndaron\Geelhoed;
 
 use Cyndaron\Model;
 
-class Department extends Model
+final class Department extends Model
 {
     public const TABLE = 'geelhoed_departments';
     public const TABLE_FIELDS = ['name'];

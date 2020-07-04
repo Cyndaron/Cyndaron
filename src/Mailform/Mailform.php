@@ -5,7 +5,7 @@ namespace Cyndaron\Mailform;
 
 use Cyndaron\Model;
 
-class Mailform extends Model
+final class Mailform extends Model
 {
     public const TABLE = 'mailforms';
     public const TABLE_FIELDS = ['name', 'email', 'antiSpamAnswer', 'sendConfirmation', 'confirmationText'];

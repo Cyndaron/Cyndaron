@@ -13,7 +13,7 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Model;
 
-class Server extends Model
+final class Server extends Model
 {
     public const TABLE = 'minecraft_servers';
     public const TABLE_FIELDS = ['name', 'hostname', 'port', 'dynmapPort'];

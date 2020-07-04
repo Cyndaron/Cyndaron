@@ -4,7 +4,7 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\DBConnection;
 use Cyndaron\Model;
 
-class PhotoalbumCaption extends Model
+final class PhotoalbumCaption extends Model
 {
     public const TABLE = 'photoalbum_captions';
     public const TABLE_FIELDS = ['hash', 'caption'];

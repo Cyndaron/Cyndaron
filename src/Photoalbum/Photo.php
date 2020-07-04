@@ -16,10 +16,6 @@ class Photo
     public ?PhotoalbumCaption $caption = null;
     public string $link = '';
 
-    final public function __construct()
-    {
-    }
-
     /**
      * @param Photoalbum $album
      * @return self[]
@@ -29,7 +25,7 @@ class Photo
         $ret = [];
         foreach ($album->getPhotos() as $filename)
         {
-            $photo = new static();
+            $photo = new self();
             $photo->album = $album;
             $photo->filename = $filename;
             $photo->hash = md5_file($photo->getFullPath());

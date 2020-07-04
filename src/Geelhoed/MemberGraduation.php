@@ -4,7 +4,7 @@ namespace Cyndaron\Geelhoed;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Model;
 
-class MemberGraduation extends Model
+final class MemberGraduation extends Model
 {
     public const TABLE = 'geelhoed_members_graduations';
     public const TABLE_FIELDS = ['memberId', 'graduationId', 'date'];
