@@ -6,13 +6,12 @@ use Cyndaron\Util;
 
 class Template
 {
-    private string $compiledDir = 'cache/template';
-    private array $data = [];
+    private const COMPILED_DIR = 'cache/template';
     private TemplateFinder $templateFinder;
 
     public function __construct()
     {
-        $this->templateFinder  = new TemplateFinder();
+        $this->templateFinder = new TemplateFinder();
     }
 
     /**
@@ -21,7 +20,7 @@ class Template
      */
     public function createCacheDir(string $engine): string
     {
-        $cacheDir = $this->compiledDir . '/' . $engine;
+        $cacheDir = self::COMPILED_DIR . '/' . $engine;
         Util::createDir($cacheDir);
 
         return $cacheDir;
@@ -32,10 +31,8 @@ class Template
      * @param array|null $data
      * @return string
      */
-    public function render(string $template, array $data = null): string
+    public function render(string $template, array $data = []): string
     {
-        $data = $data ?: $this->data;
-
         $blade  = new Blade([], $this->createCacheDir('blade'));
         $result = $blade->make($template, $data);
 
