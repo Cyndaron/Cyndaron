@@ -45,6 +45,12 @@ final class Router
         'toonsub.php' => ['url' => '/sub/', 'id' => 'id'],
     ];
 
+    private const HEADERS_DO_NOT_CACHE = [
+        'cache-control' => 'no-cache, no-store, must-revalidate',
+        'pragma' => 'no-cache',
+        'expires' => 0,
+    ];
+
     public function route(): void
     {
         if (empty($_SESSION))
@@ -91,20 +97,14 @@ final class Router
         $isLoggingIn = $this->requestVars[0] === 'user' && $this->requestVars[1] === 'login';
         if (!$isLoggingIn && !User::hasSufficientReadLevel())
         {
-            $headers = [
-                'cache-control' => 'no-cache, no-store, must-revalidate',
-                'pragma' => 'no-cache',
-                'expires' => 0,
-            ];
-
             if ($userLevel > 0)
             {
-                return new RedirectResponse('/error/403', Response::HTTP_FOUND, $headers);
+                return new RedirectResponse('/error/403', Response::HTTP_FOUND, self::HEADERS_DO_NOT_CACHE);
             }
 
             User::addNotification('U moet inloggen om deze site te bekijken');
             $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
-            return new RedirectResponse('/user/login', Response::HTTP_FOUND, $headers);
+            return new RedirectResponse('/user/login', Response::HTTP_FOUND, self::HEADERS_DO_NOT_CACHE);
         }
 
         return null;

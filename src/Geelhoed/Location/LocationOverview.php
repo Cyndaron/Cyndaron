@@ -5,12 +5,13 @@ use Cyndaron\Page;
 
 final class LocationOverview extends Page
 {
+    private const PAGE_IMAGE = '/src/Geelhoed/Location/images/location-overview.jpg';
+
     public function __construct()
     {
         parent::__construct('Leslocaties');
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $locations = Location::fetchAll([], [], 'ORDER BY city, street');
-        $pageImage = '/src/Geelhoed/Location/images/location-overview.jpg';
-        $this->addTemplateVars(['locations' => $locations, 'pageImage' => $pageImage]);
+        $this->addTemplateVars(['locations' => $locations, 'pageImage' => self::PAGE_IMAGE]);
     }
 }

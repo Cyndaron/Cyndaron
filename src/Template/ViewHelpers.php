@@ -24,6 +24,8 @@ final class ViewHelpers
         'delete' => 'btn-danger',
     ];
 
+    private const YOUTUBE = '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="https://www.youtube.com/embed/$1" sandbox="allow-scripts allow-same-origin allow-popups" allowfullscreen></iframe></div>';
+
     /**
      * Zet een maandnummer om in de naam.
      * Bijvoorbeeld: 1 -> januari.
@@ -153,8 +155,7 @@ final class ViewHelpers
             }
             return '';
         }, $text);
-        $youtube = '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="https://www.youtube.com/embed/$1" sandbox="allow-scripts allow-same-origin allow-popups" allowfullscreen></iframe></div>';
-        $text = preg_replace('/%youtube\|([A-Za-z0-9_\-]+)%/', $youtube, $text);
+        $text = preg_replace('/%youtube\|([A-Za-z0-9_\-]+)%/', self::YOUTUBE, $text);
 
         return $text;
     }

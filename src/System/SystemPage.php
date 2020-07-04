@@ -9,6 +9,32 @@ use Cyndaron\Util;
 
 final class SystemPage extends Page
 {
+    private const WRITABLE_FILES_AND_FOLDERS = [
+        '/cache',
+        '/public_html/uploads',
+    ];
+
+    private const UNWRITEABLE_FILES_AND_FOLDERS = [
+        '/public_html/asset',
+        '/public_html/contrib',
+        '/public_html/css',
+        '/public_html/icons',
+        '/public_html/js',
+        '/public_html/index.php',
+        '/public_html/user.css',
+        '/sql',
+        '/src',
+        '/vendor',
+        '/config.php',
+        '/extra-body-start.php',
+        '/extra-body-end.php',
+        '/extra-head.php',
+    ];
+
+    private const SETTINGS = [
+        'post_max_size',
+        'upload_max_filesize',
+    ];
     public function __construct(string $currentPage)
     {
         $this->template = 'System/' . ucfirst($currentPage);
@@ -126,53 +152,26 @@ final class SystemPage extends Page
      */
     private function checkFolderRights(): array
     {
-        $writableFolders = [
-            '/cache',
-            '/public_html/uploads',
-        ];
-        $unWriteableFolders = [
-            '/public_html/asset',
-            '/public_html/contrib',
-            '/public_html/css',
-            '/public_html/icons',
-            '/public_html/js',
-            '/public_html/index.php',
-            '/public_html/user.css',
-            '/sql',
-            '/src',
-            '/vendor',
-            '/config.php',
-            '/extra-body-start.php',
-            '/extra-body-end.php',
-            '/extra-head.php',
-        ];
         $folderResults = [];
-        foreach ($writableFolders as $folder)
+        foreach (self::WRITABLE_FILES_AND_FOLDERS as $folder)
         {
             $folderResults[$folder] = is_writable(__DIR__ . '/../..' . $folder);
         }
-        foreach ($unWriteableFolders as $folder)
+        foreach (self::UNWRITEABLE_FILES_AND_FOLDERS as $folder)
         {
             $folderResults[$folder] = !is_writable(__DIR__ . '/../..' . $folder);
         }
-
         ksort($folderResults);
         return $folderResults;
     }
 
     private function getSettings(): array
     {
-        $settings = [
-            'post_max_size',
-            'upload_max_filesize',
-        ];
-
         $ret = [];
-        foreach ($settings as $setting)
+        foreach (self::SETTINGS as $setting)
         {
             $ret[$setting] = ini_get($setting);
         }
-
         return $ret;
     }
 }

@@ -20,16 +20,17 @@ class Util
 {
     public const UPLOAD_DIR = __DIR__ . '/../public_html/uploads';
 
+    private const PASSWORD_CHARACTERS = ['a', 'c', 'd', 'e', 'f', 'h', 'j', 'm', 'n', 'q', 'r', 't',
+        'A', 'C', 'D', 'E', 'F', 'H', 'J', 'L', 'M', 'N', 'Q', 'R', 'T',
+        '3', '4', '7', '8'];
+
     public static function generatePassword(int $length = 10): string
     {
         $gencode = '';
-        $letters = ['a', 'c', 'd', 'e', 'f', 'h', 'j', 'm', 'n', 'q', 'r', 't',
-            'A', 'C', 'D', 'E', 'F', 'H', 'J', 'L', 'M', 'N', 'Q', 'R', 'T',
-            '3', '4', '7', '8'];
 
         for ($c = 0; $c < $length; $c++)
         {
-            $gencode .= $letters[random_int(0, count($letters) - 1)];
+            $gencode .= self::PASSWORD_CHARACTERS[random_int(0, count(self::PASSWORD_CHARACTERS) - 1)];
         }
 
         return $gencode;
