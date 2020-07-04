@@ -81,7 +81,7 @@ final class ContestController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         $contest = Contest::loadFromDatabase($id);
-        if (!$contest)
+        if ($contest === null)
         {
             $page = new Page('Onbekende wedstrijd', 'Kon de wedstrijd niet vinden');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);

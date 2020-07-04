@@ -48,7 +48,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
     public function url(array $linkParts): ?string
     {
         $album = Photoalbum::loadFromDatabase((int)$linkParts[1]);
-        return $album ? $album->name : null;
+        return $album !== null ? $album->name : null;
     }
 
     public function getList(): array

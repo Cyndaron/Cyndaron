@@ -39,7 +39,7 @@ final class Hour extends Model
 
     public function getSportName(): string
     {
-        if ($this->sportOverride)
+        if ($this->sportOverride !== '')
         {
             return $this->sportOverride;
         }

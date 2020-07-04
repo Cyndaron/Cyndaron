@@ -98,7 +98,7 @@ class Model
     protected static function DBResultsToModels(array $results): array
     {
         $ret = [];
-        if ($results)
+        if ($results !== [])
         {
             foreach ($results as $result)
             {

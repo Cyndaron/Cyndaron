@@ -20,7 +20,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
         {
             $staticPage = StaticPageModel::loadFromDatabase($this->id);
             $this->model = $staticPage;
-            $table = ($this->vvstring) ? 'sub_backups' : self::TABLE;
+            $table = ($this->vvstring !== '') ? 'sub_backups' : self::TABLE;
             /** @noinspection SqlResolve */
             $this->content = DBConnection::doQueryAndFetchOne('SELECT text FROM ' . $table . ' WHERE id=?', [$this->id]);
             /** @noinspection SqlResolve */

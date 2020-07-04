@@ -92,7 +92,7 @@ final class Photoalbum extends ModelWithCategory
     public function getImage(): string
     {
         $image = parent::getImage();
-        if ($image)
+        if ($image !== '')
         {
             return $image;
         }

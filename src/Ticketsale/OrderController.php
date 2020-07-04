@@ -106,7 +106,7 @@ final class OrderController extends Controller
         }
         $deliveryPrice = $payForDelivery ? $concertObj->deliveryCost : 0.0;
         $reserveSeats = $post->getInt('hasReservedSeats');
-        $toeslag_gereserveerde_plaats = $reserveSeats ? $concertObj->reservedSeatCharge : 0;
+        $toeslag_gereserveerde_plaats = $reserveSeats !== 0 ? $concertObj->reservedSeatCharge : 0;
         $order_tickettypes = [];
         /** @var TicketType[]|null $ticketTypes */
         $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concertId], 'ORDER BY price DESC');

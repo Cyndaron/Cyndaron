@@ -71,6 +71,8 @@ final class SystemPage extends Page
 
         $this->templateVars['defaultCategory'] = Setting::get('defaultCategory');
 
+        $frontPageIsJumbo = (bool)(int)Setting::get('frontPageIsJumbo');
+
         $formItems = [
             ['name' => 'siteName', 'description' => 'Naam website', 'type' => 'text', 'value' => Setting::get('siteName')],
             ['name' => 'organisation', 'description' => 'Organisatie', 'type' => 'text', 'value' => Setting::get('organisation')],
@@ -83,7 +85,7 @@ final class SystemPage extends Page
             ['name' => 'accentColor', 'description' => 'Accentkleur', 'type' => 'color', 'value' => Setting::get('accentColor')],
             ['name' => 'menuBackground', 'description' => 'Achtergrondafbeelding menu', 'type' => 'text', 'value' => Setting::get('menuBackground')],
             ['name' => 'frontPage', 'description' => 'Voorpagina', 'type' => 'text', 'value' => Setting::get('frontPage')],
-            ['name' => 'frontPageIsJumbo', 'description' => 'Jumbotron op voorpagina', 'type' => 'checkbox', 'value' => 1, 'extraAttr' => Setting::get('frontPageIsJumbo') ? 'checked' : ''],
+            ['name' => 'frontPageIsJumbo', 'description' => 'Jumbotron op voorpagina', 'type' => 'checkbox', 'value' => 1, 'extraAttr' => $frontPageIsJumbo ? 'checked' : ''],
 
         ];
         $this->templateVars['formItems'] = $formItems;

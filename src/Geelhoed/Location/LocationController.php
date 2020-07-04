@@ -23,7 +23,7 @@ final class LocationController extends Controller
         }
         $location = Location::loadFromDatabase($id);
 
-        if (!$location)
+        if ($location === null)
         {
             $page = new Page('Fout bij laden locatie', 'Locatie niet gevonden!');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);

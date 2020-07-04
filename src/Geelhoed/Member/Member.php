@@ -85,7 +85,7 @@ final class Member extends Model
 
     public function getPhoneNumbers(): array
     {
-        if (!$this->phoneNumbers)
+        if ($this->phoneNumbers === '')
         {
             return [];
         }

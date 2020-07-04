@@ -21,7 +21,7 @@ final class TagIndexPage extends Page
         {
             $sub = StaticPageModel::fromArray($sub);
             $tagList = $sub->getTagList();
-            if ($tagList)
+            if ($tagList !== [])
             {
                 $tags += $tagList;
                 if (in_array(strtolower($tag), $tagList, true))

@@ -149,7 +149,7 @@ final class ViewHelpers
         {
             $album = Photoalbum::loadFromDatabase($matches[1]);
             $page = new PhotoalbumPage($album, 1);
-            if ($album)
+            if ($album !== null)
             {
                 return $page->drawSlider($album);
             }

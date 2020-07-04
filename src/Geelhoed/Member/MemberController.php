@@ -30,7 +30,8 @@ final class MemberController extends Controller
         }
         $ret = [];
 
-        if ($member = Member::loadFromDatabase($id))
+        $member = Member::loadFromDatabase($id);
+        if ($member !== null)
         {
             $ret = array_merge($member->asArray(), $member->getProfile()->asArray());
             foreach ($member->getHours() as $hour)

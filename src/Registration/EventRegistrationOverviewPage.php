@@ -72,7 +72,7 @@ final class EventRegistrationOverviewPage extends Page
         ];
         foreach ($registrations as $registration)
         {
-            if ($registration->vocalRange)
+            if ($registration->vocalRange !== '')
             {
                 $totals[$registration->vocalRange][$registration->isPaid]['num']++;
                 $totals[$registration->vocalRange][$registration->isPaid]['amount'] += $registration->calculateTotal($ticketTypesByRegistration[$registration->id] ?? []);

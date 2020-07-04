@@ -46,7 +46,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         }
 
         $category = Category::loadFromDatabase((int)$linkParts[1]);
-        return $category ? $category->name : null;
+        return $category !== null ? $category->name : null;
     }
 
     public function getList(): array

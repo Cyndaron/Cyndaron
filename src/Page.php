@@ -83,7 +83,8 @@ class Page
         $this->templateVars['referrer'] = $_SESSION['referrer'] ?? '';
 
         $this->templateVars['version'] = CyndaronInfo::ENGINE_VERSION;
-        if ($favicon = Setting::get('favicon'))
+        $favicon = Setting::get('favicon');
+        if ($favicon !== '')
         {
             $extension = substr(strrchr($favicon, '.'), 1);
             $this->templateVars['favicon'] = $favicon;
@@ -147,7 +148,7 @@ class Page
             'isLoggedIn' => User::isLoggedIn(),
             'isAdmin' => User::isAdmin(),
             'inverseClass' => (Setting::get('menuTheme') === 'dark') ? 'navbar-dark' : 'navbar-light',
-            'navbar' => $logo ? sprintf('<img alt="" src="%s"> ', $logo) : $this->websiteName,
+            'navbar' => $logo !== '' ? sprintf('<img alt="" src="%s"> ', $logo) : $this->websiteName,
         ];
 
         $vars['menuItems'] = $this->getMenu();

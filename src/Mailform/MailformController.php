@@ -113,7 +113,7 @@ final class MailformController extends Controller
      */
     public function processHelper(Mailform $form, RequestParameters $post): bool
     {
-        if (!$form->name)
+        if ($form->name === '')
         {
             throw new IncompleteData('Ongeldig formulier.');
         }
@@ -145,7 +145,7 @@ final class MailformController extends Controller
         $fromName = html_entity_decode(Setting::get('organisation') ?: Setting::get('siteName'));
         $extraHeaders = 'From: ' . $fromAddress;
 
-        if ($sender)
+        if ($sender !== '')
         {
             $extraHeaders .= "\r\n" . 'Reply-To: ' . $sender;
         }

@@ -25,7 +25,8 @@ abstract class EditorSavePage
 
         $this->prepare($post);
 
-        if ($friendlyUrl = $post->getUrl('friendlyUrl'))
+        $friendlyUrl = $post->getUrl('friendlyUrl');
+        if ($friendlyUrl !== '')
         {
             $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $this->id);
             $oudeFriendlyUrl = $unfriendlyUrl->getFriendly();
