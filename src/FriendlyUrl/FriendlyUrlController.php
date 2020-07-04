@@ -11,7 +11,7 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class FriendlyUrlController extends Controller
+final class FriendlyUrlController extends Controller
 {
     protected array $apiPostRoutes = [
         'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],

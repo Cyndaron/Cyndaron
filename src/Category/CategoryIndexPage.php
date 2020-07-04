@@ -4,7 +4,7 @@ namespace Cyndaron\Category;
 use Cyndaron\Page;
 use Cyndaron\StaticPage\StaticPageModel;
 
-class CategoryIndexPage extends Page
+final class CategoryIndexPage extends Page
 {
     protected string $template = 'Category/CategoryPage';
 

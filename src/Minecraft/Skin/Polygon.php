@@ -4,7 +4,7 @@ namespace Cyndaron\Minecraft\Skin;
 /**
  * Class Polygon
  */
-class Polygon
+final class Polygon
 {
     /**
      * @var Point[]

@@ -5,7 +5,7 @@ use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\StaticPage\StaticPageModel;
 
-class TagIndexPage extends Page
+final class TagIndexPage extends Page
 {
     protected string $template = 'Category/CategoryPage';
 

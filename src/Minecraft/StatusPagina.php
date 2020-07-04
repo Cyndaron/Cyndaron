@@ -3,7 +3,7 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Page;
 
-class StatusPagina extends Page
+final class StatusPagina extends Page
 {
     public function __construct()
     {

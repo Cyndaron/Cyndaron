@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft\Skin;
 
-class CubePoint
+final class CubePoint
 {
     private Point $point;
     private array $places;

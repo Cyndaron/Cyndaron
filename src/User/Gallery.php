@@ -4,7 +4,7 @@ namespace Cyndaron\User;
 use Cyndaron\Page;
 use Cyndaron\Setting;
 
-class Gallery extends Page
+final class Gallery extends Page
 {
     private const FALLBACK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 

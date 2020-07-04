@@ -7,7 +7,7 @@ use Cyndaron\Controller;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;
 
-class MenuEditorController extends Controller
+final class MenuEditorController extends Controller
 {
     protected int $minLevelGet = UserLevel::ADMIN;
 

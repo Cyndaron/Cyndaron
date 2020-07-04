@@ -4,7 +4,7 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 
-class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
+final class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'photo';
 

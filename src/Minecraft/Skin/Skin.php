@@ -4,7 +4,7 @@ namespace Cyndaron\Minecraft\Skin;
 /**
  * Class Skin
  */
-class Skin
+final class Skin
 {
     public const SECONDS_TO_CACHE = 604800; // Cache for 7 days
     public const FALLBACK_IMAGE = __DIR__ . '/char.png';

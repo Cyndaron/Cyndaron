@@ -11,7 +11,7 @@ use PDOStatement;
 /**
  * Zorgt voor verbinding met de database.
  */
-class DBConnection
+final class DBConnection
 {
     private static PDO $pdo;
     private static array $statementError = [];

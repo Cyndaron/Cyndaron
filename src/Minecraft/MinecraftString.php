@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-class MinecraftString
+final class MinecraftString
 {
     public const MINECRAFT_COLOUR_CODES = [
         '0' => '#000000',

@@ -3,7 +3,7 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\Template\Template;
 
-class Util extends \Cyndaron\Util
+final class Util extends \Cyndaron\Util
 {
     public static function drawPageManagerTab(): string
     {

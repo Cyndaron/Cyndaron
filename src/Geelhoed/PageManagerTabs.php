@@ -8,7 +8,7 @@ use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Template\Template;
 
-class PageManagerTabs
+final class PageManagerTabs
 {
     public static function locationsTab(): string
     {

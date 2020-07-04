@@ -3,6 +3,6 @@ namespace Cyndaron\Error;
 
 use RuntimeException;
 
-class BootFailure extends RuntimeException
+final class BootFailure extends RuntimeException
 {
 }

@@ -3,7 +3,7 @@ namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Page;
 
-class OverviewPage extends Page
+final class OverviewPage extends Page
 {
     public function __construct()
     {

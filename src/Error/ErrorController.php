@@ -8,7 +8,7 @@ use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
 use Symfony\Component\HttpFoundation\Response;
 
-class ErrorController extends Controller
+final class ErrorController extends Controller
 {
     public const KNOWN_ERRORS = [
         '403' => [

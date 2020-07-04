@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class StaticPageController extends Controller
+final class StaticPageController extends Controller
 {
     protected array $postRoutes = [
         'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],

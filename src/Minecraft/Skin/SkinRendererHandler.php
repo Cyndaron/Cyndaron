@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
  * ratio - The size of the "png" image. The default and minimum value is 2.
  */
 
-class SkinRendererHandler
+final class SkinRendererHandler
 {
     private Member $user;
     private string $format;

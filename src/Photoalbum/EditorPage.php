@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
-class EditorPage extends \Cyndaron\Editor\EditorPage
+final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'photoalbum';
     public const TABLE = 'photoalbums';

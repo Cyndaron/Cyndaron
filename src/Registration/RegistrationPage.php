@@ -4,7 +4,7 @@ namespace Cyndaron\Registration;
 use Cyndaron\Page;
 use Cyndaron\Setting;
 
-class RegistrationPage extends Page
+final class RegistrationPage extends Page
 {
     public function __construct(Event $event)
     {

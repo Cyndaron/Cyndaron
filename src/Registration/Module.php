@@ -6,7 +6,7 @@ use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 
-class Module implements Routes, Datatypes
+final class Module implements Routes, Datatypes
 {
     public function routes(): array
     {

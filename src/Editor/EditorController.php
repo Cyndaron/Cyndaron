@@ -12,7 +12,7 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class EditorController extends Controller
+final class EditorController extends Controller
 {
     protected int $minLevelGet = UserLevel::ADMIN;
 

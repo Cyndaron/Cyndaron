@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Request;
 
-class RequestParameters
+final class RequestParameters
 {
     private array $vars;
 

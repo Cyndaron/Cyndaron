@@ -3,7 +3,7 @@ namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Page;
 
-class SubscriptionListPage extends Page
+final class SubscriptionListPage extends Page
 {
     public function __construct(Contest $contest)
     {

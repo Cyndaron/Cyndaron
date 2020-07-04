@@ -3,7 +3,7 @@ namespace Cyndaron\User;
 
 use Cyndaron\Page;
 
-class LoginPage extends Page
+final class LoginPage extends Page
 {
     public function __construct()
     {

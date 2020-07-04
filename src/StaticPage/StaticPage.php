@@ -5,7 +5,7 @@ use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Template\ViewHelpers;
 
-class StaticPage extends Page
+final class StaticPage extends Page
 {
     public function __construct(StaticPageModel $model)
     {

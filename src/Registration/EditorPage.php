@@ -5,7 +5,7 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\Template\ViewHelpers;
 
-class EditorPage extends \Cyndaron\Editor\EditorPage
+final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'event';
     public const TABLE = 'registration_events';

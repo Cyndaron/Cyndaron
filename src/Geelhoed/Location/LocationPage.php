@@ -3,7 +3,7 @@ namespace Cyndaron\Geelhoed\Location;
 
 use Cyndaron\Page;
 
-class LocationPage extends Page
+final class LocationPage extends Page
 {
     public function __construct(Location $location)
     {

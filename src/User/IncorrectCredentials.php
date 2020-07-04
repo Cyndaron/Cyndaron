@@ -5,6 +5,6 @@ namespace Cyndaron\User;
 
 use Exception;
 
-class IncorrectCredentials extends Exception
+final class IncorrectCredentials extends Exception
 {
 }

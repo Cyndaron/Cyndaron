@@ -3,7 +3,7 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBConnection;
 
-class EditorPage extends \Cyndaron\Editor\EditorPage
+final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'sub';
     public const TABLE = 'subs';

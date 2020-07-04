@@ -4,7 +4,7 @@ namespace Cyndaron\Minecraft\Skin;
 use Cyndaron\Template\Template;
 use Symfony\Component\HttpFoundation\Response;
 
-class SkinRendererSVG extends SkinRenderer
+final class SkinRendererSVG extends SkinRenderer
 {
     private Template $template;
     private array $templateVars = [];

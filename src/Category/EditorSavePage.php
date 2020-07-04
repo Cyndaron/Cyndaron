@@ -5,7 +5,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Cyndaron\Util;
 
-class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
+final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'category';
 

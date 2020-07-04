@@ -11,7 +11,7 @@ use Cyndaron\Util;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class FileCabinetController extends Controller
+final class FileCabinetController extends Controller
 {
     protected array $postRoutes = [
         'addItem' => ['level' => UserLevel::ADMIN, 'function' => 'addItem'],

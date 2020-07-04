@@ -10,7 +10,7 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class RichLinkController extends Controller
+final class RichLinkController extends Controller
 {
     public array $apiPostRoutes = [
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'createOrEdit'],

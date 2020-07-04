@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
-class EditorPage extends \Cyndaron\Editor\EditorPage
+final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'mailform';
     public const TABLE = 'mailformulieren';

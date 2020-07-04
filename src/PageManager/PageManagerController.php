@@ -7,7 +7,7 @@ use Cyndaron\Controller;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;
 
-class PageManagerController extends Controller
+final class PageManagerController extends Controller
 {
     protected int $minLevelGet = UserLevel::ADMIN;
 

@@ -3,6 +3,6 @@ namespace Cyndaron\Error;
 
 use Exception;
 
-class ImproperSubclassing extends Exception
+final class ImproperSubclassing extends Exception
 {
 }

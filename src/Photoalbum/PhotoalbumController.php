@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class PhotoalbumController extends Controller
+final class PhotoalbumController extends Controller
 {
     protected array $postRoutes = [
         'addPhoto' => ['level' => UserLevel::ADMIN, 'function' => 'addPhoto'],

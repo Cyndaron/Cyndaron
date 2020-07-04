@@ -15,7 +15,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class MailformController extends Controller
+final class MailformController extends Controller
 {
     protected array $postRoutes = [
         'process' => ['level' => UserLevel::ANONYMOUS, 'function' => 'process'],

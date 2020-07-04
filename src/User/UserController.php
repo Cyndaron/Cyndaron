@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserController extends Controller
+final class UserController extends Controller
 {
     protected array $getRoutes = [
         'gallery' => ['level' => UserLevel::LOGGED_IN, 'function' => 'gallery'],

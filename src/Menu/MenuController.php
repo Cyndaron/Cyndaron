@@ -10,7 +10,7 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class MenuController extends Controller
+final class MenuController extends Controller
 {
     protected array $apiPostRoutes = [
         'addItem' => ['level' => UserLevel::ADMIN, 'function' => 'addItem'],

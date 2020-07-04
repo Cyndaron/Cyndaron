@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft\Skin;
 
-class RGBA
+final class RGBA
 {
     public int $red;
     public int $green;

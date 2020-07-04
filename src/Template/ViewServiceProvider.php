@@ -4,7 +4,7 @@ namespace Cyndaron\Template;
 
 use Pine\BladeFilters\BladeFilters;
 
-class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
+final class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
 {
     public const FILTERS = [
         'euro' => ViewHelpers::class . '::formatEuro',

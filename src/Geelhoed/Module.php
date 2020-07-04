@@ -13,7 +13,7 @@ use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 
-class Module implements Datatypes, Routes, UrlProvider
+final class Module implements Datatypes, Routes, UrlProvider
 {
     /**
      * @return Datatype[]

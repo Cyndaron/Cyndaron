@@ -10,7 +10,7 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class MemberController extends Controller
+final class MemberController extends Controller
 {
     protected array $apiGetRoutes = [
         'get' => ['level' => UserLevel::ADMIN, 'function' => 'get'],

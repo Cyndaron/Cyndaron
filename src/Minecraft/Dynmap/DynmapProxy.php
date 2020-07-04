@@ -7,7 +7,7 @@ use Cyndaron\Minecraft\Server;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Router;
 
-class DynmapProxy
+final class DynmapProxy
 {
     private string $contents;
     private string $contentType;

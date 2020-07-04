@@ -6,7 +6,7 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\Page;
 use Cyndaron\Template\Template;
 
-class PhotoalbumPage extends Page
+final class PhotoalbumPage extends Page
 {
     public function __construct(Photoalbum $album, int $viewMode = Photoalbum::VIEWMODE_REGULAR)
     {

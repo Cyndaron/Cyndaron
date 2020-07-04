@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron;
 
-class PlainTextMail
+final class PlainTextMail
 {
     public string $to;
     public string $subject;

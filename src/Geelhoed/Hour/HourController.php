@@ -6,7 +6,7 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class HourController extends Controller
+final class HourController extends Controller
 {
     protected array $getRoutes = [
         'memberList' => ['level' => UserLevel::ADMIN, 'function' => 'memberList'],

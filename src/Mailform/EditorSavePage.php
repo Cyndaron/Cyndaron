@@ -6,7 +6,7 @@ namespace Cyndaron\Mailform;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 
-class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
+final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'mailform';
 

@@ -4,7 +4,7 @@ namespace Cyndaron\Category;
 use Cyndaron\Page;
 use Cyndaron\Photoalbum\Photoalbum;
 
-class PhotoalbumIndexPage extends Page
+final class PhotoalbumIndexPage extends Page
 {
     protected string $template = 'Category/CategoryPage';
 

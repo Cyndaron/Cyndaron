@@ -4,7 +4,7 @@ namespace Cyndaron\Template;
 
 use Cyndaron\Util;
 
-class Template
+final class Template
 {
     private const COMPILED_DIR = 'cache/template';
     private TemplateFinder $templateFinder;

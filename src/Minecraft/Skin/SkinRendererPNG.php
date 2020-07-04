@@ -3,7 +3,7 @@ namespace Cyndaron\Minecraft\Skin;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class SkinRendererPNG extends SkinRenderer
+final class SkinRendererPNG extends SkinRenderer
 {
     /** @var resource */
     protected $image;

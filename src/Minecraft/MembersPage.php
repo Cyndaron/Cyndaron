@@ -3,7 +3,7 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Page;
 
-class MembersPage extends Page
+final class MembersPage extends Page
 {
     private const LEVELS = [
         'In de Goelag',

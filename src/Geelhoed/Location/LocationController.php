@@ -7,7 +7,7 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class LocationController extends Controller
+final class LocationController extends Controller
 {
     protected array $getRoutes = [
         'view' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],

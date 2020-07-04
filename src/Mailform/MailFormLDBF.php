@@ -4,7 +4,7 @@ namespace Cyndaron\Mailform;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Template\Template;
 
-class MailFormLDBF
+final class MailFormLDBF
 {
     private const MAIL_TEMPLATE_VARS = [
         'geslacht',

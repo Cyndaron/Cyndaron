@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron;
 
-class CyndaronInfo
+final class CyndaronInfo
 {
     public const ENGINE_VERSION = '6.0.0';
     public const PRODUCT_CODENAME = 'Trajectum';

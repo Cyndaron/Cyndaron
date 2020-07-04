@@ -3,7 +3,7 @@ namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Router;
 
-class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
+final class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
 {
     public const HAS_TITLE = false;
     public const TYPE = 'photo';

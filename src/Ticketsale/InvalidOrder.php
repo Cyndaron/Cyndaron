@@ -3,6 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
-class InvalidOrder extends \Exception
+final class InvalidOrder extends \Exception
 {
 }

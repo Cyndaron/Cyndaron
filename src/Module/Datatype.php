@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Module;
 
-class Datatype
+final class Datatype
 {
     public string $singular;
     public string $plural;

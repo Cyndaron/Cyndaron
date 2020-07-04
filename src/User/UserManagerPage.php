@@ -3,7 +3,7 @@ namespace Cyndaron\User;
 
 use Cyndaron\Page;
 
-class UserManagerPage extends Page
+final class UserManagerPage extends Page
 {
     public const USER_LEVEL_DESCRIPTIONS = [
         'Niet ingelogd',

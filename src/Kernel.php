@@ -4,7 +4,7 @@ namespace Cyndaron;
 use Cyndaron\Error\BootFailure;
 use RuntimeException;
 
-class Kernel
+final class Kernel
 {
     public function __construct()
     {

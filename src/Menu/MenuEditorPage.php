@@ -5,7 +5,7 @@ namespace Cyndaron\Menu;
 
 use Cyndaron\Page;
 
-class MenuEditorPage extends Page
+final class MenuEditorPage extends Page
 {
     public function __construct()
     {

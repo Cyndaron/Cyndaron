@@ -10,7 +10,7 @@ use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\Template\Template;
 
-class Module implements Datatypes, Routes, UrlProvider, Linkable
+final class Module implements Datatypes, Routes, UrlProvider, Linkable
 {
     /**
      * @inheritDoc

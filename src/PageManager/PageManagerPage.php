@@ -10,7 +10,7 @@ use Cyndaron\Page;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Template\Template;
 
-class PageManagerPage extends Page
+final class PageManagerPage extends Page
 {
     private static array $pageTypes = [];
 

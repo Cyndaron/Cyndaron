@@ -4,7 +4,7 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 
-class ConcertOrderOverviewPage extends Page
+final class ConcertOrderOverviewPage extends Page
 {
     public function __construct(Concert $concert)
     {

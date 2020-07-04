@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Request;
 
-class QueryBits
+final class QueryBits
 {
     private array $vars;
 

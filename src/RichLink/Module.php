@@ -8,7 +8,7 @@ use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Template\Template;
 
-class Module implements Datatypes, UrlProvider, Routes
+final class Module implements Datatypes, UrlProvider, Routes
 {
     /**
      * @inheritDoc

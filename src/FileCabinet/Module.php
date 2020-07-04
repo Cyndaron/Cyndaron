@@ -5,7 +5,7 @@ namespace Cyndaron\FileCabinet;
 
 use Cyndaron\Module\Routes;
 
-class Module implements Routes
+final class Module implements Routes
 {
     public function routes(): array
     {

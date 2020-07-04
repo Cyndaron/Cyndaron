@@ -12,7 +12,7 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class MinecraftController extends Controller
+final class MinecraftController extends Controller
 {
     public array $getRoutes = [
         'dynmapproxy' => ['level' => UserLevel::ANONYMOUS, 'function' => 'dynmapProxy'],

@@ -5,7 +5,7 @@ use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Setting;
 
-class EventRegistrationOverviewPage extends Page
+final class EventRegistrationOverviewPage extends Page
 {
     public const TOTALS_FORMAT = [0 => ['amount' => 0, 'num' => 0], 1 => ['amount' => 0, 'num' => 0]];
 

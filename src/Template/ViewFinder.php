@@ -4,7 +4,7 @@ namespace Cyndaron\Template;
 use Illuminate\View\FileViewFinder;
 use InvalidArgumentException;
 
-class ViewFinder extends FileViewFinder
+final class ViewFinder extends FileViewFinder
 {
     /**
      * Find the given view in the list of paths.

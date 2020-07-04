@@ -4,7 +4,7 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\Util;
 use Imagick;
 
-class Photo
+final class Photo
 {
     public const THUMBNAIL_WIDTH = 270;
     public const THUMBNAIL_HEIGHT = 200;

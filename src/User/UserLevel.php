@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\User;
 
-class UserLevel
+final class UserLevel
 {
     public const ANONYMOUS = 0;
     public const LOGGED_IN = 1;

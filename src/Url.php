@@ -5,7 +5,7 @@ use Cyndaron\Error\DatabaseError;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Module\UrlProvider;
 
-class Url
+final class Url
 {
     private string $url;
     /** @var string[] $urlProviders */

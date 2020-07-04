@@ -3,7 +3,7 @@ namespace Cyndaron\Category;
 
 use Cyndaron\DBConnection;
 
-class EditorPage extends \Cyndaron\Editor\EditorPage
+final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'category';
     public const TABLE = 'categories';

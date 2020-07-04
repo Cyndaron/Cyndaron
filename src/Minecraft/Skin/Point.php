@@ -4,7 +4,7 @@ namespace Cyndaron\Minecraft\Skin;
 /**
  * Class Point
  */
-class Point
+final class Point
 {
     private array $_originCoord;
     private array $_destCoord = [];

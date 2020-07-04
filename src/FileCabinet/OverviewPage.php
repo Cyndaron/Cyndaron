@@ -6,7 +6,7 @@ use Cyndaron\Setting;
 use Cyndaron\User\User;
 use Cyndaron\Util;
 
-class OverviewPage extends Page
+final class OverviewPage extends Page
 {
     private const PATH = Util::UPLOAD_DIR . '/filecabinet/';
 

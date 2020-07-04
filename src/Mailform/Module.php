@@ -7,7 +7,7 @@ use Cyndaron\Module\Routes;
 use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\Template\Template;
 
-class Module implements Datatypes, Routes
+final class Module implements Datatypes, Routes
 {
     /**
      * @inheritDoc

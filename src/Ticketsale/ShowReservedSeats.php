@@ -3,7 +3,7 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
 
-class ShowReservedSeats
+final class ShowReservedSeats
 {
     private string $contents = '';
 

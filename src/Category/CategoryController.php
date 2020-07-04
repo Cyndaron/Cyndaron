@@ -16,7 +16,7 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class CategoryController extends Controller
+final class CategoryController extends Controller
 {
     protected array $apiGetRoutes = [
         'underlyingPages' => ['level' => UserLevel::ANONYMOUS, 'function' => 'underlyingPages'],

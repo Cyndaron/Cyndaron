@@ -3,7 +3,7 @@ namespace Cyndaron\Minecraft\Skin;
 
 use Cyndaron\Request\RequestParameters;
 
-class SkinRendererParameters
+final class SkinRendererParameters
 {
     public int $ratio;
     public int $verticalRotation;

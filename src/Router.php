@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Zorgt voor correct doorverwijzen van verzoeken.
  * @package Cyndaron
  */
-class Router
+final class Router
 {
     private array $requestVars = [''];
     private bool $isApiCall = false;

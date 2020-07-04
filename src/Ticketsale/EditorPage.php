@@ -5,7 +5,7 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\Template\ViewHelpers;
 
-class EditorPage extends \Cyndaron\Editor\EditorPage
+final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'concert';
     public const TABLE = 'ticketsale_concerts';

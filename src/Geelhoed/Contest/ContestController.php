@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class ContestController extends Controller
+final class ContestController extends Controller
 {
     protected array $getRoutes = [
         'overview' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overview'],

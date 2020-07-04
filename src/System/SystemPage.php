@@ -7,7 +7,7 @@ use Cyndaron\Page;
 use Cyndaron\Setting;
 use Cyndaron\Util;
 
-class SystemPage extends Page
+final class SystemPage extends Page
 {
     public function __construct(string $currentPage)
     {

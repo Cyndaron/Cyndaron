@@ -21,7 +21,7 @@ use Pine\BladeFilters\BladeFiltersCompiler;
  * Class Blade
  * @package Cyndaron\Template
  */
-class Blade implements FactoryContract
+final class Blade implements FactoryContract
 {
     protected ?ContainerInterface $container;
 

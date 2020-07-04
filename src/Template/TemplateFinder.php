@@ -2,7 +2,7 @@
 
 namespace Cyndaron\Template;
 
-class TemplateFinder
+final class TemplateFinder
 {
     public function __construct()
     {

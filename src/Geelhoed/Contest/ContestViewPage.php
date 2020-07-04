@@ -5,7 +5,7 @@ use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Page;
 use Cyndaron\User\User;
 
-class ContestViewPage extends Page
+final class ContestViewPage extends Page
 {
     public function __construct(Contest $contest)
     {
