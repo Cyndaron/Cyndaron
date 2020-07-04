@@ -31,7 +31,7 @@ class EventRegistrationOverviewPage extends Page
         $ticketTypesByRegistration = $this->getTicketTypesByRegistration();
         $totals = $this->calculateTotals($registrations, $ticketTypesByRegistration);
 
-        $this->addTemplateVars(compact('event', 'ticketTypes', 'ticketTypesByRegistration', 'registrations', 'totals'));
+        $this->addTemplateVars(['event' => $event, 'ticketTypes' => $ticketTypes, 'ticketTypesByRegistration' => $ticketTypesByRegistration, 'registrations' => $registrations, 'totals' => $totals]);
     }
 
     /**

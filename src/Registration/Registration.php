@@ -95,7 +95,7 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
 
         $template = new Template();
         $registration = $this;
-        $args = compact('registration', 'event', 'registrationTotal', 'ticketTypes', 'registrationTicketTypes', 'lunchText', 'extraFields');
+        $args = ['registration' => $registration, 'event' => $event, 'registrationTotal' => $registrationTotal, 'ticketTypes' => $ticketTypes, 'registrationTicketTypes' => $registrationTicketTypes, 'lunchText' => $lunchText, 'extraFields' => $extraFields];
         $text = $template->render($templateFile, $args);
         // We're sending a plaintext mail, so avoid displaying html entities.
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');

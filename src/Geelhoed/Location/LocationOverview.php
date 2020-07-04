@@ -11,6 +11,6 @@ class LocationOverview extends Page
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $locations = Location::fetchAll([], [], 'ORDER BY city, street');
         $pageImage = '/src/Geelhoed/Location/images/location-overview.jpg';
-        $this->addTemplateVars(compact('locations', 'pageImage'));
+        $this->addTemplateVars(['locations' => $locations, 'pageImage' => $pageImage]);
     }
 }

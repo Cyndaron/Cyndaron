@@ -13,19 +13,19 @@ class PageManagerTabs
     public static function locationsTab(): string
     {
         $locations = Location::fetchAll();
-        $ret = (new Template())->render('Geelhoed/Location/PageManagerTab', compact('locations'));
+        $ret = (new Template())->render('Geelhoed/Location/PageManagerTab', ['locations' => $locations]);
         return $ret;
     }
 
     public static function membersTab(): string
     {
         $members = Member::fetchAll();
-        return (new Template())->render('Geelhoed/Member/PageManagerTab', compact('members'));
+        return (new Template())->render('Geelhoed/Member/PageManagerTab', ['members' => $members]);
     }
 
     public static function contestsTab(): string
     {
         $contests = Contest::fetchAll([], [], 'ORDER BY date DESC');
-        return (new Template())->render('Geelhoed/Contest/PageManagerTab', compact('contests'));
+        return (new Template())->render('Geelhoed/Contest/PageManagerTab', ['contests' => $contests]);
     }
 }
