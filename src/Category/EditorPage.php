@@ -14,20 +14,20 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     protected function prepare(): void
     {
-        $viewMode = 0;
+        $currentViewMode = Category::VIEWMODE_REGULAR;
         if ($this->id)
         {
             $this->model = Category::loadFromDatabase($this->id);
             $this->content = $this->model->description ?? '';
             $this->contentTitle = $this->model->name ?? '';
-            $viewMode = ($this->model->viewMode) ?? Category::VIEWMODE_REGULAR;
+            $currentViewMode = $this->model->viewMode ?? Category::VIEWMODE_REGULAR;
         }
 
-        $id = 'viewMode';
-        $label = 'Weergave';
-        $options = Category::VIEWMODE_DESCRIPTIONS;
-        $selected = $viewMode;
-
-        $this->addTemplateVars(['id' => $id, 'label' => $label, 'options' => $options, 'selected' => $selected]);
+        $this->addTemplateVars([
+            'id' => 'viewMode',
+            'label' => 'Weergave',
+            'options' => Category::VIEWMODE_DESCRIPTIONS,
+            'selected' => $currentViewMode,
+        ]);
     }
 }
