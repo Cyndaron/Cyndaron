@@ -94,7 +94,7 @@ class Model
         {
             $whereString = 'WHERE ' . implode(' AND ', $where);
         }
-        $results = DBConnection::doQueryAndFetchAll('SELECT * FROM ' . static::TABLE . ' ' . $whereString . ' ' . $afterWhere, $args);
+        $results = DBConnection::doQueryAndFetchAll('SELECT * FROM ' . static::TABLE . ' ' . $whereString . ' ' . $afterWhere, $args) ?: [];
         return self::DBResultsToModels($results);
     }
 
@@ -134,7 +134,8 @@ class Model
         $results = static::fetchAll($where, $args, $afterWhere);
         if (count($results) > 0)
         {
-            return reset($results);
+            $firstElem = reset($results);
+            return $firstElem !== false ? $firstElem : null;
         }
 
         return null;

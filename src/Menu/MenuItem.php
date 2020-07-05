@@ -93,7 +93,7 @@ final class MenuItem extends Model
             ) AS one
             ORDER BY name ASC;",
             [$id, $id, $id]
-        );
+        ) ?: [];
 
         $items = [];
         foreach ($pagesInCategory as $page)

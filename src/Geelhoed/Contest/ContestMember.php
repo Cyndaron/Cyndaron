@@ -36,6 +36,7 @@ final class ContestMember extends Model
             return null;
         }
 
-        return reset($results);
+        $firstElem = reset($results);
+        return $firstElem !== false ? $firstElem : null;
     }
 }

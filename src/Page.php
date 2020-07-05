@@ -60,9 +60,11 @@ class Page
         if (empty($this->template))
         {
             $rc = new \ReflectionClass(static::class);
-            $dir = dirname($rc->getFileName()) . '/templates';
+            $filename = $rc->getFileName();
+            assert($filename !== false);
+            $dir = dirname($filename) . '/templates';
 
-            $file = str_replace('.php', '.blade.php', basename($rc->getFileName()));
+            $file = str_replace('.php', '.blade.php', basename($filename));
             $testPath = "$dir/$file";
 
             if (file_exists($testPath))
@@ -88,8 +90,10 @@ class Page
         $favicon = Setting::get('favicon');
         if ($favicon !== '')
         {
-            $extension = substr(strrchr($favicon, '.'), 1);
+            $dotPosition = strrchr($favicon, '.');
+            $extension = $dotPosition !== false ? substr($dotPosition, 1) : '';
             $this->templateVars['favicon'] = $favicon;
+            /** @todo Replace with actual mime type check */
             $this->templateVars['faviconType'] = "image/$extension";
         }
 

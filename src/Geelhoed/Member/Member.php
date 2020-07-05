@@ -55,7 +55,7 @@ final class Member extends Model
     public function getHours(): array
     {
         $sql = 'SELECT * FROM geelhoed_hours WHERE id IN (SELECT hourId FROM geelhoed_members_hours WHERE memberId = ?)';
-        $hoursArr = DBConnection::doQueryAndFetchAll($sql, [$this->id]);
+        $hoursArr = DBConnection::doQueryAndFetchAll($sql, [$this->id]) ?: [];
         $hours = [];
         foreach ($hoursArr as $hourArr)
         {
@@ -342,7 +342,8 @@ final class Member extends Model
             return null;
         }
 
-        return reset($results);
+        $firstElem = reset($results);
+        return $firstElem !== false ? $firstElem : null;
     }
 
     public static function loadFromLoggedInUser(): ?self

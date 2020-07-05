@@ -122,7 +122,8 @@ final class RequestParameters
 
     public function getEmail(string $name, string $default = ''): string
     {
-        return filter_var($this->getUnfilteredString($name, $default), FILTER_SANITIZE_EMAIL);
+        $ret = filter_var($this->getUnfilteredString($name, $default), FILTER_SANITIZE_EMAIL);
+        return ($ret === false) ? $default : $ret;
     }
 
     public function getPhone(string $name, string $default = ''): string
@@ -133,7 +134,8 @@ final class RequestParameters
     public function getUrl(string $name, string $default = ''): string
     {
         $preFilter = str_replace(['<', '>'], '', $this->getUnfilteredString($name, $default));
-        return filter_var($preFilter, FILTER_SANITIZE_URL);
+        $ret = filter_var($preFilter, FILTER_SANITIZE_URL);
+        return ($ret === false) ? $default : $ret;
     }
 
     public function getColor(string $name, string $default = '#000000'): string
@@ -231,6 +233,7 @@ final class RequestParameters
     public function getSimpleString(string $name, string $default = ''): string
     {
         $value = $this->getUnfilteredString($name, $default);
-        return filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_NO_ENCODE_QUOTES);
+        $ret = filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_NO_ENCODE_QUOTES);
+        return ($ret === false) ? $default : $ret;
     }
 }

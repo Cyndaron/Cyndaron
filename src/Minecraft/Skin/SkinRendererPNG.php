@@ -35,7 +35,7 @@ final class SkinRendererPNG extends SkinRenderer
 
         ob_start();
         imagepng($this->image);
-        $contents = ob_get_clean();
+        $contents = ob_get_clean() ?: '';
         imagedestroy($this->image);
         for ($i = 1, $iMax = count($this->times); $i < $iMax; $i++)
         {

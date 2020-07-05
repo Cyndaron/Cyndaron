@@ -16,6 +16,7 @@
  */
 namespace Cyndaron;
 
+use Safe\DateTimeImmutable;
 use Safe\Exceptions\FilesystemException;
 use function Safe\mkdir;
 use function Safe\sprintf;
@@ -105,7 +106,7 @@ class Util
 
         }
 
-        return \DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+        return DateTimeImmutable::createFromFormat('!Y-m-d', $date);
     }
 
     public static function filenameToUrl(string $filename): string
