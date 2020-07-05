@@ -2,6 +2,7 @@
 namespace Cyndaron;
 
 use Cyndaron\Error\BootFailure;
+use ErrorException;
 use RuntimeException;
 
 use function Safe\ini_set;
@@ -12,6 +13,7 @@ final class Kernel
     {
         try
         {
+            $this->setErrorHandler();
             $this->registerAutoloaders();
             $this->setPhpConfig();
             $this->processSettings();
@@ -23,7 +25,18 @@ final class Kernel
         }
     }
 
-    protected function setPhpConfig(): void
+    /**
+     * Turn errors into exceptions
+     */
+    private function setErrorHandler(): void
+    {
+        set_error_handler(static function(int $severity, string $message, string $file, int $line)
+        {
+            throw new ErrorException($message, 0, $severity, $file, $line);
+        });
+    }
+
+    private function setPhpConfig(): void
     {
         // Prevent passing the session ID via URLs.
         ini_set('session.use_only_cookies', '1');
@@ -37,12 +50,12 @@ final class Kernel
         ini_set('memory_limit', '96M');
     }
 
-    protected function registerAutoloaders(): void
+    private function registerAutoloaders(): void
     {
         require_once __DIR__ . '/../vendor/autoload.php';
     }
 
-    protected function processSettings(): void
+    private function processSettings(): void
     {
         $settingsFile = $this->getSettingsFile();
         if ($settingsFile === null)
@@ -53,7 +66,7 @@ final class Kernel
         $this->connectToDatabase($settingsFile);
     }
 
-    protected function handleRequest(): void
+    private function handleRequest(): void
     {
         $route = new Router();
         $route->route();
