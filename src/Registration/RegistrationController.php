@@ -154,7 +154,7 @@ final class RegistrationController extends Controller
                 $ott->tickettypeId = $ticketType->id;
                 $ott->amount = $registrationTicketTypes[$ticketType->id];
                 $result = $ott->save();
-                if ($result === false)
+                if (!$result)
                 {
                     throw new DatabaseError('Opslaan kaarttypen mislukt!');
                 }

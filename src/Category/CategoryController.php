@@ -68,7 +68,7 @@ final class CategoryController extends Controller
         $category = new Category(null);
         $category->name = $post->getHTML('name');
         $result = $category->save();
-        if ($result === false)
+        if (!$result)
         {
             return new JsonResponse(['error' => 'Could not save category!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -87,7 +87,7 @@ final class CategoryController extends Controller
         $menuItem = new MenuItem();
         $menuItem->link = '/category/' . $id;
         $result = $menuItem->save();
-        if ($result === false)
+        if (!$result)
         {
             return new JsonResponse(['error' => 'Could not save menu item!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }

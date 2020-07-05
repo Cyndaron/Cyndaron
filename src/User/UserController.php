@@ -144,7 +144,7 @@ final class UserController extends Controller
         $user->avatar = $post->getFilenameWithDirectory('avatar');
         $user->hideFromMemberList = $post->getBool('hideFromMemberList');
         $result = $user->save();
-        if ($result === false)
+        if (!$result)
         {
             return new JsonResponse(['error' => 'Could not update user!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }

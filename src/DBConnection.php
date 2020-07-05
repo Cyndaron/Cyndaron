@@ -29,7 +29,7 @@ final class DBConnection
     {
         $prep = static::$pdo->prepare($query);
         $result = $prep->execute($vars);
-        if ($result === false)
+        if (!$result)
         {
             static::$statementError = $prep->errorInfo();
             static::$errorQuery = $query;
