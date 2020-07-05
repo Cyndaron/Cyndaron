@@ -3,7 +3,6 @@
 namespace Cyndaron\Template;
 
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Container\Container as ContainerInterface;
 use Illuminate\Contracts\View\Factory as FactoryContract;
 use Illuminate\Contracts\View\View;
 use Illuminate\Events\Dispatcher;
@@ -23,7 +22,7 @@ use Pine\BladeFilters\BladeFiltersCompiler;
  */
 final class Blade implements FactoryContract
 {
-    protected ?ContainerInterface $container;
+    protected Container $container;
 
     private ? Factory $factory;
 
@@ -33,14 +32,13 @@ final class Blade implements FactoryContract
      * Blade constructor.
      * @param string[] $viewPaths
      * @param string $cachePath
-     * @param ContainerInterface|null $container
      */
-    public function __construct(array $viewPaths, string $cachePath, ContainerInterface $container = null)
+    public function __construct(array $viewPaths, string $cachePath)
     {
-        $this->container = $container ?: new Container();
+        $this->container = new Container();
 
         $this->setupContainer($viewPaths, $cachePath);
-        /** @noinspection PhpParamsInspection */
+        /** @noinspection PhpParamsInspection @phpstan-ignore-next-line */
         (new ViewServiceProvider($this->container))->register();
 
         $this->factory = $this->container->get('view');
@@ -84,6 +82,7 @@ final class Blade implements FactoryContract
 
     public function share($key, $value = null)
     {
+        assert(is_string($key));
         return $this->factory->shared($key, $value);
     }
 
@@ -111,8 +110,14 @@ final class Blade implements FactoryContract
         return $this;
     }
 
+    /**
+     * @param string $method
+     * @param array $params
+     * @return mixed
+     */
     public function __call(string $method, array $params)
     {
+        /** @phpstan-ignore-next-line (false positive) */
         return call_user_func_array([$this->factory, $method], $params);
     }
 
