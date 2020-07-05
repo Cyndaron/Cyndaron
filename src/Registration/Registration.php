@@ -122,7 +122,7 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
         {
             $text .= 'Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaarliggen bij de kassa.';
         }
-        elseif ($organisation === Setting::ORGANISATION_SBK)
+        if ($organisation === Setting::ORGANISATION_SBK)
         {
             $text = 'Beste koorzanger,
 
