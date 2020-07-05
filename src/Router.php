@@ -201,6 +201,7 @@ final class Router
         if (array_key_exists($request, self::OLD_URLS))
         {
             $url = self::OLD_URLS[$request]['url'];
+            /** @phpstan-ignore-next-line (false positive) */
             $id = (int)$_GET(self::OLD_URLS[$request]['id']);
             return new RedirectResponse("${url}${id}", Response::HTTP_MOVED_PERMANENTLY);
         }

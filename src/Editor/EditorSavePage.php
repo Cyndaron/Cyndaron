@@ -48,6 +48,7 @@ abstract class EditorSavePage
 
     protected function parseTextForInlineImages(string $text): string
     {
+        /** @phpstan-ignore-next-line (false positive, callback _works_) */
         $result = preg_replace_callback('/src="(data:)([^"]*)"/', 'static::extractImages', $text);
         if (!is_string($result))
         {
