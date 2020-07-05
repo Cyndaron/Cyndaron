@@ -28,7 +28,7 @@ final class Template
 
     /**
      * @param string $template
-     * @param array|null $data
+     * @param array $data
      * @return string
      */
     public function render(string $template, array $data = []): string
