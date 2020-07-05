@@ -85,14 +85,14 @@ EOT;
      */
     public static function getNotifications(): ?array
     {
-        $return = @$_SESSION['notifications'];
+        $return = $_SESSION['notifications'] ?? null;
         $_SESSION['notifications'] = null;
         return $return;
     }
 
     public static function getLevel(): int
     {
-        return (int)@$_SESSION['level'];
+        return isset($_SESSION['level']) ? (int)$_SESSION['level'] : UserLevel::ANONYMOUS;
     }
 
     public static function hasSufficientReadLevel(): bool

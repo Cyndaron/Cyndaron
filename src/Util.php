@@ -68,10 +68,19 @@ class Util
 
     public static function createDir(string $dir, int $mask = 0777): bool
     {
+        if (file_exists($dir))
+        {
+            if (is_dir($dir))
+            {
+                return true;
+            }
+            throw new FilesystemException('A file with this name exists!');
+        }
+
         try
         {
             $oldUmask = umask(0);
-            @mkdir($dir, $mask, true);
+            mkdir($dir, $mask, true);
             umask($oldUmask);
         }
         catch (FilesystemException $e)
