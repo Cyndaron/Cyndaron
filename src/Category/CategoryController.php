@@ -57,6 +57,7 @@ final class CategoryController extends Controller
         }
 
         $category = Category::loadFromDatabase((int)$id);
+        assert($category !== null);
         $page = new CategoryIndexPage($category);
         return new Response($page->render());
     }

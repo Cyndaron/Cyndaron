@@ -35,6 +35,10 @@ final class PhotoalbumController extends Controller
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
         $album = Photoalbum::loadFromDatabase($id);
+        if ($album === null)
+        {
+            return new JsonResponse(['error' => 'Album does not exist!'], Response::HTTP_NOT_FOUND);
+        }
         $page = new PhotoalbumPage($album);
         return new Response($page->render());
     }

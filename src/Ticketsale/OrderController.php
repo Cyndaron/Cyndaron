@@ -108,7 +108,7 @@ final class OrderController extends Controller
         $reserveSeats = $post->getInt('hasReservedSeats');
         $toeslag_gereserveerde_plaats = $reserveSeats !== 0 ? $concertObj->reservedSeatCharge : 0;
         $order_tickettypes = [];
-        /** @var TicketType[]|null $ticketTypes */
+        /** @var TicketType[] $ticketTypes */
         $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concertId], 'ORDER BY price DESC');
         foreach ($ticketTypes as $ticketType)
         {
@@ -169,7 +169,7 @@ final class OrderController extends Controller
             }
         }
 
-        $this->sendMail($payForDelivery, $concertObj, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats, $totaalprijs, $orderId, $ticketTypes, $order_tickettypes, $lastName, $initials, $street, $postcode, $city, $comments, $email);
+        $this->sendMail($payForDelivery, $concertObj, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats ?: [], $totaalprijs, $orderId, $ticketTypes, $order_tickettypes, $lastName, $initials, $street, $postcode, $city, $comments, $email);
     }
 
     private function checkForm(bool $forcedDelivery, bool $memberDelivery, RequestParameters $post): array
@@ -221,7 +221,7 @@ final class OrderController extends Controller
      * @param bool $memberDelivery
      * @param string $deliveryMemberName
      * @param int $reserveSeats
-     * @param array|null $reservedSeats
+     * @param array $reservedSeats
      * @param float $total
      * @param int $orderId
      * @param TicketType[] $ticketTypes
@@ -235,7 +235,7 @@ final class OrderController extends Controller
      * @param string $email
      * @return bool
      */
-    private function sendMail(bool $delivery, Concert $concert, bool $memberDelivery, string $deliveryMemberName, int $reserveSeats, ?array $reservedSeats, float $total, int $orderId, array $ticketTypes, array $orderTicketTypes, string $lastName, string $initials, string $street, string $postcode, string $city, string $comments, string $email): bool
+    private function sendMail(bool $delivery, Concert $concert, bool $memberDelivery, string $deliveryMemberName, int $reserveSeats, array $reservedSeats, float $total, int $orderId, array $ticketTypes, array $orderTicketTypes, string $lastName, string $initials, string $street, string $postcode, string $city, string $comments, string $email): bool
     {
         if ($delivery || ($concert->forcedDelivery && !$memberDelivery))
         {

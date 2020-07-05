@@ -24,7 +24,7 @@ final class Blade implements FactoryContract
 {
     protected Container $container;
 
-    private ? Factory $factory;
+    private Factory $factory;
 
     private BladeCompiler $compiler;
 

@@ -161,14 +161,14 @@ final class ViewHelpers
         $text = preg_replace_callback('/%slider\|(\d+)%/', static function($matches)
         {
             $album = Photoalbum::loadFromDatabase($matches[1]);
-            $page = new PhotoalbumPage($album, 1);
             if ($album !== null)
             {
+                $page = new PhotoalbumPage($album, 1);
                 return $page->drawSlider($album);
             }
             return '';
         }, $text);
-        $text = preg_replace('/%youtube\|([A-Za-z0-9_\-]+)%/', self::YOUTUBE, $text);
+        $text = preg_replace('/%youtube\|([A-Za-z0-9_\-]+)%/', self::YOUTUBE, $text ?? '');
 
         return $text;
     }

@@ -26,6 +26,11 @@ final class ErrorController extends Controller
     // Overridden, since both GET and POST requests may end up here, and checking user rights is not necessary.
     public function route(RequestParameters $post): Response
     {
+        if ($this->action === null)
+        {
+            $this->action = 'null';
+        }
+
         if (!array_key_exists($this->action, static::KNOWN_ERRORS))
         {
             $page = new Page('Onbekende fout', 'Er is een onbekende fout opgetreden. Code: ' . $this->action);

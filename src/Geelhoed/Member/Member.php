@@ -61,6 +61,7 @@ final class Member extends Model
         {
             $hours[] = Hour::loadFromDatabase((int)$hourArr['id']);
         }
+        /** @phpstan-ignore-next-line (there won't be null results in the array) */
         return $hours;
     }
 

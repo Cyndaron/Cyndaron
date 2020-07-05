@@ -47,6 +47,10 @@ final class EventController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         $event = Event::loadFromDatabase($id);
+        if ($event === null)
+        {
+            return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
+        }
         $page = new RegistrationPage($event);
         return new Response($page->render());
     }
@@ -59,6 +63,10 @@ final class EventController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         $event = Event::loadFromDatabase($id);
+        if ($event === null)
+        {
+            return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
+        }
         $page = new EventRegistrationOverviewPage($event);
         return new Response($page->render());
     }

@@ -31,12 +31,16 @@ final class Hour extends Model
 
     public function getLocation(): Location
     {
-        return Location::loadFromDatabase((int)$this->locationId);
+        $ret = Location::loadFromDatabase($this->locationId);
+        assert($ret !== null);
+        return $ret;
     }
 
     public function getSport(): Sport
     {
-        return Sport::loadFromDatabase((int)$this->sportId);
+        $ret = Sport::loadFromDatabase((int)$this->sportId);
+        assert($ret !== null);
+        return $ret;
     }
 
     public function getSportName(): string
@@ -50,7 +54,9 @@ final class Hour extends Model
 
     public function getDepartment(): Department
     {
-        return Department::loadFromDatabase((int)$this->departmentId);
+        $ret = Department::loadFromDatabase((int)$this->departmentId);
+        assert($ret !== null);
+        return $ret;
     }
 
     public function getRange(): string

@@ -154,7 +154,7 @@ final class MailformController extends Controller
 
         if (mail($recipient, $subject, $mailBody, $extraHeaders, "-f$fromAddress"))
         {
-            if ($form->sendConfirmation && $sender)
+            if ($form->sendConfirmation && $sender && $form->confirmationText !== null)
             {
                 $extraHeaders = sprintf('From: %s <%s>', $fromName, $fromAddress);
                 $extraHeaders .= "\r\n" . 'Reply-To: ' . $recipient;

@@ -17,9 +17,13 @@ final class HourController extends Controller
         $id = $this->queryBits->getInt(2);
         if ($id < 1)
         {
-            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+            return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
         }
         $hour = Hour::loadFromDatabase($id);
+        if ($hour === null)
+        {
+            return new Response('Les bestaat niet!', Response::HTTP_NOT_FOUND);
+        }
         $page = new MemberListPage($hour);
         return new Response($page->render());
     }

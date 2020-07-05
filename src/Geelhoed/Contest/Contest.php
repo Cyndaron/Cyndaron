@@ -30,7 +30,9 @@ final class Contest extends Model
 
     public function getSport(): Sport
     {
-        return Sport::loadFromDatabase($this->sportId);
+        $ret = Sport::loadFromDatabase($this->sportId);
+        assert($ret !== null);
+        return $ret;
     }
 
     public function hasMember(Member $member): bool

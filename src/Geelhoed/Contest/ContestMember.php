@@ -20,12 +20,16 @@ final class ContestMember extends Model
 
     public function getMember(): Member
     {
-        return Member::loadFromDatabase($this->memberId);
+        $ret = Member::loadFromDatabase($this->memberId);
+        assert($ret !== null);
+        return $ret;
     }
 
     public function getGraduation(): Graduation
     {
-        return Graduation::loadFromDatabase($this->graduationId);
+        $ret = Graduation::loadFromDatabase($this->graduationId);
+        assert($ret !== null);
+        return $ret;
     }
 
     public static function fetchByContestAndMember(Contest $contest, Member $member): ?self

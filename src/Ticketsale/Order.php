@@ -40,6 +40,7 @@ final class Order extends Model
 
         /** @var Concert|null $concert */
         $concert = Concert::loadFromDatabase($this->concertId);
+        assert($concert !== null);
 
         DBConnection::doQuery('UPDATE ticketsale_orders SET `isPaid`=1 WHERE id=?', [$this->id]);
 

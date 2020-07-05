@@ -168,7 +168,7 @@ final class RequestParameters
         return $value;
     }
 
-    public function getDate(string $name, ?string $default = null): ?string
+    public function getDate(string $name, string $default = ''): string
     {
         $preFilter = $this->getUnfilteredString($name);
         if ($preFilter === '')
@@ -176,7 +176,7 @@ final class RequestParameters
             return $default;
         }
 
-        return preg_replace('/[^0-9:\-] /', '', $preFilter);
+        return preg_replace('/[^0-9:\- ]/', '', $preFilter);
     }
 
     public function getPostcode(string $name, string $default = ''): string

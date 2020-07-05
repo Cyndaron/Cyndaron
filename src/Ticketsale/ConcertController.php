@@ -28,7 +28,7 @@ final class ConcertController extends Controller
         }
         $concert = new Concert($concertId);
         $concert->load();
-        /** @var TicketType[]|null $ticketTypes */
+        /** @var TicketType[] $ticketTypes */
         $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concertId], 'ORDER BY price DESC');
 
         $answer = [
@@ -70,6 +70,7 @@ final class ConcertController extends Controller
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
         $concert = Concert::loadFromDatabase($id);
+        assert($concert !== null);
         $page = new ConcertOrderOverviewPage($concert);
         return new Response($page->render());
     }
@@ -83,6 +84,7 @@ final class ConcertController extends Controller
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
         $concert = Concert::loadFromDatabase($id);
+        assert($concert !== null);
         $page = new ShowReservedSeats($concert);
         return new Response($page->render());
     }

@@ -42,6 +42,11 @@ class Controller
 
     public function checkCSRFToken(string $token): bool
     {
+        if ($this->module === null || $this->action === null)
+        {
+            return false;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && !User::checkToken($this->module, $this->action, $token))
         {
             return false;
@@ -77,7 +82,7 @@ class Controller
                 return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
 
-        if (array_key_exists($this->action, $routesTable))
+        if ($this->action !== null && array_key_exists($this->action, $routesTable))
         {
             $route = $routesTable[$this->action];
             $right = $route['right'] ?? '';

@@ -106,6 +106,7 @@ final class MemberController extends Controller
         if ($newGraduationId && $newGraduationDate)
         {
             $mg = new MemberGraduation();
+            assert($member->id !== null);
             /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
             $mg->memberId = $member->id;
             $mg->graduationId = $newGraduationId;
@@ -161,6 +162,7 @@ final class MemberController extends Controller
      */
     private function updateMemberFields(User $user, Member $member, RequestParameters $post): Member
     {
+        assert($user->id !== null);
         /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $member->userId = $user->id;
         $member->parentEmail = $post->getEmail('parentEmail');

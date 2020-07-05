@@ -55,6 +55,10 @@ final class MinecraftController extends Controller
         $format = $get->getSimpleString('format');
         $username = $get->getSimpleString('user');
         $member = Member::loadByUsername($username);
+        if ($member === null)
+        {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
         $parameters = SkinRendererParameters::fromRequestParameters($get);
 
         $handler = new SkinRendererHandler($member, $format, $parameters);

@@ -96,6 +96,7 @@ final class RegistrationController extends Controller
             $registrationTicketTypes[$ticketType->id] = $post->getInt('tickettype-' . $ticketType->id);
         }
 
+        assert($eventObj->id !== null);
         $registration = new Registration();
         /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $registration->eventId = $eventObj->id;
@@ -140,8 +141,10 @@ final class RegistrationController extends Controller
             throw new DatabaseError('Opslaan aanmelding mislukt!');
         }
 
+        assert($registration->id !== null);
         foreach ($ticketTypes as $ticketType)
         {
+            assert($ticketType->id !== null);
             if ($registrationTicketTypes[$ticketType->id] > 0)
             {
                 $ott = new RegistrationTicketType();

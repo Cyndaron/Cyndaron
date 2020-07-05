@@ -71,6 +71,7 @@ abstract class ModelWithCategory extends Model
             $categories[] = Category::loadFromDatabase($entry['categoryId']);
         }
 
+        /** @phpstan-ignore-next-line (there cannot be null results) */
         return $categories;
     }
 
@@ -83,6 +84,7 @@ abstract class ModelWithCategory extends Model
         $ret = [];
         foreach ($categories as $category)
         {
+            assert($category->id !== null);
             $ret[] = $category->id;
         }
 
@@ -115,6 +117,7 @@ abstract class ModelWithCategory extends Model
         foreach ($entries as $entry)
         {
             $model = static::loadFromDatabase($entry['id']);
+            assert($model !== null);
             $model->priority = $entry['priority'];
             $ret[] = $model;
         }

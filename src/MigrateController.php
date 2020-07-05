@@ -18,7 +18,7 @@ final class MigrateController extends Controller
     {
         $version = $this->action;
 
-        if (array_key_exists($version, static::VERSIONS))
+        if ($version !== null && array_key_exists($version, static::VERSIONS))
         {
             $method = static::VERSIONS[$version];
             if ($this->$method())

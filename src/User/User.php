@@ -182,6 +182,11 @@ EOT;
 
     public function mailNewPassword(string $password): bool
     {
+        if ($this->email === null)
+        {
+            throw new Exception('No email address specified!');
+        }
+
         $websiteName = Setting::get('siteName');
         $organisation = Setting::get('organisation') ?: Setting::get('siteName');
         $from = Util::getNoreplyAddress();
@@ -384,6 +389,11 @@ EOT;
 
     public function getAge(): int
     {
+        if ($this->dateOfBirth === null)
+        {
+            return 0;
+        }
+
         $date = new DateTime($this->dateOfBirth);
         $now = new DateTime();
         $interval = $now->diff($date);

@@ -70,6 +70,10 @@ final class TemplateFinder
         if (count($parts) > 1)
         {
             $name = array_pop($parts);
+            if ($name === null)
+            {
+                return null;
+            }
             $module = implode('/', $parts);
 
             $template = $this->searchPath('src/' . $module . '/templates/', $name);

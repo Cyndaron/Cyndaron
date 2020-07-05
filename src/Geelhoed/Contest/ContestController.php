@@ -92,11 +92,13 @@ final class ContestController extends Controller
         }
 
         $member = Member::loadFromLoggedInUser();
+        assert($member !== null);
+        assert($contest->id !== null);
+        assert($member->id !== null);
         $contestMember = new ContestMember();
         /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $contestMember->contestId = $contest->id;
         /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
-        /** @noinspection NullPointerExceptionInspection */
         $contestMember->memberId = $member->id;
         $contestMember->graduationId = $post->getInt('graduationId');
         $contestMember->weight = $post->getInt('weight');
@@ -159,8 +161,15 @@ final class ContestController extends Controller
             return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        $redirectUrl = $payment->getCheckoutUrl();
+        if ($redirectUrl === null)
+        {
+            User::addNotification('Bedankt voor je inschrijving! Helaas lukte het doorsturen naar de betaalpagina niet.');
+            return new RedirectResponse('/');
+        }
+
         User::addNotification('Bedankt voor je inschrijving! Het kan even duren voordat de betaling geregistreerd is.');
-        return new RedirectResponse($payment->getCheckoutUrl());
+        return new RedirectResponse($redirectUrl);
     }
 
     public function mollieWebhook(RequestParameters $post): Response
@@ -215,9 +224,13 @@ final class ContestController extends Controller
         $id = $this->queryBits->getInt(2);
         if ($id < 1)
         {
-            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+            return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
         }
         $contest = Contest::loadFromDatabase($id);
+        if ($contest === null)
+        {
+            return new Response('Kon de wedstrijd niet vinden!', Response::HTTP_NOT_FOUND);
+        }
         $page = new SubscriptionListPage($contest);
         return new Response($page->render());
     }
@@ -326,9 +339,7 @@ final class ContestController extends Controller
         $contest->description = $post->getHTML('description');
         $contest->location = $post->getHTML('location');
         $contest->sportId = $post->getInt('sportId');
-        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $contest->date = $post->getDate('date');
-        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $contest->registrationDeadline = $post->getDate('registrationDeadline');
         $contest->price = $post->getFloat('price');
         if (!$contest->save())
