@@ -6,6 +6,8 @@ use Cyndaron\Setting;
 use Cyndaron\User\User;
 use Cyndaron\Util;
 
+use Safe\Exceptions\DirException;
+use Safe\Exceptions\FilesystemException;
 use function Safe\fclose;
 use function Safe\filectime;
 use function Safe\filesize;
@@ -39,13 +41,17 @@ final class OverviewPage extends Page
         $introduction = '';
 
         $includefile = self::PATH . 'include.html';
-        if ($handle = @fopen($includefile, 'rb'))
+        try
         {
+            $handle = @fopen($includefile, 'rb');
             $contents = fread($handle, filesize($includefile));
             fclose($handle);
             // Take the inner-HTML of the body, discarding the rest.
             preg_match("/<body(.*?)>(.*?)<\\/body>/si", $contents, $matches);
             $introduction = $matches[2];
+        }
+        catch (FilesystemException $e)
+        {
         }
 
         return $introduction;
@@ -57,7 +63,11 @@ final class OverviewPage extends Page
      */
     private function getFileList(string $orderBy): array
     {
-        if (!($dir = @opendir(self::PATH)))
+        try
+        {
+            $dir = @opendir(self::PATH);
+        }
+        catch (DirException $e)
         {
             return [];
         }

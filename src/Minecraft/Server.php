@@ -13,6 +13,8 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Model;
 
+use Safe\Exceptions\FilesystemException;
+use Safe\Exceptions\StreamException;
 use function Safe\fclose;
 use function Safe\fread;
 use function Safe\fwrite;
@@ -39,19 +41,28 @@ final class Server extends Model
 
     public function retrieveInfo(): bool
     {
-        $socket = @stream_socket_client(sprintf('tcp://%s:%u', $this->hostname, $this->port), $errno, $errstr, 1);
-
-        if (!$socket)
+        try
+        {
+            $socket = @stream_socket_client(sprintf('tcp://%s:%u', $this->hostname, $this->port), $errno, $errstr, 1);
+        }
+        catch (StreamException $e)
         {
             return false;
         }
 
-        fwrite($socket, "\xfe\x01");
-        $data = fread($socket, 1024);
-        fclose($socket);
+        try
+        {
+            fwrite($socket, "\xfe\x01");
+            $data = fread($socket, 1024);
+            fclose($socket);
+        }
+        catch (FilesystemException $e)
+        {
+            return false;
+        }
 
         // Is this a disconnect with the ping?
-        if ($data === false || substr($data, 0, 1) !== "\xFF")
+        if (substr($data, 0, 1) !== "\xFF")
         {
             return false;
         }

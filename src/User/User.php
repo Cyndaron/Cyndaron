@@ -11,6 +11,8 @@ use Cyndaron\Util;
 use Exception;
 use finfo;
 use Safe\DateTime;
+use Safe\Exceptions\FilesystemException;
+use Safe\Exceptions\ImageException;
 use Safe\Exceptions\SessionException;
 
 use function Safe\file_get_contents;
@@ -132,29 +134,35 @@ EOT;
         Util::createDir(static::AVATAR_DIR);
 
         $tmpName = $_FILES['avatarFile']['tmp_name'];
-        $buffer = file_get_contents($tmpName);
-        if ($buffer === false)
+        try
+        {
+            $buffer = file_get_contents($tmpName);
+        }
+        catch (FilesystemException $e)
         {
             throw new Exception('Kon de inhoud van de avatar niet lezen!');
         }
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $mimeType = $finfo->buffer($buffer);
-        switch ($mimeType)
-        {
-            case 'image/gif':
-                $avatarImg = imagecreatefromgif($tmpName);
-                break;
-            case 'image/jpeg':
-                $avatarImg = imagecreatefromjpeg($tmpName);
-                break;
-            case 'image/png':
-                $avatarImg = imagecreatefrompng($tmpName);
-                break;
-            default:
-                throw new Exception('Ongeldig bestandstype');
-        }
 
-        if ($avatarImg === false)
+        try
+        {
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mimeType = $finfo->buffer($buffer);
+            switch ($mimeType)
+            {
+                case 'image/gif':
+                    $avatarImg = imagecreatefromgif($tmpName);
+                    break;
+                case 'image/jpeg':
+                    $avatarImg = imagecreatefromjpeg($tmpName);
+                    break;
+                case 'image/png':
+                    $avatarImg = imagecreatefrompng($tmpName);
+                    break;
+                default:
+                    throw new Exception('Ongeldig bestandstype');
+            }
+        }
+        catch (ImageException $e)
         {
             throw new Exception('Kon de bestandsinhoud niet verwerken!');
         }

@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft\Skin;
 
+use Safe\Exceptions\ImageException;
 use function Safe\imagealphablending;
 use function Safe\imagecreatefrompng;
 use function Safe\imagesavealpha;
@@ -31,8 +32,11 @@ final class Skin
         }
         else
         {
-            $img_png = imagecreatefrompng($this->url);
-            if (!$img_png)
+            try
+            {
+                $img_png = imagecreatefrompng($this->url);
+            }
+            catch (ImageException $e)
             {
                 $img_png = imagecreatefrompng(self::FALLBACK_IMAGE);
             }

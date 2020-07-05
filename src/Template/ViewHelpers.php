@@ -6,6 +6,7 @@ use Cyndaron\Photoalbum\PhotoalbumPage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
+use Safe\Exceptions\DatetimeException;
 use function Safe\natsort;
 use function Safe\preg_replace;
 use function Safe\sprintf;
@@ -98,8 +99,11 @@ final class ViewHelpers
 
     public static function filterDutchDate(string $date): string
     {
-        $timestamp = strtotime($date);
-        if ($timestamp === false)
+        try
+        {
+            $timestamp = strtotime($date);
+        }
+        catch (DatetimeException $e)
         {
             return 'Ongeldige datum';
         }
@@ -111,11 +115,15 @@ final class ViewHelpers
 
     public static function filterDutchDateTime(string $date): string
     {
-        $timestamp = strtotime($date);
-        if ($timestamp === false)
+        try
+        {
+            $timestamp = strtotime($date);
+        }
+        catch (DatetimeException $e)
         {
             return 'Ongeldige datum en tijd';
         }
+
         return sprintf('%s om %s', self::filterDutchDate($date), date('H:i', $timestamp));
     }
 
