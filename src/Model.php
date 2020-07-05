@@ -101,12 +101,9 @@ class Model
     protected static function DBResultsToModels(array $results): array
     {
         $ret = [];
-        if ($results !== [])
+        foreach ($results as $result)
         {
-            foreach ($results as $result)
-            {
-                $ret[] = static::DBResultToModel($result);
-            }
+            $ret[] = static::DBResultToModel($result);
         }
 
         return $ret;

@@ -4,10 +4,6 @@ namespace Cyndaron\Template;
 
 final class TemplateFinder
 {
-    public function __construct()
-    {
-    }
-
     /**
      * Locate actual path to template file (based on current SmartyTools logic)
      *

@@ -8,10 +8,6 @@ use function Safe\ini_set;
 
 final class Kernel
 {
-    public function __construct()
-    {
-    }
-
     public function boot(): void
     {
         try
