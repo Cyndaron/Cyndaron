@@ -5,6 +5,7 @@ namespace Cyndaron;
 use Cyndaron\Error\ImproperSubclassing;
 use Cyndaron\Error\IncompleteData;
 use Exception;
+use ReflectionNamedType;
 use ReflectionProperty;
 
 use function Safe\sprintf;
@@ -270,7 +271,7 @@ class Model
             return $var;
         }
 
-        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+        /** @var ReflectionNamedType $type */
         switch ($type->getName())
         {
             case 'int':
