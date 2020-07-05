@@ -147,6 +147,7 @@ abstract class SkinRenderer
 
         $this->times[] = ['Projection-plan', $this->microtimeFloat()];
 
+        /** @phpstan-ignore-next-line */
         if (Skin::SECONDS_TO_CACHE > 0)
         {
             $ts = gmdate('D, d M Y H:i:s', time() + Skin::SECONDS_TO_CACHE) . ' GMT';
