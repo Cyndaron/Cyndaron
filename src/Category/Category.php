@@ -7,6 +7,9 @@ use Cyndaron\RichLink\RichLink;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url;
 
+use function Safe\strtotime;
+use function Safe\usort;
+
 final class Category extends ModelWithCategory
 {
     public const TABLE = 'categories';

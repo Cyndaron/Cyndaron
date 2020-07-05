@@ -45,7 +45,7 @@ final class FileCabinetController extends Controller
         $fullPath = Util::UPLOAD_DIR . "/filecabinet/$filename";
         if ($filename !== 'include.html' && file_exists($fullPath))
         {
-            if (@unlink($fullPath))
+            if (Util::deleteFile($fullPath))
             {
                 User::addNotification('Bestand verwijderd.');
             }

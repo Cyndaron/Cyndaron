@@ -15,6 +15,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Safe\error_log;
+use function Safe\sprintf;
+use function Safe\strtotime;
+
 final class ContestController extends Controller
 {
     protected array $getRoutes = [

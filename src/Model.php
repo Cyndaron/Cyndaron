@@ -7,6 +7,8 @@ use Cyndaron\Error\IncompleteData;
 use Exception;
 use ReflectionProperty;
 
+use function Safe\sprintf;
+
 class Model
 {
     public const TABLE = '';

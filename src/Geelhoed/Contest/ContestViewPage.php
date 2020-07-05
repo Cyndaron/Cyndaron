@@ -5,6 +5,8 @@ use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Page;
 use Cyndaron\User\User;
 
+use function Safe\sprintf;
+
 final class ContestViewPage extends Page
 {
     public function __construct(Contest $contest)

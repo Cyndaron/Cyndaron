@@ -8,6 +8,8 @@ use PDO;
 use PDOException;
 use PDOStatement;
 
+use function Safe\error_log;
+
 /**
  * Zorgt voor verbinding met de database.
  */

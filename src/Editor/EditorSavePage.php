@@ -8,6 +8,9 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
 use Cyndaron\Util;
 
+use function Safe\base64_decode;
+use function Safe\file_put_contents;
+
 abstract class EditorSavePage
 {
     public const TYPE = '';

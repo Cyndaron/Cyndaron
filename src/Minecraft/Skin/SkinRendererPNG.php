@@ -3,6 +3,12 @@ namespace Cyndaron\Minecraft\Skin;
 
 use Symfony\Component\HttpFoundation\Response;
 
+use function Safe\imagecreatetruecolor;
+use function Safe\imagedestroy;
+use function Safe\imagefill;
+use function Safe\imagepng;
+use function Safe\imagesavealpha;
+
 final class SkinRendererPNG extends SkinRenderer
 {
     /** @var resource */

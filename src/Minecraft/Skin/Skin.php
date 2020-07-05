@@ -1,6 +1,10 @@
 <?php
 namespace Cyndaron\Minecraft\Skin;
 
+use function Safe\imagealphablending;
+use function Safe\imagecreatefrompng;
+use function Safe\imagesavealpha;
+
 /**
  * Class Skin
  */

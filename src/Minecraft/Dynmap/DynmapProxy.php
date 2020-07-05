@@ -7,6 +7,9 @@ use Cyndaron\Minecraft\Server;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Router;
 
+use function Safe\file_get_contents;
+use function Safe\sprintf;
+
 final class DynmapProxy
 {
     private string $contents;

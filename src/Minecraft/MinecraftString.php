@@ -1,6 +1,12 @@
 <?php
 namespace Cyndaron\Minecraft;
 
+use function Safe\preg_match_all;
+use function Safe\preg_match;
+use function Safe\preg_split;
+use function Safe\sprintf;
+use function Safe\substr;
+
 final class MinecraftString
 {
     public const MINECRAFT_COLOUR_CODES = [

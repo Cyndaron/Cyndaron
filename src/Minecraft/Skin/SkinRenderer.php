@@ -3,6 +3,13 @@ namespace Cyndaron\Minecraft\Skin;
 
 use Symfony\Component\HttpFoundation\Response;
 
+use function Safe\imagecolorat;
+use function Safe\imagecopyresampled;
+use function Safe\imagecreatefrompng;
+use function Safe\imagecreatetruecolor;
+use function Safe\imagesx;
+use function Safe\imagesy;
+
 abstract class SkinRenderer
 {
     public const ALL_FACES = [

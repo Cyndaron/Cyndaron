@@ -1,8 +1,6 @@
 <?php
 namespace Cyndaron\Category;
 
-use Cyndaron\DBConnection;
-
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'category';

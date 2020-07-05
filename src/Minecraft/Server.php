@@ -13,6 +13,13 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Model;
 
+use function Safe\fclose;
+use function Safe\fread;
+use function Safe\fwrite;
+use function Safe\sprintf;
+use function Safe\stream_socket_client;
+use function Safe\substr;
+
 final class Server extends Model
 {
     public const TABLE = 'minecraft_servers';

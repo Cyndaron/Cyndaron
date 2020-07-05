@@ -12,6 +12,9 @@ use Cyndaron\Model;
 use Cyndaron\User\User;
 use Cyndaron\Util;
 
+use function Safe\uasort;
+use function Safe\usort;
+
 final class Member extends Model
 {
     public const TABLE = 'geelhoed_members';

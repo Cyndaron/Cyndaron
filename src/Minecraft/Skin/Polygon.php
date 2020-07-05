@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron\Minecraft\Skin;
 
+use function Safe\imagefilledpolygon;
+
 /**
  * Class Polygon
  */

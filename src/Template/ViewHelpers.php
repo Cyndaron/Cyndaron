@@ -6,6 +6,11 @@ use Cyndaron\Photoalbum\PhotoalbumPage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
+use function Safe\natsort;
+use function Safe\preg_replace;
+use function Safe\sprintf;
+use function Safe\strtotime;
+
 final class ViewHelpers
 {
     protected const DUTCH_MONTHS = ['', 'januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];

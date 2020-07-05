@@ -16,6 +16,12 @@
  */
 namespace Cyndaron;
 
+use Safe\Exceptions\FilesystemException;
+use function Safe\mkdir;
+use function Safe\sprintf;
+use function Safe\substr;
+use function Safe\unlink;
+
 class Util
 {
     public const UPLOAD_DIR = __DIR__ . '/../public_html/uploads';
@@ -61,11 +67,18 @@ class Util
 
     public static function createDir(string $dir, int $mask = 0777): bool
     {
-        $oldUmask = umask(0);
-        $ret = @mkdir($dir, $mask, true);
-        umask($oldUmask);
+        try
+        {
+            $oldUmask = umask(0);
+            @mkdir($dir, $mask, true);
+            umask($oldUmask);
+        }
+        catch (FilesystemException $e)
+        {
+            return false;
+        }
 
-        return $ret;
+        return true;
     }
 
     public static function getStartOfNextQuarter(): \DateTimeImmutable
@@ -108,9 +121,23 @@ class Util
 
     public static function ensureDirectoryExists(string $dir): void
     {
-        if (!mkdir($dir, 0777, true) && !is_dir($dir))
+        if (!is_dir($dir) && !self::createDir($dir))
         {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
         }
+    }
+
+    public static function deleteFile(string $filename): bool
+    {
+        try
+        {
+            @unlink($filename);
+        }
+        catch (FilesystemException $e)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

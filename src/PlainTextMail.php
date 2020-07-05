@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron;
 
+use function Safe\sprintf;
+
 final class PlainTextMail
 {
     public string $to;

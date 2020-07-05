@@ -5,7 +5,12 @@ use Cyndaron\Category\Category;
 use Cyndaron\CyndaronInfo;
 use Cyndaron\Page;
 use Cyndaron\Setting;
-use Cyndaron\Util;
+
+use function Safe\ksort;
+use function Safe\ini_get;
+use function Safe\phpinfo;
+use function Safe\preg_match;
+use function Safe\preg_replace;
 
 final class SystemPage extends Page
 {

@@ -9,6 +9,10 @@ use Cyndaron\Setting;
 use Cyndaron\Url;
 use Cyndaron\Util;
 
+use function Safe\scandir;
+use function Safe\sprintf;
+use function Safe\substr;
+
 abstract class EditorPage extends Page
 {
     public const TYPE = null;

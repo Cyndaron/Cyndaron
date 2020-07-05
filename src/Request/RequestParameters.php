@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron\Request;
 
+use function Safe\preg_replace;
+
 final class RequestParameters
 {
     private array $vars;

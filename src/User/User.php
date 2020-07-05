@@ -8,9 +8,21 @@ use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use Cyndaron\Setting;
 use Cyndaron\Util;
-use DateTime;
 use Exception;
 use finfo;
+use Safe\DateTime;
+use Safe\Exceptions\SessionException;
+
+use function Safe\file_get_contents;
+use function Safe\imagecreatefromgif;
+use function Safe\imagecreatefromjpeg;
+use function Safe\imagecreatefrompng;
+use function Safe\imagepng;
+use function Safe\password_hash;
+use function Safe\session_destroy;
+use function Safe\sprintf;
+use function Safe\substr;
+use function Safe\unlink;
 
 final class User extends Model
 {
@@ -278,7 +290,13 @@ EOT;
 
     public static function logout(): void
     {
-        @session_destroy();
+        try
+        {
+            session_destroy();
+        }
+        catch (SessionException $e)
+        {
+        }
         static::addNotification('U bent afgemeld.');
     }
 

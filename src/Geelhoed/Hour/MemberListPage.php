@@ -5,6 +5,8 @@ use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Page;
 use Cyndaron\Template\ViewHelpers;
 
+use function Safe\sprintf;
+
 final class MemberListPage extends Page
 {
     public function __construct(Hour $hour)

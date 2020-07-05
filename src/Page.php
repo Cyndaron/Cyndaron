@@ -3,10 +3,12 @@
 
 namespace Cyndaron;
 
-use Cyndaron\Category\Category;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Template\ViewHelpers;
 use Cyndaron\User\User;
+
+use function Safe\sprintf;
+use function Safe\substr;
 
 /*
  * Copyright © 2009-2017, Michael Steenbeek

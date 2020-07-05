@@ -9,6 +9,8 @@ use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Model;
 use Cyndaron\Template\ViewHelpers;
 
+use function Safe\sprintf;
+
 final class Hour extends Model
 {
     public const TABLE = 'geelhoed_hours';

@@ -8,6 +8,8 @@ use Cyndaron\Model;
 use Cyndaron\Setting;
 use Cyndaron\Url;
 
+use function Safe\sprintf;
+
 final class MenuItem extends Model
 {
     public const TABLE = 'menu';

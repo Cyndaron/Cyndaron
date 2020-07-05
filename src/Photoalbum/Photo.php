@@ -4,6 +4,10 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\Util;
 use Imagick;
 
+use function Safe\copy;
+use function Safe\md5_file;
+use function Safe\unlink;
+
 final class Photo
 {
     public const THUMBNAIL_WIDTH = 270;
@@ -127,12 +131,12 @@ final class Photo
 
         $baseDir = Util::UPLOAD_DIR . "/photoalbums/{$album->id}";
         $mainPhoto = "$baseDir/originals/$filename";
-        if (file_exists($mainPhoto) && unlink($mainPhoto))
+        if (file_exists($mainPhoto) && Util::deleteFile($mainPhoto))
         {
             $numDeleted++;
         }
         $thumbnail = "$baseDir/thumbnails/$filename";
-        if (file_exists($thumbnail) && unlink($thumbnail))
+        if (file_exists($thumbnail) && Util::deleteFile($thumbnail))
         {
             $numDeleted++;
         }

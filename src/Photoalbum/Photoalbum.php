@@ -6,9 +6,12 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\ModelWithCategory;
-use Cyndaron\Template\ViewHelpers;
 use Cyndaron\Url;
 use Cyndaron\Util;
+
+use function Safe\natsort;
+use function Safe\scandir;
+use function Safe\substr;
 
 final class Photoalbum extends ModelWithCategory
 {

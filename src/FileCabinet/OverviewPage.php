@@ -6,6 +6,17 @@ use Cyndaron\Setting;
 use Cyndaron\User\User;
 use Cyndaron\Util;
 
+use function Safe\fclose;
+use function Safe\filectime;
+use function Safe\filesize;
+use function Safe\fopen;
+use function Safe\fread;
+use function Safe\natsort;
+use function Safe\opendir;
+use function Safe\preg_match;
+use function Safe\substr;
+use function Safe\usort;
+
 final class OverviewPage extends Page
 {
     private const PATH = Util::UPLOAD_DIR . '/filecabinet/';

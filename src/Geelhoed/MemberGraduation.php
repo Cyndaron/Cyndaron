@@ -4,6 +4,8 @@ namespace Cyndaron\Geelhoed;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Model;
 
+use function Safe\sprintf;
+
 final class MemberGraduation extends Model
 {
     public const TABLE = 'geelhoed_members_graduations';

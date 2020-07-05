@@ -10,6 +10,8 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Safe\sprintf;
+
 final class MemberController extends Controller
 {
     protected array $apiGetRoutes = [

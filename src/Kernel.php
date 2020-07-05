@@ -4,6 +4,8 @@ namespace Cyndaron;
 use Cyndaron\Error\BootFailure;
 use RuntimeException;
 
+use function Safe\ini_set;
+
 final class Kernel
 {
     public function __construct()
@@ -14,8 +16,8 @@ final class Kernel
     {
         try
         {
-            $this->setPhpConfig();
             $this->registerAutoloaders();
+            $this->setPhpConfig();
             $this->processSettings();
             $this->handleRequest();
         }
