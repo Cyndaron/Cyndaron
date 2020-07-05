@@ -148,7 +148,7 @@ final class ContestController extends Controller
             'webhookUrl' => "{$baseUrl}/api/contest/mollieWebhook",
         ]);
 
-        if (!$payment->id)
+        if (empty($payment->id))
         {
             $page = new Page('Fout bij inschrijven', 'Betaling niet gevonden!');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);

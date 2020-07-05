@@ -60,7 +60,8 @@ final class Photoalbum extends ModelWithCategory
     {
         $ret = [];
 
-        if ($dirArray = @scandir(Util::UPLOAD_DIR . "/photoalbums/$this->id/originals"))
+        $dirArray = @scandir(Util::UPLOAD_DIR . "/photoalbums/$this->id/originals");
+        if ($dirArray !== [])
         {
             natsort($dirArray);
             $ret = array_values(array_filter($dirArray, static function($value)
