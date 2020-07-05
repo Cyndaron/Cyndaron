@@ -129,7 +129,7 @@ final class Polygon
             $points_2d[] = ($coord['y'] - $minY) * $ratio;
             $nb_points++;
         }
-        if (!($same_plan_x || $same_plan_y))
+        if (!$same_plan_x && !$same_plan_y)
         {
             $colour = imagecolorallocate($image, $r, $g, $b);
             imagefilledpolygon($image, $points_2d, $nb_points, $colour);

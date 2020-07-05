@@ -88,7 +88,7 @@ abstract class SkinRenderer
             imagecopyresampled($this->skinSource, $skinSourceOld, 0, 0, 0, 0, $this->width, $this->height / 2, $this->width, $this->height / 2);
             $this->height = imagesy($this->skinSource);
         }
-        elseif (!($this->width === $this->height * 2) || $this->height % 32 !== 0)
+        elseif ($this->width !== ($this->height * 2) || ($this->height % 32) !== 0)
         {
             // Bad ratio created
             $this->skinSource = imagecreatefrompng(Skin::FALLBACK_IMAGE);
