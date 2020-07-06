@@ -57,7 +57,7 @@ abstract class EditorSavePage
         return $result;
     }
 
-    protected static function extractImages(string $matches): string
+    protected static function extractImages(array $matches): string
     {
         [$type, $image] = explode(';', $matches[2]);
 
