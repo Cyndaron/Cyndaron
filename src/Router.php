@@ -9,6 +9,7 @@ use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\Module\UserMenu;
 use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
@@ -323,6 +324,11 @@ final class Router
                         EditorController::addInternalLinkType($moduleClass);
                     }
                 }
+            }
+
+            if ($module instanceof UserMenu)
+            {
+                User::$userMenu = array_merge(User::$userMenu, $module->getUserMenuItems());
             }
         }
     }

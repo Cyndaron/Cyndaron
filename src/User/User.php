@@ -65,6 +65,8 @@ Content-type: text/html; charset=utf-8
 From: %s <%s>
 EOT;
 
+    public static array $userMenu = [];
+
     public static function isAdmin(): bool
     {
         return isset($_SESSION['username']) && $_SESSION['level'] >= 4;
@@ -409,5 +411,30 @@ EOT;
 
         $filename = self::AVATAR_DIR . "/{$this->avatar}";
         return Util::filenameToUrl($filename);
+    }
+
+    public static function fromSession(): ?self
+    {
+        return $_SESSION['profile'] ?? null;
+    }
+
+    public static function getUserMenuFiltered(): array
+    {
+        return array_filter(static::$userMenu, static function($userMenuItem)
+        {
+            $level = $userMenuItem['level'] ?? UserLevel::ADMIN;
+            if (User::getLevel() >= $level)
+            {
+                return true;
+            }
+            $right = $userMenuItem['right'] ?? '';
+            $profile = static::fromSession();
+            if ($right !== '' && $profile !== null && $profile->hasRight($right))
+            {
+                return true;
+            }
+
+            return false;
+        });
     }
 }

@@ -164,10 +164,16 @@ class Page
             ['link' => '/menu-editor', 'title' => 'Menu bewerken', 'icon' => 'menu-hamburger'],
             ['link' => '/user/manager', 'title' => 'Gebruikersbeheer', 'icon' => 'user'],
         ];
-        $vars['userMenuItems'] = [
+        $userMenuItems = [
             ['link' => '', 'title' => $_SESSION['username'] ?? ''],
-            ['link' => '/user/logout', 'title' => 'Uitloggen', 'icon' => 'log-out']
         ];
+        foreach (User::getUserMenuFiltered() as $extraItem)
+        {
+            $userMenuItems[] = ['link' => $extraItem['link'], 'title' => $extraItem['label'], 'icon' => $extraItem['icon'] ?? ''];
+        }
+        $userMenuItems[] = ['link' => '/user/logout', 'title' => 'Uitloggen', 'icon' => 'log-out'];
+
+        $vars['userMenuItems'] = $userMenuItems;
 
         $vars['notifications'] = User::getNotifications();
 

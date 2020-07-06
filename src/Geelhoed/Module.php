@@ -3,17 +3,22 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed;
 
+use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Contest\ContestController;
 use Cyndaron\Geelhoed\Hour\HourController;
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Location\LocationController;
+use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberController;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\Module\UserMenu;
+use Cyndaron\User\User;
+use Cyndaron\User\UserLevel;
 
-final class Module implements Datatypes, Routes, UrlProvider
+final class Module implements Datatypes, Routes, UrlProvider, UserMenu
 {
     /**
      * @return Datatype[]
@@ -71,5 +76,24 @@ final class Module implements Datatypes, Routes, UrlProvider
         }
 
         return null;
+    }
+
+    public function getUserMenuItems(): array
+    {
+        $ret = [
+            ['label' => 'Wedstrijdbeheer', 'link' => '/contest/manageOverview' , 'right' => Contest::RIGHT, 'level' => UserLevel::ADMIN],
+        ];
+
+        /*$profile = User::fromSession();
+        if ($profile !== null)
+        {
+            $member = Member::fetch(['userId = ?'], [$profile->id]);
+            if ($member !== null && $member->isContestant)
+            {
+                $ret[] = ['label' => 'Mijn wedstrijden'];
+            }
+        }*/
+
+        return $ret;
     }
 }
