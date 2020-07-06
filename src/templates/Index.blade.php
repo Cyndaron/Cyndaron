@@ -21,7 +21,7 @@
     @foreach ($extraCss as $extraCssScript)
         <link href="{{ $extraCssScript }}?r={{ $version }}" type="text/css" rel="stylesheet" />
     @endforeach
-    @if ($favicon)
+    @if (!empty($favicon))
         <link rel="icon" type="{{ $faviconType }}" href="{{ $favicon }}">
     @endif
     <style type="text/css">

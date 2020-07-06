@@ -88,11 +88,11 @@ class Page
 
         $this->templateVars['version'] = CyndaronInfo::ENGINE_VERSION;
         $favicon = Setting::get('favicon');
+        $this->templateVars['favicon'] = $favicon;
         if ($favicon !== '')
         {
             $dotPosition = strrchr($favicon, '.');
             $extension = $dotPosition !== false ? substr($dotPosition, 1) : '';
-            $this->templateVars['favicon'] = $favicon;
             /** @todo Replace with actual mime type check */
             $this->templateVars['faviconType'] = "image/$extension";
         }
