@@ -28,6 +28,7 @@ final class ContestController extends Controller
         'manageOverview' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'manageOverview'],
         'subscriptionList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'subscriptionList'],
         'subscriptionListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'subscriptionListExcel'],
+        'contestantsList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'contestantsList'],
     ];
 
     protected array $postRoutes = [
@@ -378,5 +379,11 @@ final class ContestController extends Controller
         $contestMember->save();
 
         return new JsonResponse();
+    }
+
+    public function contestantsList(): Response
+    {
+        $page = new ContestantsListPage();
+        return new Response($page->render());
     }
 }

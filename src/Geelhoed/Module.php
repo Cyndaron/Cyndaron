@@ -81,7 +81,8 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu
     public function getUserMenuItems(): array
     {
         $ret = [
-            ['label' => 'Wedstrijdbeheer', 'link' => '/contest/manageOverview' , 'right' => Contest::RIGHT, 'level' => UserLevel::ADMIN],
+            ['label' => 'Wedstrijdbeheer', 'link' => '/contest/manageOverview', 'right' => Contest::RIGHT, 'level' => UserLevel::ADMIN],
+            ['label' => 'Overzicht wedstrijdjudoka\'s', 'link' => '/contest/contestantsList', 'right' => Contest::RIGHT, 'level' => UserLevel::ADMIN],
         ];
 
         /*$profile = User::fromSession();
