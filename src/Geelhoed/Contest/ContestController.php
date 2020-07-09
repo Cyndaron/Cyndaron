@@ -121,7 +121,7 @@ final class ContestController extends Controller
 
         try
         {
-            $response = $this->doMollieTransaction($contest, $contestMember);
+            $response = $this->doMollieTransaction($contest, [$contestMember]);
         }
         catch (\Exception $e)
         {
@@ -132,7 +132,13 @@ final class ContestController extends Controller
         return $response;
     }
 
-    private function doMollieTransaction(Contest $contest, ContestMember $contestMember): Response
+    /**
+     * @param Contest $contest
+     * @param ContestMember[] $contestMembers
+     * @throws \Mollie\Api\Exceptions\ApiException
+     * @return Response
+     */
+    private function doMollieTransaction(Contest $contest, array $contestMembers): Response
     {
         $apiKey = Setting::get('mollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
@@ -157,11 +163,14 @@ final class ContestController extends Controller
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
 
-        $contestMember->molliePaymentId = $payment->id;
-        if (!$contestMember->save())
+        foreach ($contestMembers as $contestMember)
         {
-            $page = new Page('Fout bij inschrijven', 'Kon de betalings-ID niet opslaan!');
-            return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            $contestMember->molliePaymentId = $payment->id;
+            if (!$contestMember->save())
+            {
+                $page = new Page('Fout bij inschrijven', 'Kon de betalings-ID niet opslaan!');
+                return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
         }
 
         $redirectUrl = $payment->getCheckoutUrl();
