@@ -23,12 +23,13 @@ use function Safe\strtotime;
 final class ContestController extends Controller
 {
     protected array $getRoutes = [
+        'myContests' => ['level' => UserLevel::LOGGED_IN, 'function' => 'myContests'],
         'overview' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overview'],
         'view' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
-        'manageOverview' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'manageOverview'],
-        'subscriptionList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'subscriptionList'],
-        'subscriptionListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'subscriptionListExcel'],
-        'contestantsList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'contestantsList'],
+        'manageOverview' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'manageOverview'],
+        'subscriptionList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionList'],
+        'subscriptionListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionListExcel'],
+        'contestantsList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsList'],
     ];
 
     protected array $postRoutes = [
@@ -36,11 +37,11 @@ final class ContestController extends Controller
     ];
 
     protected array $apiPostRoutes = [
-        'edit' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'createOrEdit'],
-        'delete' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'delete'],
+        'edit' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'createOrEdit'],
+        'delete' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'delete'],
         'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook'],
-        'updatePaymentStatus' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'updatePaymentStatus'],
-        'removeSubscription' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT, 'function' => 'removeSubscription'],
+        'updatePaymentStatus' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'updatePaymentStatus'],
+        'removeSubscription' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'removeSubscription'],
     ];
 
     public function checkCSRFToken(string $token): bool
@@ -182,32 +183,35 @@ final class ContestController extends Controller
 
         $id = $post->getUnfilteredString('id');
         $payment = $mollie->payments->get($id);
-        $contestMember = ContestMember::fetch(['molliePaymentId = ?'], [$id]);
+        $contestMembers = ContestMember::fetchAll(['molliePaymentId = ?'], [$id]);
 
-        if ($contestMember === null)
+        if (count($contestMembers) === 0)
         {
             $message = sprintf('Poging tot updaten van transactie met id %s mislukt.', $id);
-            $message .= ' $contestMember is null.';
+            $message .= ' $contestMembers is leeg.';
 
             /** @noinspection ForgottenDebugOutputInspection */
             error_log($message);
             return new JsonResponse(['error' => 'Could not find payment!'], Response::HTTP_NOT_FOUND);
         }
 
+        $savesSucceeded = true;
+        $paidStatus = false;
+
         if ($payment->isPaid() && !$payment->hasRefunds() && !$payment->hasChargebacks())
         {
-            $contestMember->isPaid = true;
-            $saveSucceeded = $contestMember->save();
-        }
-        else
-        {
-            $contestMember->isPaid = false;
-            $saveSucceeded = $contestMember->save();
+            $paidStatus = true;
         }
 
-        if (!$saveSucceeded)
+        foreach ($contestMembers as $contestMember)
         {
-            return new JsonResponse(['error' => 'Could not update payment information!'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $contestMember->isPaid = $paidStatus;
+            $savesSucceeded = $savesSucceeded && $contestMember->save();
+        }
+
+        if (!$savesSucceeded)
+        {
+            return new JsonResponse(['error' => 'Could not update payment information for all subscriptions!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return new JsonResponse();
@@ -384,6 +388,12 @@ final class ContestController extends Controller
     public function contestantsList(): Response
     {
         $page = new ContestantsListPage();
+        return new Response($page->render());
+    }
+
+    public function myContests(): Response
+    {
+        $page = new MyContestsPage();
         return new Response($page->render());
     }
 }

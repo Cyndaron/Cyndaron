@@ -10,7 +10,8 @@ final class Contest extends Model
     public const TABLE = 'geelhoed_contests';
     public const TABLE_FIELDS = ['name', 'description', 'location', 'sportId', 'date', 'registrationDeadline', 'price'];
 
-    public const RIGHT = 'geelhoed_manage_contests';
+    public const RIGHT_MANAGE = 'geelhoed_manage_contests';
+    public const RIGHT_PARENT = 'geelhoed_contestant_parent';
 
     public string $name = '';
     public string $description = '';

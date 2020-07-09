@@ -60,6 +60,19 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu
     {
         switch ($linkParts[0])
         {
+            case 'contest':
+                switch ($linkParts[1])
+                {
+                    case 'contestantsList':
+                        return 'Overzicht wedstrijdjudoka\'s';
+                    case 'manageOverview':
+                        return 'Wedstrijdbeheer';
+                    case 'myContests':
+                        return 'Mijn wedstrijden';
+                    case 'overview':
+                        return 'Wedstrijden';
+                }
+                break;
             case 'location':
                 switch ($linkParts[1])
                 {
@@ -81,19 +94,22 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu
     public function getUserMenuItems(): array
     {
         $ret = [
-            ['label' => 'Wedstrijdbeheer', 'link' => '/contest/manageOverview', 'right' => Contest::RIGHT, 'level' => UserLevel::ADMIN],
-            ['label' => 'Overzicht wedstrijdjudoka\'s', 'link' => '/contest/contestantsList', 'right' => Contest::RIGHT, 'level' => UserLevel::ADMIN],
+            ['label' => 'Wedstrijdbeheer', 'link' => '/contest/manageOverview', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
+            ['label' => 'Overzicht wedstrijdjudoka\'s', 'link' => '/contest/contestantsList', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
         ];
 
-        /*$profile = User::fromSession();
+        $profile = User::fromSession();
         if ($profile !== null)
         {
+            $isContestantParent = $profile->hasRight(Contest::RIGHT_PARENT);
             $member = Member::fetch(['userId = ?'], [$profile->id]);
-            if ($member !== null && $member->isContestant)
+            $isContestant = $member !== null && $member->isContestant;
+
+            if ($isContestant || $isContestantParent)
             {
-                $ret[] = ['label' => 'Mijn wedstrijden'];
+                $ret[] = ['label' => 'Mijn wedstrijden', 'link' => '/contest/myContests'];
             }
-        }*/
+        }
 
         return $ret;
     }
