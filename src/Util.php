@@ -150,4 +150,14 @@ class Util
 
         return true;
     }
+
+    public static function spreadsheetHeadersForFilename(string $filename): array
+    {
+        $filename = str_replace('"', "'", $filename);
+        return [
+            'content-type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8',
+            'content-disposition' => 'attachment;filename="' . $filename . '"',
+            'cache-control' => 'max-age=0'
+        ];
+    }
 }

@@ -1,6 +1,12 @@
 @extends ('Index')
 
 @section ('contents')
+    @component('Widget/Toolbar')
+        @slot('right')
+            @include('Widget/Button', ['kind' => 'th', 'link' => '/contest/contestantsListExcel/', 'text' => 'Excel-export'])
+        @endslot
+    @endcomponent
+
     <table class="table table-bordered table-striped">
         <thead>
             <tr>

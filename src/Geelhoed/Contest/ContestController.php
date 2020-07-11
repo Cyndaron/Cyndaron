@@ -4,12 +4,14 @@ namespace Cyndaron\Geelhoed\Contest;
 use Cyndaron\Controller;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
+use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Setting;
 use Cyndaron\Template\ViewHelpers;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util;
 use PhpOffice\PhpSpreadsheet\Shared\Date as PHPSpreadsheetDate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,6 +32,7 @@ final class ContestController extends Controller
         'subscriptionList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionList'],
         'subscriptionListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionListExcel'],
         'contestantsList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsList'],
+        'contestantsListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsListExcel'],
     ];
 
     protected array $postRoutes = [
@@ -314,13 +317,7 @@ final class ContestController extends Controller
         }
 
         $date = date('Y-m-d', strtotime($contest->date));
-        $filename = str_replace('"', "'", "Deelnemers {$contest->name} ($date).xlsx");
-
-        $httpHeaders = [
-            'content-type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8',
-            'content-disposition' => 'attachment;filename="' . $filename . '"',
-            'cache-control' => 'max-age=0'
-        ];
+        $httpHeaders = Util::spreadsheetHeadersForFilename("Deelnemers {$contest->name} ($date).xlsx");
 
         return new Response(ViewHelpers::spreadsheetToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
     }
@@ -403,6 +400,67 @@ final class ContestController extends Controller
     {
         $page = new ContestantsListPage();
         return new Response($page->render());
+    }
+
+    public function contestantsListExcel(): Response
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        $headers = ['Naam', 'Geslacht', 'Adres', 'Postcode', 'Woonplaats', 'Geboortedatum', 'Banden', 'JBN-nummer'];
+        foreach ($headers as $key => $value)
+        {
+            $column = chr(ord('A') + $key);
+            $sheet->setCellValue("{$column}1", $value);
+        }
+
+        $contestants = Member::fetchAll(['isContestant = 1'], [], 'ORDER BY lastName,tussenvoegsel,firstName');
+        $sports = Sport::fetchAll();
+        $row = 2;
+        foreach ($contestants as $member)
+        {
+            $profile = $member->getProfile();
+
+            $sheet->setCellValue("A{$row}", $profile->getFullName());
+            $sheet->setCellValue("B{$row}", $profile->gender === 'female' ? 'v' : 'm');
+            $sheet->setCellValue("C{$row}", "{$profile->street} {$profile->houseNumber} {$profile->houseNumberAddition}");
+            $sheet->setCellValue("D{$row}", $profile->postalCode);
+            $sheet->setCellValue("E{$row}", $profile->city);
+            if ($profile->dateOfBirth !== null)
+            {
+                $dobExcel = PHPSpreadsheetDate::PHPToExcel(date($profile->dateOfBirth));
+                $sheet->setCellValue("F{$row}", $dobExcel);
+                $sheet->getStyle("F{$row}")->getNumberFormat()->setFormatCode('dd-mm-yyyy');
+            }
+            else
+            {
+                $sheet->setCellValue("F{$row}", '');
+            }
+            $graduations = [];
+            foreach ($sports as $sport)
+            {
+                $highest = $member->getHighestGraduation($sport);
+                if ($highest !== null)
+                {
+                    $graduations[] = "{$sport->name}: {$highest->name}";
+                }
+            }
+            $sheet->setCellValue("G{$row}", implode("\r\n", $graduations));
+            $sheet->setCellValue("H{$row}", $member->jbnNumber);
+
+            $row++;
+        }
+        for ($i = 0, $numHeaders = count($headers); $i < $numHeaders; $i++)
+        {
+            $column = chr(ord('A') + $i);
+            $dimension = $sheet->getColumnDimension($column);
+            $dimension->setAutoSize(true);
+        }
+
+        $date = date('Y-m-d');
+        $httpHeaders = Util::spreadsheetHeadersForFilename("Wedstrijdjudoka's (uitvoer {$date}).xlsx");
+
+        return new Response(ViewHelpers::spreadsheetToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
     }
 
     public function myContests(): Response
