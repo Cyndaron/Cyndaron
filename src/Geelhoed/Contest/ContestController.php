@@ -422,7 +422,7 @@ final class ContestController extends Controller
             $profile = $member->getProfile();
 
             $sheet->setCellValue("A{$row}", $profile->getFullName());
-            $sheet->setCellValue("B{$row}", $profile->gender === 'female' ? 'v' : 'm');
+            $sheet->setCellValue("B{$row}", $profile->getGenderDisplay());
             $sheet->setCellValue("C{$row}", "{$profile->street} {$profile->houseNumber} {$profile->houseNumberAddition}");
             $sheet->setCellValue("D{$row}", $profile->postalCode);
             $sheet->setCellValue("E{$row}", $profile->city);

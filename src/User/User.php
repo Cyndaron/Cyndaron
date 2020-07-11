@@ -437,4 +437,18 @@ EOT;
             return false;
         });
     }
+
+    public function getGenderDisplay(): string
+    {
+        switch ($this->gender)
+        {
+            case 'male':
+                return 'm';
+            case 'female':
+                return 'v';
+            case null:
+            default:
+                return '?';
+        }
+    }
 }

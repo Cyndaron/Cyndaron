@@ -24,7 +24,7 @@
                 @php $profile = $contestant->getProfile() @endphp
                 <tr>
                     <td>{{ $profile->lastName }} {{ $profile->tussenvoegsel }} {{ $profile->firstName }}</td>
-                    <td>{{ $profile->gender === 'female' ? 'v' : 'm' }}</td>
+                    <td>{{ $profile->getGenderDisplay() }}</td>
                     <td>
                         {{ $profile->street }} {{ $profile->houseNumber }} {{ $profile->houseNumberAddition }}<br>
                         {{ $profile->postalCode }} {{ $profile->city }}
