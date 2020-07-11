@@ -121,7 +121,9 @@ final class ContestController extends Controller
 
         try
         {
-            $response = $this->doMollieTransaction($contest, [$contestMember]);
+            $baseUrl = "https://{$_SERVER['HTTP_HOST']}";
+            $redirectUrl = "{$baseUrl}/contest/view/{$contest->id}";
+            $response = $this->doMollieTransaction([$contestMember], "Inschrijving {$contest->name}", $contest->price, $redirectUrl);
         }
         catch (\Exception $e)
         {
@@ -133,18 +135,21 @@ final class ContestController extends Controller
     }
 
     /**
-     * @param Contest $contest
      * @param ContestMember[] $contestMembers
+     * @param string $description
+     * @param float $price
+     * @param string $redirectUrl
+     * @throws \Cyndaron\Error\ImproperSubclassing
      * @throws \Mollie\Api\Exceptions\ApiException
      * @return Response
      */
-    private function doMollieTransaction(Contest $contest, array $contestMembers): Response
+    private function doMollieTransaction(array $contestMembers, string $description, float $price, string $redirectUrl): Response
     {
         $apiKey = Setting::get('mollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
         $mollie->setApiKey($apiKey);
 
-        $formattedAmount = number_format($contest->price, 2, '.', '');
+        $formattedAmount = number_format($price, 2, '.', '');
         $baseUrl = "https://{$_SERVER['HTTP_HOST']}";
 
         $payment = $mollie->payments->create([
@@ -152,8 +157,8 @@ final class ContestController extends Controller
                 'currency' => 'EUR',
                 'value' => $formattedAmount,
             ],
-            'description' => "Inschrijving {$contest->name}",
-            'redirectUrl' => "{$baseUrl}/contest/view/{$contest->id}",
+            'description' => $description,
+            'redirectUrl' => $redirectUrl,
             'webhookUrl' => "{$baseUrl}/api/contest/mollieWebhook",
         ]);
 
@@ -404,5 +409,63 @@ final class ContestController extends Controller
     {
         $page = new MyContestsPage();
         return new Response($page->render());
+    }
+
+    public function payFullDue(): Response
+    {
+        $user = User::fromSession();
+        assert($user !== null);
+
+        [$due, $contestMembers] = $this->getDue($user);
+        if ($due === 0.00)
+        {
+            return new Response('Er staan geen betalingen open.');
+        }
+
+        try
+        {
+            $redirectUrl = "https://{$_SERVER['HTTP_HOST']}/contest/myContests";
+            $response = $this->doMollieTransaction($contestMembers, 'Inschrijving wedstrijdjudo Sportschool Geelhoed', $due, $redirectUrl);
+        }
+        catch (\Exception $e)
+        {
+            User::addNotification('Je inschrijving is opgeslagen, maar de betaling is mislukt!');
+            $response = new RedirectResponse("/contest/myContests");
+        }
+
+        return $response;
+    }
+
+    private function getDue(User $user): array
+    {
+        $members = Member::fetchAllByUser($user);
+        if (count($members) === 0)
+        {
+            return [0.00, []];
+        }
+        $memberIds = array_map(static function(Member $elem)
+        {
+            return $elem->id;
+        }, $members);
+        $contests =  Contest::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (?))'], [implode(',', $memberIds)], 'ORDER BY date DESC');
+        $contestMembers = [];
+        $due = 0.00;
+        foreach ($contests as $contest)
+        {
+            foreach ($members as $member)
+            {
+                $contestMember = ContestMember::fetchByContestAndMember($contest, $member);
+                if ($contestMember !== null)
+                {
+                    if (!$contestMember->isPaid)
+                    {
+                        $due += $contest->price;
+                        $contestMembers[] = $contestMember;
+                    }
+                }
+            }
+        }
+
+        return [$due, $contestMembers];
     }
 }

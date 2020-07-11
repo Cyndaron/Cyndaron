@@ -43,4 +43,13 @@ final class ContestMember extends Model
         $firstElem = reset($results);
         return $firstElem !== false ? $firstElem : null;
     }
+
+    /**
+     * @param Contest $contest
+     * @return self[]
+     */
+    public static function fetchAllByContest(Contest $contest): array
+    {
+        return self::fetchAll(['contestId = ?'], [$contest->id]);
+    }
 }

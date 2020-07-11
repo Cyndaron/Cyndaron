@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\DBConnection;
+use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
@@ -372,5 +373,24 @@ final class Member extends Model
         }
 
         return $member;
+    }
+
+    /**
+     * @param User $user
+     * @return self[]
+     */
+    public static function fetchAllByUser(User $user): array
+    {
+        if ($user->hasRight(Contest::RIGHT_PARENT))
+        {
+            return self::fetchAll(['parentEmail LIKE ?'], ["%{$user->email}%"]);
+        }
+
+        $ret = self::loadFromProfile($user);
+        if ($ret === null)
+        {
+            return [];
+        }
+        return [$ret];
     }
 }
