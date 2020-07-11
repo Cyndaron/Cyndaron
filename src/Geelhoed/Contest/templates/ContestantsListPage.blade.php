@@ -5,9 +5,11 @@
         <thead>
             <tr>
                 <th>Naam</th>
+                <th>Geslacht</th>
                 <th>Adres</th>
                 <th>Geboortedatum</th>
                 <th>Banden</th>
+                <th>JBN-nummer</th>
             </tr>
         </thead>
         <tbody>
@@ -16,6 +18,7 @@
                 @php $profile = $contestant->getProfile() @endphp
                 <tr>
                     <td>{{ $profile->lastName }} {{ $profile->tussenvoegsel }} {{ $profile->firstName }}</td>
+                    <td>{{ $profile->gender === 'female' ? 'v' : 'm' }}</td>
                     <td>
                         {{ $profile->street }} {{ $profile->houseNumber }} {{ $profile->houseNumberAddition }}<br>
                         {{ $profile->postalCode }} {{ $profile->city }}
@@ -27,6 +30,7 @@
                             @if ($highest !== null) {{ $sport->name }}: {{ $highest->name }}@endif
                         @endforeach
                     </td>
+                    <td>{{ $contestant->jbnNumber }}</td>
                 </tr>
             @endforeach
         </tbody>
