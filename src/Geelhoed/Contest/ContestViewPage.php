@@ -21,6 +21,7 @@ final class ContestViewPage extends Page
             'loggedInMember' => $loggedInMember,
             'mayViewOtherContestants' => $mayViewOtherContestants,
             'canManage' => $canManage,
+            'deleteCsrfToken' => User::getCSRFToken('contest', 'deleteAttachment'),
         ]);
     }
 }

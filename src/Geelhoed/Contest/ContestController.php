@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\error_log;
+use function Safe\preg_replace;
 use function Safe\sprintf;
 use function Safe\strtotime;
 
@@ -37,7 +38,8 @@ final class ContestController extends Controller
     ];
 
     protected array $postRoutes = [
-        'addItem' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addItem'],
+        'addAttachment' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addAttachment'],
+        'deleteAttachment' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteAttachment'],
         'subscribe' => ['level' => UserLevel::LOGGED_IN, 'function' => 'subscribe'],
     ];
 
@@ -532,7 +534,7 @@ final class ContestController extends Controller
         return [$due, $contestMembers];
     }
 
-    public function addItem(): Response
+    public function addAttachment(): Response
     {
         $id = $this->queryBits->getInt(2);
         if ($id < 1)
@@ -548,7 +550,8 @@ final class ContestController extends Controller
         $dir = Util::UPLOAD_DIR . '/contest/' . $contest->id . '/attachments';
         Util::ensureDirectoryExists($dir);
 
-        $filename = $dir . '/' . basename($_FILES['newFile']['name']);
+        $filteredParams = new RequestParameters($_FILES['newFile']);
+        $filename = $dir . '/' . basename($filteredParams->getFilename('name'));
         if (move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
         {
             User::addNotification('Bijlage geüpload');
@@ -556,6 +559,41 @@ final class ContestController extends Controller
         else
         {
             User::addNotification('Bijlage kon niet naar de uploadmap worden verplaatst.');
+        }
+
+        return new RedirectResponse('/contest/view/' . $contest->id);
+    }
+
+    protected function deleteAttachment(RequestParameters $post): Response
+    {
+        $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
+        }
+        $contest = Contest::loadFromDatabase($id);
+        if ($contest === null)
+        {
+            return new Response('Wedstrijd bestaat niet!', Response::HTTP_NOT_FOUND);
+        }
+
+        $dir = Util::UPLOAD_DIR . '/contest/' . $contest->id . '/attachments';
+        $filename = $post->getFilename('filename');
+        $fullPath = "$dir/$filename";
+        if (file_exists($fullPath))
+        {
+            if (Util::deleteFile($fullPath))
+            {
+                User::addNotification('Bestand verwijderd.');
+            }
+            else
+            {
+                User::addNotification('Bestand kon niet worden verwijderd.');
+            }
+        }
+        else
+        {
+            User::addNotification('Bestand bestaat niet.');
         }
 
         return new RedirectResponse('/contest/view/' . $contest->id);

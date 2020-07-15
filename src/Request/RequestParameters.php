@@ -207,7 +207,7 @@ final class RequestParameters
     public function getFilename(string $name, string $default = ''): string
     {
         $preFilter = $this->getUnfilteredString($name, $default);
-        return preg_replace('/[^A-Za-z0-9 \-+.]/', '', $preFilter);
+        return preg_replace('/[^A-Za-z0-9() \-+.]/', '', $preFilter);
     }
 
     /**

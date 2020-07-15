@@ -10,10 +10,10 @@
     @if ($canManage)
         @component('Widget/Toolbar2')
             @slot('right')
-                <form class="form-inline" method="post" action="/contest/addItem/{{ $contest->id }}" enctype="multipart/form-data">
+                <form class="form-inline" method="post" action="/contest/addAttachment/{{ $contest->id }}" enctype="multipart/form-data">
                     <label for="newFile">Bijlage toevoegen: </label>
                     <input type="file" id="newFile" name="newFile" required>
-                    <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('contest', 'addItem') }}">
+                    <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('contest', 'addAttachment') }}">
                     <input class="btn btn-primary" type="submit" value="Uploaden">
                 </form>
             @endslot
@@ -42,7 +42,16 @@
         <tr><th>Documenten:</th><td>
             <ul>
             @foreach ($attachments as $attachment)
-                <li><a href="/uploads/contest/{{ $contest->id }}/attachments/{{ $attachment }}">{{ $attachment }}</a></li>
+                <li>
+                    <a href="/uploads/contest/{{ $contest->id }}/attachments/{{ $attachment }}">{{ $attachment }}</a>
+                    @if ($canManage)
+                        <form method="post" action="/contest/deleteAttachment/{{ $contest->id }}" style="display: inline;">
+                            <input type="hidden" name="csrfToken" value="{{ $deleteCsrfToken }}">
+                            <input type="hidden" name="filename" value="{{ $attachment }}">
+                            <button class="btn btn-sm btn-danger" type="submit" title="Dit bestand verwijderen"><span class="glyphicon glyphicon-trash"></span></button>
+                        </form>
+                    @endif
+                </li>
             @endforeach
             </ul>
         </td></tr>
