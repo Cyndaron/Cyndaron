@@ -37,6 +37,7 @@ final class ContestController extends Controller
     ];
 
     protected array $postRoutes = [
+        'addItem' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addItem'],
         'subscribe' => ['level' => UserLevel::LOGGED_IN, 'function' => 'subscribe'],
     ];
 
@@ -529,5 +530,34 @@ final class ContestController extends Controller
         }
 
         return [$due, $contestMembers];
+    }
+
+    public function addItem(): Response
+    {
+        $id = $this->queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
+        }
+        $contest = Contest::loadFromDatabase($id);
+        if ($contest === null)
+        {
+            return new Response('Wedstrijd bestaat niet!', Response::HTTP_NOT_FOUND);
+        }
+
+        $dir = Util::UPLOAD_DIR . '/contest/' . $contest->id . '/attachments';
+        Util::ensureDirectoryExists($dir);
+
+        $filename = $dir . '/' . basename($_FILES['newFile']['name']);
+        if (move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
+        {
+            User::addNotification('Bijlage geüpload');
+        }
+        else
+        {
+            User::addNotification('Bijlage kon niet naar de uploadmap worden verplaatst.');
+        }
+
+        return new RedirectResponse('/contest/view/' . $contest->id);
     }
 }

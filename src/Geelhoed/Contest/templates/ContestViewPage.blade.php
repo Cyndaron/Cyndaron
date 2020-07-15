@@ -7,6 +7,19 @@
         $sport = $contest->getSport();
     @endphp
 
+    @if ($canManage)
+        @component('Widget/Toolbar2')
+            @slot('right')
+                <form class="form-inline" method="post" action="/contest/addItem/{{ $contest->id }}" enctype="multipart/form-data">
+                    <label for="newFile">Bijlage toevoegen: </label>
+                    <input type="file" id="newFile" name="newFile" required>
+                    <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('contest', 'addItem') }}">
+                    <input class="btn btn-primary" type="submit" value="Uploaden">
+                </form>
+            @endslot
+        @endcomponent
+    @endif
+
     <table>
         <tr><th>Locatie: </th><td>{{ $contest->location }}</td></tr>
         <tr><th>Datum en tijd: </th><td>{{ $contest->date|dmyHm }}</td></tr>
@@ -24,6 +37,16 @@
             </tr>
         @endif
         <tr><th>Beschrijving:</th><td>{{ $contest->description }}</td></tr>
+        @php $attachments = $contest->getAttachments() @endphp
+        @if (count($attachments) > 0)
+        <tr><th>Documenten:</th><td>
+            <ul>
+            @foreach ($attachments as $attachment)
+                <li><a href="/uploads/contest/{{ $contest->id }}/attachments/{{ $attachment }}">{{ $attachment }}</a></li>
+            @endforeach
+            </ul>
+        </td></tr>
+        @endif
     </table>
 
     @if (time() > strtotime($contest->date))

@@ -4,6 +4,10 @@ namespace Cyndaron\Geelhoed\Contest;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Model;
+use Cyndaron\Util;
+
+use function Safe\scandir;
+use function Safe\substr;
 
 final class Contest extends Model
 {
@@ -54,5 +58,20 @@ final class Contest extends Model
         }
 
         return false;
+    }
+
+    public function getAttachments(): array
+    {
+        $folder = Util::UPLOAD_DIR . '/contest/' . $this->id . '/attachments';
+        if (!file_exists($folder) || !is_dir($folder))
+        {
+            return [];
+        }
+        $files = scandir($folder);
+        return array_filter($files, static function($filename)
+        {
+            // Exclude hidden files.
+            return substr($filename, 0, 1) !== '.';
+        });
     }
 }
