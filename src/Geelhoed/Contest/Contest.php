@@ -22,11 +22,18 @@ final class Contest extends Model
     public float $price;
 
     /**
+     * @param bool $includeUnpaid
      * @return ContestMember[]
      */
-    public function getContestMembers(): array
+    public function getContestMembers(bool $includeUnpaid = false): array
     {
-        return ContestMember::fetchAll(['contestId = ?'], [$this->id]);
+        $args = ['contestId = ?'];
+        if (!$includeUnpaid)
+        {
+            $args[] = 'isPaid = 1';
+        }
+
+        return ContestMember::fetchAll($args, [$this->id]);
     }
 
     public function getSport(): Sport
