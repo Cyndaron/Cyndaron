@@ -35,8 +35,10 @@
             Om te kunnen omschrijven moet je wedstrijdjudoka/jitsuka zijn.
         @elseif ($contest->hasMember($loggedInMember))
             @php $subscription = \Cyndaron\Geelhoed\Contest\ContestMember::fetchByContestAndMember($contest, $loggedInMember); @endphp
-            Je hebt je al ingeschreven voor deze wedstrijd.
-            @if (!$subscription->isPaid)Je hebt nog niet betaald.@endif
+            Je hebt je al aangemeld voor deze wedstrijd.
+            @if (!$subscription->isPaid)
+                <div class="alert alert-warning">Je hebt nog niet betaald. Je bent pas definitief ingeschreven wanneer je betaald hebt.</div>
+            @endif
         @else
             @php $loggedInProfile = \Cyndaron\User\User::getLoggedIn() @endphp
             <hr>
