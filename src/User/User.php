@@ -389,7 +389,7 @@ EOT;
     }
 
 
-    public function getAge(): int
+    public function getAge(?DateTime $on = null): int
     {
         if ($this->dateOfBirth === null)
         {
@@ -397,8 +397,11 @@ EOT;
         }
 
         $date = new DateTime($this->dateOfBirth);
-        $now = new DateTime();
-        $interval = $now->diff($date);
+        if ($on === null)
+        {
+            $on = new DateTime();
+        }
+        $interval = $on->diff($date);
         return $interval->y;
     }
 

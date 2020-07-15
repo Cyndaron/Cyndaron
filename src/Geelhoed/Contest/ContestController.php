@@ -14,6 +14,7 @@ use Cyndaron\User\UserLevel;
 use Cyndaron\Util;
 use PhpOffice\PhpSpreadsheet\Shared\Date as PHPSpreadsheetDate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Safe\DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -274,7 +275,7 @@ final class ContestController extends Controller
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $headers = ['Naam', 'Adres', 'Postcode', 'Woonplaats', 'Geboortedatum', 'Band', 'Gewicht', 'JBN-nummer', 'Betaald', 'Opmerkingen'];
+        $headers = ['Naam', 'Geslacht', 'Adres', 'Postcode', 'Woonplaats', 'Geboortedatum', 'Leeftijd', 'Band', 'Gewicht', 'JBN-nummer', 'Betaald', 'Transactie-ID', 'Opmerkingen'];
         foreach ($headers as $key => $value)
         {
             $column = chr(ord('A') + $key);
@@ -288,24 +289,27 @@ final class ContestController extends Controller
             $profile = $member->getProfile();
 
             $sheet->setCellValue("A{$row}", $profile->getFullName());
-            $sheet->setCellValue("B{$row}", "{$profile->street} {$profile->houseNumber} {$profile->houseNumberAddition}");
-            $sheet->setCellValue("C{$row}", $profile->postalCode);
-            $sheet->setCellValue("D{$row}", $profile->city);
+            $sheet->setCellValue("B{$row}", $profile->getGenderDisplay());
+            $sheet->setCellValue("C{$row}", "{$profile->street} {$profile->houseNumber} {$profile->houseNumberAddition}");
+            $sheet->setCellValue("D{$row}", $profile->postalCode);
+            $sheet->setCellValue("E{$row}", $profile->city);
             if ($profile->dateOfBirth !== null)
             {
                 $dobExcel = PHPSpreadsheetDate::PHPToExcel(date($profile->dateOfBirth));
-                $sheet->setCellValue("E{$row}", $dobExcel);
-                $sheet->getStyle("E{$row}")->getNumberFormat()->setFormatCode('dd-mm-yyyy');
+                $sheet->setCellValue("F{$row}", $dobExcel);
+                $sheet->getStyle("F{$row}")->getNumberFormat()->setFormatCode('dd-mm-yyyy');
             }
             else
             {
-                $sheet->setCellValue("E{$row}", '');
+                $sheet->setCellValue("F{$row}", '');
             }
-            $sheet->setCellValue("F{$row}", $contestMember->getGraduation()->name);
-            $sheet->setCellValue("G{$row}", $contestMember->weight);
-            $sheet->setCellValue("H{$row}", $member->jbnNumber);
-            $sheet->setCellValue("I{$row}", ViewHelpers::boolToText($contestMember->isPaid));
-            $sheet->setCellValue("J{$row}", $contestMember->comments);
+            $sheet->setCellValue("G{$row}", $profile->getAge(new DateTime($contest->date)));
+            $sheet->setCellValue("H{$row}", $contestMember->getGraduation()->name);
+            $sheet->setCellValue("I{$row}", $contestMember->weight);
+            $sheet->setCellValue("J{$row}", $member->jbnNumber);
+            $sheet->setCellValue("K{$row}", ViewHelpers::boolToText($contestMember->isPaid));
+            $sheet->setCellValue("L{$row}", $contestMember->molliePaymentId ?? '');
+            $sheet->setCellValue("M{$row}", $contestMember->comments);
 
             $row++;
         }

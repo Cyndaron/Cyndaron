@@ -17,12 +17,14 @@
             <tr>
                 <th></th>
                 <th>Naam</th>
+                <th>M/V</th>
                 <th>Adres</th>
-                <th>Geboortedatum</th>
+                <th>Leeftijd</th>
                 <th>Band</th>
                 <th>Gewicht</th>
                 <th>JBN-nummer</th>
                 <th>Betaald</th>
+                <th>Transactie-ID</th>
                 <th>Opmerkingen</th>
                 <th>Acties</th>
             </tr>
@@ -34,15 +36,21 @@
                 <tr>
                     <td></td>
                     <td>{{ $profile->getFullName() }}</td>
+                    <td>{{ $profile->getGenderDisplay() }}</td>
                     <td>
                         {{ $profile->street }} {{ $profile->houseNumber }} {{ $profile->houseNumberAddition }}<br>
                         {{ $profile->postalCode }} {{ $profile->city }}
                     </td>
-                    <td>@if ($profile->dateOfBirth){{ date('d-m-Y', strtotime($profile->dateOfBirth)) }}@endif</td>
+                    <td>
+                        <abbr title="@if ($profile->dateOfBirth){{ date('d-m-Y', strtotime($profile->dateOfBirth)) }}@endif">
+                            {{ $profile->getAge(new \Safe\DateTime($contest->date)) }}
+                        </abbr>
+                    </td>
                     <td>{{ $contestMember->getGraduation()->name }}</td>
                     <td>{{ $contestMember->weight }}</td>
                     <td>{{ $member->jbnNumber }}</td>
                     <td>{{ \Cyndaron\Template\ViewHelpers::boolToText($contestMember->isPaid) }}</td>
+                    <td>{{ $contestMember->molliePaymentId }}</td>
                     <td>{{ $contestMember->comments }}</td>
                     <td>
                         <div class="btn-group">
