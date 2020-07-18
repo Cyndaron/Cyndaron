@@ -2,6 +2,7 @@
 namespace Cyndaron\Geelhoed\Location;
 
 use Cyndaron\Page;
+use Cyndaron\Setting;
 
 final class LocationOverview extends Page
 {
@@ -12,6 +13,7 @@ final class LocationOverview extends Page
         parent::__construct('Leslocaties');
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $locations = Location::fetchAll([], [], 'ORDER BY city, street');
-        $this->addTemplateVars(['locations' => $locations, 'pageImage' => self::PAGE_IMAGE]);
+        $locNotification = Setting::get('geelhoed_locationNotification');
+        $this->addTemplateVars(['locations' => $locations, 'pageImage' => self::PAGE_IMAGE, 'locNotification' => $locNotification]);
     }
 }

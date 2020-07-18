@@ -1,6 +1,12 @@
 @extends ('Index')
 
 @section ('contents')
+    @if (!empty($locNotification))
+        <div class="alert alert-info">
+            {{ $locNotification }}
+        </div>
+    @endif
+
     <p>
         {{ $location->street }} {{ $location->houseNumber }}<br>
         {{ $location->postalCode }} {{$location->city}}

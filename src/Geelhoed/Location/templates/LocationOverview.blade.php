@@ -1,6 +1,12 @@
 @extends ('Index')
 
 @section ('contents')
+    @if (!empty($locNotification))
+        <div class="alert alert-info">
+            {{ $locNotification }}
+        </div>
+    @endif
+
     @php /** @var \Cyndaron\Geelhoed\Location\Location[] $locations*/ @endphp
     @foreach ($locations as $location)
         <div class="card location-card">
