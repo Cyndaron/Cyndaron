@@ -388,6 +388,7 @@ final class ContestController extends Controller
         $contest->location = $post->getHTML('location');
         $contest->sportId = $post->getInt('sportId');
         $contest->registrationDeadline = $post->getDate('registrationDeadline');
+        $contest->registrationChangeDeadline = $post->getDate('registrationChangeDeadline');
         $contest->price = $post->getFloat('price');
         if (!$contest->save())
         {

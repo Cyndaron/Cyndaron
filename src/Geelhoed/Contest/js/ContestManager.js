@@ -1,6 +1,6 @@
 "use strict";
 
-function showContestEditDialog(id, name, description, location, sportId, deadlineDate, deadlineTime, price)
+function showContestEditDialog(id, name, description, location, sportId, deadlineDate, deadlineTime, registrationChangeDeadlineDate, registrationChangeDeadlineTime, price)
 {
     $('#gcm-edit-dialog').modal().show();
 
@@ -13,6 +13,8 @@ function showContestEditDialog(id, name, description, location, sportId, deadlin
 
     $('#gcm-edit-deadline-date').val(deadlineDate);
     $('#gcm-edit-deadline-time').val(deadlineTime);
+    $('#gcm-edit-registration-change-deadline-date').val(registrationChangeDeadlineDate);
+    $('#gcm-edit-registration-change-deadline-time').val(registrationChangeDeadlineTime);
     $('#gcm-edit-price').val(price);
 }
 
@@ -20,7 +22,7 @@ $(document).ready(function()
 {
     $('#gcm-new').on('click', function ()
     {
-        showContestEditDialog(null, null, null, null, null, null, null, null);
+        showContestEditDialog(null, null, null, null, null, null, null, null, null, null);
     });
 
     $('.gcm-edit').on('click', function()
@@ -30,11 +32,13 @@ $(document).ready(function()
         let description = $(this).data('description');
         let location = $(this).data('location');
         let sportId = $(this).data('sport-id');
-        let deadlineDate = $(this).data('deadlineDate');
-        let deadlineTime = $(this).data('deadlineTime');
+        let deadlineDate = $(this).data('deadline-date');
+        let deadlineTime = $(this).data('deadline-time');
+        let registrationChangeDeadlineDate = $(this).data('registration-change-deadline-date');
+        let registrationChangeDeadlineTime = $(this).data('registration-change-deadline-time');
         let price = $(this).data('price');
 
-        showContestEditDialog(id, name, description, location, sportId, deadlineDate, deadlineTime, price);
+        showContestEditDialog(id, name, description, location, sportId, deadlineDate, deadlineTime, registrationChangeDeadlineDate, registrationChangeDeadlineTime, price);
     });
 
     $('.gcm-delete').on('click', function ()
@@ -63,6 +67,7 @@ $(document).ready(function()
             location: $('#gcm-edit-location').val(),
             sportId: $('#gcm-edit-sportId').val(),
             registrationDeadline: $('#gcm-edit-deadline-date').val() + ' ' + $('#gcm-edit-deadline-time').val() + ':00',
+            registrationChangeDeadline: $('#gcm-edit-registration-change-deadline-date').val() + ' ' + $('#gcm-edit-registration-change-deadline-time').val() + ':00',
             price: parseFloat($('#gcm-edit-price').val()),
         };
 

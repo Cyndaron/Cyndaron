@@ -33,6 +33,8 @@
                             data-sport-id="{{ $contest->sportId }}"
                             data-deadline-date="{{ date('Y-m-d', strtotime($contest->registrationDeadline)) }}"
                             data-deadline-time="{{ date('H:i', strtotime($contest->registrationDeadline)) }}"
+                            data-registration-change-deadline-date="{{ date('Y-m-d', strtotime($contest->registrationChangeDeadline)) }}"
+                            data-registration-change-deadline-time="{{ date('H:i', strtotime($contest->registrationChangeDeadline)) }}"
                             data-price="{{ $contest->price }}">
                     <span class="glyphicon glyphicon-edit"></span></button>
                     <button title="Wedstrijd verwijderen" class="btn btn-danger gcm-delete" data-id="{{ $contest->id }}" type="button"><span class="glyphicon glyphicon-trash"></span></button>
@@ -55,6 +57,12 @@
             @slot('right')
                 <input id="gcm-edit-deadline-date" type="date" class="form-control form-control-inline" required>
                 <input id="gcm-edit-deadline-time" type="time" class="form-control form-control-inline" required>
+            @endslot
+        @endcomponent
+        @component('Widget/Form/FormWrapper', ['id' => 'gcm-edit-registration-change-deadline-date', 'label' => 'Deadline voor wijzigingen'])
+            @slot('right')
+                <input id="gcm-edit-registration-change-deadline-date" type="date" class="form-control form-control-inline" required>
+                <input id="gcm-edit-registration-change-deadline-time" type="time" class="form-control form-control-inline" required>
             @endslot
         @endcomponent
         @component('Widget/Form/FormWrapper', ['id' => 'gcm-edit-price', 'label' => 'Prijs'])

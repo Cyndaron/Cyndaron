@@ -12,7 +12,7 @@ use function Safe\substr;
 final class Contest extends Model
 {
     public const TABLE = 'geelhoed_contests';
-    public const TABLE_FIELDS = ['name', 'description', 'location', 'sportId', 'registrationDeadline', 'price'];
+    public const TABLE_FIELDS = ['name', 'description', 'location', 'sportId', 'registrationDeadline', 'registrationChangeDeadline', 'price'];
 
     public const RIGHT_MANAGE = 'geelhoed_manage_contests';
     public const RIGHT_PARENT = 'geelhoed_contestant_parent';
@@ -22,6 +22,7 @@ final class Contest extends Model
     public string $location = '';
     public int $sportId = 0;
     public string $registrationDeadline = '';
+    public string $registrationChangeDeadline = '';
     public float $price;
 
     /**
