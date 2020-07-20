@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\error_log;
-use function Safe\preg_replace;
 use function Safe\sprintf;
 use function Safe\strtotime;
 
@@ -40,10 +39,12 @@ final class ContestController extends Controller
     protected array $postRoutes = [
         'addAttachment' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addAttachment'],
         'deleteAttachment' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteAttachment'],
+        'deleteDate' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteDate'],
         'subscribe' => ['level' => UserLevel::LOGGED_IN, 'function' => 'subscribe'],
     ];
 
     protected array $apiPostRoutes = [
+        'addDate' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addDate'],
         'edit' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'createOrEdit'],
         'delete' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'delete'],
         'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook'],
@@ -306,7 +307,15 @@ final class ContestController extends Controller
             {
                 $sheet->setCellValue("F{$row}", '');
             }
-            $sheet->setCellValue("G{$row}", $profile->getAge(new DateTime($contest->date)));
+
+            $firstDate = $contest->getFirstDate();
+            $contestDateObject = null;
+            if ($firstDate !== null)
+            {
+                $contestDateObject = new DateTime($firstDate);
+            }
+
+            $sheet->setCellValue("G{$row}", $profile->getAge($contestDateObject));
             $sheet->setCellValue("H{$row}", $contestMember->getGraduation()->name);
             $sheet->setCellValue("I{$row}", $contestMember->weight);
             $sheet->setCellValue("J{$row}", $member->jbnNumber);
@@ -323,7 +332,8 @@ final class ContestController extends Controller
             $dimension->setAutoSize(true);
         }
 
-        $date = date('Y-m-d', strtotime($contest->date));
+        $firstDate = $contest->getFirstDate();
+        $date = $firstDate !== null ? date('Y-m-d', strtotime($firstDate)) : 'onbekende datum';
         $httpHeaders = Util::spreadsheetHeadersForFilename("Deelnemers {$contest->name} ($date).xlsx");
 
         return new Response(ViewHelpers::spreadsheetToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
@@ -377,7 +387,6 @@ final class ContestController extends Controller
         $contest->description = $post->getHTML('description');
         $contest->location = $post->getHTML('location');
         $contest->sportId = $post->getInt('sportId');
-        $contest->date = $post->getDate('date');
         $contest->registrationDeadline = $post->getDate('registrationDeadline');
         $contest->price = $post->getFloat('price');
         if (!$contest->save())
@@ -596,6 +605,60 @@ final class ContestController extends Controller
             User::addNotification('Bestand bestaat niet.');
         }
 
+        return new RedirectResponse('/contest/view/' . $contest->id);
+    }
+
+    public function addDate(RequestParameters $post): JsonResponse
+    {
+        $contestId = $post->getInt('contestId');
+        if ($contestId < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
+        $contest = Contest::loadFromDatabase($contestId);
+        if ($contest === null)
+        {
+            return new JsonResponse(['error' => 'Wedstrijd bestaat niet!'], Response::HTTP_NOT_FOUND);
+        }
+
+        $contestDate = new ContestDate();
+        $contestDate->contestId = $contestId;
+        $contestDate->datetime = $post->getDate('date') . ' ' . $post->getDate('time') . ':00';
+        $contestDate->save();
+
+        $contestDateId = $contestDate->id;
+        if ($contestDateId === null)
+        {
+            return new JsonResponse(['error' => 'Kon de datum niet opslaan!'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $classes = ContestClass::fetchAll();
+        foreach ($classes as $class)
+        {
+            if ($post->getBool('class-' . $class->id))
+            {
+                $contestDate->addClass($class);
+            }
+        }
+
+        return new JsonResponse(['status' => 'ok']);
+    }
+
+    public function deleteDate(RequestParameters $post): Response
+    {
+        $contestDateId = $this->queryBits->getInt(2);
+        if ($contestDateId < 1)
+        {
+            return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
+        }
+        $contestDate = ContestDate::loadFromDatabase($contestDateId);
+        if ($contestDate === null)
+        {
+            return new Response('Wedstrijddatum bestaat niet!', Response::HTTP_NOT_FOUND);
+        }
+
+        $contest = $contestDate->getContest();
+        $contestDate->delete();
         return new RedirectResponse('/contest/view/' . $contest->id);
     }
 }

@@ -30,6 +30,13 @@
             </tr>
         </thead>
         <tbody>
+            @php
+                $firstDate = $contest->getFirstDate();
+                $contestDateObject = null;
+                if ($firstDate !== null):
+                    $contestDateObject = new \Safe\DateTime($firstDate);
+                endif;
+            @endphp
             @foreach ($contest->getContestMembers() as $contestMember)
                 @php $member = $contestMember->getMember() @endphp
                 @php $profile = $member->getProfile() @endphp
@@ -43,7 +50,7 @@
                     </td>
                     <td>
                         <abbr title="@if ($profile->dateOfBirth){{ date('d-m-Y', strtotime($profile->dateOfBirth)) }}@endif">
-                            {{ $profile->getAge(new \Safe\DateTime($contest->date)) }}
+                            {{ $profile->getAge($contestDateObject) }}
                         </abbr>
                     </td>
                     <td>{{ $contestMember->getGraduation()->name }}</td>

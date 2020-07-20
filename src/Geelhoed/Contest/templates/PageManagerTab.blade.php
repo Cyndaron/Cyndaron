@@ -20,7 +20,7 @@
         <tr>
             <td>{{ $contest->id }}</td>
             <td>{{ $contest->name }}</td>
-            <td>{{ $contest->date }}</td>
+            <td>{{ $contest->getFirstDate() }}</td>
             <td>
                 <div class="btn-group">
                     <a title="Naar de inschrijfpagina" href="/contest/view/{{ $contest->id }}" class="btn btn-outline-cyndaron"><span class="glyphicon glyphicon-plus"></span></a>
@@ -31,8 +31,6 @@
                             data-description="{{ $contest->description }}"
                             data-location="{{ $contest->location }}"
                             data-sport-id="{{ $contest->sportId }}"
-                            data-date="{{ date('Y-m-d', strtotime($contest->date)) }}"
-                            data-time="{{ date('H:i', strtotime($contest->date)) }}"
                             data-deadline-date="{{ date('Y-m-d', strtotime($contest->registrationDeadline)) }}"
                             data-deadline-time="{{ date('H:i', strtotime($contest->registrationDeadline)) }}"
                             data-price="{{ $contest->price }}">
@@ -53,12 +51,6 @@
         @include('Widget/Form/Textarea', ['id' => 'gcm-edit-description', 'label' => 'Beschrijving', 'placeholder' => '(Vul hier meer informatie over de wedstrijd in, zoals de weegtijden.)'])
         @include('Widget/Form/BasicInput', ['id' => 'gcm-edit-location', 'label' => 'Locatie', 'required' => true])
         @include('Widget/Form/Select', ['id' => 'gcm-edit-sportId', 'label' => 'Sport', 'required' => true, 'options' => \Cyndaron\Geelhoed\Sport::fetchAllForSelect()])
-        @component('Widget/Form/FormWrapper', ['id' => 'gcm-edit-date', 'label' => 'Datum en tijd'])
-            @slot('right')
-                <input id="gcm-edit-date" type="date" class=" form-control form-control-inline" required>
-                <input id="gcm-edit-time" type="time" class="form-control form-control-inline" required>
-            @endslot
-        @endcomponent
         @component('Widget/Form/FormWrapper', ['id' => 'gcm-edit-deadline-date', 'label' => 'Inschrijvings-deadline'])
             @slot('right')
                 <input id="gcm-edit-deadline-date" type="date" class="form-control form-control-inline" required>

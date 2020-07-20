@@ -1,6 +1,6 @@
 "use strict";
 
-function showContestEditDialog(id, name, description, location, sportId, date, time, deadlineDate, deadlineTime, price)
+function showContestEditDialog(id, name, description, location, sportId, deadlineDate, deadlineTime, price)
 {
     $('#gcm-edit-dialog').modal().show();
 
@@ -10,8 +10,7 @@ function showContestEditDialog(id, name, description, location, sportId, date, t
     $('#gcm-edit-location').val(location);
     $('#gcm-edit-sportId option').prop('selected', false);
     $('#gcm-edit-sportId option[value=' + (sportId ? sportId : 1) + ']').prop('selected', true);
-    $('#gcm-edit-date').val(date);
-    $('#gcm-edit-time').val(time);
+
     $('#gcm-edit-deadline-date').val(deadlineDate);
     $('#gcm-edit-deadline-time').val(deadlineTime);
     $('#gcm-edit-price').val(price);
@@ -21,7 +20,7 @@ $(document).ready(function()
 {
     $('#gcm-new').on('click', function ()
     {
-        showContestEditDialog(null, null, null, null, null, null, null, null, null);
+        showContestEditDialog(null, null, null, null, null, null, null, null);
     });
 
     $('.gcm-edit').on('click', function()
@@ -31,13 +30,11 @@ $(document).ready(function()
         let description = $(this).data('description');
         let location = $(this).data('location');
         let sportId = $(this).data('sport-id');
-        let date = $(this).data('date');
-        let time = $(this).data('time');
         let deadlineDate = $(this).data('deadlineDate');
         let deadlineTime = $(this).data('deadlineTime');
         let price = $(this).data('price');
 
-        showContestEditDialog(id, name, description, location, sportId, date, time, deadlineDate, deadlineTime, price);
+        showContestEditDialog(id, name, description, location, sportId, deadlineDate, deadlineTime, price);
     });
 
     $('.gcm-delete').on('click', function ()
@@ -65,7 +62,6 @@ $(document).ready(function()
             description: $('#gcm-edit-description').val(),
             location: $('#gcm-edit-location').val(),
             sportId: $('#gcm-edit-sportId').val(),
-            date: $('#gcm-edit-date').val() + ' ' + $('#gcm-edit-time').val() + ':00',
             registrationDeadline: $('#gcm-edit-deadline-date').val() + ' ' + $('#gcm-edit-deadline-time').val() + ':00',
             price: parseFloat($('#gcm-edit-price').val()),
         };

@@ -25,7 +25,7 @@ final class PageManagerTabs
 
     public static function contestsTab(): string
     {
-        $contests = Contest::fetchAll([], [], 'ORDER BY date DESC');
+        $contests = Contest::fetchAll([], [], 'ORDER BY registrationDeadline DESC');
         return (new Template())->render('Geelhoed/Contest/PageManagerTab', ['contests' => $contests]);
     }
 }

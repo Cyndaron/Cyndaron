@@ -12,7 +12,7 @@ use function Safe\substr;
 final class Contest extends Model
 {
     public const TABLE = 'geelhoed_contests';
-    public const TABLE_FIELDS = ['name', 'description', 'location', 'sportId', 'date', 'registrationDeadline', 'price'];
+    public const TABLE_FIELDS = ['name', 'description', 'location', 'sportId', 'registrationDeadline', 'price'];
 
     public const RIGHT_MANAGE = 'geelhoed_manage_contests';
     public const RIGHT_PARENT = 'geelhoed_contestant_parent';
@@ -21,7 +21,6 @@ final class Contest extends Model
     public string $description = '';
     public string $location = '';
     public int $sportId = 0;
-    public string $date = '';
     public string $registrationDeadline = '';
     public float $price;
 
@@ -73,5 +72,32 @@ final class Contest extends Model
             // Exclude hidden files.
             return substr($filename, 0, 1) !== '.';
         });
+    }
+
+    /**
+     * @return ContestDate[]
+     */
+    public function getDates(): array
+    {
+        return ContestDate::fetchAll(['contestId = ?'], [$this->id], 'ORDER BY datetime');
+    }
+
+    public function getFirstDate(): ?string
+    {
+        $dates = $this->getDates();
+        if (count($dates) === 0)
+        {
+            return null;
+        }
+
+        return $dates[0]->datetime;
+    }
+
+    /**
+     * @return self[]
+     */
+    public static function fetchAllCurrentWithDate(): array
+    {
+        return self::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_dates WHERE datetime > CURRENT_TIMESTAMP)'], [], 'ORDER BY registrationDeadline DESC');
     }
 }

@@ -22,6 +22,9 @@ final class ContestViewPage extends Page
             'mayViewOtherContestants' => $mayViewOtherContestants,
             'canManage' => $canManage,
             'deleteCsrfToken' => User::getCSRFToken('contest', 'deleteAttachment'),
+            'addDateCsrfToken' => User::getCSRFToken('contest', 'addDate'),
+            'deleteDateCsrfToken' => User::getCSRFToken('contest', 'deleteDate'),
         ]);
+        $this->addScript('/src/Geelhoed/Contest/js/ContestViewPage.js');
     }
 }
