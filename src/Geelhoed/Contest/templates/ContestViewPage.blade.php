@@ -3,7 +3,6 @@
 @section ('contents')
     @php
         /** @var \Cyndaron\Geelhoed\Contest\Contest $contest */
-        /** @var \Cyndaron\Geelhoed\Member\Member $loggedInMember */
         $sport = $contest->getSport();
     @endphp
 
@@ -24,6 +23,13 @@
                 </form>
             @endslot
         @endcomponent
+    @endif
+
+    @if ($due > 0.00)
+        <div class="alert alert-warning">
+            Let op: er staan nog betalingen open. Inschrijvingen zijn pas definitief als er is betaald.<br>
+            <a href="/contest/payFullDue" class="btn btn-primary">Betalen</a>
+        </div>
     @endif
 
     <table>
@@ -85,47 +91,37 @@
 
     @if (time() > strtotime($contest->registrationDeadline))
         De deadline voor het inschrijven is verlopen.
-    @elseif ($loggedInMember === null)
-        Om te kunnen omschrijven moet je wedstrijdjudoka/jitsuka zijn en ingelogd hebben.
-    @elseif(!$loggedInMember->isContestant)
-        Om te kunnen omschrijven moet je wedstrijdjudoka/jitsuka zijn.
-    @elseif ($contest->hasMember($loggedInMember))
-        @php $subscription = \Cyndaron\Geelhoed\Contest\ContestMember::fetchByContestAndMember($contest, $loggedInMember); @endphp
-        Je hebt je al aangemeld voor deze wedstrijd.
-        @if (!$subscription->isPaid)
-            <div class="alert alert-warning">Je hebt nog niet betaald. Je bent pas definitief ingeschreven wanneer je betaald hebt.</div>
-        @endif
+    @elseif (count($controlledMembers) === 0)
+        Om te kunnen omschrijven moet je wedstrijdjudoka/jitsuka zijn (of ouder van) en ingelogd hebben.
+    @elseif ($allSubscribed)
+        Alle leden die u kunt inschrijven, zijn ingescheven.
     @else
         @php $loggedInProfile = \Cyndaron\User\User::getLoggedIn() @endphp
         <hr>
         <h3>Inschrijven</h3>
         <form method="post" action="/contest/subscribe/{{ $contest->id }}">
             <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('contest', 'subscribe') }}"/>
-            @component ('Widget/Form/FormWrapper', ['label' => 'Naam'])
+            @component ('Widget/Form/FormWrapper', ['label' => 'Lid'])
                 @slot('right')
-                    {{ $loggedInProfile->getFullName() }}
-                @endslot
-            @endcomponent
-            @component ('Widget/Form/FormWrapper', ['label' => 'JBN-nummer'])
-                @slot('right')
-                    {{ $loggedInMember->jbnNumber }} ({{ $loggedInMember->jbnNumberLocation }})
-                @endslot
-            @endcomponent
-            @component ('Widget/Form/FormWrapper', ['label' => 'E-mailadres'])
-                @slot('right')
-                    {{ $loggedInMember->getEmail() }}
+                    <select id="memberId" name="memberId" class="form-control custom-select">
+                        @php /** @var \Cyndaron\Geelhoed\Member\Member[] $controlledMembers */ @endphp
+                        @foreach ($controlledMembers as $controlledMember)
+                            @if ($contest->hasMember($controlledMember, true)) @continue @endif
+                            @php
+                                $highestGraduation = $controlledMember->getHighestGraduation($sport);
+                                $highestGraduation = $highestGraduation !== null ? $highestGraduation->id : '';
+                            @endphp
+                            <option value="{{ $controlledMember->id }}" id="option-member-{{ $controlledMember->id }}" data-highest-graduation="{{ $highestGraduation }}">{{ $controlledMember->getProfile()->getFullName() }} - {{ $controlledMember->jbnNumber }}</option>
+                        @endforeach
+                    </select>
                 @endslot
             @endcomponent
             @php $sportName = strtolower($sport->name); @endphp
             @component ('Widget/Form/FormWrapper', ['id' => 'graduationId', 'label' => "Band {$sportName}"])
                 @slot('right')
-                    <select id="graduationId" name="graduationId" class="form-control custom-select">
+                    <select id="graduationId" name="graduationId" class="form-control custom-select" required>
                         @foreach (\Cyndaron\Geelhoed\Graduation::fetchAllBySport($sport) as $graduation)
-                            @php
-                                $highestGraduation = $loggedInMember->getHighestGraduation($sport);
-                                $selected = ($highestGraduation !== null && $highestGraduation->id === $graduation->id) ? 'selected' : ''
-                            @endphp
-                            <option value="{{ $graduation->id }}" {{ $selected }}>{{ $graduation->name }}</option>
+                            <option value="{{ $graduation->id }}">{{ $graduation->name }}</option>
                         @endforeach
                     </select>
                 @endslot
@@ -142,10 +138,10 @@
                 @endslot
             @endcomponent
 
-            <p>
-                Kloppen alle bovenstaande gegevens? Klik dan op de knop “Inschrijven” om te betalen.
-                Na betaling is je inschrijving definitief.
-            </p>
+            <div>
+                Kloppen alle bovenstaande gegevens? Klik dan op de knop “Inschrijven”.
+                <div class="alert alert-warning">Let op: pas na betaling is je inschrijving definitief.</div>
+            </div>
             @component ('Widget/Form/FormWrapper')
                 @slot('right')
                     <input type="submit" class="btn btn-lg btn-primary" value="Inschrijven">

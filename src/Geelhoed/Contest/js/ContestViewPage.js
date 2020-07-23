@@ -2,6 +2,12 @@
 
 $(document).ready(function()
 {
+    $('#memberId').on('change', function ()
+    {
+        let option = $('#memberId option:selected');
+        let graduation = option.data('highest-graduation');
+        $('#graduationId').val(graduation);
+    })
     $('#gcv-add-date-save').on('click keyup', function ()
     {
         $.post({

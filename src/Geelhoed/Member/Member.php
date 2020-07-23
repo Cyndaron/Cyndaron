@@ -5,6 +5,7 @@ namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Contest\Contest;
+use Cyndaron\Geelhoed\Contest\ContestMember;
 use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
@@ -348,49 +349,80 @@ final class Member extends Model
         return $firstElem !== false ? $firstElem : null;
     }
 
-    public static function loadFromLoggedInUser(): ?self
+    /**
+     * @param User $user
+     * @throws \Exception
+     * @return self[]
+     */
+    public static function fetchAllByUser(User $user): array
     {
-        if (!empty($_SESSION['geelhoedMemberProfile']))
+        /** @var Member[] $ret */
+        $ret = [];
+        // A logged in member can always control their own membership.
+        $ownMember = self::loadFromProfile($user);
+        if ($ownMember !== null)
         {
-            return $_SESSION['geelhoedMemberProfile'];
+            $ret[] = $ownMember;
         }
 
+        $relatedMembers = DBConnection::doQueryAndFetchAll('SELECT * FROM geelhoed_users_members WHERE userId = ?', [$user->id]) ?: [];
+        foreach ($relatedMembers as $relatedMemberArray)
+        {
+            $member = self::loadFromDatabase((int)$relatedMemberArray['memberId']);
+            if ($member !== null)
+            {
+                $ret[] = $member;
+            }
+        }
+
+        return $ret;
+    }
+
+    public static function fetchAllByLoggedInUser(): array
+    {
         if (!User::isLoggedIn())
         {
-            return null;
+            return [];
         }
 
         $profile = $_SESSION['profile'];
         if ($profile === null)
         {
-            return null;
+            return [];
         }
 
-        $member = self::loadFromProfile($profile);
-        if ($member !== null)
+        return self::fetchAllByUser($profile);
+    }
+
+    public static function fetchAllContestantsByLoggedInUser(): array
+    {
+        return array_filter(self::fetchAllByLoggedInUser(), static function(Member $member)
         {
-            $_SESSION['geelhoedMemberProfile'] = $member;
-        }
-
-        return $member;
+            return $member->isContestant;
+        });
     }
 
     /**
-     * @param User $user
-     * @return self[]
+     * @param self[] $members
+     * @param Contest[] $contests
+     * @return float
      */
-    public static function fetchAllByUser(User $user): array
+    public static function calculateDue(array $members, array $contests): float
     {
-        if ($user->hasRight(Contest::RIGHT_PARENT))
+        $due = 0.0;
+
+        foreach ($contests as $contest)
         {
-            return self::fetchAll(['parentEmail LIKE ?'], ["%{$user->email}%"]);
+            foreach ($members as $member)
+            {
+                $contestMember = ContestMember::fetchByContestAndMember($contest, $member);
+                if ($contestMember !== null && !$contestMember->isPaid)
+                {
+                    $due += $contest->price;
+                }
+            }
         }
 
-        $ret = self::loadFromProfile($user);
-        if ($ret === null)
-        {
-            return [];
-        }
-        return [$ret];
+        return $due;
     }
 }

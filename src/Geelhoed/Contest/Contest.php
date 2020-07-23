@@ -4,6 +4,7 @@ namespace Cyndaron\Geelhoed\Contest;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Model;
+use Cyndaron\User\User;
 use Cyndaron\Util;
 
 use function Safe\scandir;
@@ -47,9 +48,9 @@ final class Contest extends Model
         return $ret;
     }
 
-    public function hasMember(Member $member): bool
+    public function hasMember(Member $member, bool $includeUnpaid = false): bool
     {
-        foreach ($this->getContestMembers() as $contestMember)
+        foreach ($this->getContestMembers($includeUnpaid) as $contestMember)
         {
             if ($contestMember->getMember()->id === $member->id)
             {
@@ -100,5 +101,35 @@ final class Contest extends Model
     public static function fetchAllCurrentWithDate(): array
     {
         return self::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_dates WHERE datetime > CURRENT_TIMESTAMP)'], [], 'ORDER BY registrationDeadline DESC');
+    }
+
+    public static function getTotalDue(User $user): array
+    {
+        $members = Member::fetchAllByUser($user);
+        if (count($members) === 0)
+        {
+            return [0.00, []];
+        }
+        $memberIds = array_map(static function(Member $elem)
+        {
+            return $elem->id;
+        }, $members);
+        $contests = Contest::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (?))'], [implode(',', $memberIds)]);
+        $contestMembers = [];
+        $due = 0.00;
+        foreach ($contests as $contest)
+        {
+            foreach ($members as $member)
+            {
+                $contestMember = ContestMember::fetchByContestAndMember($contest, $member);
+                if (($contestMember !== null) && !$contestMember->isPaid)
+                {
+                    $due += $contest->price;
+                    $contestMembers[] = $contestMember;
+                }
+            }
+        }
+
+        return [$due, $contestMembers];
     }
 }

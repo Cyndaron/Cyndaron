@@ -4,10 +4,10 @@
 
     Openstaand inschrijfgeld: {{ $due|euro }}
     @if ($due > 0.0)
-        <button class="btn btn-primary">Betalen</button>
+        <a class="btn btn-primary" href="/contest/payFullDue">Betalen</a>
     @endif
 
-    <p>Je hebt je voor de volgende wedstrijden ingeschreven:</p>
+    <p>Er is voor de volgende wedstrijden ingeschreven:</p>
 
     @php /** @var \Cyndaron\Geelhoed\Contest\Contest[] $contests */ @endphp
     @foreach ($contests as $contest)

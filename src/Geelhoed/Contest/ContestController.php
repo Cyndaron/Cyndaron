@@ -34,6 +34,7 @@ final class ContestController extends Controller
         'subscriptionListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionListExcel'],
         'contestantsList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsList'],
         'contestantsListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsListExcel'],
+        'payFullDue' => ['level' => UserLevel::LOGGED_IN, 'function' => 'payFullDue'],
     ];
 
     protected array $postRoutes = [
@@ -102,8 +103,20 @@ final class ContestController extends Controller
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
 
-        $member = Member::loadFromLoggedInUser();
-        assert($member !== null);
+        $memberId = $post->getInt('memberId');
+        $member = Member::loadFromDatabase($memberId);
+        if ($member === null)
+        {
+            $page = new Page('Onbekend lid', 'Kon het lid niet vinden.');
+            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+        }
+        $controlledMemberIds = array_map(static function(Member $member) { return $member->id; }, Member::fetchAllByLoggedInUser());
+        if (!in_array($memberId, $controlledMemberIds, true))
+        {
+            $page = new Page('Fout', 'U mag dit lid niet beheren.');
+            return new Response($page->render(), Response::HTTP_FORBIDDEN);
+        }
+
         assert($contest->id !== null);
         assert($member->id !== null);
         $contestMember = new ContestMember();
@@ -121,25 +134,27 @@ final class ContestController extends Controller
             return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        // No need to pay, so just redirect.
-        if ($contest->price <= 0.00)
-        {
-            return new RedirectResponse("/contest/view/{$contest->id}");
-        }
+//        // No need to pay, so just redirect.
+//        if ($contest->price <= 0.00)
+//        {
+//            return new RedirectResponse("/contest/view/{$contest->id}");
+//        }
+//
+//        try
+//        {
+//            $baseUrl = "https://{$_SERVER['HTTP_HOST']}";
+//            $redirectUrl = "{$baseUrl}/contest/view/{$contest->id}";
+//            $response = $this->doMollieTransaction([$contestMember], "Inschrijving {$contest->name}", $contest->price, $redirectUrl);
+//        }
+//        catch (\Exception $e)
+//        {
+//            User::addNotification('Je inschrijving is opgeslagen, maar de betaling is mislukt!');
+//            $response = new RedirectResponse("/contest/view/{$contest->id}");
+//        }
 
-        try
-        {
-            $baseUrl = "https://{$_SERVER['HTTP_HOST']}";
-            $redirectUrl = "{$baseUrl}/contest/view/{$contest->id}";
-            $response = $this->doMollieTransaction([$contestMember], "Inschrijving {$contest->name}", $contest->price, $redirectUrl);
-        }
-        catch (\Exception $e)
-        {
-            User::addNotification('Je inschrijving is opgeslagen, maar de betaling is mislukt!');
-            $response = new RedirectResponse("/contest/view/{$contest->id}");
-        }
-
-        return $response;
+//        return $response;
+        User::addNotification('De inschrijving is succesvol verlopen. Let op: de inschrijving is pas definitief wanneer u heeft betaald.');
+        return new RedirectResponse("/contest/view/{$contest->id}");
     }
 
     /**
@@ -491,7 +506,7 @@ final class ContestController extends Controller
         $user = User::fromSession();
         assert($user !== null);
 
-        [$due, $contestMembers] = $this->getDue($user);
+        [$due, $contestMembers] = Contest::getTotalDue($user);
         if ($due === 0.00)
         {
             return new Response('Er staan geen betalingen open.');
@@ -504,44 +519,13 @@ final class ContestController extends Controller
         }
         catch (\Exception $e)
         {
-            User::addNotification('Je inschrijving is opgeslagen, maar de betaling is mislukt!');
+            User::addNotification('De betaling is mislukt!');
             $response = new RedirectResponse("/contest/myContests");
+            /** @noinspection ForgottenDebugOutputInspection */
+            error_log($e->getMessage());
         }
 
         return $response;
-    }
-
-    private function getDue(User $user): array
-    {
-        $members = Member::fetchAllByUser($user);
-        if (count($members) === 0)
-        {
-            return [0.00, []];
-        }
-        $memberIds = array_map(static function(Member $elem)
-        {
-            return $elem->id;
-        }, $members);
-        $contests =  Contest::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (?))'], [implode(',', $memberIds)], 'ORDER BY date DESC');
-        $contestMembers = [];
-        $due = 0.00;
-        foreach ($contests as $contest)
-        {
-            foreach ($members as $member)
-            {
-                $contestMember = ContestMember::fetchByContestAndMember($contest, $member);
-                if ($contestMember !== null)
-                {
-                    if (!$contestMember->isPaid)
-                    {
-                        $due += $contest->price;
-                        $contestMembers[] = $contestMember;
-                    }
-                }
-            }
-        }
-
-        return [$due, $contestMembers];
     }
 
     public function addAttachment(): Response

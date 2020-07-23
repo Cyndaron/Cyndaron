@@ -11,41 +11,22 @@ final class MyContestsPage extends Page
 {
     public function __construct()
     {
-        parent::__construct('Overzicht wedstrijdjudoka\'s');
+        parent::__construct('Mijn wedstrijden');
         $user = User::getLoggedIn();
-        $loggedInMember = Member::loadFromLoggedInUser();
+        $controlledMembers = Member::fetchAllContestantsByLoggedInUser();
         $contests = [];
         $due = 0.0;
-        if ($loggedInMember !== null)
+        if (count($controlledMembers) > 0)
         {
-            $contests = Contest::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId = ?)'], [$loggedInMember->id], 'ORDER BY date DESC');
-            $due = $this->calculateDue($loggedInMember, $contests);
+            $memberIds = array_map(static function(Member $member) { return $member->id; }, $controlledMembers);
+            $contests = Contest::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (?))'], [implode(',', $memberIds)], 'ORDER BY registrationDeadline DESC');
+            $due = Member::calculateDue($controlledMembers, $contests);
         }
         $this->addTemplateVars([
             'profile' => $user,
-            'member' => $loggedInMember,
+            'controlledMembers' => $controlledMembers,
             'contests' => $contests,
             'due' => $due,
         ]);
-    }
-
-    /**
-     * @param Contest[] $contests
-     * @return float
-     */
-    private function calculateDue(Member $member, array $contests): float
-    {
-        $due = 0.0;
-
-        foreach ($contests as $contest)
-        {
-            $contestMember = ContestMember::fetchByContestAndMember($contest, $member);
-            if ($contestMember !== null && !$contestMember->isPaid)
-            {
-                $due += $contest->price;
-            }
-        }
-
-        return $due;
     }
 }
