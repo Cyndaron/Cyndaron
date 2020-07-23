@@ -18,6 +18,13 @@ final class ContestMember extends Model
     public bool $isPaid = false;
     public string $comments = '';
 
+    public function getContest(): Contest
+    {
+        $ret = Contest::loadFromDatabase($this->contestId);
+        assert($ret !== null);
+        return $ret;
+    }
+
     public function getMember(): Member
     {
         $ret = Member::loadFromDatabase($this->memberId);
@@ -42,6 +49,27 @@ final class ContestMember extends Model
 
         $firstElem = reset($results);
         return $firstElem !== false ? $firstElem : null;
+    }
+
+    /**
+     * @param Contest $contest
+     * @param Member[] $members
+     * @return self[]
+     */
+    public static function fetchAllByContestAndMembers(Contest $contest, array $members): array
+    {
+        $memberIds = array_map(static function(Member $member) { return $member->id; }, $members);
+        return self::fetchAll(['contestId = ?', 'memberId IN (' . implode(',', $memberIds) . ')'], [$contest->id], 'ORDER BY contestId DESC');
+    }
+
+    /**
+     * @param array $members
+     * @return self[]
+     */
+    public static function fetchAllByMembers(array $members): array
+    {
+        $memberIds = array_map(static function(Member $member) { return $member->id; }, $members);
+        return self::fetchAll(['memberId IN (' . implode(',', $memberIds) . ')'], [], 'ORDER BY contestId DESC');
     }
 
     /**

@@ -7,7 +7,33 @@
         <a class="btn btn-primary" href="/contest/payFullDue">Betalen</a>
     @endif
 
-    <p>Er is voor de volgende wedstrijden ingeschreven:</p>
+{{--    @php $lastContest = null; @endphp--}}
+{{--    @php /** @var \Cyndaron\Geelhoed\Contest\ContestMember[] $contestMembers */ @endphp--}}
+{{--    @foreach ($contestMembers as $contestMember)--}}
+{{--        @php $contest = $contestMember->getContest(); @endphp--}}
+{{--        @if ($contest !== $lastContest)--}}
+{{--            <h2>{{ $contest->name }}</h2>--}}
+
+{{--            <table>--}}
+{{--                <tr><th>Locatie:</th><td>{{ $contest->location }}</td></tr>--}}
+{{--                <tr><th>Data: </th><td>--}}
+{{--                        @foreach ($contest->getDates() as $contestDate)--}}
+{{--                            @php $classes = $contestDate->getClasses() @endphp--}}
+{{--                            {{ $contestDate->datetime|dmyHm }}@if (count($classes) > 0):@endif--}}
+{{--                            @foreach($classes as $class)--}}
+{{--                                {{ $class->name }}@if (!$loop->last), @endif--}}
+{{--                            @endforeach--}}
+{{--                        @endforeach--}}
+{{--                    </td>--}}
+{{--                </tr>--}}
+{{--                <tr><th>Inschrijfgeld:</th><td>{{ $contest->price|euro }}</td></tr>--}}
+{{--            </table>--}}
+{{--        @endif--}}
+
+
+
+{{--        @php $lastContest = $contest @endphp--}}
+{{--    @endforeach--}}
 
     @php /** @var \Cyndaron\Geelhoed\Contest\Contest[] $contests */ @endphp
     @foreach ($contests as $contest)
@@ -19,18 +45,41 @@
                 <table>
                     <tr><th>Locatie:</th><td>{{ $contest->location }}</td></tr>
                     <tr><th>Data: </th><td>
-                            @foreach ($contest->getDates() as $contestDate)
-                                @php $classes = $contestDate->getClasses() @endphp
-                                {{ $contestDate->datetime|dmyHm }}@if (count($classes) > 0):@endif
-                                @foreach($classes as $class)
-                                    {{ $class->name }}@if (!$loop->last), @endif
+                            <ul>
+                                @foreach ($contest->getDates() as $contestDate)
+                                    @php $classes = $contestDate->getClasses() @endphp
+                                    <li>
+                                    {{ $contestDate->datetime|dmyHm }}@if (count($classes) > 0):@endif
+                                    @foreach($classes as $class)
+                                        {{ $class->name }}@if (!$loop->last), @endif
+                                    @endforeach
+                                    </li>
                                 @endforeach
-                            @endforeach
+                            </ul>
+
                         </td>
                     </tr>
-                    <tr><th>Inschrijven voor:</th><td>{{ $contest->registrationDeadline|dmyHm }}</td></tr>
+                    <tr><th>Inschrijfgeld:</th><td>{{ $contest->price|euro }}</td></tr>
                 </table>
                 <a role="button" class="btn btn-outline-cyndaron" href="/contest/view/{{ $contest->id }}">Meer informatie</a>
+
+                <h6 class="mt-3">Ingeschreven</h6>
+
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <th>Naam</th>
+                        <th>Betaald</th>
+                    </tr>
+
+                    @foreach (\Cyndaron\Geelhoed\Contest\ContestMember::fetchAllByContestAndMembers($contest, $controlledMembers) as $contestMember)
+                        <tr>
+                            <td>{{ $contestMember->getMember()->getProfile()->getFullName() }}</td>
+                            <td>{{ $contestMember->isPaid|boolToText }}</td>
+                        </tr>
+                    @endforeach
+                </table>
+
+
             </div>
         </div>
     @endforeach
