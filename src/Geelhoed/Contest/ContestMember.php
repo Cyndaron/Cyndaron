@@ -4,6 +4,9 @@ namespace Cyndaron\Geelhoed\Contest;
 use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Model;
+use Cyndaron\User\User;
+
+use function Safe\strtotime;
 
 final class ContestMember extends Model
 {
@@ -79,5 +82,11 @@ final class ContestMember extends Model
     public static function fetchAllByContest(Contest $contest): array
     {
         return self::fetchAll(['contestId = ?'], [$contest->id]);
+    }
+
+    public function canBeChanged(User $user): bool
+    {
+        $contest = $this->getContest();
+        return $contest->registrationCanBeChanged($user);
     }
 }

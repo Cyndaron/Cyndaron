@@ -8,6 +8,7 @@ use Cyndaron\User\User;
 use Cyndaron\Util;
 
 use function Safe\scandir;
+use function Safe\strtotime;
 use function Safe\substr;
 
 final class Contest extends Model
@@ -131,5 +132,26 @@ final class Contest extends Model
         }
 
         return [$due, $contestMembers];
+    }
+
+    public function registrationCanBeChanged(User $user): bool
+    {
+        if ($user->hasRight(self::RIGHT_MANAGE))
+        {
+            return true;
+        }
+
+        $deadline = $this->registrationChangeDeadline;
+        if ($deadline === '')
+        {
+            $deadline = $this->registrationDeadline;
+        }
+
+        if ($deadline === '')
+        {
+            return true;
+        }
+
+        return time() <= strtotime($deadline);
     }
 }

@@ -66,6 +66,9 @@
                             @else
                                 <button class="btn btn-success gcsm-update-payment-status" data-id="{{ $contestMember->id }}" data-is-paid="1" title="Markeren als betaald"><span class="glyphicon glyphicon-euro"></span></button>
                             @endif
+                            <a href="/contest/editSubscription/{{ $contestMember->id }}" class="btn btn-warning" title="Gewicht of band wijzigen">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
                             <button class="btn btn-danger gcsm-delete" data-id="{{ $contestMember->id }}" title="Deze inschrijving verwijderen"><span class="glyphicon glyphicon-trash"></span></button>
                         </div>
                     </td>

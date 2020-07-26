@@ -6,6 +6,7 @@ use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
 use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Page;
+use Cyndaron\PlainTextMail;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Setting;
 use Cyndaron\Template\ViewHelpers;
@@ -35,12 +36,14 @@ final class ContestController extends Controller
         'contestantsList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsList'],
         'contestantsListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsListExcel'],
         'payFullDue' => ['level' => UserLevel::LOGGED_IN, 'function' => 'payFullDue'],
+        'editSubscription' => ['level' => UserLevel::LOGGED_IN, 'function' => 'editSubscriptionPage'],
     ];
 
     protected array $postRoutes = [
         'addAttachment' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addAttachment'],
         'deleteAttachment' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteAttachment'],
         'deleteDate' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteDate'],
+        'editSubscription' => ['level' => UserLevel::LOGGED_IN, 'function' => 'editSubscription'],
         'subscribe' => ['level' => UserLevel::LOGGED_IN, 'function' => 'subscribe'],
     ];
 
@@ -629,7 +632,7 @@ final class ContestController extends Controller
         return new JsonResponse(['status' => 'ok']);
     }
 
-    public function deleteDate(RequestParameters $post): Response
+    public function deleteDate(): Response
     {
         $contestDateId = $this->queryBits->getInt(2);
         if ($contestDateId < 1)
@@ -645,5 +648,81 @@ final class ContestController extends Controller
         $contest = $contestDate->getContest();
         $contestDate->delete();
         return new RedirectResponse('/contest/view/' . $contest->id);
+    }
+
+    public function editSubscription(RequestParameters $post): Response
+    {
+        $id = $this->queryBits->getInt(2);
+        $subscription = ContestMember::loadFromDatabase($id);
+        if ($subscription === null)
+        {
+            return new Response('Record bestaat niet!', Response::HTTP_NOT_FOUND);
+        }
+
+        $user = User::fromSession();
+        if ($user === null)
+        {
+            return new Response('U moet ingelogd zijn!', Response::HTTP_UNAUTHORIZED);
+        }
+        if (!$user->hasRight(Contest::RIGHT_MANAGE))
+        {
+            $memberId = $subscription->getMember()->id;
+            $controlledMemberIds = array_map(static function(Member $member) { return $member->id; }, Member::fetchAllByLoggedInUser());
+            if (!in_array($memberId, $controlledMemberIds, true))
+            {
+                return new Response('U mag deze judoka niet beheren!', Response::HTTP_FORBIDDEN);
+            }
+        }
+
+        if (!$subscription->canBeChanged($user))
+        {
+            return new Response('De deadline voor aanpassingen is verlopen!', Response::HTTP_BAD_REQUEST);
+        }
+
+        $subscription->weight = $post->getInt('weight');
+        $subscription->graduationId = $post->getInt('graduationId');
+        if ($subscription->save())
+        {
+            User::addNotification('Wijzigingen opgeslagen.');
+            $mailText = "{{ {$subscription->getMember()->getProfile()->getFullName()} heeft zijn/haar inschrijving voor {$subscription->getContest()->name} gewijzigd. Het gewicht is nu {$subscription->weight} kg en de graduatie is: {$subscription->getGraduation()->name}.";
+            $to = Setting::get('geelhoed_contestMaintainerMail');
+            $mail = new PlainTextMail($to, 'Wijziging inschrijving', $mailText);
+            $mail->send();
+        }
+
+        return new RedirectResponse('/contest/myContests');
+    }
+
+    public function editSubscriptionPage(): Response
+    {
+        $id = $this->queryBits->getInt(2);
+        $subscription = ContestMember::loadFromDatabase($id);
+        if ($subscription === null)
+        {
+            return new Response('Record bestaat niet!', Response::HTTP_NOT_FOUND);
+        }
+
+        $user = User::fromSession();
+        if ($user === null)
+        {
+            return new Response('U moet ingelogd zijn!', Response::HTTP_UNAUTHORIZED);
+        }
+        if (!$user->hasRight(Contest::RIGHT_MANAGE))
+        {
+            $memberId = $subscription->getMember()->id;
+            $controlledMemberIds = array_map(static function(Member $member) { return $member->id; }, Member::fetchAllByLoggedInUser());
+            if (!in_array($memberId, $controlledMemberIds, true))
+            {
+                return new Response('U mag deze judoka niet beheren!', Response::HTTP_FORBIDDEN);
+            }
+        }
+
+        if (!$subscription->canBeChanged($user))
+        {
+            return new Response('De deadline voor aanpassingen is verlopen!', Response::HTTP_BAD_REQUEST);
+        }
+
+        $page = new EditSubscriptionPage($subscription);
+        return new Response($page->render());
     }
 }
