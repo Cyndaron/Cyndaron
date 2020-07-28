@@ -71,6 +71,8 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu
                         return 'Mijn wedstrijden';
                     case 'overview':
                         return 'Wedstrijden';
+                    case 'parentAccounts':
+                        return 'Ouderaccounts';
                 }
                 break;
             case 'location':
@@ -96,6 +98,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu
         $ret = [
             ['label' => 'Wedstrijdbeheer', 'link' => '/contest/manageOverview', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
             ['label' => 'Overzicht wedstrijdjudoka\'s', 'link' => '/contest/contestantsList', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
+            ['label' => 'Overzicht ouderaccounts', 'link' => '/contest/parentAccounts', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
         ];
 
         $profile = User::fromSession();

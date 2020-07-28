@@ -27,16 +27,17 @@ use function Safe\strtotime;
 final class ContestController extends Controller
 {
     protected array $getRoutes = [
-        'myContests' => ['level' => UserLevel::LOGGED_IN, 'function' => 'myContests'],
-        'overview' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overview'],
-        'view' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
-        'manageOverview' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'manageOverview'],
-        'subscriptionList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionList'],
-        'subscriptionListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionListExcel'],
         'contestantsList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsList'],
         'contestantsListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsListExcel'],
-        'payFullDue' => ['level' => UserLevel::LOGGED_IN, 'function' => 'payFullDue'],
         'editSubscription' => ['level' => UserLevel::LOGGED_IN, 'function' => 'editSubscriptionPage'],
+        'manageOverview' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'manageOverview'],
+        'myContests' => ['level' => UserLevel::LOGGED_IN, 'function' => 'myContests'],
+        'overview' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overview'],
+        'parentAccounts' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'parentAccounts'],
+        'payFullDue' => ['level' => UserLevel::LOGGED_IN, 'function' => 'payFullDue'],
+        'subscriptionList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionList'],
+        'subscriptionListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionListExcel'],
+        'view' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
     ];
 
     protected array $postRoutes = [
@@ -723,6 +724,12 @@ final class ContestController extends Controller
         }
 
         $page = new EditSubscriptionPage($subscription);
+        return new Response($page->render());
+    }
+
+    public function parentAccounts(): Response
+    {
+        $page = new ParentAccountsPage();
         return new Response($page->render());
     }
 }
