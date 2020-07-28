@@ -111,6 +111,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu
             if ($isContestant || $isContestantParent)
             {
                 $ret[] = ['label' => 'Mijn wedstrijden', 'link' => '/contest/myContests', 'level' => UserLevel::LOGGED_IN];
+                $ret[] = ['label' => 'Wedstrijdagenda', 'link' => '/contest/overview', 'level' => UserLevel::LOGGED_IN];
             }
         }
 
