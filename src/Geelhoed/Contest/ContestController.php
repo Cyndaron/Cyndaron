@@ -157,7 +157,7 @@ final class ContestController extends Controller
 //        }
 
 //        return $response;
-        User::addNotification('De inschrijving is succesvol verlopen. Let op: de inschrijving is pas definitief wanneer u heeft betaald.');
+        User::addNotification('Let op: de inschrijving is pas definitief wanneer u heeft betaald.');
         return new RedirectResponse("/contest/view/{$contest->id}");
     }
 
@@ -212,7 +212,7 @@ final class ContestController extends Controller
             return new RedirectResponse('/');
         }
 
-        User::addNotification('Bedankt voor je inschrijving! Het kan even duren voordat de betaling geregistreerd is.');
+        User::addNotification('Bedankt voor de betaling! Het kan even duren voordat deze geregistreerd is.');
         return new RedirectResponse($redirectUrl);
     }
 
