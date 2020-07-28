@@ -94,6 +94,8 @@
         De deadline voor het inschrijven is verlopen.
     @elseif (count($controlledMembers) === 0)
         Om te kunnen omschrijven moet je wedstrijdjudoka/jitsuka zijn (of ouder van) en ingelogd hebben.
+
+        <a href="/user/login" class="btn btn-primary">Inloggen</a>
     @elseif ($allSubscribed)
         Alle leden die u kunt inschrijven, zijn ingescheven.
     @else
