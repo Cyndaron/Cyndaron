@@ -73,7 +73,7 @@ final class UserController extends Controller
 
     protected function loginPost(RequestParameters $post): Response
     {
-        $identification = $post->getAlphaNum('login_user');
+        $identification = $post->getEmail('login_user');
         $verification = $post->getUnfilteredString('login_pass');
 
         try
