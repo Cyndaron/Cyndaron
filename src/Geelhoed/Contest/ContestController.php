@@ -35,6 +35,7 @@ final class ContestController extends Controller
         'overview' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overview'],
         'parentAccounts' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'parentAccounts'],
         'payFullDue' => ['level' => UserLevel::LOGGED_IN, 'function' => 'payFullDue'],
+        'subscribe' => ['level' => UserLevel::LOGGED_IN, 'function' => 'subscribePage'],
         'subscriptionList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionList'],
         'subscriptionListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionListExcel'],
         'view' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
@@ -123,6 +124,13 @@ final class ContestController extends Controller
 
         assert($contest->id !== null);
         assert($member->id !== null);
+
+        if ($member->jbnNumber === '')
+        {
+            $member->jbnNumber = $post->getAlphaNum('jbnNumber');
+            $member->save();
+        }
+
         $contestMember = new ContestMember();
         /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $contestMember->contestId = $contest->id;
@@ -731,5 +739,46 @@ final class ContestController extends Controller
     {
         $page = new ParentAccountsPage();
         return new Response($page->render());
+    }
+
+    public function subscribePage(): Response
+    {
+        $contestId = $this->queryBits->getInt(2);
+        $memberId = $this->queryBits->getInt(3);
+
+        $controlledMembers = Member::fetchAllContestantsByLoggedInUser();
+        $memberIds = array_map(static function(Member $member)
+        {
+            return $member->id;
+        }, $controlledMembers);
+
+        if (!in_array($memberId, $memberIds, true))
+        {
+            return new Response((new Page('Fout', 'U kunt deze judoka niet beheren!'))->render(), Response::HTTP_BAD_REQUEST);
+        }
+        $member = Member::loadFromDatabase($memberId);
+        if ($member === null)
+        {
+            return new Response((new Page('Fout', 'Lid niet gevonden!'))->render(), Response::HTTP_NOT_FOUND);
+        }
+
+        $contest = Contest::loadFromDatabase($contestId);
+        if ($contest === null)
+        {
+            return new Response((new Page('Fout', 'Wedstrijd niet gevonden!'))->render(), Response::HTTP_NOT_FOUND);
+        }
+
+        $contestMember = ContestMember::fetchByContestAndMember($contest, $member);
+        if ($contestMember !== null)
+        {
+            return new Response((new Page('Fout', 'Deze judoka is al ingeschreven!'))->render(), Response::HTTP_NOT_FOUND);
+        }
+
+        if (strtotime($contest->registrationDeadline) < time())
+        {
+            return new Response((new Page('Fout', 'Voor deze wedstrijd kan niet meer worden ingeschreven!'))->render(), Response::HTTP_BAD_REQUEST);
+        }
+
+        return new Response((new SubscribePage($contest, $member))->render());
     }
 }

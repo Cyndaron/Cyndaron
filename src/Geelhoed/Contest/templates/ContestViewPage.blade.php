@@ -90,6 +90,7 @@
         @endif
     </table>
 
+    @php /** @var \Cyndaron\Geelhoed\Member\Member[] $controlledMembers */@endphp
     @if (time() > strtotime($contest->registrationDeadline))
         De deadline voor het inschrijven is verlopen.
     @elseif (count($controlledMembers) === 0)
@@ -99,59 +100,40 @@
     @elseif ($allSubscribed)
         Alle leden die u kunt inschrijven, zijn ingescheven.
     @else
-        @php $loggedInProfile = \Cyndaron\User\User::getLoggedIn() @endphp
-        <hr>
         <h3>Inschrijven</h3>
-        <form method="post" action="/contest/subscribe/{{ $contest->id }}">
-            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('contest', 'subscribe') }}"/>
-            @component ('Widget/Form/FormWrapper', ['label' => 'Lid'])
-                @slot('right')
-                    <select id="memberId" name="memberId" class="form-control custom-select">
-                        @php /** @var \Cyndaron\Geelhoed\Member\Member[] $controlledMembers */ @endphp
-                        @foreach ($controlledMembers as $controlledMember)
-                            @if ($contest->hasMember($controlledMember, true)) @continue @endif
-                            @php
-                                $highestGraduation = $controlledMember->getHighestGraduation($sport);
-                                $highestGraduation = $highestGraduation !== null ? $highestGraduation->id : '';
-                            @endphp
-                            <option value="{{ $controlledMember->id }}" id="option-member-{{ $controlledMember->id }}" data-highest-graduation="{{ $highestGraduation }}">{{ $controlledMember->getProfile()->getFullName() }} - {{ $controlledMember->jbnNumber }}</option>
-                        @endforeach
-                    </select>
-                @endslot
-            @endcomponent
-            @php $sportName = strtolower($sport->name); @endphp
-            @component ('Widget/Form/FormWrapper', ['id' => 'graduationId', 'label' => "Band {$sportName}"])
-                @slot('right')
-                    <select id="graduationId" name="graduationId" class="form-control custom-select" required>
-                        @foreach (\Cyndaron\Geelhoed\Graduation::fetchAllBySport($sport) as $graduation)
-                            <option value="{{ $graduation->id }}">{{ $graduation->name }}</option>
-                        @endforeach
-                    </select>
-                @endslot
-            @endcomponent
-            @component ('Widget/Form/FormWrapper', ['id' => 'weight', 'label' => 'Gewicht (hele kg)'])
-                @slot('right')
-                    <input id="weight" name="weight" type="number" class="form-control" required>
-                @endslot
-            @endcomponent
-            @include('Widget/Form/Textarea', ['id' => 'comments', 'label' => 'Opmerkingen'])
-            @component ('Widget/Form/FormWrapper', ['label' => 'Inschrijfgeld'])
-                @slot('right')
-                    {{ $contest->price|euro }}
-                @endslot
-            @endcomponent
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>Status</th>
+                    <th>Acties</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($controlledMembers as $controlledMember)
+                    @php $subscription = \Cyndaron\Geelhoed\Contest\ContestMember::fetchByContestAndMember($contest, $controlledMember) @endphp
+                    <tr>
+                        <td>{{ $controlledMember->getProfile()->getFullName() }}</td>
+                        <td>
+                            @if ($subscription === null)
+                                Niet ingeschreven
+                            @elseif ($subscription->isPaid)
+                                Ingeschreven
+                            @else
+                                Wacht op betaling
+                            @endif
+                        </td>
+                        <td>
+                            @if ($subscription === null)
+                                <a href="/contest/subscribe/{{ $contest->id }}/{{ $controlledMember->id }}" class="btn btn-primary">Inschrijven</a>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
 
-            <div>
-                Kloppen alle bovenstaande gegevens? Klik dan op de knop “Inschrijven”.
-                <div class="alert alert-warning">Let op: pas na betaling is je inschrijving definitief.</div>
-            </div>
-            @component ('Widget/Form/FormWrapper')
-                @slot('right')
-                    <input type="submit" class="btn btn-lg btn-primary" value="Inschrijven">
-                @endslot
-            @endcomponent
 
-        </form>
     @endif
 
     @if ($canManage)
