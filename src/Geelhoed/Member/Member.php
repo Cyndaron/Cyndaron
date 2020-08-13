@@ -16,6 +16,7 @@ use Cyndaron\Util;
 
 use function Safe\uasort;
 use function Safe\usort;
+use function Safe\strtotime;
 
 final class Member extends Model
 {
@@ -416,7 +417,8 @@ final class Member extends Model
             foreach ($members as $member)
             {
                 $contestMember = ContestMember::fetchByContestAndMember($contest, $member);
-                if ($contestMember !== null && !$contestMember->isPaid)
+                $deadlinePassed = strtotime($contest->registrationDeadline) > time();
+                if ($contestMember !== null && !$contestMember->isPaid && !$deadlinePassed)
                 {
                     $due += $contest->price;
                 }

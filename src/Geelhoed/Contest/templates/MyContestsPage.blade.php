@@ -43,7 +43,7 @@
                         <th>Naam</th>
                         <th>Gewicht</th>
                         <th>Band</th>
-                        <th>Betaald</th>
+                        <th>Status</th>
                         @if ($canChange)<th>Aanpassen</th>@endif
                     </tr>
 
@@ -52,7 +52,12 @@
                             <td>{{ $contestMember->getMember()->getProfile()->getFullName() }}</td>
                             <td>{{ $contestMember->weight }} kg</td>
                             <td>{{ $contestMember->getGraduation()->name }}</td>
-                            <td>{{ $contestMember->isPaid|boolToText }}</td>
+                            <td>
+                                @if ($contestMember->isPaid)Betaald
+                                @elseif(strtotime($contest->registrationDeadline) < time())Niet betaald
+                                @else Verlopen
+                                @endif
+                            </td>
                             @if ($canChange)
                                 <td>
                                     <a href="/contest/editSubscription/{{ $contestMember->id }}" class="btn btn-warning" title="Gewicht of band veranderd? Geef de wijziging hier door!">

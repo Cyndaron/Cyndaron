@@ -123,7 +123,7 @@ final class Contest extends Model
             foreach ($members as $member)
             {
                 $contestMember = ContestMember::fetchByContestAndMember($contest, $member);
-                if (($contestMember !== null) && !$contestMember->isPaid)
+                if (($contestMember !== null) && !$contestMember->isPaid && strtotime($contest->registrationDeadline) < time())
                 {
                     $due += $contest->price;
                     $contestMembers[] = $contestMember;
