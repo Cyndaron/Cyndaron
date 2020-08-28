@@ -312,7 +312,8 @@ EOT;
 
     public function getFullName(): string
     {
-        $ret = $this->firstName . ' ' . $this->tussenvoegsel;
+        $ret = $this->firstName ?: $this->initials;
+        $ret .= ' ' . $this->tussenvoegsel;
         if (substr($this->tussenvoegsel, -1) !== "'")
         {
             $ret .= ' ';
