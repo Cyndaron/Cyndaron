@@ -39,13 +39,13 @@ final class Kernel
     private function setPhpConfig(): void
     {
         // Prevent passing the session ID via URLs.
-        ini_set('session.use_only_cookies', '1');
+        ini_set('session.use_only_cookies', true);
         // Prevent Javascript from reading cookie contents.
-        ini_set('session.cookie_httponly', '1');
+        ini_set('session.cookie_httponly', true);
         // Ensure all cookies are sent via HTTPS.
-        ini_set('session.cookie_secure', '1');
+        ini_set('session.cookie_secure', true);
         // Prevent users from specifying their own session ID.
-        ini_set('session.use_strict_mode', '1');
+        ini_set('session.use_strict_mode', true);
         // Moved from DBConnection. TODO: check if really needed.
         ini_set('memory_limit', '96M');
     }
