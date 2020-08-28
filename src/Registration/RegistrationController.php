@@ -161,7 +161,7 @@ final class RegistrationController extends Controller
             }
         }
 
-        return $registration->sendConfirmationMail($registrationTotal, $registrationTicketTypes);
+        return $registration->sendIntroductionMail($registrationTotal, $registrationTicketTypes);
     }
 
     private function checkForm(Event $event, RequestParameters $post): array

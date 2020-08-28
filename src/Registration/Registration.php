@@ -65,7 +65,7 @@ final class Registration extends Model
      * @param array $registrationTicketTypes
      * @return bool
      */
-    public function sendConfirmationMail(float $registrationTotal, array $registrationTicketTypes): bool
+    public function sendIntroductionMail(float $registrationTotal, array $registrationTicketTypes): bool
     {
         $event = $this->getEvent();
 

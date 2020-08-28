@@ -15,7 +15,14 @@ $(document).ready(function()
             data: $('#gcv-add-date-form').serialize(),
         }).done(function (data) {
             location.reload();
-        });
+        }).fail(function (data) {
+            let error = 'Onbekende fout.';
+            if (data.hasOwnProperty('error'))
+            {
+                error = data.error;
+            }
 
+            alert(error);
+        });
     });
 });

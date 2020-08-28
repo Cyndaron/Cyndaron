@@ -454,4 +454,15 @@ EOT;
                 return '?';
         }
     }
+
+    public function addRight(string $right): bool
+    {
+        if (empty($this->id))
+        {
+            throw new \Exception('ID not set!');
+        }
+
+        $result = DBConnection::doQuery('INSERT INTO user_rights(`userId`, `right`) VALUES (?, ?)', [$this->id, $right]);
+        return (bool)$result;
+    }
 }

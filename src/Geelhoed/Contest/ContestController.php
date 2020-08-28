@@ -2,6 +2,7 @@
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Controller;
+use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
 use Cyndaron\Geelhoed\Sport;
@@ -9,6 +10,7 @@ use Cyndaron\Page;
 use Cyndaron\PlainTextMail;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Setting;
+use Cyndaron\Template\Template;
 use Cyndaron\Template\ViewHelpers;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
@@ -43,6 +45,7 @@ final class ContestController extends Controller
 
     protected array $postRoutes = [
         'addAttachment' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addAttachment'],
+        'addToParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addToParentAccount'],
         'deleteAttachment' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteAttachment'],
         'deleteDate' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteDate'],
         'editSubscription' => ['level' => UserLevel::LOGGED_IN, 'function' => 'editSubscription'],
@@ -51,6 +54,9 @@ final class ContestController extends Controller
 
     protected array $apiPostRoutes = [
         'addDate' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addDate'],
+        'createParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'createParentAccount'],
+        'deleteParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteParentAccount'],
+        'deleteFromParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteFromParentAccount'],
         'edit' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'createOrEdit'],
         'delete' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'delete'],
         'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook'],
@@ -780,5 +786,113 @@ final class ContestController extends Controller
         }
 
         return new Response((new SubscribePage($contest, $member))->render());
+    }
+
+    public function createParentAccount(RequestParameters $post): JsonResponse
+    {
+        $user = new User();
+        $user->firstName = $post->getSimpleString('firstName');
+        $user->initials = $post->getSimpleString('initials');
+        $user->tussenvoegsel = $post->getSimpleString('tussenvoegsel');
+        $user->lastName = $post->getSimpleString('lastName');
+        $user->email = $post->getEmail('email');
+
+        try
+        {
+            if (!$user->save())
+            {
+                return new JsonResponse(['error' => 'Kon ouderaccount niet opslaan'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+            $user->addRight(Contest::RIGHT_PARENT);
+        }
+        catch (\PDOException $e)
+        {
+            return new JsonResponse(['error' => 'Kon ouderaccount niet opslaan, databasefout. Controleer of het e-mailadres uniek is.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+
+        if ($post->getBool('sendIntroductionMail'))
+        {
+            if (!self::sendParentAccountIntroductionMail($user))
+            {
+                return new JsonResponse(['error' => 'Account is aangemaakt, maar kon welkomstmail niet versturen'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        User::addNotification('Ouderaccount aangemaakt.');
+        return new JsonResponse();
+    }
+
+    public static function sendParentAccountIntroductionMail(User $user): bool
+    {
+        $password = $user->generatePassword();
+
+        $template = new Template();
+        $mailBody = $template->render('Geelhoed/Contest/ParentAccountIntroductionMail', [
+            'fullName' => $user->getFullName(),
+            'email' => $user->email,
+            'password' => $password,
+        ]);
+
+        assert($user->email !== null);
+        $mail = new PlainTextMail($user->email, 'Ouderaccount aangemaakt', $mailBody);
+        return $mail->send();
+    }
+
+    public function deleteParentAccount(): JsonResponse
+    {
+        $id = $this->queryBits->getInt(2);
+        $user = User::loadFromDatabase($id);
+        if ($user === null)
+        {
+            return new JsonResponse(['error' => 'Gebruiker bestaat niet!'], Response::HTTP_NOT_FOUND);
+        }
+        if (!$user->hasRight(Contest::RIGHT_PARENT))
+        {
+            return new JsonResponse(['error' => 'Gebruiker is geen ouderaccount!'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user->delete();
+        return new JsonResponse();
+    }
+
+    public function deleteFromParentAccount(RequestParameters $post): JsonResponse
+    {
+        $userId = $post->getInt('userId');
+        $user = User::loadFromDatabase($userId);
+        if ($user === null)
+        {
+            return new JsonResponse(['error' => 'Gebruiker bestaat niet!'], Response::HTTP_NOT_FOUND);
+        }
+
+        $memberToRemoveId = $post->getInt('memberId');
+        $controlledMembers = Member::fetchAllByUser($user);
+        if (!in_array($memberToRemoveId, array_map(static function(Member $member) { return $member->id; }, $controlledMembers), true))
+        {
+            return new JsonResponse(['error' => 'Ouder kan dit lid niet beheren!'], Response::HTTP_NOT_FOUND);
+        }
+
+        DBConnection::doQuery('DELETE FROM geelhoed_users_members WHERE userId = ? AND memberId = ?', [$userId, $memberToRemoveId]);
+        return new JsonResponse();
+    }
+
+    public function addToParentAccount(RequestParameters $post): Response
+    {
+        $userId = $post->getInt('userId');
+        $user = User::loadFromDatabase($userId);
+        if ($user === null)
+        {
+            return new Response((new Page('Fout', 'Gebruiker bestaat niet!'))->render(), Response::HTTP_NOT_FOUND);
+        }
+
+        $memberId = $post->getInt('memberId');
+        $member = User::loadFromDatabase($memberId);
+        if ($member === null)
+        {
+            return new Response((new Page('Fout', 'Lid bestaat niet!'))->render(), Response::HTTP_NOT_FOUND);
+        }
+
+        DBConnection::doQuery('INSERT INTO geelhoed_users_members(`userId`, `memberId`) VALUES(?, ?)', [$userId, $memberId]);
+        return new RedirectResponse('/contest/parentAccounts');
     }
 }
