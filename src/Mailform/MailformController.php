@@ -145,19 +145,25 @@ final class MailformController extends Controller
 
         $fromAddress = Util::getNoreplyAddress();
         $fromName = html_entity_decode(Setting::get('organisation') ?: Setting::get('siteName'));
-        $extraHeaders = 'From: ' . $fromAddress;
+        $extraHeaders = [
+            'From' => $fromAddress,
+            'Content-Type' => 'text/plain; charset="UTF-8"',
+        ];
 
         if ($sender !== '')
         {
-            $extraHeaders .= "\r\n" . 'Reply-To: ' . $sender;
+            $extraHeaders['Reply-To'] = $sender;
         }
 
         if (mail($recipient, $subject, $mailBody, $extraHeaders, "-f$fromAddress"))
         {
             if ($form->sendConfirmation && $sender && $form->confirmationText !== null)
             {
-                $extraHeaders = sprintf('From: %s <%s>', $fromName, $fromAddress);
-                $extraHeaders .= "\r\n" . 'Reply-To: ' . $recipient;
+                $extraHeaders = [
+                    'From' => sprintf('%s <%s>', $fromName, $fromAddress),
+                    'Reply-To' => $recipient,
+                    'Content-Type' => 'text/plain; charset="UTF-8"',
+                ];
                 mail($sender, 'Ontvangstbevestiging', $form->confirmationText, $extraHeaders, "-f$fromAddress");
             }
             return true;
