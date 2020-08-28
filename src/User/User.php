@@ -308,6 +308,7 @@ EOT;
         try
         {
             session_destroy();
+            session_start();
         }
         catch (SessionException $e)
         {
