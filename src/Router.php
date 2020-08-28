@@ -49,7 +49,7 @@ final class Router
         'toonsub.php' => ['url' => '/sub/', 'id' => 'id'],
     ];
 
-    private const HEADERS_DO_NOT_CACHE = [
+    public const HEADERS_DO_NOT_CACHE = [
         'cache-control' => 'no-cache, no-store, must-revalidate',
         'pragma' => 'no-cache',
         'expires' => 0,

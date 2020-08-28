@@ -62,7 +62,7 @@ final class UserController extends Controller
     protected function logout(): Response
     {
         User::logout();
-        return new RedirectResponse('/');
+        return new RedirectResponse('/', Response::HTTP_FOUND, Router::HEADERS_DO_NOT_CACHE);
     }
 
     protected function manager(): Response
