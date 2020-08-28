@@ -887,7 +887,7 @@ final class ContestController extends Controller
         }
 
         $memberId = $post->getInt('memberId');
-        $member = User::loadFromDatabase($memberId);
+        $member = Member::loadFromDatabase($memberId);
         if ($member === null)
         {
             return new Response((new Page('Fout', 'Lid bestaat niet!'))->render(), Response::HTTP_NOT_FOUND);
