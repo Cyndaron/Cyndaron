@@ -826,6 +826,7 @@ final class ContestController extends Controller
     public static function sendParentAccountIntroductionMail(User $user): bool
     {
         $password = $user->generatePassword();
+        $user->save();
 
         $template = new Template();
         $mailBody = $template->render('Geelhoed/Contest/ParentAccountIntroductionMail', [
