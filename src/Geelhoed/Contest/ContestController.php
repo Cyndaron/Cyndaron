@@ -699,7 +699,7 @@ final class ContestController extends Controller
         if ($subscription->save())
         {
             User::addNotification('Wijzigingen opgeslagen.');
-            $mailText = "{{ {$subscription->getMember()->getProfile()->getFullName()} heeft zijn/haar inschrijving voor {$subscription->getContest()->name} gewijzigd. Het gewicht is nu {$subscription->weight} kg en de graduatie is: {$subscription->getGraduation()->name}.";
+            $mailText = "{$subscription->getMember()->getProfile()->getFullName()} heeft zijn/haar inschrijving voor {$subscription->getContest()->name} gewijzigd. Het gewicht is nu {$subscription->weight} kg en de graduatie is: {$subscription->getGraduation()->name}.";
             $to = Setting::get('geelhoed_contestMaintainerMail');
             $mail = new PlainTextMail($to, 'Wijziging inschrijving', $mailText);
             $mail->send();
