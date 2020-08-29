@@ -699,10 +699,15 @@ final class ContestController extends Controller
         if ($subscription->save())
         {
             User::addNotification('Wijzigingen opgeslagen.');
-            $mailText = "{$subscription->getMember()->getProfile()->getFullName()} heeft zijn/haar inschrijving voor {$subscription->getContest()->name} gewijzigd. Het gewicht is nu {$subscription->weight} kg en de graduatie is: {$subscription->getGraduation()->name}.";
-            $to = Setting::get('geelhoed_contestMaintainerMail');
-            $mail = new PlainTextMail($to, 'Wijziging inschrijving', $mailText);
-            $mail->send();
+            // Since we only start entering names and data once people have paid, no need to notify for changes if they haven't paid yet.
+            if ($subscription->isPaid)
+            {
+                $mailText = "{$subscription->getMember()->getProfile()->getFullName()} heeft zijn/haar inschrijving voor {$subscription->getContest()->name} gewijzigd. Het gewicht is nu {$subscription->weight} kg en de graduatie is: {$subscription->getGraduation()->name}.";
+                $to = Setting::get('geelhoed_contestMaintainerMail');
+                $mail = new PlainTextMail($to, 'Wijziging inschrijving', $mailText);
+                $mail->send();
+            }
+
         }
 
         return new RedirectResponse('/contest/myContests');
