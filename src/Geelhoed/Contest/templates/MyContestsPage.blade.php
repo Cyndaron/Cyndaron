@@ -54,7 +54,7 @@
                             <td>{{ $contestMember->getGraduation()->name }}</td>
                             <td>
                                 @if ($contestMember->isPaid)Betaald
-                                @elseif(strtotime($contest->registrationDeadline) < time())Niet betaald
+                                @elseif(time() < strtotime($contest->registrationDeadline))Niet betaald
                                 @else Verlopen
                                 @endif
                             </td>
