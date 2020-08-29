@@ -402,29 +402,4 @@ final class Member extends Model
             return $member->isContestant;
         });
     }
-
-    /**
-     * @param self[] $members
-     * @param Contest[] $contests
-     * @return float
-     */
-    public static function calculateDue(array $members, array $contests): float
-    {
-        $due = 0.0;
-
-        foreach ($contests as $contest)
-        {
-            foreach ($members as $member)
-            {
-                $contestMember = ContestMember::fetchByContestAndMember($contest, $member);
-                $deadlinePassed = strtotime($contest->registrationDeadline) > time();
-                if ($contestMember !== null && !$contestMember->isPaid && !$deadlinePassed)
-                {
-                    $due += $contest->price;
-                }
-            }
-        }
-
-        return $due;
-    }
 }

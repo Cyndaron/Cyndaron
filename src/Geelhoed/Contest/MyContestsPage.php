@@ -19,10 +19,10 @@ final class MyContestsPage extends Page
         $due = 0.0;
         if (count($controlledMembers) > 0)
         {
+            assert($user !== null);
             $memberIds = array_map(static function(Member $member) { return $member->id; }, $controlledMembers);
             $contests = Contest::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (?))'], [implode(',', $memberIds)], 'ORDER BY registrationDeadline DESC');
-            $contestMembers = ContestMember::fetchAllByMembers($controlledMembers);
-            $due = Member::calculateDue($controlledMembers, $contests);
+            [$due, $contestMembers] = Contest::getTotalDue($user);
         }
         $this->addTemplateVars([
             'profile' => $user,
