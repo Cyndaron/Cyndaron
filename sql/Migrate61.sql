@@ -94,3 +94,13 @@ CREATE TABLE `richlink_category` (
 ALTER TABLE `richlink_category` ADD FOREIGN KEY (`id`) REFERENCES `richlink`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `richlink_category` ADD FOREIGN KEY (`categoryId`) REFERENCES `categories`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `richlink_category` ADD UNIQUE(`id`, `categoryId`);
+
+ALTER TABLE `users` ADD `initials` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL AFTER `firstName`;
+ALTER TABLE `users` ADD `gender` enum('male','female','other') COLLATE utf8mb4_unicode_ci DEFAULT NULL AFTER `hideFromMemberList`;
+ALTER TABLE `users` ADD `street` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL AFTER `gender`;
+ALTER TABLE `users` ADD `houseNumber` int DEFAULT NULL AFTER `street`;
+ALTER TABLE `users` ADD `houseNumberAddition` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL AFTER `houseNumber`;
+ALTER TABLE `users` ADD `postalCode` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL AFTER `houseNumberAddition`;
+ALTER TABLE `users` ADD `city` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL AFTER `postalCode`;
+ALTER TABLE `users` ADD `dateOfBirth` date DEFAULT NULL AFTER `city`;
+ALTER TABLE `users` ADD `notes` text COLLATE utf8mb4_unicode_ci NOT NULL AFTER `dateOfBirth`;
