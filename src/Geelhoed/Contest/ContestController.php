@@ -707,7 +707,6 @@ final class ContestController extends Controller
                 $mail = new PlainTextMail($to, 'Wijziging inschrijving', $mailText);
                 $mail->send();
             }
-
         }
 
         return new RedirectResponse('/contest/myContests');

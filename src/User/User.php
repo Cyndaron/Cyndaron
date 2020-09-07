@@ -461,4 +461,9 @@ EOT;
         $result = DBConnection::doQuery('INSERT INTO user_rights(`userId`, `right`) VALUES (?, ?)', [$this->id, $right]);
         return (bool)$result;
     }
+
+    public function checkPassword(string $password): bool
+    {
+        return password_verify($password, $this->password);
+    }
 }

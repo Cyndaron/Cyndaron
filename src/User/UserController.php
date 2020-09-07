@@ -10,6 +10,7 @@ use Cyndaron\Router;
 use Cyndaron\Setting;
 use Cyndaron\Util;
 use Exception;
+use phpDocumentor\Reflection\DocBlock\Tags\Example;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class UserController extends Controller
 {
     protected array $getRoutes = [
+        'changePassword' => ['level' => UserLevel::LOGGED_IN, 'function' => 'changePasswordGet'],
         'gallery' => ['level' => UserLevel::LOGGED_IN, 'function' => 'gallery'],
         'login' => ['level' => UserLevel::ANONYMOUS, 'function' => 'loginGet'],
         'logout' => ['level' => UserLevel::LOGGED_IN, 'function' => 'logout'],
@@ -24,6 +26,7 @@ final class UserController extends Controller
     ];
 
     protected array $postRoutes = [
+        'changePassword' => ['level' => UserLevel::LOGGED_IN, 'function' => 'changePasswordPost'],
         'login' => ['level' => UserLevel::ANONYMOUS, 'function' => 'loginPost'],
         'changeAvatar' => ['level' => UserLevel::ADMIN, 'function' => 'changeAvatar'],
     ];
@@ -195,5 +198,50 @@ final class UserController extends Controller
         $user->uploadNewAvatar();
 
         return new RedirectResponse('/user/manager');
+    }
+
+    protected function changePasswordGet(): Response
+    {
+        return new Response((new ChangePasswordPage())->render());
+    }
+
+    protected function changePasswordPost(RequestParameters $post): Response
+    {
+        $profile = User::fromSession();
+        if ($profile === null)
+        {
+            return new Response((new Page('Fout', 'Geen profiel gevonden!'))->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $oldPassword = $post->getUnfilteredString('oldPassword');
+        if (!$profile->checkPassword($oldPassword))
+        {
+            User::addNotification('Oude wachtwoord klopt niet!');
+            return new RedirectResponse('/user/changePassword');
+        }
+
+        $newPassword = $post->getUnfilteredString('newPassword');
+        if (strlen($newPassword) < 8)
+        {
+            User::addNotification('Nieuw wachtwoord moet langer zijn dan 8 tekens!');
+            return new RedirectResponse('/user/changePassword');
+        }
+
+        $newPasswordRepeat = $post->getUnfilteredString('newPasswordRepeat');
+
+        if ($newPassword !== $newPasswordRepeat)
+        {
+            User::addNotification('Wachtwoorden komen niet overeen!');
+            return new RedirectResponse('/user/changePassword');
+        }
+
+        $changed = $profile->setPassword($newPassword) && $profile->save();
+        if (!$changed)
+        {
+            return new Response((new Page('Fout', 'Kon het nieuwe wachtwoord niet opslaan.'))->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        User::addNotification('Wachtwoord gewijzigd.');
+        return new RedirectResponse('/');
     }
 }

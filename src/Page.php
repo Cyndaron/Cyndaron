@@ -171,6 +171,7 @@ class Page
         {
             $userMenuItems[] = ['link' => $extraItem['link'], 'title' => $extraItem['label'], 'icon' => $extraItem['icon'] ?? ''];
         }
+        $userMenuItems[] = ['link' => '/user/changePassword', 'title' => 'Wachtwoord wijzigen', 'icon' => 'lock'];
         $userMenuItems[] = ['link' => '/user/logout', 'title' => 'Uitloggen', 'icon' => 'log-out'];
 
         $vars['userMenuItems'] = $userMenuItems;
