@@ -33,3 +33,6 @@ jobs:
       # Docs: https://getcomposer.org/doc/articles/scripts.md
       - name: Run PHPStan
         run: composer run-script phpstan
+
+      - name: Run PHP Coding Standards Fixer
+        run: composer run-script cscheck

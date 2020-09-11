@@ -27,7 +27,8 @@
         "roave/security-advisories": "dev-master",
         "phan/phan": "^3.0",
         "thecodingmachine/phpstan-safe-rule": "^1.0",
-        "phpstan/phpstan": "^0.12.42"
+        "phpstan/phpstan": "^0.12.42",
+        "friendsofphp/php-cs-fixer": "^2.16"
     },
     "config": {
         "platform": {
@@ -37,6 +38,9 @@
     "scripts": {
         "phpstan": [
             "vendor/bin/phpstan analyse src --level 8"
+        ],
+        "cscheck": [
+            "vendor/bin/php-cs-fixer fix src/ --allow-risky=yes --dry-run --diff"
         ]
     }
 }
