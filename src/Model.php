@@ -132,7 +132,7 @@ class Model
         if (count($results) > 0)
         {
             $firstElem = reset($results);
-            return $firstElem !== false ? $firstElem : null;
+            return $firstElem;
         }
 
         return null;

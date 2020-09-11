@@ -51,7 +51,7 @@ final class ContestMember extends Model
         }
 
         $firstElem = reset($results);
-        return $firstElem !== false ? $firstElem : null;
+        return $firstElem;
     }
 
     /**

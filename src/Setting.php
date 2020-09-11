@@ -16,7 +16,7 @@ final class Setting
         $setting = $connection->prepare('SELECT value FROM settings WHERE name= ?');
         $setting->execute([$name]);
 
-        return $setting->fetchColumn() ?: '';
+        return (string)$setting->fetchColumn();
     }
 
     public static function set(string $name, string $value): void
