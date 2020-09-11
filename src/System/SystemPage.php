@@ -37,8 +37,12 @@ final class SystemPage extends Page
     ];
 
     private const SETTINGS = [
-        'post_max_size',
-        'upload_max_filesize',
+        'post_max_size' => ['expected' => '25M'],
+        'upload_max_filesize' => ['expected' => '25M'],
+        'session.cookie_httponly' => ['expected' => 1],
+        'session.cookie_secure' => ['expected' => 1],
+        'session.use_only_cookies' => ['expected' => 1],
+        'session.use_strict_mode' => ['expected' => 1],
     ];
     public function __construct(string $currentPage)
     {
@@ -162,11 +166,17 @@ final class SystemPage extends Page
         $folderResults = [];
         foreach (self::WRITABLE_FILES_AND_FOLDERS as $folder)
         {
-            $folderResults[$folder] = is_writable(__DIR__ . '/../..' . $folder);
+            $folderResults[$folder] = [
+                'expected' => 'Schrijfbaar',
+                'result' => is_writable(__DIR__ . '/../..' . $folder),
+            ];
         }
         foreach (self::UNWRITEABLE_FILES_AND_FOLDERS as $folder)
         {
-            $folderResults[$folder] = !is_writable(__DIR__ . '/../..' . $folder);
+            $folderResults[$folder] = [
+                'expected' => 'Niet schrijfbaar',
+                'result' => !is_writable(__DIR__ . '/../..' . $folder),
+            ];
         }
         ksort($folderResults);
         return $folderResults;
@@ -175,9 +185,9 @@ final class SystemPage extends Page
     private function getSettings(): array
     {
         $ret = [];
-        foreach (self::SETTINGS as $setting)
+        foreach (self::SETTINGS as $setting => $definition)
         {
-            $ret[$setting] = ini_get($setting);
+            $ret[$setting] = array_merge($definition, ['result' => ini_get($setting)]);
         }
         return $ret;
     }

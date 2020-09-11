@@ -8,7 +8,8 @@
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th>Map</th>
+                    <th>Map/bestand</th>
+                    <th>Verwachting</th>
                     <th>Resultaat</th>
                 </tr>
             </thead>
@@ -16,7 +17,8 @@
                 @foreach ($folderResults as $folder => $result)
                     <tr>
                         <td>{{ $folder }}</td>
-                        <td>{{ $result ? 'OK' : 'Incorrect' }}</td>
+                        <td>{{ $result['expected'] }}</td>
+                        <td>{{ $result['result'] ? 'OK' : 'Incorrect' }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -27,14 +29,16 @@
             <thead>
                 <tr>
                     <th>Instelling</th>
+                    <th>Verwachting</th>
                     <th>Waarde</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($settings as $setting => $value)
+                @foreach ($settings as $setting => $definition)
                     <tr>
                         <td>{{ $setting }}</td>
-                        <td>{{ $value }}</td>
+                        <td>{{ $definition['expected'] }}</td>
+                        <td>{{ $definition['result'] }}</td>
                     </tr>
                 @endforeach
             </tbody>
