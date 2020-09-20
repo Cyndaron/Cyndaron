@@ -132,7 +132,7 @@ class Page
             {
                 ob_start();
                 include __DIR__ . "/../$filename.php";
-                $this->templateVars[$varName] = ob_get_clean();
+                $this->templateVars[$varName] = ViewHelpers::parseText(ob_get_clean() ?: '');
             }
         }
     }
