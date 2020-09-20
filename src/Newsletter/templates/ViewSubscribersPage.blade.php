@@ -2,6 +2,7 @@
 
 @section('contents')
     <h2>Abonnees</h2>
+    <p>Er zijn {{ count($subscribers) }} nieuwsbriefabonnees.</p>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
