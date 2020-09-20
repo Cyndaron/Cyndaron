@@ -104,3 +104,13 @@ ALTER TABLE `users` ADD `postalCode` varchar(20) COLLATE utf8mb4_unicode_ci DEFA
 ALTER TABLE `users` ADD `city` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL AFTER `postalCode`;
 ALTER TABLE `users` ADD `dateOfBirth` date DEFAULT NULL AFTER `city`;
 ALTER TABLE `users` ADD `notes` text COLLATE utf8mb4_unicode_ci NOT NULL AFTER `dateOfBirth`;
+
+CREATE TABLE `newsletter_subscriber` (
+    `id` INT NOT NULL AUTO_INCREMENT ,
+    `name` VARCHAR(200) NOT NULL ,
+    `email` VARCHAR(200) NOT NULL ,
+    `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+    `modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+    PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `newsletter_subscriber` ADD UNIQUE( `email`);

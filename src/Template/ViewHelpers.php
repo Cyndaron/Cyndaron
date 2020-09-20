@@ -3,6 +3,7 @@ namespace Cyndaron\Template;
 
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Photoalbum\PhotoalbumPage;
+use Cyndaron\User\User;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
@@ -168,9 +169,15 @@ final class ViewHelpers
             }
             return '';
         }, $text);
+
         $text = preg_replace('/%youtube\|([A-Za-z0-9_\-]+)%/', self::YOUTUBE, $text ?? '');
 
-        return $text;
+        $text = preg_replace_callback('/%csrfToken\|([A-Za-z0-9_\-]+)\|([A-Za-z0-9_\-]+)%/', static function($matches)
+        {
+            return User::getCSRFToken($matches[1], $matches[2]);
+        }, $text);
+
+        return $text ?? '';
     }
 
     /**
