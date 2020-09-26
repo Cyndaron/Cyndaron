@@ -111,6 +111,8 @@ final class DBConnection
         {
             static::$pdo = @new PDO($engine . ':host=' . $host . ';dbname=' . $databaseName . ';charset=utf8mb4', $user, $password);
             static::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            // Setting this to false makes PDO use native prepared statements.
+            static::$pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         }
         catch (PDOException $e)
         {
