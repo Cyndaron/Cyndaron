@@ -56,7 +56,7 @@ class Controller
         return true;
     }
 
-    public function route(RequestParameters $post): Response
+    public function route(DependencyInjectionContainer $dic): Response
     {
         $getRoutes = ($this->isApiCall && !empty($this->apiGetRoutes)) ? $this->apiGetRoutes : $this->getRoutes;
         $postRoutes = ($this->isApiCall && !empty($this->apiPostRoutes)) ? $this->apiPostRoutes : $this->postRoutes;
@@ -101,8 +101,7 @@ class Controller
                 }
             }
 
-            $method = $route->method;
-            return $this->$method($post);
+            return $this->callMethodWithDependencyInjection($route->method, $dic);
         }
 
         // Do not fall back to old functions for API calls.
@@ -117,7 +116,23 @@ class Controller
             return $response;
         }
 
-        return $this->$oldRouteFunction($post);
+        return $this->callMethodWithDependencyInjection($oldRouteFunction, $dic);
+    }
+
+    protected function callMethodWithDependencyInjection(string $method, DependencyInjectionContainer $dic): Response
+    {
+        $reflectionMethod = new \ReflectionMethod($this, $method);
+        $reflectionMethod->setAccessible(true);
+
+        $params = [];
+        foreach ($reflectionMethod->getParameters() as $parameter)
+        {
+            $class = $parameter->getClass();
+            $className = $class ? $class->getName() : '';
+
+            $params[] = $dic->get($className);
+        }
+        return $reflectionMethod->invokeArgs($this, $params);
     }
 
     protected function routeGet(): Response

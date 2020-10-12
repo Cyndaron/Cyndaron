@@ -154,7 +154,10 @@ final class Router
 
         try
         {
-            return $route->route($post);
+            $dic = new DependencyInjectionContainer();
+            $dic->add($post);
+
+            return $route->route($dic);
         }
         catch (\Exception $e)
         {

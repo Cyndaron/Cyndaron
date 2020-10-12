@@ -6,6 +6,7 @@ namespace Cyndaron\Error;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\DependencyInjectionContainer;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ErrorController extends Controller
@@ -24,7 +25,7 @@ final class ErrorController extends Controller
     ];
 
     // Overridden, since both GET and POST requests may end up here, and checking user rights is not necessary.
-    public function route(RequestParameters $post): Response
+    public function route(DependencyInjectionContainer $dic): Response
     {
         if ($this->action === null)
         {
