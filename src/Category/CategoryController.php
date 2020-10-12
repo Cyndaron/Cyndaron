@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Category;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\ModelWithCategory;

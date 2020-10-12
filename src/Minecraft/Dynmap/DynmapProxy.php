@@ -5,7 +5,7 @@ namespace Cyndaron\Minecraft\Dynmap;
 
 use Cyndaron\Minecraft\Server;
 use Cyndaron\Request\QueryBits;
-use Cyndaron\Router;
+use Cyndaron\Routing\Router;
 
 use function Safe\file_get_contents;
 use function Safe\sprintf;

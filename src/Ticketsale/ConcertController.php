@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\User\UserLevel;

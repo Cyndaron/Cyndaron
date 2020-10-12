@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\StaticPage;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;

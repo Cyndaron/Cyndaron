@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace Cyndaron\System;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Setting;
 use Cyndaron\User\UserLevel;

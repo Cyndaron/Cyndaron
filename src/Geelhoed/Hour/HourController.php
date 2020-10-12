@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Hour;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

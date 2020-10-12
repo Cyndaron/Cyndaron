@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Cyndaron\User;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Router;
+use Cyndaron\Routing\Router;
 use Cyndaron\Setting;
 use Cyndaron\Util;
 use Exception;

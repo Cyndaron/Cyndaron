@@ -2,6 +2,7 @@
 namespace Cyndaron;
 
 use Cyndaron\Error\BootFailure;
+use Cyndaron\Routing\Router;
 use ErrorException;
 use RuntimeException;
 

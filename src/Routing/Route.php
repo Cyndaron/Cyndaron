@@ -1,0 +1,36 @@
+<?php
+declare(strict_types=1);
+
+/*
+ * Copyright © 2009-2017, Michael Steenbeek
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+namespace Cyndaron\Routing;
+
+use Cyndaron\User\UserLevel;
+
+final class Route
+{
+    public string $method = '';
+    public int $level = UserLevel::ADMIN;
+    public ?string $right = null;
+
+    public function __construct(string $method, int $level = UserLevel::ADMIN, ?string $right = null)
+    {
+        $this->method = $method;
+        $this->level = $level;
+        $this->right = $right;
+    }
+}

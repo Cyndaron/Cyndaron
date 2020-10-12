@@ -2,18 +2,23 @@
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 declare(strict_types=1);
 
-namespace Cyndaron;
+namespace Cyndaron\Routing;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Editor\EditorController;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\UserMenu;
+use Cyndaron\Page;
 use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Setting;
+use Cyndaron\Url;
 use Cyndaron\User\User;
+use Cyndaron\Util;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,13 +37,13 @@ final class Router
 
     protected array $endpoints = [
         // Default endpoints
-        'editor' => Editor\EditorController::class,
-        'error' => Error\ErrorController::class,
-        'menu' => Menu\MenuController::class,
-        'menu-editor' => Menu\MenuEditorController::class,
-        'migrate' => MigrateController::class,
-        'pagemanager' => PageManager\PageManagerController::class,
-        'system' => System\SystemController::class,
+        'editor' => \Cyndaron\Editor\EditorController::class,
+        'error' => \Cyndaron\Error\ErrorController::class,
+        'menu' => \Cyndaron\Menu\MenuController::class,
+        'menu-editor' => \Cyndaron\Menu\MenuEditorController::class,
+        'migrate' => \Cyndaron\MigrateController::class,
+        'pagemanager' => \Cyndaron\PageManager\PageManagerController::class,
+        'system' => \Cyndaron\System\SystemController::class,
         'user' => \Cyndaron\User\UserController::class,
     ];
 

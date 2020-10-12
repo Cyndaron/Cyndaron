@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\RichLink;
 
 use Cyndaron\Category\Category;
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;

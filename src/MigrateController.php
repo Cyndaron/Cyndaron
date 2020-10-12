@@ -7,7 +7,7 @@ namespace Cyndaron;
 use Cyndaron\User\User;
 use Symfony\Component\HttpFoundation\Response;
 
-final class MigrateController extends Controller
+final class MigrateController extends \Cyndaron\Routing\Controller
 {
     public const VERSIONS = [
         '5.3' => 'migrate53',

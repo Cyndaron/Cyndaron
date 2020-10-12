@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron;
+namespace Cyndaron\Routing;
 
+use Cyndaron\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
@@ -85,20 +86,23 @@ class Controller
         if ($this->action !== null && array_key_exists($this->action, $routesTable))
         {
             $route = $routesTable[$this->action];
-            $right = $route['right'] ?? '';
-            $hasRight = $right !== '' && !empty($_SESSION['profile']) && $_SESSION['profile']->hasRight($right);
+            if (is_array($route))
+            {
+                $route = new Route($route['function'], $route['level']?? UserLevel::ADMIN, $route['right'] ?? null);
+            }
+            $right = $route->right;
+            $hasRight = !empty($right) && !empty($_SESSION['profile']) && $_SESSION['profile']->hasRight($right);
             if (!$hasRight)
             {
-                $level = $route['level'] ?? UserLevel::ADMIN;
-                $response = $this->checkUserLevel($level);
+                $response = $this->checkUserLevel($route->level);
                 if ($response !== null)
                 {
                     return $response;
                 }
             }
 
-            $function = $route['function'];
-            return $this->$function($post);
+            $method = $route->method;
+            return $this->$method($post);
         }
 
         // Do not fall back to old functions for API calls.

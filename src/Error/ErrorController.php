@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Error;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;
 use Symfony\Component\HttpFoundation\Response;

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\Error\DatabaseError;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Page;

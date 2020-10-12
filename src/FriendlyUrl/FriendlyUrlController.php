@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\FriendlyUrl;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;

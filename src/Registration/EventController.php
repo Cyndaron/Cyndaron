@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;

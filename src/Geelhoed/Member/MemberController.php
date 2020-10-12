@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Member;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Request\RequestParameters;

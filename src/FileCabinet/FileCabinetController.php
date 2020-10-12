@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\FileCabinet;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;

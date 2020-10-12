@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Contest;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;

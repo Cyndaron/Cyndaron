@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Location;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\Page;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;

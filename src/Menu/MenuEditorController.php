@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Menu;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;
 

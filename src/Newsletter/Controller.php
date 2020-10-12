@@ -23,7 +23,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;
 
-class Controller extends \Cyndaron\Controller
+class Controller extends \Cyndaron\Routing\Controller
 {
     protected array $getRoutes = [
         'viewSubscribers' => ['level' => UserLevel::ADMIN, 'function' => 'viewSubscribers']

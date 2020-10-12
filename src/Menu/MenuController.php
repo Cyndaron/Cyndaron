@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Menu;
 
-use Cyndaron\Controller;
+use Cyndaron\Routing\Controller;
 use Cyndaron\Error\DatabaseError;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;

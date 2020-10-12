@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\Router;
+use Cyndaron\Routing\Router;
 
 final class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
 {
