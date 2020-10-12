@@ -13,12 +13,10 @@ final class ErrorController extends Controller
 {
     public const KNOWN_ERRORS = [
         '403' => [
-            'httpStatus' => 'HTTP/1.0 403 Forbidden',
             'pageTitle' => '403: Forbidden',
             'notification' => 'U heeft geprobeerd een pagina op te vragen die niet mag worden opgevraagd.',
         ],
         '404' => [
-            'httpStatus' => 'HTTP/1.0 404 Not Found',
             'pageTitle' => '404: Not Found',
             'notification' => 'U heeft geprobeerd een pagina op te vragen die niet kon worden gevonden.',
         ],
