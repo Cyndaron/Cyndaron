@@ -128,7 +128,9 @@ final class RequestParameters
 
     public function getPhone(string $name, string $default = ''): string
     {
-        return preg_replace('/[^0-9+\- ]/', '', $this->getUnfilteredString($name, $default));
+        /** @var string $result */
+        $result = preg_replace('/[^0-9+\- ]/', '', $this->getUnfilteredString($name, $default));
+        return $result;
     }
 
     public function getUrl(string $name, string $default = ''): string
@@ -141,13 +143,17 @@ final class RequestParameters
     public function getColor(string $name, string $default = '#000000'): string
     {
         $preFilter = $this->getUnfilteredString($name, $default);
-        return preg_replace('/[^#0-9A-Za-z]/', '', $preFilter);
+        /** @var string $result */
+        $result = preg_replace('/[^#0-9A-Za-z]/', '', $preFilter);
+        return $result;
     }
 
     public function getAlphaNum(string $name, string $default = ''): string
     {
         $preFilter = $this->getUnfilteredString($name, $default);
-        return preg_replace('/[^0-9A-Za-z]/', '', $preFilter);
+        /** @var string $result */
+        $result = preg_replace('/[^0-9A-Za-z]/', '', $preFilter);
+        return $result;
     }
 
     /**
@@ -161,8 +167,10 @@ final class RequestParameters
     {
         $value = $this->getUnfilteredString($name, $default);
         // Remove <script> tags
+        /** @var string $value */
         $value = preg_replace("/<script.*?>.*?<\/script>/ims", '', $value);
         // Remove onLoad/onClick/... attributes
+        /** @var string $value */
         $value = preg_replace('/\bon\w+=\S+(?=.*>)/', '', $value);
 
         return $value;
@@ -176,25 +184,33 @@ final class RequestParameters
             return $default;
         }
 
-        return preg_replace('/[^0-9:\- ]/', '', $preFilter);
+        /** @var string $result */
+        $result = preg_replace('/[^0-9:\- ]/', '', $preFilter);
+        return $result;
     }
 
     public function getPostcode(string $name, string $default = ''): string
     {
         $preFilter = $this->getUnfilteredString($name, $default);
-        return preg_replace('/[^0-9A-Za-z ]/', '', $preFilter);
+        /** @var string $result */
+        $result = preg_replace('/[^0-9A-Za-z ]/', '', $preFilter);
+        return $result;
     }
 
     public function getInitials(string $name, string $default = ''): string
     {
         $preFilter = strtoupper($this->getUnfilteredString($name, $default));
-        return preg_replace('/[^A-Z.]/', '', $preFilter);
+        /** @var string $result */
+        $result = preg_replace('/[^A-Z.]/', '', $preFilter);
+        return $result;
     }
 
     public function getTussenvoegsel(string $name, string $default = ''): string
     {
         $preFilter = $this->getUnfilteredString($name, $default);
-        return preg_replace('/[^A-Za-z\' ]/', '', $preFilter);
+        /** @var string $result */
+        $result = preg_replace('/[^A-Za-z\' ]/', '', $preFilter);
+        return $result;
     }
 
     /**
@@ -207,7 +223,9 @@ final class RequestParameters
     public function getFilename(string $name, string $default = ''): string
     {
         $preFilter = $this->getUnfilteredString($name, $default);
-        return preg_replace('/[^A-Za-z0-9() \-+.]/', '', $preFilter);
+        /** @var string $result */
+        $result = preg_replace('/[^A-Za-z0-9() \-+.]/', '', $preFilter);
+        return $result;
     }
 
     /**
@@ -220,7 +238,9 @@ final class RequestParameters
     public function getFilenameWithDirectory(string $name, string $default = ''): string
     {
         $preFilter = $this->getUnfilteredString($name, $default);
-        return preg_replace('/[^A-Za-z0-9 \-+.\/]/', '', $preFilter);
+        /** @var string $result */
+        $result = preg_replace('/[^A-Za-z0-9 \-+.\/]/', '', $preFilter);
+        return $result;
     }
 
     /**
