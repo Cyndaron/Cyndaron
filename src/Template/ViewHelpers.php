@@ -183,10 +183,10 @@ final class ViewHelpers
     /**
      * @param int $numPages
      * @param int $currentPage
+     * @throws \Safe\Exceptions\ArrayException
      * @return int[]
      *
      * todo: Filter out impossible page numbers
-     * @throws \Safe\Exceptions\ArrayException
      */
     public static function determinePages(int $numPages, int $currentPage): array
     {

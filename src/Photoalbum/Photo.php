@@ -21,8 +21,8 @@ final class Photo
 
     /**
      * @param Photoalbum $album
-     * @return self[]
      * @throws \Safe\Exceptions\StringsException
+     * @return self[]
      */
     public static function fetchAllByAlbum(Photoalbum $album): array
     {

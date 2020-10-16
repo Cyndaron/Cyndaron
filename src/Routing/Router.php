@@ -175,8 +175,8 @@ final class Router
 
     /**
      * @param Url $url
-     * @return string
      * @throws \Safe\Exceptions\StringsException
+     * @return string
      */
     private function rewriteFriendlyUrl(Url $url): string
     {
@@ -253,8 +253,8 @@ final class Router
 
     /**
      * @param string $request
-     * @return RedirectResponse|null
      * @throws \Safe\Exceptions\StringsException
+     * @return RedirectResponse|null
      */
     private function blockPathTraversal(string $request): ?RedirectResponse
     {

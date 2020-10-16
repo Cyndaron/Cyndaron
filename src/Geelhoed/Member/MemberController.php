@@ -130,8 +130,8 @@ final class MemberController extends Controller
     /**
      * @param User $user
      * @param RequestParameters $post
-     * @return User
      * @throws \Safe\Exceptions\PcreException
+     * @return User
      */
     private function updateUserFields(User $user, RequestParameters $post): User
     {
@@ -159,8 +159,8 @@ final class MemberController extends Controller
      * @param User $user
      * @param Member $member
      * @param RequestParameters $post
-     * @return Member
      * @throws \Safe\Exceptions\PcreException
+     * @return Member
      */
     private function updateMemberFields(User $user, Member $member, RequestParameters $post): Member
     {

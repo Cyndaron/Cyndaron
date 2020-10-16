@@ -63,8 +63,8 @@ final class Registration extends Model
     /**
      * @param float $registrationTotal
      * @param array $registrationTicketTypes
-     * @return bool
      * @throws \Safe\Exceptions\FilesystemException
+     * @return bool
      */
     public function sendIntroductionMail(float $registrationTotal, array $registrationTicketTypes): bool
     {

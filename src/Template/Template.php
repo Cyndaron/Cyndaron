@@ -16,8 +16,8 @@ final class Template
 
     /**
      * @param string $engine
-     * @return string
      * @throws \Safe\Exceptions\FilesystemException
+     * @return string
      */
     public function createCacheDir(string $engine): string
     {
@@ -30,8 +30,8 @@ final class Template
     /**
      * @param string $template
      * @param array $data
-     * @return string
      * @throws \Safe\Exceptions\FilesystemException
+     * @return string
      */
     public function render(string $template, array $data = []): string
     {

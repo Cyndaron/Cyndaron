@@ -160,8 +160,8 @@ final class SystemPage extends Page
      * Checks if folders that need write rights have them,
      * and that folders that shouldn't be writable don't.
      *
-     * @return array
      * @throws \Safe\Exceptions\ArrayException
+     * @return array
      */
     private function checkFolderRights(): array
     {
