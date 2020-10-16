@@ -68,10 +68,11 @@ abstract class ModelWithCategory extends Model
         $entries = DBConnection::doQueryAndFetchAll("SELECT categoryId FROM {$tableName} WHERE id = ?", [$this->id]) ?: [];
         foreach ($entries as $entry)
         {
-            $categories[] = Category::loadFromDatabase($entry['categoryId']);
+            /** @var Category $category */
+            $category = Category::loadFromDatabase($entry['categoryId']);
+            $categories[] = $category;
         }
 
-        /** @phpstan-ignore-next-line (there cannot be null results) */
         return $categories;
     }
 
