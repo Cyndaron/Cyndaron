@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc2d64a49e2540996360febe777cac66",
+    "content-hash": "daf7c70c719864a860b6e3db29c6d76d",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -5034,6 +5034,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
+        "php": "^7.4",
         "ext-pdo": "*",
         "ext-imagick": "*",
         "ext-json": "*",
@@ -5041,8 +5042,5 @@
         "ext-gd": "*"
     },
     "platform-dev": [],
-    "platform-overrides": {
-        "php": "7.4.0"
-    },
     "plugin-api-version": "1.1.0"
 }

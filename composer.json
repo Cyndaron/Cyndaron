@@ -8,6 +8,7 @@
         }
     },
     "require": {
+        "php": "^7.4",
         "illuminate/view": "^6.5",
         "conedevelopment/blade-filters": "^0.7",
         "ext-pdo": "*",
@@ -29,11 +30,6 @@
         "thecodingmachine/phpstan-safe-rule": "^1.0",
         "phpstan/phpstan": "^0.12.42",
         "friendsofphp/php-cs-fixer": "^2.16"
-    },
-    "config": {
-        "platform": {
-            "php": "7.4.0"
-        }
     },
     "scripts": {
         "phpstan": [
