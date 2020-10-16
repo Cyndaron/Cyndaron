@@ -204,6 +204,7 @@
                     @include('Widget/Form/Checkbox', ['id' => 'temporaryStop', 'label' => 'Tijdelijke stop'])
                     @include('Widget/Form/Select', ['id' => 'paymentMethod', 'label' => 'Betaalwijze', 'options' => \Cyndaron\Geelhoed\Member\Member::PAYMENT_METHODS])
                     @include('Widget/Form/BasicInput', ['id' => 'iban', 'label' => 'IBAN-nummer', 'value' => ''])
+                    @include('Widget/Form/BasicInput', ['id' => 'ibanHolder', 'label' => 'Rekeninghouder', 'value' => ''])
                     @include('Widget/Form/Checkbox', ['id' => 'paymentProblem', 'label' => 'Heeft betalingsprobleem'])
                     @include('Widget/Form/Textarea', ['id' => 'paymentProblemNote', 'label' => 'Notitie betalingsprobleem', 'value' => ''])
 

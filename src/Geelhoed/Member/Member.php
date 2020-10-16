@@ -9,6 +9,7 @@ use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Geelhoed\Sport;
 use Cyndaron\Model;
+use Cyndaron\Page;
 use Cyndaron\User\User;
 use Cyndaron\Util;
 
@@ -18,7 +19,7 @@ use function Safe\usort;
 final class Member extends Model
 {
     public const TABLE = 'geelhoed_members';
-    public const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'paymentProblem', 'paymentProblemNote', 'freeParticipation', 'temporaryStop', 'joinedAt', 'jbnNumber', 'jbnNumberLocation'];
+    public const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'ibanHolder', 'paymentProblem', 'paymentProblemNote', 'freeParticipation', 'temporaryStop', 'joinedAt', 'jbnNumber', 'jbnNumberLocation'];
 
     public int $userId;
     public string $parentEmail = '';
@@ -26,6 +27,7 @@ final class Member extends Model
     public bool $isContestant = false;
     public string $paymentMethod = 'incasso';
     public string $iban = '';
+    public string $ibanHolder = '';
     public bool $paymentProblem = false;
     public string $paymentProblemNote = '';
     public bool $freeParticipation = false;
@@ -402,5 +404,15 @@ final class Member extends Model
         {
             return $member->isContestant;
         });
+    }
+
+    public function getIbanHolder(): string
+    {
+        if ($this->ibanHolder !== '')
+        {
+            return $this->ibanHolder;
+        }
+
+        return $this->getProfile()->lastName;
     }
 }

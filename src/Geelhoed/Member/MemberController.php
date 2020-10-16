@@ -172,6 +172,7 @@ final class MemberController extends Controller
         $member->isContestant = $post->getBool('isContestant');
         $member->paymentMethod = $post->getSimpleString('paymentMethod');
         $member->iban = $post->getSimpleString('iban');
+        $member->ibanHolder = $post->getSimpleString('ibanHolder');
         $member->paymentProblem = $post->getBool('paymentProblem');
         $member->paymentProblemNote = $post->getHTML('paymentProblem');
         $member->freeParticipation = $post->getBool('freeParticipation');
