@@ -119,7 +119,8 @@ final class SystemPage extends Page
 
         // We only want the innerhtml of the body.
         preg_match("/<body(.*?)>(.*?)<\\/body>/si", $phpinfo, $match);
-        $phpinfo = strtr($match[2], [
+        $phpInfoText = $match[2] ?? '';
+        $phpinfo = strtr($phpInfoText, [
             // Remove centering
             '<div class="center"' => '<div',
             // Enhance table layout
