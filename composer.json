@@ -29,7 +29,8 @@
         "phan/phan": "^3.0",
         "thecodingmachine/phpstan-safe-rule": "^1.0",
         "phpstan/phpstan": "^0.12.42",
-        "friendsofphp/php-cs-fixer": "^2.16"
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "vimeo/psalm": "^3.17"
     },
     "scripts": {
         "phpstan": [
@@ -37,6 +38,9 @@
         ],
         "cscheck": [
             "vendor/bin/php-cs-fixer fix src/ --allow-risky=yes --dry-run --diff"
+        ],
+        "psalm": [
+            "vendor/bin/psalm"
         ]
     }
 }
