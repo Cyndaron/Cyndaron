@@ -3,7 +3,6 @@ namespace Cyndaron\Category;
 
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
-use Cyndaron\Util;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {

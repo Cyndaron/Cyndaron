@@ -5,7 +5,6 @@ namespace Cyndaron\Error;
 
 use Cyndaron\Routing\Controller;
 use Cyndaron\Page;
-use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\DependencyInjectionContainer;
 use Symfony\Component\HttpFoundation\Response;
 

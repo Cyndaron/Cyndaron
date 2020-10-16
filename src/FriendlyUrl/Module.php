@@ -1,11 +1,9 @@
 <?php
 namespace Cyndaron\FriendlyUrl;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
-use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\Template\Template;
 
 final class Module implements Datatypes, Routes

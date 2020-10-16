@@ -7,7 +7,6 @@ use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
-use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\Template\Template;
 
 final class Module implements Datatypes, Routes, UrlProvider, Linkable

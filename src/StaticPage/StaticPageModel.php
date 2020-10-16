@@ -4,7 +4,6 @@ namespace Cyndaron\StaticPage;
 use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\ModelWithCategory;
-use Cyndaron\Template\ViewHelpers;
 use Cyndaron\Url;
 
 final class StaticPageModel extends ModelWithCategory

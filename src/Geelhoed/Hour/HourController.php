@@ -3,7 +3,6 @@ namespace Cyndaron\Geelhoed\Hour;
 
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 final class HourController extends Controller

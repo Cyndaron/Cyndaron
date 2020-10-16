@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
-use Cyndaron\DBConnection;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 

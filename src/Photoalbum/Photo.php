@@ -6,7 +6,6 @@ use Imagick;
 
 use function Safe\copy;
 use function Safe\md5_file;
-use function Safe\unlink;
 
 final class Photo
 {

@@ -3,12 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\PageManager;
 
-use Cyndaron\Category\Category;
-use Cyndaron\DBConnection;
-use Cyndaron\Mailform\Mailform;
 use Cyndaron\Page;
-use Cyndaron\Photoalbum\Photoalbum;
-use Cyndaron\Template\Template;
 
 final class PageManagerPage extends Page
 {

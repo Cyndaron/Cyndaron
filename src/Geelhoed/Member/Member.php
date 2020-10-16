@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\DBConnection;
-use Cyndaron\Geelhoed\Contest\Contest;
-use Cyndaron\Geelhoed\Contest\ContestMember;
 use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
@@ -16,7 +14,6 @@ use Cyndaron\Util;
 
 use function Safe\uasort;
 use function Safe\usort;
-use function Safe\strtotime;
 
 final class Member extends Model
 {

@@ -6,8 +6,6 @@ use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Model;
 use Cyndaron\User\User;
 
-use function Safe\strtotime;
-
 final class ContestMember extends Model
 {
     public const TABLE = 'geelhoed_contests_members';

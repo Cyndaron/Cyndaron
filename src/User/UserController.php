@@ -10,7 +10,6 @@ use Cyndaron\Routing\Router;
 use Cyndaron\Setting;
 use Cyndaron\Util;
 use Exception;
-use phpDocumentor\Reflection\DocBlock\Tags\Example;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
