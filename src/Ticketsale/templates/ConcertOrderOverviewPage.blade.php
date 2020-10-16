@@ -57,7 +57,7 @@
                 <th class="rotate">
                     <div><span>Is betaald?</span></div>
                 </th>
-                <th style="min-width: 150px;"></th>
+                <th class="column-actions"></th>
             </tr>
         </thead>
 

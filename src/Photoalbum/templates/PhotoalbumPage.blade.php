@@ -38,7 +38,7 @@
                     @if (file_exists($photo->getThumbnailPath()))
                         <img class="thumb" alt="{{ $photo->filename }}" src="{{ \Cyndaron\Util::filenameToUrl($photo->getThumbnailPath()) }}"/>
                     @else
-                        <img class="thumb" alt="{{ $photo->filename }}" src="{{ \Cyndaron\Util::filenameToUrl($photo->getFullPath()) }}" style="width:270px; height:200px"/>
+                        <img class="thumb default-thumbnail-size" alt="{{ $photo->filename }}" src="{{ \Cyndaron\Util::filenameToUrl($photo->getFullPath()) }}"/>
                     @endif
                 </a>
 

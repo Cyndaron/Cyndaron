@@ -35,7 +35,7 @@
                 <th class="rotate">
                     <div><span>Status</span></div>
                 </th>
-                <th style="min-width: 150px;"></th>
+                <th class="column-actions"></th>
             </tr>
         </thead>
         <tbody>

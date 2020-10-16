@@ -69,7 +69,7 @@
                             </button>
                         </h5>
                     </div>
-                    <div id="collapse2" class="collapse" aria-labelledby="heading2" data-parent="#categories-accordion" style="">
+                    <div id="collapse2" class="collapse" aria-labelledby="heading2" data-parent="#categories-accordion">
                         <div class="card-body">
                             @foreach($categories as $category)
                                 <div class="form-group form-check">

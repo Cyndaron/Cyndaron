@@ -563,3 +563,24 @@ button.aantalKaarten
 {
     display: none;
 }
+
+.inline-button-form
+{
+    display: inline;
+}
+
+.inline-monospace
+{
+    font-family:monospace;
+}
+
+.default-thumbnail-size
+{
+    width: 270px;
+    height: 200px;
+}
+
+.column-actions
+{
+    min-width: 150px;
+}

@@ -86,7 +86,7 @@
             </div>
 
             <p>Om te voorkomen dat er spam wordt verstuurd met dit formulier<br/>word je verzocht in het onderstaande
-                vak <span style="font-family:monospace;">{{ $event->getAntispam() }}</span> in te vullen.</p>
+                vak <span class="inline-monospace">{{ $event->getAntispam() }}</span> in te vullen.</p>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="antispam">Antispam:</label>

@@ -44,7 +44,7 @@
                         {{ $class->name }}@if (!$loop->last), @endif
                     @endforeach
                     @if ($canManage)
-                        <form method="post" action="/contest/deleteDate/{{ $contestDate->id }}" style="display: inline;">
+                        <form method="post" action="/contest/deleteDate/{{ $contestDate->id }}" class="inline-button-form">
                             <input type="hidden" name="csrfToken" value="{{ $deleteDateCsrfToken }}">
                             <button class="btn btn-sm btn-danger" type="submit" title="Deze datum verwijderen"><span class="glyphicon glyphicon-trash"></span></button>
                         </form>
@@ -66,7 +66,7 @@
                 <li>
                     <a href="/uploads/contest/{{ $contest->id }}/attachments/{{ $attachment }}">{{ $attachment }}</a>
                     @if ($canManage)
-                        <form method="post" action="/contest/deleteAttachment/{{ $contest->id }}" style="display: inline;">
+                        <form method="post" action="/contest/deleteAttachment/{{ $contest->id }}" class="inline-button-form">
                             <input type="hidden" name="csrfToken" value="{{ $deleteCsrfToken }}">
                             <input type="hidden" name="filename" value="{{ $attachment }}">
                             <button class="btn btn-sm btn-danger" type="submit" title="Dit bestand verwijderen"><span class="glyphicon glyphicon-trash"></span></button>

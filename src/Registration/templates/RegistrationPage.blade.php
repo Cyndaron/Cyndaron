@@ -123,7 +123,7 @@
             </div>
 
             <p>Om te voorkomen dat er spam wordt verstuurd met dit formulier<br/>wordt u verzocht in het onderstaande
-                vak <span style="font-family:monospace;">{{ $event->getAntispam() }}</span> in te vullen.</p>
+                vak <span class="inline-monospace">{{ $event->getAntispam() }}</span> in te vullen.</p>
 
             @include('Widget/Form/BasicInput', ['id' => 'antispam', 'label' => 'Antispam', 'required' => true])
 

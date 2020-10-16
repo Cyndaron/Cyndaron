@@ -16,7 +16,7 @@
         @if ($server->isOnline)
             <br>
             <h3>Landkaart {{ $server->name }} <a href="http://{{ $server->hostname }}:{{ $server->dynmapPort }}" class="btn btn-outline-cyndaron" role="button"><span class="glyphicon glyphicon-resize-full"></span> Maximaliseren</a></h3><br>
-            <iframe src="/minecraft/dynmapproxy/{{ $server->id }}/" style="border-radius:7px;" width="800" height="600"></iframe>
+            <iframe class="dynmap-embed" src="/minecraft/dynmapproxy/{{ $server->id }}/" width="800" height="600"></iframe>
             <br>
         @endif
     @endforeach

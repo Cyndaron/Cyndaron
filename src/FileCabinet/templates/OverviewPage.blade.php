@@ -21,7 +21,7 @@
             <li>
                 <a href="/uploads/filecabinet/{{ rawurlencode($filename) }}">{{ pathinfo($filename, PATHINFO_FILENAME) }}</a>
                 @if ($isAdmin)
-                    <form method="post" action="/filecabinet/deleteItem" style="display: inline">
+                    <form method="post" action="/filecabinet/deleteItem" class="inline-button-form">
                         <input type="hidden" name="csrfToken" value="{{ $deleteCsrfToken }}">
                         <input type="hidden" name="filename" value="{{ $filename }}">
                         <button class="btn btn-sm btn-danger" type="submit" title="Dit bestand verwijderen"><span class="glyphicon glyphicon-trash"></span></button>
