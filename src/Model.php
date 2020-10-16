@@ -67,9 +67,9 @@ class Model
             throw new IncompleteData('ID is not set!');
         }
 
+        $table = static::TABLE;
         /** @noinspection SqlResolve */
-        /** @noinspection SqlIdentifier */
-        $record = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM ' . static::TABLE . ' WHERE id = ?', [$this->id]);
+        $record = DBConnection::doQueryAndFetchFirstRow("SELECT * FROM {$table} WHERE id = ?", [$this->id]);
         if ($record === false)
         {
             return false;
@@ -185,8 +185,9 @@ class Model
             throw new IncompleteData('No ID!');
         }
 
+        $table = static::TABLE;
         /** @noinspection SqlResolve */
-        DBConnection::doQuery('DELETE FROM ' . static::TABLE . ' WHERE id = ?', [$this->id]);
+        DBConnection::doQuery("DELETE FROM {$table} WHERE id = ?", [$this->id]);
     }
 
     public function save(): bool
