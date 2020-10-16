@@ -6,7 +6,8 @@ function clearPopUpFields()
 
     $('#gum-edit-user-dialog input,textarea,select').each(function () {
         let element = $(this);
-        if (element.prop('name') !== 'csrfToken')
+        let elementName = element.prop('name');
+        if (!elementName.startsWith('csrfToken'))
         {
             if (element.is(':checkbox'))
             {
