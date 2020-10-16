@@ -13,7 +13,6 @@ use finfo;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\ImageException;
-use Safe\Exceptions\SessionException;
 
 use function Safe\file_get_contents;
 use function Safe\imagecreatefromgif;
@@ -103,14 +102,14 @@ EOT;
         return (static::getLevel() >= $minimumReadLevel);
     }
 
+    /**
+     * @throws \Safe\Exceptions\PasswordException
+     * @return string
+     */
     public function generatePassword(): string
     {
         $newPassword = Util::generatePassword();
         $hashResult = password_hash($newPassword, PASSWORD_DEFAULT);
-        if (!is_string($hashResult))
-        {
-            throw new Exception('Error while hashing password!');
-        }
         $this->password = $hashResult;
         return $newPassword;
     }
@@ -232,14 +231,14 @@ EOT;
         return false;
     }
 
+    /**
+     * @param string $newPassword
+     * @throws \Safe\Exceptions\PasswordException
+     * @return bool
+     */
     public function setPassword(string $newPassword): bool
     {
         $result = password_hash($newPassword, PASSWORD_DEFAULT);
-        if (!is_string($result))
-        {
-            return false;
-        }
-
         $this->password = $result;
         return true;
     }
