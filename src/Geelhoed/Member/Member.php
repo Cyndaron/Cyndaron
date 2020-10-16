@@ -62,9 +62,11 @@ final class Member extends Model
         $hours = [];
         foreach ($hoursArr as $hourArr)
         {
-            $hours[] = Hour::loadFromDatabase((int)$hourArr['id']);
+            /** @var Hour $hour */
+            $hour = Hour::loadFromDatabase((int)$hourArr['id']);
+            $hours[] = $hour;
         }
-        /** @phpstan-ignore-next-line (there won't be null results in the array) */
+
         return $hours;
     }
 
