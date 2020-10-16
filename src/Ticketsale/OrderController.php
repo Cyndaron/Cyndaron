@@ -112,6 +112,7 @@ final class OrderController extends Controller
         $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concertId], 'ORDER BY price DESC');
         foreach ($ticketTypes as $ticketType)
         {
+            assert($ticketType->id !== null);
             $order_tickettypes[$ticketType->id] = $post->getInt('tickettype-' . $ticketType->id);
             $totaalprijs += $order_tickettypes[$ticketType->id] * ($ticketType->price + $deliveryPrice + $toeslag_gereserveerde_plaats);
             $totaalAantalKaarten += $order_tickettypes[$ticketType->id];
@@ -144,11 +145,12 @@ final class OrderController extends Controller
 
         foreach ($ticketTypes as $ticketType)
         {
-            if ($order_tickettypes[$ticketType->id] > 0)
+            $numTicketsOfType = $order_tickettypes[$ticketType->id] ?? 0;
+            if ($numTicketsOfType > 0)
             {
                 $result = DBConnection::doQuery(
                     'INSERT INTO ticketsale_orders_tickettypes(`orderId`, `tickettypeId`, `amount`) VALUES(?, ?, ?)',
-                    [$orderId, $ticketType->id, $order_tickettypes[$ticketType->id]]
+                    [$orderId, $ticketType->id, $numTicketsOfType]
                 );
                 if ($result === false)
                 {
@@ -279,9 +281,10 @@ Kaartsoorten:
 ';
         foreach ($ticketTypes as $ticketType)
         {
-            if ($orderTicketTypes[$ticketType->id] > 0)
+            $numTicketsOfType = $orderTicketTypes[$ticketType->id] ?? 0;
+            if ($numTicketsOfType > 0)
             {
-                $text .= '   ' . $ticketType->name . ': ' . $orderTicketTypes[$ticketType->id] . ' à ' . ViewHelpers::formatEuro($ticketType->price) . PHP_EOL;
+                $text .= '   ' . $ticketType->name . ': ' . $numTicketsOfType . ' à ' . ViewHelpers::formatEuro($ticketType->price) . PHP_EOL;
             }
         }
         if (!$concert->forcedDelivery)
