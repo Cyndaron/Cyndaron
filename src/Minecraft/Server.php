@@ -13,6 +13,7 @@ namespace Cyndaron\Minecraft;
 
 use Cyndaron\Model;
 
+use ErrorException;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\StreamException;
 use function Safe\fclose;
@@ -46,6 +47,10 @@ final class Server extends Model
             $socket = @stream_socket_client(sprintf('tcp://%s:%u', $this->hostname, $this->port), $errno, $errstr, 1);
         }
         catch (StreamException $e)
+        {
+            return false;
+        }
+        catch (ErrorException $e)
         {
             return false;
         }
