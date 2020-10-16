@@ -263,13 +263,13 @@ class Model
     public static function mangleVarForProperty(string $property, string $var)
     {
         $rp = new ReflectionProperty(static::class, $property);
+        /** @var ReflectionNamedType|null $type */
         $type = $rp->getType();
         if ($type === null)
         {
             return $var;
         }
 
-        /** @var ReflectionNamedType $type */
         switch ($type->getName())
         {
             case 'int':
