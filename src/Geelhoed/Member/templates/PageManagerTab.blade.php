@@ -216,6 +216,8 @@
 
                     @include('Widget/Form/Checkbox', ['id' => 'isContestant', 'label' => 'Wedstrijdjudoka'])
 
+                    @include('Widget/Form/Textarea', ['id' => 'notes', 'label' => 'Bijzonderheden', 'value' => '', 'placeholder' => 'Bijzonderheden zoals allergieën en andere zaken die voor de docent van belang kunnen zijn.'])
+
                     <h4>Behaalde banden</h4>
                     <ul id="gum-user-dialog-graduation-list">
 
