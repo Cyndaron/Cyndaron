@@ -301,6 +301,8 @@ final class Member extends Model
     /**
      * @param Hour $hour
      * @return Member[]
+     * @throws \Safe\Exceptions\ArrayException
+     * @throws \Safe\Exceptions\ArrayException
      */
     public static function fetchAllByHour(Hour $hour): array
     {

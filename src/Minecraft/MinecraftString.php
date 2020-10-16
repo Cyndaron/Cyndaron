@@ -94,6 +94,8 @@ final class MinecraftString
     /**
      * @param string $code The formatting code, e.g. “§a".
      * @param int $blockLength
+     * @throws \Safe\Exceptions\StringsException
+     * @throws \Safe\Exceptions\StringsException
      */
     private function processFormattingCode(string $code, int $blockLength): void
     {

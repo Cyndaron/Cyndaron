@@ -23,6 +23,7 @@ final class Skin
 
     /**
      * @return resource
+     * @throws ImageException
      */
     public function getSkinOrFallback()
     {

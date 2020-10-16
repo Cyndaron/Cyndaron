@@ -60,6 +60,7 @@ final class OverviewPage extends Page
     /**
      * @param string $orderBy
      * @return array
+     * @throws \Safe\Exceptions\StringsException
      */
     private function getFileList(string $orderBy): array
     {

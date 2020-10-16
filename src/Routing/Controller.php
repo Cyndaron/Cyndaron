@@ -149,6 +149,8 @@ class Controller
     /**
      * @param int $requiredLevel
      * @return Response|null A Response if the user level is insufficient, null otherwise.
+     * @throws \Safe\Exceptions\SessionException
+     * @throws \Safe\Exceptions\SessionException
      */
     public function checkUserLevel(int $requiredLevel): ?Response
     {

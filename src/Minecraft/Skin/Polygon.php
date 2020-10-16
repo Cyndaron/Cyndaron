@@ -91,6 +91,7 @@ final class Polygon
      * @param int $minX
      * @param int $minY
      * @param int $ratio
+     * @throws \Safe\Exceptions\ImageException
      */
     public function addPngPolygon(&$image, $minX, $minY, $ratio): void
     {

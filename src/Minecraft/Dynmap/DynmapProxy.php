@@ -66,6 +66,8 @@ final class DynmapProxy
      * @param string $link
      * @param Server $server
      * @return string
+     * @throws \Safe\Exceptions\FilesystemException
+     * @throws \Safe\Exceptions\StringsException
      */
     private function getFileContents(string $link, Server $server): string
     {

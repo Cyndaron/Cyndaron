@@ -162,6 +162,7 @@ final class RequestParameters
      * @param string $name
      * @param string $default
      * @return string
+     * @throws \Safe\Exceptions\PcreException
      */
     public function getHTML(string $name, string $default = ''): string
     {
@@ -219,6 +220,7 @@ final class RequestParameters
      * @param string $name
      * @param string $default
      * @return string
+     * @throws \Safe\Exceptions\PcreException
      */
     public function getFilename(string $name, string $default = ''): string
     {
@@ -234,6 +236,7 @@ final class RequestParameters
      * @param string $name
      * @param string $default
      * @return string
+     * @throws \Safe\Exceptions\PcreException
      */
     public function getFilenameWithDirectory(string $name, string $default = ''): string
     {

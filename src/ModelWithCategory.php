@@ -79,6 +79,7 @@ abstract class ModelWithCategory extends Model
 
     /**
      * @return int[]
+     * @throws \Exception
      */
     public function getCategoryIds(): array
     {
