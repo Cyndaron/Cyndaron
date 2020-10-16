@@ -60,6 +60,12 @@
             Geb. datum eind:
             <input id="gum-filter-dateOfBirth-end" class="gum-filter-dateOfBirth form-control form-control-inline" type="date"/>
 
+            Wedstrijdjudoka:
+            <select id="gum-filter-isContestant" class="custom-select form-control-inline">
+                <option value="-1">(Alles)</option>
+                <option value="1">Ja</option>
+                <option value="0">Nee</option>
+            </select>
         @endslot
         @slot('right')
             <button type="button" id="gum-new" class="btn btn-success" data-toggle="modal" data-target="#gum-edit-user-dialog">
@@ -90,6 +96,7 @@
                     data-temporaryStop="{{ (int)$member->temporaryStop }}"
                     data-paymentMethod="{{ $member->paymentMethod }}"
                     data-paymentProblem="{{ (int)$member->paymentProblem }}"
+                    data-isContestant="{{ (int)$member->isContestant }}"
                     @if ($profile->dateOfBirth)
                          data-dateOfBirth="{{ date('Y-m-d', strtotime($profile->dateOfBirth)) }}"
                     @endif

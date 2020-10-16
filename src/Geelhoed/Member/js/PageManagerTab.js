@@ -144,7 +144,18 @@ $('#gum-filter-paymentProblem').on('change', function ()
 
     if (value !== -1)
     {
-        $('.geelhoed-member-entry:not([data-temporaryStop="' + value + '"])').hide();
+        $('.geelhoed-member-entry:not([data-paymentProblem="' + value + '"])').hide();
+    }
+});
+
+$('#gum-filter-isContestant').on('change', function ()
+{
+    let value = parseInt($( "#gum-filter-isContestant option:selected" ).val());
+    $('.geelhoed-member-entry').show();
+
+    if (value !== -1)
+    {
+        $('.geelhoed-member-entry:not([data-isContestant="' + value + '"])').hide();
     }
 });
 
