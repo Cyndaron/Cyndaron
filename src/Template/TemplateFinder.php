@@ -56,20 +56,16 @@ final class TemplateFinder
     }
 
     /**
-     * @param string $name
+     * @param string $fullName
      * @return string|null
      */
-    private function searchSrcAndVendor(string $name): ?string
+    private function searchSrcAndVendor(string $fullName): ?string
     {
         $template = null;
-        $parts = explode('/', $name);
+        $parts = explode('/', $fullName);
         if (count($parts) > 1)
         {
             $name = array_pop($parts);
-            if ($name === null)
-            {
-                return null;
-            }
             $module = implode('/', $parts);
 
             $template = $this->searchPath('src/' . $module . '/templates/', $name);
