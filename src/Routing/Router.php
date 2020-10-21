@@ -156,6 +156,7 @@ final class Router
         {
             $dic = new DependencyInjectionContainer();
             $dic->add($post);
+            $dic->add(new QueryBits($this->requestVars));
 
             return $route->route($dic);
         }
