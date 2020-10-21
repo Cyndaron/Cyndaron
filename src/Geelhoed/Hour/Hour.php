@@ -14,7 +14,7 @@ use function Safe\sprintf;
 final class Hour extends Model
 {
     public const TABLE = 'geelhoed_hours';
-    public const TABLE_FIELDS = ['locationId', 'day', 'description', 'from', 'until', 'sportId', 'sportOverride', 'departmentId', 'notes'];
+    public const TABLE_FIELDS = ['locationId', 'day', 'description', 'from', 'until', 'sportId', 'sportOverride', 'departmentId', 'capacity', 'notes'];
 
     public int $locationId;
     public int $day;
@@ -24,6 +24,7 @@ final class Hour extends Model
     public int $sportId;
     public string $sportOverride;
     public int $departmentId;
+    public int $capacity;
     public string $notes;
 
     /** @var Hour[] */

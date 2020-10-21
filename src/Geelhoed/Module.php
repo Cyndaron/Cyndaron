@@ -10,6 +10,7 @@ use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Location\LocationController;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberController;
+use Cyndaron\Geelhoed\Reservation\ReservationController;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
@@ -53,41 +54,36 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu
             'location' =>  LocationController::class,
             'member' => MemberController::class,
             'contest' => ContestController::class,
+            'reservation' => ReservationController::class,
         ];
     }
 
     public function url(array $linkParts): ?string
     {
-        switch ($linkParts[0])
+        static $staticRoutes = [
+            'contest/contestantsList' => 'Overzicht wedstrijdjudoka\'s',
+            'contest/manageOverview' => 'Wedstrijdbeheer',
+            'contest/myContests' => 'Mijn wedstrijden',
+            'contest/overview' => 'Wedstrijden',
+            'contest/parentAccounts' => 'Ouderaccounts',
+            'location/overview' => 'Leslocaties',
+            'reservation/overview' => 'Overzicht reserveringen',
+        ];
+
+        $link = implode('/', $linkParts);
+        if (array_key_exists($link, $staticRoutes))
         {
-            case 'contest':
-                switch ($linkParts[1])
-                {
-                    case 'contestantsList':
-                        return 'Overzicht wedstrijdjudoka\'s';
-                    case 'manageOverview':
-                        return 'Wedstrijdbeheer';
-                    case 'myContests':
-                        return 'Mijn wedstrijden';
-                    case 'overview':
-                        return 'Wedstrijden';
-                    case 'parentAccounts':
-                        return 'Ouderaccounts';
-                }
-                break;
-            case 'location':
-                switch ($linkParts[1])
-                {
-                    case 'overview':
-                        return 'Leslocaties';
-                    case 'view':
-                        $location = Location::loadFromDatabase((int)$linkParts[2]);
-                        if ($location === null)
-                        {
-                            return null;
-                        }
-                        return $location->getName();
-                }
+            return $staticRoutes[$link];
+        }
+
+        if ($linkParts[0] === 'location' && $linkParts[1] === 'view')
+        {
+            $location = Location::loadFromDatabase((int)$linkParts[2]);
+            if ($location === null)
+            {
+                return null;
+            }
+            return $location->getName();
         }
 
         return null;
@@ -99,6 +95,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu
             ['label' => 'Wedstrijdbeheer', 'link' => '/contest/manageOverview', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
             ['label' => 'Overzicht wedstrijdjudoka\'s', 'link' => '/contest/contestantsList', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
             ['label' => 'Overzicht ouderaccounts', 'link' => '/contest/parentAccounts', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
+            ['label' => 'Overzicht reserveringen', 'link' => '/reservation/overview', 'level' => UserLevel::ADMIN],
         ];
 
         $profile = User::fromSession();
