@@ -103,7 +103,7 @@ class Model
         $ret = [];
         foreach ($results as $result)
         {
-            $ret[] = static::DBResultToModel($result);
+            $ret[$result['id']] = static::DBResultToModel($result);
         }
 
         return $ret;
