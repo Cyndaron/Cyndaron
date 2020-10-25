@@ -20,7 +20,9 @@ namespace Cyndaron\Geelhoed\Reservation;
 
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Page;
+use Cyndaron\Template\ViewHelpers;
 use Cyndaron\User\User;
+use Cyndaron\Util;
 
 final class ReserveStep1Page extends Page
 {
@@ -35,8 +37,9 @@ final class ReserveStep1Page extends Page
             $location = $hour->getLocation();
             $availableDates = Reservation::getDatesForHour($hour);
             $numAvailableDates = count($availableDates);
+            $day = ViewHelpers::getDutchWeekday($hour->day);
 
-            $hoursSelect[$hour->id] = "{$location->getName()} {$hour->getRange()} ({$numAvailableDates} data beschikbaar)";
+            $hoursSelect[$hour->id] = "{$location->getName()} {$day} {$hour->getRange()} ({$numAvailableDates} data beschikbaar)";
         }
 
         $this->addTemplateVars([
