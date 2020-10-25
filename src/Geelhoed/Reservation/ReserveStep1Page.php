@@ -34,12 +34,9 @@ final class ReserveStep1Page extends Page
         {
             $location = $hour->getLocation();
             $availableDates = Reservation::getDatesForHour($hour);
-            if (count($availableDates) === 0)
-            {
-                continue;
-            }
+            $numAvailableDates = count($availableDates);
 
-            $hoursSelect[$hour->id] = "{$location->getName()} {$hour->getRange()}";
+            $hoursSelect[$hour->id] = "{$location->getName()} {$hour->getRange()} ({$numAvailableDates} data beschikbaar)";
         }
 
         $this->addTemplateVars([
