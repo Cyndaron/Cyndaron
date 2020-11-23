@@ -10,7 +10,7 @@ use ReflectionProperty;
 
 use function Safe\sprintf;
 
-class Model
+abstract class Model
 {
     public const TABLE = '';
     // Override to include the fields for that particular model
