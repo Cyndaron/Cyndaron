@@ -93,7 +93,7 @@ final class Contest extends Model
             return null;
         }
 
-        return $dates[0]->datetime;
+        return reset($dates)->datetime;
     }
 
     /**
