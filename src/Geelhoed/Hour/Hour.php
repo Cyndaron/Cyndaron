@@ -70,7 +70,7 @@ final class Hour extends Model
      * @throws \Exception
      * @return Hour|null
      */
-    public static function loadFromDatabase(int $id): ?Model
+    public static function loadFromDatabase(int $id): ?Hour
     {
         if (array_key_exists($id, static::$cache))
         {
