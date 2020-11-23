@@ -63,11 +63,6 @@ final class Url
         }
     }
 
-    public static function deleteFriendlyUrl(string $name): void
-    {
-        DBConnection::doQuery('DELETE FROM friendlyurls WHERE name=?', [ltrim($name, '/')]);
-    }
-
     public function getPageTitle(): string
     {
         $link = trim($this->getUnfriendly(), '/');

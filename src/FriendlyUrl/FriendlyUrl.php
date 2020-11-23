@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\FriendlyUrl;
 
+use Cyndaron\DBConnection;
 use Cyndaron\Model;
 
 final class FriendlyUrl extends Model
@@ -10,4 +11,17 @@ final class FriendlyUrl extends Model
 
     public string $name = '';
     public string $target = '';
+
+    public static function fetchByName(string $name): ?self
+    {
+        $result = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM friendlyurls WHERE name=?', [ltrim($name, '/')]);
+        if (empty($result))
+        {
+            return null;
+        }
+
+        $ret = new self($result['id']);
+        $ret->updateFromArray($result);
+        return $ret;
+    }
 }

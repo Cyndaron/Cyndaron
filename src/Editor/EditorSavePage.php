@@ -3,6 +3,7 @@ namespace Cyndaron\Editor;
 
 use Cyndaron\Category\Category;
 use Cyndaron\DBConnection;
+use Cyndaron\FriendlyUrl\FriendlyUrl;
 use Cyndaron\ModelWithCategory;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
@@ -32,11 +33,14 @@ abstract class EditorSavePage
         if ($friendlyUrl !== '')
         {
             $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $this->id);
-            $oudeFriendlyUrl = $unfriendlyUrl->getFriendly();
-            Url::deleteFriendlyUrl($oudeFriendlyUrl);
+            $oldFriendlyUrl = FriendlyUrl::fetchByName($unfriendlyUrl->getFriendly());
+            if ($oldFriendlyUrl !== null)
+            {
+                $oldFriendlyUrl->delete();
+            }
             $unfriendlyUrl->createFriendly($friendlyUrl);
             // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast
-            DBConnection::doQuery('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oudeFriendlyUrl]);
+            DBConnection::doQuery('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oldFriendlyUrl]);
         }
         if (!$this->returnUrl && isset($_SESSION['referrer']))
         {
