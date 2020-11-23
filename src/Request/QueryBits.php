@@ -45,6 +45,6 @@ final class QueryBits
 
     public function hasIndex(int $index): bool
     {
-        return $index > 0 && $index < count($this->vars);
+        return $index >= 0 && $index < count($this->vars);
     }
 }
