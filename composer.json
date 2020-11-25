@@ -10,7 +10,11 @@
     "repositories": [
         {
             "type": "vcs",
-            "url":  "https://github.com/Cyndaron/module-geelhoed"
+            "url": "https://github.com/Cyndaron/module-geelhoed"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/Cyndaron/module-minecraft"
         }
     ],
     "require": {
@@ -27,15 +31,15 @@
         "twbs/bootstrap": "^4.5",
         "symfony/http-foundation": "^5.0",
         "thecodingmachine/safe": "^1.1",
-        "cyndaron/module-geelhoed": "dev-master"
+        "cyndaron/module-geelhoed": "dev-master",
+        "cyndaron/module-minecraft": "dev-master"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
         "phan/phan": "^3.0",
         "thecodingmachine/phpstan-safe-rule": "^1.0",
         "phpstan/phpstan": "^0.12.42",
-        "friendsofphp/php-cs-fixer": "^2.16",
-        "vimeo/psalm": "^3.17"
+        "friendsofphp/php-cs-fixer": "^2.16"
     },
     "scripts": {
         "phpstan": [
@@ -43,9 +47,6 @@
         ],
         "cscheck": [
             "vendor/bin/php-cs-fixer fix src/ --allow-risky=yes --dry-run --diff"
-        ],
-        "psalm": [
-            "vendor/bin/psalm"
         ]
     }
 }
