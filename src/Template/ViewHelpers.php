@@ -8,6 +8,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 use Safe\Exceptions\DatetimeException;
+use function Safe\date;
 use function Safe\natsort;
 use function Safe\preg_replace;
 use function Safe\sprintf;
@@ -18,7 +19,6 @@ use function implode;
 use function array_slice;
 use function number_format;
 use function explode;
-use function date;
 use function array_key_exists;
 use function ob_start;
 use function ob_get_clean;

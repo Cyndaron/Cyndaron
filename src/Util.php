@@ -8,6 +8,7 @@ namespace Cyndaron;
 
 use Safe\DateTimeImmutable;
 use Safe\Exceptions\FilesystemException;
+use function Safe\date;
 use function Safe\mkdir;
 use function Safe\sprintf;
 use function Safe\substr;
@@ -21,7 +22,6 @@ use function strtolower;
 use function file_exists;
 use function umask;
 use function floor;
-use function date;
 use function strpos;
 use function dirname;
 use function strlen;
