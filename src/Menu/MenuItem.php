@@ -90,25 +90,29 @@ final class MenuItem extends Model
 
     public function getSubmenu(): array
     {
+        // TODO: handle this via the module system
         $id = (int)str_replace('/category/', '', $this->link);
         $pagesInCategory = DBConnection::doQueryAndFetchAll(
             "
             SELECT * FROM
             (
-                SELECT 'sub' AS type, id, name FROM subs WHERE id IN (SELECT id FROM sub_categories WHERE categoryId = ?)
+                SELECT 'sub' AS type, id, name, '' AS url FROM subs WHERE id IN (SELECT id FROM sub_categories WHERE categoryId = ?)
                 UNION
-                SELECT 'photoalbum' AS type, id, name FROM photoalbums WHERE id IN (SELECT id FROM photoalbum_categories WHERE categoryId = ?)
+                SELECT 'photoalbum' AS type, id, name, '' AS url FROM photoalbums WHERE id IN (SELECT id FROM photoalbum_categories WHERE categoryId = ?)
                 UNION
-                SELECT 'category' AS type, id, name FROM categories WHERE id IN (SELECT id FROM category_categories WHERE categoryId = ?)
+                SELECT 'category' AS type, id, name, '' AS url FROM categories WHERE id IN (SELECT id FROM category_categories WHERE categoryId = ?)
+                UNION
+                SELECT 'richlink' AS type, id, name, url FROM richlink WHERE id IN (SELECT id FROM richlink_category WHERE categoryId = ?)
             ) AS one
             ORDER BY name ASC;",
-            [$id, $id, $id]
+            [$id, $id, $id, $id]
         ) ?: [];
 
         $items = [];
         foreach ($pagesInCategory as $page)
         {
-            $url = new Url(sprintf('/%s/%d', $page['type'], $page['id']));
+            $urlString = $page['url'] ?: sprintf('/%s/%d', $page['type'], $page['id']);
+            $url = $url = new Url($urlString);
             $link = $url->getFriendly();
             $items[] = ['link' => $link, 'title' => $page['name']];
         }
