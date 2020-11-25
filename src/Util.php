@@ -22,6 +22,21 @@ use function Safe\mkdir;
 use function Safe\sprintf;
 use function Safe\substr;
 use function Safe\unlink;
+use function random_int;
+use function count;
+use function bin2hex;
+use function random_bytes;
+use function strtr;
+use function strtolower;
+use function file_exists;
+use function umask;
+use function floor;
+use function date;
+use function strpos;
+use function dirname;
+use function strlen;
+use function is_dir;
+use function str_replace;
 
 class Util
 {

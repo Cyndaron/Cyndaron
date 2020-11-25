@@ -6,6 +6,8 @@ use function Safe\preg_match;
 use function Safe\preg_split;
 use function Safe\sprintf;
 use function Safe\substr;
+use function strlen;
+use function array_key_exists;
 
 final class MinecraftString
 {

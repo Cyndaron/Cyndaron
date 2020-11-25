@@ -9,6 +9,16 @@ use Cyndaron\User\User;
 
 use function Safe\sprintf;
 use function Safe\substr;
+use function assert;
+use function dirname;
+use function str_replace;
+use function basename;
+use function strrchr;
+use function file_exists;
+use function ob_start;
+use function ob_get_clean;
+use function count;
+use function array_merge;
 
 /*
  * Copyright © 2009-2017, Michael Steenbeek

@@ -5,6 +5,7 @@ use Safe\Exceptions\ImageException;
 use function Safe\imagealphablending;
 use function Safe\imagecreatefrompng;
 use function Safe\imagesavealpha;
+use function trim;
 
 /**
  * Class Skin

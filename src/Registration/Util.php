@@ -2,6 +2,7 @@
 namespace Cyndaron\Registration;
 
 use Cyndaron\Template\Template;
+use function date;
 
 final class Util extends \Cyndaron\Util
 {

@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\session_destroy;
+use function array_key_exists;
+use function is_array;
+use function session_start;
 
 class Controller
 {

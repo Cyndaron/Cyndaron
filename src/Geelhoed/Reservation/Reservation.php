@@ -25,6 +25,7 @@ use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
 use DateTimeInterface;
+use function count;
 
 final class Reservation extends Model
 {

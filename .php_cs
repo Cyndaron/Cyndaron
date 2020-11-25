@@ -29,5 +29,13 @@ return PhpCsFixer\Config::create()
         'phpdoc_order' => true,
         'strict_param' => true,
         'string_line_ending' => true,
+        'native_function_invocation' => [
+            'include' => ['@all'],
+        ],
+        'global_namespace_import' => [
+            'import_classes' => null,
+            'import_constants' => true,
+            'import_functions' => true,
+        ]
     ])
     ->setFinder($finder);

@@ -10,6 +10,9 @@ use Cyndaron\Setting;
 use Cyndaron\Template\Template;
 use Cyndaron\Template\ViewHelpers;
 use \Exception;
+use function assert;
+use function html_entity_decode;
+use function floor;
 
 final class Registration extends Model
 {

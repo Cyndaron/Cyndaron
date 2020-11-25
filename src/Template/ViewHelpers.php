@@ -12,6 +12,18 @@ use function Safe\natsort;
 use function Safe\preg_replace;
 use function Safe\sprintf;
 use function Safe\strtotime;
+use function strip_tags;
+use function count;
+use function implode;
+use function array_slice;
+use function number_format;
+use function explode;
+use function date;
+use function array_key_exists;
+use function ob_start;
+use function ob_get_clean;
+use function preg_replace_callback;
+use function array_unique;
 
 final class ViewHelpers
 {

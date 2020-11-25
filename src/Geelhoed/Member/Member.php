@@ -15,6 +15,13 @@ use Cyndaron\Util;
 
 use function Safe\uasort;
 use function Safe\usort;
+use function trim;
+use function explode;
+use function array_reverse;
+use function implode;
+use function count;
+use function reset;
+use function array_filter;
 
 final class Member extends Model
 {

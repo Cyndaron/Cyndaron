@@ -2,6 +2,12 @@
 
 namespace Cyndaron\Template;
 
+use function file_exists;
+use function explode;
+use function count;
+use function array_pop;
+use function implode;
+
 final class TemplateFinder
 {
     /**

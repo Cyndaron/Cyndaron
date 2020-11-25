@@ -3,6 +3,10 @@ namespace Cyndaron;
 
 use Cyndaron\Category\Category;
 use Cyndaron\Template\ViewHelpers;
+use function html_entity_decode;
+use function trim;
+use function reset;
+use function assert;
 
 /**
  * Class ModelWithCategory

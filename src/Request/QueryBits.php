@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron\Request;
 
+use function count;
+
 final class QueryBits
 {
     private array $vars;

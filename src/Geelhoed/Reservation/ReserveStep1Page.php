@@ -23,6 +23,7 @@ use Cyndaron\Page;
 use Cyndaron\Template\ViewHelpers;
 use Cyndaron\User\User;
 use Cyndaron\Util;
+use function count;
 
 final class ReserveStep1Page extends Page
 {

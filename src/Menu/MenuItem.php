@@ -9,6 +9,10 @@ use Cyndaron\Setting;
 use Cyndaron\Url;
 
 use function Safe\sprintf;
+use function is_string;
+use function ltrim;
+use function strpos;
+use function str_replace;
 
 final class MenuItem extends Model
 {

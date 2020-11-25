@@ -9,6 +9,15 @@ use function Safe\imagecreatefrompng;
 use function Safe\imagecreatetruecolor;
 use function Safe\imagesx;
 use function Safe\imagesy;
+use function gmdate;
+use function time;
+use function deg2rad;
+use function cos;
+use function sin;
+use function explode;
+use function microtime;
+use function in_array;
+use function array_diff;
 
 abstract class SkinRenderer
 {

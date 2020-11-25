@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\PageManager;
 
 use Cyndaron\Page;
+use function array_merge;
 
 final class PageManagerPage extends Page
 {

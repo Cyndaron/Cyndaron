@@ -5,6 +5,9 @@ use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\ModelWithCategory;
 use Cyndaron\Url;
+use function explode;
+use function strtolower;
+use function implode;
 
 final class StaticPageModel extends ModelWithCategory
 {

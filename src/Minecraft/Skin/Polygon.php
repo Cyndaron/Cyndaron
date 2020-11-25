@@ -2,6 +2,7 @@
 namespace Cyndaron\Minecraft\Skin;
 
 use function Safe\imagefilledpolygon;
+use function imagecolorallocate;
 
 /**
  * Class Polygon

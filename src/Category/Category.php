@@ -9,6 +9,8 @@ use Cyndaron\Url;
 
 use function Safe\strtotime;
 use function Safe\usort;
+use function array_merge;
+use function strcasecmp;
 
 final class Category extends ModelWithCategory
 {

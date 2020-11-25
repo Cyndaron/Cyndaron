@@ -3,6 +3,7 @@ namespace Cyndaron\FriendlyUrl;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Model;
+use function ltrim;
 
 final class FriendlyUrl extends Model
 {

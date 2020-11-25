@@ -12,6 +12,9 @@ use Cyndaron\Util;
 use function Safe\natsort;
 use function Safe\scandir;
 use function Safe\substr;
+use function array_values;
+use function array_filter;
+use function reset;
 
 final class Photoalbum extends ModelWithCategory
 {

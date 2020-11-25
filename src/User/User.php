@@ -24,6 +24,17 @@ use function Safe\session_destroy;
 use function Safe\sprintf;
 use function Safe\substr;
 use function Safe\unlink;
+use function file_exists;
+use function basename;
+use function mail;
+use function strpos;
+use function password_needs_rehash;
+use function session_start;
+use function strtolower;
+use function random_int;
+use function count;
+use function array_filter;
+use function password_verify;
 
 final class User extends Model
 {

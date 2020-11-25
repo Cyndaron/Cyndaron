@@ -29,6 +29,12 @@ use Cyndaron\User\UserLevel;
 use DateTimeImmutable;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use function is_array;
+use function array_walk;
+use function filter_var;
+use function trim;
+use function array_filter;
+use function count;
 
 final class ReservationController extends Controller
 {

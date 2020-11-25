@@ -19,6 +19,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Routing;
 
+use function get_class;
+
 final class DependencyInjectionContainer
 {
     private array $objects = [];

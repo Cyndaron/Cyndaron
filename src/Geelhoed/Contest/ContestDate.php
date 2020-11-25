@@ -5,6 +5,7 @@ namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Model;
+use function assert;
 
 final class ContestDate extends Model
 {

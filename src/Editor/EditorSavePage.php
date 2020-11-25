@@ -11,6 +11,14 @@ use Cyndaron\Util;
 
 use function Safe\base64_decode;
 use function Safe\file_put_contents;
+use function strtr;
+use function preg_replace_callback;
+use function is_string;
+use function explode;
+use function str_replace;
+use function date;
+use function md5;
+use function move_uploaded_file;
 
 abstract class EditorSavePage
 {

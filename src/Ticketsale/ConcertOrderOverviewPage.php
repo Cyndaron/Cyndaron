@@ -3,6 +3,7 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
+use function array_key_exists;
 
 final class ConcertOrderOverviewPage extends Page
 {

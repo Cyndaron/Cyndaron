@@ -8,6 +8,10 @@ use function Safe\imagedestroy;
 use function Safe\imagefill;
 use function Safe\imagepng;
 use function Safe\imagesavealpha;
+use function imagecolorallocatealpha;
+use function ob_start;
+use function ob_get_clean;
+use function count;
 
 final class SkinRendererPNG extends SkinRenderer
 {

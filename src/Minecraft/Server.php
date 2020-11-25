@@ -22,6 +22,8 @@ use function Safe\fwrite;
 use function Safe\sprintf;
 use function Safe\stream_socket_client;
 use function Safe\substr;
+use function mb_convert_encoding;
+use function explode;
 
 final class Server extends Model
 {

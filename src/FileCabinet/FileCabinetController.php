@@ -10,6 +10,9 @@ use Cyndaron\User\UserLevel;
 use Cyndaron\Util;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use function basename;
+use function move_uploaded_file;
+use function file_exists;
 
 final class FileCabinetController extends Controller
 {

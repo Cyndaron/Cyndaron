@@ -22,6 +22,8 @@ use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Page;
 use Cyndaron\User\User;
 use DateTimeInterface;
+use function count;
+use function min;
 
 final class ReserveStep3Page extends Page
 {

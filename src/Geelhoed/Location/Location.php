@@ -6,6 +6,8 @@ namespace Cyndaron\Geelhoed\Location;
 use Cyndaron\DBConnection;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Model;
+use function urlencode;
+use function implode;
 
 final class Location extends Model
 {

@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\usort;
+use function strlen;
+use function array_key_exists;
+use function var_export;
+use function array_merge;
 
 final class EditorController extends Controller
 {

@@ -4,6 +4,7 @@ namespace Cyndaron\Registration;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Setting;
+use function array_key_exists;
 
 final class EventRegistrationOverviewPage extends Page
 {

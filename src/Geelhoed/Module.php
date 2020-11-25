@@ -18,6 +18,8 @@ use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\UserMenu;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use function implode;
+use function array_key_exists;
 
 final class Module implements Datatypes, Routes, UrlProvider, UserMenu
 {

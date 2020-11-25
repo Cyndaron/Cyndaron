@@ -7,6 +7,8 @@ use ErrorException;
 use RuntimeException;
 
 use function Safe\ini_set;
+use function set_error_handler;
+use function file_exists;
 
 final class Kernel
 {

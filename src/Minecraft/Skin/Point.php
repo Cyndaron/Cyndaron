@@ -1,6 +1,12 @@
 <?php
 namespace Cyndaron\Minecraft\Skin;
 
+use function sin;
+use function cos;
+use function count;
+use function min;
+use function max;
+
 /**
  * Class Point
  */

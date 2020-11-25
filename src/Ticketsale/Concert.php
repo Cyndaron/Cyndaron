@@ -7,6 +7,7 @@ use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use Exception;
+use function range;
 
 final class Concert extends Model
 {

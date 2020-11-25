@@ -12,6 +12,9 @@ use Cyndaron\Util;
 use function Safe\scandir;
 use function Safe\sprintf;
 use function Safe\substr;
+use function trim;
+use function is_dir;
+use function array_filter;
 
 abstract class EditorPage extends Page
 {

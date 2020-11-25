@@ -7,6 +7,7 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\Page;
 use Cyndaron\Routing\DependencyInjectionContainer;
 use Symfony\Component\HttpFoundation\Response;
+use function array_key_exists;
 
 final class ErrorController extends Controller
 {

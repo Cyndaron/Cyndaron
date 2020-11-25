@@ -7,6 +7,7 @@ use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
 use Cyndaron\PlainTextMail;
+use function assert;
 
 final class Order extends Model
 {

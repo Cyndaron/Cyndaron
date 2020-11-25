@@ -3,6 +3,7 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
+use function trim;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {

@@ -5,6 +5,11 @@ use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Model;
 use Cyndaron\User\User;
+use function assert;
+use function count;
+use function reset;
+use function array_map;
+use function implode;
 
 final class ContestMember extends Model
 {

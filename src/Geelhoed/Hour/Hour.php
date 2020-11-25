@@ -10,6 +10,8 @@ use Cyndaron\Model;
 use Cyndaron\Template\ViewHelpers;
 
 use function Safe\sprintf;
+use function assert;
+use function array_key_exists;
 
 final class Hour extends Model
 {

@@ -2,6 +2,8 @@
 namespace Cyndaron\Minecraft;
 
 use Cyndaron\Model;
+use function count;
+use function reset;
 
 final class Member extends Model
 {

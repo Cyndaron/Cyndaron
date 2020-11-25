@@ -8,6 +8,7 @@ use Cyndaron\Page;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use function assert;
 
 final class ConcertController extends Controller
 {

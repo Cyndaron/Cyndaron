@@ -9,6 +9,13 @@ use ReflectionNamedType;
 use ReflectionProperty;
 
 use function Safe\sprintf;
+use function array_merge;
+use function reset;
+use function array_key_exists;
+use function array_fill;
+use function count;
+use function implode;
+use function is_bool;
 
 abstract class Model
 {

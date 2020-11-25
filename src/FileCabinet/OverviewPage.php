@@ -18,6 +18,8 @@ use function Safe\opendir;
 use function Safe\preg_match;
 use function Safe\substr;
 use function Safe\usort;
+use function readdir;
+use function closedir;
 
 final class OverviewPage extends Page
 {

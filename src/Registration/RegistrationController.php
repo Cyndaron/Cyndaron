@@ -13,6 +13,9 @@ use Cyndaron\User\UserLevel;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use function implode;
+use function assert;
+use function strcasecmp;
 
 final class RegistrationController extends Controller
 {

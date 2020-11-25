@@ -2,6 +2,7 @@
 namespace Cyndaron;
 
 use function Safe\sprintf;
+use function mail;
 
 final class PlainTextMail
 {

@@ -3,6 +3,7 @@ namespace Cyndaron\Template;
 
 use Illuminate\View\FileViewFinder;
 use InvalidArgumentException;
+use function strtr;
 
 final class ViewFinder extends FileViewFinder
 {

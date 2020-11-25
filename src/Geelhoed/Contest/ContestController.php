@@ -25,6 +25,19 @@ use Symfony\Component\HttpFoundation\Response;
 use function Safe\error_log;
 use function Safe\sprintf;
 use function Safe\strtotime;
+use function number_format;
+use function implode;
+use function count;
+use function chr;
+use function ord;
+use function date;
+use function basename;
+use function move_uploaded_file;
+use function file_exists;
+use function time;
+use function assert;
+use function in_array;
+use function array_map;
 
 final class ContestController extends Controller
 {

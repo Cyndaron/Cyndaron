@@ -2,6 +2,7 @@
 namespace Cyndaron\Minecraft\Skin;
 
 use Cyndaron\Request\RequestParameters;
+use function max;
 
 final class SkinRendererParameters
 {

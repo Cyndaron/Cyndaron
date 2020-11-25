@@ -3,6 +3,7 @@ namespace Cyndaron\Mailform;
 
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Template\Template;
+use function mail;
 
 final class MailFormLDBF
 {

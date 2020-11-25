@@ -25,6 +25,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\error_log;
 use function Safe\substr;
+use function session_start;
+use function strpos;
+use function array_key_exists;
+use function explode;
+use function trim;
+use function array_shift;
+use function defined;
+use function array_merge;
+use function filter_input;
 
 /**
  * Zorgt voor correct doorverwijzen van verzoeken.

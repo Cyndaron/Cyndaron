@@ -10,6 +10,15 @@ use Cyndaron\Util;
 use function Safe\scandir;
 use function Safe\strtotime;
 use function Safe\substr;
+use function assert;
+use function file_exists;
+use function is_dir;
+use function array_filter;
+use function reset;
+use function count;
+use function array_map;
+use function implode;
+use function time;
 
 final class Contest extends Model
 {

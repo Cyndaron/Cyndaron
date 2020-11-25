@@ -3,6 +3,7 @@ namespace Cyndaron\Category;
 
 use Cyndaron\Page;
 use Cyndaron\StaticPage\StaticPageModel;
+use function count;
 
 final class CategoryIndexPage extends Page
 {

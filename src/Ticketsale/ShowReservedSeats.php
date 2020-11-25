@@ -2,6 +2,7 @@
 namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBConnection;
+use function range;
 
 final class ShowReservedSeats
 {

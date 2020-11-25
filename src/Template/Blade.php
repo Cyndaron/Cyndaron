@@ -10,6 +10,9 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Factory;
 use Pine\BladeFilters\BladeFiltersCompiler;
+use function assert;
+use function is_string;
+use function call_user_func_array;
 
 /**
  * Based on the original at https://github.com/jenssegers/blade

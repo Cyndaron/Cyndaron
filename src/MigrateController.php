@@ -6,6 +6,7 @@ namespace Cyndaron;
 
 use Cyndaron\User\User;
 use Symfony\Component\HttpFoundation\Response;
+use function array_key_exists;
 
 final class MigrateController extends \Cyndaron\Routing\Controller
 {

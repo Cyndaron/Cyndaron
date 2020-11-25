@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Ticketsale;
 
 use Cyndaron\Template\ViewHelpers;
+use function assert;
 
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {

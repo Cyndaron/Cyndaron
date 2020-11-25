@@ -16,6 +16,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\sprintf;
+use function in_array;
+use function strcasecmp;
+use function strtr;
+use function html_entity_decode;
+use function mail;
 
 final class MailformController extends Controller
 {

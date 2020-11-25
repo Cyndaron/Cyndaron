@@ -3,6 +3,7 @@ namespace Cyndaron\Minecraft\Skin;
 
 use Cyndaron\Template\Template;
 use Symfony\Component\HttpFoundation\Response;
+use function count;
 
 final class SkinRendererSVG extends SkinRenderer
 {

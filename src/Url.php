@@ -6,6 +6,10 @@ use Cyndaron\Error\IncompleteData;
 use Cyndaron\Module\UrlProvider;
 
 use function Safe\class_implements;
+use function trim;
+use function explode;
+use function array_key_exists;
+use function in_array;
 
 final class Url
 {

@@ -13,6 +13,9 @@ use Cyndaron\User\UserLevel;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use function assert;
+use function strtoupper;
+use function implode;
 
 final class OrderController extends Controller
 {

@@ -15,6 +15,11 @@ use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use function assert;
+use function strpos;
+use function explode;
+use function array_walk;
+use function get_class;
 
 final class CategoryController extends Controller
 {

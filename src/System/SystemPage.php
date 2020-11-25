@@ -11,6 +11,12 @@ use function Safe\ini_get;
 use function Safe\phpinfo;
 use function Safe\preg_match;
 use function Safe\preg_replace;
+use function ucfirst;
+use function ob_start;
+use function ob_get_clean;
+use function strtr;
+use function is_writable;
+use function array_merge;
 
 final class SystemPage extends Page
 {
