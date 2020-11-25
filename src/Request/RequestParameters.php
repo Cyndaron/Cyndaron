@@ -181,7 +181,7 @@ final class RequestParameters
         $value = preg_replace("/<script.*?>.*?<\/script>/ims", '', $value);
         // Remove onLoad/onClick/... attributes
         /** @var string $value */
-        $value = preg_replace('/\bon\w+=\S+(?=.*>)/', '', $value);
+        $value = preg_replace('/\bon\w+=\S+(?=.*>)/i', '', $value);
 
         return $value;
     }
