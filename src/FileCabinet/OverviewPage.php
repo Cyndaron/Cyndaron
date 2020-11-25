@@ -62,6 +62,7 @@ final class OverviewPage extends Page
         {
         }
 
+        /** @var string $introduction */
         return $introduction;
     }
 
