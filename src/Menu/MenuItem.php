@@ -61,7 +61,13 @@ final class MenuItem extends Model
             $link = $url->getFriendly();
         }
 
-        // Ensure there is a slash in front.
+        // Do not put a slash in front of URLs that already include the protocol.
+        if (strpos($link, ':/'))
+        {
+            return $link;
+        }
+
+        // For relative URLs, ensure there is a slash in front.
         return '/' . ltrim($link, '/');
     }
 
