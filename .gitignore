@@ -1,18 +1,20 @@
-config.php
-public_html/user.css
+# Dev
 cyn2
-afb/
-doc/
-muz/
-org/
 .idea/
-bestandenkast/
-cache/
+
+# Caches
 .sass-cache/
-vendor/
-public_html/uploads/
+.php_cs.cache
+cache/
+
+# Site-specific
+config.php
 extra-head.php
 extra-body-start.php
 extra-body-end.php
-.php_cs.cache
+public_html/user.css
+public_html/uploads/
+
+# Generated/autodownloaded
+vendor/
 public_html/asset
