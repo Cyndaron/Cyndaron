@@ -7,7 +7,7 @@
         <h1>{{ $productName }} {{ $productVersion }} ({{ $productCodename }})</h1>
         Engineversie: {{ $engineVersion }}<br />
         © Michael Steenbeek, 2009-2020<br />
-        Beschikbaar onder de ISC-licentie (zie het bestand LICENSE), m.u.v. van de volgende onderdelen:
+        Beschikbaar onder een MIT-licentie (zie het bestand LICENSE). Code van derde partijen valt onder de volgende licenties:
         <ul>
             <li>Lightbox: MIT-licentie (LICENSE.Lightbox)</li>
             <li>MCServerStats: MIT-licentie (LICENSE.MCServerStats)</li>

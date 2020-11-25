@@ -1,5 +1,5 @@
 # Cyndaron
-Simpel en lichtgewicht CMS, beschikbaar onder de ISC-licentie. Deze is te raadplegen in het bestand LICENSE.
+Simpel en lichtgewicht CMS, beschikbaar onder de MIT-licentie. Deze is te raadplegen in het bestand LICENSE.
 
 Code van derden en alle daaraan aangebrachte wijzigingen vallen onder de volgende licenties:
 - Lightbox: MIT (LICENSE.Lightbox)

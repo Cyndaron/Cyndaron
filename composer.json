@@ -1,7 +1,7 @@
 {
     "name": "cyndaron/cyndaron",
     "description": "Simple and lightweight CMS",
-    "license": "ISC",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Cyndaron\\": "src/"
