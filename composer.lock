@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "92540740793868a275cd6f250de1a90f",
+    "content-hash": "8bc0f537a9e156875bcf94974d0be9aa",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -209,6 +209,60 @@
             ],
             "description": "Use filters easily in your blade templates.",
             "time": "2020-09-16T06:37:02+00:00"
+        },
+        {
+            "name": "cyndaron/module-geelhoed",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Cyndaron/module-geelhoed.git",
+                "reference": "913ac12300dbe2e1aecbdf9c7aeaa72abe9ae688"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Cyndaron/module-geelhoed/zipball/913ac12300dbe2e1aecbdf9c7aeaa72abe9ae688",
+                "reference": "913ac12300dbe2e1aecbdf9c7aeaa72abe9ae688",
+                "shasum": ""
+            },
+            "require": {
+                "components/jquery": "^3.5",
+                "mollie/mollie-api-php": "^2.0",
+                "php": "^7.4",
+                "phpoffice/phpspreadsheet": "^1.12",
+                "symfony/http-foundation": "^5.0",
+                "thecodingmachine/safe": "^1.1"
+            },
+            "require-dev": {
+                "cyndaron/cyndaron": "dev-master",
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "phan/phan": "^3.0",
+                "phpstan/phpstan": "^0.12.42",
+                "roave/security-advisories": "dev-master",
+                "thecodingmachine/phpstan-safe-rule": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cyndaron\\Geelhoed\\": "src/"
+                }
+            },
+            "scripts": {
+                "phpstan": [
+                    "vendor/bin/phpstan analyse src --level 8"
+                ],
+                "cscheck": [
+                    "vendor/bin/php-cs-fixer fix src/ --allow-risky=yes --dry-run --diff"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Sportschool Geelhoed module for Cyndaron",
+            "support": {
+                "source": "https://github.com/Cyndaron/module-geelhoed/tree/master",
+                "issues": "https://github.com/Cyndaron/module-geelhoed/issues"
+            },
+            "time": "2020-11-25T15:52:35+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -1051,16 +1105,16 @@
         },
         {
             "name": "mollie/mollie-api-php",
-            "version": "v2.24.0",
+            "version": "v2.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mollie/mollie-api-php.git",
-                "reference": "52bd606724109906d61226698c8b031ccae9e637"
+                "reference": "ae0ff0229b2f616997c224270eb50ed1b224239c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mollie/mollie-api-php/zipball/52bd606724109906d61226698c8b031ccae9e637",
-                "reference": "52bd606724109906d61226698c8b031ccae9e637",
+                "url": "https://api.github.com/repos/mollie/mollie-api-php/zipball/ae0ff0229b2f616997c224270eb50ed1b224239c",
+                "reference": "ae0ff0229b2f616997c224270eb50ed1b224239c",
                 "shasum": ""
             },
             "require": {
@@ -1133,20 +1187,20 @@
                 "sofortbanking",
                 "subscriptions"
             ],
-            "time": "2020-10-15T12:55:48+00:00"
+            "time": "2020-11-24T14:17:48+00:00"
         },
         {
             "name": "myclabs/php-enum",
-            "version": "1.7.6",
+            "version": "1.7.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/php-enum.git",
-                "reference": "5f36467c7a87e20fbdc51e524fd8f9d1de80187c"
+                "reference": "d178027d1e679832db9f38248fcc7200647dc2b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/php-enum/zipball/5f36467c7a87e20fbdc51e524fd8f9d1de80187c",
-                "reference": "5f36467c7a87e20fbdc51e524fd8f9d1de80187c",
+                "url": "https://api.github.com/repos/myclabs/php-enum/zipball/d178027d1e679832db9f38248fcc7200647dc2b7",
+                "reference": "d178027d1e679832db9f38248fcc7200647dc2b7",
                 "shasum": ""
             },
             "require": {
@@ -1179,7 +1233,17 @@
             "keywords": [
                 "enum"
             ],
-            "time": "2020-02-14T08:15:52+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/mnapoli",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/myclabs/php-enum",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-11-14T18:14:52+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -1976,20 +2040,20 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.18.1",
+            "version": "v1.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "a6977d63bf9a0ad4c65cd352709e230876f9904a"
+                "reference": "39d483bdf39be819deabf04ec872eb0b2410b531"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/a6977d63bf9a0ad4c65cd352709e230876f9904a",
-                "reference": "a6977d63bf9a0ad4c65cd352709e230876f9904a",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/39d483bdf39be819deabf04ec872eb0b2410b531",
+                "reference": "39d483bdf39be819deabf04ec872eb0b2410b531",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=7.1"
             },
             "suggest": {
                 "ext-mbstring": "For best performance"
@@ -1997,7 +2061,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.18-dev"
+                    "dev-main": "1.20-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -2049,7 +2113,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-07-14T12:35:20+00:00"
+            "time": "2020-10-23T14:02:19+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
@@ -5684,6 +5748,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "ckeditor/ckeditor": 20,
+        "cyndaron/module-geelhoed": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
