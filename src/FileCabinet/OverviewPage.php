@@ -16,6 +16,7 @@ use function Safe\fread;
 use function Safe\natsort;
 use function Safe\opendir;
 use function Safe\preg_match;
+use function Safe\preg_replace;
 use function Safe\substr;
 use function Safe\usort;
 use function readdir;
@@ -50,7 +51,12 @@ final class OverviewPage extends Page
             fclose($handle);
             // Take the inner-HTML of the body, discarding the rest.
             preg_match("/<body(.*?)>(.*?)<\\/body>/si", $contents, $matches);
-            $introduction = $matches[2];
+            $introduction = $matches[2] ?? '';
+            // Strip style attributes
+            $introduction = preg_replace('/\bstyle="(.*?)"/i', '', $introduction);
+            // Strip font tags (but keep their contents)
+            $introduction = preg_replace('/<font(.*?)>/', '', $introduction);
+            $introduction = preg_replace('/<\/font(.*?)>/', '', $introduction);
         }
         catch (FilesystemException $e)
         {
