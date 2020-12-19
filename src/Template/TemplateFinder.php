@@ -2,14 +2,22 @@
 
 namespace Cyndaron\Template;
 
+use Cyndaron\Module\TemplateRoot;
+use function array_key_exists;
+use function array_slice;
 use function file_exists;
 use function explode;
 use function count;
 use function array_pop;
 use function implode;
+use function var_dump;
+use function rtrim;
 
 final class TemplateFinder
 {
+    private static array $templateRoots = [
+    ];
+
     /**
      * Locate actual path to template file (based on current SmartyTools logic)
      *
@@ -72,16 +80,24 @@ final class TemplateFinder
         if (count($parts) > 1)
         {
             $name = array_pop($parts);
-            $module = implode('/', $parts);
+            $module = $parts[0];
+            $parts = array_slice($parts, 1);
 
-            $template = $this->searchPath('src/' . $module . '/templates/', $name);
-            // If the template is not present in the module templates, look in the vendor packages.
-            if ($template === null)
+            $pathInModule = implode('/', $parts);
+
+            $template = $this->searchPath("src/$module/$pathInModule/templates/", $name);
+            if ($template === null && array_key_exists($module, static::$templateRoots))
             {
-                $template = $this->searchPath('vendor/' . $module . '/templates/', $name);
+                $root = static::$templateRoots[$module];
+                $template = $this->searchPath("$root/$pathInModule/templates/", $name);
             }
         }
 
         return $template;
+    }
+
+    public static function addTemplateRoot(TemplateRoot $templateRoot): void
+    {
+        static::$templateRoots[$templateRoot->name] = rtrim($templateRoot->root, '/');
     }
 }

@@ -9,6 +9,8 @@ use Cyndaron\Editor\EditorController;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
+use Cyndaron\Module\Templated;
+use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\UserMenu;
 use Cyndaron\Page;
@@ -16,6 +18,7 @@ use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Setting;
+use Cyndaron\Template\TemplateFinder;
 use Cyndaron\Url;
 use Cyndaron\User\User;
 use Cyndaron\Util;
@@ -350,6 +353,10 @@ final class Router
             if ($module instanceof UserMenu)
             {
                 User::$userMenu = array_merge(User::$userMenu, $module->getUserMenuItems());
+            }
+            if ($module instanceof Templated)
+            {
+                TemplateFinder::addTemplateRoot($module->getTemplateRoot());
             }
         }
     }
