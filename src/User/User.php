@@ -5,6 +5,7 @@ namespace Cyndaron\User;
 
 use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
+use Cyndaron\Mail\Mail;
 use Cyndaron\Model;
 use Cyndaron\Setting;
 use Cyndaron\Util;
@@ -14,6 +15,7 @@ use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\ImageException;
 
+use Symfony\Component\Mime\Address;
 use function Safe\file_get_contents;
 use function Safe\imagecreatefromgif;
 use function Safe\imagecreatefromjpeg;
@@ -26,7 +28,6 @@ use function Safe\substr;
 use function Safe\unlink;
 use function file_exists;
 use function basename;
-use function mail;
 use function strpos;
 use function password_needs_rehash;
 use function session_start;
@@ -65,15 +66,9 @@ final class User extends Model
     public string $notes = '';
 
     public const RESET_PASSWORD_MAIL_TEXT =
-        '<p>U vroeg om een nieuw wachtwoord voor %s.</p>
+        'U vroeg om een nieuw wachtwoord voor %s.
 
-<p>Uw nieuwe wachtwoord is: %s</p>';
-
-    public const MAIL_HEADERS = <<<EOT
-MIME-Version: 1.0
-Content-type: text/html; charset=utf-8
-From: %s <%s>
-EOT;
+Uw nieuwe wachtwoord is: %s';
 
     public static array $userMenu = [];
 
@@ -199,17 +194,12 @@ EOT;
             throw new Exception('No email address specified!');
         }
 
-        $websiteName = Setting::get('siteName');
-        $organisation = Setting::get('organisation') ?: Setting::get('siteName');
-        $from = Util::getNoreplyAddress();
-
-        return mail(
-            $this->email,
+        $mail = new Mail(
+            new Address($this->email),
             'Nieuw wachtwoord ingesteld',
-            sprintf(self::RESET_PASSWORD_MAIL_TEXT, $websiteName, $password),
-            sprintf(self::MAIL_HEADERS, $organisation, $from),
-            "-f$from"
+            sprintf(self::RESET_PASSWORD_MAIL_TEXT, Setting::get('siteName'), $password)
         );
+        return $mail->send();
     }
 
     public static function getCSRFToken(string $module, string $action): string
