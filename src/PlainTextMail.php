@@ -1,8 +1,9 @@
 <?php
 namespace Cyndaron;
 
-use function Safe\sprintf;
-use function mail;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport\SendmailTransport;
+use Symfony\Component\Mime\Email;
 
 final class PlainTextMail
 {
@@ -25,13 +26,25 @@ final class PlainTextMail
 
     public function send(): bool
     {
-        $additionalHeaders = [
-            'From' => sprintf('%s <%s>', $this->fromName, $this->fromAddress),
-            'Content-Type' => 'text/plain; charset="UTF-8"',
-        ];
-        // Set the envelope sender. This is often needed to make DMARC checks pass if multiple domains send mail from the same server.
-        $additionalParameters = "-f{$this->fromAddress}";
+        $transport = new SendmailTransport();
+        $mailer = new Mailer($transport);
 
-        return mail($this->to, $this->subject, $this->message, $additionalHeaders, $additionalParameters);
+        $email = (new Email())
+            ->from("{$this->fromName} <{$this->fromAddress}>")
+            ->to($this->to)
+            ->subject($this->subject)
+            ->text($this->message);
+
+        try
+        {
+            $mailer->send($email);
+            return true;
+        }
+        catch (\Throwable $e)
+        {
+            \Safe\error_log((string)$e);
+        }
+
+        return false;
     }
 }
