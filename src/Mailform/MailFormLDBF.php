@@ -1,9 +1,10 @@
 <?php
 namespace Cyndaron\Mailform;
 
+use Cyndaron\Mail\Mail;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Template\Template;
-use function mail;
+use Symfony\Component\Mime\Address;
 
 final class MailFormLDBF
 {
@@ -53,14 +54,22 @@ final class MailFormLDBF
 
     public function sendMail(string $requesterMail): bool
     {
-        $extraheaders = 'From: "Website Leen de Broekert Fonds" <noreply@leendebroekertfonds.nl>' . "\n" .
-            'Content-Type: text/html; charset="UTF-8"';
-        $extraheadersMail1 = $extraheaders . "\n" . 'Reply-To: ' . $requesterMail;
-        $extraheadersMail2 = $extraheaders . "\n" . 'Reply-To: voorzitter@leendebroekertfonds.nl';
+        $mail1 = new Mail(
+            new Address('voorzitter@leendebroekertfonds.nl'),
+            'Nieuwe aanvraag',
+            null,
+            $this->mailBody
+        );
+        $mail1->addReplyTo(new Address($requesterMail));
 
-        $mail1 = mail('voorzitter@leendebroekertfonds.nl', 'Nieuwe aanvraag', $this->mailBody, $extraheadersMail1, '-fnoreply@leendebroekertfonds.nl');
-        $mail2 = mail($requesterMail, 'Kopie aanvraag', $this->mailBody, $extraheadersMail2, '-fnoreply@leendebroekertfonds.nl');
+        $mail2 = new Mail(
+            new Address($requesterMail),
+            'Kopie aanvraag',
+            null,
+            $this->mailBody
+        );
+        $mail2->addReplyTo(new Address('voorzitter@leendebroekertfonds.nl'));
 
-        return $mail1 && $mail2;
+        return $mail1->send() && $mail2->send();
     }
 }
