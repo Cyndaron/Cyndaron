@@ -6,13 +6,14 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\PlainTextMail;
+use Cyndaron\Mail\PlainTextMail;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Template\ViewHelpers;
 use Cyndaron\User\UserLevel;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Address;
 use function assert;
 use function strtoupper;
 use function implode;
@@ -316,7 +317,7 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
             }
         }
 
-        $mail = new PlainTextMail($email, 'Bestelling concertkaarten', $text);
+        $mail = new PlainTextMail(new Address($email), 'Bestelling concertkaarten', $text);
         return $mail->send();
     }
 

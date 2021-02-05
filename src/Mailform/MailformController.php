@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
+use Cyndaron\Mail\PlainTextMail;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Error\DatabaseError;
 use Cyndaron\Error\IncompleteData;
@@ -15,6 +16,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+use Symfony\Component\Mime\Address;
 use function Safe\sprintf;
 use function in_array;
 use function strcasecmp;
@@ -148,28 +150,20 @@ final class MailformController extends Controller
         $subject = $form->name;
         $sender = $post->getEmail('E-mailadres');
 
-        $fromAddress = Util::getNoreplyAddress();
-        $fromName = html_entity_decode(Setting::get('organisation') ?: Setting::get('siteName'));
-        $extraHeaders = [
-            'From' => $fromAddress,
-            'Content-Type' => 'text/plain; charset="UTF-8"',
-        ];
-
+        $mail = new PlainTextMail(new Address($recipient), $subject, $mailBody);
         if ($sender !== '')
         {
-            $extraHeaders['Reply-To'] = $sender;
+            $mail->addReplyTo(new Address($sender));
         }
+        $mailSent = $mail->send();
 
-        if (mail($recipient, $subject, $mailBody, $extraHeaders, "-f$fromAddress"))
+        if ($mailSent)
         {
             if ($form->sendConfirmation && $sender && $form->confirmationText !== null)
             {
-                $extraHeaders = [
-                    'From' => sprintf('%s <%s>', $fromName, $fromAddress),
-                    'Reply-To' => $recipient,
-                    'Content-Type' => 'text/plain; charset="UTF-8"',
-                ];
-                mail($sender, 'Ontvangstbevestiging', $form->confirmationText, $extraHeaders, "-f$fromAddress");
+                $mail = new PlainTextMail(new Address($sender), 'Ontvangstbevestiging', $form->confirmationText);
+                $mail->addReplyTo(new Address($recipient));
+                $mail->send();
             }
             return true;
         }

@@ -6,7 +6,8 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\DBConnection;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Model;
-use Cyndaron\PlainTextMail;
+use Cyndaron\Mail\PlainTextMail;
+use Symfony\Component\Mime\Address;
 use function assert;
 
 final class Order extends Model
@@ -59,7 +60,7 @@ final class Order extends Model
             $text .= 'Uw kaarten zullen op de avond van het concert voor u klaarliggen bij de kassa.';
         }
 
-        $mail = new PlainTextMail($this->email, 'Betalingsbevestiging', $text);
+        $mail = new PlainTextMail(new Address($this->email), 'Betalingsbevestiging', $text);
         return $mail->send();
     }
 
