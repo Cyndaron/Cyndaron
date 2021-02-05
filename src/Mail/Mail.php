@@ -9,20 +9,22 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use function html_entity_decode;
 
-final class PlainTextMail
+final class Mail
 {
     public string $subject;
-    public string $message;
+    public ?string $plainTextMessage;
+    public ?string $htmlMessage;
 
     public Address $to;
     public Address $from;
     public ?Address $replyTo = null;
 
-    public function __construct(Address $to, string $subject, string $message)
+    public function __construct(Address $to, string $subject, ?string $plainTextMessage = null, ?string $htmlMessage = null)
     {
         $this->to = $to;
         $this->subject = $subject;
-        $this->message = $message;
+        $this->plainTextMessage = $plainTextMessage;
+        $this->htmlMessage = $htmlMessage;
 
         $fromName = html_entity_decode(Setting::get('organisation') ?: Setting::get('siteName'));
         $this->from = new Address(Util::getNoreplyAddress(), $fromName);
@@ -46,12 +48,20 @@ final class PlainTextMail
         $email = (new Email())
             ->from($this->from)
             ->to($this->to)
-            ->subject($this->subject)
-            ->text($this->message);
+            ->subject($this->subject);
 
         if ($this->replyTo !== null)
         {
             $email->addReplyTo($this->replyTo);
+        }
+
+        if ($this->plainTextMessage)
+        {
+            $email->text($this->plainTextMessage);
+        }
+        if ($this->htmlMessage)
+        {
+            $email->html($this->htmlMessage);
         }
 
         try

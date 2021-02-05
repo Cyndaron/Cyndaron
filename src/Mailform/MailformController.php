@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
-use Cyndaron\Mail\PlainTextMail;
+use Cyndaron\Mail\Mail;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Error\DatabaseError;
 use Cyndaron\Error\IncompleteData;
@@ -150,7 +150,7 @@ final class MailformController extends Controller
         $subject = $form->name;
         $sender = $post->getEmail('E-mailadres');
 
-        $mail = new PlainTextMail(new Address($recipient), $subject, $mailBody);
+        $mail = new Mail(new Address($recipient), $subject, $mailBody);
         if ($sender !== '')
         {
             $mail->addReplyTo(new Address($sender));
@@ -161,7 +161,7 @@ final class MailformController extends Controller
         {
             if ($form->sendConfirmation && $sender && $form->confirmationText !== null)
             {
-                $mail = new PlainTextMail(new Address($sender), 'Ontvangstbevestiging', $form->confirmationText);
+                $mail = new Mail(new Address($sender), 'Ontvangstbevestiging', $form->confirmationText);
                 $mail->addReplyTo(new Address($recipient));
                 $mail->send();
             }

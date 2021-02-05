@@ -6,7 +6,7 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBConnection;
 use Cyndaron\Page;
-use Cyndaron\Mail\PlainTextMail;
+use Cyndaron\Mail\Mail;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Template\ViewHelpers;
 use Cyndaron\User\UserLevel;
@@ -317,7 +317,7 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
             }
         }
 
-        $mail = new PlainTextMail(new Address($email), 'Bestelling concertkaarten', $text);
+        $mail = new Mail(new Address($email), 'Bestelling concertkaarten', $text);
         return $mail->send();
     }
 
