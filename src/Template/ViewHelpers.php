@@ -43,7 +43,7 @@ final class ViewHelpers
         'delete' => 'btn-danger',
     ];
 
-    private const YOUTUBE = '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="https://www.youtube.com/embed/$1" sandbox="allow-scripts allow-same-origin allow-popups" allowfullscreen></iframe></div>';
+    private const YOUTUBE = '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="https://www.youtube.com/embed/$1" sandbox="allow-scripts allow-same-origin allow-popups allow-presentation" allowfullscreen></iframe></div>';
 
     /**
      * Zet een maandnummer om in de naam.
