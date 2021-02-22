@@ -83,6 +83,11 @@ class Page
         $this->templateVars['websiteName'] = $this->websiteName;
         $this->templateVars['title'] = $this->title;
         $this->templateVars['referrer'] = $_SESSION['referrer'] ?? '';
+        $this->templateVars['previewImage'] = '';
+        if ($this->model instanceof ModelWithCategory)
+        {
+            $this->templateVars['previewImage'] = $this->model->getPreviewImage();
+        }
 
         $this->templateVars['version'] = CyndaronInfo::ENGINE_VERSION;
         $favicon = Setting::get('favicon');

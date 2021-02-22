@@ -6,6 +6,9 @@
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="{{ $title }}" />
     <meta name="twitter:description" content="Klik hier om verder te lezen..." />
+    @if ($previewImage)
+        <meta name="twitter:image" content="{{ $previewImage }}" />
+    @endif
     <meta name="apple-mobile-web-app-title" content="{{ $websiteName }}">
     <meta name="application-name" content="{{ $websiteName }}">
     <title>{{ $title }} - {{ $websiteName }}</title>

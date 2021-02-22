@@ -1,4 +1,5 @@
 Versie 6.1/7.0 (in ontwikkeling)
+- Feature: afbeelding in Twitter-card (#118).
 - Feature: "speciale links" die in een categorie geplaatst kunnen worden (#66).
 - Feature: uploaden van meerdere foto's tegelijkertijd in een fotoalbum.
 - Technisch: algehele refactor waarbij veel functies zijn opgesplitst en meer met objecten is gewerkt.

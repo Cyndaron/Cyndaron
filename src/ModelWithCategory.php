@@ -3,6 +3,7 @@ namespace Cyndaron;
 
 use Cyndaron\Category\Category;
 use Cyndaron\Template\ViewHelpers;
+use function Safe\preg_match;
 use function html_entity_decode;
 use function trim;
 use function reset;
@@ -44,7 +45,19 @@ abstract class ModelWithCategory extends Model
 
     public function getPreviewImage(): string
     {
-        return $this->previewImage ?: $this->getImage();
+        return $this->previewImage ?: $this->getImage() ?: $this->getImageFromText();
+    }
+
+    /**
+     * Fetches the first image from the page body.
+     * Most useful as a fallback.
+     *
+     * @return string
+     */
+    public function getImageFromText(): string
+    {
+        preg_match('/<img.*?src="(.*?)".*?>/si', $this->getText(), $match);
+        return $match[1] ?? '';
     }
 
     /**
