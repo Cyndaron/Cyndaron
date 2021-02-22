@@ -53,18 +53,18 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         $template = new Template();
         $templateVars = [];
 
-        /** @noinspection SqlResolve */
-        $subs = DBConnection::doQueryAndFetchAll('SELECT id, name, "Zonder categorie" AS category FROM subs WHERE id NOT IN (SELECT id FROM sub_categories) UNION (SELECT s.id AS id, s.name AS name, c.name AS category FROM subs AS s,categories AS c WHERE c.id IN (SELECT categoryId FROM sub_categories WHERE id = s.id) ORDER BY category, name, id ASC);') ?: [];
+        $subs = DBConnection::doQueryAndFetchAll('SELECT s.id,s.name,c.name AS category,IF(sb.text IS NOT NULL, 1, 0) AS hasBackup FROM subs s LEFT JOIN sub_categories sc ON s.id = sc.id LEFT JOIN categories c ON sc.categoryId = c.id LEFT JOIN sub_backups sb ON s.id = sb.id ORDER BY category, name, id ASC') ?: [];
         $subsPerCategory = [];
 
         foreach ($subs as $sub)
         {
-            if (empty($subsPerCategory[$sub['category']]))
+            $category = $sub['category'] ?? 'Zonder categorie';
+            if (empty($subsPerCategory[$category]))
             {
-                $subsPerCategory[$sub['category']] = [];
+                $subsPerCategory[$category] = [];
             }
 
-            $subsPerCategory[$sub['category']][$sub['id']] = $sub['name'];
+            $subsPerCategory[$category][$sub['id']] = $sub;
         }
 
         $templateVars['subsPerCategory'] = $subsPerCategory;

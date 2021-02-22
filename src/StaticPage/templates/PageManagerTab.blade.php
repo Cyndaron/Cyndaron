@@ -15,19 +15,12 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($subs as $id => $name)
-
-            @php
-                // TODO: Get rid of this disgrace.
-                $vvsub = \Cyndaron\DBConnection::doQueryAndFetchFirstRow('SELECT * FROM sub_backups WHERE id= ?', [$id]);
-                $hasLastVersion = !empty($vvsub);
-            @endphp
-
+            @foreach ($subs as $id => $sub)
             <tr id="pm-row-sub-{{ $id }}">
                 <td>{{ $id }}</td>
                 <td>
                     <span style="font-size: 15px;">
-                        <a href="/sub/{{ $id }}"><b>{{ $name }}</b></a>
+                        <a href="/sub/{{ $id }}"><b>{{ $sub['name'] }}</b></a>
                     </span>
                 </td>
                 <td>
@@ -35,7 +28,7 @@
                         @include('Widget/Button', ['kind' => 'edit', 'link' => "/editor/sub/{$id}", 'title' => 'Bewerk deze statische pagina', 'size' => 16])
                         <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="sub" data-id="{{ $id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('sub', 'delete') }}"><span class="glyphicon glyphicon-trash"></span></button>
                         <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="sub" data-id="{{ $id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('sub', 'addtomenu') }}"><span class="glyphicon glyphicon-bookmark"></span></button>
-                        @if ($hasLastVersion)
+                        @if ($sub['hasBackup'])
                             @include('Widget/Button', ['kind' => 'lastversion', 'link' => "/editor/sub/{$id}/previous", 'title' => 'Vorige versie terugzetten', 'size' => 16])
                         @endif
                     </div>
