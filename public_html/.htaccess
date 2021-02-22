@@ -36,7 +36,7 @@ RewriteRule ^(.*)$ index.php?page=$1 [QSA,NC,L]
 <ifModule mod_headers.c>
 
 # 1 year
-<FilesMatch "\.(ico|gif|jpg|jpeg|png|flv|pdf)$">
+<FilesMatch "\.(ico|gif|jpg|jpeg|png|flv|pdf|webp)$">
   Header set Cache-Control "max-age=29030400"
 </FilesMatch>
 # 1 week
