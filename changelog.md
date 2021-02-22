@@ -6,6 +6,7 @@ Versie 6.1/7.0 (in ontwikkeling)
 - Technisch: alle widgets zijn naar Blade geconverteerd.
 - Technisch: controllermethodes geven nu een Response terug in plaats van zelf te echoën.
 - Technisch: een nonce is nu vereist bij script-tags.
+- Technisch: mails worden nu verstuurd via Symfony Mailer (#117).
 - Technisch: nieuw inputframework.
 - Technisch: scripttags en inline JavaScript worden nu gefilterd uit strings (#11).
 
