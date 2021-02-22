@@ -261,7 +261,7 @@ final class Router
             $scriptSrc = "'self' 'nonce-{$nonce}' 'strict-dynamic'";
         }
 
-        return "upgrade-insecure-requests; script-src $scriptSrc; font-src 'self'; base-uri 'none'; object-src 'none'";
+        return "upgrade-insecure-requests; frame-ancestors 'self'; default-src 'none'; base-uri 'none'; child-src 'none'; connect-src 'self'; font-src 'self'; frame-src 'self' youtube.com *.youtube.com youtu.be; img-src 'self' https: data:;  manifest-src 'none'; media-src 'self' data: https:; object-src 'none'; prefetch-src 'self'; script-src $scriptSrc; style-src 'self' 'unsafe-inline'";
     }
 
     /**
