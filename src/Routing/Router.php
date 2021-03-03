@@ -83,20 +83,23 @@ final class Router
         $this->updateRequestVars($request);
         $cspHeader = $this->getCSPHeader();
 
+        $response = $this->getEndpointOrRedirect($request);
+        $response->headers->set('Content-Security-Policy', $cspHeader);
+        $response->send();
+    }
+
+    private function getEndpointOrRedirect(string $request): Response
+    {
         $redirect = $this->blockPathTraversal($request);
         if ($redirect !== null)
         {
-            $redirect->headers->set('Content-Security-Policy', $cspHeader);
-            $redirect->send();
-            return;
+            return $redirect;
         }
 
         $redirect = $this->redirectOldUrls($request);
         if ($redirect !== null)
         {
-            $redirect->headers->set('Content-Security-Policy', $cspHeader);
-            $redirect->send();
-            return;
+            return $redirect;
         }
 
         $this->loadModules();
@@ -107,9 +110,7 @@ final class Router
             $this->updateRequestVars('/error/404');
         }
 
-        $response = $this->routeEndpoint();
-        $response->headers->set('Content-Security-Policy', $cspHeader);
-        $response->send();
+        return $this->routeEndpoint();
     }
 
     private function routeFoundNowCheckLogin(): ?RedirectResponse
