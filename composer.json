@@ -7,6 +7,10 @@
             "Cyndaron\\": "src/"
         }
     },
+    "config": {
+        "optimize-autoloader": true,
+        "classmap-authoritative": true
+    },
     "repositories": [
         {
             "type": "vcs",
