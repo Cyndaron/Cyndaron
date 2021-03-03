@@ -6,11 +6,12 @@ use Cyndaron\Routing\Router;
 use ErrorException;
 use RuntimeException;
 
+use Symfony\Component\HttpFoundation\Request;
 use function Safe\ini_set;
 use function set_error_handler;
 use function file_exists;
 
-final class Kernel
+final class WebBootstrapper
 {
     public function boot(): void
     {
@@ -72,7 +73,8 @@ final class Kernel
     private function handleRequest(): void
     {
         $route = new Router();
-        $route->route();
+        $response = $route->handle(Request::createFromGlobals());
+        $response->send();
     }
 
     /**

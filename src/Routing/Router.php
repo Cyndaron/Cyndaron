@@ -10,7 +10,6 @@ use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
-use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\UserMenu;
 use Cyndaron\Page;
@@ -24,7 +23,9 @@ use Cyndaron\User\User;
 use Cyndaron\Util;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 use function Safe\error_log;
 use function Safe\substr;
@@ -42,7 +43,7 @@ use function filter_input;
  * Zorgt voor correct doorverwijzen van verzoeken.
  * @package Cyndaron
  */
-final class Router
+final class Router implements HttpKernelInterface
 {
     private array $requestVars = [''];
     private bool $isApiCall = false;
@@ -71,22 +72,6 @@ final class Router
         'pragma' => 'no-cache',
         'expires' => 0,
     ];
-
-    public function route(): void
-    {
-        if (empty($_SESSION))
-        {
-            session_start();
-        }
-
-        $request = (new RequestParameters($_GET))->getUrl('page') ?: '/';
-        $this->updateRequestVars($request);
-        $cspHeader = $this->getCSPHeader();
-
-        $response = $this->getEndpointOrRedirect($request);
-        $response->headers->set('Content-Security-Policy', $cspHeader);
-        $response->send();
-    }
 
     private function getEndpointOrRedirect(string $request): Response
     {
@@ -316,7 +301,10 @@ final class Router
 
             if ($module instanceof Routes)
             {
-                $this->endpoints = array_merge($this->endpoints, $module->routes());
+                foreach ($module->routes() as $path => $controller)
+                {
+                    $this->addRoute($path, $controller);
+                }
             }
             if ($module instanceof Datatypes)
             {
@@ -395,5 +383,26 @@ final class Router
         }
 
         return $nonce;
+    }
+
+    public function handle(Request $request, int $type = self::MASTER_REQUEST, bool $catch = true): Response
+    {
+        if (empty($_SESSION))
+        {
+            session_start();
+        }
+
+        $requestStr = (new RequestParameters($request->query->all()))->getUrl('page') ?: '/';
+        $this->updateRequestVars($requestStr);
+        $cspHeader = $this->getCSPHeader();
+        $response = $this->getEndpointOrRedirect($requestStr);
+        $response->headers->set('Content-Security-Policy', $cspHeader);
+
+        return $response;
+    }
+
+    public function addRoute(string $path, string $controller): void
+    {
+        $this->endpoints[$path] = $controller;
     }
 }

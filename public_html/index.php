@@ -1,7 +1,7 @@
 <?php
-require __DIR__ . '/../src/Kernel.php';
+require __DIR__ . '/../src/WebBootstrapper.php';
 
 chdir(__DIR__ . '/../');
 
-$kernel = new \Cyndaron\Kernel();
+$kernel = new \Cyndaron\WebBootstrapper();
 $kernel->boot();
