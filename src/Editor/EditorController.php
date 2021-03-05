@@ -56,9 +56,9 @@ final class EditorController extends Controller
         $id = $this->queryBits->getNullableInt(2);
 
         $class = static::$savePages[$type];
-        /** @var EditorSavePage $editorSavePage */
         try
         {
+            /** @var EditorSavePage $editorSavePage */
             $editorSavePage = new $class($id, $post);
             return new RedirectResponse($editorSavePage->getReturnUrl() ?: '/');
         }

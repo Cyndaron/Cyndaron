@@ -19,10 +19,10 @@ final class StaticPage extends Page
         parent::__construct($this->model->name);
 
         $this->addTemplateVars([
-            'model' => $this->model,
-            'text' => ViewHelpers::parseText($this->model->text),
+            'model' => $model,
+            'text' => ViewHelpers::parseText($model->text),
             'replies' => $replies,
-            'pageImage' => $this->model->getImage(),
+            'pageImage' => $model->getImage(),
         ]);
     }
 }

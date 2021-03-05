@@ -19,12 +19,12 @@ final class CategoryIndexPage extends Page
 
         $this->addTemplateVars([
             'type' => 'subs',
-            'model' => $this->model,
-            'viewMode' => $this->model->viewMode,
+            'model' => $category,
+            'viewMode' => $category->viewMode,
             'pages' => $category->getUnderlyingPages(),
             'tags' => $this->getTags($subs),
             'portfolioContent' => $this->getPortfolioContent(),
-            'pageImage' => $this->model->getImage(),
+            'pageImage' => $category->getImage(),
         ]);
     }
 
