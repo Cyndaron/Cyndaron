@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
-use Cyndaron\Model;
+use Cyndaron\DBAL\Model;
 
 final class Mailform extends Model
 {

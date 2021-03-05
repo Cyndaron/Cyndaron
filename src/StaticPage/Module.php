@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\StaticPage;
 
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;

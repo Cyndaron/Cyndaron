@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Cyndaron\Category;
 
 use Cyndaron\Routing\Controller;
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Menu\MenuItem;
-use Cyndaron\ModelWithCategory;
+use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Page;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request\RequestParameters;

@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Category;
 
-use Cyndaron\ModelWithCategory;
+use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\RichLink\RichLink;
 use Cyndaron\StaticPage\StaticPageModel;

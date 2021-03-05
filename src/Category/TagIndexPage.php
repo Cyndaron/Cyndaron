@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Category;
 
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\StaticPage\StaticPageModel;
 use function ucfirst;

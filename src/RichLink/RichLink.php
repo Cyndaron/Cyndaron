@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\RichLink;
 
-use Cyndaron\ModelWithCategory;
+use Cyndaron\Category\ModelWithCategory;
 
 final class RichLink extends ModelWithCategory
 {

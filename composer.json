@@ -18,6 +18,10 @@
         },
         {
             "type": "vcs",
+            "url": "https://github.com/Cyndaron/dbal"
+        },
+        {
+            "type": "vcs",
             "url": "https://github.com/Cyndaron/module-geelhoed"
         },
         {
@@ -44,7 +48,8 @@
         "symfony/mailer": "^5.2",
         "symfony/http-kernel": "^5.2",
         "symfony/routing": "^5.2",
-        "cyndaron/module": "^1.0"
+        "cyndaron/module": "^1.0",
+        "cyndaron/dbal": "^1.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

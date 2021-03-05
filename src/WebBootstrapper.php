@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Error\BootFailure;
 use Cyndaron\Routing\Router;
 use ErrorException;

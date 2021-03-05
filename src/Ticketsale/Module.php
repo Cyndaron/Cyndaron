@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;

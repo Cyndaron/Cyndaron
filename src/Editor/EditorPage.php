@@ -2,8 +2,8 @@
 namespace Cyndaron\Editor;
 
 use Cyndaron\Category\Category;
-use Cyndaron\DBConnection;
-use Cyndaron\ModelWithCategory;
+use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Page;
 use Cyndaron\Setting;
 use Cyndaron\Url;

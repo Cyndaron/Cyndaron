@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Newsletter;
 
-use Cyndaron\Model;
+use Cyndaron\DBAL\Model;
 
 class Subscriber extends Model
 {

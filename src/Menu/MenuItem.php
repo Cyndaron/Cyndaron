@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Menu;
 
-use Cyndaron\DBConnection;
-use Cyndaron\Model;
+use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Setting;
 use Cyndaron\Url;
 

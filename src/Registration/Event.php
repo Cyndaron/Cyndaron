@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
-use Cyndaron\Model;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Setting;
 
 final class Event extends Model

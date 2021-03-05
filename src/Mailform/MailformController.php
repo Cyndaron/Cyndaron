@@ -5,7 +5,7 @@ namespace Cyndaron\Mailform;
 
 use Cyndaron\Mail\Mail;
 use Cyndaron\Routing\Controller;
-use Cyndaron\Error\DatabaseError;
+use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;

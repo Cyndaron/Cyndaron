@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Registration;
 
 use Cyndaron\Routing\Controller;
-use Cyndaron\Error\DatabaseError;
+use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Page;
 use Cyndaron\Request\RequestParameters;

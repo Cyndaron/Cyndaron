@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\StaticPage;
 
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Template\ViewHelpers;
 

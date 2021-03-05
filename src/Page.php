@@ -8,9 +8,11 @@
 
 namespace Cyndaron;
 
+use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Template\ViewHelpers;
 use Cyndaron\User\User;
+use Cyndaron\DBAL\Model;
 
 use function Safe\sprintf;
 use function Safe\substr;

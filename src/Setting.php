@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\DBAL\DBConnection;
+
 final class Setting
 {
     public const ORGANISATION_VOV = 'Vlissingse Oratorium Vereniging';

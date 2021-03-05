@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Menu;
 
 use Cyndaron\Routing\Controller;
-use Cyndaron\Error\DatabaseError;
+use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;

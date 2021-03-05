@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Ticketsale;
 
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page;
 
 final class OrderTicketsPage extends Page

@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\StaticPage;
 
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {

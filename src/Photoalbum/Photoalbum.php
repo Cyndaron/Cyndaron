@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Error\IncompleteData;
-use Cyndaron\ModelWithCategory;
+use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Url;
 use Cyndaron\Util;
 

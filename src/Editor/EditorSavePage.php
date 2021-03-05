@@ -2,9 +2,9 @@
 namespace Cyndaron\Editor;
 
 use Cyndaron\Category\Category;
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\FriendlyUrl\FriendlyUrl;
-use Cyndaron\ModelWithCategory;
+use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
 use Cyndaron\Util;

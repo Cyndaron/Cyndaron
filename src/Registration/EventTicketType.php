@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Registration;
 
-use Cyndaron\Model;
+use Cyndaron\DBAL\Model;
 
 final class EventTicketType extends Model
 {

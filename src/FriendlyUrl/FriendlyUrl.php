@@ -1,8 +1,8 @@
 <?php
 namespace Cyndaron\FriendlyUrl;
 
-use Cyndaron\DBConnection;
-use Cyndaron\Model;
+use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Model;
 use function ltrim;
 
 final class FriendlyUrl extends Model

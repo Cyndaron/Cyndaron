@@ -1,9 +1,9 @@
 <?php
 namespace Cyndaron\StaticPage;
 
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Error\IncompleteData;
-use Cyndaron\ModelWithCategory;
+use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Url;
 use function explode;
 use function strtolower;

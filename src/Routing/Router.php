@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Routing;
 
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Editor\EditorController;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;

@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Ticketsale;
 
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use function range;
 
 final class ShowReservedSeats

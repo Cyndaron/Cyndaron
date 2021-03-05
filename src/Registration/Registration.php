@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Registration;
 
 use Cyndaron\Error\IncompleteData;
-use Cyndaron\Model;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Mail\Mail;
 use Cyndaron\Setting;
 use Cyndaron\Template\Template;

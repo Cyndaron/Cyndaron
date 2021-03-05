@@ -1,8 +1,8 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\DBConnection;
-use Cyndaron\Model;
+use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Model;
 
 final class PhotoalbumCaption extends Model
 {

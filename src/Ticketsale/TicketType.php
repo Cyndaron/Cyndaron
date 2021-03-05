@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
-use Cyndaron\Model;
+use Cyndaron\DBAL\Model;
 
 final class TicketType extends Model
 {

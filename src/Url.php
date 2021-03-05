@@ -1,7 +1,8 @@
 <?php
 namespace Cyndaron;
 
-use Cyndaron\Error\DatabaseError;
+use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Module\UrlProvider;
 

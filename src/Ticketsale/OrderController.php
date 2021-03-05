@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Ticketsale;
 
 use Cyndaron\Routing\Controller;
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page;
 use Cyndaron\Mail\Mail;
 use Cyndaron\Request\RequestParameters;

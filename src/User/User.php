@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Cyndaron\User;
 
-use Cyndaron\DBConnection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Error\IncompleteData;
 use Cyndaron\Mail\Mail;
-use Cyndaron\Model;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Setting;
 use Cyndaron\Util;
 use Exception;
