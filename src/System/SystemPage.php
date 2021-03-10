@@ -32,6 +32,7 @@ final class SystemPage extends Page
         '/public_html/icons',
         '/public_html/js',
         '/public_html/index.php',
+        '/public_html/uploads/.htaccess',
         '/public_html/user.css',
         '/sql',
         '/src',
