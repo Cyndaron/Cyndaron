@@ -41,10 +41,11 @@ abstract class EditorSavePage
         if ($friendlyUrl !== '')
         {
             $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $this->id);
-            $oldFriendlyUrl = FriendlyUrl::fetchByName($unfriendlyUrl->getFriendly());
-            if ($oldFriendlyUrl !== null)
+            $oldFriendlyUrl = $unfriendlyUrl->getFriendly();
+            $oldFriendlyUrlObj = FriendlyUrl::fetchByName($oldFriendlyUrl);
+            if ($oldFriendlyUrlObj !== null)
             {
-                $oldFriendlyUrl->delete();
+                $oldFriendlyUrlObj->delete();
             }
             $unfriendlyUrl->createFriendly($friendlyUrl);
             // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast
