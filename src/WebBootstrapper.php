@@ -51,6 +51,8 @@ final class WebBootstrapper
         ini_set('session.cookie_secure', true);
         // Prevent users from specifying their own session ID.
         ini_set('session.use_strict_mode', true);
+        // Ensure SameSite attribute is set on all cookies.
+        ini_set('session.cookie_samesite', true);
         // Moved from DBConnection. TODO: check if really needed.
         ini_set('memory_limit', '96M');
     }
