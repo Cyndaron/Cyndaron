@@ -27,6 +27,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/Cyndaron/module-minecraft"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/Cyndaron/module-ticketsale"
         }
     ],
     "require": {
@@ -49,7 +53,8 @@
         "symfony/http-kernel": "^5.2",
         "symfony/routing": "^5.2",
         "cyndaron/module": "^1.0",
-        "cyndaron/dbal": "^1.0"
+        "cyndaron/dbal": "^1.0",
+        "cyndaron/module-ticketsale": "dev-master"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

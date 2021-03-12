@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1e1ff82ee202a0b49dba3c82f6fdafff",
+    "content-hash": "6e01bfff13fcf8de230468cacabac917",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -443,6 +443,61 @@
                 "issues": "https://github.com/Cyndaron/module-minecraft/issues"
             },
             "time": "2021-03-05T12:03:16+00:00"
+        },
+        {
+            "name": "cyndaron/module-ticketsale",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Cyndaron/module-ticketsale.git",
+                "reference": "a57f7076110e59df43e0e0a8f70f3a2005812879"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Cyndaron/module-ticketsale/zipball/a57f7076110e59df43e0e0a8f70f3a2005812879",
+                "reference": "a57f7076110e59df43e0e0a8f70f3a2005812879",
+                "shasum": ""
+            },
+            "require": {
+                "components/jquery": "^3.5",
+                "cyndaron/dbal": "^1.0",
+                "cyndaron/module": "^1.0",
+                "php": "^7.4",
+                "symfony/http-foundation": "^5.0",
+                "thecodingmachine/safe": "^1.1"
+            },
+            "require-dev": {
+                "cyndaron/cyndaron": "dev-master",
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "phan/phan": "^3.0",
+                "phpstan/phpstan": "^0.12.42",
+                "roave/security-advisories": "dev-master",
+                "thecodingmachine/phpstan-safe-rule": "^1.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cyndaron\\Ticketsale\\": "src/"
+                }
+            },
+            "scripts": {
+                "phpstan": [
+                    "vendor/bin/phpstan analyse src --level 8"
+                ],
+                "cscheck": [
+                    "vendor/bin/php-cs-fixer fix src/ --allow-risky=yes --dry-run --diff"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Ticketsale module for Cyndaron",
+            "support": {
+                "source": "https://github.com/Cyndaron/module-ticketsale/tree/master",
+                "issues": "https://github.com/Cyndaron/module-ticketsale/issues"
+            },
+            "time": "2021-03-12T12:06:00+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -6248,6 +6303,7 @@
         "ckeditor/ckeditor": 20,
         "cyndaron/module-geelhoed": 20,
         "cyndaron/module-minecraft": 20,
+        "cyndaron/module-ticketsale": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
