@@ -58,13 +58,12 @@ final class Router implements HttpKernelInterface
         'pagemanager' => \Cyndaron\PageManager\PageManagerController::class,
         'system' => \Cyndaron\System\SystemController::class,
         'user' => \Cyndaron\User\UserController::class,
-    ];
 
-    public const OLD_URLS = [
-        'tooncategorie.php' => ['url' => '/category/', 'id' => 'id'],
-        'toonfoto.php' => ['url' => '/photoalbum/', 'id' => 'boekid'], // Old link to photo in album (pre-Lightbox)
-        'toonfotoboek.php' => ['url' => '/photoalbum/', 'id' => 'id'],
-        'toonsub.php' => ['url' => '/sub/', 'id' => 'id'],
+        'tooncategorie.php' => \Cyndaron\Routing\OldUrlsController::class,
+        'toonphoto.php' => \Cyndaron\Routing\OldUrlsController::class,
+        'toonphotoalbum.php' => \Cyndaron\Routing\OldUrlsController::class,
+        'toonsub.php' => \Cyndaron\Routing\OldUrlsController::class,
+        'verwerkmailformulier.php' => \Cyndaron\Routing\OldUrlsController::class,
     ];
 
     public const HEADERS_DO_NOT_CACHE = [
@@ -209,18 +208,6 @@ final class Router implements HttpKernelInterface
         if ($_SERVER['REQUEST_URI'] !== '/' && $url = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target = ?', [$_SERVER['REQUEST_URI']]))
         {
             return new RedirectResponse("/$url", Response::HTTP_MOVED_PERMANENTLY);
-        }
-        if (array_key_exists($request, self::OLD_URLS))
-        {
-            $url = self::OLD_URLS[$request]['url'];
-            /** @phpstan-ignore-next-line (false positive) */
-            $id = (int)$_GET(self::OLD_URLS[$request]['id']);
-            return new RedirectResponse("${url}${id}", Response::HTTP_MOVED_PERMANENTLY);
-        }
-        if ($request === 'verwerkmailformulier.php')
-        {
-            $id = (int)$_GET['id'];
-            $this->updateRequestVars("/mailform/process/$id");
         }
 
         return null;

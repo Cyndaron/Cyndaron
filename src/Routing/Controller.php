@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+use function method_exists;
 use function Safe\session_destroy;
 use function array_key_exists;
 use function is_array;
@@ -114,6 +115,12 @@ abstract class Controller
             return new JsonResponse(['error' => 'Route not found!'], Response::HTTP_NOT_FOUND);
         }
 
+        // Fall back to old functions
+        if (!method_exists($this, $oldRouteFunction))
+        {
+            return new Response('Route niet gevonden!', Response::HTTP_NOT_FOUND);
+        }
+
         $response = $this->checkUserLevel($oldMinLevel);
         if ($response !== null)
         {
@@ -137,17 +144,6 @@ abstract class Controller
             $params[] = $dic->get($className);
         }
         return $reflectionMethod->invokeArgs($this, $params);
-    }
-
-    protected function routeGet(QueryBits $queryBits): Response
-    {
-        return new Response('Route niet gevonden!', Response::HTTP_NOT_FOUND);
-    }
-
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function routePost(QueryBits $queryBits, RequestParameters $post): Response
-    {
-        return new Response('Route niet gevonden!', Response::HTTP_NOT_FOUND);
     }
 
     /**
