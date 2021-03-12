@@ -337,18 +337,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Cyndaron/module-geelhoed.git",
-                "reference": "1d6e13ace1d886a2d04e442a2287d72093ab3d65"
+                "reference": "81997181079610d9ccd792765101c5d81ee6350e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Cyndaron/module-geelhoed/zipball/1d6e13ace1d886a2d04e442a2287d72093ab3d65",
-                "reference": "1d6e13ace1d886a2d04e442a2287d72093ab3d65",
+                "url": "https://api.github.com/repos/Cyndaron/module-geelhoed/zipball/81997181079610d9ccd792765101c5d81ee6350e",
+                "reference": "81997181079610d9ccd792765101c5d81ee6350e",
                 "shasum": ""
             },
             "require": {
                 "components/jquery": "^3.5",
                 "cyndaron/dbal": "^1.0",
                 "cyndaron/module": "^1.0",
+                "cyndaron/util": "^1.0",
+                "cyndaron/view": "^1.0",
                 "mollie/mollie-api-php": "^2.0",
                 "php": "^7.4",
                 "phpoffice/phpspreadsheet": "^1.12",
@@ -386,7 +388,7 @@
                 "source": "https://github.com/Cyndaron/module-geelhoed/tree/master",
                 "issues": "https://github.com/Cyndaron/module-geelhoed/issues"
             },
-            "time": "2021-03-10T14:39:01+00:00"
+            "time": "2021-03-12T13:34:30+00:00"
         },
         {
             "name": "cyndaron/module-minecraft",
@@ -394,18 +396,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Cyndaron/module-minecraft.git",
-                "reference": "cfc02c817bb47ab98e3428a4bd37a18f2714ddd0"
+                "reference": "d73399c14ea7ccf601c1266819941282b7b6642e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Cyndaron/module-minecraft/zipball/cfc02c817bb47ab98e3428a4bd37a18f2714ddd0",
-                "reference": "cfc02c817bb47ab98e3428a4bd37a18f2714ddd0",
+                "url": "https://api.github.com/repos/Cyndaron/module-minecraft/zipball/d73399c14ea7ccf601c1266819941282b7b6642e",
+                "reference": "d73399c14ea7ccf601c1266819941282b7b6642e",
                 "shasum": ""
             },
             "require": {
                 "components/jquery": "^3.5",
                 "cyndaron/dbal": "^1.0",
                 "cyndaron/module": "^1.0",
+                "cyndaron/util": "^1.0",
+                "cyndaron/view": "^1.0",
                 "ext-gd": "*",
                 "php": "^7.4",
                 "symfony/http-foundation": "^5.0",
@@ -442,7 +446,7 @@
                 "source": "https://github.com/Cyndaron/module-minecraft/tree/master",
                 "issues": "https://github.com/Cyndaron/module-minecraft/issues"
             },
-            "time": "2021-03-05T12:03:16+00:00"
+            "time": "2021-03-12T13:38:40+00:00"
         },
         {
             "name": "cyndaron/module-ticketsale",
@@ -450,18 +454,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Cyndaron/module-ticketsale.git",
-                "reference": "a57f7076110e59df43e0e0a8f70f3a2005812879"
+                "reference": "26efe13a43149416a2b8356103901baabee0a2dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Cyndaron/module-ticketsale/zipball/a57f7076110e59df43e0e0a8f70f3a2005812879",
-                "reference": "a57f7076110e59df43e0e0a8f70f3a2005812879",
+                "url": "https://api.github.com/repos/Cyndaron/module-ticketsale/zipball/26efe13a43149416a2b8356103901baabee0a2dd",
+                "reference": "26efe13a43149416a2b8356103901baabee0a2dd",
                 "shasum": ""
             },
             "require": {
                 "components/jquery": "^3.5",
                 "cyndaron/dbal": "^1.0",
                 "cyndaron/module": "^1.0",
+                "cyndaron/util": "^1.0",
+                "cyndaron/view": "^1.0",
                 "php": "^7.4",
                 "symfony/http-foundation": "^5.0",
                 "thecodingmachine/safe": "^1.1"
@@ -497,7 +503,7 @@
                 "source": "https://github.com/Cyndaron/module-ticketsale/tree/master",
                 "issues": "https://github.com/Cyndaron/module-ticketsale/issues"
             },
-            "time": "2021-03-12T12:06:00+00:00"
+            "time": "2021-03-12T13:24:33+00:00"
         },
         {
             "name": "cyndaron/util",
