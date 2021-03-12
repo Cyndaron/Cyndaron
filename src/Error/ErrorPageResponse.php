@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Error;
 
-use Cyndaron\Page;
+use Cyndaron\View\Page;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

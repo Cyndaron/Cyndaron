@@ -1,4 +1,4 @@
-@component('Widget/Toolbar')
+@component('View/Widget/Toolbar')
     @slot('right')
         <label for="pm-friendlyurl-new-name" class="mr-sm-2">Nieuwe friendly URL:</label>
         <input id="pm-friendlyurl-new-name" type="text" placeholder="URL" class="form-control mr-sm-2" required/>

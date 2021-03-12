@@ -5,7 +5,7 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\Routing\Controller;
 use Cyndaron\Menu\MenuItem;
-use Cyndaron\Page;
+use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;

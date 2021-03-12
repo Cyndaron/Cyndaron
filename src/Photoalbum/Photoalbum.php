@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Cyndaron\Photoalbum;
 
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Error\IncompleteData;
+use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Url;
-use Cyndaron\Util;
+use Cyndaron\Util\Util;
 
 use function Safe\natsort;
 use function Safe\scandir;

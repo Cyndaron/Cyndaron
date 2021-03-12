@@ -17,7 +17,7 @@
 
             <h3>Uw gegevens (verplicht):</h3>
 
-            @include('Widget/Form/Select', [
+            @include('View/Widget/Form/Select', [
                 'id' => 'lunchType',
                 'label' => 'Soort lunch',
                 'options' => ['Vegetarisch' => 'Vegetarisch', 'Vis' => 'Vis', 'Vlees' => 'Vlees']])
@@ -32,22 +32,22 @@
                 </div>
             </div>
 
-            @include('Widget/Form/BasicInput', ['id' => 'lastName', 'label' => 'Achternaam', 'required' => true])
-            @include('Widget/Form/BasicInput', ['id' => 'initials', 'label' => 'Voorletters', 'required' => true])
-            @include('Widget/Form/Select', ['id' => 'vocalRange', 'label' => 'Stemsoort', 'required' => true, 'options' => ['Sopraan' => 'Sopraan', 'Alt' => 'Alt', 'Tenor' => 'Tenor', 'Bas' => 'Bas']])
-            @include('Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'E-mailadres', 'required' => true])
+            @include('View/Widget/Form/BasicInput', ['id' => 'lastName', 'label' => 'Achternaam', 'required' => true])
+            @include('View/Widget/Form/BasicInput', ['id' => 'initials', 'label' => 'Voorletters', 'required' => true])
+            @include('View/Widget/Form/Select', ['id' => 'vocalRange', 'label' => 'Stemsoort', 'required' => true, 'options' => ['Sopraan' => 'Sopraan', 'Alt' => 'Alt', 'Tenor' => 'Tenor', 'Bas' => 'Bas']])
+            @include('View/Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'E-mailadres', 'required' => true])
 
-            @include('Widget/Form/Checkbox', ['id' => 'lunch', 'label' => 'Ik wil graag gebruik maken van de lunch'])
+            @include('View/Widget/Form/Checkbox', ['id' => 'lunch', 'label' => 'Ik wil graag gebruik maken van de lunch'])
 
             <div id="lunchTypeWrapper">
-                @include('Widget/Form/Select', [
+                @include('View/Widget/Form/Select', [
                     'id' => 'lunchType',
                     'label' => 'Soort lunch',
                     'options' => ['Vegetarisch' => 'Vegetarisch', 'Vis' => 'Vis', 'Vlees' => 'Vlees']])
             </div>
 
-            @include('Widget/Form/Checkbox', ['id' => 'bhv', 'label' => 'Ik ben arts of in het bezit van een BHV- of AED-certificaat'])
-            @include('Widget/Form/Checkbox', ['id' => 'kleinkoor', 'label' => 'Ik wil graag meezingen in het kleinkoor'])
+            @include('View/Widget/Form/Checkbox', ['id' => 'bhv', 'label' => 'Ik ben arts of in het bezit van een BHV- of AED-certificaat'])
+            @include('View/Widget/Form/Checkbox', ['id' => 'kleinkoor', 'label' => 'Ik wil graag meezingen in het kleinkoor'])
 
             <div id="kleinkoorExplanationWrapper">
                 <div class="form-group row">
@@ -61,13 +61,13 @@
 
             <h3 id="adresgegevensKop">Overige gegevens (niet verplicht):</h3>
 
-            @include('Widget/Form/BasicInput', ['id' => 'birthYear', 'label' => 'Uw geboortejaar', 'type' => 'number', 'min' => 1900, 'max' => date('Y') - 10, 'step' => 1, 'pattern' => '[0-9]{4}'])
+            @include('View/Widget/Form/BasicInput', ['id' => 'birthYear', 'label' => 'Uw geboortejaar', 'type' => 'number', 'min' => 1900, 'max' => date('Y') - 10, 'step' => 1, 'pattern' => '[0-9]{4}'])
 
-            @include('Widget/Form/BasicInput', ['id' => 'street', 'label' => 'Straatnaam'])
-            @include('Widget/Form/BasicInput', ['id' => 'houseNumber', 'label' => 'Huisnummer', 'type' => 'number'])
-            @include('Widget/Form/BasicInput', ['id' => 'houseNumberAddition', 'label' => 'Huisnummertoevoeging'])
-            @include('Widget/Form/BasicInput', ['id' => 'postcode', 'label' => 'Postcode'])
-            @include('Widget/Form/BasicInput', ['id' => 'city', 'label' => 'Woonplaats'])
+            @include('View/Widget/Form/BasicInput', ['id' => 'street', 'label' => 'Straatnaam'])
+            @include('View/Widget/Form/BasicInput', ['id' => 'houseNumber', 'label' => 'Huisnummer', 'type' => 'number'])
+            @include('View/Widget/Form/BasicInput', ['id' => 'houseNumberAddition', 'label' => 'Huisnummertoevoeging'])
+            @include('View/Widget/Form/BasicInput', ['id' => 'postcode', 'label' => 'Postcode'])
+            @include('View/Widget/Form/BasicInput', ['id' => 'city', 'label' => 'Woonplaats'])
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Eerder meegedaan?</label>
@@ -125,7 +125,7 @@
             <p>Om te voorkomen dat er spam wordt verstuurd met dit formulier<br/>wordt u verzocht in het onderstaande
                 vak <span class="inline-monospace">{{ $event->getAntispam() }}</span> in te vullen.</p>
 
-            @include('Widget/Form/BasicInput', ['id' => 'antispam', 'label' => 'Antispam', 'required' => true])
+            @include('View/Widget/Form/BasicInput', ['id' => 'antispam', 'label' => 'Antispam', 'required' => true])
 
             <p>Uw gegevens zullen worden verwerkt zoals beschreven in onze <a href="/privacyverklaring">privacyverklaring</a>.</p>
 

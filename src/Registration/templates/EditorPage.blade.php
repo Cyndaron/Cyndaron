@@ -2,16 +2,16 @@
 
 @section ('contentSpecificButtons')
 
-    @include ('Widget/Form/Textarea', ['id' => 'descriptionWhenClosed',  'label' => 'Beschijving indien gesloten', 'value' => $model->descriptionWhenClosed ?? ''])
+    @include ('View/Widget/Form/Textarea', ['id' => 'descriptionWhenClosed',  'label' => 'Beschijving indien gesloten', 'value' => $model->descriptionWhenClosed ?? ''])
 
-    @include ('Widget/Form/Checkbox', ['id' => 'openForRegistration', 'description' => 'Open voor aanmelden', 'checked' => $model->openForRegistration ?? false])
+    @include ('View/Widget/Form/Checkbox', ['id' => 'openForRegistration', 'description' => 'Open voor aanmelden', 'checked' => $model->openForRegistration ?? false])
 
-    @include ('Widget/Form/Currency', ['id' => 'registrationCost0', 'label' => 'Inschrijfgeld groep 0', 'value' => $registrationCost0])
-    @include ('Widget/Form/Currency', ['id' => 'registrationCost1', 'label' => 'Inschrijfgeld groep 1', 'value' => $registrationCost1])
-    @include ('Widget/Form/Currency', ['id' => 'registrationCost2', 'label' => 'Inschrijfgeld groep 2', 'value' => $registrationCost2])
+    @include ('View/Widget/Form/Currency', ['id' => 'registrationCost0', 'label' => 'Inschrijfgeld groep 0', 'value' => $registrationCost0])
+    @include ('View/Widget/Form/Currency', ['id' => 'registrationCost1', 'label' => 'Inschrijfgeld groep 1', 'value' => $registrationCost1])
+    @include ('View/Widget/Form/Currency', ['id' => 'registrationCost2', 'label' => 'Inschrijfgeld groep 2', 'value' => $registrationCost2])
 
 
-    @include ('Widget/Form/Currency', ['id' => 'lunchCost', 'label' => 'Lunchkosten', 'value' => $lunchCost])
+    @include ('View/Widget/Form/Currency', ['id' => 'lunchCost', 'label' => 'Lunchkosten', 'value' => $lunchCost])
 
 
     <div class="form-group row">
@@ -27,10 +27,10 @@
         </div>
     </div>
 
-    @include ('Widget/Form/Checkbox', ['id' => 'requireApproval', 'description' => 'Vereis goedkeuring van inschrijvingen', 'checked' => $model->requireApproval])
+    @include ('View/Widget/Form/Checkbox', ['id' => 'requireApproval', 'description' => 'Vereis goedkeuring van inschrijvingen', 'checked' => $model->requireApproval])
 
-    @include ('Widget/Form/InputText', ['id' => 'performedPiece',  'label' => 'Uitgevoerd stuk', 'value' => $model->performedPiece ?? ''])
+    @include ('View/Widget/Form/InputText', ['id' => 'performedPiece',  'label' => 'Uitgevoerd stuk', 'value' => $model->performedPiece ?? ''])
 
-    @include ('Widget/Form/Textarea', ['id' => 'termsAndConditions',  'label' => 'Voorwaarden', 'value' => $model->termsAndConditions ?? ''])
+    @include ('View/Widget/Form/Textarea', ['id' => 'termsAndConditions',  'label' => 'Voorwaarden', 'value' => $model->termsAndConditions ?? ''])
 
 @endsection

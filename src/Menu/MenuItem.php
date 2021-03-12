@@ -5,7 +5,7 @@ namespace Cyndaron\Menu;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
-use Cyndaron\Setting;
+use Cyndaron\Util\Setting;
 use Cyndaron\Url;
 
 use function Safe\sprintf;

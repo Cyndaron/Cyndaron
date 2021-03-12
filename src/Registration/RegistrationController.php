@@ -5,10 +5,10 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DatabaseError;
-use Cyndaron\Error\IncompleteData;
-use Cyndaron\Page;
+use Cyndaron\Util\Error\IncompleteData;
+use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Setting;
+use Cyndaron\Util\Setting;
 use Cyndaron\User\UserLevel;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;

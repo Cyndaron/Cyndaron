@@ -7,7 +7,7 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Category\ModelWithCategory;
-use Cyndaron\Page;
+use Cyndaron\View\Page;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\RichLink\RichLink;

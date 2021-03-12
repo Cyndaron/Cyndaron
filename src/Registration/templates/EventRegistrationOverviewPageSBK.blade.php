@@ -2,7 +2,7 @@
 @php /** @var \Cyndaron\Registration\Event $event */@endphp
 
 @section ('contents')
-    @component('Widget/Toolbar')
+    @component('View/Widget/Toolbar')
         @slot('left')
             <a class="btn btn-outline-cyndaron" href="/pagemanager/eventSbk">&laquo; Terug naar overzicht evenementen</a>
         @endslot

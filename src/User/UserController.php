@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Cyndaron\User;
 
 use Cyndaron\Routing\Controller;
-use Cyndaron\Page;
+use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Router;
-use Cyndaron\Setting;
-use Cyndaron\Util;
+use Cyndaron\Util\Setting;
+use Cyndaron\Util\Util;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;

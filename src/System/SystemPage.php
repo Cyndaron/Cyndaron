@@ -3,8 +3,8 @@ namespace Cyndaron\System;
 
 use Cyndaron\Category\Category;
 use Cyndaron\CyndaronInfo;
-use Cyndaron\Page;
-use Cyndaron\Setting;
+use Cyndaron\View\Page;
+use Cyndaron\Util\Setting;
 
 use function Safe\ksort;
 use function Safe\ini_get;

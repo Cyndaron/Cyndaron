@@ -2,7 +2,7 @@
 namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Page;
+use Cyndaron\View\Page;
 use Cyndaron\StaticPage\StaticPageModel;
 use function ucfirst;
 use function in_array;

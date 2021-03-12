@@ -4,7 +4,7 @@ namespace Cyndaron\Mailform;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
-use Cyndaron\Template\Template;
+use Cyndaron\View\Template\Template;
 
 final class Module implements Datatypes, Routes
 {

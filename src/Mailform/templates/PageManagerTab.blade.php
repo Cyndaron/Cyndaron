@@ -1,6 +1,6 @@
-@component('Widget/Toolbar')
+@component('View/Widget/Toolbar')
     @slot('right')
-        @include('Widget/Button', ['kind' => 'new', 'link' => '/editor/mailform', 'title' => 'Nieuw mailformulier', 'text' => 'Nieuw mailformulier'])
+        @include('View/Widget/Button', ['kind' => 'new', 'link' => '/editor/mailform', 'title' => 'Nieuw mailformulier', 'text' => 'Nieuw mailformulier'])
     @endslot
 @endcomponent
 

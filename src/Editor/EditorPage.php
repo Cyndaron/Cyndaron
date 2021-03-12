@@ -4,10 +4,10 @@ namespace Cyndaron\Editor;
 use Cyndaron\Category\Category;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Category\ModelWithCategory;
-use Cyndaron\Page;
-use Cyndaron\Setting;
+use Cyndaron\View\Page;
+use Cyndaron\Util\Setting;
 use Cyndaron\Url;
-use Cyndaron\Util;
+use Cyndaron\Util\Util;
 
 use function Safe\scandir;
 use function Safe\sprintf;

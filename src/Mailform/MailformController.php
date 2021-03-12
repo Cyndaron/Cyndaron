@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
-use Cyndaron\Mail\Mail;
+use Cyndaron\Util\Mail\Mail;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DatabaseError;
-use Cyndaron\Error\IncompleteData;
-use Cyndaron\Page;
+use Cyndaron\Util\Error\IncompleteData;
+use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Setting;
+use Cyndaron\Util\Setting;
 use Cyndaron\User\UserLevel;
-use Cyndaron\Util;
+use Cyndaron\Util\Util;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

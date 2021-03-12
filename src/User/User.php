@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Cyndaron\User;
 
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Error\IncompleteData;
-use Cyndaron\Mail\Mail;
+use Cyndaron\Util\Error\IncompleteData;
+use Cyndaron\Util\Mail\Mail;
 use Cyndaron\DBAL\Model;
-use Cyndaron\Setting;
-use Cyndaron\Util;
+use Cyndaron\Util\Setting;
+use Cyndaron\Util\Util;
 use Exception;
 use finfo;
 use Safe\DateTime;

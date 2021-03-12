@@ -18,12 +18,12 @@
 
             <h3>Uw gegevens (verplicht):</h3>
 
-            @include('Widget/Form/BasicInput', ['id' => 'lastName', 'label' => 'Achternaam', 'required' => true])
-            @include('Widget/Form/BasicInput', ['id' => 'initials', 'label' => 'Voornaam', 'required' => true])
-            @include('Widget/Form/BasicInput', ['id' => 'city', 'label' => 'Woonplaats', 'required' => true])
-            @include('Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'E-mailadres', 'required' => true])
+            @include('View/Widget/Form/BasicInput', ['id' => 'lastName', 'label' => 'Achternaam', 'required' => true])
+            @include('View/Widget/Form/BasicInput', ['id' => 'initials', 'label' => 'Voornaam', 'required' => true])
+            @include('View/Widget/Form/BasicInput', ['id' => 'city', 'label' => 'Woonplaats', 'required' => true])
+            @include('View/Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'E-mailadres', 'required' => true])
 
-            @include('Widget/Form/Select', ['id' => 'birthYear', 'label' => 'Leeftijdscategorie', 'required' => true, 'options' => [
+            @include('View/Widget/Form/Select', ['id' => 'birthYear', 'label' => 'Leeftijdscategorie', 'required' => true, 'options' => [
                               (0) => 'Maak een keuze',
                  (date('Y') - 12) => '12 - 25',
                  (date('Y') - 26) => '26 - 50',
@@ -33,7 +33,7 @@
                  (date('Y') - 76) => '76 - 80',
                  (date('Y') - 81) => '81+',
             ]])
-            @include('Widget/Form/Select', ['id' => 'vocalRange', 'label' => 'Stemsoort', 'required' => true, 'options' => ['Sopraan' => 'Sopraan', 'Alt' => 'Alt', 'Tenor' => 'Tenor', 'Bas' => 'Bas']])
+            @include('View/Widget/Form/Select', ['id' => 'vocalRange', 'label' => 'Stemsoort', 'required' => true, 'options' => ['Sopraan' => 'Sopraan', 'Alt' => 'Alt', 'Tenor' => 'Tenor', 'Bas' => 'Bas']])
 
             <div class="form-group row">
                 <label for="currentChoir" class="col-md-3 col-form-label">Ik ben lid van:</label>
@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            @include('Widget/Form/Select', ['id' => 'choirPreference', 'label' => 'Voorkeur koor 1 / 2', 'required' => true, 'options' => ['Geen voorkeur' => 'Geen voorkeur', 'Voorkeur koor 1' => 'Voorkeur koor 1', 'Voorkeur koor 2' => 'Voorkeur koor 2']])
+            @include('View/Widget/Form/Select', ['id' => 'choirPreference', 'label' => 'Voorkeur koor 1 / 2', 'required' => true, 'options' => ['Geen voorkeur' => 'Geen voorkeur', 'Voorkeur koor 1' => 'Voorkeur koor 1', 'Voorkeur koor 2' => 'Voorkeur koor 2']])
 
             <div><h5><b>Totaalprijs:</b> <span id="prijsvak">€&nbsp;0,00</span></h5></div>
 
@@ -88,7 +88,7 @@
             <p>Om te voorkomen dat er spam wordt verstuurd met dit formulier<br/>wordt u verzocht in het onderstaande
                 vak <span class="inline-monospace">{{ $event->getAntispam() }}</span> in te vullen.</p>
 
-            @include('Widget/Form/BasicInput', ['id' => 'antispam', 'label' => 'Antispam', 'required' => true])
+            @include('View/Widget/Form/BasicInput', ['id' => 'antispam', 'label' => 'Antispam', 'required' => true])
 
 {{--            <p>Uw gegevens zullen worden verwerkt zoals beschreven in onze <a href="/privacyverklaring">privacyverklaring</a>.</p>--}}
 

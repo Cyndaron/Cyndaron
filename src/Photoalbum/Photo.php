@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\Util;
+use Cyndaron\Util\Util;
 use Imagick;
 
 use function Safe\copy;

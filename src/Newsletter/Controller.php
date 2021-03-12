@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Newsletter;
 
-use Cyndaron\Page;
+use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;

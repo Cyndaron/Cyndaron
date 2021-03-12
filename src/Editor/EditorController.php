@@ -6,7 +6,7 @@ namespace Cyndaron\Editor;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\Linkable;
-use Cyndaron\Page;
+use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;

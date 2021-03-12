@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
-use Cyndaron\Error\IncompleteData;
+use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\DBAL\Model;
-use Cyndaron\Mail\Mail;
-use Cyndaron\Setting;
-use Cyndaron\Template\Template;
-use Cyndaron\Template\ViewHelpers;
+use Cyndaron\Util\Mail\Mail;
+use Cyndaron\Util\Setting;
+use Cyndaron\View\Template\Template;
+use Cyndaron\View\Template\ViewHelpers;
 use \Exception;
 use Symfony\Component\Mime\Address;
 use function assert;

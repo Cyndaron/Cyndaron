@@ -4,7 +4,7 @@ namespace Cyndaron\System;
 
 use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Setting;
+use Cyndaron\Util\Setting;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;

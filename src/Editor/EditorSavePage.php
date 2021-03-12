@@ -7,7 +7,7 @@ use Cyndaron\FriendlyUrl\FriendlyUrl;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
-use Cyndaron\Util;
+use Cyndaron\Util\Util;
 
 use function Safe\base64_decode;
 use function Safe\date;

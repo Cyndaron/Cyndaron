@@ -1,7 +1,7 @@
 @extends ('Index')
 
 @section ('contents')
-    @include('Widget/PageTabs', ['subPages' => $pageTabs, 'urlPrefix' => '/system/', 'currentPage' => $currentPage ])
+    @include('View/Widget/PageTabs', ['subPages' => $pageTabs, 'urlPrefix' => '/system/', 'currentPage' => $currentPage ])
 
     <div class="container-fluid tab-contents">
         <form method="post" action="/system/config" class="form-horizontal">

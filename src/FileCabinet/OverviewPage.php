@@ -1,10 +1,10 @@
 <?php
 namespace Cyndaron\FileCabinet;
 
-use Cyndaron\Page;
-use Cyndaron\Setting;
+use Cyndaron\View\Page;
+use Cyndaron\Util\Setting;
 use Cyndaron\User\User;
-use Cyndaron\Util;
+use Cyndaron\Util\Util;
 
 use Safe\Exceptions\DirException;
 use Safe\Exceptions\FilesystemException;

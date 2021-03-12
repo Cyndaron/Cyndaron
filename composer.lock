@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e01bfff13fcf8de230468cacabac917",
+    "content-hash": "d64ca2790a1667999992e84b1b862cb0",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -498,6 +498,110 @@
                 "issues": "https://github.com/Cyndaron/module-ticketsale/issues"
             },
             "time": "2021-03-12T12:06:00+00:00"
+        },
+        {
+            "name": "cyndaron/util",
+            "version": "v1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Cyndaron/util.git",
+                "reference": "9038abc418267ba9273b597aa2de396de9b9ef03"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Cyndaron/util/zipball/9038abc418267ba9273b597aa2de396de9b9ef03",
+                "reference": "9038abc418267ba9273b597aa2de396de9b9ef03",
+                "shasum": ""
+            },
+            "require": {
+                "cyndaron/dbal": "^1.0",
+                "php": "^7.4",
+                "symfony/mailer": "^5.2",
+                "thecodingmachine/safe": "^1.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "phan/phan": "^3.0",
+                "phpstan/phpstan": "^0.12.42",
+                "roave/security-advisories": "dev-master",
+                "thecodingmachine/phpstan-safe-rule": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cyndaron\\Util\\": "src/"
+                }
+            },
+            "scripts": {
+                "phpstan": [
+                    "vendor/bin/phpstan analyse src --level 8"
+                ],
+                "cscheck": [
+                    "vendor/bin/php-cs-fixer fix src/ --allow-risky=yes --dry-run --diff"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "General utility classes for Cyndaron",
+            "support": {
+                "source": "https://github.com/Cyndaron/util/tree/v1",
+                "issues": "https://github.com/Cyndaron/util/issues"
+            },
+            "time": "2021-03-12T13:04:14+00:00"
+        },
+        {
+            "name": "cyndaron/view",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Cyndaron/view.git",
+                "reference": "233d9d53cc22b9f895608547fccfcb370894164e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Cyndaron/view/zipball/233d9d53cc22b9f895608547fccfcb370894164e",
+                "reference": "233d9d53cc22b9f895608547fccfcb370894164e",
+                "shasum": ""
+            },
+            "require": {
+                "cyndaron/dbal": "^1.0",
+                "cyndaron/module": "^1.0",
+                "cyndaron/util": "^1.0",
+                "php": "^7.4",
+                "thecodingmachine/safe": "^1.1"
+            },
+            "require-dev": {
+                "cyndaron/cyndaron": "dev-master",
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "phan/phan": "^3.0",
+                "phpstan/phpstan": "^0.12.42",
+                "roave/security-advisories": "dev-master",
+                "thecodingmachine/phpstan-safe-rule": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cyndaron\\View\\": "src/"
+                }
+            },
+            "scripts": {
+                "phpstan": [
+                    "vendor/bin/phpstan analyse src --level 8"
+                ],
+                "cscheck": [
+                    "vendor/bin/php-cs-fixer fix src/ --allow-risky=yes --dry-run --diff"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "View and template components Cyndaron",
+            "support": {
+                "source": "https://github.com/Cyndaron/view/tree/v1.0.2",
+                "issues": "https://github.com/Cyndaron/view/issues"
+            },
+            "time": "2021-03-12T13:17:49+00:00"
         },
         {
             "name": "doctrine/inflector",

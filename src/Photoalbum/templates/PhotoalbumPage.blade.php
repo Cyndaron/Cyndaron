@@ -2,7 +2,7 @@
 
 @section ('titleControls')
     @if ($model->viewMode === 0)
-        @include('Widget/Button', ['kind' => 'edit', 'link' => '/editor/photoalbum/' . $model->id, 'description' => 'Dit fotoalbum bewerken'])
+        @include('View/Widget/Button', ['kind' => 'edit', 'link' => '/editor/photoalbum/' . $model->id, 'description' => 'Dit fotoalbum bewerken'])
     @endif
 @endsection
 
@@ -20,7 +20,7 @@
     @if ($numEntries === 0)
         <div class="alert alert-info">Dit album is leeg.</div>
     @else
-        {!! \Cyndaron\Template\ViewHelpers::parseText($model->notes) !!}
+        {!! \Cyndaron\View\Template\ViewHelpers::parseText($model->notes) !!}
 
         @if ($numEntries === 1)
             <p>Dit album bevat 1 foto. Klik op de verkleinde foto om een vergroting te zien.</p>
@@ -33,12 +33,12 @@
             @foreach ($photos as $photo)
             <figure class="fotobadge">
 
-                <a href="/{{ \Cyndaron\Util::filenameToUrl($photo->getFullPath()) }}" data-lightbox="{{ $model->name }}" data-hash="{{ $photo->hash }}"
+                <a href="/{{ \Cyndaron\Util\Util::filenameToUrl($photo->getFullPath()) }}" data-lightbox="{{ $model->name }}" data-hash="{{ $photo->hash }}"
                     @if ($photo->caption) data-title="{{ $photo->caption->caption }}" @endif>
                     @if (file_exists($photo->getThumbnailPath()))
-                        <img class="thumb" alt="{{ $photo->filename }}" src="{{ \Cyndaron\Util::filenameToUrl($photo->getThumbnailPath()) }}"/>
+                        <img class="thumb" alt="{{ $photo->filename }}" src="{{ \Cyndaron\Util\Util::filenameToUrl($photo->getThumbnailPath()) }}"/>
                     @else
-                        <img class="thumb default-thumbnail-size" alt="{{ $photo->filename }}" src="{{ \Cyndaron\Util::filenameToUrl($photo->getFullPath()) }}"/>
+                        <img class="thumb default-thumbnail-size" alt="{{ $photo->filename }}" src="{{ \Cyndaron\Util\Util::filenameToUrl($photo->getFullPath()) }}"/>
                     @endif
                 </a>
 
@@ -49,7 +49,7 @@
 
                         <input type="hidden" name="csrfToken" value="{{ $deleteToken }}">
                         <div class="btn-group btn-group-sm">
-                            @include('Widget/Button', ['kind' => 'edit', 'link' => "/editor/photo/$captionId/{$photo->hash}", 'title' => 'Bijschrift bewerken', 'text' => 'Bijschrift bewerken', 'size' => 16])
+                            @include('View/Widget/Button', ['kind' => 'edit', 'link' => "/editor/photo/$captionId/{$photo->hash}", 'title' => 'Bijschrift bewerken', 'text' => 'Bijschrift bewerken', 'size' => 16])
                             <button class="btn btn-sm btn-danger" type="submit"><span class="glyphicon glyphicon-trash"></span></button>
                         </div>
                     </form>

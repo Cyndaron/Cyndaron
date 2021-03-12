@@ -1,4 +1,4 @@
-@component('Widget/Toolbar')
+@component('View/Widget/Toolbar')
     @slot('right')
         <label for="pm-category-new-name" class="mr-sm-2">Nieuwe categorie:</label>
         <input class="form-control mr-sm-2" id="pm-category-new-name" type="text"/>
@@ -24,7 +24,7 @@
                 </td>
                 <td>
                     <div class="btn-group">
-                        @include('Widget/Button', ['kind' => 'edit', 'link' => "/editor/category/{$category->id}", 'title' => 'Deze categorie bewerken', 'size' => 16])
+                        @include('View/Widget/Button', ['kind' => 'edit', 'link' => "/editor/category/{$category->id}", 'title' => 'Deze categorie bewerken', 'size' => 16])
                         <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="category" data-id="{{ $category->id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('category', 'delete') }}"><span class="glyphicon glyphicon-trash" title="Verwijder deze categorie"></span></button>
                         <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="category" data-id="{{ $category->id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('category', 'addtomenu') }}"><span class="glyphicon glyphicon-bookmark" title="Voeg deze categorie toe aan het menu"></span></button>
                         <button class="btn btn-outline-cyndaron btn-sm pm-changeorder" data-id="{{ $category->id }}" data-toggle="modal" data-target="#pm-change-order"><span class="glyphicon glyphicon-sort-by-order" title="Verander de volgorde binnen deze categorie"></span></button>
@@ -35,7 +35,7 @@
     </tbody>
 </table>
 
-@component('Widget/Modal',  ['id' => 'pm-change-order', 'title' => 'Volgorde aanpassen', 'sizeClass' => 'modal-lg'])
+@component('View/Widget/Modal',  ['id' => 'pm-change-order', 'title' => 'Volgorde aanpassen', 'sizeClass' => 'modal-lg'])
     @slot('body')
         <form id="pm-change-order-form">
             <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('category', 'changeOrder') }}">

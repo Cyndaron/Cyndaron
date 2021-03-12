@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\User;
 
-use Cyndaron\Page;
+use Cyndaron\View\Page;
 
 final class ChangePasswordPage extends Page
 {

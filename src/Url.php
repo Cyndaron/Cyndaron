@@ -3,7 +3,7 @@ namespace Cyndaron;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\DatabaseError;
-use Cyndaron\Error\IncompleteData;
+use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Module\UrlProvider;
 
 use function Safe\class_implements;

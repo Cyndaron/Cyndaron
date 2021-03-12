@@ -22,6 +22,14 @@
         },
         {
             "type": "vcs",
+            "url": "https://github.com/Cyndaron/util"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/Cyndaron/view"
+        },
+        {
+            "type": "vcs",
             "url": "https://github.com/Cyndaron/module-geelhoed"
         },
         {
@@ -54,7 +62,9 @@
         "symfony/routing": "^5.2",
         "cyndaron/module": "^1.0",
         "cyndaron/dbal": "^1.0",
-        "cyndaron/module-ticketsale": "dev-master"
+        "cyndaron/module-ticketsale": "dev-master",
+        "cyndaron/util": "^1.0",
+        "cyndaron/view": "^1.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

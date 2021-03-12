@@ -2,7 +2,7 @@
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Error\IncompleteData;
+use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Url;
 use function explode;

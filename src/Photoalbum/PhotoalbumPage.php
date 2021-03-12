@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\Page;
-use Cyndaron\Template\Template;
+use Cyndaron\View\Page;
+use Cyndaron\View\Template\Template;
 
 final class PhotoalbumPage extends Page
 {

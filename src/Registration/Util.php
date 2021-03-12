@@ -1,10 +1,10 @@
 <?php
 namespace Cyndaron\Registration;
 
-use Cyndaron\Template\Template;
+use Cyndaron\View\Template\Template;
 use function Safe\date;
 
-final class Util extends \Cyndaron\Util
+final class Util extends \Cyndaron\Util\Util
 {
     public static function drawPageManagerTab(): string
     {

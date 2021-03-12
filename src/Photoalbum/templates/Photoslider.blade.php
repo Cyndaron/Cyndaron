@@ -12,7 +12,7 @@
             @php $captionText = $caption ? trim($caption->caption) : '' @endphp
 
             <div class="carousel-item @if ($loop->first) active @endif">
-                <img class="d-block w-100" src="{{ \Cyndaron\Util::filenameToUrl($photo->getFullPath()) }}" alt="">
+                <img class="d-block w-100" src="{{ \Cyndaron\Util\Util::filenameToUrl($photo->getFullPath()) }}" alt="">
                 @if ($captionText)
                     <div class="carousel-caption d-none d-md-block">
                         {!! $captionText !!}

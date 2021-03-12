@@ -1,4 +1,4 @@
-@component('Widget/Toolbar')
+@component('View/Widget/Toolbar')
     @slot('right')
         <button id="pm-new" class="btn btn-success" type="button"><span class="glyphicon glyphicon-plus"></span> Nieuwe speciale link</button>
     @endslot
@@ -40,15 +40,15 @@
     </tbody>
 </table>
 
-@component('Widget/Modal', ['id' => 'pm-edit-dialog', 'title' => 'Wedstrijd toevoegen/bewerken', 'sizeClass' => 'modal-lg'])
+@component('View/Widget/Modal', ['id' => 'pm-edit-dialog', 'title' => 'Wedstrijd toevoegen/bewerken', 'sizeClass' => 'modal-lg'])
     @slot('body')
         <input type="hidden" id="pm-edit-id" value="">
 
-        @include('Widget/Form/BasicInput', ['id' => 'pm-edit-name', 'label' => 'Naam', 'required' => true])
-        @include('Widget/Form/BasicInput', ['id' => 'pm-edit-url', 'label' => 'Verwijsdoel', 'required' => true])
-        @include('Widget/Form/BasicInput', ['id' => 'pm-edit-previewImage', 'label' => 'Preview-afbeelding'])
-        @include('Widget/Form/Textarea', ['id' => 'pm-edit-blurb', 'label' => 'Korte samenvatting'])
-        @include('Widget/Form/Checkbox', ['id' => 'pm-edit-openInNewTab', 'label' => 'In nieuwe tab openen'])
+        @include('View/Widget/Form/BasicInput', ['id' => 'pm-edit-name', 'label' => 'Naam', 'required' => true])
+        @include('View/Widget/Form/BasicInput', ['id' => 'pm-edit-url', 'label' => 'Verwijsdoel', 'required' => true])
+        @include('View/Widget/Form/BasicInput', ['id' => 'pm-edit-previewImage', 'label' => 'Preview-afbeelding'])
+        @include('View/Widget/Form/Textarea', ['id' => 'pm-edit-blurb', 'label' => 'Korte samenvatting'])
+        @include('View/Widget/Form/Checkbox', ['id' => 'pm-edit-openInNewTab', 'label' => 'In nieuwe tab openen'])
 
         <div class="form-group row" id="categories-accordion">
             <div class="container">

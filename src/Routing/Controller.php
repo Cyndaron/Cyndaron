@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Routing;
 
-use Cyndaron\Page;
+use Cyndaron\View\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;

@@ -2,7 +2,7 @@
 
 @section ('contents')
 
-    @component('Widget/Toolbar')
+    @component('View/Widget/Toolbar')
         @slot('right')
             <button id="mm-create-item"
                     data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('menu', 'addItem') }}"
@@ -67,7 +67,7 @@
         </tbody>
     </table>
 
-    @component('Widget/Modal', ['id' => 'mm-edit-item-dialog', 'title' => 'Menu-item bewerken'])
+    @component('View/Widget/Modal', ['id' => 'mm-edit-item-dialog', 'title' => 'Menu-item bewerken'])
         @slot('body')
             <input type="hidden" id="mm-id" />
             <input type="hidden" id="mm-csrf-token" />

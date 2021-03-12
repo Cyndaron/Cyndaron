@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Error;
 
 use Cyndaron\Routing\Controller;
-use Cyndaron\Page;
+use Cyndaron\View\Page;
 use Cyndaron\Routing\DependencyInjectionContainer;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;

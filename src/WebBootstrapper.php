@@ -2,7 +2,7 @@
 namespace Cyndaron;
 
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Error\BootFailure;
+use Cyndaron\Util\Error\BootFailure;
 use Cyndaron\Routing\Router;
 use ErrorException;
 use RuntimeException;

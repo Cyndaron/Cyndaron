@@ -1,7 +1,7 @@
 @extends('Index')
 
 @section('contents')
-    @component('Widget/Toolbar')
+    @component('View/Widget/Toolbar')
         @slot('right')
             <button id="um-create-user"
                     data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('user', 'add') }}"
@@ -67,7 +67,7 @@
         </tbody>
     </table>
 
-    @component('Widget/Modal', ['id' => 'um-edit-user-dialog', 'title' => 'Gebruiker toevoegen/bewerken', 'sizeClass' => 'modal-lg'])
+    @component('View/Widget/Modal', ['id' => 'um-edit-user-dialog', 'title' => 'Gebruiker toevoegen/bewerken', 'sizeClass' => 'modal-lg'])
         @slot('body')
             <input type="hidden" id="um-id" />
             <input type="hidden" id="um-csrf-token" />
@@ -157,12 +157,12 @@
             <button type="button" class="btn btn-outline-cyndaron" data-dismiss="modal">Annuleren</button>
         @endslot
     @endcomponent
-    @component('Widget/Modal', ['id' => 'um-update-avatar-dialog', 'title' => 'Avatar aanpassen', 'sizeClass' => 'modal-lg'])
+    @component('View/Widget/Modal', ['id' => 'um-update-avatar-dialog', 'title' => 'Avatar aanpassen', 'sizeClass' => 'modal-lg'])
         @slot('body')
             <form id="um-update-avatar" method="post" action="/user/changeAvatar/" enctype="multipart/form-data">
                 <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('user', 'changeAvatar') }}"/>
 
-                @include('Widget/Form/File', ['id' => 'avatarFile', 'label' => 'Nieuwe avatar'])
+                @include('View/Widget/Form/File', ['id' => 'avatarFile', 'label' => 'Nieuwe avatar'])
             </form>
         @endslot
         @slot('footer')

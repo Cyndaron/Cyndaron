@@ -7,7 +7,7 @@
 @section ('contents')
 <div id="category-container">
     <div id="category-main">
-        {!! $model ? \Cyndaron\Template\ViewHelpers::parseText($model->description) : '' !!}
+        {!! $model ? \Cyndaron\View\Template\ViewHelpers::parseText($model->description) : '' !!}
 
     @if ($viewMode === 0)
         <div class="category-listview">

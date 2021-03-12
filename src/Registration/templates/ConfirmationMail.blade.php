@@ -14,8 +14,8 @@ Inschrijvingsnummer: {{ $registration->id }}
 Achternaam: {{ $registration->lastName }}
 Voorletters: {{ $registration->initials }}
 Stemsoort: {{ $registration->vocalRange }}
-Arts / BHV / AED: {{ \Cyndaron\Template\ViewHelpers::boolToText($this->bhv) }}
-Meezingen in kleinkoor: {{ \Cyndaron\Template\ViewHelpers::boolToText($this->kleinkoor) }}
+Arts / BHV / AED: {{ \Cyndaron\View\Template\ViewHelpers::boolToText($this->bhv) }}
+Meezingen in kleinkoor: {{ \Cyndaron\View\Template\ViewHelpers::boolToText($this->kleinkoor) }}
 Lunch: {{ $lunchText }}
 
 
@@ -27,8 +27,8 @@ Lunch: {{ $lunchText }}
 @if (!empty($ticketTypes))
 Kaartsoorten:
 @foreach ($ticketTypes as $ticketType)
-@if ($registrationTicketTypes[$ticketType->id] > 0)   {{ $ticketType->name }}: {{ $registrationTicketTypes[$ticketType->id] }} à {{ \Cyndaron\Template\ViewHelpers::formatEuro((float)$ticketType->price) }}
+@if ($registrationTicketTypes[$ticketType->id] > 0)   {{ $ticketType->name }}: {{ $registrationTicketTypes[$ticketType->id] }} à {{ \Cyndaron\View\Template\ViewHelpers::formatEuro((float)$ticketType->price) }}
 @endif
 @endforeach
 @endif
-Totaalbedrag: {{ \Cyndaron\Template\ViewHelpers::formatEuro($registrationTotal) }}
+Totaalbedrag: {{ \Cyndaron\View\Template\ViewHelpers::formatEuro($registrationTotal) }}

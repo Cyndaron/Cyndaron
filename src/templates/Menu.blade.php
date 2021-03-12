@@ -10,7 +10,7 @@
             @php /** @var \Cyndaron\Menu\MenuItem[] $menuItems */ @endphp
             @foreach ($menuItems as $menuitem)
                 @if ($menuitem->isCategoryDropdown())
-                    @include('Widget/MenuDropdown', ['title' => $menuitem->getTitle(), 'icon' => '', 'items' => $menuitem->getSubmenu()])
+                    @include('View/Widget/MenuDropdown', ['title' => $menuitem->getTitle(), 'icon' => '', 'items' => $menuitem->getSubmenu()])
                 @else
                     <li class="nav-item @if ($menuitem->isCurrentPage())active @endif">
                         @if ($menuitem->isImage)
@@ -29,9 +29,9 @@
                         <a class="nav-link" title="Nieuwe statische pagina aanmaken" href="/editor/sub"><span
                                     class="glyphicon glyphicon-plus"></span></a>
                     </li>
-                    @include('Widget/MenuDropdown', ['title' => '', 'icon' => 'wrench', 'items' => $configMenuItems])
+                    @include('View/Widget/MenuDropdown', ['title' => '', 'icon' => 'wrench', 'items' => $configMenuItems])
                 @endif
-                @include('Widget/MenuDropdown', ['title' => '', 'icon' => 'user', 'items' => $userMenuItems])
+                @include('View/Widget/MenuDropdown', ['title' => '', 'icon' => 'user', 'items' => $userMenuItems])
             @else
                 <li class="nav-item">
                     <a class="nav-link" title="Inloggen" href="/user/login"><span class="glyphicon glyphicon-lock"></span></a>

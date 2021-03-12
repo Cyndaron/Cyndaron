@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
-use Cyndaron\Template\ViewHelpers;
+use Cyndaron\View\Template\ViewHelpers;
 
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {

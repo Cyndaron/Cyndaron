@@ -3,7 +3,7 @@ namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Template\ViewHelpers;
+use Cyndaron\View\Template\ViewHelpers;
 use function Safe\preg_match;
 use function html_entity_decode;
 use function trim;

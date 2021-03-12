@@ -13,7 +13,7 @@
             </div>
 
             @if ($hasCategory)
-                @include ('Widget/Form/Checkbox', ['id' => 'showBreadcrumbs', 'description' => 'Titel tonen als breadcrumbs', 'checked' => $showBreadcrumbs])
+                @include ('View/Widget/Form/Checkbox', ['id' => 'showBreadcrumbs', 'description' => 'Titel tonen als breadcrumbs', 'checked' => $showBreadcrumbs])
             @endif
 
             <div class="form-group row">
@@ -32,9 +32,9 @@
         @endif
 
         @if ($hasCategory)
-            @include('Widget/Form/BasicInput', ['id' => 'image', 'label' => 'Afbeelding', 'type' => 'text', 'value' => $image, 'datalist' => 'page-header-images'])
-            @include('Widget/Form/BasicInput', ['id' => 'previewImage', 'label' => 'Preview-afbeelding', 'type' => 'text', 'value' => $previewImage, 'datalist' => 'page-preview-images'])
-            @include('Widget/Form/BasicInput', ['id' => 'blurb', 'label' => 'Korte samenvatting', 'type' => 'text', 'value' => $blurb])
+            @include('View/Widget/Form/BasicInput', ['id' => 'image', 'label' => 'Afbeelding', 'type' => 'text', 'value' => $image, 'datalist' => 'page-header-images'])
+            @include('View/Widget/Form/BasicInput', ['id' => 'previewImage', 'label' => 'Preview-afbeelding', 'type' => 'text', 'value' => $previewImage, 'datalist' => 'page-preview-images'])
+            @include('View/Widget/Form/BasicInput', ['id' => 'blurb', 'label' => 'Korte samenvatting', 'type' => 'text', 'value' => $blurb])
 
             <label class="btn btn-primary" for="header-image-upload">Headerafbeelding uploaden...
                     <input type="file" id="header-image-upload" name="header-image-upload">
