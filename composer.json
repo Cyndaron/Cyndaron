@@ -43,8 +43,6 @@
     ],
     "require": {
         "php": "^7.4",
-        "illuminate/view": "^6.5",
-        "conedevelopment/blade-filters": "^0.7",
         "ext-pdo": "*",
         "ext-imagick": "*",
         "ext-json": "*",
