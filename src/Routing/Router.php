@@ -135,7 +135,8 @@ final class Router implements HttpKernelInterface
 
     private function getResponse(Controller $route): Response
     {
-        $post = new RequestParameters($_POST);
+        $request = Request::createFromGlobals();
+        $post = new RequestParameters($request->request->all());
 
         $token = $post->getAlphaNum('csrfToken');
         $tokenCorrect = $route->checkCSRFToken($token);
@@ -153,6 +154,7 @@ final class Router implements HttpKernelInterface
         try
         {
             $dic = new DependencyInjectionContainer();
+            $dic->add($request);
             $dic->add($post);
             $dic->add(new QueryBits($this->requestVars));
 
