@@ -35,6 +35,7 @@ abstract class Controller
     /** @var array[] $apiPostRoutes */
     protected array $apiPostRoutes = [];
 
+    /** @deprecated  */
     protected QueryBits $queryBits;
 
     public function __construct(string $module, string $action, bool $isApiCall = false)
@@ -138,13 +139,13 @@ abstract class Controller
         return $reflectionMethod->invokeArgs($this, $params);
     }
 
-    protected function routeGet(): Response
+    protected function routeGet(QueryBits $queryBits): Response
     {
         return new Response('Route niet gevonden!', Response::HTTP_NOT_FOUND);
     }
 
     /** @noinspection PhpUnusedParameterInspection */
-    protected function routePost(RequestParameters $post): Response
+    protected function routePost(QueryBits $queryBits, RequestParameters $post): Response
     {
         return new Response('Route niet gevonden!', Response::HTTP_NOT_FOUND);
     }

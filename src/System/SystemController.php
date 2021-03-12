@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Cyndaron\System;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Util\Setting;
@@ -13,14 +14,14 @@ final class SystemController extends Controller
 {
     protected int $minLevelGet = UserLevel::ADMIN;
 
-    protected function routeGet(): Response
+    protected function routeGet(QueryBits $queryBits): Response
     {
-        $currentPage = $this->queryBits->getString(1, 'config');
+        $currentPage = $queryBits->getString(1, 'config');
         $page = new SystemPage($currentPage);
         return new Response($page->render());
     }
 
-    protected function routePost(RequestParameters $post): Response
+    protected function routePost(QueryBits $queryBits, RequestParameters $post): Response
     {
         Setting::set('siteName', $post->getHTML('siteName'));
         Setting::set('organisation', $post->getHTML('organisation'));

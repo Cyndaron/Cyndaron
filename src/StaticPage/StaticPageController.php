@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\StaticPage;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\View\Page;
@@ -21,9 +22,9 @@ final class StaticPageController extends Controller
         'react' => ['level' => UserLevel::ANONYMOUS, 'function' => 'react'],
     ];
 
-    protected function routeGet(): Response
+    protected function routeGet(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(1);
+        $id = $queryBits->getInt(1);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -38,9 +39,9 @@ final class StaticPageController extends Controller
         return new Response($page->render());
     }
 
-    protected function addToMenu(): JsonResponse
+    protected function addToMenu(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -51,9 +52,9 @@ final class StaticPageController extends Controller
         return new JsonResponse();
     }
 
-    protected function delete(): JsonResponse
+    protected function delete(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -63,9 +64,9 @@ final class StaticPageController extends Controller
         return new JsonResponse();
     }
 
-    protected function react(RequestParameters $post): Response
+    protected function react(QueryBits $queryBits, RequestParameters $post): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);

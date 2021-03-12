@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\FriendlyUrl;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request\RequestParameters;
@@ -28,9 +29,9 @@ final class FriendlyUrlController extends Controller
         return new JsonResponse();
     }
 
-    public function addToMenu(): JsonResponse
+    public function addToMenu(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         $entry = FriendlyUrl::loadFromDatabase($id);
         if ($entry === null)
         {
@@ -43,9 +44,9 @@ final class FriendlyUrlController extends Controller
         return new JsonResponse();
     }
 
-    public function delete(): JsonResponse
+    public function delete(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         FriendlyUrl::deleteById($id);
         return new JsonResponse();
     }

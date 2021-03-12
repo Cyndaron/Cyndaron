@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Editor;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\Linkable;
@@ -26,34 +27,34 @@ final class EditorController extends Controller
     protected static array $savePages = [];
     protected static array $internalLinkTypes = [];
 
-    protected function routeGet(): Response
+    protected function routeGet(QueryBits $queryBits): Response
     {
-        $type = $this->queryBits->getString(1);
+        $type = $queryBits->getString(1);
         if (!array_key_exists($type, static::$editorPages))
         {
             throw new \Exception('Onbekend paginatype: ' . $type);
         }
 
         $class = static::$editorPages[$type];
-        $id = $this->queryBits->getNullableInt(2);
-        $previous = $this->queryBits->getString(3) === 'previous';
+        $id = $queryBits->getNullableInt(2);
+        $previous = $queryBits->getString(3) === 'previous';
         /** @var Page $editorPage */
         $editorPage = new $class($this->getInternalLinks(), $id, $previous);
-        $hash = $this->queryBits->getString(3);
+        $hash = $queryBits->getString(3);
         $hash = strlen($hash) > 20 ? $hash : '';
         $editorPage->addTemplateVar('hash', $hash);
         return new Response($editorPage->render());
     }
 
-    protected function routePost(RequestParameters $post): Response
+    protected function routePost(QueryBits $queryBits, RequestParameters $post): Response
     {
-        $type = $this->queryBits->getString(1);
+        $type = $queryBits->getString(1);
         if (!array_key_exists($type, static::$savePages))
         {
             throw new \Exception('Onbekend paginatype: ' . $type);
         }
 
-        $id = $this->queryBits->getNullableInt(2);
+        $id = $queryBits->getNullableInt(2);
 
         $class = static::$savePages[$type];
         try

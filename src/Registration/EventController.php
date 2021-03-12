@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\User\UserLevel;
@@ -17,9 +18,9 @@ final class EventController extends Controller
         'viewRegistrations' => ['level' => UserLevel::ADMIN, 'function' => 'viewRegistrations'],
     ];
 
-    protected function getEventInfo(): JsonResponse
+    protected function getEventInfo(QueryBits $queryBits): JsonResponse
     {
-        $eventId = $this->queryBits->getInt(2);
+        $eventId = $queryBits->getInt(2);
         if ($eventId < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -39,9 +40,9 @@ final class EventController extends Controller
         return new JsonResponse($answer);
     }
 
-    protected function register(): Response
+    protected function register(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -55,9 +56,9 @@ final class EventController extends Controller
         return new Response($page->render());
     }
 
-    protected function viewRegistrations(): Response
+    protected function viewRegistrations(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);

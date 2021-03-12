@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\User;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
@@ -122,9 +123,9 @@ final class UserController extends Controller
         return new JsonResponse(['userId' => $user->id]);
     }
 
-    protected function edit(RequestParameters $post): JsonResponse
+    protected function edit(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -155,9 +156,9 @@ final class UserController extends Controller
         return new JsonResponse();
     }
 
-    protected function delete(): JsonResponse
+    protected function delete(QueryBits $queryBits): JsonResponse
     {
-        $userId = $this->queryBits->getInt(2);
+        $userId = $queryBits->getInt(2);
         if ($userId < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -169,9 +170,9 @@ final class UserController extends Controller
         return new JsonResponse();
     }
 
-    protected function resetPassword(): JsonResponse
+    protected function resetPassword(QueryBits $queryBits): JsonResponse
     {
-        $userId = $this->queryBits->getInt(2);
+        $userId = $queryBits->getInt(2);
         if ($userId < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -184,9 +185,9 @@ final class UserController extends Controller
         return new JsonResponse();
     }
 
-    protected function changeAvatar(): Response
+    protected function changeAvatar(QueryBits $queryBits): Response
     {
-        $userId = $this->queryBits->getInt(2);
+        $userId = $queryBits->getInt(2);
         if ($userId < 1)
         {
             $page = new Page('Fout bij veranderen avatar', 'Onbekende fout.');

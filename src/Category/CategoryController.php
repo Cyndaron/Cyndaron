@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Category;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Menu\MenuItem;
@@ -35,9 +36,9 @@ final class CategoryController extends Controller
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
     ];
 
-    protected function routeGet(): Response
+    protected function routeGet(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getString(1);
+        $id = $queryBits->getString(1);
 
         if ($id === '0' || $id === 'fotoboeken')
         {
@@ -46,7 +47,7 @@ final class CategoryController extends Controller
         }
         if ($id === 'tag')
         {
-            $tag = $this->queryBits->getString(2);
+            $tag = $queryBits->getString(2);
             if ($tag === '')
             {
                 $page = new Page('Foute aanvraag', 'Lege tag ontvangen.');
@@ -81,9 +82,9 @@ final class CategoryController extends Controller
         return new JsonResponse($return);
     }
 
-    public function addToMenu(): JsonResponse
+    public function addToMenu(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -100,9 +101,9 @@ final class CategoryController extends Controller
         return new JsonResponse($return);
     }
 
-    public function delete(): JsonResponse
+    public function delete(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -113,9 +114,9 @@ final class CategoryController extends Controller
         return new JsonResponse();
     }
 
-    public function edit(RequestParameters $post): JsonResponse
+    public function edit(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -128,9 +129,9 @@ final class CategoryController extends Controller
         return new JsonResponse();
     }
 
-    public function changeOrder(RequestParameters $post): JsonResponse
+    public function changeOrder(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
-        $categoryId = $this->queryBits->getInt(2);
+        $categoryId = $queryBits->getInt(2);
         if ($categoryId < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -171,9 +172,9 @@ final class CategoryController extends Controller
         return new JsonResponse();
     }
 
-    public function underlyingPages(): JsonResponse
+    public function underlyingPages(QueryBits $queryBits): JsonResponse
     {
-        $categoryId = $this->queryBits->getInt(2);
+        $categoryId = $queryBits->getInt(2);
         if ($categoryId < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);

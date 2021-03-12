@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Menu;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Request\RequestParameters;
@@ -38,9 +39,9 @@ final class MenuController extends Controller
         return new JsonResponse();
     }
 
-    protected function editItem(RequestParameters $post): JsonResponse
+    protected function editItem(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
-        $index = $this->queryBits->getNullableInt(2);
+        $index = $queryBits->getNullableInt(2);
         $menuItem = new MenuItem($index);
         $menuItem->load();
         $menuItem->link = $post->getUrl('link');
@@ -57,9 +58,9 @@ final class MenuController extends Controller
         return new JsonResponse();
     }
 
-    protected function deleteItem(): JsonResponse
+    protected function deleteItem(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);

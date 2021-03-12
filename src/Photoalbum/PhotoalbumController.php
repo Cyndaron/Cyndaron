@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Photoalbum;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\View\Page;
@@ -27,9 +28,9 @@ final class PhotoalbumController extends Controller
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
     ];
 
-    protected function routeGet(): Response
+    protected function routeGet(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(1);
+        $id = $queryBits->getInt(1);
         if ($id < 1)
         {
             $page = new Page('Fotoalbum', 'Ongeldige parameter.');
@@ -52,9 +53,9 @@ final class PhotoalbumController extends Controller
         return new JsonResponse();
     }
 
-    public function addPhoto(): Response
+    public function addPhoto(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -77,9 +78,9 @@ final class PhotoalbumController extends Controller
         return new RedirectResponse("/photoalbum/{$album->id}");
     }
 
-    public function addToMenu(): JsonResponse
+    public function addToMenu(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -92,9 +93,9 @@ final class PhotoalbumController extends Controller
         return new JsonResponse();
     }
 
-    public function delete(): JsonResponse
+    public function delete(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -106,9 +107,9 @@ final class PhotoalbumController extends Controller
         return new JsonResponse();
     }
 
-    public function deletePhoto(): Response
+    public function deletePhoto(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -119,7 +120,7 @@ final class PhotoalbumController extends Controller
         {
             throw new \Exception('Photo album not found!');
         }
-        $filename = $this->queryBits->getString(3);
+        $filename = $queryBits->getString(3);
         if ($filename === '')
         {
             $page = new Page('Fout bij verwijderen foto', 'Geen bestandsnaam opgegeven!');
@@ -130,9 +131,9 @@ final class PhotoalbumController extends Controller
         return new RedirectResponse("/photoalbum/{$album->id}");
     }
 
-    public function edit(RequestParameters $post): JsonResponse
+    public function edit(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);

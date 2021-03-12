@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Util\Mail\Mail;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DatabaseError;
@@ -49,9 +50,9 @@ final class MailformController extends Controller
      * @throws Exception
      * @return Response
      */
-    public function process(RequestParameters $post): Response
+    public function process(QueryBits $queryBits, RequestParameters $post): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -176,9 +177,9 @@ final class MailformController extends Controller
      * @return JsonResponse
      *
      */
-    public function delete(): JsonResponse
+    public function delete(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         $mailform = Mailform::loadFromDatabase($id);
         if ($mailform === null)
         {

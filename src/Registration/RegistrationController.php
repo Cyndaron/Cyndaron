@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Util\Error\IncompleteData;
@@ -193,9 +194,9 @@ final class RegistrationController extends Controller
         return $errorFields;
     }
 
-    public function delete(): JsonResponse
+    public function delete(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -207,9 +208,9 @@ final class RegistrationController extends Controller
         return new JsonResponse();
     }
 
-    public function setApprovalStatus(RequestParameters $post): JsonResponse
+    public function setApprovalStatus(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -230,9 +231,9 @@ final class RegistrationController extends Controller
         return new JsonResponse();
     }
 
-    public function setIsPaid(): JsonResponse
+    public function setIsPaid(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);

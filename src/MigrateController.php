@@ -5,6 +5,7 @@
 namespace Cyndaron;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\User\User;
 use Cyndaron\View\Page;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,7 @@ final class MigrateController extends \Cyndaron\Routing\Controller
         '6.0' => 'migrate60',
     ];
 
-    protected function routeGet(): Response
+    protected function routeGet(QueryBits $queryBits): Response
     {
         $version = $this->action;
 
