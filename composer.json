@@ -22,6 +22,10 @@
         },
         {
             "type": "vcs",
+            "url": "https://github.com/Cyndaron/request"
+        },
+        {
+            "type": "vcs",
             "url": "https://github.com/Cyndaron/util"
         },
         {
@@ -62,7 +66,8 @@
         "cyndaron/dbal": "^1.0",
         "cyndaron/module-ticketsale": "dev-master",
         "cyndaron/util": "^1.0",
-        "cyndaron/view": "^1.0"
+        "cyndaron/view": "^1.0",
+        "cyndaron/request": "^1.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c3d857d5f9cd854ad23a569f259d33d3",
+    "content-hash": "247f7d25ff2fb94029a4a15bb7497b1a",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -504,6 +504,55 @@
                 "issues": "https://github.com/Cyndaron/module-ticketsale/issues"
             },
             "time": "2021-03-12T13:24:33+00:00"
+        },
+        {
+            "name": "cyndaron/request",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Cyndaron/request.git",
+                "reference": "a7e1a685313c4bbd3022ae84c8e294c7b5ff7942"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Cyndaron/request/zipball/a7e1a685313c4bbd3022ae84c8e294c7b5ff7942",
+                "reference": "a7e1a685313c4bbd3022ae84c8e294c7b5ff7942",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4",
+                "thecodingmachine/safe": "^1.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "phan/phan": "^3.0",
+                "phpstan/phpstan": "^0.12.42",
+                "roave/security-advisories": "dev-master",
+                "thecodingmachine/phpstan-safe-rule": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cyndaron\\Request\\": "src/"
+                }
+            },
+            "scripts": {
+                "phpstan": [
+                    "vendor/bin/phpstan analyse src --level 8"
+                ],
+                "cscheck": [
+                    "vendor/bin/php-cs-fixer fix src/ --allow-risky=yes --dry-run --diff"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Request component for Cyndaron",
+            "support": {
+                "source": "https://github.com/Cyndaron/request/tree/v1.0.1",
+                "issues": "https://github.com/Cyndaron/request/issues"
+            },
+            "time": "2021-03-12T14:24:17+00:00"
         },
         {
             "name": "cyndaron/util",
