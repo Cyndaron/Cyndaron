@@ -17,7 +17,7 @@ use function array_key_exists;
 use function is_array;
 use function session_start;
 
-class Controller
+abstract class Controller
 {
     protected ?string $module = null;
     protected ?string $action = null;
