@@ -556,16 +556,16 @@
         },
         {
             "name": "cyndaron/util",
-            "version": "v1",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Cyndaron/util.git",
-                "reference": "9038abc418267ba9273b597aa2de396de9b9ef03"
+                "reference": "22a51ef3dae67f6a40eec48df55357816ac3a16d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Cyndaron/util/zipball/9038abc418267ba9273b597aa2de396de9b9ef03",
-                "reference": "9038abc418267ba9273b597aa2de396de9b9ef03",
+                "url": "https://api.github.com/repos/Cyndaron/util/zipball/22a51ef3dae67f6a40eec48df55357816ac3a16d",
+                "reference": "22a51ef3dae67f6a40eec48df55357816ac3a16d",
                 "shasum": ""
             },
             "require": {
@@ -600,10 +600,10 @@
             ],
             "description": "General utility classes for Cyndaron",
             "support": {
-                "source": "https://github.com/Cyndaron/util/tree/v1",
+                "source": "https://github.com/Cyndaron/util/tree/v2",
                 "issues": "https://github.com/Cyndaron/util/issues"
             },
-            "time": "2021-03-12T13:04:14+00:00"
+            "time": "2021-04-14T16:35:41+00:00"
         },
         {
             "name": "cyndaron/view",
