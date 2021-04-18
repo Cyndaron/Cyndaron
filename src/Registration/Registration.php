@@ -12,6 +12,7 @@ use Cyndaron\View\Template\ViewHelpers;
 use \Exception;
 use Symfony\Component\Mime\Address;
 use function assert;
+use function file_exists;
 use function html_entity_decode;
 use function floor;
 
@@ -98,6 +99,10 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
         if (Setting::get('organisation') === Setting::ORGANISATION_VOV)
         {
             $templateFile = 'Registration/ConfirmationMailVOV';
+            if (file_exists(__DIR__ . '/templates/ConfirmationMailVOV-' . $event->id . '.blade.php'))
+            {
+                $templateFile = 'Registration/ConfirmationMailVOV-' . $event->id;
+            }
         }
 
         $template = new Template();
