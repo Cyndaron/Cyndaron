@@ -5,6 +5,9 @@
         @slot('left')
             <a class="btn btn-outline-cyndaron" href="/pagemanager/event">&laquo; Terug naar overzicht evenementen</a>
         @endslot
+        @slot('right')
+            @include('View/Widget/Button', ['kind' => 'th', 'link' => '/event/registrationListExcel/' . $event->id, 'text' => 'Excel-export'])
+        @endslot
     @endcomponent
 
     <table class="overzichtInschrijvingen table table-striped">
