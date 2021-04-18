@@ -12,6 +12,7 @@ Lid van: {{ $registration->currentChoir ?: 'Geen koor / ander koor' }}
 Voorkeur koor I/II: {{ $registration->choirPreference }}
 
 @foreach ($extraFields as $description => $contents)
+@if ($description === 'Geboortejaar') @continue @endif
 @if (!empty(trim((string)$contents))){{ $description }}: {{ $contents }}
 @endif
 @endforeach
