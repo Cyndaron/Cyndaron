@@ -6,7 +6,7 @@ Hieronder volgt een overzicht van uw inschrijving.
 Inschrijvingsnummer: {{ $registration->id }}
 
 Achternaam: {{ $registration->lastName }}
-Voorletters: {{ $registration->initials }}
+Voornaam: {{ $registration->initials }}
 Woonplaats: {{ $registration->city }}
 Telefoon: {{ $registration->phone }}
 Stemsoort: {{ $registration->vocalRange }}

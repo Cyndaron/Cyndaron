@@ -32,7 +32,7 @@ final class Util extends \Cyndaron\Util\Util
             {
                 if ($ageRange[0] === 0)
                 {
-                    return "t/m $ageRange[0]";
+                    return "t/m $ageRange[1]";
                 }
                 if ($ageRange[1] === INF)
                 {

@@ -19,7 +19,8 @@
             <td>
                 {{ $event->name }}
                 (<a href="/event/register/{{ $event->id }}">inschrijfpagina</a>,
-                <a href="/event/viewRegistrations/{{ $event->id }}">overzicht inschrijvingen</a>)
+                <a href="/event/viewRegistrations/{{ $event->id }}">overzicht inschrijvingen</a>,
+                <a href="/event/registrationListExcel/{{ $event->id }}">Excel-export</a>)
             </td>
             <td>
                 <div class="btn-group">

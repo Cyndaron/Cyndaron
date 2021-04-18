@@ -53,6 +53,10 @@ final class Registration extends Model
     public int $approvalStatus = self::APPROVAL_UNDECIDED;
     public bool $isPaid = false;
 
+    /**
+     * @param Event $event
+     * @return self[]
+     */
     public static function loadByEvent(Event $event): array
     {
         return static::fetchAll(['eventId = ?'], [$event->id], 'ORDER BY id');
