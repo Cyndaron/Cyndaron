@@ -13,9 +13,8 @@ let registrationCost1 = NaN;
 let registrationCost2 = NaN;
 let lunchCost = NaN;
 
-$.ajax('/api/event/getInfo/' + eventId, {}).done(function (json)
+$.ajax('/api/event/getInfo/' + eventId, {}).done(function (data)
 {
-    let data = JSON.parse(json);
     tickettypes = data.tickettypes;
     registrationCost0 = parseFloat(data.registrationCost0);
     registrationCost1 = parseFloat(data.registrationCost1);

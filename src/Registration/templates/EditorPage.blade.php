@@ -29,6 +29,8 @@
 
     @include ('View/Widget/Form/Checkbox', ['id' => 'requireApproval', 'description' => 'Vereis goedkeuring van inschrijvingen', 'checked' => $model->requireApproval])
 
+    @include ('View/Widget/Form/Checkbox', ['id' => 'hideRegistrationFee', 'description' => 'Inschrijfgeld niet tonen', 'checked' => $model->hideRegistrationFee])
+
     @include ('View/Widget/Form/InputText', ['id' => 'performedPiece',  'label' => 'Uitgevoerd stuk', 'value' => $model->performedPiece ?? ''])
 
     @include ('View/Widget/Form/Textarea', ['id' => 'termsAndConditions',  'label' => 'Voorwaarden', 'value' => $model->termsAndConditions ?? ''])

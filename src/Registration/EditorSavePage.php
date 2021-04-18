@@ -23,6 +23,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $event->maxRegistrations = $post->getInt('maxRegistrations');
         $event->numSeats = $post->getInt('numSeats');
         $event->requireApproval = $post->getBool('requireApproval');
+        $event->hideRegistrationFee = $post->getBool('hideRegistrationFee');
         $event->performedPiece = $post->getHTML('performedPiece');
         $event->termsAndConditions = $post->getHTML('termsAndConditions');
 
