@@ -31,14 +31,28 @@ final class RegistrationController extends Controller
 
     protected function add(RequestParameters $post): Response
     {
+
+
         try
         {
+            $eventId = $post->getInt('event_id');
+            /** @var Event|null $eventObj */
+            $eventObj = Event::loadFromDatabase($eventId);
+            if ($eventObj === null)
+            {
+                throw new Exception('Evenement niet gevonden!');
+            }
+
             $this->processRegistration($post);
 
             $body = 'Hartelijk dank voor uw aanmelding. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw aanmelding en betaalinformatie.';
             if (Setting::get('organisation') === 'Stichting Bijzondere Koorprojecten')
             {
                 $body = 'Hartelijk dank voor je aanmelding. Je ontvangt binnen enkele minuten een e-mail met een bevestiging van je aanmelding.';
+            }
+            elseif ($eventObj->hideRegistrationFee)
+            {
+                $body = 'Hartelijk dank voor uw aanmelding. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw aanmelding.';
             }
 
             $page = new Page(
