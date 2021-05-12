@@ -1,4 +1,4 @@
 # Disable script execution
-php_flag engine off
+#php_flag engine off
 AddHandler cgi-script .php .php3 .php4 .phtml .pl .py .jsp .asp .aspx .htm .html .shtml .sh .cgi
 Options -Indexes -ExecCGI
