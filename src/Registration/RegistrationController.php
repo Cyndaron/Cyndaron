@@ -31,8 +31,6 @@ final class RegistrationController extends Controller
 
     protected function add(RequestParameters $post): Response
     {
-
-
         try
         {
             $eventId = $post->getInt('event_id');
