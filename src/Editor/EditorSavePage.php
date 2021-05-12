@@ -94,7 +94,7 @@ abstract class EditorSavePage
 
         $image = str_replace('base64,', '', $image);
         $image = base64_decode(str_replace(' ', '+', $image), true);
-        $destinationFilename = self::IMAGE_DIR . date('c') . '-' . md5($image) . '.' . $extension;
+        $destinationFilename = self::IMAGE_DIR . '/' . date('c') . '-' . md5($image) . '.' . $extension;
         Util::createDir(self::IMAGE_DIR);
         file_put_contents($destinationFilename, $image);
 
