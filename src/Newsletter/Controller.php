@@ -157,7 +157,7 @@ class Controller extends \Cyndaron\Routing\Controller
             Subscriber::fetchAll()
         );
 
-        $unsubscribe = '<hr><i>U ontvangt deze e-mail omdat u zich heeft ingeschreven voor de nieuwsbrief. Mail naar <a href="mailto:info@sportschoolgeelhoed.nl">info@sportschoolgeelhoed.nl</a> om u uit te schrijven.</i>';
+        $unsubscribe = '<hr><i>U ontvangt deze e-mail omdat u zich heeft ingeschreven voor de nieuwsbrief. Mail naar <a href="mailto:nieuwsbrief@sportschoolgeelhoed.nl">nieuwsbrief@sportschoolgeelhoed.nl</a> om u uit te schrijven.</i>';
         $result = $this->sendNewsletterMail($subject, $body . $unsubscribe, $subscriberAddresses);
         if ($result === false || $recipient === 'subscribers')
         {
@@ -182,7 +182,7 @@ class Controller extends \Cyndaron\Routing\Controller
         );
         // Do not send an e-mail to people who already got one because they're a newsletter subscriber.
         $memberAddresses = array_diff($memberAddresses, $subscriberAddresses);
-        $unsubscribe = '<hr><i>U ontvangt deze e-mail omdat u of uw kind(eren) lid zijn van Sportschool Geelhoed. Mail naar <a href="mailto:info@sportschoolgeelhoed.nl">info@sportschoolgeelhoed.nl</a> om u uit te schrijven.</i>';
+        $unsubscribe = '<hr><i>U ontvangt deze e-mail omdat u of uw kind(eren) lid zijn van Sportschool Geelhoed. Mail naar <a href="mailto:nieuwsbrief@sportschoolgeelhoed.nl">nieuwsbrief@sportschoolgeelhoed.nl</a> om u uit te schrijven.</i>';
         $result = $this->sendNewsletterMail($subject, $body . $unsubscribe, $memberAddresses);
         return $this->getResponse($result);
     }
