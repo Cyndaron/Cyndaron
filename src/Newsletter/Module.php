@@ -24,6 +24,7 @@ final class Module implements Routes, UserMenu
     public function getUserMenuItems(): array
     {
         return [
+            ['label' => 'Nieuwsbrief versturen', 'link' => '/newsletter/compose', 'level' => UserLevel::ADMIN],
             ['label' => 'Abonnees nieuwsbrief', 'link' => '/newsletter/viewSubscribers', 'level' => UserLevel::ADMIN],
         ];
     }
