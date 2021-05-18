@@ -15,7 +15,9 @@ final class PhotoalbumIndexPage extends Page
 
         $this->addTemplateVars([
             'type' => 'photoalbums',
+            'model' => null,
             'pages' => $photoalbums,
+            'tags' => [],
             'viewMode' => Category::VIEWMODE_TITLES
         ]);
     }

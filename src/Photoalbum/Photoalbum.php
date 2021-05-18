@@ -63,14 +63,21 @@ final class Photoalbum extends ModelWithCategory
     {
         $ret = [];
 
-        $dirArray = @scandir(Util::UPLOAD_DIR . "/photoalbums/$this->id/originals");
-        if ($dirArray !== [])
+        try
         {
-            natsort($dirArray);
-            $ret = array_values(array_filter($dirArray, static function($value)
+            $dirArray = scandir(Util::UPLOAD_DIR . "/photoalbums/$this->id/originals");
+            if ($dirArray !== [])
             {
-                return substr($value, 0, 1) !== '.';
-            }));
+                natsort($dirArray);
+                $ret = array_values(array_filter($dirArray, static function($value)
+                {
+                    return substr($value, 0, 1) !== '.';
+                }));
+            }
+        }
+        catch (\Throwable $e)
+        {
+            error_log((string)$e);
         }
 
         return $ret;
