@@ -1,7 +1,9 @@
 @extends ('Index')
 
 @section ('titleControls')
-    <a href="/editor/category/{{ $model->id }}" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
+    @if ($model)
+        <a href="/editor/category/{{ $model->id }}" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
+    @endif
 @endsection
 
 @section ('contents')
