@@ -607,16 +607,16 @@
         },
         {
             "name": "cyndaron/view",
-            "version": "v1.0.3",
+            "version": "v1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Cyndaron/view.git",
-                "reference": "276f0ebc67692307690bf424e34931b298cc04be"
+                "reference": "6751b4e301bbab5bc563668bbcf53b1d05290661"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Cyndaron/view/zipball/276f0ebc67692307690bf424e34931b298cc04be",
-                "reference": "276f0ebc67692307690bf424e34931b298cc04be",
+                "url": "https://api.github.com/repos/Cyndaron/view/zipball/6751b4e301bbab5bc563668bbcf53b1d05290661",
+                "reference": "6751b4e301bbab5bc563668bbcf53b1d05290661",
                 "shasum": ""
             },
             "require": {
@@ -655,10 +655,10 @@
             ],
             "description": "View and template components Cyndaron",
             "support": {
-                "source": "https://github.com/Cyndaron/view/tree/v1.0.3",
+                "source": "https://github.com/Cyndaron/view/tree/v1.0.5",
                 "issues": "https://github.com/Cyndaron/view/issues"
             },
-            "time": "2021-03-12T14:04:09+00:00"
+            "time": "2021-05-18T17:52:25+00:00"
         },
         {
             "name": "doctrine/inflector",
