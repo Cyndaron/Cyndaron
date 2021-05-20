@@ -1,4 +1,6 @@
 # Disable script execution
-#php_flag engine off
-AddHandler cgi-script .php .php3 .php4 .phtml .pl .py .jsp .asp .aspx .htm .html .shtml .sh .cgi
+<FilesMatch "\.(php|php3|php4|phtml|pl|py|jsp|asp|aspx|htm|html|shtml|sh|cgi|js)$">
+    deny from all
+</FilesMatch>
+AddHandler cgi-script .php .php3 .php4 .phtml .pl .py .jsp .asp .aspx .htm .html .shtml .sh .cgi .js
 Options -Indexes -ExecCGI
