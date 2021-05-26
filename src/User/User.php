@@ -40,7 +40,7 @@ use function password_verify;
 final class User extends Model
 {
     public const TABLE = 'users';
-    public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'initials', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city', 'dateOfBirth', 'notes'];
+    public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'initials', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city', 'dateOfBirth', 'optOut', 'notes'];
 
     public const AVATAR_DIR = Util::UPLOAD_DIR . '/user/avatar';
 
@@ -63,6 +63,7 @@ final class User extends Model
     public ?string $postalCode = null;
     public ?string $city = null;
     public ?string $dateOfBirth = null;
+    public bool $optOut = false;
     public string $notes = '';
 
     public const RESET_PASSWORD_MAIL_TEXT =
