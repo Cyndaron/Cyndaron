@@ -8,6 +8,7 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use ReflectionNamedType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -138,8 +139,8 @@ abstract class Controller
         $params = [];
         foreach ($reflectionMethod->getParameters() as $parameter)
         {
-            $class = $parameter->getClass();
-            $className = $class ? $class->getName() : '';
+            $type = $parameter->getType();
+            $className = ($type instanceof ReflectionNamedType) ? $type->getName() : '';
 
             $params[] = $dic->get($className);
         }
