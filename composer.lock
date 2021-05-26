@@ -337,12 +337,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Cyndaron/module-geelhoed.git",
-                "reference": "4e25ff23f9b8218b9ef62bc3f1648141e97c9b39"
+                "reference": "db4dcc93286b3f4a4c78bb454557ec7fb0e71098"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Cyndaron/module-geelhoed/zipball/4e25ff23f9b8218b9ef62bc3f1648141e97c9b39",
-                "reference": "4e25ff23f9b8218b9ef62bc3f1648141e97c9b39",
+                "url": "https://api.github.com/repos/Cyndaron/module-geelhoed/zipball/db4dcc93286b3f4a4c78bb454557ec7fb0e71098",
+                "reference": "db4dcc93286b3f4a4c78bb454557ec7fb0e71098",
                 "shasum": ""
             },
             "require": {
@@ -388,7 +388,7 @@
                 "source": "https://github.com/Cyndaron/module-geelhoed/tree/master",
                 "issues": "https://github.com/Cyndaron/module-geelhoed/issues"
             },
-            "time": "2021-05-26T17:06:21+00:00"
+            "time": "2021-05-26T17:12:26+00:00"
         },
         {
             "name": "cyndaron/module-minecraft",
