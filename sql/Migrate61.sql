@@ -114,3 +114,5 @@ CREATE TABLE `newsletter_subscriber` (
     PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
 ALTER TABLE `newsletter_subscriber` ADD UNIQUE( `email`);
+
+ALTER TABLE `users` ADD `optOut` TINYINT(1) DEFAULT 0 AFTER `dateOfBirth`;
