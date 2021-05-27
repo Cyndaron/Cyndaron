@@ -4,6 +4,7 @@ Header set X-XSS-Protection "1; mode=block"
 Header set X-Content-Type-Options "nosniff"
 Header set Referrer-Policy "no-referrer-when-downgrade"
 Header set Cross-Origin-Opener-Policy "same-origin"
+Header set Permissions-Policy "interest-cohort=()"
 
 # Prevent generating folder indexes (for safety reasons); turn off MultiViews (interferes with our own routing)
 Options -Indexes -MultiViews
