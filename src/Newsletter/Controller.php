@@ -32,6 +32,7 @@ use function class_exists;
 use function count;
 use function \Safe\error_log;
 use function trim;
+use function filter_var;
 
 class Controller extends \Cyndaron\Routing\Controller
 {
@@ -92,7 +93,9 @@ class Controller extends \Cyndaron\Routing\Controller
     {
         $addresses = array_filter($addresses, static function(string $address)
         {
-            return (trim($address) !== '');
+            return
+                (trim($address) !== '') &&
+                filter_var($address, FILTER_VALIDATE_EMAIL);
         });
         if (count($addresses) === 0)
         {
