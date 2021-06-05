@@ -9,6 +9,7 @@ use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Url;
 use Cyndaron\Util\Util;
 
+use function Safe\error_log;
 use function Safe\natsort;
 use function Safe\scandir;
 use function Safe\substr;
