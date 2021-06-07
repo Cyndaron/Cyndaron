@@ -37,7 +37,6 @@ class Page
         '/js/cyndaron.js',
     ];
 
-    protected string $extraMeta = '';
     protected string $title = '';
     protected array $extraScripts = [];
     protected array $extraCss = [];
@@ -144,11 +143,6 @@ class Page
                 $this->templateVars[$varName] = ViewHelpers::parseText(ob_get_clean() ?: '');
             }
         }
-    }
-
-    public function setExtraMeta(string $extraMeta): void
-    {
-        $this->extraMeta = $extraMeta;
     }
 
     public function isFrontPage(): bool
