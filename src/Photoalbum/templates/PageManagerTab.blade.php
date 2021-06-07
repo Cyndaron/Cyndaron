@@ -18,7 +18,7 @@
         @php /** @var \Cyndaron\Photoalbum\Photoalbum[] $photoalbums */ @endphp
         @foreach ($photoalbums as $photoalbum)
         <tr id="pm-row-photoalbum-{{ $photoalbum->id }}">
-            <td>{{ $photoalbum->id }}</td>
+            <td><a href="/photoalbum/{{ $photoalbum->id }}">{{ $photoalbum->id }}</a></td>
             <td>
                 <a href="/photoalbum/{{ $photoalbum->id }}"><b>{{ $photoalbum->name }}</b></a>
             </td>

@@ -18,7 +18,7 @@
         @php /** @var \Cyndaron\Category\Category[] $categories */ @endphp
         @foreach ($categories as $category)
             <tr id="pm-row-category-{{ $category->id }}">
-                <td>{{ $category->id }}</td>
+                <td><a href="/category/{{ $category->id }}">{{ $category->id }}</a></td>
                 <td>
                     <a href="/category/{{ $category->id }}"><b>{{ $category->name }}</b></a>
                 </td>

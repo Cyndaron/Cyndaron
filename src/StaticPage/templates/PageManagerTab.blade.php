@@ -17,7 +17,7 @@
         <tbody>
             @foreach ($subs as $id => $sub)
             <tr id="pm-row-sub-{{ $id }}">
-                <td>{{ $id }}</td>
+                <td><a href="/sub/{{ $id }}">{{ $id }}</a></td>
                 <td>
                     <span style="font-size: 15px;">
                         <a href="/sub/{{ $id }}"><b>{{ $sub['name'] }}</b></a>
