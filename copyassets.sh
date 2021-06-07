@@ -1,5 +1,5 @@
 #!/bin/bash
-FILES=$(grep -IriEoh "\/(src|vendor)\/.*\.(js|css|map|png|jpg|jpeg|gif|html)" src/ vendor/cyndaron/ | uniq)
+FILES=$(grep -IriEoh "\/(src|vendor)\/.*\.(js|css|map|png|jpg|jpeg|gif|html)" src/ | uniq)
 
 rm -Rf public_html/asset/*
 

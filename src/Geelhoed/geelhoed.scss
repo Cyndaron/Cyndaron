@@ -1,0 +1,25 @@
+#geelhoed-membermanager
+{
+    overflow-x: scroll;
+
+    td {
+        //white-space:nowrap;
+        //word-break: keep-all;
+    }
+}
+
+.location-card
+{
+    margin-bottom: 30px;
+}
+
+table.location-overview
+{
+    td:last-child, th:last-child,
+    {
+        @media (all and max-width: 767px)
+        {
+            display: none;
+        }
+    }
+}

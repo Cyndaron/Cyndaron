@@ -11,40 +11,6 @@
         "optimize-autoloader": true,
         "classmap-authoritative": true
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/Cyndaron/module"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/Cyndaron/dbal"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/Cyndaron/request"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/Cyndaron/util"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/Cyndaron/view"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/Cyndaron/module-geelhoed"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/Cyndaron/module-minecraft"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/Cyndaron/module-ticketsale"
-        }
-    ],
     "require": {
         "php": "^7.4",
         "ext-pdo": "*",
@@ -57,17 +23,13 @@
         "twbs/bootstrap": "^4.5",
         "symfony/http-foundation": "^5.0",
         "thecodingmachine/safe": "^1.1",
-        "cyndaron/module-geelhoed": "dev-master",
-        "cyndaron/module-minecraft": "dev-master",
-        "symfony/mailer": "^5.2",
+        "symfony/mailer": "^5.3",
         "symfony/http-kernel": "^5.2",
         "symfony/routing": "^5.2",
-        "cyndaron/module": "^1.0",
-        "cyndaron/dbal": "^1.0",
-        "cyndaron/module-ticketsale": "dev-master",
-        "cyndaron/util": "^1.0",
-        "cyndaron/view": "^1.0",
-        "cyndaron/request": "^1.0"
+        "illuminate/view": "^8.45",
+        "conedevelopment/blade-filters": "^0.8.0",
+        "mollie/mollie-api-php": "^2.32",
+        "phpoffice/phpspreadsheet": "^1.18"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

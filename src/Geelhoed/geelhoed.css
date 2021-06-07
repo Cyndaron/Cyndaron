@@ -1,0 +1,11 @@
+#geelhoed-membermanager {
+  overflow-x: scroll; }
+
+.location-card {
+  margin-bottom: 30px; }
+
+@media (max-width: 767px) {
+  table.location-overview td:last-child, table.location-overview th:last-child {
+    display: none; } }
+
+/*# sourceMappingURL=geelhoed.css.map */
