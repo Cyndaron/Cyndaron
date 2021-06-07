@@ -11,6 +11,7 @@ use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\usort;
@@ -46,7 +47,7 @@ final class EditorController extends Controller
         return new Response($editorPage->render());
     }
 
-    protected function routePost(QueryBits $queryBits, RequestParameters $post): Response
+    protected function routePost(QueryBits $queryBits, RequestParameters $post, Request $request): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, static::$savePages))
@@ -60,7 +61,7 @@ final class EditorController extends Controller
         try
         {
             /** @var EditorSavePage $editorSavePage */
-            $editorSavePage = new $class($id, $post);
+            $editorSavePage = new $class($id, $post, $request);
             return new RedirectResponse($editorSavePage->getReturnUrl() ?: '/');
         }
         catch (\PDOException $e)

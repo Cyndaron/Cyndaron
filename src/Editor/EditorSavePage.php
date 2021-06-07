@@ -9,8 +9,11 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
 use Cyndaron\Util\Util;
 
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\Request;
 use function Safe\base64_decode;
 use function Safe\date;
+use function Safe\error_log;
 use function Safe\file_put_contents;
 use function strtr;
 use function preg_replace_callback;
@@ -18,7 +21,6 @@ use function is_string;
 use function explode;
 use function str_replace;
 use function md5;
-use function move_uploaded_file;
 
 abstract class EditorSavePage
 {
@@ -31,11 +33,11 @@ abstract class EditorSavePage
     public const PAGE_HEADER_DIR = Util::UPLOAD_DIR . '/images/page-header';
     public const PAGE_PREVIEW_DIR = Util::UPLOAD_DIR . '/images/page-preview';
 
-    public function __construct(?int $id, RequestParameters $post)
+    public function __construct(?int $id, RequestParameters $post, Request $request)
     {
         $this->id = $id;
 
-        $this->prepare($post);
+        $this->prepare($post, $request);
 
         $friendlyUrl = $post->getUrl('friendlyUrl');
         if ($friendlyUrl !== '')
@@ -57,7 +59,7 @@ abstract class EditorSavePage
         }
     }
 
-    abstract protected function prepare(RequestParameters $post): void;
+    abstract protected function prepare(RequestParameters $post, Request $request): void;
 
     protected function parseTextForInlineImages(string $text): string
     {
@@ -106,26 +108,38 @@ abstract class EditorSavePage
         return $this->returnUrl;
     }
 
-    protected function saveHeaderAndPreviewImage(ModelWithCategory $model, RequestParameters $post): void
+    protected function saveHeaderAndPreviewImage(ModelWithCategory $model, RequestParameters $post, Request $request): void
     {
-        $image = $post->getUrl('image');
-        if (!empty($_FILES['header-image-upload']['name']))
+        Util::ensureDirectoryExists(self::PAGE_HEADER_DIR);
+        Util::ensureDirectoryExists(self::PAGE_PREVIEW_DIR);
+
+        $files = $request->files;
+        $image = $post->getUrl('editorHeaderImage');
+        if ($file = $files->get('header-image-upload'))
         {
-            Util::ensureDirectoryExists(self::PAGE_HEADER_DIR);
-            $filename = self::PAGE_HEADER_DIR . '/' . $_FILES['header-image-upload']['name'];
-            if (move_uploaded_file($_FILES['header-image-upload']['tmp_name'], $filename))
+            try
             {
-                $image = Util::filenameToUrl($filename);
+                /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+                $file = $file->move(self::PAGE_HEADER_DIR, $file->getClientOriginalName());
+                $image = Util::filenameToUrl($file->getPathname());
+            }
+            catch (FileException $e)
+            {
+                error_log((string)$e);
             }
         }
-        $previewImage = $post->getUrl('previewImage');
-        if (!empty($_FILES['preview-image-upload']['name']))
+        $previewImage = $post->getUrl('editorPreviewImage');
+        if ($file = $files->get('preview-image-upload'))
         {
-            Util::ensureDirectoryExists(self::PAGE_PREVIEW_DIR);
-            $filename = self::PAGE_PREVIEW_DIR . '/' . $_FILES['preview-image-upload']['name'];
-            if (move_uploaded_file($_FILES['preview-image-upload']['tmp_name'], $filename))
+            try
             {
-                $previewImage = Util::filenameToUrl($filename);
+                /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+                $file = $file->move(self::PAGE_PREVIEW_DIR, $file->getClientOriginalName());
+                $previewImage = Util::filenameToUrl($file->getPathname());
+            }
+            catch (FileException $e)
+            {
+                error_log((string)$e);
             }
         }
         $model->image = $image;

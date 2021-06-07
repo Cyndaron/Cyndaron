@@ -5,12 +5,13 @@ namespace Cyndaron\Mailform;
 
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
+use Symfony\Component\HttpFoundation\Request;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'mailform';
 
-    protected function prepare(RequestParameters $post): void
+    protected function prepare(RequestParameters $post, Request $request): void
     {
         $mailform = new Mailform($this->id);
         $mailform->loadIfIdIsSet();

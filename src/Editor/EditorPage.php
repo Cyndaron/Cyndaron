@@ -68,8 +68,8 @@ abstract class EditorPage extends Page
         $this->templateVars['friendlyUrlPrefix'] = "https://{$_SERVER['HTTP_HOST']}/";
         $this->templateVars['article'] = $this->content;
         $this->templateVars['model'] = $this->model;
-        $this->templateVars['image'] = ($this->model instanceof ModelWithCategory) ? $this->model->image : '';
-        $this->templateVars['previewImage'] = ($this->model instanceof ModelWithCategory) ? $this->model->previewImage : '';
+        $this->templateVars['editorHeaderImage'] = ($this->model instanceof ModelWithCategory) ? $this->model->image : '';
+        $this->templateVars['editorPreviewImage'] = ($this->model instanceof ModelWithCategory) ? $this->model->previewImage : '';
         $this->templateVars['blurb'] = ($this->model instanceof ModelWithCategory) ? $this->model->blurb : '';
 
         $this->templateVars['internalLinks'] = $internalLinks;

@@ -5,10 +5,11 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
+use Symfony\Component\HttpFoundation\Request;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
-    protected function prepare(RequestParameters $post): void
+    protected function prepare(RequestParameters $post, Request $request): void
     {
         $event = new Event($this->id);
         $event->loadIfIdIsSet();

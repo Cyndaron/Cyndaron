@@ -32,8 +32,8 @@
         @endif
 
         @if ($hasCategory)
-            @include('View/Widget/Form/BasicInput', ['id' => 'image', 'label' => 'Afbeelding', 'type' => 'text', 'value' => $image, 'datalist' => 'page-header-images'])
-            @include('View/Widget/Form/BasicInput', ['id' => 'previewImage', 'label' => 'Preview-afbeelding', 'type' => 'text', 'value' => $previewImage, 'datalist' => 'page-preview-images'])
+            @include('View/Widget/Form/BasicInput', ['id' => 'editorHeaderImage', 'label' => 'Afbeelding', 'type' => 'text', 'value' => $editorHeaderImage, 'datalist' => 'page-header-images'])
+            @include('View/Widget/Form/BasicInput', ['id' => 'editorPreviewImage', 'label' => 'Preview-afbeelding', 'type' => 'text', 'value' => $editorPreviewImage, 'datalist' => 'page-preview-images'])
             @include('View/Widget/Form/BasicInput', ['id' => 'blurb', 'label' => 'Korte samenvatting', 'type' => 'text', 'value' => $blurb])
 
             <label class="btn btn-primary" for="header-image-upload">Headerafbeelding uploaden...

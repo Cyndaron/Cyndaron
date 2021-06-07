@@ -3,13 +3,14 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
+use Symfony\Component\HttpFoundation\Request;
 use function trim;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'sub';
 
-    protected function prepare(RequestParameters $post): void
+    protected function prepare(RequestParameters $post, Request $request): void
     {
         $titel = $post->getHTML('titel');
         $text = $this->parseTextForInlineImages($post->getHTML('artikel'));
@@ -25,7 +26,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $model->enableComments = $enableComments;
         $model->showBreadcrumbs = $showBreadcrumbs;
         $model->tags = $tags;
-        $this->saveHeaderAndPreviewImage($model, $post);
+        $this->saveHeaderAndPreviewImage($model, $post, $request);
         if ($model->save())
         {
             $this->saveCategories($model, $post);

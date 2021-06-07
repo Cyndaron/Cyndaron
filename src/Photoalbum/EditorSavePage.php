@@ -3,12 +3,13 @@ namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
+use Symfony\Component\HttpFoundation\Request;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'photoalbum';
 
-    protected function prepare(RequestParameters $post): void
+    protected function prepare(RequestParameters $post, Request $request): void
     {
         $photoalbum = new Photoalbum($this->id);
         $photoalbum->loadIfIdIsSet();
@@ -18,7 +19,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $photoalbum->showBreadcrumbs = $post->getBool('showBreadcrumbs');
         $photoalbum->hideFromOverview = $post->getBool('hideFromOverview');
         $photoalbum->viewMode = $post->getInt('viewMode');
-        $this->saveHeaderAndPreviewImage($photoalbum, $post);
+        $this->saveHeaderAndPreviewImage($photoalbum, $post, $request);
         $photoalbum->save();
         $this->saveCategories($photoalbum, $post);
 
