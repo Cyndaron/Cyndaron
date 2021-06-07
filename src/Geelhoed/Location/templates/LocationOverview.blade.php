@@ -7,11 +7,17 @@
         </div>
     @endif
 
+    @php $lastCity = '' @endphp
     @php /** @var \Cyndaron\Geelhoed\Location\Location[] $locations*/ @endphp
     @foreach ($locations as $location)
         @php $hoursPerWeekday = $location->getHoursSortedByWeekday() @endphp
         @if (count($hoursPerWeekday) === 0) @continue @endif
-        <div class="card location-card">
+
+        <div class="card location-card"
+            @if ($lastCity !== $location->city)
+                id="{{ $location->city }}"
+                @php $lastCity = $location->city @endphp
+            @endif>
             <div class="card-header">
                 <h2>{{ $location->city }}, {{ $location->name ?: ($location->street) }}</h2>
             </div>
