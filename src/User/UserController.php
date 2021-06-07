@@ -13,6 +13,7 @@ use Cyndaron\Util\Util;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use function strlen;
 
@@ -185,7 +186,7 @@ final class UserController extends Controller
         return new JsonResponse();
     }
 
-    protected function changeAvatar(QueryBits $queryBits): Response
+    protected function changeAvatar(QueryBits $queryBits, Request $request): Response
     {
         $userId = $queryBits->getInt(2);
         if ($userId < 1)
@@ -196,7 +197,7 @@ final class UserController extends Controller
 
         $user = new User($userId);
         $user->load();
-        $user->uploadNewAvatar();
+        $user->uploadNewAvatar($request);
 
         return new RedirectResponse('/user/manager');
     }

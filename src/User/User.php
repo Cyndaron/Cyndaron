@@ -15,6 +15,7 @@ use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\ImageException;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mime\Address;
 use function Safe\file_get_contents;
 use function Safe\imagecreatefromgif;
@@ -137,11 +138,12 @@ Uw nieuwe wachtwoord is: %s';
         $this->mailNewPassword($newPassword);
     }
 
-    public function uploadNewAvatar(): void
+    public function uploadNewAvatar(Request $request): void
     {
-        Util::createDir(static::AVATAR_DIR);
-
-        $tmpName = $_FILES['avatarFile']['tmp_name'];
+        Util::ensureDirectoryExists(static::AVATAR_DIR);
+        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+        $file = $request->files->get('avatarFile');
+        $tmpName = $file->getPathname();
         try
         {
             $buffer = file_get_contents($tmpName);
