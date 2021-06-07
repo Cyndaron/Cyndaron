@@ -7,7 +7,7 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label" for="titel">Titel: </label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="titel" name="titel"
+                    <input type="text" class="form-control" id="titel" name="titel" required
                            value="{{ $contentTitle }}"/>
                 </div>
             </div>
