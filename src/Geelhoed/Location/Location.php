@@ -54,7 +54,12 @@ final class Location extends Model
 
     public function getName(): string
     {
-        return $this->name ?: "$this->street $this->city";
+        if ($this->name)
+        {
+            return "{$this->name}, {$this->city}";
+        }
+
+        return "{$this->street}, {$this->city}";
     }
 
     public function getMapsLink(): string

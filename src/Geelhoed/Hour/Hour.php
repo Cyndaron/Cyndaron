@@ -86,6 +86,15 @@ final class Hour extends Model
         return $object;
     }
 
+    /**
+     * @param int $age
+     * @return self[]
+     */
+    public static function fetchByAge(int $age): array
+    {
+        return self::fetchAll(['minAge <= ? AND (maxAge IS NULL OR maxAge >= ?)'], [$age, $age], 'ORDER BY locationId, day');
+    }
+
     public function save(): bool
     {
         $result = parent::save();
