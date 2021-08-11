@@ -2,5 +2,34 @@ parameters:
     bootstrapFiles:
         - .phpstan_bootstrap.php
     checkMissingIterableValueType: false
+    polluteScopeWithLoopInitialAssignments: false
+    polluteScopeWithAlwaysIterableForeach: false
+    checkAlwaysTrueInstanceof: true
+    checkExplicitMixedMissingReturn: true
+    checkFunctionNameCase: true
+    reportMaybesInMethodSignatures: true
+    reportStaticMethodSignatures: true
 includes:
     - vendor/thecodingmachine/phpstan-safe-rule/phpstan-safe-rule.neon
+
+rules:
+	- PHPStan\Rules\Classes\RequireParentConstructCallRule
+	- PHPStan\Rules\DisallowedConstructs\DisallowedImplicitArrayCreationRule
+	- PHPStan\Rules\Methods\WrongCaseOfInheritedMethodRule
+	- PHPStan\Rules\Operators\OperandInArithmeticPostDecrementRule
+	- PHPStan\Rules\Operators\OperandInArithmeticPostIncrementRule
+	- PHPStan\Rules\Operators\OperandInArithmeticPreDecrementRule
+	- PHPStan\Rules\Operators\OperandInArithmeticPreIncrementRule
+	- PHPStan\Rules\Operators\OperandsInArithmeticAdditionRule
+	- PHPStan\Rules\Operators\OperandsInArithmeticDivisionRule
+	- PHPStan\Rules\Operators\OperandsInArithmeticExponentiationRule
+	- PHPStan\Rules\Operators\OperandsInArithmeticModuloRule
+	- PHPStan\Rules\Operators\OperandsInArithmeticMultiplicationRule
+	- PHPStan\Rules\Operators\OperandsInArithmeticSubtractionRule
+	- PHPStan\Rules\StrictCalls\DynamicCallOnStaticMethodsRule
+	- PHPStan\Rules\StrictCalls\StrictFunctionCallsRule
+	- PHPStan\Rules\SwitchConditions\MatchingTypeInSwitchCaseConditionRule
+
+services:
+	-
+		class: PHPStan\Rules\Operators\OperatorRuleHelper

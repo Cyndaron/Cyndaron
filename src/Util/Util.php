@@ -101,7 +101,7 @@ class Util
     {
         $year = (int)date('Y');
         $nextYear = $year + 1;
-        $currentQuarter = floor(((int)date('m') - 1) / 3) + 1;
+        $currentQuarter = (int)floor(((int)date('m') - 1) / 3) + 1;
 
         switch ($currentQuarter)
         {

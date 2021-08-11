@@ -36,7 +36,8 @@
         "phan/phan": "^3.0",
         "thecodingmachine/phpstan-safe-rule": "^1.0",
         "phpstan/phpstan": "^0.12.42",
-        "friendsofphp/php-cs-fixer": "^2.16"
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "phpstan/phpstan-strict-rules": "^0.12.10"
     },
     "scripts": {
         "phpstan": [
