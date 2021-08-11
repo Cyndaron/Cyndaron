@@ -5,6 +5,7 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\View\Page;
 use Cyndaron\User\UserLevel;
+use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,7 +29,7 @@ final class LocationController extends Controller
 
         if ($location === null)
         {
-            $page = new Page('Fout bij laden locatie', 'Locatie niet gevonden!');
+            $page = new SimplePage('Fout bij laden locatie', 'Locatie niet gevonden!');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
 
@@ -53,7 +54,7 @@ final class LocationController extends Controller
         $age = $queryBits->getInt(2);
         if ($age <= 0)
         {
-            $page = new Page('Fout bij zoeken', 'Ongeldige leeftijd opgegeven!');
+            $page = new SimplePage('Fout bij zoeken', 'Ongeldige leeftijd opgegeven!');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
 

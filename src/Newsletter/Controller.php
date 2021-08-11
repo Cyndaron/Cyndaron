@@ -13,6 +13,7 @@ use Cyndaron\Util\Mail\Mail;
 use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
+use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Mailer;
@@ -63,7 +64,7 @@ class Controller extends \Cyndaron\Routing\Controller
         $antiSpam = $post->getUnfilteredString('antispam');
         if ($antiSpam !== '')
         {
-            $page = new Page('Inschrijving nieuwsbrief', 'Er is iets misgegaan bij het invullen van het formulier.');
+            $page = new SimplePage('Inschrijving nieuwsbrief', 'Er is iets misgegaan bij het invullen van het formulier.');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
 
@@ -85,7 +86,7 @@ class Controller extends \Cyndaron\Routing\Controller
             $message = 'U bent ingeschreven voor de nieuwsbrief.';
         }
 
-        $page = new Page('Inschrijving nieuwsbrief', $message);
+        $page = new SimplePage('Inschrijving nieuwsbrief', $message);
         return new Response($page->render());
     }
 

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Cyndaron\Error;
 
 use Cyndaron\View\Page;
+use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -26,7 +27,7 @@ class ErrorPageResponse extends Response
      */
     public function __construct(string $title, string $body, int $status = Response::HTTP_INTERNAL_SERVER_ERROR, array $headers = [])
     {
-        $page = new Page($title, $body);
+        $page = new SimplePage($title, $body);
         parent::__construct($page->render(), $status, $headers);
     }
 }

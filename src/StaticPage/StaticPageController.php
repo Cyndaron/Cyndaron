@@ -9,6 +9,7 @@ use Cyndaron\Menu\MenuItem;
 use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
+use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,7 @@ final class StaticPageController extends Controller
         $model = StaticPageModel::loadFromDatabase($id);
         if ($model === null)
         {
-            $page = new Page('Fout', 'Statische pagina niet gevonden.');
+            $page = new SimplePage('Fout', 'Statische pagina niet gevonden.');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
         $page = new StaticPage($model);
@@ -74,7 +75,7 @@ final class StaticPageController extends Controller
         $model = StaticPageModel::loadFromDatabase($id);
         if ($model === null)
         {
-            $page = new Page('Fout', 'Statische pagina niet gevonden.');
+            $page = new SimplePage('Fout', 'Statische pagina niet gevonden.');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
 

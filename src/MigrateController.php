@@ -7,7 +7,7 @@ namespace Cyndaron;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\User\User;
-use Cyndaron\View\Page;
+use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 
@@ -27,15 +27,15 @@ final class MigrateController extends \Cyndaron\Routing\Controller
             $method = static::VERSIONS[$version];
             if ($this->$method())
             {
-                $page = new Page('Upgrade naar versie ' . $version, 'De upgrade is voltooid.');
+                $page = new SimplePage('Upgrade naar versie ' . $version, 'De upgrade is voltooid.');
                 return new Response($page->render());
             }
 
-            $page = new Page('Upgrade mislukt', 'Onbekende oorzaak');
+            $page = new SimplePage('Upgrade mislukt', 'Onbekende oorzaak');
             return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $page = new Page('Upgrade mislukt', 'Onbekende versie');
+        $page = new SimplePage('Upgrade mislukt', 'Onbekende versie');
         return new Response($page->render(), Response::HTTP_NOT_FOUND);
     }
 

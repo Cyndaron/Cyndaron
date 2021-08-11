@@ -17,6 +17,7 @@ use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Util\Setting;
+use Cyndaron\View\SimplePage;
 use Cyndaron\View\Template\TemplateFinder;
 use Cyndaron\Url;
 use Cyndaron\User\User;
@@ -146,7 +147,7 @@ final class Router implements HttpKernelInterface
                 return new JsonResponse(['error' => 'CSRF token incorrect!'], Response::HTTP_FORBIDDEN);
             }
 
-            $page = new Page('Controle CSRF-token gefaald!', 'Uw CSRF-token is niet correct.');
+            $page = new SimplePage('Controle CSRF-token gefaald!', 'Uw CSRF-token is niet correct.');
             return new Response($page->render(), Response::HTTP_FORBIDDEN);
         }
 
@@ -168,7 +169,7 @@ final class Router implements HttpKernelInterface
                 return new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
-            $page = new Page('Fout', 'Er ging iets mis bij het laden van deze pagina!');
+            $page = new SimplePage('Fout', 'Er ging iets mis bij het laden van deze pagina!');
             return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

@@ -10,6 +10,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Router;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
+use Cyndaron\View\SimplePage;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -88,12 +89,12 @@ final class UserController extends Controller
         }
         catch (IncorrectCredentials $e)
         {
-            $page = new Page('Inloggen mislukt', $e->getMessage());
+            $page = new SimplePage('Inloggen mislukt', $e->getMessage());
             return new Response($page->render());
         }
         catch (Exception $e)
         {
-            $page = new Page('Inloggen mislukt', 'Onbekende fout: ' . $e->getMessage());
+            $page = new SimplePage('Inloggen mislukt', 'Onbekende fout: ' . $e->getMessage());
             return new Response($page->render());
         }
     }
@@ -191,7 +192,7 @@ final class UserController extends Controller
         $userId = $queryBits->getInt(2);
         if ($userId < 1)
         {
-            $page = new Page('Fout bij veranderen avatar', 'Onbekende fout.');
+            $page = new SimplePage('Fout bij veranderen avatar', 'Onbekende fout.');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
 
@@ -212,7 +213,7 @@ final class UserController extends Controller
         $profile = User::fromSession();
         if ($profile === null)
         {
-            return new Response((new Page('Fout', 'Geen profiel gevonden!'))->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new Response((new SimplePage('Fout', 'Geen profiel gevonden!'))->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $oldPassword = $post->getUnfilteredString('oldPassword');
@@ -240,7 +241,7 @@ final class UserController extends Controller
         $changed = $profile->setPassword($newPassword) && $profile->save();
         if (!$changed)
         {
-            return new Response((new Page('Fout', 'Kon het nieuwe wachtwoord niet opslaan.'))->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new Response((new SimplePage('Fout', 'Kon het nieuwe wachtwoord niet opslaan.'))->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         User::addNotification('Wachtwoord gewijzigd.');

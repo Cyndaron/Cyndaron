@@ -10,6 +10,7 @@ use Cyndaron\Module\Linkable;
 use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
+use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,7 +67,7 @@ final class EditorController extends Controller
         }
         catch (\PDOException $e)
         {
-            $page = new Page('Fout bij opslaan', $e->getFile() . ':' . $e->getLine() . ' ' . $e->getTraceAsString() . PHP_EOL . $e->getMessage() . ': ' . var_export(DBConnection::errorInfo(), true));
+            $page = new SimplePage('Fout bij opslaan', $e->getFile() . ':' . $e->getLine() . ' ' . $e->getTraceAsString() . PHP_EOL . $e->getMessage() . ': ' . var_export(DBConnection::errorInfo(), true));
             return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

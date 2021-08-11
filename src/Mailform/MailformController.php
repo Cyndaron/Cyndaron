@@ -13,6 +13,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Util\Setting;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Util;
+use Cyndaron\View\SimplePage;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,12 +67,12 @@ final class MailformController extends Controller
                 throw new IncompleteData('Formulier niet gevonden!');
             }
             $this->processHelper($form, $post);
-            $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
+            $page = new SimplePage('Formulier verstuurd', 'Het versturen is gelukt.');
             return new Response($page->render());
         }
         catch (Exception $e)
         {
-            $page = new Page('Formulier versturen mislukt', $e->getMessage());
+            $page = new SimplePage('Formulier versturen mislukt', $e->getMessage());
             return new Response($page->render());
         }
     }
@@ -82,12 +83,12 @@ final class MailformController extends Controller
         {
             $this->processLDBFHelper($post);
 
-            $page = new Page('Formulier verstuurd', 'Het versturen is gelukt.');
+            $page = new SimplePage('Formulier verstuurd', 'Het versturen is gelukt.');
             return new Response($page->render());
         }
         catch (Exception $e)
         {
-            $page = new Page('Formulier versturen mislukt', $e->getMessage());
+            $page = new SimplePage('Formulier versturen mislukt', $e->getMessage());
             return new Response($page->render());
         }
     }

@@ -6,6 +6,7 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
 use Cyndaron\View\Page;
+use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use function assert;
@@ -54,7 +55,7 @@ final class ConcertController extends Controller
         $id = $this->queryBits->getInt(2);
         if ($id < 1)
         {
-            $page = new Page('Fout', 'Incorrect ID!');
+            $page = new SimplePage('Fout', 'Incorrect ID!');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
         $page = new OrderTicketsPage($id);
@@ -66,7 +67,7 @@ final class ConcertController extends Controller
         $id = $this->queryBits->getInt(2);
         if ($id < 1)
         {
-            $page = new Page('Fout', 'Incorrect ID!');
+            $page = new SimplePage('Fout', 'Incorrect ID!');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
         $concert = Concert::loadFromDatabase($id);
@@ -80,7 +81,7 @@ final class ConcertController extends Controller
         $id = $this->queryBits->getInt(2);
         if ($id < 1)
         {
-            $page = new Page('Fout', 'Incorrect ID!');
+            $page = new SimplePage('Fout', 'Incorrect ID!');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
         $concert = Concert::loadFromDatabase($id);

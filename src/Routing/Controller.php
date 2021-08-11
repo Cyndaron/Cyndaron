@@ -8,6 +8,7 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\View\SimplePage;
 use ReflectionNamedType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -85,7 +86,7 @@ abstract class Controller
                     return new JsonResponse(['error' => 'Unacceptable request method!'], Response::HTTP_METHOD_NOT_ALLOWED, ['allow' => 'GET, POST']);
                 }
 
-                $page = new Page('Verkeerde aanvraag', 'U kunt geen aanvraag doen met deze methode.');
+                $page = new SimplePage('Verkeerde aanvraag', 'U kunt geen aanvraag doen met deze methode.');
                 return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
 

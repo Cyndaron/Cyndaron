@@ -14,6 +14,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\RichLink\RichLink;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\User\UserLevel;
+use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use function assert;
@@ -50,7 +51,7 @@ final class CategoryController extends Controller
             $tag = $queryBits->getString(2);
             if ($tag === '')
             {
-                $page = new Page('Foute aanvraag', 'Lege tag ontvangen.');
+                $page = new SimplePage('Foute aanvraag', 'Lege tag ontvangen.');
                 return new Response($page->render(), Response::HTTP_BAD_REQUEST);
             }
             $page = new TagIndexPage($tag);
@@ -58,7 +59,7 @@ final class CategoryController extends Controller
         }
         if ($id === '' || $id < 0)
         {
-            $page = new Page('Foute aanvraag', 'Incorrecte parameter ontvangen.');
+            $page = new SimplePage('Foute aanvraag', 'Incorrecte parameter ontvangen.');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
 

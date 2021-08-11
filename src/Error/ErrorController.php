@@ -6,6 +6,7 @@ namespace Cyndaron\Error;
 use Cyndaron\Routing\Controller;
 use Cyndaron\View\Page;
 use Cyndaron\Routing\DependencyInjectionContainer;
+use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 
@@ -32,13 +33,13 @@ final class ErrorController extends Controller
 
         if (!array_key_exists($this->action, static::KNOWN_ERRORS))
         {
-            $page = new Page('Onbekende fout', 'Er is een onbekende fout opgetreden. Code: ' . $this->action);
+            $page = new SimplePage('Onbekende fout', 'Er is een onbekende fout opgetreden. Code: ' . $this->action);
             return new Response($page->render());
         }
 
         $error = static::KNOWN_ERRORS[$this->action];
         $statusCode = (int)$this->action;
-        $page = new Page($error['pageTitle'], $error['notification']);
+        $page = new SimplePage($error['pageTitle'], $error['notification']);
         return new Response($page->render(), $statusCode);
     }
 }

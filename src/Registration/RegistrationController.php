@@ -11,6 +11,7 @@ use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Util\Setting;
 use Cyndaron\User\UserLevel;
+use Cyndaron\View\SimplePage;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,7 +54,7 @@ final class RegistrationController extends Controller
                 $body = 'Hartelijk dank voor uw aanmelding. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw aanmelding.';
             }
 
-            $page = new Page(
+            $page = new SimplePage(
                 'Aanmelding verwerkt',
                 $body
             );
@@ -61,7 +62,7 @@ final class RegistrationController extends Controller
         }
         catch (Exception $e)
         {
-            $page = new Page('Fout bij verwerken aanmelding', $e->getMessage());
+            $page = new SimplePage('Fout bij verwerken aanmelding', $e->getMessage());
             return new Response($page->render());
         }
     }

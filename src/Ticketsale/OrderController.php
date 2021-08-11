@@ -9,6 +9,7 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Mail\Mail;
 use Cyndaron\View\Page;
+use Cyndaron\View\SimplePage;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,7 +36,7 @@ final class OrderController extends Controller
         {
             $this->processOrder($post);
 
-            $page = new Page(
+            $page = new SimplePage(
                 'Bestelling verwerkt',
                 'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw bestelling en betaalinformatie.'
             );
@@ -43,7 +44,7 @@ final class OrderController extends Controller
         }
         catch (Exception $e)
         {
-            $page = new Page('Fout bij verwerken bestelling', $e->getMessage());
+            $page = new SimplePage('Fout bij verwerken bestelling', $e->getMessage());
             return new Response($page->render());
         }
     }

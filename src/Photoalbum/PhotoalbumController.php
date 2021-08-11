@@ -9,6 +9,7 @@ use Cyndaron\Menu\MenuItem;
 use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
+use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +34,7 @@ final class PhotoalbumController extends Controller
         $id = $queryBits->getInt(1);
         if ($id < 1)
         {
-            $page = new Page('Fotoalbum', 'Ongeldige parameter.');
+            $page = new SimplePage('Fotoalbum', 'Ongeldige parameter.');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
         $album = Photoalbum::loadFromDatabase($id);
@@ -123,7 +124,7 @@ final class PhotoalbumController extends Controller
         $filename = $queryBits->getString(3);
         if ($filename === '')
         {
-            $page = new Page('Fout bij verwijderen foto', 'Geen bestandsnaam opgegeven!');
+            $page = new SimplePage('Fout bij verwijderen foto', 'Geen bestandsnaam opgegeven!');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
         Photo::deleteByAlbumAndFilename($album, $filename);
