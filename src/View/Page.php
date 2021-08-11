@@ -41,17 +41,15 @@ class Page
     protected array $extraScripts = [];
     protected array $extraCss = [];
     protected string $websiteName = '';
-    protected string $body = '';
 
     protected ?Model $model = null;
 
     protected string $template = '';
-    protected array $templateVars = [];
+    protected array $templateVars = ['contents' => ''];
 
-    public function __construct(string $title, string $body = '')
+    public function __construct(string $title)
     {
         $this->title = $title;
-        $this->body = $body;
 
         $this->updateTemplate();
     }
@@ -188,8 +186,6 @@ class Page
     public function render(array $vars = []): string
     {
         $this->addTemplateVars($vars);
-
-        $this->templateVars['contents'] = $this->body;
 
         $this->renderSkeleton();
 

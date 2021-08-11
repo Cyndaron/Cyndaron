@@ -290,10 +290,9 @@ final class ContestController extends Controller
 
     public function manageOverview(): Response
     {
-        $contests = PageManagerTabs::contestsTab();
-        $page = new Page('Overzicht wedstrijden', $contests);
+        $page = new Page('Overzicht wedstrijden');
         $page->addScript('/src/Geelhoed/Contest/js/ContestManager.js');
-        return new Response($page->render());
+        return new Response($page->render(['contents' => PageManagerTabs::contestsTab()]));
     }
 
     public function subscriptionList(): Response

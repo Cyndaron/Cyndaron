@@ -12,7 +12,8 @@ final class SimplePage
 
     public function __construct(string $title, string $body)
     {
-        $this->page = new Page($title, $body);
+        $this->page = new Page($title);
+        $this->page->addTemplateVar('contents', $body);
     }
 
     public function render(array $vars = []): string
