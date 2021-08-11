@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
@@ -322,9 +323,9 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
         return $mail->send();
     }
 
-    public function delete(): JsonResponse
+    public function delete(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -336,9 +337,9 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
         return new JsonResponse();
     }
 
-    public function setIsPaid(): JsonResponse
+    public function setIsPaid(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -350,9 +351,9 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
         return new JsonResponse();
     }
 
-    public function setIsSent(): JsonResponse
+    public function setIsSent(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);

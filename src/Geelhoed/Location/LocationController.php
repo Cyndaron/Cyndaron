@@ -18,9 +18,9 @@ final class LocationController extends Controller
         'searchByAge' => ['level' => UserLevel::ANONYMOUS, 'function' => 'searchByAge'],
     ];
 
-    public function view(): Response
+    public function view(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);

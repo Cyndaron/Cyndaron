@@ -38,9 +38,6 @@ abstract class Controller
     /** @var array[] $apiPostRoutes */
     protected array $apiPostRoutes = [];
 
-    /** @deprecated  */
-    protected QueryBits $queryBits;
-
     public function __construct(string $module, string $action, bool $isApiCall = false)
     {
         $this->module = $module;
@@ -171,10 +168,5 @@ abstract class Controller
         }
 
         return null;
-    }
-
-    public function setQueryBits(QueryBits $queryBits): void
-    {
-        $this->queryBits = $queryBits;
     }
 }

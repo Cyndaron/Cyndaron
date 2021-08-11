@@ -126,7 +126,6 @@ final class Router implements HttpKernelInterface
             $classname = $this->endpoints[$this->requestVars[0]];
             /** @var Controller $route */
             $route = new $classname($this->requestVars[0], $this->requestVars[1] ?? '', $this->isApiCall);
-            $route->setQueryBits(new QueryBits($this->requestVars));
             $ret = $this->getResponse($route);
         }
 

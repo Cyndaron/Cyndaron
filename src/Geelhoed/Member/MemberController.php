@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Member;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
@@ -30,9 +31,9 @@ final class MemberController extends Controller
         'directDebitList' => ['level' => UserLevel::ADMIN, 'function' => 'directDebitList'],
     ];
 
-    public function get(): JsonResponse
+    public function get(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -62,9 +63,9 @@ final class MemberController extends Controller
         return new JsonResponse($ret);
     }
 
-    public function removeGraduation(): JsonResponse
+    public function removeGraduation(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -197,9 +198,9 @@ final class MemberController extends Controller
         return $member;
     }
 
-    public function delete(): JsonResponse
+    public function delete(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);

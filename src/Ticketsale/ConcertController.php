@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
 use Cyndaron\View\Page;
@@ -20,9 +21,9 @@ final class ConcertController extends Controller
         'viewReservedSeats' => ['level' => UserLevel::ADMIN, 'function' => 'viewReservedSeats'],
     ];
 
-    protected function getConcertInfo(): JsonResponse
+    protected function getConcertInfo(QueryBits $queryBits): JsonResponse
     {
-        $concertId = $this->queryBits->getInt(2);
+        $concertId = $queryBits->getInt(2);
         if ($concertId < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -50,9 +51,9 @@ final class ConcertController extends Controller
         return new JsonResponse($answer);
     }
 
-    protected function order(): Response
+    protected function order(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             $page = new SimplePage('Fout', 'Incorrect ID!');
@@ -62,9 +63,9 @@ final class ConcertController extends Controller
         return new Response($page->render());
     }
 
-    protected function viewOrders(): Response
+    protected function viewOrders(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             $page = new SimplePage('Fout', 'Incorrect ID!');
@@ -76,9 +77,9 @@ final class ConcertController extends Controller
         return new Response($page->render());
     }
 
-    protected function viewReservedSeats(): Response
+    protected function viewReservedSeats(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             $page = new SimplePage('Fout', 'Incorrect ID!');

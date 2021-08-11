@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Contest;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Geelhoed\Member\Member;
@@ -98,9 +99,9 @@ final class ContestController extends Controller
         return new Response($page->render());
     }
 
-    public function view(): Response
+    public function view(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -116,9 +117,9 @@ final class ContestController extends Controller
         return new Response($page->render());
     }
 
-    public function subscribe(RequestParameters $post): Response
+    public function subscribe(QueryBits $queryBits, RequestParameters $post): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -295,9 +296,9 @@ final class ContestController extends Controller
         return new Response($page->render(['contents' => PageManagerTabs::contestsTab()]));
     }
 
-    public function subscriptionList(): Response
+    public function subscriptionList(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
@@ -311,9 +312,9 @@ final class ContestController extends Controller
         return new Response($page->render());
     }
 
-    public function subScriptionListExcel(): Response
+    public function subScriptionListExcel(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
@@ -561,9 +562,9 @@ final class ContestController extends Controller
         return $response;
     }
 
-    public function addAttachment(): Response
+    public function addAttachment(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
@@ -591,9 +592,9 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/view/' . $contest->id);
     }
 
-    protected function deleteAttachment(RequestParameters $post): Response
+    protected function deleteAttachment(QueryBits $queryBits, RequestParameters $post): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
@@ -662,9 +663,9 @@ final class ContestController extends Controller
         return new JsonResponse(['status' => 'ok']);
     }
 
-    public function deleteDate(): Response
+    public function deleteDate(QueryBits $queryBits): Response
     {
-        $contestDateId = $this->queryBits->getInt(2);
+        $contestDateId = $queryBits->getInt(2);
         if ($contestDateId < 1)
         {
             return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
@@ -680,9 +681,9 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/view/' . $contest->id);
     }
 
-    public function editSubscription(RequestParameters $post): Response
+    public function editSubscription(QueryBits $queryBits, RequestParameters $post): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         $subscription = ContestMember::loadFromDatabase($id);
         if ($subscription === null)
         {
@@ -727,9 +728,9 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/myContests');
     }
 
-    public function editSubscriptionPage(): Response
+    public function editSubscriptionPage(QueryBits $queryBits): Response
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         $subscription = ContestMember::loadFromDatabase($id);
         if ($subscription === null)
         {
@@ -766,10 +767,10 @@ final class ContestController extends Controller
         return new Response($page->render());
     }
 
-    public function subscribePage(): Response
+    public function subscribePage(QueryBits $queryBits): Response
     {
-        $contestId = $this->queryBits->getInt(2);
-        $memberId = $this->queryBits->getInt(3);
+        $contestId = $queryBits->getInt(2);
+        $memberId = $queryBits->getInt(3);
 
         $controlledMembers = Member::fetchAllContestantsByLoggedInUser();
         $memberIds = array_map(static function(Member $member)
@@ -859,9 +860,9 @@ final class ContestController extends Controller
         return $mail->send();
     }
 
-    public function deleteParentAccount(): JsonResponse
+    public function deleteParentAccount(QueryBits $queryBits): JsonResponse
     {
-        $id = $this->queryBits->getInt(2);
+        $id = $queryBits->getInt(2);
         $user = User::loadFromDatabase($id);
         if ($user === null)
         {
