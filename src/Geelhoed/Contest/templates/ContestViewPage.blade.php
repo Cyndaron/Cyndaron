@@ -57,7 +57,7 @@
         <tr><th>Sport: </th><td>{{ $sport->name }}</td></tr>
         <tr><th>Inschrijfgeld:</th><td>{{ $contest->price|euro }}</td></tr>
         <tr><th>Inschrijven voor: </th><td>{{ $contest->registrationDeadline|dmyHm }}</td></tr>
-        <tr><th>Beschrijving:</th><td>{{ $contest->description }}</td></tr>
+        <tr><th>Beschrijving:</th><td>{!! nl2br(trim($contest->description)) !!}</td></tr>
         @php $attachments = $contest->getAttachments() @endphp
         @if (count($attachments) > 0)
         <tr><th>Documenten:</th><td>
