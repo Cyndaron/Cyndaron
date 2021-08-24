@@ -17,17 +17,20 @@ final class ContestViewPage extends Page
         $mayViewOtherContestants = $this->loggedInUserMayViewOtherContestants($canManage, $controlledMembers);
         parent::__construct(sprintf('Wedstrijd: %s', $contest->name));
         $this->addTemplateVars([
+            'addDateCsrfToken' => User::getCSRFToken('contest', 'addDate'),
+            'allSubscribed' => $this->areAllSubscribed($contest, $controlledMembers),
+            'canManage' => $canManage,
+            'cancelSubscriptionCsrfToken' => User::getCSRFToken('contest', 'cancelSubscription'),
             'contest' => $contest,
             'controlledMembers' => $controlledMembers,
-            'allSubscribed' => $this->areAllSubscribed($contest, $controlledMembers),
-            'mayViewOtherContestants' => $mayViewOtherContestants,
-            'canManage' => $canManage,
             'deleteCsrfToken' => User::getCSRFToken('contest', 'deleteAttachment'),
-            'addDateCsrfToken' => User::getCSRFToken('contest', 'addDate'),
             'deleteDateCsrfToken' => User::getCSRFToken('contest', 'deleteDate'),
             'due' => $user !== null ? $this->getTotalDue($user) : 0.00,
+            'mayViewOtherContestants' => $mayViewOtherContestants,
+            'profile' => $user,
         ]);
         $this->addScript('/src/Geelhoed/Contest/js/ContestViewPage.js');
+        $this->addScript('/src/Geelhoed/Contest/js/MemberSubscriptionStatus.js');
     }
 
     private function loggedInUserMayViewOtherContestants(bool $currentUserCanManageContests, array $controlledMembers): bool

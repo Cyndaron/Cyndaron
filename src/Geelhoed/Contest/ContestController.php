@@ -71,6 +71,7 @@ final class ContestController extends Controller
 
     protected array $apiPostRoutes = [
         'addDate' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addDate'],
+        'cancelSubscription' => ['level' => UserLevel::LOGGED_IN, 'function' => 'cancelSubscription'],
         'createParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'createParentAccount'],
         'deleteParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteParentAccount'],
         'deleteFromParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteFromParentAccount'],
@@ -915,5 +916,41 @@ final class ContestController extends Controller
 
         DBConnection::doQuery('INSERT INTO geelhoed_users_members(`userId`, `memberId`) VALUES(?, ?)', [$userId, $memberId]);
         return new RedirectResponse('/contest/parentAccounts');
+    }
+
+    public function cancelSubscription(QueryBits $queryBits): JsonResponse
+    {
+        $contestMemberId = $queryBits->getInt(2);
+        $contestMember = ContestMember::loadFromDatabase($contestMemberId);
+        if ($contestMember === null)
+        {
+            return new JsonResponse(['message' => 'Gebruiker bestaat niet!'], Response::HTTP_NOT_FOUND);
+        }
+
+        $member = $contestMember->getMember();
+        $manageableContestants = Member::fetchAllContestantsByLoggedInUser();
+        $canManage = false;
+        foreach ($manageableContestants as $manageableContestant)
+        {
+            if ($manageableContestant->id === $member->id)
+            {
+                $canManage = true;
+                break;
+            }
+        }
+
+        if (!$canManage)
+        {
+            return new JsonResponse(['message' => 'U kunt deze gebruiker niet beheren!'], Response::HTTP_FORBIDDEN);
+        }
+
+        if ($contestMember->isPaid)
+        {
+            return new JsonResponse(['message' => 'U kunt niet meer annuleren als er al betaald is!'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $contestMember->delete();
+
+        return new JsonResponse(['message' => 'De inschrijving is geannuleerd!']);
     }
 }

@@ -28,12 +28,14 @@ final class MyContestsPage extends Page
             $contests = Contest::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (?))'], [implode(',', $memberIds)], 'ORDER BY registrationDeadline DESC');
             [$due, $contestMembers] = Contest::getTotalDue($user);
         }
+        $this->addScript('/src/Geelhoed/Contest/js/MemberSubscriptionStatus.js');
         $this->addTemplateVars([
             'profile' => $user,
             'controlledMembers' => $controlledMembers,
             'contests' => $contests,
             'contestMembers' => $contestMembers,
             'due' => $due,
+            'cancelSubscriptionCsrfToken' => User::getCSRFToken('contest', 'cancelSubscription'),
         ]);
     }
 }

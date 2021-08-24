@@ -41,31 +41,20 @@
                 <table class="table table-bordered table-striped">
                     <tr>
                         <th>Naam</th>
+                        <th>Graduatie</th>
                         <th>Gewicht</th>
-                        <th>Band</th>
                         <th>Status</th>
                         @if ($canChange)<th>Aanpassen</th>@endif
                     </tr>
 
                     @foreach (\Cyndaron\Geelhoed\Contest\ContestMember::fetchAllByContestAndMembers($contest, $controlledMembers) as $contestMember)
-                        <tr>
-                            <td>{{ $contestMember->getMember()->getProfile()->getFullName() }}</td>
-                            <td>{{ $contestMember->weight }} kg</td>
-                            <td>{{ $contestMember->getGraduation()->name }}</td>
-                            <td>
-                                @if ($contestMember->isPaid)Betaald
-                                @elseif(time() < strtotime($contest->registrationDeadline))Niet betaald
-                                @else Verlopen
-                                @endif
-                            </td>
-                            @if ($canChange)
-                                <td>
-                                    <a href="/contest/editSubscription/{{ $contestMember->id }}" class="btn btn-warning" title="Gewicht of band veranderd? Geef de wijziging hier door!">
-                                        <span class="glyphicon glyphicon-pencil"></span>
-                                    </a>
-                                </td>
-                            @endif
-                        </tr>
+                        @php $member = $contestMember->getMember(); @endphp
+                        @include('Geelhoed/Contest/MemberSubscriptionStatus', [
+                            'contest' => $contest,
+                            'contestMember' => $contestMember,
+                            'member' => $member,
+                            'canChange' => $canChange,
+                            'csrfToken' => $cancelSubscriptionCsrfToken])
                     @endforeach
                 </table>
             </div>

@@ -97,38 +97,28 @@
         Om te kunnen omschrijven moet je wedstrijdjudoka/jitsuka zijn (of ouder van) en ingelogd hebben.
 
         <a href="/user/login" class="btn btn-primary">Inloggen</a>
-    @elseif ($allSubscribed)
-        Alle leden die u kunt inschrijven, zijn ingescheven.
     @else
         <h3>Inschrijven</h3>
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>Naam</th>
+                    <th>Graduatie</th>
+                    <th>Gewicht</th>
                     <th>Status</th>
                     <th>Acties</th>
                 </tr>
             </thead>
             <tbody>
+                @php $canChange = $contest->registrationCanBeChanged($profile); @endphp
                 @foreach ($controlledMembers as $controlledMember)
                     @php $subscription = \Cyndaron\Geelhoed\Contest\ContestMember::fetchByContestAndMember($contest, $controlledMember) @endphp
-                    <tr>
-                        <td>{{ $controlledMember->getProfile()->getFullName() }}</td>
-                        <td>
-                            @if ($subscription === null)
-                                Niet ingeschreven
-                            @elseif ($subscription->isPaid)
-                                Ingeschreven
-                            @else
-                                Wacht op betaling
-                            @endif
-                        </td>
-                        <td>
-                            @if ($subscription === null)
-                                <a href="/contest/subscribe/{{ $contest->id }}/{{ $controlledMember->id }}" class="btn btn-primary">Inschrijven</a>
-                            @endif
-                        </td>
-                    </tr>
+                    @include('Geelhoed/Contest/MemberSubscriptionStatus', [
+                        'contest' => $contest,
+                        'contestMember' => $subscription,
+                        'member' => $controlledMember,
+                        'canChange' => $canChange,
+                        'csrfToken' => $cancelSubscriptionCsrfToken])
                 @endforeach
             </tbody>
         </table>
