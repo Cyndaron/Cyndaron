@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\Mime\Address;
+use function array_key_exists;
 use function Safe\date;
 use function Safe\error_log;
 use function Safe\sprintf;
@@ -547,10 +548,22 @@ final class ContestController extends Controller
             return new Response('Er staan geen betalingen open.');
         }
 
+        $contests = [];
+        foreach ($contestMembers as $contestMember)
+        {
+            $contest = $contestMember->getContest();
+            $contests[$contest->id] = $contest;
+        }
+        $contestNames = array_map(static function(Contest $contest)
+        {
+            return $contest->name;
+        }, $contests);
+
         try
         {
             $redirectUrl = "https://{$_SERVER['HTTP_HOST']}/contest/myContests";
-            $response = $this->doMollieTransaction($contestMembers, 'Inschrijving wedstrijdjudo Sportschool Geelhoed', $due, $redirectUrl);
+            $description = implode(' + ', $contestNames) . ' - Geelhoed';
+            $response = $this->doMollieTransaction($contestMembers, $description, $due, $redirectUrl);
         }
         catch (Exception $e)
         {
