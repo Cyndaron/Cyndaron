@@ -12,7 +12,7 @@ final class PageManagerPage extends Page
 
     public function __construct(string $currentPage)
     {
-        $this->addScript('/src/PageManager/PageManagerPage.js');
+        $this->addScript('/src/PageManager/js/PageManagerPage.js');
         parent::__construct('Paginaoverzicht');
 
         $pageTabs = [];

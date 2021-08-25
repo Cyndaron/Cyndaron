@@ -23,7 +23,7 @@ final class MembersPage extends Page
     public function __construct()
     {
         parent::__construct('Spelers');
-        $this->addScript('/src/Minecraft/js/memberpage.js');
+        $this->addScript('/src/Minecraft/js/MembersPage.js');
         $this->addCss('/src/Minecraft/css/memberpage.min.css');
 
         $members = Member::fetchAll([], [], 'ORDER BY level DESC, userName ASC');

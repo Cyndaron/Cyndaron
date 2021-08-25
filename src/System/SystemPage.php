@@ -83,7 +83,7 @@ final class SystemPage extends Page
 
     public function showConfigPage(): void
     {
-        $this->addScript('/src/System/SystemPage.js');
+        $this->addScript('/src/System/js/SystemPage.js');
 
         $this->templateVars['defaultCategory'] = Setting::get('defaultCategory');
 
