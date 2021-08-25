@@ -424,43 +424,46 @@ button.aantalKaarten
 {
     display: flex;
     flex-wrap: wrap;
+
+    .category-block
+    {
+        width: 320px;
+        margin: 10px;
+
+        h3
+        {
+            margin-top: 15px;
+        }
+    }
 }
 
-.category-blockview .category-block
+.category-horizontalview
 {
-    width: 320px;
-    margin: 10px;
-}
+    .category-block
+    {
+        display: flex;
 
-.category-blockview .category-block h3
-{
-    margin-top: 15px;
-}
+        + .category-block
+        {
+            margin-top: 15px;
+        }
 
-.category-horizontalview .category-block
-{
-    display: flex;
-}
+        .category-block-left
+        {
+            flex-grow: 1;
+        }
 
-.category-horizontalview .category-block + .category-block
-{
-    margin-top: 15px;
-}
+        .category-block-right
+        {
+            width: 22.5%;
+        }
 
-.category-horizontalview .category-block .category-block-left
-{
-    flex-grow: 1;
-}
-
-.category-horizontalview .category-block .category-block-right
-{
-    width: 22.5%;
-}
-
-.category-horizontalview .category-block .category-block-right img
-{
-    display: block;
-    width: 100%;
+        .category-block-right img
+        {
+            display: block;
+            width: 100%;
+        }
+    }
 }
 
 .category-block a
