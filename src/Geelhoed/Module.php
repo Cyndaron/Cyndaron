@@ -93,7 +93,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu, Template
         return null;
     }
 
-    public function getUserMenuItems(): array
+    public function getUserMenuItems(?User $profile): array
     {
         $ret = [
             ['label' => 'Wedstrijdbeheer', 'link' => '/contest/manageOverview', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
@@ -102,7 +102,6 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu, Template
             ['label' => 'Overzicht reserveringen', 'link' => '/reservation/overview', 'level' => UserLevel::ADMIN],
         ];
 
-        $profile = User::fromSession();
         if ($profile !== null)
         {
             $isContestantParent = $profile->hasRight(Contest::RIGHT_PARENT);

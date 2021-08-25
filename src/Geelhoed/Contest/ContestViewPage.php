@@ -9,11 +9,10 @@ use function Safe\sprintf;
 
 final class ContestViewPage extends Page
 {
-    public function __construct(Contest $contest)
+    public function __construct(Contest $contest, ?User $currentUser)
     {
-        $user = User::getLoggedIn();
         $controlledMembers = Member::fetchAllContestantsByLoggedInUser();
-        $canManage = $user !== null && $user->hasRight(Contest::RIGHT_MANAGE);
+        $canManage = $currentUser !== null && $currentUser->hasRight(Contest::RIGHT_MANAGE);
         $mayViewOtherContestants = $this->loggedInUserMayViewOtherContestants($canManage, $controlledMembers);
         parent::__construct(sprintf('Wedstrijd: %s', $contest->name));
         $this->addTemplateVars([
@@ -25,9 +24,9 @@ final class ContestViewPage extends Page
             'controlledMembers' => $controlledMembers,
             'deleteCsrfToken' => User::getCSRFToken('contest', 'deleteAttachment'),
             'deleteDateCsrfToken' => User::getCSRFToken('contest', 'deleteDate'),
-            'due' => $user !== null ? $this->getTotalDue($user) : 0.00,
+            'due' => $currentUser !== null ? $this->getTotalDue($currentUser) : 0.00,
             'mayViewOtherContestants' => $mayViewOtherContestants,
-            'profile' => $user,
+            'profile' => $currentUser,
         ]);
         $this->addScript('/src/Geelhoed/Contest/js/ContestViewPage.js');
         $this->addScript('/src/Geelhoed/Contest/js/MemberSubscriptionStatus.js');

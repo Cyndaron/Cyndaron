@@ -87,7 +87,7 @@ final class Router implements HttpKernelInterface
             return $redirect;
         }
 
-        $this->loadModules();
+        $this->loadModules(User::fromSession());
         $this->rewriteFriendlyUrls($request);
 
         if (!array_key_exists($this->requestVars[0], $this->endpoints))
@@ -156,6 +156,11 @@ final class Router implements HttpKernelInterface
             $dic->add($request);
             $dic->add($post);
             $dic->add(new QueryBits($this->requestVars));
+            $user = User::fromSession();
+            if ($user !== null)
+            {
+                $dic->add($user);
+            }
 
             return $route->route($dic);
         }
@@ -268,7 +273,7 @@ final class Router implements HttpKernelInterface
         $this->requestVars = $vars;
     }
 
-    private function loadModules(): void
+    private function loadModules(?User $currentUser): void
     {
         $modules = [
             \Cyndaron\StaticPage\Module::class,
@@ -330,7 +335,7 @@ final class Router implements HttpKernelInterface
 
             if ($module instanceof UserMenu)
             {
-                User::$userMenu = array_merge(User::$userMenu, $module->getUserMenuItems());
+                User::$userMenu = array_merge(User::$userMenu, $module->getUserMenuItems($currentUser));
             }
             if ($module instanceof Templated)
             {

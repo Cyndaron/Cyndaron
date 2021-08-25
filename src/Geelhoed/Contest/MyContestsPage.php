@@ -13,24 +13,22 @@ use function implode;
 
 final class MyContestsPage extends Page
 {
-    public function __construct()
+    public function __construct(User $currentUser)
     {
         parent::__construct('Mijn wedstrijden');
-        $user = User::getLoggedIn();
         $controlledMembers = Member::fetchAllContestantsByLoggedInUser();
         $contests = [];
         $contestMembers = [];
         $due = 0.0;
         if (count($controlledMembers) > 0)
         {
-            assert($user !== null);
             $memberIds = array_map(static function(Member $member) { return $member->id; }, $controlledMembers);
             $contests = Contest::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (?))'], [implode(',', $memberIds)], 'ORDER BY registrationDeadline DESC');
-            [$due, $contestMembers] = Contest::getTotalDue($user);
+            [$due, $contestMembers] = Contest::getTotalDue($currentUser);
         }
         $this->addScript('/src/Geelhoed/Contest/js/MemberSubscriptionStatus.js');
         $this->addTemplateVars([
-            'profile' => $user,
+            'profile' => $currentUser,
             'controlledMembers' => $controlledMembers,
             'contests' => $contests,
             'contestMembers' => $contestMembers,

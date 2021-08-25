@@ -10,6 +10,7 @@ namespace Cyndaron\Newsletter;
 
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UserMenu;
+use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 
 final class Module implements Routes, UserMenu
@@ -21,7 +22,7 @@ final class Module implements Routes, UserMenu
         ];
     }
 
-    public function getUserMenuItems(): array
+    public function getUserMenuItems(?User $profile): array
     {
         return [
             ['label' => 'Nieuwsbrief versturen', 'link' => '/newsletter/compose', 'level' => UserLevel::ADMIN],

@@ -101,7 +101,7 @@ final class ContestController extends Controller
         return new Response($page->render());
     }
 
-    public function view(QueryBits $queryBits): Response
+    public function view(QueryBits $queryBits, ?User $currentUser): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -115,7 +115,7 @@ final class ContestController extends Controller
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
 
-        $page = new ContestViewPage($contest);
+        $page = new ContestViewPage($contest, $currentUser);
         return new Response($page->render());
     }
 
@@ -531,18 +531,15 @@ final class ContestController extends Controller
         return new Response(ViewHelpers::spreadsheetToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
     }
 
-    public function myContests(): Response
+    public function myContests(User $currentUser): Response
     {
-        $page = new MyContestsPage();
+        $page = new MyContestsPage($currentUser);
         return new Response($page->render());
     }
 
-    public function payFullDue(): Response
+    public function payFullDue(User $currentUser): Response
     {
-        $user = User::fromSession();
-        assert($user !== null);
-
-        [$due, $contestMembers] = Contest::getTotalDue($user);
+        [$due, $contestMembers] = Contest::getTotalDue($currentUser);
         if ($due === 0.00)
         {
             return new Response('Er staan geen betalingen open.');
@@ -695,7 +692,7 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/view/' . $contest->id);
     }
 
-    public function editSubscription(QueryBits $queryBits, RequestParameters $post): Response
+    public function editSubscription(QueryBits $queryBits, RequestParameters $post, ?User $currentUser): Response
     {
         $id = $queryBits->getInt(2);
         $subscription = ContestMember::loadFromDatabase($id);
@@ -704,12 +701,11 @@ final class ContestController extends Controller
             return new Response('Record bestaat niet!', Response::HTTP_NOT_FOUND);
         }
 
-        $user = User::fromSession();
-        if ($user === null)
+        if ($currentUser === null)
         {
             return new Response('U moet ingelogd zijn!', Response::HTTP_UNAUTHORIZED);
         }
-        if (!$user->hasRight(Contest::RIGHT_MANAGE))
+        if (!$currentUser->hasRight(Contest::RIGHT_MANAGE))
         {
             $memberId = $subscription->getMember()->id;
             $controlledMemberIds = array_map(static function(Member $member) { return $member->id; }, Member::fetchAllByLoggedInUser());
@@ -719,7 +715,7 @@ final class ContestController extends Controller
             }
         }
 
-        if (!$subscription->canBeChanged($user))
+        if (!$subscription->canBeChanged($currentUser))
         {
             return new Response('De deadline voor aanpassingen is verlopen!', Response::HTTP_BAD_REQUEST);
         }
@@ -742,7 +738,7 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/myContests');
     }
 
-    public function editSubscriptionPage(QueryBits $queryBits): Response
+    public function editSubscriptionPage(QueryBits $queryBits, ?User $currentUser): Response
     {
         $id = $queryBits->getInt(2);
         $subscription = ContestMember::loadFromDatabase($id);
@@ -751,12 +747,11 @@ final class ContestController extends Controller
             return new Response('Record bestaat niet!', Response::HTTP_NOT_FOUND);
         }
 
-        $user = User::fromSession();
-        if ($user === null)
+        if ($currentUser === null)
         {
             return new Response('U moet ingelogd zijn!', Response::HTTP_UNAUTHORIZED);
         }
-        if (!$user->hasRight(Contest::RIGHT_MANAGE))
+        if (!$currentUser->hasRight(Contest::RIGHT_MANAGE))
         {
             $memberId = $subscription->getMember()->id;
             $controlledMemberIds = array_map(static function(Member $member) { return $member->id; }, Member::fetchAllByLoggedInUser());
@@ -766,7 +761,7 @@ final class ContestController extends Controller
             }
         }
 
-        if (!$subscription->canBeChanged($user))
+        if (!$subscription->canBeChanged($currentUser))
         {
             return new Response('De deadline voor aanpassingen is verlopen!', Response::HTTP_BAD_REQUEST);
         }

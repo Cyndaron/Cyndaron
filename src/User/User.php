@@ -382,12 +382,6 @@ Uw nieuwe wachtwoord is: %s';
         return false;
     }
 
-    public static function getLoggedIn(): ?self
-    {
-        return $_SESSION['profile'] ?? null;
-    }
-
-
     public function getAge(?DateTime $on = null): int
     {
         if ($this->dateOfBirth === null)
