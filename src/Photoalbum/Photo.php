@@ -77,14 +77,14 @@ final class Photo
 
         copy($filename, $filenameThumb);
 
-        static::resizeMainPhoto($filename);
-        static::createThumbnail($filenameThumb);
+        self::resizeMainPhoto($filename);
+        self::createThumbnail($filenameThumb);
     }
 
     protected static function resizeMainPhoto(string $filename): bool
     {
         $image = new Imagick($filename);
-        static::autoRotate($image);
+        self::autoRotate($image);
         if ($image->getImageWidth() > self::MAX_DIMENSION || $image->getImageHeight() > self::MAX_DIMENSION)
         {
             $image->scaleImage(self::MAX_DIMENSION, self::MAX_DIMENSION, true);
@@ -95,7 +95,7 @@ final class Photo
     protected static function createThumbnail(string $filename): bool
     {
         $image = new Imagick($filename);
-        static::autoRotate($image);
+        self::autoRotate($image);
         $image->cropThumbnailImage(self::THUMBNAIL_WIDTH, self::THUMBNAIL_HEIGHT);
         return $image->writeImage($filename);
     }

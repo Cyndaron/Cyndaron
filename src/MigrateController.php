@@ -22,9 +22,9 @@ final class MigrateController extends \Cyndaron\Routing\Controller
     {
         $version = $this->action;
 
-        if ($version !== null && array_key_exists($version, static::VERSIONS))
+        if ($version !== null && array_key_exists($version, self::VERSIONS))
         {
-            $method = static::VERSIONS[$version];
+            $method = self::VERSIONS[$version];
             if ($this->$method())
             {
                 $page = new SimplePage('Upgrade naar versie ' . $version, 'De upgrade is voltooid.');

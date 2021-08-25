@@ -16,12 +16,12 @@ final class PageManagerPage extends Page
         parent::__construct('Paginaoverzicht');
 
         $pageTabs = [];
-        foreach (static::$pageTypes as $pageType => $data)
+        foreach (self::$pageTypes as $pageType => $data)
         {
             $pageTabs[$pageType] = $data['name'];
         }
 
-        $pageDef = static::$pageTypes[$currentPage];
+        $pageDef = self::$pageTypes[$currentPage];
         $tabContents = $pageDef['tabDraw']();
 
         $this->addTemplateVars([
@@ -42,6 +42,6 @@ final class PageManagerPage extends Page
      */
     public static function addPageType(array $pageType): void
     {
-        static::$pageTypes = array_merge(static::$pageTypes, $pageType);
+        self::$pageTypes = array_merge(self::$pageTypes, $pageType);
     }
 }

@@ -26,12 +26,12 @@ final class DBConnection
      */
     private static function executeQuery(string $query, array $vars, callable $functionOnSuccess)
     {
-        $prep = static::$pdo->prepare($query);
+        $prep = self::$pdo->prepare($query);
         $result = $prep->execute($vars);
         if (!$result)
         {
-            static::$statementError = $prep->errorInfo();
-            static::$errorQuery = $query;
+            self::$statementError = $prep->errorInfo();
+            self::$errorQuery = $query;
             return false;
         }
 
@@ -45,9 +45,9 @@ final class DBConnection
      */
     public static function doQuery(string $query, array $vars = [])
     {
-        $result = static::executeQuery($query, $vars, static function(PDOStatement $prep, $result)
+        $result = self::executeQuery($query, $vars, static function(PDOStatement $prep, $result)
         {
-            return static::$pdo->lastInsertId();
+            return self::$pdo->lastInsertId();
         });
         return ($result === false) ? false : (int)$result;
     }
@@ -59,7 +59,7 @@ final class DBConnection
      */
     public static function doQueryAndFetchAll(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result)
+        return self::executeQuery($query, $vars, static function(PDOStatement $prep, $result)
         {
             return $prep->fetchAll(PDO::FETCH_ASSOC);
         });
@@ -67,7 +67,7 @@ final class DBConnection
 
     public static function doQueryAndReturnFetchable(string $query, array $vars = []): PDOStatement
     {
-        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result)
+        return self::executeQuery($query, $vars, static function(PDOStatement $prep, $result)
         {
             return $prep;
         });
@@ -80,7 +80,7 @@ final class DBConnection
      */
     public static function doQueryAndFetchFirstRow(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, static function(PDOStatement $prep, $result)
+        return self::executeQuery($query, $vars, static function(PDOStatement $prep, $result)
         {
             return $prep->fetch(PDO::FETCH_ASSOC);
         });
@@ -93,7 +93,7 @@ final class DBConnection
      */
     public static function doQueryAndFetchOne(string $query, array $vars = [])
     {
-        return static::executeQuery($query, $vars, static function(PDOStatement$prep, $result)
+        return self::executeQuery($query, $vars, static function(PDOStatement$prep, $result)
         {
             return $prep->fetchColumn();
         });
@@ -101,17 +101,17 @@ final class DBConnection
 
     public static function errorInfo(): array
     {
-        return ['pdo' => static::$pdo->errorInfo(), 'statement' => static::$statementError, 'query' => static::$errorQuery];
+        return ['pdo' => self::$pdo->errorInfo(), 'statement' => self::$statementError, 'query' => self::$errorQuery];
     }
 
     public static function connect(string $engine, string $host, string $databaseName, string $user, string $password): void
     {
         try
         {
-            static::$pdo = @new PDO($engine . ':host=' . $host . ';dbname=' . $databaseName . ';charset=utf8mb4', $user, $password);
-            static::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            self::$pdo = @new PDO($engine . ':host=' . $host . ';dbname=' . $databaseName . ';charset=utf8mb4', $user, $password);
+            self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             // Setting this to false makes PDO use native prepared statements.
-            static::$pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            self::$pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         }
         catch (PDOException $e)
         {
@@ -123,6 +123,6 @@ final class DBConnection
 
     public static function getPDO(): PDO
     {
-        return static::$pdo;
+        return self::$pdo;
     }
 }

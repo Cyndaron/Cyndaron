@@ -74,14 +74,14 @@ final class Hour extends Model
      */
     public static function loadFromDatabase(int $id): ?Hour
     {
-        if (array_key_exists($id, static::$cache))
+        if (array_key_exists($id, self::$cache))
         {
-            return static::$cache[$id];
+            return self::$cache[$id];
         }
 
         /** @var static $object */
         $object = parent::loadFromDatabase($id);
-        static::$cache[$id] = $object;
+        self::$cache[$id] = $object;
 
         return $object;
     }
@@ -100,7 +100,7 @@ final class Hour extends Model
         $result = parent::save();
         if ($result)
         {
-            static::$cache[$this->id] = $this;
+            self::$cache[$this->id] = $this;
         }
         return $result;
     }

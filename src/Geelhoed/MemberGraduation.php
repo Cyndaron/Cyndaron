@@ -22,16 +22,16 @@ final class MemberGraduation extends Model
      */
     public static function fetchAllByMember(Member $member): array
     {
-        return static::fetchAll(['memberId = ?'], [$member->id], 'ORDER BY date');
+        return self::fetchAll(['memberId = ?'], [$member->id], 'ORDER BY date');
     }
 
     public function getGraduation(): Graduation
     {
-        if (!array_key_exists($this->graduationId, static::$graduationCache))
+        if (!array_key_exists($this->graduationId, self::$graduationCache))
         {
-            static::$graduationCache[$this->graduationId] = Graduation::loadFromDatabase($this->graduationId);
+            self::$graduationCache[$this->graduationId] = Graduation::loadFromDatabase($this->graduationId);
         }
 
-        return static::$graduationCache[$this->graduationId];
+        return self::$graduationCache[$this->graduationId];
     }
 }

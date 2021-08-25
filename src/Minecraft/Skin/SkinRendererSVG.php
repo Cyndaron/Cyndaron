@@ -12,13 +12,13 @@ final class SkinRendererSVG extends SkinRenderer
 
     protected function setupTarget(): void
     {
-        $width = static::$maxX - static::$minX;
-        $height = static::$maxY - static::$minY;
+        $width = self::$maxX - self::$minX;
+        $height = self::$maxY - self::$minY;
 
         $this->template = new Template();
         $this->templateVars = [
-            'minX' => static::$minX,
-            'minY' => static::$minY,
+            'minX' => self::$minX,
+            'minY' => self::$minY,
             'width' => $width,
             'height' => $height,
             'contents' => '',

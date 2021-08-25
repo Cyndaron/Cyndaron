@@ -73,9 +73,9 @@ final class Url
         $link = trim($this->getUnfriendly(), '/');
         $linkParts = explode('/', $link);
 
-        if (array_key_exists($linkParts[0], static::$urlProviders))
+        if (array_key_exists($linkParts[0], self::$urlProviders))
         {
-            $classname = static::$urlProviders[$linkParts[0]];
+            $classname = self::$urlProviders[$linkParts[0]];
             /** @var UrlProvider $class */
             $class = new $classname();
             $result = $class->url($linkParts);
@@ -98,7 +98,7 @@ final class Url
     {
         if (in_array(UrlProvider::class, class_implements($class), true))
         {
-            static::$urlProviders[$urlBase] = $class;
+            self::$urlProviders[$urlBase] = $class;
         }
     }
 }

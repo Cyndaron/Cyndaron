@@ -97,7 +97,7 @@ final class ViewHelpers
 
     public static function formatEuro(float $amount): string
     {
-        return '€ ' . static::formatCurrency($amount);
+        return '€ ' . self::formatCurrency($amount);
     }
 
     public static function boolToText(?bool $bool): string

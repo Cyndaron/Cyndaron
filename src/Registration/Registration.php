@@ -59,7 +59,7 @@ final class Registration extends Model
      */
     public static function loadByEvent(Event $event): array
     {
-        return static::fetchAll(['eventId = ?'], [$event->id], 'ORDER BY id');
+        return self::fetchAll(['eventId = ?'], [$event->id], 'ORDER BY id');
     }
 
     public function getEvent(): Event

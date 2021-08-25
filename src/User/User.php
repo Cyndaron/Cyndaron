@@ -107,7 +107,7 @@ Uw nieuwe wachtwoord is: %s';
     public static function hasSufficientReadLevel(): bool
     {
         $minimumReadLevel = (int)Setting::get('minimumReadLevel');
-        return (static::getLevel() >= $minimumReadLevel);
+        return (self::getLevel() >= $minimumReadLevel);
     }
 
     /**
@@ -140,7 +140,7 @@ Uw nieuwe wachtwoord is: %s';
 
     public function uploadNewAvatar(Request $request): void
     {
-        Util::ensureDirectoryExists(static::AVATAR_DIR);
+        Util::ensureDirectoryExists(self::AVATAR_DIR);
         /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
         $file = $request->files->get('avatarFile');
         $tmpName = $file->getPathname();
@@ -177,7 +177,7 @@ Uw nieuwe wachtwoord is: %s';
             throw new Exception('Kon de bestandsinhoud niet verwerken!');
         }
 
-        $filename = static::AVATAR_DIR . "/{$this->id}.png";
+        $filename = self::AVATAR_DIR . "/{$this->id}.png";
         if (file_exists($filename))
         {
             unlink($filename);
@@ -291,7 +291,7 @@ Uw nieuwe wachtwoord is: %s';
         $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
         $_SESSION['level'] = $userdata['level'];
 
-        static::addNotification('U bent ingelogd.');
+        self::addNotification('U bent ingelogd.');
 
         if ($_SESSION['redirect'])
         {
@@ -310,7 +310,7 @@ Uw nieuwe wachtwoord is: %s';
     {
         session_destroy();
         session_start();
-        static::addNotification('U bent afgemeld.');
+        self::addNotification('U bent afgemeld.');
     }
 
     public function getFullName(): string
@@ -416,7 +416,7 @@ Uw nieuwe wachtwoord is: %s';
 
     public static function getUserMenuFiltered(): array
     {
-        return array_filter(static::$userMenu, static function($userMenuItem)
+        return array_filter(self::$userMenu, static function($userMenuItem)
         {
             $level = $userMenuItem['level'] ?? UserLevel::ADMIN;
             if (User::getLevel() >= $level)
@@ -424,7 +424,7 @@ Uw nieuwe wachtwoord is: %s';
                 return true;
             }
             $right = $userMenuItem['right'] ?? '';
-            $profile = static::fromSession();
+            $profile = self::fromSession();
             if ($right !== '' && $profile !== null && $profile->hasRight($right))
             {
                 return true;

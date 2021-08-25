@@ -31,13 +31,13 @@ final class ErrorController extends Controller
             $this->action = 'null';
         }
 
-        if (!array_key_exists($this->action, static::KNOWN_ERRORS))
+        if (!array_key_exists($this->action, self::KNOWN_ERRORS))
         {
             $page = new SimplePage('Onbekende fout', 'Er is een onbekende fout opgetreden. Code: ' . $this->action);
             return new Response($page->render());
         }
 
-        $error = static::KNOWN_ERRORS[$this->action];
+        $error = self::KNOWN_ERRORS[$this->action];
         $statusCode = (int)$this->action;
         $page = new SimplePage($error['pageTitle'], $error['notification']);
         return new Response($page->render(), $statusCode);

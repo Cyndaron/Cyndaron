@@ -16,12 +16,12 @@ final class Graduation extends Model
 
     public function getSport(): Sport
     {
-        if (!array_key_exists($this->sportId, static::$sportCache))
+        if (!array_key_exists($this->sportId, self::$sportCache))
         {
-            static::$sportCache[$this->sportId] = Sport::loadFromDatabase($this->sportId);
+            self::$sportCache[$this->sportId] = Sport::loadFromDatabase($this->sportId);
         }
 
-        return static::$sportCache[$this->sportId];
+        return self::$sportCache[$this->sportId];
     }
 
     /**
@@ -30,6 +30,6 @@ final class Graduation extends Model
      */
     public static function fetchAllBySport(Sport $sport): array
     {
-        return static::fetchAll(['sportId = ?'], [$sport->id]);
+        return self::fetchAll(['sportId = ?'], [$sport->id]);
     }
 }

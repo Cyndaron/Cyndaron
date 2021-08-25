@@ -18,6 +18,6 @@ final class RegistrationTicketType extends Model
      */
     public static function loadByRegistration(Registration $registration): array
     {
-        return static::fetchAll(['orderId = ?'], [$registration->id]);
+        return self::fetchAll(['orderId = ?'], [$registration->id]);
     }
 }

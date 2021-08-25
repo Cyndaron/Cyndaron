@@ -19,6 +19,6 @@ final class EventTicketType extends Model
      */
     public static function loadByEvent(Event $event): array
     {
-        return static::fetchAll(['eventId = ?'], [$event->id], 'ORDER BY price DESC');
+        return self::fetchAll(['eventId = ?'], [$event->id], 'ORDER BY price DESC');
     }
 }
