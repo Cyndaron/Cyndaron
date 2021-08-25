@@ -87,25 +87,6 @@ img.sys
     padding: 0 0 0 0;
 }
 
-.uitwerk
-{
-    font-size: 11px;
-    border: 1px solid #DDDDDD;
-    padding: 4px;
-    border-collapse: collapse;
-}
-
-.uitwerk tr th
-{
-    text-align: left;
-}
-
-.uitwerk tr td, .uitwerk tr th
-{
-    border: 1px solid #DDDDDD;
-    padding: 3px;
-}
-
 .small
 {
     font-size: 10px;
@@ -134,29 +115,10 @@ hr
     border-top: 1px dotted #777777;
 }
 
-table.metlijnen tr td
-{
-    border: 1px solid #BBBBBB;
-}
-
 ul
 {
     margin-top: 5px;
     margin-bottom: 5px;
-}
-
-ul.menulijst
-{
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
-ul.menulijst li
-{
-    font-weight: bold;
-    display: inline;
-    padding-left: 10px;
-    padding-right: 10px;
 }
 
 ul.zonderbullets, ul.zonderbullets li
@@ -164,11 +126,6 @@ ul.zonderbullets, ul.zonderbullets li
     list-style-type: none;
     margin: 0 0 0 0;
     padding: 0 0 0 0;
-}
-
-div.center
-{
-    text-align: center;
 }
 
 .dottop
@@ -202,11 +159,6 @@ div.center
 {
     max-width: 100%;
     padding: 0;
-}
-
-tr.rotate
-{
-
 }
 
 th.rotate
