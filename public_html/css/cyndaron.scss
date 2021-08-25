@@ -9,7 +9,9 @@ a:hover
     text-decoration: underline;
 }
 
-.btn-primary.disabled, .btn-primary:disabled {
+.btn-primary.disabled,
+.btn-primary:disabled
+{
     background-color: #999999;
     border-color: #999999;
 }
@@ -43,7 +45,7 @@ a:hover
 .page-title h1
 {
     display: inline;
-    margin-right:8px;
+    margin-right: 8px;
 }
 
 h1, h2, h3, h4, h5, h6
@@ -121,7 +123,8 @@ ul
     margin-bottom: 5px;
 }
 
-ul.zonderbullets, ul.zonderbullets li
+ul.zonderbullets,
+ul.zonderbullets li
 {
     list-style-type: none;
     margin: 0 0 0 0;
@@ -170,7 +173,9 @@ th.rotate
 
 th.rotate > div
 {
-    transform: /* Magic Numbers */ translate(5px, 51px) /* 45 is really 360 - 45 */ rotate(315deg);
+    transform: /* Magic Numbers */
+        translate(5px, 51px) /* 45 is really 360 - 45 */
+        rotate(315deg);
     width: 30px;
 }
 
@@ -219,7 +224,8 @@ th.rotate > div > span
     content: "\e095";
 }
 
-.navbar-inverse .navbar-nav > li > a, .navbar-inverse .navbar-brand
+.navbar-inverse .navbar-nav > li > a,
+.navbar-inverse .navbar-brand
 {
     color: #f5f5f5;
 }
@@ -235,7 +241,8 @@ th.rotate > div > span
 }
 
 /* ID */
-.pm-table th:first-child, .pm-table td:first-child
+.pm-table th:first-child,
+.pm-table td:first-child
 {
     text-align: center;
 }
@@ -290,7 +297,8 @@ table.kaartverkoop tr th
     text-align: left;
 }
 
-table.kaartverkoop tr td, table.kaartverkoop tr th
+table.kaartverkoop tr td,
+table.kaartverkoop tr th
 {
     padding-right: 30px;
     vertical-align: middle;
@@ -345,72 +353,89 @@ button.aantalKaarten
     border-radius: 4px;
     padding: 4px;
 }
+
 /* Einde jumbotron */
 
-.nav-tabs {
+.nav-tabs
+{
     /*margin-bottom: 15px;*/
 }
 
 /* Navigation */
-.menu {
+.menu
+{
     border-radius: 4px;
 }
 
 .navbar-dark .navbar-nav .nav-link,
 .navbar-dark .navbar-nav .nav-link:focus,
 .navbar-dark .navbar-nav .nav-link:hover,
-.navbar-dark .navbar-nav .nav-link:active {
+.navbar-dark .navbar-nav .nav-link:active
+{
     color: rgba(255, 255, 255, 0.9);
 }
 
-.navbar-right .dropdown-menu {
+.navbar-right .dropdown-menu
+{
     left: auto;
     right: 0;
 }
+
 /* End Navigation */
 
 /* Common controls */
-.btn-outline-cyndaron {
+.btn-outline-cyndaron
+{
     color: #343a40;
     background-color: #FFFFFF;
     border-color: #cccccc;
 }
 
-.btn-outline-cyndaron:hover {
+.btn-outline-cyndaron:hover
+{
     color: #343a40;
     background-color: #cccccc;
     border-color: #aaaaaa;
 }
 
-.btn-outline-cyndaron:focus, .btn-outline-cyndaron.focus {
+.btn-outline-cyndaron:focus,
+.btn-outline-cyndaron.focus
+{
     box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
 }
 
-.btn-outline-cyndaron.disabled, .btn-outline-cyndaron:disabled {
+.btn-outline-cyndaron.disabled,
+.btn-outline-cyndaron:disabled
+{
     color: #343a40;
     background-color: transparent;
 }
 
-.btn-outline-cyndaron:not(:disabled):not(.disabled):active, .btn-outline-cyndaron:not(:disabled):not(.disabled).active,
-.show > .btn-outline-cyndaron.dropdown-toggle {
+.btn-outline-cyndaron:not(:disabled):not(.disabled).active,
+.show > .btn-outline-cyndaron.dropdown-toggle
+{
     color: #fff;
     background-color: #343a40;
     border-color: #cccccc;
 }
 
-.btn-outline-cyndaron:not(:disabled):not(.disabled):active:focus, .btn-outline-cyndaron:not(:disabled):not(.disabled).active:focus,
-.show > .btn-outline-dark.dropdown-toggle:focus {
+.btn-outline-cyndaron:not(:disabled):not(.disabled).active:focus,
+.show > .btn-outline-dark.dropdown-toggle:focus
+{
     box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
 }
 
-.toolbar {
+.toolbar
+{
     border: 1px solid #dee2e6;
     background-color: #ffffff;
     margin-bottom: 1rem;
 }
+
 /* End common controls */
 
-.tab-contents {
+.tab-contents
+{
     width: 100%;
     padding: 15px;
     margin: auto;
@@ -493,9 +518,11 @@ button.aantalKaarten
     max-width: 100%;
     height: auto;
 }
+
 /* */
 
-.modal-body .tab-pane {
+.modal-body .tab-pane
+{
     border: 1px solid #dee2e6;
     border-top: 0;
     padding: 15px;
@@ -514,7 +541,8 @@ button.aantalKaarten
     }
 }
 
-#header-image-upload, #preview-image-upload
+#header-image-upload,
+#preview-image-upload
 {
     display: none;
 }
@@ -526,7 +554,7 @@ button.aantalKaarten
 
 .inline-monospace
 {
-    font-family:monospace;
+    font-family: monospace;
 }
 
 .default-thumbnail-size
