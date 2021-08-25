@@ -524,3 +524,10 @@ th.rotate > div > span
 {
     min-width: 150px;
 }
+
+input[type=color].form-control
+{
+    border: 0;
+    padding: 0;
+    width: calc(1.5em + .75rem + 2px) !important; // Matches the height that Bootstrap gives them
+}
