@@ -9,8 +9,7 @@ declare(strict_types=1);
 namespace Cyndaron\Newsletter;
 
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Util\Mail\Mail;
-use Cyndaron\View\Page;
+use Cyndaron\Util\Util;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Cyndaron\View\SimplePage;
@@ -105,11 +104,13 @@ class Controller extends \Cyndaron\Routing\Controller
         // Use multiple e-mails as necessary, to avoid rejection by spam filters.
         $addressChunks = array_chunk($addresses, 490);
 
-        $fromAddress = new Address('nieuwsbrief@sportschoolgeelhoed.nl', 'Nieuwsbrief Sportschool Geelhoed');
+        $fromAddress = new Address($this->getFromAddress(), 'Nieuwsbrief Sportschool Geelhoed');
         $infoAddress = new Address('info@sportschoolgeelhoed.nl');
 
         $transport = new SendmailTransport();
         $mailer = new Mailer($transport);
+
+        $unsubscribeAddress = $this->getUnsubscribeAddress();
 
         try
         {
@@ -122,6 +123,7 @@ class Controller extends \Cyndaron\Routing\Controller
                     ->addReplyTo($infoAddress)
                     ->addBcc(...$addressChunk)
                     ->html($body);
+                $email->getHeaders()->addTextHeader('List-Unsubscribe', "<mailto:{$unsubscribeAddress}>");
                 $mailer->send($email);
             }
         }
@@ -150,6 +152,7 @@ class Controller extends \Cyndaron\Routing\Controller
         $body = $post->getHTML('body');
         $recipient = $post->getAlphaNum('recipient');
         $recipientAddress = $post->getEmail('recipientAddress');
+        $unsubscribeAddress = $this->getUnsubscribeAddress();
         if ($recipient === 'single')
         {
             $result = $this->sendNewsletterMail($subject, $body, [$recipientAddress]);
@@ -161,7 +164,7 @@ class Controller extends \Cyndaron\Routing\Controller
             Subscriber::fetchAll()
         );
 
-        $unsubscribe = '<hr><i>U ontvangt deze e-mail omdat u zich heeft ingeschreven voor de nieuwsbrief. Mail naar <a href="mailto:nieuwsbrief@sportschoolgeelhoed.nl">nieuwsbrief@sportschoolgeelhoed.nl</a> om u uit te schrijven.</i>';
+        $unsubscribe = '<hr><i>U ontvangt deze e-mail omdat u zich heeft ingeschreven voor de nieuwsbrief. Mail naar <a href="mailto:' . $unsubscribeAddress . '">' . $unsubscribeAddress . '</a> om u uit te schrijven.</i>';
         $result = $this->sendNewsletterMail($subject, $body . $unsubscribe, $subscriberAddresses);
         if ($result === false || $recipient === 'subscribers')
         {
@@ -186,8 +189,20 @@ class Controller extends \Cyndaron\Routing\Controller
         );
         // Do not send an e-mail to people who already got one because they're a newsletter subscriber.
         $memberAddresses = array_diff($memberAddresses, $subscriberAddresses);
-        $unsubscribe = '<hr><i>U ontvangt deze e-mail omdat u of uw kind(eren) lid zijn van Sportschool Geelhoed. Mail naar <a href="mailto:nieuwsbrief@sportschoolgeelhoed.nl">nieuwsbrief@sportschoolgeelhoed.nl</a> om u uit te schrijven.</i>';
+        $unsubscribe = '<hr><i>U ontvangt deze e-mail omdat u of uw kind(eren) lid zijn van Sportschool Geelhoed. Mail naar <a href="mailto:' . $unsubscribeAddress . '">' . $unsubscribeAddress . '</a> om u uit te schrijven.</i>';
         $result = $this->sendNewsletterMail($subject, $body . $unsubscribe, $memberAddresses);
         return $this->getResponse($result);
+    }
+
+    private function getFromAddress(): string
+    {
+        $domain = Util::getDomain();
+        return "nieuwsbrief@{$domain}";
+    }
+
+    private function getUnsubscribeAddress(): string
+    {
+        $domain = Util::getDomain();
+        return "nieuwsbrief@{$domain}";
     }
 }
