@@ -18,6 +18,7 @@ final class OrderTicketsPage extends Page
 
         parent::__construct('Kaarten bestellen: ' . $concert->name);
 
+        $this->addCss('/src/Ticketsale/css/Ticketsale.min.css');
         $this->addTemplateVars([
             'concert' => $concert,
             'ticketTypes' => $ticketTypes,

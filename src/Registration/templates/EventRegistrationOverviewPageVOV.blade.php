@@ -10,7 +10,7 @@
         @endslot
     @endcomponent
 
-    <table class="overzichtInschrijvingen table table-striped">
+    <table class="overzichtBestellingen table table-striped">
         <thead>
             <tr class="rotate">
                 <th class="rotate">

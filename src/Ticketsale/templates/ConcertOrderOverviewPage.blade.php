@@ -83,7 +83,7 @@
 
                     @foreach ($ticketTypes as $ticketTypeId)
                         <td>
-                        @if (array_key_exists($ticketTypeId['id'], $ticketTypesByOrder[$order['bestellingsnr']]))
+                        @if (\array_key_exists($order['bestellingsnr'], $ticketTypesByOrder) && \array_key_exists($ticketTypeId['id'], $ticketTypesByOrder[$order['bestellingsnr']]))
                             <b>{{ $ticketTypesByOrder[$order['bestellingsnr']][$ticketTypeId['id']] }}</b>
                             @php
                                 $totaalbedrag += $ticketTypesByOrder[$orderId][$ticketTypeId['id']] * $ticketTypeId['price'];

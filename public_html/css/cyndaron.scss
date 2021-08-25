@@ -281,49 +281,6 @@ th.rotate > div > span
     text-align: center;
 }
 
-.overzichtBestellingen
-{
-    border: 1px solid #ddd;
-}
-
-table.kaartverkoop
-{
-    width: auto;
-    border: 1px solid #ddd;
-}
-
-table.kaartverkoop tr th
-{
-    text-align: left;
-}
-
-table.kaartverkoop tr td,
-table.kaartverkoop tr th
-{
-    padding-right: 30px;
-    vertical-align: middle;
-}
-
-input.aantalKaarten
-{
-    text-align: center;
-    width: 40px;
-    padding: initial;
-}
-
-button.aantalKaarten
-{
-    margin-top: -2px;
-    margin-bottom: 2px;
-}
-
-#verzendknop
-{
-    width: 150px;
-    height: 50px;
-    font-size: 18px;
-}
-
 .control-label
 {
     text-align: left !important;

@@ -26,6 +26,7 @@ final class EventRegistrationOverviewPage extends Page
         $registrations = Registration::loadByEvent($event);
 
         $this->addScript('/src/Registration/js/EventOrderOverviewPage.js');
+        $this->addCss('/src/Ticketsale/css/Ticketsale.min.css');
 
         parent::__construct('Overzicht aanmeldingen: ' . $event->name);
 

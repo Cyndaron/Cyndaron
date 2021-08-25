@@ -16,6 +16,7 @@ final class RegistrationPage extends Page
 
         $this->addScript('/src/Registration/js/RegistrationPage.js');
         $this->addCss('/src/Registration/css/RegistrationPage.css');
+        $this->addCss('/src/Ticketsale/css/Ticketsale.min.css');
 
         $organisation = Setting::get('organisation');
 

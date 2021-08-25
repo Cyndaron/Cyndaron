@@ -15,7 +15,7 @@
         <p>{{ $concert->description }}</p>
 
         <h3>Vrije plaatsen en gereserveerde plaatsen</h3>
-        <p>{{ sprintf(\Cyndaron\Setting::get('ticketsale_reservedSeatsDescription'), $concert->numReservedSeats) }}</p>
+        <p>{{ sprintf(\Cyndaron\Util\Setting::get('ticketsale_reservedSeatsDescription'), $concert->numReservedSeats) }}</p>
 
         <br/>
         <form method="post" action="/concert-order/add" class="form-horizontal" id="kaartenbestellen">
