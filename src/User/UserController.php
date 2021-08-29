@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\User;
 
+use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\View\Page;
@@ -38,7 +39,7 @@ final class UserController extends Controller
         'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'resetpassword' => ['level' => UserLevel::ADMIN, 'function' => 'resetPassword'],
+        'resetpassword' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'resetPassword'],
     ];
 
     protected function gallery(): Response
