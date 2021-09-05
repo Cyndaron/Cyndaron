@@ -47,6 +47,7 @@ use function array_map;
 final class ContestController extends Controller
 {
     protected array $getRoutes = [
+        'contestantsEmail' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsEmail'],
         'contestantsList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsList'],
         'contestantsListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsListExcel'],
         'editSubscription' => ['level' => UserLevel::LOGGED_IN, 'function' => 'editSubscriptionPage'],
@@ -467,6 +468,12 @@ final class ContestController extends Controller
     public function contestantsList(): Response
     {
         $page = new ContestantsListPage();
+        return new Response($page->render());
+    }
+
+    public function contestantsEmail(): Response
+    {
+        $page = new ContestantsEmailPage();
         return new Response($page->render());
     }
 

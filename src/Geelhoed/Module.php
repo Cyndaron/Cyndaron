@@ -65,6 +65,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu, Template
     public function url(array $linkParts): ?string
     {
         static $staticRoutes = [
+            'contest/contestantsEmail' => 'E-mailadressen wedstrijdjudoka\'s',
             'contest/contestantsList' => 'Overzicht wedstrijdjudoka\'s',
             'contest/manageOverview' => 'Wedstrijdbeheer',
             'contest/myContests' => 'Mijn wedstrijden',
@@ -97,6 +98,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu, Template
     {
         $ret = [
             ['label' => 'Wedstrijdbeheer', 'link' => '/contest/manageOverview', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
+            ['label' => 'E-mailadressen wedstrijdjudoka\'s', 'link' => '/contest/contestantsEmail', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
             ['label' => 'Overzicht wedstrijdjudoka\'s', 'link' => '/contest/contestantsList', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
             ['label' => 'Overzicht ouderaccounts', 'link' => '/contest/parentAccounts', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
             ['label' => 'Overzicht reserveringen', 'link' => '/reservation/overview', 'level' => UserLevel::ADMIN],
