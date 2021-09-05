@@ -316,11 +316,17 @@ Uw nieuwe wachtwoord is: %s';
     public function getFullName(): string
     {
         $ret = $this->firstName ?: $this->initials;
-        $ret .= ' ' . $this->tussenvoegsel;
-        if (substr($this->tussenvoegsel, -1) !== "'")
+        $ret .= ' ';
+        if ($this->tussenvoegsel !== '')
         {
-            $ret .= ' ';
+            $ret .= $this->tussenvoegsel;
+            $lastChar = substr($this->tussenvoegsel, -1);
+            if ($lastChar !== "'" && $lastChar !== '’')
+            {
+                $ret .= ' ';
+            }
         }
+
         $ret .= $this->lastName;
 
         return $ret;
