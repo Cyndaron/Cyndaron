@@ -115,7 +115,7 @@ final class Contest extends Model
 
     public static function getTotalDue(User $user): array
     {
-        $members = Member::fetchAllByUser($user);
+        $members = Member::fetchAllContestantsByUser($user);
         if (count($members) === 0)
         {
             return [0.00, []];

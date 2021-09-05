@@ -16,7 +16,7 @@ final class MyContestsPage extends Page
     public function __construct(User $currentUser)
     {
         parent::__construct('Mijn wedstrijden');
-        $controlledMembers = Member::fetchAllContestantsByLoggedInUser();
+        $controlledMembers = Member::fetchAllContestantsByUser($currentUser);
         $contests = [];
         $contestMembers = [];
         $due = 0.0;

@@ -415,9 +415,9 @@ final class Member extends Model
         return self::fetchAllByUser($profile);
     }
 
-    public static function fetchAllContestantsByLoggedInUser(): array
+    public static function fetchAllContestantsByUser(User $profile): array
     {
-        return array_filter(self::fetchAllByLoggedInUser(), static function(Member $member)
+        return array_filter(self::fetchAllByUser($profile), static function(Member $member)
         {
             return $member->isContestant;
         });

@@ -11,7 +11,7 @@ final class ContestViewPage extends Page
 {
     public function __construct(Contest $contest, ?User $currentUser)
     {
-        $controlledMembers = Member::fetchAllContestantsByLoggedInUser();
+        $controlledMembers = $currentUser !== null ? Member::fetchAllContestantsByUser($currentUser) : [];
         $canManage = $currentUser !== null && $currentUser->hasRight(Contest::RIGHT_MANAGE);
         $mayViewOtherContestants = $this->loggedInUserMayViewOtherContestants($canManage, $controlledMembers);
         parent::__construct(sprintf('Wedstrijd: %s', $contest->name));

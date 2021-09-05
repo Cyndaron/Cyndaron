@@ -776,12 +776,12 @@ final class ContestController extends Controller
         return new Response($page->render());
     }
 
-    public function subscribePage(QueryBits $queryBits): Response
+    public function subscribePage(QueryBits $queryBits, User $currentUser): Response
     {
         $contestId = $queryBits->getInt(2);
         $memberId = $queryBits->getInt(3);
 
-        $controlledMembers = Member::fetchAllContestantsByLoggedInUser();
+        $controlledMembers = Member::fetchAllContestantsByUser($currentUser);
         $memberIds = array_map(static function(Member $member)
         {
             return $member->id;
@@ -926,7 +926,7 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/parentAccounts');
     }
 
-    public function cancelSubscription(QueryBits $queryBits): JsonResponse
+    public function cancelSubscription(QueryBits $queryBits, User $currentUser): JsonResponse
     {
         $contestMemberId = $queryBits->getInt(2);
         $contestMember = ContestMember::loadFromDatabase($contestMemberId);
@@ -936,7 +936,7 @@ final class ContestController extends Controller
         }
 
         $member = $contestMember->getMember();
-        $manageableContestants = Member::fetchAllContestantsByLoggedInUser();
+        $manageableContestants = Member::fetchAllContestantsByUser($currentUser);
         $canManage = false;
         foreach ($manageableContestants as $manageableContestant)
         {
