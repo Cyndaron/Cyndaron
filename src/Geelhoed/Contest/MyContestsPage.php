@@ -23,7 +23,7 @@ final class MyContestsPage extends Page
         if (count($controlledMembers) > 0)
         {
             $memberIds = array_map(static function(Member $member) { return $member->id; }, $controlledMembers);
-            $contests = Contest::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (?))'], [implode(',', $memberIds)], 'ORDER BY registrationDeadline DESC');
+            $contests = Contest::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (' . implode(',', $memberIds) . '))'], [], 'ORDER BY registrationDeadline DESC');
             [$due, $contestMembers] = Contest::getTotalDue($currentUser);
         }
         $this->addScript('/src/Geelhoed/Contest/js/MemberSubscriptionStatus.js');

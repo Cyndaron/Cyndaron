@@ -124,7 +124,7 @@ final class Contest extends Model
         {
             return $elem->id;
         }, $members);
-        $contests = Contest::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (?))'], [implode(',', $memberIds)]);
+        $contests = Contest::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (' . implode(',', $memberIds) . '))']);
         $contestMembers = [];
         $due = 0.00;
         foreach ($contests as $contest)
