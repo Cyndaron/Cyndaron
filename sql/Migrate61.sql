@@ -116,3 +116,5 @@ CREATE TABLE `newsletter_subscriber` (
 ALTER TABLE `newsletter_subscriber` ADD UNIQUE( `email`);
 
 ALTER TABLE `users` ADD `optOut` TINYINT(1) DEFAULT 0 AFTER `dateOfBirth`;
+
+ALTER TABLE `users` ADD UNIQUE( `email`);
