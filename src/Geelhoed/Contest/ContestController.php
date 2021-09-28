@@ -18,6 +18,7 @@ use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Util;
 use Exception;
+use Mollie\Api\Resources\Payment;
 use PhpOffice\PhpSpreadsheet\Shared\Date as PHPSpreadsheetDate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Safe\DateTime;
@@ -250,6 +251,22 @@ final class ContestController extends Controller
         return new RedirectResponse($redirectUrl);
     }
 
+    private function isPartiallyRefunded(Payment $payment): bool
+    {
+        if (!$payment->isPaid() || !$payment->hasRefunds())
+        {
+            return false;
+        }
+
+        $refundedAmount = $payment->getAmountRefunded();
+        if ($refundedAmount === 0.0 || $refundedAmount >= $payment->amount->value)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public function mollieWebhook(RequestParameters $post): Response
     {
         $apiKey = Setting::get('mollieApiKey');
@@ -274,6 +291,10 @@ final class ContestController extends Controller
         $paidStatus = false;
 
         if ($payment->isPaid() && !$payment->hasRefunds() && !$payment->hasChargebacks())
+        {
+            $paidStatus = true;
+        }
+        elseif ($this->isPartiallyRefunded($payment))
         {
             $paidStatus = true;
         }
