@@ -20,6 +20,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $event->registrationCost0 = $post->getFloat('registrationCost0');
         $event->registrationCost1 = $post->getFloat('registrationCost1');
         $event->registrationCost2 = $post->getFloat('registrationCost2');
+        $event->registrationCost3 = $post->getFloat('registrationCost3');
         $event->lunchCost = $post->getFloat('lunchCost');
         $event->maxRegistrations = $post->getInt('maxRegistrations');
         $event->numSeats = $post->getInt('numSeats');

@@ -9,7 +9,7 @@ use Cyndaron\Util\Setting;
 final class Event extends Model
 {
     public const TABLE = 'registration_events';
-    public const TABLE_FIELDS = ['name', 'openForRegistration', 'description', 'descriptionWhenClosed', 'registrationCost0', 'registrationCost1', 'registrationCost2', 'lunchCost', 'maxRegistrations', 'numSeats', 'requireApproval', 'hideRegistrationFee', 'performedPiece', 'termsAndConditions'];
+    public const TABLE_FIELDS = ['name', 'openForRegistration', 'description', 'descriptionWhenClosed', 'registrationCost0', 'registrationCost1', 'registrationCost2', 'registrationCost3', 'lunchCost', 'maxRegistrations', 'numSeats', 'requireApproval', 'hideRegistrationFee', 'performedPiece', 'termsAndConditions'];
 
     public string $name = '';
     public bool $openForRegistration = true;
@@ -18,6 +18,7 @@ final class Event extends Model
     public float $registrationCost0;
     public float $registrationCost1;
     public float $registrationCost2 = 0.0;
+    public float $registrationCost3 = 0.0;
     public float $lunchCost;
     public int $maxRegistrations = 300;
     public int $numSeats = 300;

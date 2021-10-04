@@ -11,6 +11,7 @@ let tickettypes = [];
 let registrationCost0 = NaN;
 let registrationCost1 = NaN;
 let registrationCost2 = NaN;
+let registrationCost3 = NaN;
 let lunchCost = NaN;
 
 $.ajax('/api/event/getInfo/' + eventId, {}).done(function (data)
@@ -19,6 +20,7 @@ $.ajax('/api/event/getInfo/' + eventId, {}).done(function (data)
     registrationCost0 = parseFloat(data.registrationCost0);
     registrationCost1 = parseFloat(data.registrationCost1);
     registrationCost2 = parseFloat(data.registrationCost2);
+    registrationCost3 = parseFloat(data.registrationCost3);
     lunchCost = parseFloat(data.lunchCost);
 });
 
@@ -77,7 +79,9 @@ function calculateTotal()
         }
     }
 
-    if (regGroup === 2)
+    if (regGroup === 3)
+        total += registrationCost3;
+    else if (regGroup === 2)
         total += registrationCost2;
     else if (regGroup === 1)
         total += registrationCost1;

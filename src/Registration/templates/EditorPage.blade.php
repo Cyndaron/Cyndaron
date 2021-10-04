@@ -9,6 +9,7 @@
     @include ('View/Widget/Form/Currency', ['id' => 'registrationCost0', 'label' => 'Inschrijfgeld groep 0', 'value' => $registrationCost0])
     @include ('View/Widget/Form/Currency', ['id' => 'registrationCost1', 'label' => 'Inschrijfgeld groep 1', 'value' => $registrationCost1])
     @include ('View/Widget/Form/Currency', ['id' => 'registrationCost2', 'label' => 'Inschrijfgeld groep 2', 'value' => $registrationCost2])
+    @include ('View/Widget/Form/Currency', ['id' => 'registrationCost3', 'label' => 'Inschrijfgeld groep 3', 'value' => $registrationCost3])
 
 
     @include ('View/Widget/Form/Currency', ['id' => 'lunchCost', 'label' => 'Lunchkosten', 'value' => $lunchCost])

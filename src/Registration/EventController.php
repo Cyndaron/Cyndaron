@@ -42,6 +42,7 @@ final class EventController extends Controller
             'registrationCost0' => $event->registrationCost0,
             'registrationCost1' => $event->registrationCost1,
             'registrationCost2' => $event->registrationCost2,
+            'registrationCost3' => $event->registrationCost3,
             'lunchCost' => $event->lunchCost,
             'tickettypes' => $ticketTypes,
         ];

@@ -39,6 +39,7 @@
                         <option data-registration-group="2" value="Vocaal Ensembe Cantare">Vocaal Ensembe Cantare</option>
                         <option data-registration-group="2" value="COV Te Deum Laudamus Kapelle">COV Te Deum Laudamus Kapelle</option>
                         <option data-registration-group="2" value="COV Soli Deo Gloria Sliedrecht">COV Soli Deo Gloria Sliedrecht</option>
+                        <option data-registration-group="3" value="Student HZ / UCR">Student HZ / UCR</option>
                         <option data-registration-group="0" value="">Geen koor / een ander koor</option>
                     </select>
                 </div>

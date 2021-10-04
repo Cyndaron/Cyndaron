@@ -157,7 +157,11 @@ Stichting Bijzondere Koorprojecten';
     {
         $event = $this->getEvent();
         $registrationTotal = 0;
-        if ($this->registrationGroup === 2)
+        if ($this->registrationGroup === 3)
+        {
+            $registrationTotal += $event->registrationCost3;
+        }
+        elseif ($this->registrationGroup === 2)
         {
             $registrationTotal += $event->registrationCost2;
         }

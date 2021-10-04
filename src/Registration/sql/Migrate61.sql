@@ -7,3 +7,5 @@ ALTER TABLE `registration_orders` ADD `approvalStatus` TINYINT(1) NOT NULL DEFAU
 ALTER TABLE `registration_orders` ADD `phone` VARCHAR(20) NOT NULL DEFAULT '' AFTER `approvalStatus`;
 ALTER TABLE `registration_orders` ADD `choirExperience` INT NOT NULL DEFAULT 0 AFTER `phone`;
 ALTER TABLE `registration_orders` ADD `performedBefore` TINYINT(1) NOT NULL DEFAULT 0 AFTER `choirExperience`;
+
+ALTER TABLE `registration_events` ADD `registrationCost3` DOUBLE NOT NULL AFTER `registrationCost2`;

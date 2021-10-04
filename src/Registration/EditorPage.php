@@ -33,6 +33,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
         $this->templateVars['registrationCost0'] = ViewHelpers::formatCurrency($this->model->registrationCost0 ?? 15.0);
         $this->templateVars['registrationCost1'] = ViewHelpers::formatCurrency($this->model->registrationCost1 ?? 15.0);
         $this->templateVars['registrationCost2'] = ViewHelpers::formatCurrency($this->model->registrationCost2 ?? 0.0);
+        $this->templateVars['registrationCost3'] = ViewHelpers::formatCurrency($this->model->registrationCost3 ?? 0.0);
         $this->templateVars['lunchCost'] = ViewHelpers::formatCurrency((float)($this->model->lunchCost ?? 15.0));
     }
 }
