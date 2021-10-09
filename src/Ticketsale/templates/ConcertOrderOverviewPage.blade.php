@@ -62,33 +62,34 @@
         </thead>
 
         <tbody>
+            @php /** @var \Cyndaron\Ticketsale\Order[] $orders */ @endphp
             @foreach ($orders as $order)
                 @php
-                    $orderId = $order['bestellingsnr'];
-                    $totaalbedrag = 0.0;
-                    $verzendkosten = $order['delivery'] * $concert->deliveryCost;
-                    $toeslag_gereserveerde_plaats = $order['hasReservedSeats'] * $concert->reservedSeatCharge;
+                    $orderId = $order->id;
+                    $totalAmount = 0.0;
+                    $deliveryCost = $order->delivery * $concert->deliveryCost;
+                    $reservedSeatCharge = $order->hasReservedSeats * $concert->reservedSeatCharge;
                 @endphp
 
                 <tr>
                     <td>{{ $orderId }}</td>
-                    <td>{{ $order['lastName'] }}</td>
-                    <td>{{ $order['initials'] }}</td>
-                    <td>{{ $order['email'] }}</td>
+                    <td>{{ $order->lastName }}</td>
+                    <td>{{ $order->initials }}</td>
+                    <td>{{ $order->email }}</td>
                     <td>
-                        {{ $order['street'] }}<br />
-                        {{ $order['postcode'] }} {{ $order['city'] }}
+                        {{ $order->street }}<br />
+                        {{ $order->postcode }} {{ $order->city }}
                     </td>
-                    <td>{{ $order['comments'] }}</td>
+                    <td>{{ $order->comments }}</td>
 
                     @foreach ($ticketTypes as $ticketTypeId)
                         <td>
-                        @if (\array_key_exists($order['bestellingsnr'], $ticketTypesByOrder) && \array_key_exists($ticketTypeId['id'], $ticketTypesByOrder[$order['bestellingsnr']]))
-                            <b>{{ $ticketTypesByOrder[$order['bestellingsnr']][$ticketTypeId['id']] }}</b>
+                        @if (\array_key_exists($order->id, $ticketTypesByOrder) && \array_key_exists($ticketTypeId['id'], $ticketTypesByOrder[$order->id]))
+                            <b>{{ $ticketTypesByOrder[$order->id][$ticketTypeId['id']] }}</b>
                             @php
-                                $totaalbedrag += $ticketTypesByOrder[$orderId][$ticketTypeId['id']] * $ticketTypeId['price'];
-                                $totaalbedrag += $ticketTypesByOrder[$orderId][$ticketTypeId['id']] * $verzendkosten;
-                                $totaalbedrag += $ticketTypesByOrder[$orderId][$ticketTypeId['id']] * $toeslag_gereserveerde_plaats;
+                                $totalAmount += $ticketTypesByOrder[$order->id][$ticketTypeId['id']] * $ticketTypeId['price'];
+                                $totalAmount += $ticketTypesByOrder[$order->id][$ticketTypeId['id']] * $deliveryCost;
+                                $totalAmount += $ticketTypesByOrder[$order->id][$ticketTypeId['id']] * $reservedSeatCharge;
                             @endphp
                         @else
                             &nbsp;
@@ -96,14 +97,14 @@
                         </td>
                     @endforeach
 
-                    <td>{{ $totaalbedrag|euro }}</td>
+                    <td>{{ $totalAmount|euro }}</td>
 
                     @if (!$concert->forcedDelivery)
-                        <td>{{ $order['delivery']|boolToText }}</td>
+                        <td>{{ $order->delivery|boolToText }}</td>
                     @else
                         <td>
-                        @if ($order['deliveryByMember'])
-                            {{ $order['deliveryMemberName'] }}
+                        @if ($order->deliveryByMember)
+                            {{ $order->deliveryMemberName }}
                         @else
                             Nee
                         @endif
@@ -111,25 +112,25 @@
                     @endif
 
                     <td>
-                        @if ($order['delivery'] || $concert->forcedDelivery)
-                            {{ $order['isDelivered']|boolToText }}
+                        @if ($order->delivery || $concert->forcedDelivery)
+                            {{ $order->isDelivered|boolToText }}
                         @else
                             &nbsp;
                         @endif
                     </td>
                     <td>
-                        {{ $order['hasReservedSeats']|boolToText }}
+                        {{ $order->hasReservedSeats|boolToText }}
                     </td>
                     <td>
-                        {{ $order['isPaid']|boolToText }}
+                        {{ $order->isPaid|boolToText }}
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            @if (!$order['isPaid'])
+                            @if (!$order->isPaid)
                                 <button data-order-id="{{ $orderId }}" data-csrf-token-set-is-paid="{{ \Cyndaron\User\User::getCSRFToken('concert-order', 'setIsPaid') }}" title="Markeren als betaald" class="com-order-set-paid btn btn-sm btn-success"><span class="glyphicon glyphicon-eur"></span></button>
                             @endif
 
-                            @if (($concert->forcedDelivery || $order['delivery']) && !$order['isDelivered'])
+                            @if (($concert->forcedDelivery || $order->delivery) && !$order->isDelivered)
                                 <button data-order-id="{{ $orderId }}" data-csrf-token-set-is-sent="{{ \Cyndaron\User\User::getCSRFToken('concert-order', 'setIsSent') }}" title="Markeren als verstuurd" class="com-order-set-sent btn btn-sm btn-success"><span class="glyphicon glyphicon-envelope"></span></button>
                             @endif
 

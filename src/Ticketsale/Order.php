@@ -74,4 +74,9 @@ final class Order extends Model
         $result = DBConnection::doQuery('UPDATE ticketsale_orders SET `isDelivered`=1 WHERE id=?', [$this->id]);
         return (bool)$result;
     }
+
+    public static function fetchByConcert(Concert $concert): array
+    {
+        return self::fetchAll(['concertId = ?'], [$concert->id]);
+    }
 }

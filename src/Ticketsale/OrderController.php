@@ -50,45 +50,20 @@ final class OrderController extends Controller
         }
     }
 
-    /**
-     * @param RequestParameters $post
-     * @throws InvalidOrder
-     */
-    private function processOrder(RequestParameters $post): void
-    {
-        if ($post->isEmpty())
-        {
-            throw new InvalidOrder('De bestellingsgegevens zijn niet goed aangekomen.');
-        }
+    private function calculateTotal(
+        Concert $concert,
+        array $ticketTypes,
+        array $orderTicketTypes,
+        bool $reserveSeats,
+        bool $wantDelivery,
+        bool &$deliveryByMember,
+        bool $addressIsAbroad,
+        int $postcode
+    ): OrderTotal {
+        $totalPrice = 0.0;
+        $totalNumTickets = 0;
 
-        $concertId = $post->getInt('concert_id');
-
-        /** @var Concert $concertObj */
-        $concertObj = Concert::loadFromDatabase($concertId);
-
-        if (!$concertObj->openForSales)
-        {
-            throw new InvalidOrder('De verkoop voor dit concert is helaas gesloten, u kunt geen kaarten meer bestellen.');
-        }
-
-        $postcode = $post->getPostcode('postcode');
-        $addressIsAbroad = $post->getUnfilteredString('country') === 'abroad';
-        $deliveryByMember = $post->getBool('deliveryByMember');
-        $deliveryByMember = $addressIsAbroad ? true : $deliveryByMember;
-        $deliveryMemberName = $post->getSimpleString('deliveryMemberName');
-
-        $incorrecteVelden = $this->checkForm($concertObj->forcedDelivery, $deliveryByMember, $post);
-        if (!empty($incorrecteVelden))
-        {
-            $message = 'De volgende velden zijn niet goed ingevuld of niet goed aangekomen: ';
-            $message .= implode(', ', $incorrecteVelden) . '.';
-            throw new InvalidOrder($message);
-        }
-
-        $totaalprijs = 0.0;
-        $totaalAantalKaarten = 0;
-
-        if ($concertObj->forcedDelivery)
+        if ($concert->forcedDelivery)
         {
             $qualifiesForFreeDelivery = ($addressIsAbroad) ? false : Util::postcodeQualifiesForFreeDelivery((int)$postcode);
 
@@ -108,23 +83,90 @@ final class OrderController extends Controller
         }
         else
         {
-            $payForDelivery = $post->getBool('bezorgen');
+            $payForDelivery = $wantDelivery;
         }
-        $deliveryPrice = $payForDelivery ? $concertObj->deliveryCost : 0.0;
-        $reserveSeats = $post->getInt('hasReservedSeats');
-        $toeslag_gereserveerde_plaats = $reserveSeats !== 0 ? $concertObj->reservedSeatCharge : 0;
-        $order_tickettypes = [];
-        /** @var TicketType[] $ticketTypes */
-        $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concertId], 'ORDER BY price DESC');
+        $deliveryPrice = $payForDelivery ? $concert->deliveryCost : 0.0;
+        $reservedSeatCharge = $reserveSeats ? $concert->reservedSeatCharge : 0;
         foreach ($ticketTypes as $ticketType)
         {
             assert($ticketType->id !== null);
-            $order_tickettypes[$ticketType->id] = $post->getInt('tickettype-' . $ticketType->id);
-            $totaalprijs += $order_tickettypes[$ticketType->id] * ($ticketType->price + $deliveryPrice + $toeslag_gereserveerde_plaats);
-            $totaalAantalKaarten += $order_tickettypes[$ticketType->id];
+            $totalPrice += $orderTicketTypes[$ticketType->id] * ($ticketType->price + $deliveryPrice + $reservedSeatCharge);
+            $totalNumTickets += $orderTicketTypes[$ticketType->id];
         }
 
-        if ($totaalprijs <= 0)
+        $orderTotal = new OrderTotal();
+        $orderTotal->amount = $totalPrice;
+        $orderTotal->numTickets = $totalNumTickets;
+        $orderTotal->ticketTypes = $orderTicketTypes;
+        $orderTotal->payForDelivery = $payForDelivery;
+
+        return $orderTotal;
+    }
+
+    /**
+     * @param RequestParameters $post
+     * @throws InvalidOrder
+     */
+    private function processOrder(RequestParameters $post): void
+    {
+        if ($post->isEmpty())
+        {
+            throw new InvalidOrder('De bestellingsgegevens zijn niet goed aangekomen.');
+        }
+
+        $concertId = $post->getInt('concert_id');
+
+        $concert = Concert::loadFromDatabase($concertId);
+        if ($concert === null)
+        {
+            throw new InvalidOrder('Concert niet gevonden!');
+        }
+
+        if (!$concert->openForSales)
+        {
+            throw new InvalidOrder('De verkoop voor dit concert is helaas gesloten, u kunt geen kaarten meer bestellen.');
+        }
+
+        $postcode = $post->getPostcode('postcode');
+        $addressIsAbroad = $post->getUnfilteredString('country') === 'abroad';
+        $deliveryByMember = $post->getBool('deliveryByMember');
+        $deliveryByMember = $addressIsAbroad ? true : $deliveryByMember;
+        $deliveryMemberName = $post->getSimpleString('deliveryMemberName');
+
+        $incorrecteVelden = $this->checkForm($concert->forcedDelivery, $deliveryByMember, $post);
+        if (!empty($incorrecteVelden))
+        {
+            $message = 'De volgende velden zijn niet goed ingevuld of niet goed aangekomen: ';
+            $message .= implode(', ', $incorrecteVelden) . '.';
+            throw new InvalidOrder($message);
+        }
+
+        $orderTicketTypes = [];
+        $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concert->id], 'ORDER BY price DESC');
+        foreach ($ticketTypes as $ticketType)
+        {
+            assert($ticketType->id !== null);
+            $orderTicketTypes[$ticketType->id] = $post->getInt('tickettype-' . $ticketType->id);
+        }
+
+        $reserveSeats = $post->getInt('hasReservedSeats');
+
+        $orderTotal = $this->calculateTotal(
+            $concert,
+            $ticketTypes,
+            $orderTicketTypes,
+            $reserveSeats === 1,
+            $post->getBool('bezorgen'),
+            $deliveryByMember,
+            $addressIsAbroad,
+            (int)$postcode
+        );
+
+        $totalAmount = $orderTotal->amount;
+        $totalNumTickets = $orderTotal->numTickets;
+        $payForDelivery = $orderTotal->payForDelivery;
+
+        if ($totalAmount <= 0)
         {
             throw new InvalidOrder('U heeft een bestelling van 0 kaarten geplaatst of het formulier is niet goed aangekomen.');
         }
@@ -151,7 +193,7 @@ final class OrderController extends Controller
 
         foreach ($ticketTypes as $ticketType)
         {
-            $numTicketsOfType = $order_tickettypes[$ticketType->id] ?? 0;
+            $numTicketsOfType = $orderTicketTypes[$ticketType->id] ?? 0;
             if ($numTicketsOfType > 0)
             {
                 $result = DBConnection::doQuery(
@@ -168,16 +210,16 @@ final class OrderController extends Controller
         $reservedSeats = null;
         if ($reserveSeats === 1)
         {
-            $reservedSeats = $concertObj->reserveSeats($orderId, $totaalAantalKaarten);
+            $reservedSeats = $concert->reserveSeats($orderId, $totalNumTickets);
             if ($reservedSeats === null)
             {
                 DBConnection::doQuery('UPDATE ticketsale_orders SET hasReservedSeats = 0 WHERE id=?', [$orderId]);
-                $totaalprijs -= $totaalAantalKaarten * $toeslag_gereserveerde_plaats;
+                $totalAmount -= $totalNumTickets * $concert->reservedSeatCharge;
                 $reserveSeats = -1;
             }
         }
 
-        $this->sendMail($payForDelivery, $concertObj, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats ?: [], $totaalprijs, $orderId, $ticketTypes, $order_tickettypes, $lastName, $initials, $street, $postcode, $city, $comments, $email);
+        $this->sendMail($payForDelivery, $concert, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats ?: [], $totalAmount, $orderId, $ticketTypes, $orderTicketTypes, $lastName, $initials, $street, $postcode, $city, $comments, $email);
     }
 
     private function checkForm(bool $forcedDelivery, bool $memberDelivery, RequestParameters $post): array
