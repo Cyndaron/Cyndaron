@@ -14,7 +14,8 @@ final class EventRegistrationOverviewPage extends Page
     {
         switch (Setting::get('organisation'))
         {
-            case 'Vlissingse Oratorium Vereniging':
+            case Setting::ORGANISATION_VOV:
+            case Setting::ORGANISATION_ZCK:
                 $this->template = 'Registration/EventRegistrationOverviewPageVOV';
                 break;
             case 'Stichting Bijzondere Koorprojecten':

@@ -14,6 +14,7 @@ use Cyndaron\View\SimplePage;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use function assert;
@@ -25,6 +26,11 @@ final class OrderController extends Controller
     protected array $postRoutes = [
         'add' => ['level' => UserLevel::ANONYMOUS, 'function' => 'add'],
     ];
+
+    protected array $apiGetRoutes = [
+        'calculateTotal' => ['level' => UserLevel::ANONYMOUS, 'function' => 'calculateTotalGet'],
+    ];
+
     protected array $apiPostRoutes = [
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
         'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
@@ -101,6 +107,12 @@ final class OrderController extends Controller
         $orderTotal->payForDelivery = $payForDelivery;
 
         return $orderTotal;
+    }
+
+    protected function calculateTotalGet(Request $request): JsonResponse
+    {
+        $get = $request->query;
+        return new JsonResponse($get->all());
     }
 
     /**

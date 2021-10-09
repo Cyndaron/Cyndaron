@@ -100,7 +100,8 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
         ];
 
         $templateFile = 'Registration/ConfirmationMail';
-        if (Setting::get('organisation') === Setting::ORGANISATION_VOV)
+        $organisation = Setting::get('organisation');
+        if ($organisation === Setting::ORGANISATION_VOV || $organisation === Setting::ORGANISATION_ZCK)
         {
             $templateFile = 'Registration/ConfirmationMailVOV';
             if (file_exists(__DIR__ . '/templates/ConfirmationMailVOV-' . $event->id . '.blade.php'))
@@ -134,7 +135,7 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
 
         $organisation = Setting::get('organisation');
         $text = "Hartelijk dank voor uw inschrijving bij $organisation. Wij hebben uw betaling in goede orde ontvangen.\n";
-        if ($organisation !== Setting::ORGANISATION_VOV)
+        if ($organisation !== Setting::ORGANISATION_VOV && $organisation !== Setting::ORGANISATION_ZCK)
         {
             $text .= 'Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaarliggen bij de kassa.';
         }

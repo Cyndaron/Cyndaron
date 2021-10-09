@@ -3,6 +3,7 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\View\Page;
 use Cyndaron\Util\Setting;
+use Phan\Library\Set;
 use function constant;
 use function Safe\date;
 use function file_exists;
@@ -20,7 +21,7 @@ final class RegistrationPage extends Page
 
         $organisation = Setting::get('organisation');
 
-        if ($organisation === 'Vlissingse Oratorium Vereniging')
+        if ($organisation === Setting::ORGANISATION_VOV || $organisation === Setting::ORGANISATION_ZCK)
         {
             $template = 'Registration/RegistrationPageVOV';
             if (file_exists(__DIR__ . '/templates/RegistrationPageVOV-' . $event->id . '.blade.php'))

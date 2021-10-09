@@ -38,6 +38,7 @@ final class Event extends Model
         switch (Setting::get('organisation'))
         {
             case Setting::ORGANISATION_VOV:
+            case Setting::ORGANISATION_ZCK:
                 return 'Vlissingen';
             case Setting::ORGANISATION_SBK:
                 return 'Mozart';

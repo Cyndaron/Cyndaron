@@ -6,6 +6,7 @@ use Cyndaron\DBAL\DBConnection;
 final class Setting
 {
     public const ORGANISATION_VOV = 'Vlissingse Oratorium Vereniging';
+    public const ORGANISATION_ZCK = 'Zeeuws Concertkoor';
     public const ORGANISATION_SBK = 'Stichting Bijzondere Koorprojecten';
 
     /**
