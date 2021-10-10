@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
+use Cyndaron\Ticketsale\DeliveryCost\FlatFee;
+use Cyndaron\Ticketsale\DeliveryCost\Staffel;
 use Cyndaron\View\Template\ViewHelpers;
 use function assert;
 
@@ -26,6 +28,11 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
         assert($this->model instanceof Concert);
 
+        $this->templateVars['deliveryCostInterface'] = $this->model->getDeliveryCostInterface();
+        $this->templateVars['deliveryCostOptions'] = [
+            '\Cyndaron\Ticketsale\DeliveryCost\FlatFee' => 'Vast bedrag per kaart',
+            '\Cyndaron\Ticketsale\DeliveryCost\Staffel' => 'Staffel',
+        ];
         $this->templateVars['deliveryCost'] = ViewHelpers::formatCurrency($this->model->deliveryCost ?? 1.5);
         $this->templateVars['reservedSeatCharge'] = ViewHelpers::formatCurrency($this->model->reservedSeatCharge ?? 5.0);
         $this->templateVars['numFreeSeats'] = $this->model->numFreeSeats ?? 250;

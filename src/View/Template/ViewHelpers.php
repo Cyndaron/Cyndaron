@@ -105,6 +105,11 @@ final class ViewHelpers
         return $bool ? 'Ja' : 'Nee';
     }
 
+    public static function boolToDingbat(?bool $bool): string
+    {
+        return $bool ? '✔' : '⨯';
+    }
+
     public static function filterHm(string $hms): string
     {
         $parts = explode(':', $hms);

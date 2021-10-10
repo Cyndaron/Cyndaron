@@ -45,7 +45,7 @@ final class RegistrationController extends Controller
             $this->processRegistration($post);
 
             $body = 'Hartelijk dank voor uw aanmelding. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw aanmelding en betaalinformatie.';
-            if (Setting::get('organisation') === 'Stichting Bijzondere Koorprojecten')
+            if (Setting::get(Setting::ORGANISATION) === 'Stichting Bijzondere Koorprojecten')
             {
                 $body = 'Hartelijk dank voor je aanmelding. Je ontvangt binnen enkele minuten een e-mail met een bevestiging van je aanmelding.';
             }
@@ -91,7 +91,7 @@ final class RegistrationController extends Controller
         if (!$eventObj->openForRegistration)
         {
             $warning = 'De aanmelding voor dit evenement is helaas gesloten, u kunt zich niet meer aanmelden.';
-            if (Setting::get('organisation') === 'Stichting Bijzondere Koorprojecten')
+            if (Setting::get(Setting::ORGANISATION) === 'Stichting Bijzondere Koorprojecten')
             {
                 $warning = 'De aanmelding voor dit evenement is helaas gesloten, je kunt je niet meer aanmelden.';
             }

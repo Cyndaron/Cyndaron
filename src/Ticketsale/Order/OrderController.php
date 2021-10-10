@@ -1,34 +1,35 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Ticketsale;
+namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Ticketsale\Concert;
+use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
+use Cyndaron\Ticketsale\InvalidOrder;
+use Cyndaron\Ticketsale\Order\Order;
+use Cyndaron\Ticketsale\TicketType;
+use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Mail\Mail;
-use Cyndaron\View\Page;
 use Cyndaron\View\SimplePage;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use function assert;
 use function strtoupper;
 use function implode;
+use const PHP_EOL;
 
 final class OrderController extends Controller
 {
     protected array $postRoutes = [
         'add' => ['level' => UserLevel::ANONYMOUS, 'function' => 'add'],
-    ];
-
-    protected array $apiGetRoutes = [
-        'calculateTotal' => ['level' => UserLevel::ANONYMOUS, 'function' => 'calculateTotalGet'],
     ];
 
     protected array $apiPostRoutes = [
@@ -56,6 +57,17 @@ final class OrderController extends Controller
         }
     }
 
+    /**
+     * @param Concert $concert
+     * @param array $ticketTypes
+     * @param OrderTicketType[] $orderTicketTypes
+     * @param bool $reserveSeats
+     * @param bool $wantDelivery
+     * @param bool $deliveryByMember
+     * @param bool $addressIsAbroad
+     * @param int $postcode
+     * @return \Cyndaron\Ticketsale\Order\OrderTotal
+     */
     private function calculateTotal(
         Concert $concert,
         array $ticketTypes,
@@ -91,14 +103,29 @@ final class OrderController extends Controller
         {
             $payForDelivery = $wantDelivery;
         }
-        $deliveryPrice = $payForDelivery ? $concert->deliveryCost : 0.0;
+
         $reservedSeatCharge = $reserveSeats ? $concert->reservedSeatCharge : 0;
         foreach ($ticketTypes as $ticketType)
         {
             assert($ticketType->id !== null);
-            $totalPrice += $orderTicketTypes[$ticketType->id] * ($ticketType->price + $deliveryPrice + $reservedSeatCharge);
-            $totalNumTickets += $orderTicketTypes[$ticketType->id];
+            $ott = $orderTicketTypes[$ticketType->id] ?? null;
+            if ($ott === null)
+            {
+                continue;
+            }
+
+            $totalPrice += $ott->amount * $ticketType->price;
+            $totalPrice += $ott->amount * $reservedSeatCharge;
+            $totalNumTickets += $ott->amount;
         }
+
+        $deliveryCostInterface = $concert->getDeliveryCostInterface();
+        $tempOrder = new Order();
+        $tempOrder->delivery = $payForDelivery;
+        /** @var DeliveryCostInterface $deliveryCost */
+        $deliveryCost = new $deliveryCostInterface($concert, $tempOrder, $orderTicketTypes);
+
+        $totalPrice += $deliveryCost->getCost();
 
         $orderTotal = new OrderTotal();
         $orderTotal->amount = $totalPrice;
@@ -107,12 +134,6 @@ final class OrderController extends Controller
         $orderTotal->payForDelivery = $payForDelivery;
 
         return $orderTotal;
-    }
-
-    protected function calculateTotalGet(Request $request): JsonResponse
-    {
-        $get = $request->query;
-        return new JsonResponse($get->all());
     }
 
     /**
@@ -153,12 +174,19 @@ final class OrderController extends Controller
             throw new InvalidOrder($message);
         }
 
+        /** @var OrderTicketType[] $orderTicketTypes */
         $orderTicketTypes = [];
+        $tmpOrder = new Order();
         $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concert->id], 'ORDER BY price DESC');
         foreach ($ticketTypes as $ticketType)
         {
             assert($ticketType->id !== null);
-            $orderTicketTypes[$ticketType->id] = $post->getInt('tickettype-' . $ticketType->id);
+            $amount = $post->getInt('tickettype-' . $ticketType->id);
+            $ott = new OrderTicketType();
+            $ott->order = $tmpOrder;
+            $ott->amount = $amount;
+            $ott->ticketType = $ticketType;
+            $orderTicketTypes[$ticketType->id] = $ott;
         }
 
         $reserveSeats = $post->getInt('hasReservedSeats');
@@ -189,23 +217,38 @@ final class OrderController extends Controller
         $street = $post->getSimpleString('street');
         $postcode = $post->getPostcode('postcode');
         $city = $post->getSimpleString('city');
+        $donor = $post->getBool('donor');
         $comments = $post->getSimpleString('comments');
 
-        $result = DBConnection::doQuery(
-            'INSERT INTO ticketsale_orders
-            (`concertId`, `lastName`, `initials`, `email`, `street`, `postcode`, `city`, `delivery`,               `hasReservedSeats`, `deliveryByMember`,      `deliveryMemberName`, `addressIsAbroad`,      `comments`) VALUES
-            (?,           ?,          ?,          ?,       ?,        ?,          ?,      ?,                        ?,                  ?,                       ?,                    ?,                      ?)',
-            [$concertId,  $lastName,  $initials,  $email,  $street,  $postcode,  $city, ($payForDelivery ? 1 : 0), $reserveSeats,      (int)$deliveryByMember,  $deliveryMemberName,  (int)$addressIsAbroad,  $comments]
-        );
+        $order = new Order();
+        $order->concertId = $concertId;
+        $order->lastName = $lastName;
+        $order->initials = $initials;
+        $order->email = $email;
+        $order->street = $street;
+        $order->houseNumber = 0;
+        $order->postcode = $postcode;
+        $order->city = $city;
+        $order->delivery = $payForDelivery;
+        $order->hasReservedSeats = ($reserveSeats === 1);
+        $order->deliveryByMember = $deliveryByMember;
+        $order->deliveryMemberName = $deliveryMemberName;
+        $order->addressIsAbroad = $addressIsAbroad;
+        $order->comments = $comments;
+        $order->setAdditonalData(['donor' => $donor]);
+        $result = $order->save();
+
         if ($result === false)
         {
             throw new InvalidOrder('Opslaan bestelling mislukt!');
         }
-        $orderId = (int)$result;
+        /** @var int $orderId */
+        $orderId = $order->id;
 
         foreach ($ticketTypes as $ticketType)
         {
-            $numTicketsOfType = $orderTicketTypes[$ticketType->id] ?? 0;
+            $ott = $orderTicketTypes[$ticketType->id] ?? null;
+            $numTicketsOfType = $ott->amount ?? 0;
             if ($numTicketsOfType > 0)
             {
                 $result = DBConnection::doQuery(
@@ -287,7 +330,7 @@ final class OrderController extends Controller
      * @param float $total
      * @param int $orderId
      * @param TicketType[] $ticketTypes
-     * @param array $orderTicketTypes
+     * @param OrderTicketType[] $orderTicketTypes
      * @param string $lastName
      * @param string $initials
      * @param string $street
@@ -341,7 +384,8 @@ Kaartsoorten:
 ';
         foreach ($ticketTypes as $ticketType)
         {
-            $numTicketsOfType = $orderTicketTypes[$ticketType->id] ?? 0;
+            $ott = $orderTicketTypes[$ticketType->id] ?? null;
+            $numTicketsOfType = $ott->amount ?? 0;
             if ($numTicketsOfType > 0)
             {
                 $text .= '   ' . $ticketType->name . ': ' . $numTicketsOfType . ' à ' . ViewHelpers::formatEuro($ticketType->price) . PHP_EOL;

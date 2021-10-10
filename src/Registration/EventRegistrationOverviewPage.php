@@ -12,10 +12,10 @@ final class EventRegistrationOverviewPage extends Page
 
     public function __construct(Event $event)
     {
-        switch (Setting::get('organisation'))
+        switch (Setting::get(Setting::ORGANISATION))
         {
-            case Setting::ORGANISATION_VOV:
-            case Setting::ORGANISATION_ZCK:
+            case Setting::VALUE_ORGANISATION_VOV:
+            case Setting::VALUE_ORGANISATION_ZCK:
                 $this->template = 'Registration/EventRegistrationOverviewPageVOV';
                 break;
             case 'Stichting Bijzondere Koorprojecten':

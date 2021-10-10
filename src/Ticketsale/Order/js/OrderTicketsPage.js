@@ -1,7 +1,8 @@
 /**
- * Copyright © 2009-2020 Michael Steenbeek
+ * Copyright © 2009-2021 Michael Steenbeek
  *
- * Cyndaron is licensed under the MIT License. See the LICENSE file for more details.
+ * Cyndaron is licensed under the MIT License. See the LICENSE file for more
+ * details.
  */
 
 'use strict';
@@ -13,8 +14,9 @@ let addressIsAbroad = false;
 let defaultDeliveryCost;
 let reservedSeatCharge;
 
-$.ajax('/api/concert/getInfo/' + concertId, { dataType: "json" }).done(function (json)
-{
+$.ajax('/api/concert/getInfo/' + concertId, {
+    dataType: "json"
+}).done(function (json) {
     tickettypes = json.tickettypes;
     forcedDelivery = json.forcedDelivery;
     defaultDeliveryCost = json.defaultDeliveryCost;
@@ -30,6 +32,7 @@ function increase(vak)
         updateForm()
     }
 }
+
 function decrease(vak)
 {
     let element = document.getElementById(vak);
@@ -59,18 +62,19 @@ function checkNameAndEmail()
     let initials = document.getElementById('initials').value;
     let email = document.getElementById('email').value;
 
-     return (lastName.length > 0 && initials.length > 0 && email.length > 0)
+    return (lastName.length > 0 && initials.length > 0 && email.length > 0)
 }
 
 function checkAddressInfo(deliveryByMember)
 {
-    if (document.getElementById('bezorgen').checked || (forcedDelivery && !deliveryByMember))
+    if (document.getElementById('bezorgen').checked ||
+        (forcedDelivery && !deliveryByMember))
     {
         let street = document.getElementById('street').value;
         let postcode = document.getElementById('postcode').value;
         let city = document.getElementById('city').value;
 
-        if(!(street.length > 0 && postcode.length > 0 && city.length > 0))
+        if (!(street.length > 0 && postcode.length > 0 && city.length > 0))
             return false;
     }
 
@@ -94,7 +98,8 @@ function checkForm()
         return false;
     }
 
-    if ((deliveryByMember || addressIsAbroad) && document.getElementById('deliveryMemberName').value.length < 2)
+    if ((deliveryByMember || addressIsAbroad) &&
+        document.getElementById('deliveryMemberName').value.length < 2)
         return false;
 
     return true;
@@ -124,33 +129,36 @@ function updateAddressRequirement(delivery, deliveryByMember)
 {
     if (delivery)
     {
-        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
+        document.getElementById('adresgegevensKop').innerHTML =
+            "Uw adresgegevens (verplicht):";
     }
     if (!forcedDelivery && delivery)
     {
-        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
+        document.getElementById('adresgegevensKop').innerHTML =
+            "Uw adresgegevens (verplicht):";
     }
     else if (!forcedDelivery && !delivery)
     {
-        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
+        document.getElementById('adresgegevensKop').innerHTML =
+            "Uw adresgegevens (niet verplicht):";
     }
     else if (forcedDelivery && !deliveryByMember && !addressIsAbroad)
     {
-        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (verplicht):";
+        document.getElementById('adresgegevensKop').innerHTML =
+            "Uw adresgegevens (verplicht):";
     }
     else if (forcedDelivery && (deliveryByMember || addressIsAbroad))
     {
-        document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
+        document.getElementById('adresgegevensKop').innerHTML =
+            "Uw adresgegevens (niet verplicht):";
     }
 }
 
 function updateVisibleTotal(total)
 {
-    let totalFormatted = total.toLocaleString('nl-NL', {
-        style: 'currency',
-        currency: 'EUR',
-        minimumFractionDigits: 2
-    });
+    let totalFormatted = total.toLocaleString(
+        'nl-NL',
+        {style: 'currency', currency: 'EUR', minimumFractionDigits: 2});
     document.getElementById('prijsvak').innerHTML = totalFormatted;
 }
 
@@ -170,8 +178,26 @@ function updateAddressIsAbroadFields()
     }
 }
 
+function zckGetDeliveryPrice(numTickets)
+{
+    numTickets = parseInt(numTickets);
+    if (numTickets <= 0)
+        return 0.0;
+    if (numTickets === 1)
+        return 2.0;
+    if (numTickets === 2)
+        return 3.0;
+    if (numTickets >= 3 && numTickets <= 7)
+        return 4.0;
+
+    return 5.0;
+}
+
 function calculateTotal(delivery)
 {
+    const organisation = $('#organisation-value').val();
+    const isZck = (organisation === 'Vlissingse Oratorium Vereniging' ||
+        organisation === 'Zeeuws Concertkoor');
     let deliveryCost = 0.0;
     if (delivery)
     {
@@ -185,12 +211,21 @@ function calculateTotal(delivery)
     }
 
     let total = 0.0;
+    let totalNumTickets = 0;
     tickettypes.forEach(function (item) {
-        let aantal = document.getElementById('tickettype-' + item.id).value;
-        total = total + (item.price * aantal);
-        total = total + (deliveryCost * aantal);
-        total = total + (seatSurCharge * aantal);
+        let count = document.getElementById('tickettype-' + item.id).value;
+        totalNumTickets += count;
+        total = total + (item.price * count);
+        total = total + (seatSurCharge * count);
+        if (!isZck)
+            total = total + (deliveryCost * count);
     });
+
+    if (isZck && delivery)
+    {
+        total += zckGetDeliveryPrice(totalNumTickets);
+    }
+
     return total;
 }
 
@@ -200,10 +235,12 @@ function updateForm()
 
     let delivery = false;
     let deliveryByMember = false;
-    if (forcedDelivery) {
+    if (forcedDelivery)
+    {
         let postcode = document.getElementById('postcode').value;
 
-        if (postcode.length < 6 && !addressIsAbroad) {
+        if (postcode.length < 6 && !addressIsAbroad)
+        {
             document.getElementById('prijsvak').innerHTML = "€&nbsp;-";
             return;
         }
@@ -211,19 +248,24 @@ function updateForm()
         let qualifiesForFreeDelivery = postcodeQualifiesForFreeDelivery(postcode);
         deliveryByMember = document.getElementById('deliveryByMember').checked;
 
-        if (!qualifiesForFreeDelivery) {
+        if (!qualifiesForFreeDelivery)
+        {
             document.getElementById('deliveryByMember_div').style.display = "block";
         }
-        else {
+        else
+        {
             document.getElementById('deliveryByMember_div').style.display = "none";
         }
 
-        if (!qualifiesForFreeDelivery && !deliveryByMember) {
+        if (!qualifiesForFreeDelivery && !deliveryByMember)
+        {
             delivery = true;
         }
-        else {
+        else
+        {
             delivery = false;
-            document.getElementById('adresgegevensKop').innerHTML = "Uw adresgegevens (niet verplicht):";
+            document.getElementById('adresgegevensKop').innerHTML =
+                "Uw adresgegevens (niet verplicht):";
         }
     }
     else
@@ -237,11 +279,16 @@ function updateForm()
     updateAddressRequirement(delivery, deliveryByMember);
 }
 
-$('.numTickets-increase').on('click', function() { increase('tickettype-' + $(this).attr('data-kaartsoort')); });
-$('.numTickets-decrease').on('click', function() { decrease('tickettype-' + $(this).attr('data-kaartsoort')); });
-$('.recalculateTotal').on('click', function() { updateForm(); });
-$('input[type=radio][name=country]').on('change', function()
-{
+$('.numTickets-increase').on('click', function () {
+    increase('tickettype-' + $(this).attr('data-kaartsoort'));
+});
+$('.numTickets-decrease').on('click', function () {
+    decrease('tickettype-' + $(this).attr('data-kaartsoort'));
+});
+$('.recalculateTotal').on('click', function () {
+    updateForm();
+});
+$('input[type=radio][name=country]').on('change', function () {
     if (this.value === 'abroad')
     {
         addressIsAbroad = true;
@@ -250,7 +297,6 @@ $('input[type=radio][name=country]').on('change', function()
     {
         addressIsAbroad = false;
         document.getElementById('deliveryByMember').checked = false;
-
     }
 });
 

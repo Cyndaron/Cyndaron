@@ -79,7 +79,7 @@ final class Registration extends Model
     {
         $event = $this->getEvent();
 
-        if (Setting::get('organisation') === Setting::ORGANISATION_SBK)
+        if (Setting::get(Setting::ORGANISATION) === Setting::VALUE_ORGANISATION_SBK)
         {
             $text = 'Hartelijk dank voor je aanmelding op de SBK-website voor deelname als koorzanger voor ' . $event->name . '. Je aanmelding is door het SBK-bestuur in goede orde ontvangen.
 
@@ -100,8 +100,8 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
         ];
 
         $templateFile = 'Registration/ConfirmationMail';
-        $organisation = Setting::get('organisation');
-        if ($organisation === Setting::ORGANISATION_VOV || $organisation === Setting::ORGANISATION_ZCK)
+        $organisation = Setting::get(Setting::ORGANISATION);
+        if ($organisation === Setting::VALUE_ORGANISATION_VOV || $organisation === Setting::VALUE_ORGANISATION_ZCK)
         {
             $templateFile = 'Registration/ConfirmationMailVOV';
             if (file_exists(__DIR__ . '/templates/ConfirmationMailVOV-' . $event->id . '.blade.php'))
@@ -133,13 +133,13 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
         $this->isPaid = true;
         $this->save();
 
-        $organisation = Setting::get('organisation');
+        $organisation = Setting::get(Setting::ORGANISATION);
         $text = "Hartelijk dank voor uw inschrijving bij $organisation. Wij hebben uw betaling in goede orde ontvangen.\n";
-        if ($organisation !== Setting::ORGANISATION_VOV && $organisation !== Setting::ORGANISATION_ZCK)
+        if ($organisation !== Setting::VALUE_ORGANISATION_VOV && $organisation !== Setting::VALUE_ORGANISATION_ZCK)
         {
             $text .= 'Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaarliggen bij de kassa.';
         }
-        if ($organisation === Setting::ORGANISATION_SBK)
+        if ($organisation === Setting::VALUE_ORGANISATION_SBK)
         {
             $text = 'Beste koorzanger,
 
@@ -235,7 +235,7 @@ Stichting Bijzondere Koorprojecten';
         $event = $this->getEvent();
 
         $text = '';
-        if (Setting::get('organisation') === Setting::ORGANISATION_SBK)
+        if (Setting::get(Setting::ORGANISATION) === Setting::VALUE_ORGANISATION_SBK)
         {
             $registrationTotal = $this->calculateTotal();
 
@@ -271,7 +271,7 @@ Stichting Bijzondere Koorprojecten';
 
         $event = $this->getEvent();
 
-        if (Setting::get('organisation') === Setting::ORGANISATION_SBK)
+        if (Setting::get(Setting::ORGANISATION) === Setting::VALUE_ORGANISATION_SBK)
         {
             $text = 'Beste koorzanger,
 

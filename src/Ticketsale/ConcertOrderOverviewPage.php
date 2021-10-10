@@ -2,6 +2,7 @@
 namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Ticketsale\Order\Order;
 use Cyndaron\View\Page;
 use function array_key_exists;
 use function var_dump;

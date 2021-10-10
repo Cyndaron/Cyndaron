@@ -5,6 +5,9 @@
 @endsection
 
 @section('contents')
+    <input type="hidden" id="organisation-value" value="{{ $organisation }}"/>
+
+    @php /** @var \Cyndaron\Ticketsale\Concert $concert */ @endphp
     @if (!$concert->openForSales)
         @if ($concert->descriptionWhenClosed)
             {{ $concert->descriptionWhenClosed }}
@@ -43,7 +46,7 @@
             <div @if ($concert->forcedDelivery) style="display:none" @endif>
                 <input id="bezorgen" name="bezorgen" type="checkbox" value="1" class="recalculateTotal">
                 <label for="bezorgen">
-                    Bezorg mijn kaarten thuis (meerprijs van {{ $concert->deliveryCost|euro }} per kaart)
+                    Bezorg mijn kaarten thuis (hiervoor worden extra kosten in rekening gebracht)
                 </label>
             </div>
 
@@ -70,8 +73,13 @@
                 <h3>Bezorging</h3>
                 <p>
                     Bij dit concert is het alleen mogelijk om uw kaarten te laten thuisbezorgen. Als u op Walcheren
-                    woont is dit gratis. Woont u buiten Walcheren, dan kost het
-                    thuisbezorgen {{ $concert->deliveryCost|euro }} per kaart.<br>
+                    woont is dit gratis.
+                    @if (strpos($concert->deliveryCostInterface, 'FlatFee') !== false)
+                        Woont u buiten Walcheren, dan kost het
+                        thuisbezorgen {{ $concert->deliveryCost|euro }} per kaart.<br>
+                    @else
+                        Woont u buiten Walcheren, dan worden er verzendkosten in rekening gebracht.
+                    @endif
                     Het is ook mogelijk om uw kaarten te laten ophalen door een koorlid. Dit is gratis.
                 </p>
 
@@ -120,19 +128,31 @@
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="lastName">Achternaam:</label>
-                <div class="col-sm-5"><input id="lastName" name="lastName" class="form-control"/></div>
+                <div class="col-sm-5"><input id="lastName" name="lastName" class="form-control" required /></div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="initials">Voorletters:</label>
-                <div class="col-sm-5"><input id="initials" name="initials" class="form-control"/></div>
+                <div class="col-sm-5"><input id="initials" name="initials" class="form-control" required /></div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="email">E-mailadres:</label>
-                <div class="col-sm-5"><input id="email" name="email" type="email" class="form-control"/></div>
+                <div class="col-sm-5"><input id="email" name="email" type="email" class="form-control" required /></div>
             </div>
 
+            <div class="radio">
+                <label for="donor-yes">
+                    <input id="donor-yes" name="donor" type="radio" value="1"/>
+                    Ik ben donateur
+                </label>
+            </div>
+            <div class="radio">
+                <label for="donor-no">
+                    <input id="donor-no" name="donor" type="radio" value="0" />
+                    Ik ben geen donateur
+                </label>
+            </div>
 
             <h3 id="adresgegevensKop">Uw adresgegevens (nodig als u de kaarten wilt laten bezorgen):</h3>
 

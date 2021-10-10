@@ -13,6 +13,8 @@
 
     @include('View/Widget/Form/Checkbox', ['id' => 'reservedSeatsAreSoldOut', 'label' => 'Gereserveerde plaatsen zijn uitverkocht', 'checked' => (bool)($model->reservedSeatsAreSoldOut ?? false)])
 
+    @include('View/Widget/Form/Select', ['id' => 'deliveryCostInterface', 'label' => 'Berekening verzendkosten', 'selected' => $deliveryCostInterface, 'options' => $deliveryCostOptions])
+
     @include('View/Widget/Form/Currency', ['id' => 'deliveryCost', 'label' => 'Verzendkosten', 'value' => $deliveryCost])
 
     @include('View/Widget/Form/Currency', ['id' => 'reservedSeatCharge', 'label' => 'Toeslag gereserveerde plaats', 'value' => $reservedSeatCharge])

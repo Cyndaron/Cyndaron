@@ -2,6 +2,7 @@
 namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Ticketsale\Order\Order;
 use function range;
 
 final class ShowReservedSeats
@@ -22,7 +23,7 @@ final class ShowReservedSeats
                 continue;
             }
 
-            for ($seat = $currentBooking['eerste_stoel']; $seat <= $currentBooking['laatste_stoel']; $seat++)
+            for ($seat = $currentBooking['firstSeat']; $seat <= $currentBooking['lastSeat']; $seat++)
             {
                 $bookedSeats[$seat] = $order->initials . ' ' . $order->lastName . ' (' . $order->id. ')';
             }

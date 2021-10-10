@@ -2,6 +2,7 @@
 
 namespace Cyndaron\DBAL;
 
+use Cyndaron\Ticketsale\Order\Order;
 use Exception;
 use ReflectionNamedType;
 use ReflectionProperty;

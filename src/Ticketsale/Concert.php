@@ -5,14 +5,16 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
+use Cyndaron\Ticketsale\DeliveryCost\FlatFee;
 use Cyndaron\Util\Error\IncompleteData;
 use Exception;
+use function class_exists;
 use function range;
 
 final class Concert extends Model
 {
     public const TABLE = 'ticketsale_concerts';
-    public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats'];
+    public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats', 'deliveryCostInterface'];
 
     public string $name = '';
     public bool $openForSales = true;
@@ -25,6 +27,7 @@ final class Concert extends Model
     public bool $reservedSeatsAreSoldOut = false;
     public int $numFreeSeats = 250;
     public int $numReservedSeats = 270;
+    public string $deliveryCostInterface = '';
 
     /**
      * @param int $orderId
@@ -45,7 +48,7 @@ final class Concert extends Model
         $reservedSeatsPerOrder = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$this->id]) ?: [];
         foreach ($reservedSeatsPerOrder as $reservedSeatsForThisOrder)
         {
-            for ($i = $reservedSeatsForThisOrder['eerste_stoel']; $i <= $reservedSeatsForThisOrder['laatste_stoel']; $i++)
+            for ($i = $reservedSeatsForThisOrder['firstSeat']; $i <= $reservedSeatsForThisOrder['lastSeat']; $i++)
             {
                 $reservedSeats[$i] = true;
             }
@@ -82,5 +85,16 @@ final class Concert extends Model
         }
 
         return null;
+    }
+
+    public function getDeliveryCostInterface(): string
+    {
+        $interfaceName = $this->deliveryCostInterface;
+        if (class_exists($interfaceName))
+        {
+            return $interfaceName;
+        }
+
+        return FlatFee::class;
     }
 }

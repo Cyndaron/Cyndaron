@@ -57,16 +57,18 @@
                 <th class="rotate">
                     <div><span>Is betaald?</span></div>
                 </th>
+                <th class="rotate">
+                    <div><span>Is donateur?</span></div>
+                </th>
                 <th class="column-actions"></th>
             </tr>
         </thead>
 
         <tbody>
-            @php /** @var \Cyndaron\Ticketsale\Order[] $orders */ @endphp
+            @php /** @var \Cyndaron\Ticketsale\Order\Order[] $orders */ @endphp
             @foreach ($orders as $order)
                 @php
                     $orderId = $order->id;
-                    $totalAmount = 0.0;
                     $deliveryCost = $order->delivery * $concert->deliveryCost;
                     $reservedSeatCharge = $order->hasReservedSeats * $concert->reservedSeatCharge;
                 @endphp
@@ -86,43 +88,42 @@
                         <td>
                         @if (\array_key_exists($order->id, $ticketTypesByOrder) && \array_key_exists($ticketTypeId['id'], $ticketTypesByOrder[$order->id]))
                             <b>{{ $ticketTypesByOrder[$order->id][$ticketTypeId['id']] }}</b>
-                            @php
-                                $totalAmount += $ticketTypesByOrder[$order->id][$ticketTypeId['id']] * $ticketTypeId['price'];
-                                $totalAmount += $ticketTypesByOrder[$order->id][$ticketTypeId['id']] * $deliveryCost;
-                                $totalAmount += $ticketTypesByOrder[$order->id][$ticketTypeId['id']] * $reservedSeatCharge;
-                            @endphp
                         @else
                             &nbsp;
                         @endif
                         </td>
                     @endforeach
 
-                    <td>{{ $totalAmount|euro }}</td>
+                    <td>{{ $order->calculatePrice()|euro }}</td>
 
                     @if (!$concert->forcedDelivery)
-                        <td>{{ $order->delivery|boolToText }}</td>
+                        <td>{{ $order->delivery|boolToDingbat }}</td>
                     @else
                         <td>
                         @if ($order->deliveryByMember)
                             {{ $order->deliveryMemberName }}
                         @else
-                            Nee
+                            ⨯
                         @endif
                         </td>
                     @endif
 
                     <td>
                         @if ($order->delivery || $concert->forcedDelivery)
-                            {{ $order->isDelivered|boolToText }}
+                            {{ $order->isDelivered|boolToDingbat }}
                         @else
                             &nbsp;
                         @endif
                     </td>
                     <td>
-                        {{ $order->hasReservedSeats|boolToText }}
+                        {{ $order->hasReservedSeats|boolToDingbat }}
                     </td>
                     <td>
-                        {{ $order->isPaid|boolToText }}
+                        {{ $order->isPaid|boolToDingbat }}
+                    </td>
+                    <td>
+                        @php $isDonor = $order->getAdditionalData()['donor'] ?? false @endphp
+                        {{ $isDonor|boolToDingbat }}
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm">

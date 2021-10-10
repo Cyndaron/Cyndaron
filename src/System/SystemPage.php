@@ -91,7 +91,7 @@ final class SystemPage extends Page
 
         $formItems = [
             ['name' => 'siteName', 'description' => 'Naam website', 'type' => 'text', 'value' => Setting::get('siteName')],
-            ['name' => 'organisation', 'description' => 'Organisatie', 'type' => 'text', 'value' => Setting::get('organisation')],
+            ['name' => 'organisation', 'description' => 'Organisatie', 'type' => 'text', 'value' => Setting::get(Setting::ORGANISATION)],
             ['name' => 'logo', 'description' => 'Websitelogo', 'type' => 'text', 'value' => Setting::get('logo')],
             ['name' => 'subTitle', 'description' => 'Ondertitel', 'type' => 'text', 'value' => Setting::get('subTitle')],
             ['name' => 'favicon', 'description' => 'Websitepictogram', 'type' => 'text', 'value' => Setting::get('favicon')],

@@ -5,9 +5,11 @@ use Cyndaron\DBAL\DBConnection;
 
 final class Setting
 {
-    public const ORGANISATION_VOV = 'Vlissingse Oratorium Vereniging';
-    public const ORGANISATION_ZCK = 'Zeeuws Concertkoor';
-    public const ORGANISATION_SBK = 'Stichting Bijzondere Koorprojecten';
+    public const ORGANISATION = 'organisation';
+
+    public const VALUE_ORGANISATION_VOV = 'Vlissingse Oratorium Vereniging';
+    public const VALUE_ORGANISATION_ZCK = 'Zeeuws Concertkoor';
+    public const VALUE_ORGANISATION_SBK = 'Stichting Bijzondere Koorprojecten';
 
     /**
      * @param string $name

@@ -27,7 +27,7 @@ final class Mail
         $this->plainTextMessage = $plainTextMessage;
         $this->htmlMessage = $htmlMessage;
 
-        $fromName = html_entity_decode(Setting::get('organisation') ?: Setting::get('siteName'));
+        $fromName = html_entity_decode(Setting::get(Setting::ORGANISATION) ?: Setting::get('siteName'));
         $this->from = new Address(Util::getNoreplyAddress(), $fromName);
     }
 

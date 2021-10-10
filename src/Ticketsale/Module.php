@@ -9,6 +9,7 @@ use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\TemplateRoot;
+use Cyndaron\Ticketsale\Order\OrderController;
 
 final class Module implements Routes, Datatypes, Templated
 {

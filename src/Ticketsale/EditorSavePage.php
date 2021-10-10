@@ -24,6 +24,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $concert->reservedSeatsAreSoldOut = $post->getBool('reservedSeatsAreSoldOut');
         $concert->numFreeSeats = $post->getInt('numFreeSeats');
         $concert->numReservedSeats = $post->getInt('numReservedSeats');
+        $concert->deliveryCostInterface = $post->getSimpleString('deliveryCostInterface');
 
         if ($concert->save())
         {

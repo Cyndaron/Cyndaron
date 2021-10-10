@@ -12,6 +12,7 @@ final class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
         'dmy' => ViewHelpers::class . '::filterDutchDate',
         'dmyHm' => ViewHelpers::class . '::filterDutchDateTime',
         'boolToText' => ViewHelpers::class . '::boolToText',
+        'boolToDingbat' => ViewHelpers::class . '::boolToDingbat',
     ];
 
     public function register(): void

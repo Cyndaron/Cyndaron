@@ -19,9 +19,9 @@ final class RegistrationPage extends Page
         $this->addCss('/src/Registration/css/RegistrationPage.css');
         $this->addCss('/src/Ticketsale/css/Ticketsale.min.css');
 
-        $organisation = Setting::get('organisation');
+        $organisation = Setting::get(Setting::ORGANISATION);
 
-        if ($organisation === Setting::ORGANISATION_VOV || $organisation === Setting::ORGANISATION_ZCK)
+        if ($organisation === Setting::VALUE_ORGANISATION_VOV || $organisation === Setting::VALUE_ORGANISATION_ZCK)
         {
             $template = 'Registration/RegistrationPageVOV';
             if (file_exists(__DIR__ . '/templates/RegistrationPageVOV-' . $event->id . '.blade.php'))

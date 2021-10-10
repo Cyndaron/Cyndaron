@@ -5,6 +5,7 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Ticketsale\Order\OrderTicketsPage;
 use Cyndaron\User\UserLevel;
 use Cyndaron\View\Page;
 use Cyndaron\View\SimplePage;
