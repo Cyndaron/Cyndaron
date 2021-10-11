@@ -25,6 +25,7 @@ use function assert;
 use function strtoupper;
 use function implode;
 use const PHP_EOL;
+use function count;
 
 final class OrderController extends Controller
 {
@@ -358,8 +359,8 @@ final class OrderController extends Controller
         $voor_u_reserveerde_plaatsen = '';
         if ($reserveSeats === 1)
         {
-            $voor_u_reserveerde_plaatsen = PHP_EOL . PHP_EOL . 'De volgende plaatsen zijn voor u gereserveerd: ';
-            $voor_u_reserveerde_plaatsen .= implode(', ', $reservedSeats) . '.';
+            $numSeats = count($reservedSeats);
+            $voor_u_reserveerde_plaatsen = PHP_EOL . PHP_EOL . "Er zijn {$numSeats} plaatsen voor u gereserveerd.";
         }
         elseif ($reserveSeats === -1)
         {
