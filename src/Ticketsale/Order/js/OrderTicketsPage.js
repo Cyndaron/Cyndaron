@@ -213,7 +213,7 @@ function calculateTotal(delivery)
     let total = 0.0;
     let totalNumTickets = 0;
     tickettypes.forEach(function (item) {
-        let count = document.getElementById('tickettype-' + item.id).value;
+        let count = parseInt(document.getElementById('tickettype-' + item.id).value);
         totalNumTickets += count;
         total = total + (item.price * count);
         total = total + (seatSurCharge * count);
