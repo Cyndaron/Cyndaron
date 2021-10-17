@@ -10,6 +10,7 @@
         <thead>
             <tr>
                 <th>Naam</th>
+                <th>E-mailadres</th>
                 <th>Beheert</th>
                 <th>Acties</th>
             </tr>
@@ -26,6 +27,7 @@
                 @php $controlledMemberIds = array_map(static function($member) { return $member->id; }, $controlledMembers) @endphp
                 <tr>
                     <td>{{ $user->getFullName() }}</td>
+                    <td>{{ $user->email }}</td>
                     <td>
                         <ul>
                             @foreach ($controlledMembers as $member)
