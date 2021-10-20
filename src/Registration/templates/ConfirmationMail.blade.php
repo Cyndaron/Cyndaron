@@ -14,7 +14,7 @@ Inschrijvingsnummer: {{ $registration->id }}
 Achternaam: {{ $registration->lastName }}
 Voorletters: {{ $registration->initials }}
 Stemsoort: {{ $registration->vocalRange }}
-Arts / BHV / AED: {{ $this->bhv|boolToText }}
+Arts / BHV / AED: {{ $registration->bhv|boolToText }}
 Lunch: {{ $lunchText }}
 
 

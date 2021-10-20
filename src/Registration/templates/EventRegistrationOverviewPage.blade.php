@@ -88,7 +88,7 @@
                 @foreach ($ticketTypes as $ticketType)
                 @php $ticketTypeId = $ticketType->id @endphp
                     <td>
-                        @if ($ticketTypesByRegistration[$registrationId][$ticketTypeId] > 0)
+                        @if (array_key_exists($registrationId, $ticketTypesByRegistration) && $ticketTypesByRegistration[$registrationId][$ticketTypeId] > 0)
                             <b>{{ $ticketTypesByRegistration[$registrationId][$ticketTypeId] }}</b>
                         @else
                             &nbsp;
