@@ -14,8 +14,7 @@ Inschrijvingsnummer: {{ $registration->id }}
 Achternaam: {{ $registration->lastName }}
 Voorletters: {{ $registration->initials }}
 Stemsoort: {{ $registration->vocalRange }}
-Arts / BHV / AED: {{ \Cyndaron\View\Template\ViewHelpers::boolToText($this->bhv) }}
-Meezingen in kleinkoor: {{ \Cyndaron\View\Template\ViewHelpers::boolToText($this->kleinkoor) }}
+Arts / BHV / AED: {{ $this->bhv|boolToText }}
 Lunch: {{ $lunchText }}
 
 

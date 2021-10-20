@@ -17,11 +17,6 @@
 
             <h3>Uw gegevens (verplicht):</h3>
 
-            @include('View/Widget/Form/Select', [
-                'id' => 'lunchType',
-                'label' => 'Soort lunch',
-                'options' => ['Vegetarisch' => 'Vegetarisch', 'Vis' => 'Vis', 'Vlees' => 'Vlees']])
-
             <div class="form-group row">
                 <div class="col-sm-12">
                     <input type="radio" id="registrationGroup-0" name="registrationGroup" value="0" checked />
@@ -43,11 +38,10 @@
                 @include('View/Widget/Form/Select', [
                     'id' => 'lunchType',
                     'label' => 'Soort lunch',
-                    'options' => ['Vegetarisch' => 'Vegetarisch', 'Vis' => 'Vis', 'Vlees' => 'Vlees']])
+                    'options' => ['Vegetarisch' => 'Vegetarisch', 'Niet-vegatarisch' => 'Niet-vegatarisch']])
             </div>
 
             @include('View/Widget/Form/Checkbox', ['id' => 'bhv', 'label' => 'Ik ben arts of in het bezit van een BHV- of AED-certificaat'])
-            @include('View/Widget/Form/Checkbox', ['id' => 'kleinkoor', 'label' => 'Ik wil graag meezingen in het kleinkoor'])
 
             <div id="kleinkoorExplanationWrapper">
                 <div class="form-group row">
@@ -75,13 +69,6 @@
                     <input id="participatedBefore1" name="participatedBefore" type="radio" value="1"/> <label for="participatedBefore1">Ik heb al eerder meegedaan</label><br>
                     <input id="participatedBefore0" name="participatedBefore" type="radio" value="0"/> <label for="participatedBefore0">Ik heb nog niet eerder meegedaan</label>
                 </div>
-            </div>
-
-            <p>Hoeveel raamposters kunt u kwijt om ons concert te promoten? U krijgt op termijn bericht hoe deze posters te verkrijgen zijn.</p>
-
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="numPosters">Aantal raamposters:</label>
-                <div class="col-sm-1"><input id="numPosters" name="numPosters" type="number" min="0" max="9" step="1" pattern="[0-9]{1}" value="0" class="form-control"/></div>
             </div>
 
             <h3>Kaarten voor vrienden/familie:</h3>
