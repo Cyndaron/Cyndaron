@@ -38,7 +38,7 @@
                 @include('View/Widget/Form/Select', [
                     'id' => 'lunchType',
                     'label' => 'Soort lunch',
-                    'options' => ['Vegetarisch' => 'Vegetarisch', 'Niet-vegatarisch' => 'Niet-vegatarisch']])
+                    'options' => ['Vegetarisch' => 'Vegetarisch', 'Niet-vegetarisch' => 'Niet-vegetarisch']])
             </div>
 
             @include('View/Widget/Form/Checkbox', ['id' => 'bhv', 'label' => 'Ik ben arts of in het bezit van een BHV- of AED-certificaat'])
