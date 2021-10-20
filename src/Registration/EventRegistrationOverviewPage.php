@@ -47,7 +47,7 @@ final class EventRegistrationOverviewPage extends Page
         $ticketTypesByRegistration = [];
         foreach ($boughtTicketTypes as $boughtTicketType)
         {
-            $registrationId = $boughtTicketType['registrationId'];
+            $registrationId = $boughtTicketType['orderId'];
             $ticketType = $boughtTicketType['tickettypeId'];
             if (!array_key_exists($registrationId, $ticketTypesByRegistration))
             {
