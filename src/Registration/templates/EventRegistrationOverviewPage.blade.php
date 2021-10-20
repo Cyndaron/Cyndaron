@@ -31,9 +31,10 @@
                 <th class="rotate">
                     <div><span>Lunch?</span></div>
                 </th>
+                @php /** @var \Cyndaron\Registration\EventTicketType[] $ticketTypes */ @endphp
                 @foreach ($ticketTypes as $ticketType)
                 <th class="rotate">
-                    <div><span><abbr title="Extra kaarten">EK:</abbr> {{ ticketType.name }}</span></div>
+                    <div><span><abbr title="Extra kaarten">EK:</abbr> {{ $ticketType->name }}</span></div>
                 </th>
                 @endforeach
                 <th class="rotate">
