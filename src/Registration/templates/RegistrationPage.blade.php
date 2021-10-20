@@ -115,6 +115,7 @@
             @include('View/Widget/Form/BasicInput', ['id' => 'antispam', 'label' => 'Antispam', 'required' => true])
 
             <p>Uw gegevens zullen worden verwerkt zoals beschreven in onze <a href="/privacyverklaring">privacyverklaring</a>.</p>
+            <p>Door u in te schrijven, verklaart u kennis te hebben genomen van de <a href="/aanmeldingsinformatie">Aanmeldingsinformatie</a>.</p>
 
             <div class="col-sm-offset-2"><input id="verzendknop" class="btn btn-primary" type="submit"
                                                 value="Inschrijven"/></div>
