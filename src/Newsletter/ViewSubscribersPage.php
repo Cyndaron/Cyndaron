@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Newsletter;
 
+use Cyndaron\User\User;
 use Cyndaron\View\Page;
 
 class ViewSubscribersPage extends Page
@@ -15,6 +16,10 @@ class ViewSubscribersPage extends Page
     public function __construct()
     {
         parent::__construct('Abonnees nieuwsbrief');
-        $this->addTemplateVar('subscribers', Subscriber::fetchAll([], [], 'ORDER BY name'));
+
+        $this->addTemplateVars([
+            'subscribers' => Subscriber::fetchAll([], [], 'ORDER BY name'),
+            'csrfTokenUnsubscribe' => User::getCSRFToken('newsletter', 'unsubscribe'),
+        ]);
     }
 }

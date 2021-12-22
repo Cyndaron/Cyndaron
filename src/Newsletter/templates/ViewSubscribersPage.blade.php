@@ -30,4 +30,12 @@
 @endforeach
     </pre>
 
+    <h3 id="unsubscribe">Uitschrijven</h3>
+
+    <form method="post" action="/newsletter/unsubscribe">
+        @include('View/Widget/Form/Email', ['id' => 'email', 'label' => 'E-mailadres', 'value' => ''])
+        <input type="hidden" name="csrfToken" value="{{ $csrfTokenUnsubscribe }}"/>
+        <input type="submit" class="btn btn-primary" value="Uitschrijven"/>
+    </form>
+
 @endsection
