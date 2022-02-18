@@ -12,7 +12,7 @@
         "classmap-authoritative": true
     },
     "require": {
-        "php": "^7.4||^8.1",
+        "php": "^8.1",
         "ext-pdo": "*",
         "ext-imagick": "*",
         "ext-json": "*",
@@ -21,13 +21,13 @@
         "components/jquery": "^3.5",
         "ckeditor/ckeditor": "dev-full/4.7.x",
         "twbs/bootstrap": "^4.5",
-        "symfony/http-foundation": "^5.0",
-        "thecodingmachine/safe": "^1.1",
-        "symfony/mailer": "^5.3",
-        "symfony/http-kernel": "^5.2",
-        "symfony/routing": "^5.2",
-        "illuminate/view": "^8.45",
-        "conedevelopment/blade-filters": "^0.8.0",
+        "symfony/http-foundation": "^6.0",
+        "thecodingmachine/safe": "^2.1",
+        "symfony/mailer": "^6.0",
+        "symfony/http-kernel": "^6.0",
+        "symfony/routing": "^6.0",
+        "illuminate/view": "^9.0",
+        "conedevelopment/blade-filters": "dev-master",
         "mollie/mollie-api-php": "^2.32",
         "phpoffice/phpspreadsheet": "^1.18"
     },
@@ -38,6 +38,12 @@
         "friendsofphp/php-cs-fixer": "*",
         "phpstan/phpstan-strict-rules": "*"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Gymnasiast/blade-filters"
+        }
+    ],
     "scripts": {
         "phpstan": [
             "vendor/bin/phpstan analyse src --level 8"
