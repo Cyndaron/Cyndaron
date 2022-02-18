@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft\Skin;
 
+use GdImage;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\gmdate;
@@ -50,8 +51,7 @@ abstract class SkinRenderer
     public const TORSO_WIDTH = 8;
 
     protected Skin $skin;
-    /** @var resource */
-    protected $skinSource;
+    protected GdImage $skinSource;
 
     protected float $alpha;
     protected float $omega;

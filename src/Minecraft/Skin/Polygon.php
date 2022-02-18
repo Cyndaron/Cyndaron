@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft\Skin;
 
+use GdImage;
 use function imagefilledpolygon;
 use function imagecolorallocate;
 use function assert;
@@ -89,7 +90,7 @@ final class Polygon
     }
 
     /**
-     * @param resource $image
+     * @param GdImage $image
      * @param int $minX
      * @param int $minY
      * @param int $ratio

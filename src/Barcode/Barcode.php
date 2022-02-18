@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Barcode;
 
+use GdImage;
 use function assert;
 use function imagecreate;
 use function imagepng;
@@ -30,7 +31,7 @@ abstract class Barcode
     protected float $sizeFactor;
     protected string $orientation;
 
-    /** @var resource  */
+    /** @var GdImage  */
     protected $image;
 
     public function __construct(
