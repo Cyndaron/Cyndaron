@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3b51c450e72317fb6bf415511425609",
+    "content-hash": "ad70556467dd640b6a9ac50cf5fd0458",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -3628,16 +3628,16 @@
         },
         {
             "name": "thecodingmachine/safe",
-            "version": "v2.1.2",
+            "version": "v2.1.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/thecodingmachine/safe.git",
-                "reference": "e19610c7bb1f829bf0886f5a94a21924141212de"
+                "url": "https://github.com/Cyndaron/safe.git",
+                "reference": "0c34fa5626774655989a76ad32c84fb200f90eb7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thecodingmachine/safe/zipball/e19610c7bb1f829bf0886f5a94a21924141212de",
-                "reference": "e19610c7bb1f829bf0886f5a94a21924141212de",
+                "url": "https://api.github.com/repos/Cyndaron/safe/zipball/0c34fa5626774655989a76ad32c84fb200f90eb7",
+                "reference": "0c34fa5626774655989a76ad32c84fb200f90eb7",
                 "shasum": ""
             },
             "require": {
@@ -3656,6 +3656,13 @@
                 }
             },
             "autoload": {
+                "psr-4": {
+                    "Safe\\": [
+                        "lib/",
+                        "deprecated/",
+                        "generated/"
+                    ]
+                },
                 "files": [
                     "deprecated/apc.php",
                     "deprecated/array.php",
@@ -3744,25 +3751,27 @@
                     "generated/yaz.php",
                     "generated/zip.php",
                     "generated/zlib.php"
-                ],
-                "psr-4": {
-                    "Safe\\": [
-                        "lib/",
-                        "deprecated/",
-                        "generated/"
-                    ]
-                }
+                ]
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "scripts": {
+                "phpstan": [
+                    "phpstan analyse lib -c phpstan.neon --level=max --no-progress -vvv"
+                ],
+                "cs-fix": [
+                    "phpcbf"
+                ],
+                "cs-check": [
+                    "phpcs"
+                ]
+            },
             "license": [
                 "MIT"
             ],
             "description": "PHP core functions that throw exceptions instead of returning FALSE on error",
             "support": {
-                "issues": "https://github.com/thecodingmachine/safe/issues",
-                "source": "https://github.com/thecodingmachine/safe/tree/v2.1.2"
+                "source": "https://github.com/Cyndaron/safe/tree/v2.1.3"
             },
-            "time": "2022-02-01T21:08:44+00:00"
+            "time": "2022-02-18T18:26:42+00:00"
         },
         {
             "name": "twbs/bootstrap",

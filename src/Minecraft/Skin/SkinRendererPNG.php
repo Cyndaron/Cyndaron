@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft\Skin;
 
+use GdImage;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\imagecreatetruecolor;
@@ -16,8 +17,7 @@ use function assert;
 
 final class SkinRendererPNG extends SkinRenderer
 {
-    /** @var resource */
-    protected $image;
+    protected GdImage $image;
 
     protected function setupTarget(): void
     {

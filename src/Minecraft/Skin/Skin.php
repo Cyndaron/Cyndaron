@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft\Skin;
 
+use GdImage;
 use Safe\Exceptions\ImageException;
 use function Safe\imagealphablending;
 use function Safe\imagecreatefrompng;
@@ -24,9 +25,9 @@ final class Skin
 
     /**
      * @throws ImageException
-     * @return resource
+     * @return GdImage
      */
-    public function getSkinOrFallback()
+    public function getSkinOrFallback(): GdImage
     {
         if ($this->url === null || trim($this->url) === '')
         {
