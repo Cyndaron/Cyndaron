@@ -57,6 +57,7 @@ final class Blade implements FactoryContract
         return $this->make($view, $data, $mergeData)->render();
     }
 
+    /* @phpstan-ignore-next-line */
     public function make($view, $data = [], $mergeData = []): View
     {
         return $this->factory->make($view, $data, $mergeData);
@@ -77,6 +78,7 @@ final class Blade implements FactoryContract
         return $this->factory->exists($view);
     }
 
+    /* @phpstan-ignore-next-line */
     public function file($path, $data = [], $mergeData = []): View
     {
         return $this->factory->file($path, $data, $mergeData);
