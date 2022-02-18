@@ -5,7 +5,7 @@ use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\View\Page;
 use Cyndaron\User\User;
 
-use function Safe\sprintf;
+use function sprintf;
 
 final class ContestViewPage extends Page
 {

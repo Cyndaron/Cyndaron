@@ -14,12 +14,12 @@ use function Safe\filectime;
 use function Safe\filesize;
 use function Safe\fopen;
 use function Safe\fread;
-use function Safe\natsort;
 use function Safe\opendir;
 use function Safe\preg_match;
 use function Safe\preg_replace;
-use function Safe\substr;
-use function Safe\usort;
+use function substr;
+use function usort;
+use function natsort;
 use function readdir;
 use function closedir;
 

@@ -19,10 +19,10 @@ use Safe\Exceptions\StreamException;
 use function Safe\fclose;
 use function Safe\fread;
 use function Safe\fwrite;
-use function Safe\sprintf;
+use function Safe\mb_convert_encoding;
 use function Safe\stream_socket_client;
-use function Safe\substr;
-use function mb_convert_encoding;
+use function substr;
+use function sprintf;
 use function explode;
 
 final class Server extends Model
@@ -75,6 +75,7 @@ final class Server extends Model
         }
 
         $data = substr($data, 9);
+        /** @var string $data */
         $data = mb_convert_encoding($data, 'UTF-8', 'UCS-2');
         $data = explode("\x00", $data);
 

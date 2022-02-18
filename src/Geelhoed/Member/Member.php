@@ -14,7 +14,7 @@ use Cyndaron\User\User;
 use Cyndaron\Util\Util;
 
 use function uasort;
-use function Safe\usort;
+use function usort;
 use function trim;
 use function explode;
 use function array_reverse;

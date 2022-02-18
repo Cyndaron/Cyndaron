@@ -5,7 +5,7 @@ use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\View\Page;
 use Cyndaron\View\Template\ViewHelpers;
 
-use function Safe\sprintf;
+use function sprintf;
 
 final class MemberListPage extends Page
 {

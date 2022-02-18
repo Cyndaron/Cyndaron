@@ -7,7 +7,7 @@ use Exception;
 use ReflectionNamedType;
 use ReflectionProperty;
 
-use function Safe\sprintf;
+use function sprintf;
 use function array_merge;
 use function reset;
 use function array_key_exists;

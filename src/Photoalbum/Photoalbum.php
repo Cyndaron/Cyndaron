@@ -10,11 +10,11 @@ use Cyndaron\Url;
 use Cyndaron\Util\Util;
 
 use function Safe\error_log;
-use function Safe\natsort;
 use function Safe\scandir;
-use function Safe\substr;
+use function substr;
 use function array_values;
 use function array_filter;
+use function natsort;
 use function reset;
 use const PUB_DIR;
 use function str_replace;

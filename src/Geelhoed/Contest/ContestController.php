@@ -30,7 +30,7 @@ use Symfony\Component\Mime\Address;
 use function array_key_exists;
 use function Safe\date;
 use function Safe\error_log;
-use function Safe\sprintf;
+use function sprintf;
 use function Safe\strtotime;
 use function number_format;
 use function implode;
