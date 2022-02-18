@@ -8,9 +8,11 @@ use ErrorException;
 use RuntimeException;
 
 use Symfony\Component\HttpFoundation\Request;
+use function error_log;
 use function Safe\ini_set;
 use function set_error_handler;
 use function file_exists;
+use const E_DEPRECATED;
 
 final class WebBootstrapper
 {
@@ -35,9 +37,18 @@ final class WebBootstrapper
      */
     private function setErrorHandler(): void
     {
+        // @phpstan-ignore-next-line
         set_error_handler(static function(int $severity, string $message, string $file, int $line)
         {
-            throw new ErrorException($message, 0, $severity, $file, $line);
+            if ($severity === E_DEPRECATED)
+            {
+                // @phpstan-ignore-next-line
+                error_log("[Deprecation] In {$file}:{$line}: $message");
+            }
+            else
+            {
+                throw new ErrorException($message, 0, $severity, $file, $line);
+            }
         });
     }
 
