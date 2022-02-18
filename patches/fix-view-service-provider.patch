@@ -1,0 +1,10 @@
+--- ViewServiceProvider.php	2022-02-18 21:48:20.125405427 +0100
++++ ViewServiceProvider.php	2022-02-18 21:47:53.720961792 +0100
+@@ -88,7 +88,6 @@
+             return tap(new BladeCompiler(
+                 $app['files'],
+                 $app['config']['view.compiled'],
+-                $app['config']->get('view.relative_hash', false) ? $app->basePath() : '',
+             ), function ($blade) {
+                 $blade->component('dynamic-component', DynamicComponent::class);
+             });
