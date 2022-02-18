@@ -55,15 +55,15 @@ final class WebBootstrapper
     private function setPhpConfig(): void
     {
         // Prevent passing the session ID via URLs.
-        ini_set('session.use_only_cookies', true);
+        ini_set('session.use_only_cookies', '1');
         // Prevent Javascript from reading cookie contents.
-        ini_set('session.cookie_httponly', true);
+        ini_set('session.cookie_httponly', '1');
         // Ensure all cookies are sent via HTTPS.
-        ini_set('session.cookie_secure', true);
+        ini_set('session.cookie_secure', '1');
         // Prevent users from specifying their own session ID.
-        ini_set('session.use_strict_mode', true);
+        ini_set('session.use_strict_mode', '1');
         // Ensure SameSite attribute is set on all cookies.
-        ini_set('session.cookie_samesite', true);
+        ini_set('session.cookie_samesite', '1');
         // Moved from DBConnection. TODO: check if really needed.
         ini_set('memory_limit', '96M');
     }
