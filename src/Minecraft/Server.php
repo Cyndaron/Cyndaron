@@ -79,7 +79,11 @@ final class Server extends Model
         $data = explode("\x00", $data);
 
         $this->isOnline = true;
-        [$this->protocolVersion, $this->gameVersion, $this->motd, $this->onlinePlayers, $this->maxPlayers] = $data;
+        $this->protocolVersion = $data[0];
+        $this->gameVersion = $data[1];
+        $this->motd = $data[2];
+        $this->onlinePlayers = (int)$data[3];
+        $this->maxPlayers = (int)$data[4];
         $motd = new MinecraftString($this->motd);
         $this->motd = $motd->toHtml();
 

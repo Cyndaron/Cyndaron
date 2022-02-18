@@ -51,6 +51,7 @@ class Util
 
     public static function generateToken(int $length): string
     {
+        // @phpstan-ignore-next-line Bogus error.
         return bin2hex(random_bytes($length));
     }
 
