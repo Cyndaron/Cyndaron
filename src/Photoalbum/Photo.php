@@ -10,8 +10,6 @@ use function Safe\unlink;
 use function basename;
 use function move_uploaded_file;
 use function file_exists;
-use function preg_match;
-use function count;
 
 final class Photo
 {

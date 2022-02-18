@@ -8,7 +8,7 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Router;
 
 use function Safe\file_get_contents;
-use function Safe\sprintf;
+use function sprintf;
 use function strpos;
 use function str_replace;
 

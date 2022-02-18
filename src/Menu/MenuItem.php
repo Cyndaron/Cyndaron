@@ -8,7 +8,7 @@ use Cyndaron\DBAL\Model;
 use Cyndaron\Util\Setting;
 use Cyndaron\Url;
 
-use function Safe\sprintf;
+use function sprintf;
 use function is_string;
 use function ltrim;
 use function strpos;

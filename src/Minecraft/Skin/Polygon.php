@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft\Skin;
 
-use function Safe\imagefilledpolygon;
+use function imagefilledpolygon;
 use function imagecolorallocate;
 use function assert;
 

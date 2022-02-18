@@ -11,7 +11,7 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-use function Safe\sprintf;
+use function sprintf;
 use function array_merge;
 use function implode;
 use function assert;

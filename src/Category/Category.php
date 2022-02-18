@@ -8,7 +8,7 @@ use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url;
 
 use function Safe\strtotime;
-use function Safe\usort;
+use function usort;
 use function array_merge;
 use function strcasecmp;
 

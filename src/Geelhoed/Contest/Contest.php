@@ -9,7 +9,7 @@ use Cyndaron\Util\Util;
 
 use function Safe\scandir;
 use function Safe\strtotime;
-use function Safe\substr;
+use function substr;
 use function assert;
 use function file_exists;
 use function is_dir;

@@ -29,7 +29,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 use function Safe\error_log;
-use function Safe\substr;
+use function substr;
 use function session_start;
 use function strpos;
 use function array_key_exists;

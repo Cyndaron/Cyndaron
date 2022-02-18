@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\Mime\Address;
-use function Safe\sprintf;
+use function sprintf;
 use function in_array;
 use function strcasecmp;
 use function strtr;

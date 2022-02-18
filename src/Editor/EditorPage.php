@@ -10,8 +10,8 @@ use Cyndaron\Url;
 use Cyndaron\Util\Util;
 
 use function Safe\scandir;
-use function Safe\sprintf;
-use function Safe\substr;
+use function sprintf;
+use function substr;
 use function trim;
 use function is_dir;
 use function array_filter;

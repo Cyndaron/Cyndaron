@@ -5,7 +5,7 @@ namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\View\Page;
 use Cyndaron\User\User;
-use function Safe\usort;
+use function usort;
 
 final class ParentAccountsPage extends Page
 {

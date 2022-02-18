@@ -9,7 +9,7 @@ use Cyndaron\Geelhoed\Sport;
 use Cyndaron\DBAL\Model;
 use Cyndaron\View\Template\ViewHelpers;
 
-use function Safe\sprintf;
+use function sprintf;
 use function assert;
 use function array_key_exists;
 

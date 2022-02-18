@@ -5,7 +5,7 @@ namespace Cyndaron\Geelhoed\Member;
 
 use function array_filter;
 use function array_key_exists;
-use function Safe\usort;
+use function usort;
 use function strcasecmp;
 use function trim;
 
