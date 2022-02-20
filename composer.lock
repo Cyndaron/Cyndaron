@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94a9210918745b84e487268147e3b865",
+    "content-hash": "e38c52908955a15db72302e43d2de97e",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -180,27 +180,27 @@
         },
         {
             "name": "conedevelopment/blade-filters",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Gymnasiast/blade-filters.git",
-                "reference": "b6552affde817d606111593dadd47c4f71449f66"
+                "url": "https://github.com/conedevelopment/blade-filters.git",
+                "reference": "4fd2445c9a808a164bd38708a02a05f5f3b91c30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Gymnasiast/blade-filters/zipball/b6552affde817d606111593dadd47c4f71449f66",
-                "reference": "b6552affde817d606111593dadd47c4f71449f66",
+                "url": "https://api.github.com/repos/conedevelopment/blade-filters/zipball/4fd2445c9a808a164bd38708a02a05f5f3b91c30",
+                "reference": "4fd2445c9a808a164bd38708a02a05f5f3b91c30",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^6.0 || ^7.0 || ^8.0 || ^9.0",
-                "php": "^7.2.5 | ^8.0"
+                "illuminate/support": "^8.0 || ^9.0",
+                "illuminate/view": "^8.0 || ^9.0",
+                "php": "^7.3 || ^8.0"
             },
             "require-dev": {
-                "laravel/laravel": "dev-master",
-                "phpunit/phpunit": "^9.0"
+                "laravel/laravel": "9.x-dev",
+                "phpunit/phpunit": "^9.5"
             },
-            "default-branch": true,
             "type": "project",
             "extra": {
                 "laravel": {
@@ -217,11 +217,7 @@
                     "Pine\\BladeFilters\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Pine\\BladeFilters\\Tests\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -233,9 +229,10 @@
             ],
             "description": "Use filters easily in your blade templates.",
             "support": {
-                "source": "https://github.com/Gymnasiast/blade-filters/tree/v0.8.1"
+                "issues": "https://github.com/conedevelopment/blade-filters/issues",
+                "source": "https://github.com/conedevelopment/blade-filters/tree/v1.0.0"
             },
-            "time": "2022-02-18T18:03:08+00:00"
+            "time": "2022-02-19T08:20:23+00:00"
         },
         {
             "name": "cweagans/composer-patches",
@@ -5652,7 +5649,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "ckeditor/ckeditor": 20,
-        "conedevelopment/blade-filters": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
