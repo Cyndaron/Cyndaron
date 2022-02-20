@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "be36a2cd361ef4b311480868db3c9f67",
+    "content-hash": "9eb6fb50b3ef13fb47b84918c5ee9d1f",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -180,16 +180,16 @@
         },
         {
             "name": "conedevelopment/blade-filters",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/conedevelopment/blade-filters.git",
-                "reference": "b6552affde817d606111593dadd47c4f71449f66"
+                "reference": "4fd2445c9a808a164bd38708a02a05f5f3b91c30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/conedevelopment/blade-filters/zipball/b6552affde817d606111593dadd47c4f71449f66",
-                "reference": "b6552affde817d606111593dadd47c4f71449f66",
+                "url": "https://api.github.com/repos/conedevelopment/blade-filters/zipball/4fd2445c9a808a164bd38708a02a05f5f3b91c30",
+                "reference": "4fd2445c9a808a164bd38708a02a05f5f3b91c30",
                 "shasum": ""
             },
             "require": {
@@ -201,7 +201,6 @@
                 "laravel/laravel": "9.x-dev",
                 "phpunit/phpunit": "^9.5"
             },
-            "default-branch": true,
             "type": "project",
             "extra": {
                 "laravel": {
@@ -233,7 +232,7 @@
                 "issues": "https://github.com/conedevelopment/blade-filters/issues",
                 "source": "https://github.com/conedevelopment/blade-filters/tree/v1.0.0"
             },
-            "time": "2022-02-18T18:03:08+00:00"
+            "time": "2022-02-19T08:20:23+00:00"
         },
         {
             "name": "cweagans/composer-patches",
@@ -5716,7 +5715,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "ckeditor/ckeditor": 20,
-        "conedevelopment/blade-filters": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

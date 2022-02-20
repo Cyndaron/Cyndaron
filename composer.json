@@ -30,7 +30,7 @@
         "symfony/http-kernel": "^6.0",
         "symfony/routing": "^6.0",
         "illuminate/view": "^9.0",
-        "conedevelopment/blade-filters": "dev-master",
+        "conedevelopment/blade-filters": "*",
         "mollie/mollie-api-php": "^2.32",
         "phpoffice/phpspreadsheet": "^1.18",
         "mpdf/mpdf": "^8.1",
