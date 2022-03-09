@@ -13,7 +13,7 @@ use Cyndaron\View\Page;
 use Cyndaron\User\User;
 use Cyndaron\Util\Util;
 
-use function Safe\uasort;
+use function uasort;
 use function Safe\usort;
 use function trim;
 use function explode;
