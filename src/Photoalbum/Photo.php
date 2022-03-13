@@ -48,7 +48,12 @@ final class Photo
         return Photoalbum::getPhotoalbumsDir() . $this->album->id . '/originals/' . $this->filename;
     }
 
-    public function getThumbnailPath(): string
+    public function hasThumbnail(): bool
+    {
+        return file_exists(Photoalbum::getPhotoalbumsDir() . $this->album->id . '/thumbnails/' . $this->filename);
+    }
+
+    public function getRelativeThumbnailPath(): string
     {
         return $this->album->getThumbnailPrefix() . $this->filename;
     }

@@ -30,13 +30,14 @@
 
         <div class="fotoalbum">
             @php $deleteToken = \Cyndaron\User\User::getCSRFToken('photoalbum', 'deletePhoto'); @endphp
+            @php /** @var \Cyndaron\Photoalbum\Photo $photo */@endphp
             @foreach ($photos as $photo)
             <figure class="fotobadge">
 
                 <a href="{{ \Cyndaron\Util\Util::filenameToUrl($photo->getFullPath()) }}" data-lightbox="{{ $model->name }}" data-hash="{{ $photo->hash }}"
                     @if ($photo->caption) data-title="{{ $photo->caption->caption }}" @endif>
-                    @if (file_exists($photo->getThumbnailPath()))
-                        <img class="thumb" alt="{{ $photo->filename }}" src="{{ \Cyndaron\Util\Util::filenameToUrl($photo->getThumbnailPath()) }}"/>
+                    @if ($photo->hasThumbnail())
+                        <img class="thumb" alt="{{ $photo->filename }}" src="{{ $photo->getRelativeThumbnailPath() }}"/>
                     @else
                         <img class="thumb default-thumbnail-size" alt="{{ $photo->filename }}" src="{{ \Cyndaron\Util\Util::filenameToUrl($photo->getFullPath()) }}"/>
                     @endif
