@@ -22,8 +22,13 @@ final class Util extends \Cyndaron\Util\Util
         return (new Template())->render('Registration/PageManagerTab', $templateVars);
     }
 
-    public static function birthYearToCategory(Event $event, int $birthYear): string
+    public static function birthYearToCategory(Event $event, ?int $birthYear): string
     {
+        if ($birthYear === null)
+        {
+            return 'Niet opgegeven';
+        }
+
         $age = (int)date('Y') - $birthYear;
 
         foreach (self::getAgeRanges($event) as $ageRange)
