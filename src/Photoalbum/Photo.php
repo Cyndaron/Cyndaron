@@ -45,7 +45,7 @@ final class Photo
 
     public function getFullPath(): string
     {
-        return $this->album->getLinkPrefix() . $this->filename;
+        return Photoalbum::getPhotoalbumsDir() . $this->album->id . '/originals/' . $this->filename;
     }
 
     public function getThumbnailPath(): string

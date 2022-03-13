@@ -16,6 +16,7 @@ use function Safe\substr;
 use function array_values;
 use function array_filter;
 use function reset;
+use const PUB_DIR;
 
 final class Photoalbum extends ModelWithCategory
 {
@@ -86,12 +87,12 @@ final class Photoalbum extends ModelWithCategory
 
     public function getLinkPrefix(): string
     {
-        return self::getPhotoalbumsDir() . $this->id . '/originals/';
+        return self::getPhotoalbumsRelative() . $this->id . '/originals/';
     }
 
     public function getThumbnailPrefix(): string
     {
-        return self::getPhotoalbumsDir() . $this->id . '/thumbnails/';
+        return self::getPhotoalbumsRelative() . $this->id . '/thumbnails/';
     }
 
     public static function getPhotoalbumsDir(): string
@@ -99,21 +100,30 @@ final class Photoalbum extends ModelWithCategory
         return Util::UPLOAD_DIR . '/photoalbums/';
     }
 
+    public static function getPhotoalbumsRelative(): string
+    {
+        return str_replace(PUB_DIR, '', self::getPhotoalbumsDir());
+    }
+
     public function getText(): string
     {
         return $this->notes;
     }
 
-    public function getImage(): string
+    public function getPreviewImage(): string
     {
-        $image = parent::getImage();
-        if ($image !== '')
+        if ($this->previewImage !== '')
         {
-            return $image;
+            return $this->previewImage;
         }
 
         $photos = $this->getPhotos();
+        if (count($photos) === 0)
+        {
+            return parent::getPreviewImage();
+        }
+
         $photo1 = reset($photos);
-        return $this->getLinkPrefix() . $photo1;
+        return $this->getThumbnailPrefix() . $photo1;
     }
 }
