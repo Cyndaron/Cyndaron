@@ -148,10 +148,6 @@ final class RegistrationController extends Controller
         $registration->approvalStatus = $eventObj->requireApproval ? Registration::APPROVAL_UNDECIDED : Registration::APPROVAL_APPROVED;
 
         $registrationTotal = $registration->calculateTotal($registrationTicketTypes);
-        if ($registrationTotal <= 0)
-        {
-            throw new Exception('Het formulier is niet goed aangekomen.');
-        }
 
         if (!$registration->save())
         {
