@@ -4,6 +4,7 @@ namespace Cyndaron\Category;
 use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\View\Template\ViewHelpers;
+use Safe\Exceptions\PcreException;
 use function Safe\preg_match;
 use function html_entity_decode;
 use function trim;
@@ -57,8 +58,12 @@ abstract class ModelWithCategory extends Model
      */
     public function getImageFromText(): string
     {
-        preg_match('/<img.*?src="(.*?)".*?>/si', $this->getText(), $match);
-        return $match[1] ?? '';
+        try {
+            preg_match('/<img.*?src="(.*?)".*?>/si', $this->getText(), $match);
+            return $match[1] ?? '';
+        } catch (PcreException $e) {
+            return '';
+        }
     }
 
     /**
