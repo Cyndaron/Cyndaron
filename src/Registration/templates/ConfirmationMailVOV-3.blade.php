@@ -1,5 +1,12 @@
 Hartelijk dank voor uw inschrijving voor {{ $event->name }}.
-Zodra de inschrijving is gesloten krijgt u van ons een nader bericht over het vervolg.
+
+@if ($registrationTotal > 0)Na betaling is uw inschrijving definitief.
+
+    Gebruik bij het betalen de volgende gegevens:
+    Rekeningnummer: NL06 INGB 0000 5459 25 t.n.v. Vlissingse Oratorium Vereniging
+    Bedrag: {{ $registrationTotal|euro }}
+    Onder vermelding van: inschrijvingsnummer {{ $registration->id }}
+@endif
 
 Hieronder volgt een overzicht van uw inschrijving.
 

@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <div><h5><b>Totaalprijs:</b> <span id="prijsvak">€&nbsp;0,00</span></h5></div>
+            <div><h5><b>Totaalbedrag:</b> <span id="prijsvak">€&nbsp;0,00</span></h5></div>
 
             <h3>Verzenden:</h3>
 
