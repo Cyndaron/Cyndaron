@@ -38,6 +38,9 @@
                     <div><span>Inschrijfdatum</span></div>
                 </th>
                 <th class="rotate">
+                    <div><span>Betaald</span></div>
+                </th>
+                <th class="rotate">
                     <div><span>Opmerkingen</span></div>
                 </th>
                 <th class="column-actions"></th>
@@ -70,6 +73,9 @@
                 </td>
                 <td>
                     {{ date('d-m-Y', strtotime($registration->created)) }}
+                </td>
+                <td>
+                    {{ $registration->isPaid|boolToText }}
                 </td>
                 <td>
                     {{ $registration->comments }}
