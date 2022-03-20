@@ -148,6 +148,10 @@ final class RegistrationController extends Controller
         $registration->approvalStatus = $eventObj->requireApproval ? Registration::APPROVAL_UNDECIDED : Registration::APPROVAL_APPROVED;
 
         $registrationTotal = $registration->calculateTotal($registrationTicketTypes);
+        if ($registrationTotal === 0.00)
+        {
+            $registration->isPaid = true;
+        }
 
         if (!$registration->save())
         {
