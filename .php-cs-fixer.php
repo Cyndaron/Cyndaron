@@ -12,7 +12,7 @@ $finder = PhpCsFixer\Finder::create()
     ->ignoreVCS(true)
 ;
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR2' => true,
         'align_multiline_comment' => ['comment_type' => 'phpdocs_like'],
