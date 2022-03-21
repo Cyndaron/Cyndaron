@@ -17,6 +17,8 @@ use function array_values;
 use function array_filter;
 use function reset;
 use const PUB_DIR;
+use function str_replace;
+use function count;
 
 final class Photoalbum extends ModelWithCategory
 {

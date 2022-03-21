@@ -58,10 +58,13 @@ abstract class ModelWithCategory extends Model
      */
     public function getImageFromText(): string
     {
-        try {
+        try
+        {
             preg_match('/<img.*?src="(.*?)".*?>/si', $this->getText(), $match);
             return $match[1] ?? '';
-        } catch (PcreException $e) {
+        }
+        catch (PcreException $e)
+        {
             return '';
         }
     }
