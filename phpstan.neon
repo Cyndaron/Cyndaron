@@ -10,7 +10,7 @@ parameters:
     reportMaybesInMethodSignatures: true
     reportStaticMethodSignatures: true
 includes:
-    - vendor/thecodingmachine/phpstan-safe-rule/phpstan-safe-rule.neon
+#    - vendor/thecodingmachine/phpstan-safe-rule/phpstan-safe-rule.neon
 
 rules:
 	- PHPStan\Rules\Classes\RequireParentConstructCallRule
