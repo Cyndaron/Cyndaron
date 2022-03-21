@@ -44,6 +44,9 @@
         ],
         "cscheck": [
             "vendor/bin/php-cs-fixer fix src/ --allow-risky=yes --dry-run --diff"
+        ],
+        "cs-fix": [
+            "vendor/bin/php-cs-fixer fix src/ --allow-risky=yes"
         ]
     }
 }
