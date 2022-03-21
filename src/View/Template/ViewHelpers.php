@@ -190,12 +190,13 @@ final class ViewHelpers
 
         $text = preg_replace('/%youtube\|([A-Za-z0-9_\-]+)%/', self::YOUTUBE, $text ?? '');
 
+        /** @var string $text */
         $text = preg_replace_callback('/%csrfToken\|([A-Za-z0-9_\-]+)\|([A-Za-z0-9_\-]+)%/', static function($matches)
         {
             return User::getCSRFToken($matches[1], $matches[2]);
         }, $text);
 
-        return $text ?? '';
+        return $text;
     }
 
     /**

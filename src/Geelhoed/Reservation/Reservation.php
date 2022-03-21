@@ -28,7 +28,6 @@ final class Reservation extends Model
 
     public static function getHoursAndDatesStatistics(): array
     {
-        /** @phpstan-ignore-next-line ("Safe" implementation is buggy) */
         $today = new DateTimeImmutable();
         return DBConnection::doQueryAndFetchAll('SELECT `date`,`hourId`, COUNT(*) as count FROM `geelhoed_reservation` WHERE date >= ? GROUP BY `date`,`hourId` ORDER BY `date`,`hourId`', [$today->format('Y-m-d')]) ?: [];
     }
@@ -40,7 +39,6 @@ final class Reservation extends Model
      */
     public static function getDatesForHour(Hour $hour, int $dayRange = 15): array
     {
-        /** @phpstan-ignore-next-line ("Safe" implementation is buggy) */
         $today = new DateTimeImmutable();
         $twoWeeks = $today->add(new DateInterval("P{$dayRange}D"));
         $interval = new DateInterval('P1D');

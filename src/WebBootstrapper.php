@@ -42,7 +42,6 @@ final class WebBootstrapper
         {
             if ($severity === E_DEPRECATED)
             {
-                // @phpstan-ignore-next-line
                 error_log("[Deprecation] In {$file}:{$line}: $message");
             }
             else
