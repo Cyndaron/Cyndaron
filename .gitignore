@@ -18,3 +18,4 @@ public_html/uploads/
 # Generated/autodownloaded
 vendor/
 public_html/asset
+.php-cs-fixer.cache
