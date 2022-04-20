@@ -66,4 +66,14 @@ class OldUrlsController extends Controller
         $id = $request->query->getInt('boekid');
         return new RedirectResponse("/photoalbum/$id");
     }
+
+    public function checkCSRFToken(string $token): bool
+    {
+        if ($this->module === 'verwerkmailformulier.php')
+        {
+            return true;
+        }
+
+        return parent::checkCSRFToken($token);
+    }
 }
