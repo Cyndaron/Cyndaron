@@ -7,6 +7,8 @@
 
     <textarea id="ckeditor-parent" name="body" rows="15" cols="75"></textarea>
 
+    <label for="attachment-1">Bijlagen:</label><input id="attachments" name="attachments" type="file" multiple>
+
     <h2>Ontvangers</h2>
 
     <div class="form-check">

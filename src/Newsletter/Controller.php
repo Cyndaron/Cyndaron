@@ -14,8 +14,10 @@ use Cyndaron\Util\Util;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Cyndaron\View\SimplePage;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport\SendmailTransport;
@@ -46,8 +48,11 @@ class Controller extends \Cyndaron\Routing\Controller
 
     protected array $postRoutes = [
         'subscribe' => ['level' => UserLevel::ANONYMOUS, 'function' => 'subscribe'],
-        'send' => ['level' => UserLevel::ADMIN, 'function' => 'send'],
         'unsubscribe' => ['level' => UserLevel::ADMIN, 'function' => 'unsubscribe'],
+    ];
+
+    protected array $apiPostRoutes = [
+        'send' => ['level' => UserLevel::ADMIN, 'function' => 'send'],
     ];
 
     protected function viewSubscribers(): Response
@@ -93,7 +98,15 @@ class Controller extends \Cyndaron\Routing\Controller
         return new Response($page->render());
     }
 
-    private function sendNewsletterMail(string $subject, string $body, array $addresses): bool
+    /**
+     * @param string $subject
+     * @param string $body
+     * @param string[] $addresses
+     * @param UploadedFile[] $attachments
+     * @throws \Safe\Exceptions\ErrorfuncException
+     * @return bool
+     */
+    private function sendNewsletterMail(string $subject, string $body, array $addresses, array $attachments = []): bool
     {
         $addresses = array_filter($addresses, static function(string $address)
         {
@@ -127,6 +140,10 @@ class Controller extends \Cyndaron\Routing\Controller
                     ->addReplyTo($infoAddress)
                     ->addBcc(...$addressChunk)
                     ->html($body);
+                foreach ($attachments as $attachment)
+                {
+                    $email->attachFromPath($attachment->getPath(), $attachment->getClientOriginalName(), $attachment->getClientMimeType());
+                }
                 $email->getHeaders()->addTextHeader('List-Unsubscribe', "<mailto:{$unsubscribeAddress}>");
                 $mailer->send($email);
             }
@@ -150,8 +167,11 @@ class Controller extends \Cyndaron\Routing\Controller
         return new JsonResponse();
     }
 
-    protected function send(RequestParameters $post): JsonResponse
+    protected function send(RequestParameters $post, Request $request): JsonResponse
     {
+        /** @var UploadedFile[] $attachments */
+        $attachments = ($request->files->get('attachments')) ?: [];
+
         $subject = $post->getSimpleString('subject');
         $body = $post->getHTML('body');
         $recipient = $post->getAlphaNum('recipient');
@@ -159,17 +179,20 @@ class Controller extends \Cyndaron\Routing\Controller
         $unsubscribeAddress = $this->getUnsubscribeAddress();
         if ($recipient === 'single')
         {
-            $result = $this->sendNewsletterMail($subject, $body, [$recipientAddress]);
+            $result = $this->sendNewsletterMail($subject, $body, [$recipientAddress], $attachments);
             return $this->getResponse($result);
         }
 
         $subscriberAddresses = array_map(
-            static function(Subscriber $subscriber) { return $subscriber->email; },
+            static function(Subscriber $subscriber)
+            {
+                return $subscriber->email;
+            },
             Subscriber::fetchAll()
         );
 
         $unsubscribe = '<hr><i>U ontvangt deze e-mail omdat u zich heeft ingeschreven voor de nieuwsbrief. Mail naar <a href="mailto:' . $unsubscribeAddress . '">' . $unsubscribeAddress . '</a> om u uit te schrijven.</i>';
-        $result = $this->sendNewsletterMail($subject, $body . $unsubscribe, $subscriberAddresses);
+        $result = $this->sendNewsletterMail($subject, $body . $unsubscribe, $subscriberAddresses, $attachments);
         if ($result === false || $recipient === 'subscribers')
         {
             return $this->getResponse($result);
@@ -188,13 +211,16 @@ class Controller extends \Cyndaron\Routing\Controller
                 {$parentMail}
             ) AS drie WHERE mail IS NOT NULL;";
         $memberAddresses = array_map(
-            static function(array $record) { return $record['mail']; },
+            static function(array $record)
+            {
+                return $record['mail'];
+            },
             DBConnection::doQueryAndFetchAll($sql) ?: []
         );
         // Do not send an e-mail to people who already got one because they're a newsletter subscriber.
         $memberAddresses = array_diff($memberAddresses, $subscriberAddresses);
         $unsubscribe = '<hr><i>U ontvangt deze e-mail omdat u of uw kind(eren) lid zijn van Sportschool Geelhoed. Mail naar <a href="mailto:' . $unsubscribeAddress . '">' . $unsubscribeAddress . '</a> om u uit te schrijven.</i>';
-        $result = $this->sendNewsletterMail($subject, $body . $unsubscribe, $memberAddresses);
+        $result = $this->sendNewsletterMail($subject, $body . $unsubscribe, $memberAddresses, $attachments);
         return $this->getResponse($result);
     }
 

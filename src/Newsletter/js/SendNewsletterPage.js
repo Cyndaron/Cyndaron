@@ -34,17 +34,33 @@ $(document).ready(function ()
             return;
         }
 
+        const attachments = document.getElementById('attachments').files;
         let csrfToken = $(this).data('csrf-token');
-        $.post(
-            '/newsletter/send',
-            { subject: subject, body: body, recipient: recipient, recipientAddress: recipientAddress, csrfToken: csrfToken }, null, 'json')
-            .done(function ()
-            {
-                alert('Nieuwsbrief is verstuurd!');
-            })
-            .fail(function (xhr, textStatus, errorThrown)
-            {
-                alert('Nieuwsbrief versturen mislukt: ' + xhr.responseJSON.error);
-            });
+
+        let formData = new FormData();
+        formData.append('subject', subject);
+        formData.append('body', body);
+        formData.append('recipient', recipient);
+        formData.append('recipientAddress', recipientAddress);
+        formData.append('csrfToken', csrfToken);
+        for (let i = 0; i < attachments.length; i++)
+        {
+            formData.append('attachments[]', attachments[i]);
+        }
+
+        $.ajax({
+            url : '/api/newsletter/send',
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+        }).done(function ()
+        {
+            alert('Nieuwsbrief is verstuurd!');
+        })
+        .fail(function (xhr, textStatus, errorThrown)
+        {
+            alert('Nieuwsbrief versturen mislukt: ' + xhr.responseJSON.error);
+        });
     });
 });

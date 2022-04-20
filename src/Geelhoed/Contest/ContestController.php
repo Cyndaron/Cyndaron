@@ -142,7 +142,10 @@ final class ContestController extends Controller
             $page = new SimplePage('Onbekend lid', 'Kon het lid niet vinden.');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
-        $controlledMemberIds = array_map(static function(Member $member) { return $member->id; }, Member::fetchAllByLoggedInUser());
+        $controlledMemberIds = array_map(static function(Member $member)
+        {
+            return $member->id;
+        }, Member::fetchAllByLoggedInUser());
         if (!in_array($memberId, $controlledMemberIds, true))
         {
             $page = new SimplePage('Fout', 'U mag dit lid niet beheren.');
@@ -736,7 +739,10 @@ final class ContestController extends Controller
         if (!$currentUser->hasRight(Contest::RIGHT_MANAGE))
         {
             $memberId = $subscription->getMember()->id;
-            $controlledMemberIds = array_map(static function(Member $member) { return $member->id; }, Member::fetchAllByLoggedInUser());
+            $controlledMemberIds = array_map(static function(Member $member)
+            {
+                return $member->id;
+            }, Member::fetchAllByLoggedInUser());
             if (!in_array($memberId, $controlledMemberIds, true))
             {
                 return new Response('U mag deze judoka niet beheren!', Response::HTTP_FORBIDDEN);
@@ -782,7 +788,10 @@ final class ContestController extends Controller
         if (!$currentUser->hasRight(Contest::RIGHT_MANAGE))
         {
             $memberId = $subscription->getMember()->id;
-            $controlledMemberIds = array_map(static function(Member $member) { return $member->id; }, Member::fetchAllByLoggedInUser());
+            $controlledMemberIds = array_map(static function(Member $member)
+            {
+                return $member->id;
+            }, Member::fetchAllByLoggedInUser());
             if (!in_array($memberId, $controlledMemberIds, true))
             {
                 return new Response('U mag deze judoka niet beheren!', Response::HTTP_FORBIDDEN);
@@ -925,7 +934,10 @@ final class ContestController extends Controller
 
         $memberToRemoveId = $post->getInt('memberId');
         $controlledMembers = Member::fetchAllByUser($user);
-        if (!in_array($memberToRemoveId, array_map(static function(Member $member) { return $member->id; }, $controlledMembers), true))
+        if (!in_array($memberToRemoveId, array_map(static function(Member $member)
+        {
+            return $member->id;
+        }, $controlledMembers), true))
         {
             return new JsonResponse(['error' => 'Ouder kan dit lid niet beheren!'], Response::HTTP_NOT_FOUND);
         }
