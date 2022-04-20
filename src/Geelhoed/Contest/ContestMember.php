@@ -64,7 +64,10 @@ final class ContestMember extends Model
      */
     public static function fetchAllByContestAndMembers(Contest $contest, array $members): array
     {
-        $memberIds = array_map(static function(Member $member) { return $member->id; }, $members);
+        $memberIds = array_map(static function(Member $member)
+        {
+            return $member->id;
+        }, $members);
         return self::fetchAll(['contestId = ?', 'memberId IN (' . implode(',', $memberIds) . ')'], [$contest->id], 'ORDER BY contestId DESC');
     }
 
@@ -74,7 +77,10 @@ final class ContestMember extends Model
      */
     public static function fetchAllByMembers(array $members): array
     {
-        $memberIds = array_map(static function(Member $member) { return $member->id; }, $members);
+        $memberIds = array_map(static function(Member $member)
+        {
+            return $member->id;
+        }, $members);
         return self::fetchAll(['memberId IN (' . implode(',', $memberIds) . ')'], [], 'ORDER BY contestId DESC');
     }
 
