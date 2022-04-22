@@ -7,16 +7,24 @@
         @endforeach
     </ol>
     <div class="carousel-inner">
+        @php /** @var \Cyndaron\Photoalbum\Photo[] $photos */@endphp
         @foreach ($photos as $photo)
             @php $caption = $photo->caption @endphp
             @php $captionText = $caption ? trim($caption->caption) : '' @endphp
+            @php $url = $photo->getUrl(); @endphp
 
             <div class="carousel-item @if ($loop->first) active @endif">
-                <img class="d-block w-100" src="{{ \Cyndaron\Util\Util::filenameToUrl($photo->getFullPath()) }}" alt="">
-                @if ($captionText)
-                    <div class="carousel-caption d-none d-md-block">
-                        {!! $captionText !!}
-                    </div>
+                @if ($url)
+                    <a href="{!! $url !!}">
+                        <img class="d-block w-100" src="{{ \Cyndaron\Util\Util::filenameToUrl($photo->getFullPath()) }}" alt="">
+                    </a>
+                @else
+                    <img class="d-block w-100" src="{{ \Cyndaron\Util\Util::filenameToUrl($photo->getFullPath()) }}" alt="">
+                    @if ($captionText)
+                        <div class="carousel-caption d-none d-md-block">
+                            {!! $captionText !!}
+                        </div>
+                    @endif
                 @endif
             </div>
         @endforeach

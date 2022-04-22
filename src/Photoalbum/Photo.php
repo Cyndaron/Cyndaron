@@ -151,4 +151,24 @@ final class Photo
 
         return $numDeleted;
     }
+
+    public function getUrl(): string
+    {
+        if ($this->caption === null)
+        {
+            return '';
+        }
+
+        $result = preg_match(
+            '@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@i',
+            $this->caption->caption,
+            $matches
+        );
+        if ($result === 0 || $result === false || count($matches) < 2)
+        {
+            return '';
+        }
+
+        return $matches[2];
+    }
 }
