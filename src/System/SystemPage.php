@@ -23,6 +23,7 @@ final class SystemPage extends Page
     private const WRITABLE_FILES_AND_FOLDERS = [
         '/cache',
         '/public_html/uploads',
+        '/public_html/uploads/images',
     ];
 
     private const UNWRITEABLE_FILES_AND_FOLDERS = [
