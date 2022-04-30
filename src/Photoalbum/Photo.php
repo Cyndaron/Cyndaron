@@ -4,9 +4,12 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\Util\Util;
 use Imagick;
 
+use Safe\Exceptions\PcreException;
 use function Safe\copy;
 use function Safe\md5_file;
+use function Safe\preg_match;
 use function basename;
+use function count;
 use function move_uploaded_file;
 use function file_exists;
 
@@ -159,12 +162,19 @@ final class Photo
             return '';
         }
 
-        $result = preg_match(
-            '@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@i',
-            $this->caption->caption,
-            $matches
-        );
-        if ($result === 0 || $result === false || count($matches) < 2)
+        try
+        {
+            $result = preg_match(
+                '@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@i',
+                $this->caption->caption,
+                $matches
+            );
+            if ($result === 0 || count($matches) < 2)
+            {
+                return '';
+            }
+        }
+        catch (PcreException $e)
         {
             return '';
         }
