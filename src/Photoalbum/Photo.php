@@ -169,6 +169,6 @@ final class Photo
             return '';
         }
 
-        return $matches[2];
+        return $matches[1];
     }
 }
