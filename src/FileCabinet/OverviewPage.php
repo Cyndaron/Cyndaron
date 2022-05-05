@@ -6,6 +6,7 @@ use Cyndaron\Util\Setting;
 use Cyndaron\User\User;
 use Cyndaron\Util\Util;
 
+use ErrorException;
 use Safe\Exceptions\DirException;
 use Safe\Exceptions\FilesystemException;
 use function Safe\fclose;
@@ -58,7 +59,7 @@ final class OverviewPage extends Page
             $introduction = preg_replace('/<font(.*?)>/', '', $introduction);
             $introduction = preg_replace('/<\/font(.*?)>/', '', $introduction);
         }
-        catch (FilesystemException $e)
+        catch (ErrorException $e)
         {
         }
 
