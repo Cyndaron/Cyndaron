@@ -2,7 +2,7 @@
 @php /** @var \Cyndaron\Registration\Event $event */@endphp
 
 @section ('titleControls')
-    <a href="/editor/eventSbk/{{ $event->id }}" class="btn btn-outline-cyndaron" title="Dit evenement bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
+    <a href="/editor/event/{{ $event->id }}" class="btn btn-outline-cyndaron" title="Dit evenement bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
 @endsection
 
 @section ('contents')
@@ -11,8 +11,8 @@
     @else
         {!! $event->description !!}
 
-        <form method="post" action="/eventSbk-registration/add" class="form-horizontal" id="kaartenbestellen">
-            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('eventSbk-registration', 'add') }}"/>
+        <form method="post" action="/event-registration/add" class="form-horizontal" id="kaartenbestellen">
+            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('event-registration', 'add') }}"/>
             <input type="hidden" id="eventId" name="event_id" value="{{ $event->id }}"/>
 
             <h3>Je gegevens (verplicht):</h3>

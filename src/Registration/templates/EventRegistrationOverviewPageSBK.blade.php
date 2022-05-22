@@ -4,7 +4,7 @@
 @section ('contents')
     @component('View/Widget/Toolbar')
         @slot('left')
-            <a class="btn btn-outline-cyndaron" href="/pagemanager/eventSbk">&laquo; Terug naar overzicht evenementen</a>
+            <a class="btn btn-outline-cyndaron" href="/pagemanager/event">&laquo; Terug naar overzicht evenementen</a>
         @endslot
     @endcomponent
 
@@ -72,14 +72,14 @@
                 <td>
                     <div class="btn-group btn-group-sm">
                         @if ($registration->approvalStatus === Cyndaron\Registration\Registration::APPROVAL_UNDECIDED)
-                            <button data-registration-id="{{ $registrationId }}" data-approval-status="{{ \Cyndaron\Registration\Registration::APPROVAL_APPROVED }}" data-csrf-token-set-approval-status="{{ \Cyndaron\User\User::getCSRFToken('eventSbk-registration', 'setApprovalStatus') }}" title="Aanmelding goedkeuren" class="eom-registration-set-approval-status btn btn-sm btn-success"><span class="glyphicon glyphicon-ok"></span></button>
-                            <button data-registration-id="{{ $registrationId }}" data-approval-status="{{ \Cyndaron\Registration\Registration::APPROVAL_DISAPPROVED }}" data-csrf-token-set-approval-status="{{ \Cyndaron\User\User::getCSRFToken('eventSbk-registration', 'setApprovalStatus') }}" title="Aanmelding afkeuren" class="eom-registration-set-approval-status btn btn-sm btn-warning"><span class="glyphicon glyphicon-remove"></span></button>
+                            <button data-registration-id="{{ $registrationId }}" data-approval-status="{{ \Cyndaron\Registration\Registration::APPROVAL_APPROVED }}" data-csrf-token-set-approval-status="{{ \Cyndaron\User\User::getCSRFToken('event-registration', 'setApprovalStatus') }}" title="Aanmelding goedkeuren" class="eom-registration-set-approval-status btn btn-sm btn-success"><span class="glyphicon glyphicon-ok"></span></button>
+                            <button data-registration-id="{{ $registrationId }}" data-approval-status="{{ \Cyndaron\Registration\Registration::APPROVAL_DISAPPROVED }}" data-csrf-token-set-approval-status="{{ \Cyndaron\User\User::getCSRFToken('event-registration', 'setApprovalStatus') }}" title="Aanmelding afkeuren" class="eom-registration-set-approval-status btn btn-sm btn-warning"><span class="glyphicon glyphicon-remove"></span></button>
                         @endif
                         @if ($registration->shouldPay())
-                            <button data-registration-id="{{ $registrationId }}" data-csrf-token-set-is-paid="{{ \Cyndaron\User\User::getCSRFToken('eventSbk-registration', 'setIsPaid') }}" title="Markeren als betaald" class="eom-registration-set-paid btn btn-sm btn-success"><span class="glyphicon glyphicon-eur"></span></button>
+                            <button data-registration-id="{{ $registrationId }}" data-csrf-token-set-is-paid="{{ \Cyndaron\User\User::getCSRFToken('event-registration', 'setIsPaid') }}" title="Markeren als betaald" class="eom-registration-set-paid btn btn-sm btn-success"><span class="glyphicon glyphicon-eur"></span></button>
                         @endif
                     </div>
-                    <button data-registration-id="{{ $registrationId }}" data-csrf-token-delete="{{ \Cyndaron\User\User::getCSRFToken('eventSbk-registration', 'delete') }}" title="Aanmelding verwijderen" class="eom-registration-delete btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                    <button data-registration-id="{{ $registrationId }}" data-csrf-token-delete="{{ \Cyndaron\User\User::getCSRFToken('event-registration', 'delete') }}" title="Aanmelding verwijderen" class="eom-registration-delete btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
                 </td>
             </tr>
             @endforeach
