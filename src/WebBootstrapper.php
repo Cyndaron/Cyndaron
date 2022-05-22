@@ -42,7 +42,7 @@ final class WebBootstrapper
         {
             if ($severity === E_DEPRECATED)
             {
-                error_log("[Deprecation] In {$file}:{$line}: $message");
+                error_log("[Deprecation] In {$file}:{$line}: $message\n");
             }
             else
             {
