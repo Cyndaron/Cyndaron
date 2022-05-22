@@ -45,7 +45,13 @@ final class Photoalbum extends ModelWithCategory
             throw new IncompleteData('Empty photo album name!');
         }
 
-        $id = DBConnection::doQuery('INSERT INTO photoalbums(`name`,`notes`,`showBreadcrumbs`) VALUES (?,?,?);', [$name, $notes,(int)$showBreadcrumbs]);
+        $album = new Photoalbum();
+        $album->name = $name;
+        $album->notes = $notes;
+        $album->showBreadcrumbs = $showBreadcrumbs;
+        $album->save();
+
+        $id = $album->id;
         if ($id !== false)
         {
             $baseDir = self::getPhotoalbumsDir() . "/{$id}";
