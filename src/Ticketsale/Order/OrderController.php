@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\Order;
 
+use Cyndaron\Barcode\Barcode;
+use Cyndaron\Barcode\BarcodeType;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
@@ -13,15 +15,23 @@ use Cyndaron\Ticketsale\InvalidOrder;
 use Cyndaron\Ticketsale\Order\Order;
 use Cyndaron\Ticketsale\TicketType;
 use Cyndaron\Ticketsale\Util;
+use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Mail\Mail;
+use Cyndaron\Util\Setting;
 use Cyndaron\View\SimplePage;
+use Cyndaron\View\Template\Template;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use function assert;
+use function base64_encode;
+use function ob_get_clean;
+use function ob_start;
+use function random_int;
 use function strtoupper;
 use function implode;
 use const PHP_EOL;
@@ -29,8 +39,16 @@ use function count;
 
 final class OrderController extends Controller
 {
+    protected array $getRoutes = [
+        'checkIn' => ['level' => UserLevel::ANONYMOUS, 'function' => 'checkInGet'],
+        'getTicket' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getTicket'],
+        'pay' => ['level' => UserLevel::ANONYMOUS, 'function' => 'pay'],
+        'showBarcode' => ['level' => UserLevel::ANONYMOUS, 'function' => 'showBarcode'],
+    ];
+
     protected array $postRoutes = [
         'add' => ['level' => UserLevel::ANONYMOUS, 'function' => 'add'],
+        'checkIn' => ['level' => UserLevel::ANONYMOUS, 'function' => 'checkInPost'],
     ];
 
     protected array $apiPostRoutes = [
@@ -38,6 +56,16 @@ final class OrderController extends Controller
         'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
         'setIsSent' => ['level' => UserLevel::ADMIN, 'function' => 'setIsSent'],
     ];
+
+    public function checkCSRFToken($token): bool
+    {
+        if ($this->action === 'checkIn')
+        {
+            return true;
+        }
+
+        return parent::checkCSRFToken($token);
+    }
 
     protected function add(RequestParameters $post): Response
     {
@@ -462,5 +490,178 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
         $order->setIsSent();
 
         return new JsonResponse();
+    }
+
+    protected function showBarcode(QueryBits $queryBits): Response
+    {
+        $text = (string)random_int(1_000_000_000, 9_999_999_999);
+        $size = 60;
+        $orientation = "horizontal";
+        $code_type = BarcodeType::CODE_128;
+        $print = true;
+        $sizefactor = 1.5;
+
+        $barcode = new Barcode($text, $size, $orientation, $code_type, $print, $sizefactor);
+        $output = $barcode->getOutput();
+
+        return new Response(
+            $output,
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'image/png',
+            ]
+        );
+    }
+
+    protected function pay(QueryBits $queryBits): Response
+    {
+        $orderId = $queryBits->getInt(2);
+        $order = Order::loadFromDatabase($orderId);
+        if ($order === null)
+        {
+            $page = new SimplePage('Fout', 'Order niet gevonden!');
+            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+        }
+
+
+        $concert = $order->getConcert();
+
+        $price = $order->calculatePrice();
+
+        $apiKey = Setting::get('mollieApiKey');
+        $mollie = new \Mollie\Api\MollieApiClient();
+        $mollie->setApiKey($apiKey);
+
+        $formattedAmount = number_format($price, 2, '.', '');
+        $baseUrl = "https://zeeuwsconcertkoor.nl"; //https://{$_SERVER['HTTP_HOST']}";
+
+        $description = "Ticket(s) {$concert->name}";
+        //$redirectUrl = "https://{$_SERVER['HTTP_HOST']}/concert-order/paid/{$order->id}/{$order->secretCode}";
+        $redirectUrl = "https://zeeuwsconcertkoor.nl/concert-order/paid/{$order->id}/{$order->secretCode}";
+
+
+        $payment = $mollie->payments->create([
+            'amount' => [
+                'currency' => 'EUR',
+                'value' => $formattedAmount,
+            ],
+            'description' => $description,
+            'redirectUrl' => $redirectUrl,
+            'webhookUrl' => "{$baseUrl}/api/concert-order/mollieWebhook",
+        ]);
+
+        if (empty($payment->id))
+        {
+            $page = new SimplePage('Fout bij inschrijven', 'Betaling niet gevonden!');
+            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+        }
+
+
+        $order->transactionCode = $payment->id;
+        if (!$order->save())
+        {
+            $page = new SimplePage('Fout bij betaling', 'Kon de betalings-ID niet opslaan!');
+            return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $redirectUrl = $payment->getCheckoutUrl();
+        if ($redirectUrl === null)
+        {
+            User::addNotification('Bedankt voor je bestelling! Helaas lukte het doorsturen naar de betaalpagina niet.');
+            return new RedirectResponse('/');
+        }
+
+        User::addNotification('Bedankt voor de betaling! Het kan even duren voordat deze geregistreerd is.');
+        return new RedirectResponse($redirectUrl);
+    }
+
+    protected function getTicket(QueryBits $queryBits): Response
+    {
+        $orderId = $queryBits->getInt(2);
+        $order = Order::loadFromDatabase($orderId);
+        if ($order === null)
+        {
+            $page = new SimplePage('Fout', 'Bestelling niet gevonden!');
+            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+        }
+
+        $secretCode = $queryBits->getString(3);
+        if (!empty($order->secretCode) && $order->secretCode !== $secretCode)
+        {
+            $page = new SimplePage('Fout', 'Unieke code klopt niet!');
+            return new Response($page->render(), Response::HTTP_FORBIDDEN);
+        }
+
+        if ($order->isPaid === false)
+        {
+            $page = new SimplePage('Fout', 'Bestelling is nog niet betaald!');
+            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+        }
+
+        $text = (string)random_int(1_000_000_000, 9_999_999_999);
+        $size = 60;
+        $orientation = "horizontal";
+        $code_type = BarcodeType::CODE_128;
+        $print = true;
+        $sizefactor = 1.5;
+
+        $barcode = new Barcode($order->secretCode, $size, $orientation, $code_type, $print, $sizefactor);
+        $output = $barcode->getOutput();
+
+        $concert = $order->getConcert();
+
+        $templateVars = [
+            'concert' => $concert,
+            'order' => $order,
+            'rawImage' => base64_encode($output),
+        ];
+
+        $template = new Template();
+        $output = $template->render('Ticketsale/Order/Ticket', $templateVars);
+        return new Response($output);
+    }
+
+    protected function checkInGet(): Response
+    {
+        return $this->checkInPage();
+    }
+
+    protected function checkInPost(RequestParameters $post): Response
+    {
+        $message = 'Onbekende fout!';
+        $isPositive = false;
+        $barcode = $post->getSimpleString('barcode');
+        if (empty($barcode))
+        {
+            $message = 'Lege barcode!';
+        }
+        else
+        {
+            $order = Order::fetch(['secretCode = ?'], [$barcode]);
+            if ($order === null)
+            {
+                $message = 'Geen bestelling gevonden met deze barcode!';
+            }
+            else
+            {
+                $message = 'Barcode is juist!';
+                $isPositive = true;
+            }
+        }
+
+
+        return $this->checkInPage($message, $isPositive);
+    }
+
+    private function checkInPage(?string $message = null, ?bool $isPositive = false): Response
+    {
+        $templateVars = [
+            'message' => $message,
+            'isPositive' => $isPositive,
+        ];
+
+        $template = new Template();
+        $output = $template->render('Ticketsale/Order/CheckIn', $templateVars);
+        return new Response($output);
     }
 }

@@ -23,7 +23,7 @@ use function Safe\json_encode;
 final class Order extends Model
 {
     public const TABLE = 'ticketsale_orders';
-    public const TABLE_FIELDS = ['concertId', 'lastName', 'initials', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'delivery', 'isDelivered', 'hasReservedSeats', 'isPaid', 'deliveryByMember', 'deliveryMemberName', 'addressIsAbroad', 'comments', 'additionalData'];
+    public const TABLE_FIELDS = ['concertId', 'lastName', 'initials', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'delivery', 'isDelivered', 'hasReservedSeats', 'isPaid', 'deliveryByMember', 'deliveryMemberName', 'addressIsAbroad',  'transactionCode', 'secretCode', 'comments', 'additionalData'];
 
     public int $concertId;
     public string $lastName = '';
@@ -41,6 +41,8 @@ final class Order extends Model
     public bool $deliveryByMember;
     public string $deliveryMemberName = '';
     public bool $addressIsAbroad = false;
+    public ?string $transactionCode = null;
+    public ?string $secretCode = null;
     public string $comments = '';
     protected string $additionalData = '';
 
