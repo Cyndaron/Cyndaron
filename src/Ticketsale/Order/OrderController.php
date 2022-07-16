@@ -549,7 +549,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
             );
             return new Response($page->render());
         }
-        if (empty($order->transactionCode) && strtotime($order->modified) > strtotime('-30 minutes'))
+        if (!empty($order->transactionCode) && strtotime($order->modified) > strtotime('-30 minutes'))
         {
             $page = new SimplePage('Betalen', 'Er loopt al een betaling voor deze order. Wacht 30 minuten om het opnieuw te proberen.');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
