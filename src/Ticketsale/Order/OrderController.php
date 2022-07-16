@@ -48,6 +48,8 @@ use function strtotime;
 
 final class OrderController extends Controller
 {
+    private const MAX_SECRET_CODE_RETRIES = 10;
+
     protected array $getRoutes = [
         'afterPayment' => ['level' => UserLevel::ANONYMOUS, 'function' => 'afterPayment'],
         'checkIn' => ['level' => UserLevel::ANONYMOUS, 'function' => 'checkInGet'],
@@ -235,7 +237,6 @@ final class OrderController extends Controller
             {
                 $ott = new OrderTicketTypes();
                 $ott->setTicketType($ticketType);
-                $ott->secretCode = $this->generateSecretCode();
 
                 $orderTicketTypes[] = $ott;
             }
@@ -286,11 +287,20 @@ final class OrderController extends Controller
         $order->deliveryMemberName = $deliveryMemberName;
         $order->addressIsAbroad = $addressIsAbroad;
         $order->comments = $comments;
-        $order->secretCode = $this->generateSecretCode();
         $order->setAdditonalData(['donor' => $donor]);
-        $result = $order->save();
 
-        if ($result === false)
+        $saveResult = false;
+        for ($i = 0; $i < self::MAX_SECRET_CODE_RETRIES; $i++)
+        {
+            $order->secretCode = $this->generateSecretCode();
+            $saveResult = $order->save();
+            if ($saveResult)
+            {
+                break;
+            }
+        }
+
+        if ($saveResult === false)
         {
             throw new InvalidOrder('Opslaan bestelling mislukt!');
         }
@@ -301,8 +311,18 @@ final class OrderController extends Controller
         foreach ($orderTicketTypes as $orderTicketType)
         {
             $orderTicketType->setOrder($order);
-            $result = $orderTicketType->save();
-            if ($result === false)
+            $saveResult = false;
+            for ($i = 0; $i < self::MAX_SECRET_CODE_RETRIES; $i++)
+            {
+                $orderTicketType->secretCode = $this->generateSecretCode();
+                $saveResult = $orderTicketType->save();
+                if ($saveResult)
+                {
+                    break;
+                }
+            }
+
+            if ($saveResult === false)
             {
                 throw new InvalidOrder('Opslaan kaarttypen mislukt!');
             }
