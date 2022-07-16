@@ -44,6 +44,7 @@ use function error_log;
 use const PHP_EOL;
 use const PUB_DIR;
 use const ROOT_DIR;
+use function strtotime;
 
 final class OrderController extends Controller
 {
@@ -294,7 +295,8 @@ final class OrderController extends Controller
             throw new InvalidOrder('Opslaan bestelling mislukt!');
         }
 
-        assert($order->id !== null);
+        /** @var int $orderId */
+        $orderId = $order->id;
 
         foreach ($orderTicketTypes as $orderTicketType)
         {
@@ -308,10 +310,10 @@ final class OrderController extends Controller
 
         if ($reserveSeats === 1)
         {
-            $reservedSeats = $concert->reserveSeats($order->id, $totalNumTickets);
+            $reservedSeats = $concert->reserveSeats($orderId, $totalNumTickets);
             if ($reservedSeats === null)
             {
-                DBConnection::doQuery('UPDATE ticketsale_orders SET hasReservedSeats = 0 WHERE id=?', [$order->id]);
+                DBConnection::doQuery('UPDATE ticketsale_orders SET hasReservedSeats = 0 WHERE id=?', [$orderId]);
                 $totalAmount -= $totalNumTickets * $concert->reservedSeatCharge;
                 $reserveSeats = -1;
             }
@@ -424,7 +426,9 @@ Na betaling zullen uw kaarten ' . $deliveryText . '.' . $reservedSeatsText;
         if ($deliveryType === TicketDelivery::DIGITAL)
         {
             $url = $order->getPaymentLink();
-            $text .= "U kunt betalen via deze link: {$url}
+            $text .= "
+
+U kunt betalen via deze link: {$url}
 
 ";
         }
@@ -537,6 +541,20 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
 
+        if ($order->isPaid)
+        {
+            $page = new SimplePage(
+                'Betalen',
+                'Deze order is al betaald! Check uw e-mail voor de betalingsbevestiging, hierin zitten uw kaartjes.'
+            );
+            return new Response($page->render());
+        }
+        if ($order->transactionCode !== null && strtotime($order->modified) > strtotime('-30 minutes'))
+        {
+            $page = new SimplePage('Betalen', 'Er loopt al een betaling voor deze order. Wacht 30 minuten om het opnieuw te proberen.');
+            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+        }
+
         $concert = $order->getConcert();
         $price = $order->calculatePrice();
 
@@ -554,7 +572,6 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
             $page = new SimplePage('Fout bij inschrijven', 'Betaling niet gevonden!');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
-
 
         $order->transactionCode = $molliePayment->id;
         if (!$order->save())
@@ -636,7 +653,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         if ($order->isPaid === false)
         {
             $page = new SimplePage('Fout', 'Bestelling is nog niet betaald!');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return new Response($page->render(), Response::HTTP_PAYMENT_REQUIRED);
         }
 
         $concert = $order->getConcert();
@@ -749,7 +766,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         return (string)random_int(1_000_000_000, 9_999_999_999);
     }
 
-    protected function afterPayment(QueryBits $queryBits)
+    protected function afterPayment(QueryBits $queryBits): Response
     {
         if ($queryBits->hasIndex(3))
         {

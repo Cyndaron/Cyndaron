@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
+use Cyndaron\DBAL\Model;
 use Cyndaron\Ticketsale\DeliveryCost\FlatFee;
 use Cyndaron\Ticketsale\DeliveryCost\Staffel;
 use Cyndaron\View\Template\ViewHelpers;
@@ -15,6 +16,9 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     public const SAVE_URL = '/editor/concert/%s';
 
     protected string $template = '';
+
+    /** @var Concert|null  */
+    protected ?Model $model = null;
 
     protected function prepare(): void
     {
