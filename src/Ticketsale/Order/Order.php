@@ -12,6 +12,7 @@ use Cyndaron\Ticketsale\TicketDelivery;
 use Cyndaron\Ticketsale\TicketType;
 use Cyndaron\Util\Mail\Mail;
 use Cyndaron\Util\Error\IncompleteData;
+use Cyndaron\Util\Setting;
 use Cyndaron\View\Page;
 use Safe\Exceptions\JsonException;
 use Symfony\Component\Mime\Address;
@@ -63,7 +64,9 @@ final class Order extends Model
 
         DBConnection::doQuery('UPDATE ticketsale_orders SET `isPaid`=1 WHERE id=?', [$this->id]);
 
-        $text = "Hartelijk dank voor uw bestelling bij de Vlissingse Oratorium Vereniging. Wij hebben uw betaling in goede orde ontvangen.\n";
+        $organisation = Setting::get(Setting::ORGANISATION);
+
+        $text = "Hartelijk dank voor uw bestelling bij ' . $organisation . '. Wij hebben uw betaling in goede orde ontvangen.\n";
         $ticketDelivery = $concert->getDelivery();
         if ($ticketDelivery === TicketDelivery::DIGITAL)
         {

@@ -641,7 +641,14 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
 
         foreach ($orders as $order)
         {
-            $order->isPaid = $paidStatus;
+            if ($paidStatus)
+            {
+                $order->setIsPaid();
+            }
+            else
+            {
+                $order->isPaid = false;
+            }
             $savesSucceeded = $savesSucceeded && $order->save();
         }
 
