@@ -67,7 +67,7 @@
                     </div>
                     <div class="form-group form-check">
                         <input id="hasReservedSeats-0" class="recalculateTotal form-check-input" name="hasReservedSeats"
-                               type="radio" value="0"/>
+                               type="radio" value="0" checked/>
                         <label class="form-check-label" for="hasReservedSeats-0">
                             Plaats op Rang 2
                         </label>

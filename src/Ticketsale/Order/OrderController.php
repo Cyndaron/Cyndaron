@@ -755,7 +755,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         {
             $orderId = $queryBits->getInt(2);
             $order = Order::loadFromDatabase($orderId);
-            if ($order !== null)
+            if ($order !== null && $order->isPaid)
             {
                 $secretCode = $queryBits->getString(3);
                 if (!empty($order->secretCode) && $order->secretCode === $secretCode)
