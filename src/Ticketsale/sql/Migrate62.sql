@@ -3,5 +3,6 @@ ALTER TABLE `ticketsale_orders` ADD UNIQUE(`transactionCode`), ADD UNIQUE (`secr
 
 ALTER TABLE `ticketsale_orders_tickettypes` DROP INDEX `bestelling_id`;
 ALTER TABLE `ticketsale_orders_tickettypes` ADD `secretCode` VARCHAR(32) NULL AFTER `amount`, ADD UNIQUE `TOTT_SC_UNIQUE` (`secretCode`);
+ALTER TABLE `ticketsale_orders_tickettypes` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `ticketsale_concerts` ADD `digitalDelivery` BOOLEAN NOT NULL DEFAULT FALSE AFTER `forcedDelivery`;

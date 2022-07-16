@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\Order;
 
-use Cyndaron\Barcode\Barcode;
 use Cyndaron\Barcode\Code128;
-use Cyndaron\Barcode\Orientation;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Payment\Currency;
 use Cyndaron\Payment\Payment;
@@ -27,7 +25,6 @@ use Cyndaron\View\Template\Template;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
 use Mpdf\Output\Destination;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,16 +38,17 @@ use function random_int;
 use function strlen;
 use function strtoupper;
 use function implode;
-use const PHP_EOL;
+use function sprintf;
 use function count;
+use function error_log;
+use const PHP_EOL;
 use const PUB_DIR;
 use const ROOT_DIR;
-use function sprintf;
-use function error_log;
 
 final class OrderController extends Controller
 {
     protected array $getRoutes = [
+        'afterPayment' => ['level' => UserLevel::ANONYMOUS, 'function' => 'afterPayment'],
         'checkIn' => ['level' => UserLevel::ANONYMOUS, 'function' => 'checkInGet'],
         'getTickets' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getTickets'],
         'pay' => ['level' => UserLevel::ANONYMOUS, 'function' => 'pay'],
@@ -423,7 +421,7 @@ final class OrderController extends Controller
         $text = 'Hartelijk dank voor uw bestelling bij ' . $organisation . '.
 Na betaling zullen uw kaarten ' . $deliveryText . '.' . $reservedSeatsText;
 
-        if ($deliveryType !== TicketDelivery::DIGITAL)
+        if ($deliveryType === TicketDelivery::DIGITAL)
         {
             $url = $order->getPaymentLink();
             $text .= "U kunt betalen via deze link: {$url}
@@ -545,8 +543,8 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         $description = "Ticket(s) {$concert->name}";
         $baseUrl = "https://zeeuwsconcertkoor.nl"; //https://{$_SERVER['HTTP_HOST']}";
         $webhookUrl = "{$baseUrl}/api/concert-order/mollieWebhook";
-        //$redirectUrl = "https://{$_SERVER['HTTP_HOST']}/concert-order/paid/{$order->id}/{$order->secretCode}";
-        $redirectUrl = "https://zeeuwsconcertkoor.nl/concert-order/paid/{$order->id}/{$order->secretCode}";
+        //$redirectUrl = "https://{$_SERVER['HTTP_HOST']}/concert-order/afterPayment/{$order->id}/{$order->secretCode}";
+        $redirectUrl = "https://zeeuwsconcertkoor.nl/concert-order/afterPayment/{$order->id}/{$order->secretCode}";
 
         $payment = new Payment($description, $price, Currency::EUR, $redirectUrl, $webhookUrl);
         $molliePayment = $payment->sendToMollie();
@@ -629,9 +627,9 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         }
 
         $secretCode = $queryBits->getString(3);
-        if (!empty($order->secretCode) && $order->secretCode !== $secretCode)
+        if (empty($order->secretCode) || $order->secretCode !== $secretCode)
         {
-            $page = new SimplePage('Fout', 'Unieke code klopt niet!');
+            $page = new SimplePage('Fout', 'Geheime code klopt niet!');
             return new Response($page->render(), Response::HTTP_FORBIDDEN);
         }
 
@@ -749,5 +747,32 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
     private function generateSecretCode(): string
     {
         return (string)random_int(1_000_000_000, 9_999_999_999);
+    }
+
+    protected function afterPayment(QueryBits $queryBits)
+    {
+        if ($queryBits->hasIndex(3))
+        {
+            $orderId = $queryBits->getInt(2);
+            $order = Order::loadFromDatabase($orderId);
+            if ($order !== null)
+            {
+                $secretCode = $queryBits->getString(3);
+                if (!empty($order->secretCode) && $order->secretCode === $secretCode)
+                {
+                    $page = new SimplePage(
+                        'Bestelling verwerkt',
+                        sprintf('Hartelijk dank voor uw betaling.<br><br><a href="%s" role="button" class="btn btn-primary" target="_blank">Tickets ophalen</a>', $order->getLinkToTickets()),
+                    );
+                    return new Response($page->render());
+                }
+            }
+        }
+
+        $page = new SimplePage(
+            'Bestelling verwerkt',
+            'Hartelijk dank voor uw bestelling. Als de betaling is gelukt, ontvangt binnen enkele minuten een e-mail met een link om de kaartjes te downloaden.',
+        );
+        return new Response($page->render());
     }
 }

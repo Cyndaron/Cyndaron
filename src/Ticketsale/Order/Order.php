@@ -67,8 +67,7 @@ final class Order extends Model
         $ticketDelivery = $concert->getDelivery();
         if ($ticketDelivery === TicketDelivery::DIGITAL)
         {
-            $host = "https://{$_SERVER['HTTP_HOST']}";
-            $url = "{$host}/concert-order/getTickets/{$this->id}/{$this->secretCode}";
+            $url = $this->getLinkToTickets();
             $text .= "U kunt hier kaarten hier downloaden: {$url}";
         }
         elseif ($this->delivery || ($concert->forcedDelivery && !$this->deliveryByMember))
@@ -184,5 +183,11 @@ final class Order extends Model
         assert($this->id !== null);
         $host = "https://{$_SERVER['HTTP_HOST']}";
         return "{$host}/concert-order/pay/{$this->id}";
+    }
+
+    public function getLinkToTickets(): string
+    {
+        $host = "https://{$_SERVER['HTTP_HOST']}";
+        return "{$host}/concert-order/getTickets/{$this->id}/{$this->secretCode}";
     }
 }

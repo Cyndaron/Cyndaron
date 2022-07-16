@@ -51,6 +51,6 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
             User::addNotification('Fout bij opslaan concert');
         }
 
-        $this->returnUrl = '/concert/order/' . $this->id;
+        $this->returnUrl = '/concert/order/' . $concert->id;
     }
 }
