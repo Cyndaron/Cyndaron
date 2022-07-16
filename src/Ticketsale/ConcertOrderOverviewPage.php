@@ -11,8 +11,9 @@ final class ConcertOrderOverviewPage extends Page
 {
     private const TICKET_TYPES_QUERY = 'SELECT * FROM `ticketsale_tickettypes` WHERE concertId=? ORDER BY price DESC';
 
-    private const BOUGHT_TICKET_TYPES_QUERY = 'SELECT orderId,tickettypeId,amount
-                    FROM     `ticketsale_orders_tickettypes`';
+    private const BOUGHT_TICKET_TYPES_QUERY = 'SELECT orderId, tickettypeId, SUM(amount) AS amount
+        FROM `ticketsale_orders_tickettypes`
+        GROUP BY orderId,tickettypeId;';
 
     public function __construct(Concert $concert)
     {
