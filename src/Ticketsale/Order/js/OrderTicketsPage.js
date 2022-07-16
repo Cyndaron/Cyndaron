@@ -82,7 +82,7 @@ function checkAddressInfo(delivery, deliveryByMember)
 
 function checkForm()
 {
-    if (!checkGeneralFormFields)
+    if (!checkGeneralFormFields())
     {
         return false;
     }
