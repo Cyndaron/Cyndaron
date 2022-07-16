@@ -484,7 +484,11 @@ Kaartsoorten:
             $text .= PHP_EOL . 'Kaarten bezorgen: ' . ViewHelpers::boolToText($order->delivery);
         }
 
-        $text .= PHP_EOL . 'Gereserveerde plaatsen: ' . ($reserveSeats === 1 ? 'Ja' : 'Nee') . PHP_EOL;
+        if ($concert->hasReservedSeats)
+        {
+            $text .= PHP_EOL . 'Rang: ' . ($reserveSeats === 1 ? '1' : '2') . PHP_EOL;
+        }
+
         $text .= 'Totaalbedrag: ' . ViewHelpers::formatEuro($total) . '
 
 Achternaam: ' . $order->lastName . '
