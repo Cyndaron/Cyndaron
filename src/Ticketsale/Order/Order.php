@@ -178,4 +178,11 @@ final class Order extends Model
     {
         $this->additionalData = json_encode($data);
     }
+
+    public function getPaymentLink(): string
+    {
+        assert($this->id !== null);
+        $host = "https://{$_SERVER['HTTP_HOST']}";
+        return "{$host}/concert-order/pay/{$this->id}";
+    }
 }

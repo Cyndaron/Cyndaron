@@ -88,11 +88,18 @@ final class OrderController extends Controller
     {
         try
         {
-            $this->processOrder($post);
+            $order = $this->processOrder($post);
+            $concert = $order->getConcert();
+            $paymentLinkText = ' en betaalinformatie.';
+            if ($concert->getDelivery() === TicketDelivery::DIGITAL)
+            {
+                $paymentLink = $order->getPaymentLink();
+                $paymentLinkText = sprintf('.<br><br><a href="%s" role="button" class="btn btn-primary btn-lg">Betalen</a>', $paymentLink);
+            }
 
             $page = new SimplePage(
                 'Bestelling verwerkt',
-                'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw bestelling en betaalinformatie.'
+                'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw bestelling' . $paymentLinkText,
             );
             return new Response($page->render());
         }
@@ -180,8 +187,10 @@ final class OrderController extends Controller
     /**
      * @param RequestParameters $post
      * @throws InvalidOrder
+     * @throws \Safe\Exceptions\JsonException
+     * @return Order
      */
-    private function processOrder(RequestParameters $post): void
+    private function processOrder(RequestParameters $post): Order
     {
         if ($post->isEmpty())
         {
@@ -286,8 +295,8 @@ final class OrderController extends Controller
         {
             throw new InvalidOrder('Opslaan bestelling mislukt!');
         }
-        /** @var int $orderId */
-        $orderId = $order->id;
+
+        assert($order->id !== null);
 
         foreach ($orderTicketTypes as $orderTicketType)
         {
@@ -299,85 +308,74 @@ final class OrderController extends Controller
             }
         }
 
-        $reservedSeats = null;
         if ($reserveSeats === 1)
         {
-            $reservedSeats = $concert->reserveSeats($orderId, $totalNumTickets);
+            $reservedSeats = $concert->reserveSeats($order->id, $totalNumTickets);
             if ($reservedSeats === null)
             {
-                DBConnection::doQuery('UPDATE ticketsale_orders SET hasReservedSeats = 0 WHERE id=?', [$orderId]);
+                DBConnection::doQuery('UPDATE ticketsale_orders SET hasReservedSeats = 0 WHERE id=?', [$order->id]);
                 $totalAmount -= $totalNumTickets * $concert->reservedSeatCharge;
                 $reserveSeats = -1;
             }
         }
 
-        $this->sendMail($payForDelivery, $concert, $deliveryByMember, $deliveryMemberName, $reserveSeats, $reservedSeats ?: [], $totalAmount, $orderId, $ticketTypes, $orderTicketTypes, $lastName, $initials, $street, $postcode, $city, $comments, $email);
+        $this->sendMail($order, $concert, $reserveSeats, $totalAmount, $ticketTypes, $orderTicketTypes);
+        return $order;
     }
 
     private function checkForm(bool $forcedDelivery, bool $memberDelivery, RequestParameters $post): array
     {
-        $incorrecteVelden = [];
+        $incorrectFields = [];
         if (strtoupper($post->getAlphaNum('antispam')) !== 'VLISSINGEN')
         {
-            $incorrecteVelden[] = 'Antispam';
+            $incorrectFields[] = 'Antispam';
         }
 
         if ($post->getSimpleString('lastName') === '')
         {
-            $incorrecteVelden[] = 'Achternaam';
+            $incorrectFields[] = 'Achternaam';
         }
 
         if ($post->getInitials('initials') === '')
         {
-            $incorrecteVelden[] = 'Voorletters';
+            $incorrectFields[] = 'Voorletters';
         }
 
         if ($post->getEmail('email') === '')
         {
-            $incorrecteVelden[] = 'E-mailadres';
+            $incorrectFields[] = 'E-mailadres';
         }
 
         if (($forcedDelivery && !$memberDelivery) || (!$forcedDelivery && $post->getBool('delivery')))
         {
             if ($post->getSimpleString('street') === '')
             {
-                $incorrecteVelden[] = 'Straatnaam en huisnummer';
+                $incorrectFields[] = 'Straatnaam en huisnummer';
             }
 
             if ($post->getPostcode('postcode') === '')
             {
-                $incorrecteVelden[] = 'Postcode';
+                $incorrectFields[] = 'Postcode';
             }
 
             if ($post->getSimpleString('city') === '')
             {
-                $incorrecteVelden[] = 'Woonplaats';
+                $incorrectFields[] = 'Woonplaats';
             }
         }
-        return $incorrecteVelden;
+        return $incorrectFields;
     }
 
     /**
-     * @param bool $delivery
+     * @param Order $order
      * @param Concert $concert
-     * @param bool $memberDelivery
-     * @param string $deliveryMemberName
      * @param int $reserveSeats
-     * @param array $reservedSeats
      * @param float $total
-     * @param int $orderId
      * @param TicketType[] $ticketTypes
      * @param OrderTicketTypes[] $orderTicketTypes
-     * @param string $lastName
-     * @param string $initials
-     * @param string $street
-     * @param string $postcode
-     * @param string $city
-     * @param string $comments
-     * @param string $email
      * @return bool
      */
-    private function sendMail(bool $delivery, Concert $concert, bool $memberDelivery, string $deliveryMemberName, int $reserveSeats, array $reservedSeats, float $total, int $orderId, array $ticketTypes, array $orderTicketTypes, string $lastName, string $initials, string $street, string $postcode, string $city, string $comments, string $email): bool
+    private function sendMail(Order $order, Concert $concert, int $reserveSeats, float $total, array $ticketTypes, array $orderTicketTypes): bool
     {
         $orderTicketTypeStats = [];
         foreach ($orderTicketTypes as $orderTicketType)
@@ -396,39 +394,38 @@ final class OrderController extends Controller
         $deliveryType = $concert->getDelivery();
         if ($deliveryType === TicketDelivery::DIGITAL)
         {
-            $opstuurtekst = 'per e-mail aan u opgestuurd worden';
+            $deliveryText = 'per e-mail aan u opgestuurd worden';
         }
-        elseif ($delivery || ($concert->forcedDelivery && !$memberDelivery))
+        elseif ($order->delivery || ($concert->forcedDelivery && !$order->deliveryByMember))
         {
-            $opstuurtekst = 'naar uw adres verstuurd worden';
+            $deliveryText = 'naar uw adres verstuurd worden';
         }
-        elseif ($concert->forcedDelivery && $memberDelivery)
+        elseif ($concert->forcedDelivery && $order->deliveryByMember)
         {
-            $opstuurtekst = 'worden meegegeven aan ' . $deliveryMemberName;
+            $deliveryText = 'worden meegegeven aan ' . $order->deliveryMemberName;
         }
         else
         {
-            $opstuurtekst = 'voor u klaargelegd worden bij de ingang van de kerk';
+            $deliveryText = 'voor u klaargelegd worden bij de ingang van de kerk';
         }
 
-        $voor_u_reserveerde_plaatsen = '';
+        $reservedSeatsText = '';
         /*if ($reserveSeats === 1)
         {
             $numSeats = count($reservedSeats);
-            $voor_u_reserveerde_plaatsen = PHP_EOL . PHP_EOL . "Er zijn {$numSeats} plaatsen voor u gereserveerd.";
+            $reservedSeatsText = PHP_EOL . PHP_EOL . "Er zijn {$numSeats} plaatsen voor u gereserveerd.";
         }
         else*/if ($reserveSeats === -1)
         {
-            $voor_u_reserveerde_plaatsen = PHP_EOL . PHP_EOL . 'Er waren helaas niet voldoende plaatsen op Rang 1. De gerekende toeslag voor is weer van het totaalbedrag afgetrokken.';
+            $reservedSeatsText = PHP_EOL . PHP_EOL . 'Er waren helaas niet voldoende plaatsen op Rang 1. De gerekende toeslag voor is weer van het totaalbedrag afgetrokken.';
         }
 
         $text = 'Hartelijk dank voor uw bestelling bij ' . $organisation . '.
-Na betaling zullen uw kaarten ' . $opstuurtekst . '.' . $voor_u_reserveerde_plaatsen;
+Na betaling zullen uw kaarten ' . $deliveryText . '.' . $reservedSeatsText;
 
         if ($deliveryType !== TicketDelivery::DIGITAL)
         {
-            $host = "https://{$_SERVER['HTTP_HOST']}";
-            $url = "{$host}/concert-order/pay/{$orderId}";
+            $url = $order->getPaymentLink();
             $text .= "U kunt betalen via deze link: {$url}
 
 ";
@@ -440,7 +437,7 @@ Na betaling zullen uw kaarten ' . $opstuurtekst . '.' . $voor_u_reserveerde_plaa
 Gebruik bij het betalen de volgende gegevens:
    Rekeningnummer: NL06INGB0000545925 t.n.v. Vlissingse Oratorium Vereniging
    Bedrag: ' . ViewHelpers::formatEuro($total) . '
-   Onder vermelding van: bestellingsnummer ' . $orderId . '
+   Onder vermelding van: bestellingsnummer ' . $order->id . '
 
 ';
         }
@@ -448,7 +445,7 @@ Gebruik bij het betalen de volgende gegevens:
         $text .= '
 Hieronder volgt een overzicht van uw bestelling.
 
-Bestellingsnummer: ' . $orderId . '
+Bestellingsnummer: ' . $order->id . '
 
 Kaartsoorten:
 ';
@@ -460,22 +457,22 @@ Kaartsoorten:
                 $text .= '   ' . $ticketType->name . ': ' . $numTicketsOfType . ' à ' . ViewHelpers::formatEuro($ticketType->price) . PHP_EOL;
             }
         }
-        if (!$concert->forcedDelivery)
+        if ($deliveryType === TicketDelivery::COLLECT_OR_DELIVER)
         {
-            $text .= PHP_EOL . 'Kaarten bezorgen: ' . ViewHelpers::boolToText($delivery);
+            $text .= PHP_EOL . 'Kaarten bezorgen: ' . ViewHelpers::boolToText($order->delivery);
         }
 
         $text .= PHP_EOL . 'Gereserveerde plaatsen: ' . ($reserveSeats === 1 ? 'Ja' : 'Nee') . PHP_EOL;
         $text .= 'Totaalbedrag: ' . ViewHelpers::formatEuro($total) . '
 
-Achternaam: ' . $lastName . '
-Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
+Achternaam: ' . $order->lastName . '
+Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
 
         $extraFields = [
-            'Straatnaam en huisnummer' => $street,
-            'Postcode' => $postcode,
-            'Woonplaats' => $city,
-            'Opmerkingen' => $comments,
+            'Straatnaam en huisnummer' => $order->street,
+            'Postcode' => $order->postcode,
+            'Woonplaats' => $order->city,
+            'Opmerkingen' => $order->comments,
         ];
 
         foreach ($extraFields as $description => $contents)
@@ -486,7 +483,7 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
             }
         }
 
-        $mail = new Mail(new Address($email), 'Bestelling concertkaarten', $text);
+        $mail = new Mail(new Address($order->email), 'Bestelling concertkaarten', $text);
         return $mail->send();
     }
 
