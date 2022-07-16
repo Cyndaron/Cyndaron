@@ -63,10 +63,11 @@ final class Order extends Model
         assert($concert !== null);
 
         DBConnection::doQuery('UPDATE ticketsale_orders SET `isPaid`=1 WHERE id=?', [$this->id]);
+        $this->isPaid = true;
 
         $organisation = Setting::get(Setting::ORGANISATION);
 
-        $text = "Hartelijk dank voor uw bestelling bij ' . $organisation . '. Wij hebben uw betaling in goede orde ontvangen.\n";
+        $text = "Hartelijk dank voor uw bestelling bij {$organisation}. Wij hebben uw betaling in goede orde ontvangen.\n";
         $ticketDelivery = $concert->getDelivery();
         if ($ticketDelivery === TicketDelivery::DIGITAL)
         {
