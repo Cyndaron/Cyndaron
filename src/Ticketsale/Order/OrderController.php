@@ -4,15 +4,18 @@ declare(strict_types=1);
 namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\Barcode\Barcode;
-use Cyndaron\Barcode\BarcodeType;
+use Cyndaron\Barcode\Code128;
+use Cyndaron\Barcode\Orientation;
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Payment\Currency;
+use Cyndaron\Payment\Payment;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Ticketsale\Concert;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
 use Cyndaron\Ticketsale\InvalidOrder;
-use Cyndaron\Ticketsale\Order\Order;
+use Cyndaron\Ticketsale\TicketDelivery;
 use Cyndaron\Ticketsale\TicketType;
 use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\User;
@@ -23,27 +26,34 @@ use Cyndaron\View\SimplePage;
 use Cyndaron\View\Template\Template;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
+use Mpdf\Output\Destination;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
+use function array_key_exists;
 use function assert;
 use function base64_encode;
-use function ob_get_clean;
-use function ob_start;
+use function file_get_contents;
+use function gmdate;
 use function random_int;
+use function strlen;
 use function strtoupper;
 use function implode;
 use const PHP_EOL;
 use function count;
+use const PUB_DIR;
+use const ROOT_DIR;
+use function sprintf;
+use function error_log;
 
 final class OrderController extends Controller
 {
     protected array $getRoutes = [
         'checkIn' => ['level' => UserLevel::ANONYMOUS, 'function' => 'checkInGet'],
-        'getTicket' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getTicket'],
+        'getTickets' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getTickets'],
         'pay' => ['level' => UserLevel::ANONYMOUS, 'function' => 'pay'],
-        'showBarcode' => ['level' => UserLevel::ANONYMOUS, 'function' => 'showBarcode'],
     ];
 
     protected array $postRoutes = [
@@ -53,13 +63,20 @@ final class OrderController extends Controller
 
     protected array $apiPostRoutes = [
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
+        'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook'],
         'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
         'setIsSent' => ['level' => UserLevel::ADMIN, 'function' => 'setIsSent'],
     ];
 
-    public function checkCSRFToken($token): bool
+    public function checkCSRFToken(string $token): bool
     {
         if ($this->action === 'checkIn')
+        {
+            return true;
+        }
+        // Mollie webhook does not need a CSRF token.
+        // It only notifies us of a status change and it’s up to us to check with them what that status is.
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $this->action === 'mollieWebhook')
         {
             return true;
         }
@@ -88,18 +105,16 @@ final class OrderController extends Controller
 
     /**
      * @param Concert $concert
-     * @param array $ticketTypes
-     * @param OrderTicketType[] $orderTicketTypes
+     * @param OrderTicketTypes[] $orderTicketTypes
      * @param bool $reserveSeats
      * @param bool $wantDelivery
      * @param bool $deliveryByMember
      * @param bool $addressIsAbroad
      * @param int $postcode
-     * @return \Cyndaron\Ticketsale\Order\OrderTotal
+     * @return OrderTotal
      */
     private function calculateTotal(
         Concert $concert,
-        array $ticketTypes,
         array $orderTicketTypes,
         bool $reserveSeats,
         bool $wantDelivery,
@@ -134,18 +149,15 @@ final class OrderController extends Controller
         }
 
         $reservedSeatCharge = $reserveSeats ? $concert->reservedSeatCharge : 0;
-        foreach ($ticketTypes as $ticketType)
-        {
-            assert($ticketType->id !== null);
-            $ott = $orderTicketTypes[$ticketType->id] ?? null;
-            if ($ott === null)
-            {
-                continue;
-            }
 
-            $totalPrice += $ott->amount * $ticketType->price;
-            $totalPrice += $ott->amount * $reservedSeatCharge;
-            $totalNumTickets += $ott->amount;
+        foreach ($orderTicketTypes as $orderTicketType)
+        {
+            // Historic, will always be 1 for new orders.
+            $amount = $orderTicketType->amount;
+            $ticketType = $orderTicketType->getTicketType();
+            $totalPrice += $amount * $ticketType->price;
+            $totalPrice += $amount * $reservedSeatCharge;
+            $totalNumTickets += $amount;
         }
 
         $deliveryCostInterface = $concert->getDeliveryCostInterface();
@@ -203,7 +215,7 @@ final class OrderController extends Controller
             throw new InvalidOrder($message);
         }
 
-        /** @var OrderTicketType[] $orderTicketTypes */
+        /** @var OrderTicketTypes[] $orderTicketTypes */
         $orderTicketTypes = [];
         $tmpOrder = new Order();
         $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concert->id], 'ORDER BY price DESC');
@@ -211,18 +223,20 @@ final class OrderController extends Controller
         {
             assert($ticketType->id !== null);
             $amount = $post->getInt('tickettype-' . $ticketType->id);
-            $ott = new OrderTicketType();
-            $ott->order = $tmpOrder;
-            $ott->amount = $amount;
-            $ott->ticketType = $ticketType;
-            $orderTicketTypes[$ticketType->id] = $ott;
+            for ($i = 0; $i < $amount; $i++)
+            {
+                $ott = new OrderTicketTypes();
+                $ott->setTicketType($ticketType);
+                $ott->secretCode = $this->generateSecretCode();
+
+                $orderTicketTypes[] = $ott;
+            }
         }
 
         $reserveSeats = $post->getInt('hasReservedSeats');
 
         $orderTotal = $this->calculateTotal(
             $concert,
-            $ticketTypes,
             $orderTicketTypes,
             $reserveSeats === 1,
             $post->getBool('bezorgen'),
@@ -264,6 +278,7 @@ final class OrderController extends Controller
         $order->deliveryMemberName = $deliveryMemberName;
         $order->addressIsAbroad = $addressIsAbroad;
         $order->comments = $comments;
+        $order->secretCode = $this->generateSecretCode();
         $order->setAdditonalData(['donor' => $donor]);
         $result = $order->save();
 
@@ -274,20 +289,13 @@ final class OrderController extends Controller
         /** @var int $orderId */
         $orderId = $order->id;
 
-        foreach ($ticketTypes as $ticketType)
+        foreach ($orderTicketTypes as $orderTicketType)
         {
-            $ott = $orderTicketTypes[$ticketType->id] ?? null;
-            $numTicketsOfType = $ott->amount ?? 0;
-            if ($numTicketsOfType > 0)
+            $orderTicketType->setOrder($order);
+            $result = $orderTicketType->save();
+            if ($result === false)
             {
-                $result = DBConnection::doQuery(
-                    'INSERT INTO ticketsale_orders_tickettypes(`orderId`, `tickettypeId`, `amount`) VALUES(?, ?, ?)',
-                    [$orderId, $ticketType->id, $numTicketsOfType]
-                );
-                if ($result === false)
-                {
-                    throw new InvalidOrder('Opslaan kaarttypen mislukt!');
-                }
+                throw new InvalidOrder('Opslaan kaarttypen mislukt!');
             }
         }
 
@@ -359,7 +367,7 @@ final class OrderController extends Controller
      * @param float $total
      * @param int $orderId
      * @param TicketType[] $ticketTypes
-     * @param OrderTicketType[] $orderTicketTypes
+     * @param OrderTicketTypes[] $orderTicketTypes
      * @param string $lastName
      * @param string $initials
      * @param string $street
@@ -371,7 +379,26 @@ final class OrderController extends Controller
      */
     private function sendMail(bool $delivery, Concert $concert, bool $memberDelivery, string $deliveryMemberName, int $reserveSeats, array $reservedSeats, float $total, int $orderId, array $ticketTypes, array $orderTicketTypes, string $lastName, string $initials, string $street, string $postcode, string $city, string $comments, string $email): bool
     {
-        if ($delivery || ($concert->forcedDelivery && !$memberDelivery))
+        $orderTicketTypeStats = [];
+        foreach ($orderTicketTypes as $orderTicketType)
+        {
+            $key = $orderTicketType->tickettypeId;
+            if (!array_key_exists($key, $orderTicketTypeStats))
+            {
+                $orderTicketTypeStats[$key] = 0;
+            }
+
+            $orderTicketTypeStats[$key]++;
+        }
+
+        $organisation = Setting::get(Setting::ORGANISATION);
+
+        $deliveryType = $concert->getDelivery();
+        if ($deliveryType === TicketDelivery::DIGITAL)
+        {
+            $opstuurtekst = 'per e-mail aan u opgestuurd worden';
+        }
+        elseif ($delivery || ($concert->forcedDelivery && !$memberDelivery))
         {
             $opstuurtekst = 'naar uw adres verstuurd worden';
         }
@@ -385,26 +412,40 @@ final class OrderController extends Controller
         }
 
         $voor_u_reserveerde_plaatsen = '';
-        if ($reserveSeats === 1)
+        /*if ($reserveSeats === 1)
         {
             $numSeats = count($reservedSeats);
             $voor_u_reserveerde_plaatsen = PHP_EOL . PHP_EOL . "Er zijn {$numSeats} plaatsen voor u gereserveerd.";
         }
-        elseif ($reserveSeats === -1)
+        else*/if ($reserveSeats === -1)
         {
-            $voor_u_reserveerde_plaatsen = PHP_EOL . PHP_EOL . 'Er waren helaas niet voldoende plaatsen om te reserveren. De gerekende toeslag voor gereserveerde kaarten is weer van het totaalbedrag afgetrokken.';
+            $voor_u_reserveerde_plaatsen = PHP_EOL . PHP_EOL . 'Er waren helaas niet voldoende plaatsen op Rang 1. De gerekende toeslag voor is weer van het totaalbedrag afgetrokken.';
         }
 
-        $text = 'Hartelijk dank voor uw bestelling bij de Vlissingse Oratorium Vereniging.
-Na betaling zullen uw kaarten ' . $opstuurtekst . '.' . $voor_u_reserveerde_plaatsen . '
+        $text = 'Hartelijk dank voor uw bestelling bij ' . $organisation . '.
+Na betaling zullen uw kaarten ' . $opstuurtekst . '.' . $voor_u_reserveerde_plaatsen;
+
+        if ($deliveryType !== TicketDelivery::DIGITAL)
+        {
+            $host = "https://{$_SERVER['HTTP_HOST']}";
+            $url = "{$host}/concert-order/pay/{$orderId}";
+            $text .= "U kunt betalen via deze link: {$url}
+
+";
+        }
+        else
+        {
+            $text .= '
 
 Gebruik bij het betalen de volgende gegevens:
    Rekeningnummer: NL06INGB0000545925 t.n.v. Vlissingse Oratorium Vereniging
    Bedrag: ' . ViewHelpers::formatEuro($total) . '
    Onder vermelding van: bestellingsnummer ' . $orderId . '
 
+';
+        }
 
-
+        $text .= '
 Hieronder volgt een overzicht van uw bestelling.
 
 Bestellingsnummer: ' . $orderId . '
@@ -413,8 +454,7 @@ Kaartsoorten:
 ';
         foreach ($ticketTypes as $ticketType)
         {
-            $ott = $orderTicketTypes[$ticketType->id] ?? null;
-            $numTicketsOfType = $ott->amount ?? 0;
+            $numTicketsOfType = $orderTicketTypeStats[$ticketType->id] ?? 0;
             if ($numTicketsOfType > 0)
             {
                 $text .= '   ' . $ticketType->name . ': ' . $numTicketsOfType . ' à ' . ViewHelpers::formatEuro($ticketType->price) . PHP_EOL;
@@ -492,27 +532,6 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
         return new JsonResponse();
     }
 
-    protected function showBarcode(QueryBits $queryBits): Response
-    {
-        $text = (string)random_int(1_000_000_000, 9_999_999_999);
-        $size = 60;
-        $orientation = "horizontal";
-        $code_type = BarcodeType::CODE_128;
-        $print = true;
-        $sizefactor = 1.5;
-
-        $barcode = new Barcode($text, $size, $orientation, $code_type, $print, $sizefactor);
-        $output = $barcode->getOutput();
-
-        return new Response(
-            $output,
-            Response::HTTP_OK,
-            [
-                'Content-Type' => 'image/png',
-            ]
-        );
-    }
-
     protected function pay(QueryBits $queryBits): Response
     {
         $orderId = $queryBits->getInt(2);
@@ -523,48 +542,33 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
 
-
         $concert = $order->getConcert();
-
         $price = $order->calculatePrice();
 
-        $apiKey = Setting::get('mollieApiKey');
-        $mollie = new \Mollie\Api\MollieApiClient();
-        $mollie->setApiKey($apiKey);
-
-        $formattedAmount = number_format($price, 2, '.', '');
-        $baseUrl = "https://zeeuwsconcertkoor.nl"; //https://{$_SERVER['HTTP_HOST']}";
-
         $description = "Ticket(s) {$concert->name}";
+        $baseUrl = "https://zeeuwsconcertkoor.nl"; //https://{$_SERVER['HTTP_HOST']}";
+        $webhookUrl = "{$baseUrl}/api/concert-order/mollieWebhook";
         //$redirectUrl = "https://{$_SERVER['HTTP_HOST']}/concert-order/paid/{$order->id}/{$order->secretCode}";
         $redirectUrl = "https://zeeuwsconcertkoor.nl/concert-order/paid/{$order->id}/{$order->secretCode}";
 
+        $payment = new Payment($description, $price, Currency::EUR, $redirectUrl, $webhookUrl);
+        $molliePayment = $payment->sendToMollie();
 
-        $payment = $mollie->payments->create([
-            'amount' => [
-                'currency' => 'EUR',
-                'value' => $formattedAmount,
-            ],
-            'description' => $description,
-            'redirectUrl' => $redirectUrl,
-            'webhookUrl' => "{$baseUrl}/api/concert-order/mollieWebhook",
-        ]);
-
-        if (empty($payment->id))
+        if (empty($molliePayment->id))
         {
             $page = new SimplePage('Fout bij inschrijven', 'Betaling niet gevonden!');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
 
 
-        $order->transactionCode = $payment->id;
+        $order->transactionCode = $molliePayment->id;
         if (!$order->save())
         {
             $page = new SimplePage('Fout bij betaling', 'Kon de betalings-ID niet opslaan!');
             return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $redirectUrl = $payment->getCheckoutUrl();
+        $redirectUrl = $molliePayment->getCheckoutUrl();
         if ($redirectUrl === null)
         {
             User::addNotification('Bedankt voor je bestelling! Helaas lukte het doorsturen naar de betaalpagina niet.');
@@ -575,7 +579,49 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
         return new RedirectResponse($redirectUrl);
     }
 
-    protected function getTicket(QueryBits $queryBits): Response
+    public function mollieWebhook(RequestParameters $post): Response
+    {
+        $apiKey = Setting::get('mollieApiKey');
+        $mollie = new \Mollie\Api\MollieApiClient();
+        $mollie->setApiKey($apiKey);
+
+        $id = $post->getUnfilteredString('id');
+        $payment = $mollie->payments->get($id);
+        $orders = Order::fetchAll(['transactionCode = ?'], [$id]);
+
+        if (count($orders) === 0)
+        {
+            $message = sprintf('Poging tot updaten van transactie met id %s mislukt.', $id);
+            $message .= ' Geen orders gevonden.';
+
+            /** @noinspection ForgottenDebugOutputInspection */
+            error_log($message);
+            return new JsonResponse(['error' => 'Could not find payment!'], Response::HTTP_NOT_FOUND);
+        }
+
+        $savesSucceeded = true;
+        $paidStatus = false;
+
+        if ($payment->isPaid() && !$payment->hasRefunds() && !$payment->hasChargebacks())
+        {
+            $paidStatus = true;
+        }
+
+        foreach ($orders as $order)
+        {
+            $order->isPaid = $paidStatus;
+            $savesSucceeded = $savesSucceeded && $order->save();
+        }
+
+        if (!$savesSucceeded)
+        {
+            return new JsonResponse(['error' => 'Could not update payment information for all orders!'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new JsonResponse();
+    }
+
+    protected function getTickets(QueryBits $queryBits): Response
     {
         $orderId = $queryBits->getInt(2);
         $order = Order::loadFromDatabase($orderId);
@@ -598,27 +644,65 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
 
-        $text = (string)random_int(1_000_000_000, 9_999_999_999);
-        $size = 60;
-        $orientation = "horizontal";
-        $code_type = BarcodeType::CODE_128;
-        $print = true;
-        $sizefactor = 1.5;
-
-        $barcode = new Barcode($order->secretCode, $size, $orientation, $code_type, $print, $sizefactor);
-        $output = $barcode->getOutput();
-
         $concert = $order->getConcert();
 
-        $templateVars = [
-            'concert' => $concert,
-            'order' => $order,
-            'rawImage' => base64_encode($output),
-        ];
+        $pdf = new \Mpdf\Mpdf(['tempDir' => ROOT_DIR . '/cache']);
 
-        $template = new Template();
-        $output = $template->render('Ticketsale/Order/Ticket', $templateVars);
-        return new Response($output);
+        $logoFilename = PUB_DIR . Setting::get('logo');
+        $logoSrc = file_get_contents($logoFilename) ?: '';
+        $organisation = Setting::get(Setting::ORGANISATION);
+
+        foreach ($order->getTicketTypes() as $orderTicketType)
+        {
+            if ($orderTicketType->secretCode === null)
+            {
+                throw new \Exception('Geheime code niet aanwezig!');
+            }
+            $barcode = new Code128($orderTicketType->secretCode, 60, true, 1.5);
+            $output = $barcode->getOutput();
+
+            $ticketType = $orderTicketType->getTicketType();
+            $ticketTypeDescription = $ticketType->name;
+            if ($concert->hasReservedSeats)
+            {
+                $ticketTypeDescription .= ($order->hasReservedSeats) ? ', rang 1' : ', rang 2';
+            }
+
+            $templateVars = [
+                'organisation' => $organisation,
+                'concert' => $concert,
+                'order' => $order,
+                'ticketType' => $ticketType,
+                'ticketTypeDescription' => $ticketTypeDescription,
+                'orderTicketType' => $orderTicketType,
+                'rawImage' => base64_encode($output),
+                'rawLogo' => base64_encode($logoSrc),
+            ];
+
+            $template = new Template();
+            $output = $template->render('Ticketsale/Order/Ticket', $templateVars);
+
+            $pdf->AddPage();
+            $pdf->WriteHTML($output);
+        }
+
+        $filename = "Tickets {$concert->name} {$order->initials} {$order->lastName}.pdf";
+        $buffer = $pdf->Output($filename, Destination::STRING_RETURN);
+
+        return new Response(
+            $buffer,
+            Response::HTTP_OK,
+            [
+                'Content-disposition' => 'inline; filename="' . $filename . '"',
+                'Content-Type' => 'application/pdf',
+                'Content-Length' => strlen($buffer),
+                'Cache-Control' => 'public, must-revalidate, max-age=0',
+                'Pragma' => 'public',
+                'X-Generator' => 'mPDF',
+                'Expires' => 'Sat, 26 Jul 1997 05:00:00 GMT',
+                'Last-Modified' => gmdate('D, d M Y H:i:s') . ' GMT',
+            ]
+        );
     }
 
     protected function checkInGet(): Response
@@ -663,5 +747,10 @@ Voorletters: ' . $initials . PHP_EOL . PHP_EOL;
         $template = new Template();
         $output = $template->render('Ticketsale/Order/CheckIn', $templateVars);
         return new Response($output);
+    }
+
+    private function generateSecretCode(): string
+    {
+        return (string)random_int(1_000_000_000, 9_999_999_999);
     }
 }

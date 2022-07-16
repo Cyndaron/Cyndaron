@@ -8,6 +8,7 @@ use Cyndaron\DBAL\Model;
 use Cyndaron\Ticketsale\Concert;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
 use Cyndaron\Ticketsale\DeliveryCost\FlatFee;
+use Cyndaron\Ticketsale\TicketDelivery;
 use Cyndaron\Ticketsale\TicketType;
 use Cyndaron\Util\Mail\Mail;
 use Cyndaron\Util\Error\IncompleteData;
@@ -46,10 +47,8 @@ final class Order extends Model
     public string $comments = '';
     protected string $additionalData = '';
 
+    /** @var OrderTicketTypes[]|null  */
     private ?array $cachedTicketTypes = null;
-
-    /** @var TicketType[] */
-    private static array $ticketTypeCache = [];
 
     public function setIsPaid(): bool
     {
@@ -65,7 +64,14 @@ final class Order extends Model
         DBConnection::doQuery('UPDATE ticketsale_orders SET `isPaid`=1 WHERE id=?', [$this->id]);
 
         $text = "Hartelijk dank voor uw bestelling bij de Vlissingse Oratorium Vereniging. Wij hebben uw betaling in goede orde ontvangen.\n";
-        if ($this->delivery || ($concert->forcedDelivery && !$this->deliveryByMember))
+        $ticketDelivery = $concert->getDelivery();
+        if ($ticketDelivery === TicketDelivery::DIGITAL)
+        {
+            $host = "https://{$_SERVER['HTTP_HOST']}";
+            $url = "{$host}/concert-order/getTickets/{$this->id}/{$this->secretCode}";
+            $text .= "U kunt hier kaarten hier downloaden: {$url}";
+        }
+        elseif ($this->delivery || ($concert->forcedDelivery && !$this->deliveryByMember))
         {
             $text .= 'Uw kaarten zullen zo spoedig mogelijk worden opgestuurd.';
         }
@@ -98,45 +104,23 @@ final class Order extends Model
         return self::fetchAll(['concertId = ?'], [$concert->id]);
     }
 
-    private static function getTicketType(int $ticketTypeId): TicketType
-    {
-        if (!array_key_exists($ticketTypeId, self::$ticketTypeCache))
-        {
-            $ticketType = TicketType::loadFromDatabase($ticketTypeId);
-            assert($ticketType !== null);
-            self::$ticketTypeCache[$ticketTypeId] = $ticketType;
-        }
-
-        return self::$ticketTypeCache[$ticketTypeId];
-    }
-
     /**
-     * @return OrderTicketType[]
+     * @return OrderTicketTypes[]
      */
     public function getTicketTypes(): array
     {
-        if ($this->cachedTicketTypes !== null)
+        if ($this->cachedTicketTypes === null)
         {
-            return $this->cachedTicketTypes;
-        }
-
-        $this->cachedTicketTypes = [];
-        $records = DBConnection::doQueryAndFetchAll('SELECT * FROM `ticketsale_orders_tickettypes` WHERE `orderId` = ?', [$this->id]) ?: [];
-        foreach ($records as $record)
-        {
-            $ticketType = self::getTicketType((int)$record['tickettypeId']);
-
-            $ott = new OrderTicketType();
-            $ott->order = $this;
-            $ott->ticketType = $ticketType;
-            $ott->amount = $record['amount'];
-
-            $this->cachedTicketTypes[] = $ott;
+            $this->cachedTicketTypes = OrderTicketTypes::fetchAll(['orderId = ?'], [$this->id]);
         }
 
         return $this->cachedTicketTypes;
     }
 
+    /**
+     * @param OrderTicketTypes[] $orderTicketTypes
+     * @return void
+     */
     public function setTicketTypes(array $orderTicketTypes): void
     {
         $this->cachedTicketTypes = $orderTicketTypes;
@@ -160,14 +144,15 @@ final class Order extends Model
 
     public function calculatePrice(): float
     {
-        $ticketTypes = $this->getTicketTypes();
+        $orderTicketTypes = $this->getTicketTypes();
         $totalCost = $this->getDeliveryCost()->getCost();
         $reservedSeatCharge = $this->hasReservedSeats ? $this->getConcert()->reservedSeatCharge : 0.00;
 
-        foreach ($ticketTypes as $ticketType)
+        foreach ($orderTicketTypes as $orderTicketType)
         {
-            $totalCost += $ticketType->amount * $ticketType->ticketType->price;
-            $totalCost += $ticketType->amount * $reservedSeatCharge;
+            $ticketType = $orderTicketType->getTicketType();
+            $totalCost += $orderTicketType->amount * $ticketType->price;
+            $totalCost += $orderTicketType->amount * $reservedSeatCharge;
         }
 
         return $totalCost;

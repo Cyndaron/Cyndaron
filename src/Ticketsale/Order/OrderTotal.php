@@ -8,5 +8,6 @@ final class OrderTotal
     public float $amount = 0.00;
     public bool $payForDelivery = false;
     public int $numTickets = 0;
+    /** @var OrderTicketTypes[] */
     public array $ticketTypes = [];
 }

@@ -1,8 +1,8 @@
 <?php
 namespace Cyndaron\Ticketsale\Order;
 
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Ticketsale\Concert;
+use Cyndaron\Ticketsale\TicketType;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Page;
 
@@ -14,7 +14,7 @@ final class OrderTicketsPage extends Page
 
         $concert = new Concert($concertId);
         $concert->load();
-        $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_tickettypes WHERE concertId=? ORDER BY price DESC', [$concert->id]);
+        $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concert->id], 'ORDER BY price DESC');
 
         $this->templateVars['concert'] = $concert;
 

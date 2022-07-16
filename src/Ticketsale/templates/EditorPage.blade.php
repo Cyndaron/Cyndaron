@@ -7,7 +7,11 @@
     </div>
     @include('View/Widget/Form/Checkbox', ['id' => 'openForSales', 'label' => 'Open voor verkoop', 'checked' => (bool)($model->openForSales ?? false)])
 
-    @include('View/Widget/Form/Checkbox', ['id' => 'forcedDelivery', 'label' => 'Bezorgen verplicht', 'checked' => (bool)($model->forcedDelivery ?? false)])
+    @include('View/Widget/Form/Select', ['id' => 'delivery', 'label' => 'Kaartlevering', 'required' => true, 'selected' => $delivery, 'options' => [
+        0 => 'Bij kerk of opsturen',
+        1 => 'Verplicht opsturen',
+        2 => 'Digitaal',
+    ]])
 
     @include('View/Widget/Form/Checkbox', ['id' => 'hasReservedSeats', 'label' => 'Heeft gereserveerde plaatsen', 'checked' => (bool)($model->hasReservedSeats ?? false)])
 

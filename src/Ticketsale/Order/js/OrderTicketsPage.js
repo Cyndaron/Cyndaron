@@ -9,7 +9,7 @@
 
 const concertId = $('#concertId').val();
 let tickettypes;
-let forcedDelivery;
+let deliveryType;
 let addressIsAbroad = false;
 let defaultDeliveryCost;
 let reservedSeatCharge;
@@ -18,7 +18,7 @@ $.ajax('/api/concert/getInfo/' + concertId, {
     dataType: "json"
 }).done(function (json) {
     tickettypes = json.tickettypes;
-    forcedDelivery = json.forcedDelivery;
+    deliveryType = parseInt(json.deliveryType);
     defaultDeliveryCost = json.defaultDeliveryCost;
     reservedSeatCharge = json.reservedSeatCharge;
 });
@@ -65,10 +65,9 @@ function checkNameAndEmail()
     return (lastName.length > 0 && initials.length > 0 && email.length > 0)
 }
 
-function checkAddressInfo(deliveryByMember)
+function checkAddressInfo(delivery, deliveryByMember)
 {
-    if (document.getElementById('bezorgen').checked ||
-        (forcedDelivery && !deliveryByMember))
+    if (addressIsRequired(delivery, deliveryByMember))
     {
         let street = document.getElementById('street').value;
         let postcode = document.getElementById('postcode').value;
@@ -92,8 +91,10 @@ function checkForm()
         return false;
     }
 
-    let deliveryByMember = document.getElementById('deliveryByMember').checked;
-    if (!checkAddressInfo(deliveryByMember))
+    const delivery = document.getElementById('bezorgen').checked;
+    const deliveryByMemberElem = document.getElementById('deliveryByMember');
+    const deliveryByMember = deliveryByMemberElem ? deliveryByMemberElem.checked : false;
+    if (!checkAddressInfo(delivery, deliveryByMember))
     {
         return false;
     }
@@ -127,30 +128,28 @@ function postcodeQualifiesForFreeDelivery(postcode)
 
 function updateAddressRequirement(delivery, deliveryByMember)
 {
-    if (delivery)
+    const isRequired = addressIsRequired(delivery, deliveryByMember);
+    const newText = (isRequired) ? "Uw adresgegevens (verplicht):" : "Uw adresgegevens (niet verplicht):";
+    document.getElementById('adresgegevensKop').innerHTML = newText;
+}
+
+function addressIsRequired(delivery, deliveryByMember)
+{
+    if (deliveryType === 2)
     {
-        document.getElementById('adresgegevensKop').innerHTML =
-            "Uw adresgegevens (verplicht):";
+        return false;
     }
-    if (!forcedDelivery && delivery)
+    else if (deliveryByMember)
     {
-        document.getElementById('adresgegevensKop').innerHTML =
-            "Uw adresgegevens (verplicht):";
+        return false;
     }
-    else if (!forcedDelivery && !delivery)
+    else if (deliveryType === 1)
     {
-        document.getElementById('adresgegevensKop').innerHTML =
-            "Uw adresgegevens (niet verplicht):";
+        return true;
     }
-    else if (forcedDelivery && !deliveryByMember && !addressIsAbroad)
+    else
     {
-        document.getElementById('adresgegevensKop').innerHTML =
-            "Uw adresgegevens (verplicht):";
-    }
-    else if (forcedDelivery && (deliveryByMember || addressIsAbroad))
-    {
-        document.getElementById('adresgegevensKop').innerHTML =
-            "Uw adresgegevens (niet verplicht):";
+        return false;
     }
 }
 
@@ -164,16 +163,26 @@ function updateVisibleTotal(total)
 
 function updateAddressIsAbroadFields()
 {
+    const deliverybyMemberElem = document.getElementById('deliveryByMember');
+
     if (addressIsAbroad)
     {
-        document.getElementById('deliveryByMember').checked = true;
-        document.getElementById('deliveryByMember').disabled = true;
+        if (deliverybyMemberElem)
+        {
+            deliverybyMemberElem.checked = true;
+            deliverybyMemberElem.disabled = true;
+        }
+
 
         $('.postcode-related').css({display: 'none'});
     }
     else
     {
-        document.getElementById('deliveryByMember').disabled = false;
+        if (deliverybyMemberElem)
+        {
+            deliverybyMemberElem.disabled = false;
+        }
+
         $('.postcode-related').css({display: 'flex'});
     }
 }
@@ -205,7 +214,8 @@ function calculateTotal(delivery)
     }
 
     let seatSurCharge = 0.0;
-    if (document.getElementById('hasReservedSeats').checked)
+    const hasReservedElement = document.getElementById('hasReservedSeats-1');
+    if (hasReservedElement && hasReservedElement.checked)
     {
         seatSurCharge = reservedSeatCharge;
     }
@@ -235,7 +245,7 @@ function updateForm()
 
     let delivery = false;
     let deliveryByMember = false;
-    if (forcedDelivery)
+    if (deliveryType === 1)
     {
         let postcode = document.getElementById('postcode').value;
 
@@ -268,7 +278,7 @@ function updateForm()
                 "Uw adresgegevens (niet verplicht):";
         }
     }
-    else
+    else if (deliveryType === 0)
     {
         delivery = document.getElementById('bezorgen').checked;
     }

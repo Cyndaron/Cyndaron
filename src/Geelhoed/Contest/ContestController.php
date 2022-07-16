@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Contest;
 
+use Cyndaron\Payment\Currency;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DBConnection;
@@ -210,24 +211,13 @@ final class ContestController extends Controller
      */
     private function doMollieTransaction(array $contestMembers, string $description, float $price, string $redirectUrl): Response
     {
-        $apiKey = Setting::get('mollieApiKey');
-        $mollie = new \Mollie\Api\MollieApiClient();
-        $mollie->setApiKey($apiKey);
-
-        $formattedAmount = number_format($price, 2, '.', '');
         $baseUrl = "https://{$_SERVER['HTTP_HOST']}";
+        $webhookUrl = "{$baseUrl}/api/contest/mollieWebhook";
 
-        $payment = $mollie->payments->create([
-            'amount' => [
-                'currency' => 'EUR',
-                'value' => $formattedAmount,
-            ],
-            'description' => $description,
-            'redirectUrl' => $redirectUrl,
-            'webhookUrl' => "{$baseUrl}/api/contest/mollieWebhook",
-        ]);
+        $payment = new \Cyndaron\Payment\Payment($description, $price, Currency::EUR, $redirectUrl, $webhookUrl);
+        $molliePayment = $payment->sendToMollie();
 
-        if (empty($payment->id))
+        if (empty($molliePayment->id))
         {
             $page = new SimplePage('Fout bij inschrijven', 'Betaling niet gevonden!');
             return new Response($page->render(), Response::HTTP_NOT_FOUND);
@@ -235,7 +225,7 @@ final class ContestController extends Controller
 
         foreach ($contestMembers as $contestMember)
         {
-            $contestMember->molliePaymentId = $payment->id;
+            $contestMember->molliePaymentId = $molliePayment->id;
             if (!$contestMember->save())
             {
                 $page = new SimplePage('Fout bij inschrijven', 'Kon de betalings-ID niet opslaan!');
@@ -243,7 +233,7 @@ final class ContestController extends Controller
             }
         }
 
-        $redirectUrl = $payment->getCheckoutUrl();
+        $redirectUrl = $molliePayment->getCheckoutUrl();
         if ($redirectUrl === null)
         {
             User::addNotification('Bedankt voor je inschrijving! Helaas lukte het doorsturen naar de betaalpagina niet.');

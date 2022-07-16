@@ -29,13 +29,14 @@
         "illuminate/view": "^8.45",
         "conedevelopment/blade-filters": "^0.8.0",
         "mollie/mollie-api-php": "^2.32",
-        "phpoffice/phpspreadsheet": "^1.18"
+        "phpoffice/phpspreadsheet": "^1.18",
+        "mpdf/mpdf": "^8.1"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
         "thecodingmachine/phpstan-safe-rule": "*",
         "phpstan/phpstan": "*",
-        "friendsofphp/php-cs-fixer": "*",
+        "friendsofphp/php-cs-fixer": "^2.19",
         "phpstan/phpstan-strict-rules": "*"
     },
     "scripts": {

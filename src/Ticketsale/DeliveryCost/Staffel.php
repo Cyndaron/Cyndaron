@@ -5,10 +5,12 @@ namespace Cyndaron\Ticketsale\DeliveryCost;
 
 use Cyndaron\Ticketsale\Concert;
 use Cyndaron\Ticketsale\Order\Order;
+use Cyndaron\Ticketsale\Order\OrderTicketTypes;
 
 final class Staffel implements DeliveryCostInterface
 {
     private Order $order;
+    /** @var OrderTicketTypes[] */
     private array $ticketTypes;
 
     /** @phpstan-ignore-next-line */

@@ -5,11 +5,13 @@ namespace Cyndaron\Ticketsale\DeliveryCost;
 
 use Cyndaron\Ticketsale\Concert;
 use Cyndaron\Ticketsale\Order\Order;
+use Cyndaron\Ticketsale\Order\OrderTicketTypes;
 
 final class FlatFee implements DeliveryCostInterface
 {
     private Concert $concert;
     private Order $order;
+    /** @var OrderTicketTypes[] */
     private array $ticketTypes;
 
     public function __construct(Concert $concert, Order $order, array $ticketTypes)

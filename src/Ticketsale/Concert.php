@@ -14,7 +14,7 @@ use function range;
 final class Concert extends Model
 {
     public const TABLE = 'ticketsale_concerts';
-    public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats', 'deliveryCostInterface'];
+    public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'digitalDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats', 'deliveryCostInterface'];
 
     public string $name = '';
     public bool $openForSales = true;
@@ -22,6 +22,7 @@ final class Concert extends Model
     public string $descriptionWhenClosed = '';
     public float $deliveryCost = 1.50;
     public bool $forcedDelivery = true;
+    public bool $digitalDelivery = false;
     public bool $hasReservedSeats = true;
     public float $reservedSeatCharge = 5.00;
     public bool $reservedSeatsAreSoldOut = false;
@@ -96,5 +97,19 @@ final class Concert extends Model
         }
 
         return FlatFee::class;
+    }
+
+    public function getDelivery(): int
+    {
+        if ($this->digitalDelivery)
+        {
+            return TicketDelivery::DIGITAL;
+        }
+        if ($this->forcedDelivery)
+        {
+            return TicketDelivery::FORCED_PHYSICAL;
+        }
+
+        return TicketDelivery::COLLECT_OR_DELIVER;
     }
 }

@@ -17,7 +17,7 @@
     @else
         <p>{{ $concert->description }}</p>
 
-        <h3>Vrije plaatsen en gereserveerde plaatsen</h3>
+        <h3>Rang 1 en rang 2</h3>
         <p>{{ sprintf(\Cyndaron\Util\Setting::get('ticketsale_reservedSeatsDescription'), $concert->numReservedSeats) }}</p>
 
         <br/>
@@ -31,19 +31,20 @@
                     <th>Prijs per stuk:</th>
                     <th>Aantal:</th>
                 </tr>
-                @foreach ($ticketTypes as $kaartsoort)
+                @php /** @var \Cyndaron\Ticketsale\TicketType[] $ticketTypes */ @endphp
+                @foreach ($ticketTypes as $ticketType)
                     <tr>
-                        <td>{{ $kaartsoort['name'] }}</td>
-                        <td>{{ $kaartsoort['price']|euro }}</td>
+                        <td>{{ $ticketType->name }}</td>
+                        <td>{{ $ticketType->price|euro }}</td>
                         <td>
-                            <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ $kaartsoort['id'] }}" id="tickettype-{{ $kaartsoort['id'] }}" value="0"/>
-                            <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ $kaartsoort['id'] }}"><span class="glyphicon glyphicon-plus"></span></button>
-                            <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ $kaartsoort['id'] }}"><span class="glyphicon glyphicon-minus"></span></button>
+                            <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ $ticketType->id }}" id="tickettype-{{ $ticketType->id }}" value="0"/>
+                            <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ $ticketType->id }}"><span class="glyphicon glyphicon-plus"></span></button>
+                            <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ $ticketType->id }}"><span class="glyphicon glyphicon-minus"></span></button>
                         </td>
                     </tr>
                 @endforeach
             </table>
-            <div @if ($concert->forcedDelivery) style="display:none" @endif>
+            <div @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\TicketDelivery::COLLECT_OR_DELIVER) style="display:none" @endif>
                 <input id="bezorgen" name="bezorgen" type="checkbox" value="1" class="recalculateTotal">
                 <label for="bezorgen">
                     Bezorg mijn kaarten thuis (hiervoor worden extra kosten in rekening gebracht)
@@ -52,24 +53,31 @@
 
             @if ($concert->hasReservedSeats)
                 @if ($concert->reservedSeatsAreSoldOut)
-                    <input id="hasReservedSeats" name="hasReservedSeats" style="display:none;"
-                        type="checkbox" value="1"/>
-                    U kunt voor dit concert nog kaarten voor vrije plaatsen kopen. <b>De gereserveerde plaatsen zijn inmiddels uitverkocht.</b>
+                    <input id="hasReservedSeats-0" name="hasReservedSeats" style="display:none;"
+                        type="checkbox" value="0"/>
+                    U kunt voor dit concert nog kaarten voor Rang 2. <b>De kaarten voor Rang 1 zijn inmiddels uitverkocht.</b>
                 @else
                     <div class="form-group form-check">
-                        <input id="hasReservedSeats" class="recalculateTotal form-check-input" name="hasReservedSeats"
-                               type="checkbox" value="1"/>
-                        <label class="form-check-label" for="hasReservedSeats">
-                            Gereserveerde plaats met stoelnummer in het middenschip van de kerk (meerprijs
+                        <input id="hasReservedSeats-1" class="recalculateTotal form-check-input" name="hasReservedSeats"
+                               type="radio" value="1"/>
+                        <label class="form-check-label" for="hasReservedSeats-1">
+                            Plaats op Rang 1 (meerprijs
                             van {{ $concert->reservedSeatCharge|euro }} per kaart)
+                        </label>
+                    </div>
+                    <div class="form-group form-check">
+                        <input id="hasReservedSeats-0" class="recalculateTotal form-check-input" name="hasReservedSeats"
+                               type="radio" value="0"/>
+                        <label class="form-check-label" for="hasReservedSeats-0">
+                            Plaats op Rang 2
                         </label>
                     </div>
                 @endif
             @else
-                <input id="hasReservedSeats" type="hidden" value="0">
+                <input id="hasReservedSeats-0" name="hasReservedSeats" type="hidden" value="0">
             @endif
 
-            @if ($concert->forcedDelivery)
+            @if ($concert->getDelivery() === \Cyndaron\Ticketsale\TicketDelivery::FORCED_PHYSICAL)
                 <h3>Bezorging</h3>
                 <p>
                     Bij dit concert is het alleen mogelijk om uw kaarten te laten thuisbezorgen. Als u op Walcheren
@@ -154,7 +162,7 @@
                 </label>
             </div>
 
-            <h3 id="adresgegevensKop">Uw adresgegevens (nodig als u de kaarten wilt laten bezorgen):</h3>
+            <h3 id="adresgegevensKop">Uw adresgegevens:</h3>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="street">Straatnaam en huisnummer:</label>
@@ -162,7 +170,7 @@
                                              class="form-control"/></div>
             </div>
 
-            @if (!$concert->forcedDelivery)
+            @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\TicketDelivery::FORCED_PHYSICAL)
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label" for="postcode">Postcode:</label>
                     <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control"/></div>

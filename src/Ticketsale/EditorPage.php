@@ -33,6 +33,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
             '\Cyndaron\Ticketsale\DeliveryCost\FlatFee' => 'Vast bedrag per kaart',
             '\Cyndaron\Ticketsale\DeliveryCost\Staffel' => 'Staffel',
         ];
+        $this->templateVars['delivery'] = $this->model->getDelivery();
         $this->templateVars['deliveryCost'] = ViewHelpers::formatCurrency($this->model->deliveryCost ?? 1.5);
         $this->templateVars['reservedSeatCharge'] = ViewHelpers::formatCurrency($this->model->reservedSeatCharge ?? 5.0);
         $this->templateVars['numFreeSeats'] = $this->model->numFreeSeats ?? 250;

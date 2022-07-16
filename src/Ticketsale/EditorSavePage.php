@@ -17,7 +17,6 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $concert->description = $this->parseTextForInlineImages($post->getHTML('artikel'));
         $concert->descriptionWhenClosed = $this->parseTextForInlineImages($post->getHTML('descriptionWhenClosed'));
         $concert->openForSales = $post->getBool('openForSales');
-        $concert->forcedDelivery = $post->getBool('forcedDelivery');
         $concert->deliveryCost = $post->getFloat('deliveryCost');
         $concert->hasReservedSeats = $post->getBool('hasReservedSeats');
         $concert->reservedSeatCharge = $post->getFloat('reservedSeatCharge');
@@ -25,6 +24,23 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $concert->numFreeSeats = $post->getInt('numFreeSeats');
         $concert->numReservedSeats = $post->getInt('numReservedSeats');
         $concert->deliveryCostInterface = $post->getSimpleString('deliveryCostInterface');
+
+        $delivery = $post->getInt('delivery');
+        if ($delivery === TicketDelivery::COLLECT_OR_DELIVER)
+        {
+            $concert->forcedDelivery = false;
+            $concert->digitalDelivery = false;
+        }
+        elseif ($delivery === TicketDelivery::FORCED_PHYSICAL)
+        {
+            $concert->forcedDelivery = true;
+            $concert->digitalDelivery = false;
+        }
+        elseif ($delivery === TicketDelivery::DIGITAL)
+        {
+            $concert->forcedDelivery = false;
+            $concert->digitalDelivery = true;
+        }
 
         if ($concert->save())
         {
