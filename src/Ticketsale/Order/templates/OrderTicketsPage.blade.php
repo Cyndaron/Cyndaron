@@ -17,8 +17,10 @@
     @else
         <p>{{ $concert->description }}</p>
 
-        <h3>Rang 1 en rang 2</h3>
-        <p>{{ sprintf(\Cyndaron\Util\Setting::get('ticketsale_reservedSeatsDescription'), $concert->numReservedSeats) }}</p>
+        @if ($concert->hasReservedSeats)
+            <h3>Rang 1 en rang 2</h3>
+            <p>{{ sprintf(\Cyndaron\Util\Setting::get('ticketsale_reservedSeatsDescription'), $concert->numReservedSeats) }}</p>
+        @endif
 
         <br/>
         <form method="post" action="/concert-order/add" class="form-horizontal" id="kaartenbestellen">
