@@ -9,11 +9,13 @@
 
     @php /** @var \Cyndaron\Ticketsale\Concert $concert */ @endphp
     @if (!$concert->openForSales)
-        @if ($concert->descriptionWhenClosed)
-            {{ $concert->descriptionWhenClosed }}
-        @else
-            Voor dit concert kunt u kaarten kopen aan de kassa in de St. Jacobskerk voor aanvang van het concert. Bestellen via de website is voor dit concert niet meer mogelijk.
-        @endif
+        <div class="alert-warning">
+            @if ($concert->descriptionWhenClosed)
+                {{ $concert->descriptionWhenClosed }}
+            @else
+                De kaartverkoop voor dit concert is intussen gesloten.
+            @endif
+        </div>
     @else
         <p>{{ $concert->description }}</p>
 
