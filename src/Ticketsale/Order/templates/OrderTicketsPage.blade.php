@@ -11,13 +11,13 @@
     @if (!$concert->openForSales)
         <div class="alert-warning">
             @if ($concert->descriptionWhenClosed)
-                {{ $concert->descriptionWhenClosed }}
+                {!! $concert->descriptionWhenClosed !!}
             @else
                 De kaartverkoop voor dit concert is intussen gesloten.
             @endif
         </div>
     @else
-        <p>{{ $concert->description }}</p>
+        <p>{!! $concert->description !!}</p>
 
         @if ($concert->hasReservedSeats)
             <h3>Rang 1 en rang 2</h3>
