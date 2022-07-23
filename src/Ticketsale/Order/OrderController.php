@@ -292,7 +292,7 @@ final class OrderController extends Controller
         $saveResult = false;
         for ($i = 0; $i < self::MAX_SECRET_CODE_RETRIES; $i++)
         {
-            $order->secretCode = $this->generateSecretCode();
+            $order->secretCode = Util::generateSecretCode();
             $saveResult = $order->save();
             if ($saveResult)
             {
@@ -314,7 +314,7 @@ final class OrderController extends Controller
             $saveResult = false;
             for ($i = 0; $i < self::MAX_SECRET_CODE_RETRIES; $i++)
             {
-                $orderTicketType->secretCode = $this->generateSecretCode();
+                $orderTicketType->secretCode = Util::generateSecretCode();
                 $saveResult = $orderTicketType->save();
                 if ($saveResult)
                 {
@@ -790,11 +790,6 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         $template = new Template();
         $output = $template->render('Ticketsale/Order/CheckIn', $templateVars);
         return new Response($output);
-    }
-
-    private function generateSecretCode(): string
-    {
-        return (string)random_int(1_000_000_000, 9_999_999_999);
     }
 
     protected function afterPayment(QueryBits $queryBits): Response

@@ -1,9 +1,11 @@
+@php /** @var \Cyndaron\Ticketsale\Concert $model */ @endphp
 @extends ('Editor/PageBase')
 
 @section ('contentSpecificButtons')
     <div class="form-group">
         <label for="descriptionWhenClosed">Beschijving indien gesloten:</label>
-        <textarea class="form-control" id="descriptionWhenClosed" name="descriptionWhenClosed" rows="3">{!! $descriptionWhenClosed !!}</textarea>
+        <textarea class="form-control" id="descriptionWhenClosed" name="descriptionWhenClosed"
+                  rows="3">{!! $descriptionWhenClosed !!}</textarea>
     </div>
     @include('View/Widget/Form/Checkbox', ['id' => 'openForSales', 'label' => 'Open voor verkoop', 'checked' => (bool)($model->openForSales ?? false)])
 
@@ -26,5 +28,7 @@
     @include('View/Widget/Form/Number', ['id' => 'numFreeSeats', 'label' => 'Aantal vrije plaatsen', 'value' => $numFreeSeats])
 
     @include('View/Widget/Form/Number', ['id' => 'numReservedSeats', 'label' => 'Aantal gereserveerde plaatsen', 'value' => $numReservedSeats])
+
+    @include('View/Widget/Form/BasicInput', ['id' => 'date', 'type' => 'datetime-local', 'label' => 'Datum', 'value' => $model->date ?? ''])
 
 @endsection

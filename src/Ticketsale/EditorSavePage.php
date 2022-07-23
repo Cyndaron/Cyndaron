@@ -24,6 +24,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $concert->numFreeSeats = $post->getInt('numFreeSeats');
         $concert->numReservedSeats = $post->getInt('numReservedSeats');
         $concert->deliveryCostInterface = $post->getSimpleString('deliveryCostInterface');
+        $concert->date = $post->getSimpleString('date');
 
         $delivery = $post->getInt('delivery');
         if ($delivery === TicketDelivery::COLLECT_OR_DELIVER)
@@ -40,6 +41,11 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         {
             $concert->forcedDelivery = false;
             $concert->digitalDelivery = true;
+        }
+
+        if ($concert->secretCode === '')
+        {
+            $concert->secretCode = Util::generateSecretCode();
         }
 
         if ($concert->save())

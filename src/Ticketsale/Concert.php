@@ -7,6 +7,7 @@ use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Ticketsale\DeliveryCost\FlatFee;
 use Cyndaron\Util\Error\IncompleteData;
+use DateTimeImmutable;
 use Exception;
 use function class_exists;
 use function range;
@@ -14,7 +15,7 @@ use function range;
 final class Concert extends Model
 {
     public const TABLE = 'ticketsale_concerts';
-    public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'digitalDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats', 'deliveryCostInterface'];
+    public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'digitalDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats', 'deliveryCostInterface', 'secretCode', 'date'];
 
     public string $name = '';
     public bool $openForSales = true;
@@ -29,6 +30,8 @@ final class Concert extends Model
     public int $numFreeSeats = 250;
     public int $numReservedSeats = 270;
     public string $deliveryCostInterface = '';
+    public string $secretCode = '';
+    public string $date = '';
 
     /**
      * @param int $orderId
@@ -111,5 +114,10 @@ final class Concert extends Model
         }
 
         return TicketDelivery::COLLECT_OR_DELIVER;
+    }
+
+    public function getDate(): DateTimeImmutable
+    {
+        return DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $this->date);
     }
 }

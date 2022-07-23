@@ -11,6 +11,7 @@
 
     <h1>{{ $concert->name }}</h1>
     <h2>{{ $organisation }}</h2>
+    <h4>{{ $concert->date|dmyHm }}</h4>
 
     Kaartsoort: {{ $ticketTypeDescription }}<br>
     Prijs: {{ $orderTicketType->getPrice()|euro }}<br>
