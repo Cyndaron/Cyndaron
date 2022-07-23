@@ -13,7 +13,7 @@
 @endif
 
 <form method="post">
-    <input id="barbode" type="text" name="barcode" placeholder="barcode">
+    <input id="barcode" type="text" name="barcode" placeholder="barcode">
     <button type="submit">Checken</button>
 </form>
 
