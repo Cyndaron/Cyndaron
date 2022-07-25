@@ -13,6 +13,7 @@ use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use function base64_decode;
 use function count;
 
 final class PhotoalbumController extends Controller
@@ -127,6 +128,13 @@ final class PhotoalbumController extends Controller
             $page = new SimplePage('Fout bij verwijderen foto', 'Geen bestandsnaam opgegeven!');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
+        $filename = base64_decode($filename, true);
+        if ($filename === false)
+        {
+            $page = new SimplePage('Fout bij verwijderen foto', 'Bestandsnaam onjuist gecodeerd!');
+            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+        }
+
         $numDeleted = Photo::deleteByAlbumAndFilename($album, $filename);
         if ($numDeleted === 0)
         {

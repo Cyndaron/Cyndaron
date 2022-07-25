@@ -46,7 +46,7 @@
                 @if ($isAdmin)
                     <br/>
                     @php $captionId = $photo->caption->id ?? 0 @endphp
-                    <form method="post" action="/photoalbum/deletePhoto/{{ $model->id }}/{{ $photo->filename }}">
+                    <form method="post" action="/photoalbum/deletePhoto/{{ $model->id }}/{{ base64_encode($photo->filename) }}">
 
                         <input type="hidden" name="csrfToken" value="{{ $deleteToken }}">
                         <div class="btn-group btn-group-sm">
