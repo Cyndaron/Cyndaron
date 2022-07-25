@@ -47,6 +47,7 @@ final class SystemPage extends Page
     private const SETTINGS = [
         'post_max_size' => ['expected' => '25M'],
         'upload_max_filesize' => ['expected' => '25M'],
+        'max_file_uploads' => ['expected' => '50'],
         'session.cookie_httponly' => ['expected' => 1],
         'session.cookie_secure' => ['expected' => 1],
         'session.use_only_cookies' => ['expected' => 1],
