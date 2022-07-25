@@ -127,7 +127,12 @@ final class PhotoalbumController extends Controller
             $page = new SimplePage('Fout bij verwijderen foto', 'Geen bestandsnaam opgegeven!');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
-        Photo::deleteByAlbumAndFilename($album, $filename);
+        $numDeleted = Photo::deleteByAlbumAndFilename($album, $filename);
+        if ($numDeleted === 0)
+        {
+            $page = new SimplePage('Fout bij verwijderen foto', 'Kon de bestanden niet vinden!');
+            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+        }
 
         return new RedirectResponse("/photoalbum/{$album->id}");
     }

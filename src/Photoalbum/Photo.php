@@ -6,6 +6,7 @@ use Imagick;
 
 use function Safe\copy;
 use function Safe\md5_file;
+use function Safe\unlink;
 use function basename;
 use function move_uploaded_file;
 use function file_exists;
@@ -135,19 +136,27 @@ final class Photo
         $image->setImageOrientation(Imagick::ORIENTATION_TOPLEFT);
     }
 
+    /**
+     * @param Photoalbum $album
+     * @param string $filename
+     * @throws \Safe\Exceptions\FilesystemException If the photo or thumbnail exists, but cannot be removed.
+     * @return int
+     */
     public static function deleteByAlbumAndFilename(Photoalbum $album, string $filename): int
     {
         $numDeleted = 0;
 
         $baseDir = Util::UPLOAD_DIR . "/photoalbums/{$album->id}";
         $mainPhoto = "$baseDir/originals/$filename";
-        if (file_exists($mainPhoto) && Util::deleteFile($mainPhoto))
+        if (file_exists($mainPhoto))
         {
+            unlink($mainPhoto);
             $numDeleted++;
         }
         $thumbnail = "$baseDir/thumbnails/$filename";
-        if (file_exists($thumbnail) && Util::deleteFile($thumbnail))
+        if (file_exists($thumbnail))
         {
+            unlink($thumbnail);
             $numDeleted++;
         }
 
