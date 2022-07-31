@@ -295,6 +295,7 @@ final class OrderController extends Controller
         $order->addressIsAbroad = $addressIsAbroad;
         $order->comments = $comments;
         $order->setAdditonalData(['donor' => $donor]);
+        $order->setAdditonalData(['subscribeToNewsletter' => $post->getBool('subscribeToNewsletter')]);
 
         $saveResult = false;
         for ($i = 0; $i < self::MAX_SECRET_CODE_RETRIES; $i++)

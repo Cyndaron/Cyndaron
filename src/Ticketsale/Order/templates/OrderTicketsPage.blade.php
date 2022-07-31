@@ -153,6 +153,8 @@
                 <div class="col-sm-5"><input id="email" name="email" type="email" class="form-control" required /></div>
             </div>
 
+            @include ('View/Widget/Form/Checkbox', ['id' => 'subscribeToNewsletter', 'description' => 'Ik wil mij graag inschrijven voor de nieuwsbrief'])
+
             <div class="radio">
                 <label for="donor-yes">
                     <input id="donor-yes" name="donor" type="radio" value="1"/>
