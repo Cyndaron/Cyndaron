@@ -19,7 +19,7 @@
     Bestellingsnummer: {{ $order->id }}<br>
     Naam: {{ $order->initials }} {{ $order->lastName }}<br><br>
     <br>
-    <p>{{ $concert->ticketInfo }}</p>
+    <p>{!! $concert->ticketInfo !!}</p>
     <br>
     <img src="data:image/png;base64,{!! $rawImage !!}" alt="{{ $order->secretCode }}">
 
