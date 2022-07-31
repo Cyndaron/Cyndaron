@@ -276,7 +276,6 @@ final class OrderController extends Controller
         $street = $post->getSimpleString('street');
         $postcode = $post->getPostcode('postcode');
         $city = $post->getSimpleString('city');
-        $donor = $post->getBool('donor');
         $comments = $post->getSimpleString('comments');
 
         $order = new Order();
@@ -294,8 +293,10 @@ final class OrderController extends Controller
         $order->deliveryMemberName = $deliveryMemberName;
         $order->addressIsAbroad = $addressIsAbroad;
         $order->comments = $comments;
-        $order->setAdditonalData(['donor' => $donor]);
-        $order->setAdditonalData(['subscribeToNewsletter' => $post->getBool('subscribeToNewsletter')]);
+        $order->setAdditonalData([
+            'donor' => $post->getBool('donor'),
+            'subscribeToNewsletter' => $post->getBool('subscribeToNewsletter')
+        ]);
 
         $saveResult = false;
         for ($i = 0; $i < self::MAX_SECRET_CODE_RETRIES; $i++)
