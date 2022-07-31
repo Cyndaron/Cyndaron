@@ -91,17 +91,24 @@ final class OrderController extends Controller
         {
             $order = $this->processOrder($post);
             $concert = $order->getConcert();
-            $paymentLinkText = ' en betaalinformatie.';
             if ($concert->getDelivery() === TicketDelivery::DIGITAL)
             {
                 $paymentLink = $order->getPaymentLink();
-                $paymentLinkText = sprintf('.<br><br><a href="%s" role="button" class="btn btn-primary btn-lg">Betalen</a>', $paymentLink);
+                $paymentLinkText = sprintf('<br><br><a href="%s" role="button" class="btn btn-primary btn-lg">Naar de betaalomgeving</a>', $paymentLink);
+                $page = new SimplePage(
+                    'Bestelling betalen',
+                    'Hartelijk dank voor uw bestelling. Na betaling zullen wij deze verwerken. U kunt betalen door middel van onderstaande knop.' . $paymentLinkText,
+                );
+            }
+            else
+            {
+                $page = new SimplePage(
+                    'Bestelling verwerkt',
+                    'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw bestelling en betaalinformatie.',
+                );
             }
 
-            $page = new SimplePage(
-                'Bestelling verwerkt',
-                'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw bestelling' . $paymentLinkText,
-            );
+
             return new Response($page->render());
         }
         catch (Exception $e)
