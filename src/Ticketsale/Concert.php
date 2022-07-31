@@ -15,7 +15,7 @@ use function range;
 final class Concert extends Model
 {
     public const TABLE = 'ticketsale_concerts';
-    public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'digitalDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats', 'deliveryCostInterface', 'secretCode', 'date'];
+    public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'digitalDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats', 'deliveryCostInterface', 'secretCode', 'date', 'ticketInfo'];
 
     public string $name = '';
     public bool $openForSales = true;
@@ -32,6 +32,7 @@ final class Concert extends Model
     public string $deliveryCostInterface = '';
     public string $secretCode = '';
     public string $date = '';
+    public string $ticketInfo = '';
 
     /**
      * @param int $orderId
@@ -118,6 +119,11 @@ final class Concert extends Model
 
     public function getDate(): DateTimeImmutable
     {
-        return DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $this->date);
+        $result = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $this->date);
+        if ($result === false)
+        {
+            return new DateTimeImmutable();
+        }
+        return $result;
     }
 }
