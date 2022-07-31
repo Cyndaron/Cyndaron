@@ -121,7 +121,10 @@ final class UserController extends Controller
             throw new Exception('Could not add user!');
         }
 
-        $user->mailNewPassword($password);
+        if ($user->email !== null)
+        {
+            $user->mailNewPassword($password);
+        }
 
         return new JsonResponse(['userId' => $user->id]);
     }
