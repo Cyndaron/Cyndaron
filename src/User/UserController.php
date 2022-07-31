@@ -104,7 +104,7 @@ final class UserController extends Controller
     {
         $user = new User();
         $user->username = $post->getAlphaNum('username');
-        $user->email = $post->getEmail('email');
+        $user->email = $post->getEmail('email') ?: null;
         $user->level = $post->getInt('level');
         $user->firstName = $post->getSimpleString('firstName');
         $user->tussenvoegsel = $post->getTussenvoegsel('tussenvoegsel');
