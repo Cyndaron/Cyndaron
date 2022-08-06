@@ -25,6 +25,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $concert->numReservedSeats = $post->getInt('numReservedSeats');
         $concert->deliveryCostInterface = $post->getSimpleString('deliveryCostInterface');
         $concert->date = $post->getSimpleString('date');
+        $concert->location = $post->getSimpleString('location');
         $concert->ticketInfo = $post->getHTML('ticketInfo');
 
         $delivery = $post->getInt('delivery');

@@ -24,7 +24,7 @@
     <br>
     <img src="data:image/png;base64,{!! $rawImage !!}" alt="{{ $order->secretCode }}">
     <br>
-    <h4>Bewijs van toegang</h4>
+    <h3>Bewijs van toegang</h3>
 
 </div>
 

@@ -31,5 +31,7 @@
 
     @include('View/Widget/Form/BasicInput', ['id' => 'date', 'type' => 'datetime-local', 'label' => 'Datum', 'value' => $model->date ?? ''])
 
+    @include('View/Widget/Form/BasicInput', ['id' => 'date', 'type' => 'text', 'label' => 'Locatie', 'value' => $model->location ?? ''])
+
     @include('View/Widget/Form/Textarea', ['id' => 'ticketInfo', 'label' => 'Informatie op de tickets', 'value' => $model->ticketInfo ?? ''])
 @endsection
