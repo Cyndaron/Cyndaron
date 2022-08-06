@@ -15,7 +15,7 @@ use function range;
 final class Concert extends Model
 {
     public const TABLE = 'ticketsale_concerts';
-    public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'digitalDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats', 'deliveryCostInterface', 'secretCode', 'date', 'ticketInfo'];
+    public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'digitalDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats', 'deliveryCostInterface', 'secretCode', 'date', 'location', 'ticketInfo'];
 
     public string $name = '';
     public bool $openForSales = true;
@@ -32,6 +32,7 @@ final class Concert extends Model
     public string $deliveryCostInterface = '';
     public string $secretCode = '';
     public string $date = '';
+    public string $location = '';
     public string $ticketInfo = '';
 
     /**

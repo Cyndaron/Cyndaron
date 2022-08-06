@@ -468,7 +468,7 @@ U kunt betalen via deze link: {$url}
 Gebruik bij het betalen de volgende gegevens:
    Rekeningnummer: NL06INGB0000545925 t.n.v. Vlissingse Oratorium Vereniging
    Bedrag: ' . ViewHelpers::formatEuro($total) . '
-   Onder vermelding van: bestellingsnummer ' . $order->id . '
+   Onder vermelding van: bestelnummer ' . $order->id . '
 
 ';
         }
@@ -476,7 +476,7 @@ Gebruik bij het betalen de volgende gegevens:
         $text .= '
 Hieronder volgt een overzicht van uw bestelling.
 
-Bestellingsnummer: ' . $order->id . '
+Bestelnummer: ' . $order->id . '
 
 Kaartsoorten:
 ';

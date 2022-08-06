@@ -12,16 +12,19 @@
     <h1>{{ $concert->name }}</h1>
     <h2>{{ $organisation }}</h2>
     <h4>{{ $concert->date|dmyHm }}</h4>
+    <h4>{{ $concert->location }}</h4>
 
     Kaartsoort: {{ $ticketTypeDescription }}<br>
     Prijs: {{ $orderTicketType->getPrice()|euro }}<br>
     <br>
-    Bestellingsnummer: {{ $order->id }}<br>
+    Bestelnummer: {{ $order->id }}<br>
     Naam: {{ $order->initials }} {{ $order->lastName }}<br><br>
     <br>
     <p>{!! $concert->ticketInfo !!}</p>
     <br>
     <img src="data:image/png;base64,{!! $rawImage !!}" alt="{{ $order->secretCode }}">
+    <br>
+    <h4>Bewijs van toegang</h4>
 
 </div>
 

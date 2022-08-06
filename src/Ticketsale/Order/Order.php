@@ -72,7 +72,7 @@ final class Order extends Model
         if ($ticketDelivery === TicketDelivery::DIGITAL)
         {
             $url = $this->getLinkToTickets();
-            $text .= "U kunt hier kaarten hier downloaden: {$url}";
+            $text .= "U kunt uw kaarten hier downloaden: {$url}";
         }
         elseif ($this->delivery || ($concert->forcedDelivery && !$this->deliveryByMember))
         {

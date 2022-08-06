@@ -14,7 +14,7 @@
         <thead>
             <tr class="rotate">
                 <th class="rotate">
-                    <div><span>Bestellingsnummer</span></div>
+                    <div><span>Bestelnummer</span></div>
                 </th>
                 <th class="rotate">
                     <div><span>Achternaam</span></div>
