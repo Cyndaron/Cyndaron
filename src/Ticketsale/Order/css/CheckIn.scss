@@ -3,11 +3,41 @@ html, body
     font-family: system-ui, -apple-system, sans-serif;
 }
 
-.message-positive, .message-negative
+#start-scan
 {
-    margin: 10px;
+    display: block;
+    width: 100%;
+    font-size: 200%;
+    margin-bottom: 10px;
+}
+
+#barcode
+{
+    display: block;
+    font-size: 150%;
+    width: 98%;
+    margin-bottom: 10px;
+}
+
+.message
+{
+    margin: 0 0 10px 0;
     padding: 10px;
     border-radius: 2px;
+
+    .close
+    {
+        float: right;
+        height: 20px;
+        width: 20px;
+        background-color: white;
+        border-radius: 10px;
+        text-align: center;
+
+        a {
+            text-decoration: none;
+        }
+    }
 }
 
 .message-positive

@@ -834,7 +834,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
     private function checkInPage(Concert $concert, ?string $message = null, ?bool $isPositive = false): Response
     {
         $templateVars = [
-            'concertName' => $concert->name,
+            'concert' => $concert,
             'message' => $message,
             'isPositive' => $isPositive,
             'nonce' => \Cyndaron\Routing\Router::getScriptNonce(),
