@@ -5,7 +5,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Scannen</title>
+    <title>Scannen {{ $concert->name }}</title>
     <link href="/src/Ticketsale/Order/css/CheckIn.css" type="text/css" rel="stylesheet" />
 </head>
 <body>
