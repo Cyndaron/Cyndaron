@@ -117,7 +117,7 @@
                 <div class="form-group row postcode-related">
                     <label class="col-sm-3 col-form-label" for="postcode">Postcode (verplicht):</label>
                     <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control form-control-inline"
-                                                 maxlength="7"/></div>
+                                                 maxlength="7" autocomplete="postal-code"/></div>
                 </div>
 
                 <div id="deliveryByMember_div" style="display:none;">
@@ -140,17 +140,17 @@
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="lastName">Achternaam:</label>
-                <div class="col-sm-5"><input id="lastName" name="lastName" class="form-control" required /></div>
+                <div class="col-sm-5"><input id="lastName" name="lastName" class="form-control" autocomplete="family-name" required /></div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="initials">Voorletters:</label>
-                <div class="col-sm-5"><input id="initials" name="initials" class="form-control" required /></div>
+                <div class="col-sm-5"><input id="initials" name="initials" class="form-control" autocomplete="off" required /></div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="email">E-mailadres:</label>
-                <div class="col-sm-5"><input id="email" name="email" type="email" class="form-control" required /></div>
+                <div class="col-sm-5"><input id="email" name="email" type="email" class="form-control" autocomplete="email" required /></div>
             </div>
 
             @include ('View/Widget/Form/Checkbox', ['id' => 'subscribeToNewsletter', 'description' => 'Ik wil mij graag inschrijven voor de nieuwsbrief'])
@@ -179,7 +179,7 @@
             @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\TicketDelivery::FORCED_PHYSICAL)
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label" for="postcode">Postcode:</label>
-                    <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control"/></div>
+                    <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control" autocomplete="postal-code"/></div>
                 </div>
             @endif
 
