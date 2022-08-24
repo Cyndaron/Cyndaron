@@ -10,13 +10,14 @@ use function assert;
 final class OrderTicketTypes extends Model
 {
     public const TABLE = 'ticketsale_orders_tickettypes';
-    public const TABLE_FIELDS = ['orderId', 'tickettypeId','amount', 'secretCode'];
+    public const TABLE_FIELDS = ['orderId', 'tickettypeId','amount', 'secretCode', 'hasBeenScanned'];
 
     public int $orderId;
     public int $tickettypeId;
     /** @deprecated  */
     public int $amount = 1;
     public ?string $secretCode;
+    public bool $hasBeenScanned = false;
 
     private ?Order $order = null;
     private ?TicketType $ticketType = null;

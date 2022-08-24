@@ -1,0 +1,23 @@
+html, body
+{
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.message-positive, .message-negative
+{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 2px;
+}
+
+.message-positive
+{
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.message-negative
+{
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}

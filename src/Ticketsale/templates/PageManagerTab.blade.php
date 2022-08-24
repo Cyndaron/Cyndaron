@@ -13,13 +13,15 @@
         </tr>
     </thead>
     <tbody>
+        @php /** @var \Cyndaron\Ticketsale\Concert[] $concerts */ @endphp
         @foreach ($concerts as $concert)
         <tr>
             <td>{{ $concert->id }}</td>
             <td>
                 {{ $concert->name }}
                 (<a href="/concert/order/{{ $concert->id }}">bestelpagina</a>,
-                <a href="/concert/viewOrders/{{ $concert->id }}">overzicht bestellingen</a>)
+                <a href="/concert/viewOrders/{{ $concert->id }}">overzicht bestellingen</a>,
+                <a href="/concert-order/checkIn/{{ $concert->id }}/{{ $concert->secretCode }}">incheckpagina</a>)
             </td>
             <td>
                 <div class="btn-group">

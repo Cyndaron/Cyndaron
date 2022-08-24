@@ -10,3 +10,5 @@ ALTER TABLE `ticketsale_concerts` ADD `secretCode` VARCHAR(32) NOT NULL AFTER `d
 ALTER TABLE `ticketsale_concerts` ADD `date` TIMESTAMP NOT NULL AFTER `secretCode`;
 ALTER TABLE `ticketsale_concerts` ADD `ticketInfo` TEXT NOT NULL AFTER `date`;
 ALTER TABLE `ticketsale_concerts` ADD `location` VARCHAR(255) NOT NULL AFTER `date`;
+
+ALTER TABLE `ticketsale_orders_tickettypes` ADD `hasBeenScanned` BOOLEAN NOT NULL DEFAULT FALSE AFTER `secretCode`;

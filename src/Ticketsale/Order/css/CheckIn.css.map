@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,UACA;EACI,WAAW,EAAE,oCAAoC;;AAGrD,oCACA;EACI,MAAM,EAAE,IAAI;EACZ,OAAO,EAAE,IAAI;EACb,aAAa,EAAE,GAAG;;AAGtB,iBACA;EACI,gBAAgB,EAAE,OAAO;EACzB,YAAY,EAAE,OAAO;;AAGzB,iBACA;EACI,gBAAgB,EAAE,OAAO;EACzB,YAAY,EAAE,OAAO",
+"sources": ["CheckIn.scss"],
+"names": [],
+"file": "CheckIn.css"
+}

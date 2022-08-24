@@ -34,6 +34,7 @@ use function assert;
 use function base64_encode;
 use function file_get_contents;
 use function gmdate;
+use function preg_replace;
 use function random_int;
 use function strlen;
 use function strtoupper;
@@ -757,47 +758,90 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         );
     }
 
-    protected function checkInGet(): Response
+    protected function checkInGet(QueryBits $queryBits): Response
     {
-        return $this->checkInPage();
+        $concertId = $queryBits->getInt(2);
+        $concert = Concert::loadFromDatabase($concertId);
+        if ($concert === null)
+        {
+            throw new \Exception('Concert niet gevonden!');
+        }
+        $secretCode = $queryBits->getString(3);
+        if ($secretCode !== $concert->secretCode)
+        {
+            throw new \Exception('Geheime code klopt niet!');
+        }
+
+        return $this->checkInPage($concert);
     }
 
-    protected function checkInPost(RequestParameters $post): Response
+    private function checkScannedBarcode(RequestParameters $post, Concert $concert): array
     {
-        $message = 'Onbekende fout!';
-        $isPositive = false;
         $barcode = $post->getSimpleString('barcode');
+        $barcode = preg_replace('/[^0-9]+/', '', $barcode);
         if (empty($barcode))
         {
-            $message = 'Lege barcode!';
+            return [false, 'Lege barcode!'];
         }
-        else
+
+        $ticket = OrderTicketTypes::fetch(['secretCode = ?'], [$barcode]);
+        if ($ticket === null)
         {
-            $order = Order::fetch(['secretCode = ?'], [$barcode]);
-            if ($order === null)
-            {
-                $message = 'Geen bestelling gevonden met deze barcode!';
-            }
-            else
-            {
-                $message = 'Barcode is juist!';
-                $isPositive = true;
-            }
+            return [false, 'Geen kaartje gevonden met deze barcode!'];
         }
 
+        $order = $ticket->getOrder();
+        if (!$order->isPaid)
+        {
+            return [false, 'Bestelling is niet betaald!'];
+        }
 
-        return $this->checkInPage($message, $isPositive);
+        if ($order->getConcert()->id !== $concert->id)
+        {
+            return [false, 'Dit kaartje is voor een ander concert!'];
+        }
+
+        if ($ticket->hasBeenScanned)
+        {
+            return [false, 'Dit kaartje is al gescand!'];
+        }
+
+        $ticket->hasBeenScanned = true;
+        $ticket->save();
+
+        return [true, 'Barcode is juist!'];
     }
 
-    private function checkInPage(?string $message = null, ?bool $isPositive = false): Response
+    protected function checkInPost(QueryBits $queryBits, RequestParameters $post): Response
+    {
+        $concertId = $queryBits->getInt(2);
+        $concert = Concert::loadFromDatabase($concertId);
+        if ($concert === null)
+        {
+            throw new \Exception('Concert niet gevonden!');
+        }
+        $secretCode = $queryBits->getString(3);
+        if ($secretCode !== $concert->secretCode)
+        {
+            throw new \Exception('Geheime code klopt niet!');
+        }
+
+        [$isCorrect, $message] = $this->checkScannedBarcode($post, $concert);
+
+        return $this->checkInPage($concert, $message, $isCorrect);
+    }
+
+    private function checkInPage(Concert $concert, ?string $message = null, ?bool $isPositive = false): Response
     {
         $templateVars = [
+            'concertName' => $concert->name,
             'message' => $message,
             'isPositive' => $isPositive,
+            'nonce' => \Cyndaron\Routing\Router::getScriptNonce(),
         ];
 
         $template = new Template();
-        $output = $template->render('Ticketsale/Order/CheckIn', $templateVars);
+        $output = $template->render('Ticketsale/Order/CheckInPage', $templateVars);
         return new Response($output);
     }
 
