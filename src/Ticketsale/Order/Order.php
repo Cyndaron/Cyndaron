@@ -112,8 +112,7 @@ final class Order extends Model
      */
     public function getTicketTypes(): array
     {
-        if ($this->cachedTicketTypes === null)
-        {
+        if ($this->cachedTicketTypes === null) {
             $this->cachedTicketTypes = OrderTicketTypes::fetchAll(['orderId = ?'], [$this->id]);
         }
 
@@ -193,5 +192,14 @@ final class Order extends Model
     {
         $host = "https://{$_SERVER['HTTP_HOST']}";
         return "{$host}/concert-order/getTickets/{$this->id}/{$this->secretCode}";
+    }
+
+    /**
+     * @param Concert $concert
+     * @return self[]
+     */
+    public static function loadByConcert(Concert $concert): array
+    {
+        return self::fetchAll(['concertId = ?'], [$concert->id], 'ORDER BY id');
     }
 }

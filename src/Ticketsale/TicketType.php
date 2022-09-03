@@ -13,4 +13,13 @@ final class TicketType extends Model
     public int $concertId;
     public string $name = '';
     public float $price = 0.00;
+
+    /**
+     * @param Concert $concert
+     * @return self[]
+     */
+    public static function loadByConcert(Concert $concert): array
+    {
+        return self::fetchAll(['concertId = ?'], [$concert->id], 'ORDER BY id');
+    }
 }
