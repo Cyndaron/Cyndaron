@@ -32,8 +32,10 @@ use Symfony\Component\Mime\Address;
 use function array_key_exists;
 use function assert;
 use function base64_encode;
+use function file_exists;
 use function file_get_contents;
 use function gmdate;
+use function is_file;
 use function preg_replace;
 use function random_int;
 use function strlen;
@@ -701,7 +703,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         $pdf = new \Mpdf\Mpdf(['tempDir' => ROOT_DIR . '/cache']);
 
         $logoFilename = PUB_DIR . Setting::get('logo');
-        $logoSrc = file_get_contents($logoFilename) ?: '';
+        $logoSrc = is_file($logoFilename) ? file_get_contents($logoFilename) : '';
         $organisation = Setting::get(Setting::ORGANISATION);
 
         foreach ($order->getTicketTypes() as $orderTicketType)
