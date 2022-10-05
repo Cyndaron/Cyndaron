@@ -593,10 +593,9 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         $price = $order->calculatePrice();
 
         $description = "Ticket(s) {$concert->name}";
-        $baseUrl = "https://zeeuwsconcertkoor.nl"; //https://{$_SERVER['HTTP_HOST']}";
+        $baseUrl = "https://{$_SERVER['HTTP_HOST']}";
         $webhookUrl = "{$baseUrl}/api/concert-order/mollieWebhook";
-        //$redirectUrl = "https://{$_SERVER['HTTP_HOST']}/concert-order/afterPayment/{$order->id}/{$order->secretCode}";
-        $redirectUrl = "https://zeeuwsconcertkoor.nl/concert-order/afterPayment/{$order->id}/{$order->secretCode}";
+        $redirectUrl = "https://{$_SERVER['HTTP_HOST']}/concert-order/afterPayment/{$order->id}/{$order->secretCode}";
 
         $payment = new Payment($description, $price, Currency::EUR, $redirectUrl, $webhookUrl);
         $molliePayment = $payment->sendToMollie();
