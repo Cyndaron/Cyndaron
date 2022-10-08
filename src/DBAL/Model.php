@@ -231,8 +231,16 @@ abstract class Model
 
             foreach (static::TABLE_FIELDS as $tableField)
             {
-                $setStrings[] = $tableField . '=?';
-                $arguments[] = $this->mangleVar($this->$tableField);
+                $mangledField = $this->mangleVar($this->$tableField);
+                if ($mangledField !== null)
+                {
+                    $setStrings[] = $tableField . '=?';
+                    $arguments[] = $mangledField;
+                }
+                else
+                {
+                    $setStrings[] = $tableField . '= NULL';
+                }
             }
 
             $arguments[] = $this->id;
