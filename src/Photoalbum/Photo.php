@@ -8,6 +8,7 @@ use Safe\Exceptions\PcreException;
 use function Safe\copy;
 use function Safe\md5_file;
 use function Safe\preg_match;
+use function Safe\unlink;
 use function basename;
 use function count;
 use function move_uploaded_file;
