@@ -43,6 +43,12 @@
         "friendsofphp/php-cs-fixer": "*",
         "phpstan/phpstan-strict-rules": "*"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Cyndaron/safe"
+        }
+    ],
     "extra": {
         "patches": {
             "illuminate/view": {
