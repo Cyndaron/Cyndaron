@@ -112,7 +112,8 @@ final class Order extends Model
      */
     public function getTicketTypes(): array
     {
-        if ($this->cachedTicketTypes === null) {
+        if ($this->cachedTicketTypes === null)
+        {
             $this->cachedTicketTypes = OrderTicketTypes::fetchAll(['orderId = ?'], [$this->id]);
         }
 

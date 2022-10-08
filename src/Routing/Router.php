@@ -228,7 +228,6 @@ final class Router implements HttpKernelInterface
 
     private function getCSPHeader(): string
     {
-
         // Unfortunately, CKeditor still needs inline scripting. Only allow this on editor pages,
         // in order to prevent degrading the security of the rest of the system.
         if ($this->requestVars[0] === 'editor' || ($this->requestVars[0] === 'newsletter' && $this->requestVars[1] === 'compose'))

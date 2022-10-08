@@ -26,6 +26,7 @@ use function count;
 use function is_bool;
 use function ord;
 use function property_exists;
+use function in_array;
 
 final class ConcertController extends Controller
 {

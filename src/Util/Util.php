@@ -119,7 +119,6 @@ class Util
             default:
                 $date = "$nextYear-01-01";
                 break;
-
         }
 
         /** @var DateTimeImmutable $retVal */
