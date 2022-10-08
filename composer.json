@@ -33,14 +33,14 @@
         "conedevelopment/blade-filters": "*",
         "mollie/mollie-api-php": "^2.32",
         "phpoffice/phpspreadsheet": "^1.18",
-        "mpdf/mpdf": "^8.1",
+        "mpdf/mpdf": "*",
         "cweagans/composer-patches": "^1.7"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
         "thecodingmachine/phpstan-safe-rule": "*",
         "phpstan/phpstan": "*",
-        "friendsofphp/php-cs-fixer": "^2.19",
+        "friendsofphp/php-cs-fixer": "*",
         "phpstan/phpstan-strict-rules": "*"
     },
     "extra": {
