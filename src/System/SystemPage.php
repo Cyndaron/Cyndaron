@@ -52,6 +52,8 @@ final class SystemPage extends Page
         'session.cookie_secure' => ['expected' => 1],
         'session.use_only_cookies' => ['expected' => 1],
         'session.use_strict_mode' => ['expected' => 1],
+        'session.cookie_samesite' => ['expected' => 1],
+        'memory_limit' => ['expected' => '96M of meer'],
     ];
     public function __construct(string $currentPage)
     {
