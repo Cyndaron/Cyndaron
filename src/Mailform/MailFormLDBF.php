@@ -20,6 +20,8 @@ final class MailFormLDBF
         'bvoornamen',
         'bachternaam',
         'bwoonadres',
+        'geboortedag',
+        'geboortemaand',
         'geboortejaar',
         'studie',
         'lessen',
