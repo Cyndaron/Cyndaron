@@ -40,7 +40,7 @@
     </tbody>
 </table>
 
-@component('View/Widget/Modal', ['id' => 'pm-edit-dialog', 'title' => 'Wedstrijd toevoegen/bewerken', 'sizeClass' => 'modal-lg'])
+@component('View/Widget/Modal', ['id' => 'pm-edit-dialog', 'title' => 'Speciale link toevoegen/bewerken', 'sizeClass' => 'modal-lg'])
     @slot('body')
         <input type="hidden" id="pm-edit-id" value="">
 
