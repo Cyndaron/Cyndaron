@@ -63,8 +63,6 @@ final class WebBootstrapper
         ini_set('session.use_strict_mode', '1');
         // Ensure SameSite attribute is set on all cookies.
         ini_set('session.cookie_samesite', '1');
-        // Moved from DBConnection. TODO: check if really needed.
-        ini_set('memory_limit', '96M');
     }
 
     private function registerAutoloaders(): void
