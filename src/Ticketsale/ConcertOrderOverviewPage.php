@@ -19,14 +19,29 @@ final class ConcertOrderOverviewPage extends Page
     {
         $ticketTypes = DBConnection::doQueryAndFetchAll(self::TICKET_TYPES_QUERY, [$concert->id]);
         $ticketTypesByOrder = $this->getTicketTypesPerOrder($concert);
+        $orders = Order::fetchByConcert($concert);
+        $totals = [];
+        foreach ($ticketTypesByOrder as $ticketTypesForOneOrder)
+        {
+            foreach ($ticketTypesForOneOrder as $ticketType => $amount)
+            {
+                if (!\array_key_exists($ticketType, $totals))
+                {
+                    $totals[$ticketType] = 0;
+                }
+                $totals[$ticketType] += $amount;
+            }
+        }
+
         parent::__construct('Overzicht bestellingen: ' . $concert->name);
         $this->addScript('/src/Ticketsale/js/ConcertOrderOverviewPage.js');
         $this->addCss('/src/Ticketsale/css/Ticketsale.min.css');
         $this->addTemplateVars([
             'ticketTypes' => $ticketTypes,
             'concert' => $concert,
-            'orders' => Order::fetchByConcert($concert),
+            'orders' => $orders,
             'ticketTypesByOrder' => $ticketTypesByOrder,
+            'totals' => $totals,
         ]);
     }
 

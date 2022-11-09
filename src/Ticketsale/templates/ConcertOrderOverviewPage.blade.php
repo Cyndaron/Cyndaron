@@ -85,10 +85,10 @@
                     </td>
                     <td>{{ $order->comments }}</td>
 
-                    @foreach ($ticketTypes as $ticketTypeId)
+                    @foreach ($ticketTypes as $ticketType)
                         <td>
-                        @if (\array_key_exists($order->id, $ticketTypesByOrder) && \array_key_exists($ticketTypeId['id'], $ticketTypesByOrder[$order->id]))
-                            <b>{{ $ticketTypesByOrder[$order->id][$ticketTypeId['id']] }}</b>
+                        @if (\array_key_exists($order->id, $ticketTypesByOrder) && \array_key_exists($ticketType['id'], $ticketTypesByOrder[$order->id]))
+                            <b>{{ $ticketTypesByOrder[$order->id][$ticketType['id']] }}</b>
                         @else
                             &nbsp;
                         @endif
@@ -140,6 +140,23 @@
                          </div>
                     </td>
                 </tr>
+            @endforeach
+        </tbody>
+    </table>
+    <h2>Totalen</h2>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Aantal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($ticketTypes as $ticketType)
+            <tr>
+                <td>{{ $ticketType['name'] }}</td>
+                <td>{{ $totals[$ticketType['id']] ?? 0 }}</td>
+            </tr>
             @endforeach
         </tbody>
     </table>
