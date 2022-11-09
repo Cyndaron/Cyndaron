@@ -12,6 +12,12 @@ final class OrderTicketsPage extends Page
     {
         $this->addScript('/src/Ticketsale/Order/js/OrderTicketsPage.js?r=1');
 
+        $organisation = Setting::get(Setting::ORGANISATION);
+        if ($organisation === Setting::VALUE_ORGANISATION_VOV || $organisation === Setting::VALUE_ORGANISATION_ZCK)
+        {
+            $this->template = 'Ticketsale/OrderTicketsPageVOV';
+        }
+
         $concert = new Concert($concertId);
         $concert->load();
         $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concert->id], 'ORDER BY price DESC');
