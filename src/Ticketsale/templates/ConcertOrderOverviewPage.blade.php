@@ -137,6 +137,9 @@
                             @endif
 
                             <button data-order-id="{{ $orderId }}" data-csrf-token-delete="{{ \Cyndaron\User\User::getCSRFToken('concert-order', 'delete') }}" title="Bestelling verwijderen" class="com-order-delete btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                            <a class="btn btn-sm btn-outline-cyndaron" href="/concert-order/getTickets/{{ $order->id }}/{{ $order->secretCode }}" title="Tickets opvragen" target="_blank">
+                                <span class="glyphicon glyphicon-tag"></span>
+                            </a>
                          </div>
                     </td>
                 </tr>
