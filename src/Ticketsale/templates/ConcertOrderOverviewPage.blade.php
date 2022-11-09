@@ -78,7 +78,7 @@
                     <td>{{ $orderId }}</td>
                     <td>{{ $order->lastName }}</td>
                     <td>{{ $order->initials }}</td>
-                    <td>{{ $order->email }}</td>
+                    <td><a href="mailto:{{ $order->email }}">{{ $order->email }}</a></td>
                     <td>
                         {{ $order->street }}<br />
                         {{ $order->postcode }} {{ $order->city }}
