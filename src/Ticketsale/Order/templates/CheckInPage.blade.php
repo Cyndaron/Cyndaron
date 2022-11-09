@@ -20,7 +20,7 @@
 
 <form method="post">
     <button type="button" id="start-scan">Start scannen</button>
-    <input id="barcode" type="text" name="barcode" value="barcode">
+    <input id="barcode" type="text" name="barcode" value="barcode" autocomplete="off">
     <button type="submit">Checken</button>
 </form>
 
