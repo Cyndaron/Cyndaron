@@ -5,7 +5,6 @@ use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Ticketsale\Order\Order;
 use Cyndaron\View\Page;
 use function array_key_exists;
-use function var_dump;
 
 final class ConcertOrderOverviewPage extends Page
 {
@@ -25,7 +24,7 @@ final class ConcertOrderOverviewPage extends Page
         {
             foreach ($ticketTypesForOneOrder as $ticketType => $amount)
             {
-                if (!\array_key_exists($ticketType, $totals))
+                if (!array_key_exists($ticketType, $totals))
                 {
                     $totals[$ticketType] = 0;
                 }
