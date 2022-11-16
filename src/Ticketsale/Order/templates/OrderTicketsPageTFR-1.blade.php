@@ -153,18 +153,16 @@
                 <div class="col-sm-5"><input id="email" name="email" type="email" class="form-control" autocomplete="email" required /></div>
             </div>
 
-            @include ('View/Widget/Form/Checkbox', ['id' => 'subscribeToNewsletter', 'description' => 'Ik wil mij graag inschrijven voor de nieuwsbrief'])
-
             <div class="radio">
                 <label for="donor-yes">
                     <input id="donor-yes" name="donor" type="radio" value="1"/>
-                    Ik ben donateur
+                    Ik ben donateur van de Vlissingse Oratorium Vereniging
                 </label>
             </div>
             <div class="radio">
                 <label for="donor-no">
                     <input id="donor-no" name="donor" type="radio" value="0" />
-                    Ik ben geen donateur
+                    Ik ben geen donateur van de Vlissingse Oratorium Vereniging
                 </label>
             </div>
 
