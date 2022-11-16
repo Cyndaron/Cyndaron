@@ -11,7 +11,9 @@
         "optimize-autoloader": true,
         "classmap-authoritative": true,
         "allow-plugins": {
-            "cweagans/composer-patches": true
+            "cweagans/composer-patches": true,
+            "symfony/flex": true,
+            "symfony/runtime": true
         }
     },
     "require": {

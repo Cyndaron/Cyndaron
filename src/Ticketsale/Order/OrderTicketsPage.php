@@ -5,6 +5,8 @@ use Cyndaron\Ticketsale\Concert;
 use Cyndaron\Ticketsale\TicketType;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Page;
+use function file_exists;
+use function strtoupper;
 
 final class OrderTicketsPage extends Page
 {
@@ -12,14 +14,21 @@ final class OrderTicketsPage extends Page
     {
         $this->addScript('/src/Ticketsale/Order/js/OrderTicketsPage.js?r=1');
 
-        $organisation = Setting::get(Setting::ORGANISATION);
-        if ($organisation === Setting::VALUE_ORGANISATION_VOV || $organisation === Setting::VALUE_ORGANISATION_ZCK)
-        {
-            $this->template = 'Ticketsale/OrderTicketsPageVOV';
-        }
-
         $concert = new Concert($concertId);
         $concert->load();
+
+        $shortCode = strtoupper(Setting::getShortCode());
+        $specificTemplate = "OrderTicketsPage{$shortCode}-{$concert->id}";
+        $orgTemplate = "OrderTicketsPage{$shortCode}";
+        if (file_exists(__DIR__ . "/templates/$specificTemplate.blade.php"))
+        {
+            $this->template = "Ticketsale/Order/$specificTemplate";
+        }
+        elseif (file_exists(__DIR__ . "/templates/$orgTemplate.blade.php"))
+        {
+            $this->template = "Ticketsale/Order/$orgTemplate";
+        }
+
         $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concert->id], 'ORDER BY price DESC');
 
         $this->templateVars['concert'] = $concert;
