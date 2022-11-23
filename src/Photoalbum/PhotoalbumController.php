@@ -25,6 +25,7 @@ final class PhotoalbumController extends Controller
 
     protected array $apiPostRoutes = [
         'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
+        'addPhoto' => ['level' => UserLevel::ADMIN, 'function' => 'addPhotoApi'],
         'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
@@ -78,6 +79,32 @@ final class PhotoalbumController extends Controller
         }
 
         return new RedirectResponse("/photoalbum/{$album->id}");
+    }
+
+    public function addPhotoApi(QueryBits $queryBits): JsonResponse
+    {
+        $id = $queryBits->getInt(2);
+        if ($id < 1)
+        {
+            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $album = Photoalbum::loadFromDatabase($id);
+        if ($album === null)
+        {
+            return new JsonResponse(['error' => 'Photo album not found!'], Response::HTTP_NOT_FOUND);
+        }
+
+        $numPhotos = count($_FILES['newFiles']['name']);
+        for ($i = 0; $i < $numPhotos; $i++)
+        {
+            if (!$_FILES['newFiles']['error'][$i])
+            {
+                Photo::create($album, $_FILES['newFiles']['tmp_name'][$i], $_FILES['newFiles']['name'][$i]);
+            }
+        }
+
+        return new JsonResponse([]);
     }
 
     public function addToMenu(QueryBits $queryBits): JsonResponse

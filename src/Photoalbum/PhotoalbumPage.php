@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Photoalbum;
 
+use Cyndaron\User\User;
 use Cyndaron\View\Page;
 use Cyndaron\View\Template\Template;
 
@@ -21,6 +22,11 @@ final class PhotoalbumPage extends Page
             $this->templateVars['model'] = $album;
             $this->templateVars['photos'] = $photos;
             $this->templateVars['pageImage'] = $album->getImage();
+        }
+
+        if (User::isAdmin())
+        {
+            $this->addScript('/src/Photoalbum/js/PhotoalbumPage.js');
         }
     }
 

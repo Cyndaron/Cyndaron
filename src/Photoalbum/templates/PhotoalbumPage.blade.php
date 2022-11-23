@@ -8,11 +8,11 @@
 
 @section ('contents')
     @if ($isAdmin)
-        <form method="post" action="/photoalbum/addPhoto/{{ $model->id }}" enctype="multipart/form-data">
+        <form method="post" action="/photoalbum/addPhoto/{{ $model->id }}" enctype="multipart/form-data" id="upload-photo">
             <label for="newFile">Foto toevoegen:</label>
             <input type="file" id="newFile" name="newFiles[]" multiple required>
             <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('photoalbum', 'addPhoto') }}">
-            <input class="btn btn-primary" type="submit" value="Uploaden">
+            <input id="add-photo-submit" class="btn btn-primary" type="submit" value="Uploaden">
         </form>
     @endif
 
