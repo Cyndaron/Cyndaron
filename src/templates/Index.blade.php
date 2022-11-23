@@ -51,7 +51,7 @@
     @endforeach
     {!! $extraHead !!}
 </head>
-<body class="cyndaron {{ \Cyndaron\Util\Util::slug($title) }}" data-articleColor="{{ $articleColor }}">
+<body class="cyndaron {{ $extraBodyClasses }} {{ \Cyndaron\Util\Util::slug($title) }}" data-articleColor="{{ $articleColor }}">
     {!! $extraBodyStart ?? '' !!}
 
     <header class="container menu-container">

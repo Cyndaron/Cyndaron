@@ -41,6 +41,7 @@ class Page
     protected array $extraScripts = [];
     protected array $extraCss = [];
     protected string $websiteName = '';
+    protected string $extraBodyClasses = '';
 
     protected ?Model $model = null;
 
@@ -122,6 +123,7 @@ class Page
 
         $this->templateVars['scripts'] = array_merge(self::DEFAULT_SCRIPTS, $this->extraScripts);
         $this->templateVars['extraCss'] = $this->extraCss;
+        $this->templateVars['extraBodyClasses'] = $this->extraBodyClasses;
 
         static $includes = [
             'extraHead' => 'extra-head',
