@@ -9,7 +9,7 @@
 
     @php /** @var \Cyndaron\Ticketsale\Concert $concert */ @endphp
     @if (!$concert->openForSales)
-        <div class="alert-warning">
+        <div class="alert alert-warning">
             @if ($concert->descriptionWhenClosed)
                 {!! $concert->descriptionWhenClosed !!}
             @else
