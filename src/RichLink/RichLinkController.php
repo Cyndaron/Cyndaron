@@ -7,12 +7,14 @@ use Cyndaron\Category\Category;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
+use Illuminate\Support\Js;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 final class RichLinkController extends Controller
 {
     public array $apiPostRoutes = [
+        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'createOrEdit'],
     ];
 
@@ -56,6 +58,19 @@ final class RichLinkController extends Controller
             }
         }
 
+        return new JsonResponse();
+    }
+
+    public function delete(RequestParameters $post): JsonResponse
+    {
+        $id = $post->getInt('id');
+        $richlink = RichLink::loadFromDatabase($id);
+        if ($richlink === null)
+        {
+            return new JsonResponse(['error' => 'RichLink does not exist!'], Response::HTTP_NOT_FOUND);
+        }
+
+        $richlink->delete();
         return new JsonResponse();
     }
 }
