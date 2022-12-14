@@ -5,6 +5,8 @@ use Cyndaron\View\Page;
 
 final class SubscriptionListPage extends Page
 {
+    protected string $extraBodyClasses = 'geelhoed-subscription-list-page';
+
     public function __construct(Contest $contest)
     {
         parent::__construct('Overzicht inschrijvingen ' . $contest->name);
