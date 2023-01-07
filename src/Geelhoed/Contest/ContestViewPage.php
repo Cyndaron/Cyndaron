@@ -15,6 +15,7 @@ final class ContestViewPage extends Page
         $canManage = $currentUser !== null && $currentUser->hasRight(Contest::RIGHT_MANAGE);
         $mayViewOtherContestants = $this->loggedInUserMayViewOtherContestants($canManage, $controlledMembers);
         parent::__construct(sprintf('Wedstrijd: %s', $contest->name));
+        $this->addCss('/src/Geelhoed/geelhoed.css');
         $this->addTemplateVars([
             'addDateCsrfToken' => User::getCSRFToken('contest', 'addDate'),
             'allSubscribed' => $this->areAllSubscribed($contest, $controlledMembers),

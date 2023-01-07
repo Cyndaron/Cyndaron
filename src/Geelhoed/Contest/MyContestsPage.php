@@ -16,6 +16,7 @@ final class MyContestsPage extends Page
     public function __construct(User $currentUser)
     {
         parent::__construct('Mijn wedstrijden');
+        $this->addCss('/src/Geelhoed/geelhoed.css');
         $controlledMembers = Member::fetchAllContestantsByUser($currentUser);
         $contests = [];
         $contestMembers = [];

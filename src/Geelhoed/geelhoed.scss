@@ -23,3 +23,13 @@ table.location-overview
         }
     }
 }
+
+.gcv-member-subscription.card
+{
+    min-width: 320px;
+    margin: 20px;
+    @media (all and max-width: 767px)
+    {
+        margin: 10px 0;
+    }
+}

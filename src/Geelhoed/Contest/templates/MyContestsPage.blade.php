@@ -38,15 +38,7 @@
 
                 <h6 class="mt-3">Ingeschreven</h6>
 
-                <table class="table table-bordered table-striped">
-                    <tr>
-                        <th>Naam</th>
-                        <th>Graduatie</th>
-                        <th>Gewicht</th>
-                        <th>Status</th>
-                        @if ($canChange)<th>Aanpassen</th>@endif
-                    </tr>
-
+                <div>
                     @foreach (\Cyndaron\Geelhoed\Contest\ContestMember::fetchAllByContestAndMembers($contest, $controlledMembers) as $contestMember)
                         @php $member = $contestMember->getMember(); @endphp
                         @include('Geelhoed/Contest/MemberSubscriptionStatus', [
@@ -56,7 +48,7 @@
                             'canChange' => $canChange,
                             'csrfToken' => $cancelSubscriptionCsrfToken])
                     @endforeach
-                </table>
+                </div>
             </div>
         </div>
     @endforeach

@@ -99,30 +99,18 @@
         <a href="/user/login" class="btn btn-primary">Inloggen</a>
     @else
         <h3>Inschrijven</h3>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Naam</th>
-                    <th>Graduatie</th>
-                    <th>Gewicht</th>
-                    <th>Status</th>
-                    <th>Acties</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php $canChange = $contest->registrationCanBeChanged($profile); @endphp
-                @foreach ($controlledMembers as $controlledMember)
-                    @php $subscription = \Cyndaron\Geelhoed\Contest\ContestMember::fetchByContestAndMember($contest, $controlledMember) @endphp
-                    @include('Geelhoed/Contest/MemberSubscriptionStatus', [
-                        'contest' => $contest,
-                        'contestMember' => $subscription,
-                        'member' => $controlledMember,
-                        'canChange' => $canChange,
-                        'csrfToken' => $cancelSubscriptionCsrfToken])
-                @endforeach
-            </tbody>
-        </table>
-
+        <div>
+            @php $canChange = $contest->registrationCanBeChanged($profile); @endphp
+            @foreach ($controlledMembers as $controlledMember)
+                @php $subscription = \Cyndaron\Geelhoed\Contest\ContestMember::fetchByContestAndMember($contest, $controlledMember) @endphp
+                @include('Geelhoed/Contest/MemberSubscriptionStatus', [
+                    'contest' => $contest,
+                    'contestMember' => $subscription,
+                    'member' => $controlledMember,
+                    'canChange' => $canChange,
+                    'csrfToken' => $cancelSubscriptionCsrfToken])
+            @endforeach
+        </div>
 
     @endif
 

@@ -8,4 +8,11 @@
   table.location-overview td:last-child, table.location-overview th:last-child {
     display: none; } }
 
+.gcv-member-subscription.card {
+  min-width: 320px;
+  margin: 20px; }
+  @media (max-width: 767px) {
+    .gcv-member-subscription.card {
+      margin: 10px 0; } }
+
 /*# sourceMappingURL=geelhoed.css.map */
