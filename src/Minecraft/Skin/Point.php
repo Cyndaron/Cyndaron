@@ -59,10 +59,10 @@ final class Point
         $this->_destCoord['y'] = $x * $this->sinAlpha * $this->sinOmega + $y * $this->cosAlpha - $z * $this->sinAlpha * $this->cosOmega;
         $this->_destCoord['z'] = -$x * $this->cosAlpha * $this->sinOmega + $y * $this->sinAlpha + $z * $this->cosAlpha * $this->cosOmega;
         $this->_isProjected = true;
-        SkinRenderer::$minX = min(SkinRenderer::$minX, $this->_destCoord['x']);
-        SkinRenderer::$maxX = max(SkinRenderer::$maxX, $this->_destCoord['x']);
-        SkinRenderer::$minY = min(SkinRenderer::$minY, $this->_destCoord['y']);
-        SkinRenderer::$maxY = max(SkinRenderer::$maxY, $this->_destCoord['y']);
+        SkinRenderer::$minX = (int)min(SkinRenderer::$minX, $this->_destCoord['x']);
+        SkinRenderer::$maxX = (int)max(SkinRenderer::$maxX, $this->_destCoord['x']);
+        SkinRenderer::$minY = (int)min(SkinRenderer::$minY, $this->_destCoord['y']);
+        SkinRenderer::$maxY = (int)max(SkinRenderer::$maxY, $this->_destCoord['y']);
     }
 
     public function preProject(int $dx, int $dy, int $dz, float $cosAlpha, float $sinAlpha, float $cosOmega, float $sinOmega): void
