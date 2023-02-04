@@ -17,7 +17,10 @@ final class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
 
     public function register(): void
     {
-        parent::register();
+        $this->registerFactory();
+        $this->registerViewFinder();
+        $this->registerBladeCompiler();
+        $this->registerEngineResolver();
 
         foreach (self::FILTERS as $filterName => $function)
         {
