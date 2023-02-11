@@ -13,10 +13,9 @@
         $btnClass .= ' btn-sm';
     }
 
-    $title = $description ? sprintf('title="%s"', $description) : '';
     $textAfterIcon = $text ? " $text" : '';
 @endphp
 
-<a class="btn {{ $btnClass }}" href="{{ $link }}" {{ $title }}>
+<a class="btn {{ $btnClass }}" href="{{ $link }}" @if($description)title="{{ $description }}"@endif>
     <span class="glyphicon glyphicon-{{ $icon }}"></span>{{ $textAfterIcon }}
 </a>
