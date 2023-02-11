@@ -40,18 +40,18 @@ final class Polygon
     {
         $this->_dots = $dots;
         $this->_colour = $colour;
-        $coord_0 = $dots[0]->getOriginCoord();
-        $coord_1 = $dots[1]->getOriginCoord();
-        $coord_2 = $dots[2]->getOriginCoord();
-        if ($coord_0['x'] === $coord_1['x'] && $coord_1['x'] === $coord_2['x'])
+        $coord0 = $dots[0]->getOriginCoord();
+        $coord1 = $dots[1]->getOriginCoord();
+        $coord2 = $dots[2]->getOriginCoord();
+        if ($coord0->x === $coord1->x && $coord1->x === $coord2->x)
         {
             $this->_face = 'x';
         }
-        elseif ($coord_0['y'] === $coord_1['y'] && $coord_1['y'] === $coord_2['y'])
+        elseif ($coord0->y === $coord1->y && $coord1->y === $coord2->y)
         {
             $this->_face = 'y';
         }
-        elseif ($coord_0['z'] === $coord_1['z'] && $coord_1['z'] === $coord_2['z'])
+        elseif ($coord0->z === $coord1->z && $coord1->z === $coord2->z)
         {
             $this->_face = 'z';
         }
@@ -83,7 +83,8 @@ final class Polygon
         foreach ($this->_dots as $dot)
         {
             $coord = $dot->getDestCoord();
-            $points_2d .= $coord['x'] * $ratio . ',' . $coord['y'] * $ratio . ' ';
+            assert($coord !== null);
+            $points_2d .= $coord->x * $ratio . ',' . $coord->y * $ratio . ' ';
         }
         $alpha = 1; // TODO: Implement this :)
         return '<polygon points="' . $points_2d . '" style="fill:rgba(' . $r . ',' . $g . ',' . $b . ',' . $alpha . ')" />' . "\n";
@@ -113,24 +114,25 @@ final class Polygon
         foreach ($this->_dots as $dot)
         {
             $coord = $dot->getDestCoord();
+            assert($coord !== null);
             if (!isset($coord_x))
             {
-                $coord_x = $coord['x'];
+                $coord_x = $coord->x;
             }
             if (!isset($coord_y))
             {
-                $coord_y = $coord['y'];
+                $coord_y = $coord->y;
             }
-            if ($coord_x !== $coord['x'])
+            if ($coord_x !== $coord->x)
             {
                 $same_plan_x = false;
             }
-            if ($coord_y !== $coord['y'])
+            if ($coord_y !== $coord->y)
             {
                 $same_plan_y = false;
             }
-            $points_2d[] = ($coord['x'] - $minX) * $ratio;
-            $points_2d[] = ($coord['y'] - $minY) * $ratio;
+            $points_2d[] = ($coord->x - $minX) * $ratio;
+            $points_2d[] = ($coord->y - $minY) * $ratio;
             $nb_points++;
         }
         if (!$same_plan_x && !$same_plan_y)
@@ -161,11 +163,11 @@ final class Polygon
         $this->_isProjected = true;
     }
 
-    public function preProject(int $dx, int $dy, int $dz, float $cosAlpha, float $sinAlpha, float $cosOmega, float $sinOmega): void
+    public function preProject(CoordsXYZ $delta, float $cosAlpha, float $sinAlpha, float $cosOmega, float $sinOmega): void
     {
         foreach ($this->_dots as &$dot)
         {
-            $dot->preProject($dx, $dy, $dz, $cosAlpha, $sinAlpha, $cosOmega, $sinOmega);
+            $dot->preProject($delta, $cosAlpha, $sinAlpha, $cosOmega, $sinOmega);
         }
     }
 }

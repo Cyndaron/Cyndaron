@@ -268,14 +268,14 @@ abstract class SkinRenderer
     private function generateCubePoints(): array
     {
         $cubePoints = [];
-        $cubePoints[0] = new CubePoint(new Point(['x' => 0, 'y' => 0, 'z' => 0], $this->alpha, $this->omega), ['back', 'right', 'top']);
-        $cubePoints[1] = new CubePoint(new Point(['x' => 0, 'y' => 0, 'z' => 1], $this->alpha, $this->omega), ['front', 'right', 'top']);
-        $cubePoints[2] = new CubePoint(new Point(['x' => 0, 'y' => 1, 'z' => 0], $this->alpha, $this->omega), ['back', 'right', 'bottom']);
-        $cubePoints[3] = new CubePoint(new Point(['x' => 0, 'y' => 1, 'z' => 1], $this->alpha, $this->omega), ['front', 'right', 'bottom']);
-        $cubePoints[4] = new CubePoint(new Point(['x' => 1, 'y' => 0, 'z' => 0], $this->alpha, $this->omega), ['back', 'left', 'top']);
-        $cubePoints[5] = new CubePoint(new Point(['x' => 1, 'y' => 0, 'z' => 1], $this->alpha, $this->omega), ['front', 'left', 'top']);
-        $cubePoints[6] = new CubePoint(new Point(['x' => 1, 'y' => 1, 'z' => 0], $this->alpha, $this->omega), ['back', 'left', 'bottom']);
-        $cubePoints[7] = new CubePoint(new Point(['x' => 1, 'y' => 1, 'z' => 1], $this->alpha, $this->omega), ['front', 'left', 'bottom']);
+        $cubePoints[0] = new CubePoint(new Point(new CoordsXYZ(0, 0, 0), $this->alpha, $this->omega), ['back', 'right', 'top']);
+        $cubePoints[1] = new CubePoint(new Point(new CoordsXYZ(0, 0, 1), $this->alpha, $this->omega), ['front', 'right', 'top']);
+        $cubePoints[2] = new CubePoint(new Point(new CoordsXYZ(0, 1, 0), $this->alpha, $this->omega), ['back', 'right', 'bottom']);
+        $cubePoints[3] = new CubePoint(new Point(new CoordsXYZ(0, 1, 1), $this->alpha, $this->omega), ['front', 'right', 'bottom']);
+        $cubePoints[4] = new CubePoint(new Point(new CoordsXYZ(1, 0, 0), $this->alpha, $this->omega), ['back', 'left', 'top']);
+        $cubePoints[5] = new CubePoint(new Point(new CoordsXYZ(1, 0, 1), $this->alpha, $this->omega), ['front', 'left', 'top']);
+        $cubePoints[6] = new CubePoint(new Point(new CoordsXYZ(1, 1, 0), $this->alpha, $this->omega), ['back', 'left', 'bottom']);
+        $cubePoints[7] = new CubePoint(new Point(new CoordsXYZ(1, 1, 1), $this->alpha, $this->omega), ['front', 'left', 'bottom']);
         return $cubePoints;
     }
 
@@ -359,7 +359,7 @@ abstract class SkinRenderer
             foreach ($face as $poly)
             {
                 /** @var Polygon $poly */
-                $poly->preProject(4, 8, 2, $parts_angles['head']['cos_alpha'], $parts_angles['head']['sin_alpha'], $parts_angles['head']['cos_omega'], $parts_angles['head']['sin_omega']);
+                $poly->preProject(new CoordsXYZ(4, 8, 2), $parts_angles['head']['cos_alpha'], $parts_angles['head']['sin_alpha'], $parts_angles['head']['cos_omega'], $parts_angles['head']['sin_omega']);
             }
         }
         if ($displayHair)
@@ -369,7 +369,7 @@ abstract class SkinRenderer
                 foreach ($face as $poly)
                 {
                     /** @var Polygon $poly */
-                    $poly->preProject(4, 8, 2, $parts_angles['head']['cos_alpha'], $parts_angles['head']['sin_alpha'], $parts_angles['head']['cos_omega'], $parts_angles['head']['sin_omega']);
+                    $poly->preProject(new CoordsXYZ(4, 8, 2), $parts_angles['head']['cos_alpha'], $parts_angles['head']['sin_alpha'], $parts_angles['head']['cos_omega'], $parts_angles['head']['sin_omega']);
                 }
             }
         }
@@ -379,7 +379,7 @@ abstract class SkinRenderer
             foreach ($face as $poly)
             {
                 /** @var Polygon $poly */
-                $poly->preProject(-2, 8, 2, $parts_angles['rightArm']['cos_alpha'], $parts_angles['rightArm']['sin_alpha'], $parts_angles['rightArm']['cos_omega'], $parts_angles['rightArm']['sin_omega']);
+                $poly->preProject(new CoordsXYZ(-2, 8, 2), $parts_angles['rightArm']['cos_alpha'], $parts_angles['rightArm']['sin_alpha'], $parts_angles['rightArm']['cos_omega'], $parts_angles['rightArm']['sin_omega']);
             }
         }
         foreach ($polygons['leftArm'] as $face)
@@ -387,23 +387,27 @@ abstract class SkinRenderer
             /** @var Polygon $poly */
             foreach ($face as $poly)
             {
-                $poly->preProject(10, 8, 2, $parts_angles['leftArm']['cos_alpha'], $parts_angles['leftArm']['sin_alpha'], $parts_angles['leftArm']['cos_omega'], $parts_angles['leftArm']['sin_omega']);
+                $poly->preProject(new CoordsXYZ(10, 8, 2), $parts_angles['leftArm']['cos_alpha'], $parts_angles['leftArm']['sin_alpha'], $parts_angles['leftArm']['cos_omega'], $parts_angles['leftArm']['sin_omega']);
             }
         }
+
+        $z = ($parts_angles['rightLeg']['sin_alpha'] < 0 ? 0 : 4);
         foreach ($polygons['rightLeg'] as $face)
         {
             /** @var Polygon $poly */
             foreach ($face as $poly)
             {
-                $poly->preProject(2, 20, ($parts_angles['rightLeg']['sin_alpha'] < 0 ? 0 : 4), $parts_angles['rightLeg']['cos_alpha'], $parts_angles['rightLeg']['sin_alpha'], $parts_angles['rightLeg']['cos_omega'], $parts_angles['rightLeg']['sin_omega']);
+                $poly->preProject(new CoordsXYZ(2, 20, $z), $parts_angles['rightLeg']['cos_alpha'], $parts_angles['rightLeg']['sin_alpha'], $parts_angles['rightLeg']['cos_omega'], $parts_angles['rightLeg']['sin_omega']);
             }
         }
+
+        $z = ($parts_angles['leftLeg']['sin_alpha'] < 0 ? 0 : 4);
         foreach ($polygons['leftLeg'] as $face)
         {
             /** @var Polygon $poly */
             foreach ($face as $poly)
             {
-                $poly->preProject(6, 20, ($parts_angles['leftLeg']['sin_alpha'] < 0 ? 0 : 4), $parts_angles['leftLeg']['cos_alpha'], $parts_angles['leftLeg']['sin_alpha'], $parts_angles['leftLeg']['cos_omega'], $parts_angles['leftLeg']['sin_omega']);
+                $poly->preProject(new CoordsXYZ(6, 20, $z), $parts_angles['leftLeg']['cos_alpha'], $parts_angles['leftLeg']['sin_alpha'], $parts_angles['leftLeg']['cos_omega'], $parts_angles['leftLeg']['sin_omega']);
             }
         }
     }
@@ -417,11 +421,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][$j][-2 * $this->hdRatio]))
                 {
-                    $volumePoints[$i][$j][-2 * $this->hdRatio] = new Point(['x' => $i, 'y' => $j, 'z' => -2 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][-2 * $this->hdRatio] = new Point(new CoordsXYZ($i, $j, -2 * $this->hdRatio), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][$j][6 * $this->hdRatio]))
                 {
-                    $volumePoints[$i][$j][6 * $this->hdRatio] = new Point(['x' => $i, 'y' => $j, 'z' => 6 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][6 * $this->hdRatio] = new Point(new CoordsXYZ($i, $j, 6 * $this->hdRatio), $this->alpha, $this->omega);
                 }
             }
         }
@@ -431,11 +435,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[0][$j][$faceName]))
                 {
-                    $volumePoints[0][$j][$faceName] = new Point(['x' => 0, 'y' => $j, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[0][$j][$faceName] = new Point(new CoordsXYZ(0, $j, $faceName), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[8 * $this->hdRatio][$j][$faceName]))
                 {
-                    $volumePoints[8 * $this->hdRatio][$j][$faceName] = new Point(['x' => 8 * $this->hdRatio, 'y' => $j, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[8 * $this->hdRatio][$j][$faceName] = new Point(new CoordsXYZ(8 * $this->hdRatio, $j, $faceName), $this->alpha, $this->omega);
                 }
             }
         }
@@ -445,11 +449,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][0][$faceName]))
                 {
-                    $volumePoints[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[$i][0][$faceName] = new Point(new CoordsXYZ($i, 0, $faceName), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][8 * $this->hdRatio][$faceName]))
                 {
-                    $volumePoints[$i][8 * $this->hdRatio][$faceName] = new Point(['x' => $i, 'y' => 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[$i][8 * $this->hdRatio][$faceName] = new Point(new CoordsXYZ($i, 8 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
             }
         }
@@ -538,11 +542,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][$j][-2 * $this->hdRatio]))
                 {
-                    $volumePoints[$i][$j][-2 * $this->hdRatio] = new Point(['x' => $i * 9 / 8 - 0.5 * $this->hdRatio, 'y' => $j * 9 / 8 - 0.5 * $this->hdRatio, 'z' => -2.5 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][-2 * $this->hdRatio] = new Point(new CoordsXYZ($i * 9 / 8 - 0.5 * $this->hdRatio, $j * 9 / 8 - 0.5 * $this->hdRatio, -2.5 * $this->hdRatio), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][$j][6 * $this->hdRatio]))
                 {
-                    $volumePoints[$i][$j][6 * $this->hdRatio] = new Point(['x' => $i * 9 / 8 - 0.5 * $this->hdRatio, 'y' => $j * 9 / 8 - 0.5 * $this->hdRatio, 'z' => 6.5 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][6 * $this->hdRatio] = new Point(new CoordsXYZ($i * 9 / 8 - 0.5 * $this->hdRatio, $j * 9 / 8 - 0.5 * $this->hdRatio, 6.5 * $this->hdRatio), $this->alpha, $this->omega);
                 }
             }
         }
@@ -552,11 +556,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[0][$j][$faceName]))
                 {
-                    $volumePoints[0][$j][$faceName] = new Point(['x' => -0.5 * $this->hdRatio, 'y' => $j * 9 / 8 - 0.5 * $this->hdRatio, 'z' => $faceName * 9 / 8 - 0.5 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[0][$j][$faceName] = new Point(new CoordsXYZ(-0.5 * $this->hdRatio, $j * 9 / 8 - 0.5 * $this->hdRatio, $faceName * 9 / 8 - 0.5 * $this->hdRatio), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[8 * $this->hdRatio][$j][$faceName]))
                 {
-                    $volumePoints[8 * $this->hdRatio][$j][$faceName] = new Point(['x' => 8.5 * $this->hdRatio, 'y' => $j * 9 / 8 - 0.5 * $this->hdRatio, 'z' => $faceName * 9 / 8 - 0.5 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[8 * $this->hdRatio][$j][$faceName] = new Point(new CoordsXYZ(8.5 * $this->hdRatio, $j * 9 / 8 - 0.5 * $this->hdRatio, $faceName * 9 / 8 - 0.5 * $this->hdRatio), $this->alpha, $this->omega);
                 }
             }
         }
@@ -566,11 +570,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][0][$faceName]))
                 {
-                    $volumePoints[$i][0][$faceName] = new Point(['x' => $i * 9 / 8 - 0.5 * $this->hdRatio, 'y' => -0.5 * $this->hdRatio, 'z' => $faceName * 9 / 8 - 0.5 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[$i][0][$faceName] = new Point(new CoordsXYZ($i * 9 / 8 - 0.5 * $this->hdRatio, -0.5 * $this->hdRatio, $faceName * 9 / 8 - 0.5 * $this->hdRatio), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][8 * $this->hdRatio][$faceName]))
                 {
-                    $volumePoints[$i][8 * $this->hdRatio][$faceName] = new Point(['x' => $i * 9 / 8 - 0.5 * $this->hdRatio, 'y' => 8.5 * $this->hdRatio, 'z' => $faceName * 9 / 8 - 0.5 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[$i][8 * $this->hdRatio][$faceName] = new Point(new CoordsXYZ($i * 9 / 8 - 0.5 * $this->hdRatio, 8.5 * $this->hdRatio, $faceName * 9 / 8 - 0.5 * $this->hdRatio), $this->alpha, $this->omega);
                 }
             }
         }
@@ -650,11 +654,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][$j][0]))
                 {
-                    $volumePoints[$i][$j][0] = new Point(['x' => $i, 'y' => $j + self::TORSO_WIDTH * $this->hdRatio, 'z' => 0], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][0] = new Point(new CoordsXYZ($i, $j + self::TORSO_WIDTH * $this->hdRatio, 0), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][$j][4 * $this->hdRatio]))
                 {
-                    $volumePoints[$i][$j][4 * $this->hdRatio] = new Point(['x' => $i, 'y' => $j + self::TORSO_WIDTH * $this->hdRatio, 'z' => 4 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][4 * $this->hdRatio] = new Point(new CoordsXYZ($i, $j + self::TORSO_WIDTH * $this->hdRatio, 4 * $this->hdRatio), $this->alpha, $this->omega);
                 }
             }
         }
@@ -664,11 +668,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[0][$j][$faceName]))
                 {
-                    $volumePoints[0][$j][$faceName] = new Point(['x' => 0, 'y' => $j + self::TORSO_WIDTH * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[0][$j][$faceName] = new Point(new CoordsXYZ(0, $j + self::TORSO_WIDTH * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[self::TORSO_WIDTH * $this->hdRatio][$j][$faceName]))
                 {
-                    $volumePoints[self::TORSO_WIDTH * $this->hdRatio][$j][$faceName] = new Point(['x' => self::TORSO_WIDTH * $this->hdRatio, 'y' => $j + self::TORSO_WIDTH * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[self::TORSO_WIDTH * $this->hdRatio][$j][$faceName] = new Point(new CoordsXYZ(self::TORSO_WIDTH * $this->hdRatio, $j + self::TORSO_WIDTH * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
             }
         }
@@ -678,11 +682,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][0][$faceName]))
                 {
-                    $volumePoints[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0 + self::TORSO_WIDTH * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[$i][0][$faceName] = new Point(new CoordsXYZ($i, 0 + self::TORSO_WIDTH * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][self::TORSO_LENGTH * $this->hdRatio][$faceName]))
                 {
-                    $volumePoints[$i][self::TORSO_LENGTH * $this->hdRatio][$faceName] = new Point(['x' => $i, 'y' => self::TORSO_LENGTH * $this->hdRatio + self::TORSO_WIDTH * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[$i][self::TORSO_LENGTH * $this->hdRatio][$faceName] = new Point(new CoordsXYZ($i, self::TORSO_LENGTH * $this->hdRatio + self::TORSO_WIDTH * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
             }
         }
@@ -764,11 +768,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][$j][0]))
                 {
-                    $volumePoints[$i][$j][0] = new Point(['x' => $i - 4 * $this->hdRatio, 'y' => $j + 8 * $this->hdRatio, 'z' => 0], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][0] = new Point(new CoordsXYZ($i - 4 * $this->hdRatio, $j + 8 * $this->hdRatio, 0), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][$j][4 * $this->hdRatio]))
                 {
-                    $volumePoints[$i][$j][4 * $this->hdRatio] = new Point(['x' => $i - 4 * $this->hdRatio, 'y' => $j + 8 * $this->hdRatio, 'z' => 4 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][4 * $this->hdRatio] = new Point(new CoordsXYZ($i - 4 * $this->hdRatio, $j + 8 * $this->hdRatio, 4 * $this->hdRatio), $this->alpha, $this->omega);
                 }
             }
         }
@@ -778,11 +782,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[0][$j][$faceName]))
                 {
-                    $volumePoints[0][$j][$faceName] = new Point(['x' => 0 - 4 * $this->hdRatio, 'y' => $j + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[0][$j][$faceName] = new Point(new CoordsXYZ(0 - 4 * $this->hdRatio, $j + 8 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[8 * $this->hdRatio][$j][$faceName]))
                 {
-                    $volumePoints[4 * $this->hdRatio][$j][$faceName] = new Point(['x' => 4 * $this->hdRatio - 4 * $this->hdRatio, 'y' => $j + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[4 * $this->hdRatio][$j][$faceName] = new Point(new CoordsXYZ(4 * $this->hdRatio - 4 * $this->hdRatio, $j + 8 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
             }
         }
@@ -792,11 +796,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][0][$faceName]))
                 {
-                    $volumePoints[$i][0][$faceName] = new Point(['x' => $i - 4 * $this->hdRatio, 'y' => 0 + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[$i][0][$faceName] = new Point(new CoordsXYZ($i - 4 * $this->hdRatio, 0 + 8 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][self::ARM_LENGTH * $this->hdRatio][$faceName]))
                 {
-                    $volumePoints[$i][self::ARM_LENGTH * $this->hdRatio][$faceName] = new Point(['x' => $i - 4 * $this->hdRatio, 'y' => self::ARM_LENGTH * $this->hdRatio + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[$i][self::ARM_LENGTH * $this->hdRatio][$faceName] = new Point(new CoordsXYZ($i - 4 * $this->hdRatio, self::ARM_LENGTH * $this->hdRatio + 8 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
             }
         }
@@ -878,11 +882,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][$j][0]))
                 {
-                    $volumePoints[$i][$j][0] = new Point(['x' => $i + 8 * $this->hdRatio, 'y' => $j + 8 * $this->hdRatio, 'z' => 0], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][0] = new Point(new CoordsXYZ($i + 8 * $this->hdRatio, $j + 8 * $this->hdRatio, 0), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][$j][4 * $this->hdRatio]))
                 {
-                    $volumePoints[$i][$j][4 * $this->hdRatio] = new Point(['x' => $i + 8 * $this->hdRatio, 'y' => $j + 8 * $this->hdRatio, 'z' => 4 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][4 * $this->hdRatio] = new Point(new CoordsXYZ($i + 8 * $this->hdRatio, $j + 8 * $this->hdRatio, 4 * $this->hdRatio), $this->alpha, $this->omega);
                 }
             }
         }
@@ -892,11 +896,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[0][$j][$faceName]))
                 {
-                    $volumePoints[0][$j][$faceName] = new Point(['x' => 0 + 8 * $this->hdRatio, 'y' => $j + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[0][$j][$faceName] = new Point(new CoordsXYZ(0 + 8 * $this->hdRatio, $j + 8 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[8 * $this->hdRatio][$j][$faceName]))
                 {
-                    $volumePoints[4 * $this->hdRatio][$j][$faceName] = new Point(['x' => 4 * $this->hdRatio + 8 * $this->hdRatio, 'y' => $j + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[4 * $this->hdRatio][$j][$faceName] = new Point(new CoordsXYZ(4 * $this->hdRatio + 8 * $this->hdRatio, $j + 8 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
             }
         }
@@ -906,11 +910,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][0][$faceName]))
                 {
-                    $volumePoints[$i][0][$faceName] = new Point(['x' => $i + 8 * $this->hdRatio, 'y' => 0 + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[$i][0][$faceName] = new Point(new CoordsXYZ($i + 8 * $this->hdRatio, 0 + 8 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][self::ARM_LENGTH * $this->hdRatio][$faceName]))
                 {
-                    $volumePoints[$i][self::ARM_LENGTH * $this->hdRatio][$faceName] = new Point(['x' => $i + 8 * $this->hdRatio, 'y' => self::ARM_LENGTH * $this->hdRatio + 8 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[$i][self::ARM_LENGTH * $this->hdRatio][$faceName] = new Point(new CoordsXYZ($i + 8 * $this->hdRatio, self::ARM_LENGTH * $this->hdRatio + 8 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
             }
         }
@@ -992,11 +996,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][$j][0]))
                 {
-                    $volumePoints[$i][$j][0] = new Point(['x' => $i, 'y' => $j + 20 * $this->hdRatio, 'z' => 0], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][0] = new Point(new CoordsXYZ($i, $j + 20 * $this->hdRatio, 0), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][$j][4 * $this->hdRatio]))
                 {
-                    $volumePoints[$i][$j][4 * $this->hdRatio] = new Point(['x' => $i, 'y' => $j + 20 * $this->hdRatio, 'z' => 4 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][4 * $this->hdRatio] = new Point(new CoordsXYZ($i, $j + 20 * $this->hdRatio, 4 * $this->hdRatio), $this->alpha, $this->omega);
                 }
             }
         }
@@ -1006,11 +1010,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[0][$j][$faceName]))
                 {
-                    $volumePoints[0][$j][$faceName] = new Point(['x' => 0, 'y' => $j + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[0][$j][$faceName] = new Point(new CoordsXYZ(0, $j + 20 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[8 * $this->hdRatio][$j][$faceName]))
                 {
-                    $volumePoints[4 * $this->hdRatio][$j][$faceName] = new Point(['x' => 4 * $this->hdRatio, 'y' => $j + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[4 * $this->hdRatio][$j][$faceName] = new Point(new CoordsXYZ(4 * $this->hdRatio, $j + 20 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
             }
         }
@@ -1020,11 +1024,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][0][$faceName]))
                 {
-                    $volumePoints[$i][0][$faceName] = new Point(['x' => $i, 'y' => 0 + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[$i][0][$faceName] = new Point(new CoordsXYZ($i, 0 + 20 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][self::LEG_LENGTH * $this->hdRatio][$faceName]))
                 {
-                    $volumePoints[$i][self::LEG_LENGTH * $this->hdRatio][$faceName] = new Point(['x' => $i, 'y' => self::LEG_LENGTH * $this->hdRatio + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[$i][self::LEG_LENGTH * $this->hdRatio][$faceName] = new Point(new CoordsXYZ($i, self::LEG_LENGTH * $this->hdRatio + 20 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
             }
         }
@@ -1106,11 +1110,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][$j][0]))
                 {
-                    $volumePoints[$i][$j][0] = new Point(['x' => $i + 4 * $this->hdRatio, 'y' => $j + 20 * $this->hdRatio, 'z' => 0], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][0] = new Point(new CoordsXYZ($i + 4 * $this->hdRatio, $j + 20 * $this->hdRatio, 0), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][$j][4 * $this->hdRatio]))
                 {
-                    $volumePoints[$i][$j][4 * $this->hdRatio] = new Point(['x' => $i + 4 * $this->hdRatio, 'y' => $j + 20 * $this->hdRatio, 'z' => 4 * $this->hdRatio], $this->alpha, $this->omega);
+                    $volumePoints[$i][$j][4 * $this->hdRatio] = new Point(new CoordsXYZ($i + 4 * $this->hdRatio, $j + 20 * $this->hdRatio, 4 * $this->hdRatio), $this->alpha, $this->omega);
                 }
             }
         }
@@ -1120,11 +1124,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[0][$j][$faceName]))
                 {
-                    $volumePoints[0][$j][$faceName] = new Point(['x' => 0 + 4 * $this->hdRatio, 'y' => $j + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[0][$j][$faceName] = new Point(new CoordsXYZ(0 + 4 * $this->hdRatio, $j + 20 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[8 * $this->hdRatio][$j][$faceName]))
                 {
-                    $volumePoints[4 * $this->hdRatio][$j][$faceName] = new Point(['x' => 4 * $this->hdRatio + 4 * $this->hdRatio, 'y' => $j + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[4 * $this->hdRatio][$j][$faceName] = new Point(new CoordsXYZ(4 * $this->hdRatio + 4 * $this->hdRatio, $j + 20 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
             }
         }
@@ -1134,11 +1138,11 @@ abstract class SkinRenderer
             {
                 if (!isset($volumePoints[$i][0][$faceName]))
                 {
-                    $volumePoints[$i][0][$faceName] = new Point(['x' => $i + 4 * $this->hdRatio, 'y' => 0 + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[$i][0][$faceName] = new Point(new CoordsXYZ($i + 4 * $this->hdRatio, 0 + 20 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
                 if (!isset($volumePoints[$i][self::LEG_LENGTH * $this->hdRatio][$faceName]))
                 {
-                    $volumePoints[$i][self::LEG_LENGTH * $this->hdRatio][$faceName] = new Point(['x' => $i + 4 * $this->hdRatio, 'y' => self::LEG_LENGTH * $this->hdRatio + 20 * $this->hdRatio, 'z' => $faceName], $this->alpha, $this->omega);
+                    $volumePoints[$i][self::LEG_LENGTH * $this->hdRatio][$faceName] = new Point(new CoordsXYZ($i + 4 * $this->hdRatio, self::LEG_LENGTH * $this->hdRatio + 20 * $this->hdRatio, $faceName), $this->alpha, $this->omega);
                 }
             }
         }
@@ -1243,7 +1247,7 @@ abstract class SkinRenderer
 
             foreach ($cubePoints as $cubePoint)
             {
-                $cubePoint->getPoint()->preProject(0, 0, 0, $parts_angles[$faceName]['cos_alpha'], $parts_angles[$faceName]['sin_alpha'], $parts_angles[$faceName]['cos_omega'], $parts_angles[$faceName]['sin_omega']);
+                $cubePoint->getPoint()->preProject(new CoordsXYZ(0, 0, 0), $parts_angles[$faceName]['cos_alpha'], $parts_angles[$faceName]['sin_alpha'], $parts_angles[$faceName]['cos_omega'], $parts_angles[$faceName]['sin_omega']);
                 $cubePoint->getPoint()->project();
 
                 if ($cubeMaxDepthFaces->getPoint()->getDepth() > $cubePoint->getPoint()->getDepth())

@@ -6,14 +6,15 @@ use function cos;
 use function count;
 use function min;
 use function max;
+use function assert;
 
 /**
  * Class Point
  */
 final class Point
 {
-    private array $_originCoord;
-    private array $_destCoord = [];
+    private CoordsXYZ $_originCoord;
+    private CoordsXYZ|null $_destCoord = null;
     private bool $_isProjected = false;
     private bool $_isPreProjected = false;
 
@@ -24,73 +25,74 @@ final class Point
 
     /**
      * Point constructor.
-     * @param array $originCoord
+     * @param CoordsXYZ|null $originCoord
      * @param float $alpha
      * @param float $omega
      */
-    public function __construct(array $originCoord, float $alpha, float $omega)
+    public function __construct(CoordsXYZ|null $originCoord, float $alpha, float $omega)
     {
         $this->sinAlpha = sin($alpha);
         $this->cosAlpha = cos($alpha);
         $this->sinOmega = sin($omega);
         $this->cosOmega = cos($omega);
 
-        if (count($originCoord) === 3)
+        if ($originCoord !== null)
         {
-            $this->_originCoord = [
-                'x' => ($originCoord['x'] ?? 0),
-                'y' => ($originCoord['y'] ?? 0),
-                'z' => ($originCoord['z'] ?? 0),
-            ];
+            $this->_originCoord = $originCoord;
         }
         else
         {
-            $this->_originCoord = ['x' => 0, 'y' => 0, 'z' => 0];
+            $this->_originCoord = new CoordsXYZ(0, 0, 0);
         }
     }
 
     public function project(): void
     {
         // 1, 0, 1, 0
-        $x = $this->_originCoord['x'];
-        $y = $this->_originCoord['y'];
-        $z = $this->_originCoord['z'];
-        $this->_destCoord['x'] = $x * $this->cosOmega + $z * $this->sinOmega;
-        $this->_destCoord['y'] = $x * $this->sinAlpha * $this->sinOmega + $y * $this->cosAlpha - $z * $this->sinAlpha * $this->cosOmega;
-        $this->_destCoord['z'] = -$x * $this->cosAlpha * $this->sinOmega + $y * $this->sinAlpha + $z * $this->cosAlpha * $this->cosOmega;
+        $x = $this->_originCoord->x;
+        $y = $this->_originCoord->y;
+        $z = $this->_originCoord->z;
+        $this->_destCoord = new CoordsXYZ(
+            x: $x * $this->cosOmega + $z * $this->sinOmega,
+            y: $x * $this->sinAlpha * $this->sinOmega + $y * $this->cosAlpha - $z * $this->sinAlpha * $this->cosOmega,
+            z: -$x * $this->cosAlpha * $this->sinOmega + $y * $this->sinAlpha + $z * $this->cosAlpha * $this->cosOmega,
+        );
         $this->_isProjected = true;
-        SkinRenderer::$minX = (int)min(SkinRenderer::$minX, $this->_destCoord['x']);
-        SkinRenderer::$maxX = (int)max(SkinRenderer::$maxX, $this->_destCoord['x']);
-        SkinRenderer::$minY = (int)min(SkinRenderer::$minY, $this->_destCoord['y']);
-        SkinRenderer::$maxY = (int)max(SkinRenderer::$maxY, $this->_destCoord['y']);
+        SkinRenderer::$minX = (int)min(SkinRenderer::$minX, $this->_destCoord->x);
+        SkinRenderer::$maxX = (int)max(SkinRenderer::$maxX, $this->_destCoord->x);
+        SkinRenderer::$minY = (int)min(SkinRenderer::$minY, $this->_destCoord->y);
+        SkinRenderer::$maxY = (int)max(SkinRenderer::$maxY, $this->_destCoord->y);
     }
 
-    public function preProject(int $dx, int $dy, int $dz, float $cosAlpha, float $sinAlpha, float $cosOmega, float $sinOmega): void
+    public function preProject(CoordsXYZ $delta, float $cosAlpha, float $sinAlpha, float $cosOmega, float $sinOmega): void
     {
         if (!$this->_isPreProjected)
         {
-            $x = $this->_originCoord['x'] - $dx;
-            $y = $this->_originCoord['y'] - $dy;
-            $z = $this->_originCoord['z'] - $dz;
-            $this->_originCoord['x'] = $x * $cosOmega + $z * $sinOmega + $dx;
-            $this->_originCoord['y'] = $x * $sinAlpha * $sinOmega + $y * $cosAlpha - $z * $sinAlpha * $cosOmega + $dy;
-            $this->_originCoord['z'] = -$x * $cosAlpha * $sinOmega + $y * $sinAlpha + $z * $cosAlpha * $cosOmega + $dz;
+            $x = $this->_originCoord->x - $delta->x;
+            $y = $this->_originCoord->y - $delta->y;
+            $z = $this->_originCoord->z - $delta->z;
+            $this->_originCoord = new CoordsXYZ(
+                x: $x * $cosOmega + $z * $sinOmega + $delta->x,
+                y: $x * $sinAlpha * $sinOmega + $y * $cosAlpha - $z * $sinAlpha * $cosOmega + $delta->y,
+                z: -$x * $cosAlpha * $sinOmega + $y * $sinAlpha + $z * $cosAlpha * $cosOmega + $delta->z,
+            );
+
             $this->_isPreProjected = true;
         }
     }
 
     /**
-     * @return array
+     * @return CoordsXYZ
      */
-    public function getOriginCoord(): array
+    public function getOriginCoord(): CoordsXYZ
     {
         return $this->_originCoord;
     }
 
     /**
-     * @return array
+     * @return CoordsXYZ|null
      */
-    public function getDestCoord(): array
+    public function getDestCoord(): CoordsXYZ|null
     {
         return $this->_destCoord;
     }
@@ -104,7 +106,8 @@ final class Point
         {
             $this->project();
         }
-        return $this->_destCoord['z'];
+        assert($this->_destCoord !== null);
+        return $this->_destCoord->z;
     }
 
     /**
