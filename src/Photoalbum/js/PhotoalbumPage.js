@@ -37,6 +37,7 @@ $(document).ready(function () {
             //check to make sure there are more requests to make
             if (current < calls.length)
             {
+                $('#upload-progress').html('Bezig met verwerken foto ' + (current + 1) + ' van ' + calls.length);
                 //make the AJAX request with the given info from the array of objects
                 $.ajax(calls[current]
                 ).done(function() {
@@ -53,7 +54,7 @@ $(document).ready(function () {
             {
                 document.getElementById('newFile').value = null;
                 $('#add-photo-submit').val('Uploaden');
-
+                $('#upload-progress').html('');
                 alert(numSucceeded + ' bestanden succesvol geupload, ' + numFailed + ' mislukt.');
             }
         }

@@ -13,6 +13,7 @@
             <input type="file" id="newFile" name="newFiles[]" multiple required>
             <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('photoalbum', 'addPhoto') }}">
             <input id="add-photo-submit" class="btn btn-primary" type="submit" value="Uploaden">
+            <span id="upload-progress"></span>
         </form>
     @endif
 
