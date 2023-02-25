@@ -34,6 +34,8 @@ final class Photoalbum extends ModelWithCategory
         self::VIEWMODE_PORTFOLIO => 'Portfolio',
     ];
 
+    public const RIGHT_UPLOAD = 'photoalbum_upload';
+
     public string $notes = '';
     public bool $hideFromOverview = false;
     public int $viewMode = self::VIEWMODE_REGULAR;

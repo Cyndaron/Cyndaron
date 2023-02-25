@@ -9,10 +9,11 @@ use Cyndaron\View\Template\Template;
 
 final class PhotoalbumPage extends Page
 {
-    public function __construct(Photoalbum $album, int $viewMode = Photoalbum::VIEWMODE_REGULAR)
+    public function __construct(Photoalbum $album, ?User $currentUser, int $viewMode = Photoalbum::VIEWMODE_REGULAR)
     {
         $this->model = $album;
         parent::__construct($album->name);
+        $canUpload = $currentUser !== null && $currentUser->hasRight(Photoalbum::RIGHT_UPLOAD);
 
         if ($viewMode === Photoalbum::VIEWMODE_REGULAR)
         {
@@ -24,7 +25,9 @@ final class PhotoalbumPage extends Page
             $this->templateVars['pageImage'] = $album->getImage();
         }
 
-        if (User::isAdmin())
+        $this->templateVars['canUpload'] = $canUpload;
+
+        if ($canUpload)
         {
             $this->addScript('/src/Photoalbum/js/PhotoalbumPage.js');
         }

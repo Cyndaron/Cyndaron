@@ -6,6 +6,7 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\User\User;
 use Cyndaron\View\Page;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
@@ -19,19 +20,19 @@ use function count;
 final class PhotoalbumController extends Controller
 {
     protected array $postRoutes = [
-        'addPhoto' => ['level' => UserLevel::ADMIN, 'function' => 'addPhoto'],
+        'addPhoto' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_UPLOAD, 'function' => 'addPhoto'],
         'deletePhoto' => ['level' => UserLevel::ADMIN, 'function' => 'deletePhoto'],
     ];
 
     protected array $apiPostRoutes = [
         'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
-        'addPhoto' => ['level' => UserLevel::ADMIN, 'function' => 'addPhotoApi'],
+        'addPhoto' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_UPLOAD, 'function' => 'addPhotoApi'],
         'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
     ];
 
-    protected function routeGet(QueryBits $queryBits): Response
+    protected function routeGet(QueryBits $queryBits, ?User $currentUser): Response
     {
         $id = $queryBits->getInt(1);
         if ($id < 1)
@@ -44,7 +45,7 @@ final class PhotoalbumController extends Controller
         {
             return new JsonResponse(['error' => 'Album does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        $page = new PhotoalbumPage($album);
+        $page = new PhotoalbumPage($album, $currentUser);
         return new Response($page->render());
     }
 

@@ -182,7 +182,7 @@ final class ViewHelpers
             $album = Photoalbum::loadFromDatabase((int)$matches[1]);
             if ($album !== null)
             {
-                $page = new PhotoalbumPage($album, 1);
+                $page = new PhotoalbumPage($album, null, Photoalbum::VIEWMODE_PORTFOLIO);
                 return $page->drawSlider($album);
             }
             return '';

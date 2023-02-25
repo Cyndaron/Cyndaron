@@ -7,7 +7,7 @@
 @endsection
 
 @section ('contents')
-    @if ($isAdmin)
+    @if ($canUpload)
         <form method="post" action="/photoalbum/addPhoto/{{ $model->id }}" enctype="multipart/form-data" id="upload-photo">
             <label for="newFile">Foto toevoegen:</label>
             <input type="file" id="newFile" name="newFiles[]" multiple required>
