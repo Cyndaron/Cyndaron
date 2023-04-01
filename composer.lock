@@ -4371,12 +4371,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "90538aab13dced1209eb1b30e169308fea0fd783"
+                "reference": "859e034a7425f6fd0c30c58198f831ac6c7e6bfb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/90538aab13dced1209eb1b30e169308fea0fd783",
-                "reference": "90538aab13dced1209eb1b30e169308fea0fd783",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/859e034a7425f6fd0c30c58198f831ac6c7e6bfb",
+                "reference": "859e034a7425f6fd0c30c58198f831ac6c7e6bfb",
                 "shasum": ""
             },
             "conflict": {
@@ -4959,7 +4959,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-04T01:32:15+00:00"
+            "time": "2023-03-31T23:04:35+00:00"
         },
         {
             "name": "sebastian/diff",
