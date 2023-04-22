@@ -30,12 +30,12 @@ final class EventController extends Controller
     protected function getEventInfo(QueryBits $queryBits): JsonResponse
     {
         $eventId = $queryBits->getInt(2);
-        if ($eventId < 1)
+        $event = Event::loadFromDatabase($eventId);
+        if ($event === null)
         {
-            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        $event = new Event($eventId);
-        $event->load();
+
         $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM registration_tickettypes WHERE eventId=? ORDER BY price DESC', [$eventId]);
 
         $answer = [

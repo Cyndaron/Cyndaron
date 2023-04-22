@@ -179,13 +179,12 @@ final class UserController extends Controller
     protected function resetPassword(QueryBits $queryBits): JsonResponse
     {
         $userId = $queryBits->getInt(2);
-        if ($userId < 1)
+        $user = User::loadFromDatabase($userId);
+        if ($user === null)
         {
-            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'User not found!', Response::HTTP_NOT_FOUND]);
         }
 
-        $user = new User($userId);
-        $user->load();
         $user->resetPassword();
 
         return new JsonResponse();
@@ -194,14 +193,13 @@ final class UserController extends Controller
     protected function changeAvatar(QueryBits $queryBits, Request $request): Response
     {
         $userId = $queryBits->getInt(2);
-        if ($userId < 1)
+        $user = User::loadFromDatabase($userId);
+        if ($user === null)
         {
-            $page = new SimplePage('Fout bij veranderen avatar', 'Onbekende fout.');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            $page = new SimplePage('Fout bij veranderen avatar', 'Kon gebruiker niet vinden!');
+            return new Response($page->render(), Response::HTTP_NOT_FOUND);
         }
 
-        $user = new User($userId);
-        $user->load();
         $user->uploadNewAvatar($request);
 
         return new RedirectResponse('/user/manager');

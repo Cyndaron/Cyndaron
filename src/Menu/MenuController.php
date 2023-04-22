@@ -41,9 +41,13 @@ final class MenuController extends Controller
 
     protected function editItem(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
-        $index = $queryBits->getNullableInt(2);
-        $menuItem = new MenuItem($index);
-        $menuItem->load();
+        $index = $queryBits->getInt(2);
+        $menuItem = MenuItem::loadFromDatabase($index);
+        if ($menuItem === null)
+        {
+            throw new DatabaseError('Could not find menu item!');
+        }
+
         $menuItem->link = $post->getUrl('link');
         $menuItem->alias = $post->getUrl('alias');
         $menuItem->isDropdown = $post->getBool('isDropdown');

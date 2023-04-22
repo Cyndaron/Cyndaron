@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Registration;
 
 use Cyndaron\View\Template\ViewHelpers;
+use function assert;
 
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
@@ -17,8 +18,8 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     {
         if ($this->id)
         {
-            $this->model = new Event($this->id);
-            $this->model->load();
+            $this->model = Event::loadFromDatabase($this->id);
+            assert($this->model !== null);
             $this->content = $this->model->description;
             $this->contentTitle = $this->model->name;
             $this->templateVars['model'] = $this->model;

@@ -118,12 +118,11 @@ final class CategoryController extends Controller
     public function edit(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        if ($id < 1)
+        $category = Category::loadFromDatabase($id);
+        if ($category === null)
         {
-            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Category does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        $category = new Category($id);
-        $category->load();
         $category->name = $post->getHTML('name');
         $category->save();
 

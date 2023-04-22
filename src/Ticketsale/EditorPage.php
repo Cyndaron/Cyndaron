@@ -24,8 +24,8 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     {
         if ($this->id)
         {
-            $this->model = new Concert($this->id);
-            $this->model->load();
+            $this->model = Concert::loadFromDatabase($this->id);
+            assert($this->model !== null);
             $this->content = $this->model->description;
             $this->contentTitle = $this->model->name;
         }

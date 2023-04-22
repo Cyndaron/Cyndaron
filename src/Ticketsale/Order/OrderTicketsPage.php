@@ -10,12 +10,9 @@ use function strtoupper;
 
 final class OrderTicketsPage extends Page
 {
-    public function __construct(int $concertId)
+    public function __construct(Concert $concert)
     {
         $this->addScript('/src/Ticketsale/Order/js/OrderTicketsPage.js?r=1');
-
-        $concert = new Concert($concertId);
-        $concert->load();
 
         $shortCode = strtoupper(Setting::getShortCode());
         $specificTemplate = "OrderTicketsPage{$shortCode}-{$concert->id}";

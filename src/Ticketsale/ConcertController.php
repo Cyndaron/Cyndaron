@@ -60,8 +60,12 @@ final class ConcertController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $concert = new Concert($concertId);
-        $concert->load();
+        $concert = Concert::loadFromDatabase($concertId);
+        if ($concert === null)
+        {
+            return new JsonResponse(['error' => 'Concert does not exist!'], Response::HTTP_NOT_FOUND);
+        }
+
         /** @var TicketType[] $ticketTypes */
         $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concertId], 'ORDER BY price DESC');
 
@@ -91,7 +95,14 @@ final class ConcertController extends Controller
             $page = new SimplePage('Fout', 'Incorrect ID!');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
-        $page = new OrderTicketsPage($id);
+        $concert = Concert::loadFromDatabase($id);
+        if ($concert === null)
+        {
+            $page = new SimplePage('Fout', 'Concert bestaat niet!');
+            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+        }
+
+        $page = new OrderTicketsPage($concert);
         return new Response($page->render());
     }
 

@@ -22,6 +22,7 @@ use function implode;
 use function count;
 use function reset;
 use function array_filter;
+use function assert;
 
 final class Member extends Model
 {
@@ -53,8 +54,8 @@ final class Member extends Model
 
     public function getProfile(): User
     {
-        $profile = new User($this->userId);
-        $profile->load();
+        $profile = User::loadFromDatabase($this->userId);
+        assert($profile !== null);
         return $profile;
     }
 

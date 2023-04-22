@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
+use function assert;
+
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'mailform';
@@ -15,8 +17,8 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     {
         if ($this->id)
         {
-            $this->model = new Mailform((int)$this->id);
-            $this->model->load();
+            $this->model = Mailform::loadFromDatabase($this->id);
+            assert($this->model !== null);
             $this->content = $this->model->confirmationText ?? '';
             $this->contentTitle = $this->model->name;
         }
