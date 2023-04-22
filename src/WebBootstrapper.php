@@ -4,6 +4,7 @@ namespace Cyndaron;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Util\Error\BootFailure;
 use Cyndaron\Routing\Router;
+use Cyndaron\Util\Setting;
 use ErrorException;
 use RuntimeException;
 
@@ -79,6 +80,7 @@ final class WebBootstrapper
         }
 
         $this->connectToDatabase($settingsFile);
+        Setting::load();
     }
 
     private function handleRequest(): void
