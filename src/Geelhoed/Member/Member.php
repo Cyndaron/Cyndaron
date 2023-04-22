@@ -16,6 +16,7 @@ use Cyndaron\User\User;
 use Cyndaron\Util\Util;
 
 use function array_key_exists;
+use function is_int;
 use function uasort;
 use function usort;
 use function trim;
@@ -61,6 +62,10 @@ final class Member extends CacheableModel
     private static array $hoursCache = [];
     private static FileCache $hoursCacheHandle;
 
+    /** @var array<int, float> */
+    private static array $monthlyFeeCache = [];
+    private static FileCache $monthlyFeeCacheHandle;
+
     public function getProfile(): User
     {
         $profile = User::fetchById($this->userId);
@@ -82,7 +87,7 @@ final class Member extends CacheableModel
 
         if (empty(self::$hoursCache))
         {
-            $records = DBConnection::doQueryAndFetchAll('SELECT * FROM geelhoed_members_hours');
+            $records = DBConnection::doQueryAndFetchAll('SELECT * FROM geelhoed_members_hours') ?: [];
             foreach ($records as $record)
             {
                 $memberId = (int)$record['memberId'];
@@ -92,6 +97,7 @@ final class Member extends CacheableModel
                 }
 
                 $hourId = (int)$record['hourId'];
+                /** @var Hour $hour */
                 $hour = Hour::fetchById($hourId);
 
                 self::$hoursCache[$memberId][] = $hour;
@@ -108,6 +114,7 @@ final class Member extends CacheableModel
      */
     public function setHours(array $hours): void
     {
+        assert(is_int($this->id));
         DBConnection::doQuery('DELETE FROM geelhoed_members_hours WHERE memberId = ?', [$this->id]);
 
         if (empty($hours))
@@ -249,13 +256,7 @@ final class Member extends CacheableModel
         return ($highestFee + 5.00) - $discount;
     }
 
-    /**
-     * Calculate monthly total from the start of the next quarter.
-     *
-     * @throws \Exception
-     * @return float
-     */
-    public function getMonthlyFee(): float
+    private function getMonthlyFeeUncached(): float
     {
         $currentProfile = $this->getProfile();
         $membersOnSameAddress = self::fetchAll(
@@ -269,9 +270,9 @@ final class Member extends CacheableModel
         }
 
         $feesOnThisAddress = [];
-        foreach ($membersOnSameAddress as $member)
+        foreach ($membersOnSameAddress as $memberOnAddress)
         {
-            $feesOnThisAddress[$member->id] = $member->getMonthlyFeeRaw();
+            $feesOnThisAddress[$memberOnAddress->id] = $memberOnAddress->getMonthlyFeeRaw();
         }
 
         // Sort fees, with the highest coming first.
@@ -305,6 +306,44 @@ final class Member extends CacheableModel
 
         // Shouldn't happen, but in case it does, assume full price.
         return $this->getMonthlyFeeRaw();
+    }
+
+    private static function rebuildMonthlyFeeCache(): void
+    {
+        if (empty(self::$monthlyFeeCacheHandle))
+        {
+            self::$monthlyFeeCacheHandle = new FileCache('member_monthly_fee_cache', []);
+            self::$monthlyFeeCacheHandle->load(self::$monthlyFeeCache);
+        }
+
+        if (empty(self::$monthlyFeeCache))
+        {
+            $members = self::fetchAll();
+            foreach ($members as $member)
+            {
+                assert(is_int($member->id));
+                $fee = $member->getMonthlyFeeUncached();
+                self::$monthlyFeeCache[$member->id] = $fee;
+            }
+
+            self::$monthlyFeeCacheHandle->save(self::$monthlyFeeCache);
+        }
+    }
+
+    /**
+     * Calculate monthly total from the start of the next quarter.
+     *
+     * @throws \Exception
+     * @return float
+     */
+    public function getMonthlyFee(): float
+    {
+        if (empty(self::$monthlyFeeCache))
+        {
+            self::rebuildMonthlyFeeCache();
+        }
+
+        return self::$monthlyFeeCache[$this->id] ?? 0.0;
     }
 
     /**
@@ -480,5 +519,15 @@ final class Member extends CacheableModel
         }
 
         return $this->getProfile()->lastName;
+    }
+
+    public function save(): bool
+    {
+        $result = parent::save();
+        if ($result)
+        {
+            self::rebuildMonthlyFeeCache();
+        }
+        return $result;
     }
 }

@@ -14,9 +14,9 @@ final class FileCache
     public const CACHE_DIR = ROOT_DIR . '/cache/cyndaron';
 
     public readonly string $filename;
-    public readonly array|bool $allowedClasses;
+    public readonly array $allowedClasses;
 
-    public function __construct(string $cacheKey, array|bool $allowedClasses)
+    public function __construct(string $cacheKey, array $allowedClasses)
     {
         $this->filename = self::CACHE_DIR . "/$cacheKey.phps";
         $this->allowedClasses = $allowedClasses;

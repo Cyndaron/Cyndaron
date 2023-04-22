@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\DBAL;
 
 use Cyndaron\Util\FileCache;
+use function assert;
 
 abstract class CacheableModel extends Model
 {
@@ -28,6 +29,7 @@ abstract class CacheableModel extends Model
         foreach ($objects as $object)
         {
             assert($object->id !== null);
+            // @phpstan-ignore-next-line
             self::$cache[static::TABLE][$object->id] = $object;
         }
     }
@@ -39,6 +41,7 @@ abstract class CacheableModel extends Model
             return;
         }
 
+        // @phpstan-ignore-next-line
         self::$cache[static::TABLE] = [];
         $handle = new FileCache(self::getCacheKey(), [static::class]);
         $handle->load(self::$cache[static::TABLE]);
@@ -58,6 +61,7 @@ abstract class CacheableModel extends Model
         $result = parent::save();
         if ($result)
         {
+            // @phpstan-ignore-next-line
             self::$cache[static::TABLE][$this->id] = $this;
             self::saveCache();
         }

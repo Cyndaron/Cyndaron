@@ -14,7 +14,9 @@ final class Graduation extends Model
 
     public function getSport(): Sport
     {
-        return Sport::fetchById($this->sportId);
+        /** @var Sport $sport */
+        $sport = Sport::fetchById($this->sportId);
+        return $sport;
     }
 
     /**
