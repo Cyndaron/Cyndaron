@@ -3,16 +3,19 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Member;
 
+use Cyndaron\DBAL\CacheableModel;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Geelhoed\Sport;
 use Cyndaron\DBAL\Model;
+use Cyndaron\Util\FileCache;
 use Cyndaron\View\Page;
 use Cyndaron\User\User;
 use Cyndaron\Util\Util;
 
+use function array_key_exists;
 use function uasort;
 use function usort;
 use function trim;
@@ -24,7 +27,7 @@ use function reset;
 use function array_filter;
 use function assert;
 
-final class Member extends Model
+final class Member extends CacheableModel
 {
     public const TABLE = 'geelhoed_members';
     public const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'ibanHolder', 'paymentProblem', 'paymentProblemNote', 'freeParticipation', 'discount', 'temporaryStop', 'joinedAt', 'jbnNumber', 'jbnNumberLocation'];
@@ -52,6 +55,12 @@ final class Member extends Model
         'leergeld' => 'Stichting Leergeld',
     ];
 
+    private const HOURS_CACHE_KEY = 'geelhoed-hours-by-member';
+
+    /** @var array<int, Hour[]> */
+    private static array $hoursCache = [];
+    private static FileCache $hoursCacheHandle;
+
     public function getProfile(): User
     {
         $profile = User::fetchById($this->userId);
@@ -65,16 +74,33 @@ final class Member extends Model
      */
     public function getHours(): array
     {
-        $sql = 'SELECT * FROM geelhoed_hours WHERE id IN (SELECT hourId FROM geelhoed_members_hours WHERE memberId = ?)';
-        $hoursArr = DBConnection::doQueryAndFetchAll($sql, [$this->id]) ?: [];
-        $hours = [];
-        foreach ($hoursArr as $hourArr)
+        if (empty(self::$hoursCacheHandle))
         {
-            $hour = Hour::fromArray($hourArr);
-            $hours[] = $hour;
+            self::$hoursCacheHandle = new FileCache(self::HOURS_CACHE_KEY, [Hour::class]);
+            self::$hoursCacheHandle->load(self::$hoursCache);
         }
 
-        return $hours;
+        if (empty(self::$hoursCache))
+        {
+            $records = DBConnection::doQueryAndFetchAll('SELECT * FROM geelhoed_members_hours');
+            foreach ($records as $record)
+            {
+                $memberId = (int)$record['memberId'];
+                if (!array_key_exists($memberId, self::$hoursCache))
+                {
+                    self::$hoursCache[$memberId] = [];
+                }
+
+                $hourId = (int)$record['hourId'];
+                $hour = Hour::fetchById($hourId);
+
+                self::$hoursCache[$memberId][] = $hour;
+            }
+
+            self::$hoursCacheHandle->save(self::$hoursCache);
+        }
+
+        return self::$hoursCache[$this->id] ?? [];
     }
 
     /**
@@ -97,6 +123,9 @@ final class Member extends Model
 
         $sql = trim($sql, ' ,');
         DBConnection::doQuery($sql);
+
+        self::$hoursCache[$this->id] = $hours;
+        self::$hoursCacheHandle->save(self::$hoursCache);
     }
 
     public function getPhoneNumbers(): array
@@ -297,6 +326,20 @@ final class Member extends Model
      */
     public static function fetchAll(array $where = [], array $args = [], string $afterWhere = 'ORDER BY lastname,tussenvoegsel,firstname'): array
     {
+        $saveResultToCache = false;
+        if ($where === [] && $args === [] && $afterWhere === 'ORDER BY lastname,tussenvoegsel,firstname')
+        {
+            self::loadCache();
+
+            if (!empty(self::$cache[self::TABLE]))
+            {
+                return self::$cache[self::TABLE];
+            }
+
+            $saveResultToCache = true;
+        }
+
+
         $whereString = '';
         if (count($where) > 0)
         {
@@ -312,6 +355,12 @@ final class Member extends Model
                 $obj->updateFromArray($result);
                 $ret[] = $obj;
             }
+        }
+
+        if ($saveResultToCache)
+        {
+            self::$cache[self::TABLE] = $ret;
+            self::saveCache();
         }
 
         return $ret;

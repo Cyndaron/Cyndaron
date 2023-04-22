@@ -71,14 +71,4 @@ final class Hour extends CacheableModel
     {
         return self::fetchAll(['minAge <= ? AND (maxAge IS NULL OR maxAge >= ?)'], [$age, $age], 'ORDER BY locationId, day');
     }
-
-    public function save(): bool
-    {
-        $result = parent::save();
-        if ($result)
-        {
-            self::$cache[$this->id] = $this;
-        }
-        return $result;
-    }
 }

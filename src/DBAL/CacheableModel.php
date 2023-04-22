@@ -3,31 +3,23 @@ declare(strict_types=1);
 
 namespace Cyndaron\DBAL;
 
-use Cyndaron\Util\Util;
-use function file_exists;
-use function file_get_contents;
-use function file_put_contents;
-use function serialize;
-use function unserialize;
-use const ROOT_DIR;
+use Cyndaron\Util\FileCache;
 
 abstract class CacheableModel extends Model
 {
     /** @var array<string, static[]> */
     protected static array $cache = [];
 
-    protected const CACHE_DIR = ROOT_DIR . '/cache/cyndaron';
-
-    protected static function getCacheFile(): string
+    protected static function getCacheKey(): string
     {
-        return self::CACHE_DIR . '/database-' . static::TABLE . '.phps';
+        return 'database-' . static::TABLE;
     }
 
-    protected static function saveCacheToFile(): void
+    protected static function saveCache(): void
     {
-        $cacheFile = self::getCacheFile();
-        Util::ensureDirectoryExists(self::CACHE_DIR);
-        file_put_contents($cacheFile, serialize(self::$cache[static::TABLE]));
+        $cacheKey = self::getCacheKey();
+        $handle = new FileCache($cacheKey, [static::class]);
+        $handle->save(self::$cache[static::TABLE]);
     }
 
     protected static function createCache(): void
@@ -47,23 +39,12 @@ abstract class CacheableModel extends Model
             return;
         }
 
-        $cacheFile = self::getCacheFile();
-        if (file_exists($cacheFile))
-        {
-            $serialized = file_get_contents($cacheFile);
-            if ($serialized)
-            {
-                $unserialized = unserialize($serialized, [static::class]);
-                if ($unserialized)
-                {
-                    self::$cache[static::TABLE] = $unserialized;
-                    return;
-                }
-            }
-        }
+        self::$cache[static::TABLE] = [];
+        $handle = new FileCache(self::getCacheKey(), [static::class]);
+        $handle->load(self::$cache[static::TABLE]);
 
         self::createCache();
-        self::saveCacheToFile();
+        self::saveCache();
     }
 
     public static function fetchById(int $id): ?static
@@ -78,7 +59,7 @@ abstract class CacheableModel extends Model
         if ($result)
         {
             self::$cache[static::TABLE][$this->id] = $this;
-            self::saveCacheToFile();
+            self::saveCache();
         }
 
         return $result;

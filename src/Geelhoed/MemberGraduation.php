@@ -3,7 +3,9 @@ namespace Cyndaron\Geelhoed;
 
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\DBAL\Model;
+use Cyndaron\Util\FileCache;
 use function array_key_exists;
+use function in_array;
 
 final class MemberGraduation extends Model
 {
@@ -16,13 +18,45 @@ final class MemberGraduation extends Model
 
     private static array $graduationCache = [];
 
+    /** @var array<int, MemberGraduation[]> */
+    private static array $byMemberCache = [];
+    private static FileCache $byMemberCacheHandle;
+
+    private static function rebuildByMemberCache(): void
+    {
+        if (empty(self::$byMemberCacheHandle))
+        {
+            self::$byMemberCacheHandle = new FileCache('member_graduation_by_member', [self::class]);
+            self::$byMemberCacheHandle->load(self::$byMemberCache);
+        }
+
+        $memberGraduations = self::fetchAll([], [], 'ORDER BY date');
+        foreach ($memberGraduations as $memberGraduation)
+        {
+            $memberId = $memberGraduation->memberId;
+            if (!array_key_exists($memberId, self::$byMemberCache))
+            {
+                self::$byMemberCache[$memberId] = [];
+            }
+
+            self::$byMemberCache[$memberId][] = $memberGraduation;
+        }
+
+        self::$byMemberCacheHandle->save(self::$byMemberCache);
+    }
+
     /**
      * @param Member $member
-     * @return static[]
+     * @return MemberGraduation[]
      */
     public static function fetchAllByMember(Member $member): array
     {
-        return self::fetchAll(['memberId = ?'], [$member->id], 'ORDER BY date');
+        if (empty(self::$byMemberCache))
+        {
+            self::rebuildByMemberCache();
+        }
+
+        return self::$byMemberCache[$member->id] ?? [];
     }
 
     public function getGraduation(): Graduation
@@ -33,5 +67,27 @@ final class MemberGraduation extends Model
         }
 
         return self::$graduationCache[$this->graduationId];
+    }
+
+    public static function deleteById(int $id): bool
+    {
+        $result = parent::deleteById($id);
+        if ($result)
+        {
+            self::rebuildByMemberCache();
+        }
+
+        return $result;
+    }
+
+    public function save(): bool
+    {
+        $result = parent::save();
+        if ($result)
+        {
+            self::rebuildByMemberCache();
+        }
+
+        return $result;
     }
 }
