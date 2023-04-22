@@ -14,7 +14,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     {
         if ($this->id)
         {
-            $photoalbum = Photoalbum::loadFromDatabase($this->id);
+            $photoalbum = Photoalbum::fetchById($this->id);
             if ($photoalbum !== null)
             {
                 $this->model = $photoalbum;

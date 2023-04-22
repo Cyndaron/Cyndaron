@@ -25,7 +25,7 @@ final class LocationController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $location = Location::loadFromDatabase($id);
+        $location = Location::fetchById($id);
 
         if ($location === null)
         {

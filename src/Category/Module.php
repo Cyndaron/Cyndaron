@@ -45,7 +45,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
             return 'Fotoalbums';
         }
 
-        $category = Category::loadFromDatabase((int)$linkParts[1]);
+        $category = Category::fetchById((int)$linkParts[1]);
         return $category !== null ? $category->name : null;
     }
 

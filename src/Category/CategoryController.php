@@ -63,7 +63,7 @@ final class CategoryController extends Controller
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
 
-        $category = Category::loadFromDatabase((int)$id);
+        $category = Category::fetchById((int)$id);
         assert($category !== null);
         $page = new CategoryIndexPage($category);
         return new Response($page->render());
@@ -118,7 +118,7 @@ final class CategoryController extends Controller
     public function edit(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        $category = Category::loadFromDatabase($id);
+        $category = Category::fetchById($id);
         if ($category === null)
         {
             return new JsonResponse(['error' => 'Category does not exist!'], Response::HTTP_NOT_FOUND);
@@ -136,7 +136,7 @@ final class CategoryController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $category = Category::loadFromDatabase($categoryId);
+        $category = Category::fetchById($categoryId);
         if ($category === null)
         {
             return new JsonResponse(['error' => 'Category does not exist!'], Response::HTTP_NOT_FOUND);
@@ -179,7 +179,7 @@ final class CategoryController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $category = Category::loadFromDatabase($categoryId);
+        $category = Category::fetchById($categoryId);
         if ($category === null)
         {
             return new JsonResponse(['error' => 'Category does not exist!'], Response::HTTP_NOT_FOUND);

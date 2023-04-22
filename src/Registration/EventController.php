@@ -30,7 +30,7 @@ final class EventController extends Controller
     protected function getEventInfo(QueryBits $queryBits): JsonResponse
     {
         $eventId = $queryBits->getInt(2);
-        $event = Event::loadFromDatabase($eventId);
+        $event = Event::fetchById($eventId);
         if ($event === null)
         {
             return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
@@ -57,7 +57,7 @@ final class EventController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $event = Event::loadFromDatabase($id);
+        $event = Event::fetchById($id);
         if ($event === null)
         {
             return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
@@ -73,7 +73,7 @@ final class EventController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $event = Event::loadFromDatabase($id);
+        $event = Event::fetchById($id);
         if ($event === null)
         {
             return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
@@ -89,7 +89,7 @@ final class EventController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $event = Event::loadFromDatabase($id);
+        $event = Event::fetchById($id);
         if ($event === null)
         {
             throw new Exception('Evenement niet gevonden!');

@@ -34,14 +34,14 @@ final class Hour extends Model
 
     public function getLocation(): Location
     {
-        $ret = Location::loadFromDatabase($this->locationId);
+        $ret = Location::fetchById($this->locationId);
         assert($ret !== null);
         return $ret;
     }
 
     public function getSport(): Sport
     {
-        $ret = Sport::loadFromDatabase((int)$this->sportId);
+        $ret = Sport::fetchById((int)$this->sportId);
         assert($ret !== null);
         return $ret;
     }
@@ -57,7 +57,7 @@ final class Hour extends Model
 
     public function getDepartment(): Department
     {
-        $ret = Department::loadFromDatabase((int)$this->departmentId);
+        $ret = Department::fetchById((int)$this->departmentId);
         assert($ret !== null);
         return $ret;
     }
@@ -72,7 +72,7 @@ final class Hour extends Model
      * @throws \Exception
      * @return Hour|null
      */
-    public static function loadFromDatabase(int $id): ?Hour
+    public static function fetchById(int $id): ?Hour
     {
         if (array_key_exists($id, self::$cache))
         {
@@ -80,7 +80,7 @@ final class Hour extends Model
         }
 
         /** @var static $object */
-        $object = parent::loadFromDatabase($id);
+        $object = parent::fetchById($id);
         self::$cache[$id] = $object;
 
         return $object;

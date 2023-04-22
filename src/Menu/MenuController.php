@@ -42,7 +42,7 @@ final class MenuController extends Controller
     protected function editItem(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
         $index = $queryBits->getInt(2);
-        $menuItem = MenuItem::loadFromDatabase($index);
+        $menuItem = MenuItem::fetchById($index);
         if ($menuItem === null)
         {
             throw new DatabaseError('Could not find menu item!');

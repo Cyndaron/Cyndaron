@@ -179,7 +179,7 @@ final class ViewHelpers
     {
         $text = preg_replace_callback('/%slider\|(\d+)%/', static function($matches)
         {
-            $album = Photoalbum::loadFromDatabase((int)$matches[1]);
+            $album = Photoalbum::fetchById((int)$matches[1]);
             if ($album !== null)
             {
                 $page = new PhotoalbumPage($album, null, Photoalbum::VIEWMODE_PORTFOLIO);

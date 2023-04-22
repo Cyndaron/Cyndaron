@@ -32,7 +32,7 @@ final class FriendlyUrlController extends Controller
     public function addToMenu(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        $entry = FriendlyUrl::loadFromDatabase($id);
+        $entry = FriendlyUrl::fetchById($id);
         if ($entry === null)
         {
             return new JsonResponse(['error' => 'No link specified!'], Response::HTTP_BAD_REQUEST);

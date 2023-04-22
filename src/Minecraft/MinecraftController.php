@@ -29,7 +29,7 @@ final class MinecraftController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $server = Server::loadFromDatabase($serverId);
+        $server = Server::fetchById($serverId);
         if ($server === null)
         {
             return new JsonResponse(['error' => 'Server does not exist!'], Response::HTTP_NOT_FOUND);

@@ -60,7 +60,7 @@ final class ConcertController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $concert = Concert::loadFromDatabase($concertId);
+        $concert = Concert::fetchById($concertId);
         if ($concert === null)
         {
             return new JsonResponse(['error' => 'Concert does not exist!'], Response::HTTP_NOT_FOUND);
@@ -95,7 +95,7 @@ final class ConcertController extends Controller
             $page = new SimplePage('Fout', 'Incorrect ID!');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
-        $concert = Concert::loadFromDatabase($id);
+        $concert = Concert::fetchById($id);
         if ($concert === null)
         {
             $page = new SimplePage('Fout', 'Concert bestaat niet!');
@@ -114,7 +114,7 @@ final class ConcertController extends Controller
             $page = new SimplePage('Fout', 'Incorrect ID!');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
-        $concert = Concert::loadFromDatabase($id);
+        $concert = Concert::fetchById($id);
         assert($concert !== null);
         $page = new ConcertOrderOverviewPage($concert);
         return new Response($page->render());
@@ -128,7 +128,7 @@ final class ConcertController extends Controller
             $page = new SimplePage('Fout', 'Incorrect ID!');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
-        $concert = Concert::loadFromDatabase($id);
+        $concert = Concert::fetchById($id);
         assert($concert !== null);
         $page = new ShowReservedSeats($concert);
         return new Response($page->render());
@@ -141,7 +141,7 @@ final class ConcertController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $concert = Concert::loadFromDatabase($id);
+        $concert = Concert::fetchById($id);
         if ($concert === null)
         {
             throw new Exception('Concert niet gevonden!');

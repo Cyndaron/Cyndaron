@@ -33,7 +33,7 @@ final class OrderTicketTypes extends Model
     {
         if ($this->order === null)
         {
-            $this->order = Order::loadFromDatabase($this->orderId);
+            $this->order = Order::fetchById($this->orderId);
         }
 
         assert($this->order !== null);
@@ -51,7 +51,7 @@ final class OrderTicketTypes extends Model
     {
         if ($this->ticketType === null)
         {
-            $this->ticketType = TicketType::loadFromDatabase($this->tickettypeId);
+            $this->ticketType = TicketType::fetchById($this->tickettypeId);
         }
 
         assert($this->ticketType !== null);

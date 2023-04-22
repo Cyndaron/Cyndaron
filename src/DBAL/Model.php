@@ -36,7 +36,7 @@ abstract class Model
      * @throws Exception
      * @return static|null
      */
-    public static function loadFromDatabase(int $id): ?Model
+    public static function fetchById(int $id): ?Model
     {
         // Needed to make sure an object of the derived class is returned, not one of the base class.
         $object = new static($id);

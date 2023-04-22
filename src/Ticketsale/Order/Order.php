@@ -59,7 +59,7 @@ final class Order extends Model
         }
 
         /** @var Concert|null $concert */
-        $concert = Concert::loadFromDatabase($this->concertId);
+        $concert = Concert::fetchById($this->concertId);
         assert($concert !== null);
 
         DBConnection::doQuery('UPDATE ticketsale_orders SET `isPaid`=1 WHERE id=?', [$this->id]);
@@ -131,7 +131,7 @@ final class Order extends Model
 
     public function getConcert(): Concert
     {
-        $concert = Concert::loadFromDatabase($this->concertId);
+        $concert = Concert::fetchById($this->concertId);
         assert($concert !== null);
         return $concert;
     }

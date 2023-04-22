@@ -40,7 +40,7 @@ final class MemberController extends Controller
         }
         $ret = [];
 
-        $member = Member::loadFromDatabase($id);
+        $member = Member::fetchById($id);
         if ($member !== null)
         {
             $ret = array_merge($member->asArray(), $member->getProfile()->asArray());
@@ -82,7 +82,7 @@ final class MemberController extends Controller
         // Edit existing
         if ($memberId > 0)
         {
-            $member = Member::loadFromDatabase($memberId);
+            $member = Member::fetchById($memberId);
             if ($member === null)
             {
                 throw new \Exception('Member not found!');
@@ -205,7 +205,7 @@ final class MemberController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $member = Member::loadFromDatabase($id);
+        $member = Member::fetchById($id);
         Member::deleteById($id);
         if ($member !== null && $member->userId > 0)
         {

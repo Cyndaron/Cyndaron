@@ -40,7 +40,7 @@ final class ContestDate extends Model
 
     public function getContest(): Contest
     {
-        $contest = Contest::loadFromDatabase($this->contestId);
+        $contest = Contest::fetchById($this->contestId);
         assert($contest !== null);
         return $contest;
     }

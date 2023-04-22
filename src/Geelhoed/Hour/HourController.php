@@ -19,7 +19,7 @@ final class HourController extends Controller
         {
             return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
         }
-        $hour = Hour::loadFromDatabase($id);
+        $hour = Hour::fetchById($id);
         if ($hour === null)
         {
             return new Response('Les bestaat niet!', Response::HTTP_NOT_FOUND);

@@ -58,7 +58,7 @@ final class MailformController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $form = Mailform::loadFromDatabase($id);
+        $form = Mailform::fetchById($id);
 
         try
         {
@@ -181,7 +181,7 @@ final class MailformController extends Controller
     public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        $mailform = Mailform::loadFromDatabase($id);
+        $mailform = Mailform::fetchById($id);
         if ($mailform === null)
         {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);

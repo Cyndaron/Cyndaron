@@ -137,7 +137,7 @@ final class UserController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = User::loadFromDatabase($id);
+        $user = User::fetchById($id);
         if ($user === null)
         {
             return new JsonResponse(['error' => 'User not found!', Response::HTTP_NOT_FOUND]);
@@ -179,7 +179,7 @@ final class UserController extends Controller
     protected function resetPassword(QueryBits $queryBits): JsonResponse
     {
         $userId = $queryBits->getInt(2);
-        $user = User::loadFromDatabase($userId);
+        $user = User::fetchById($userId);
         if ($user === null)
         {
             return new JsonResponse(['error' => 'User not found!', Response::HTTP_NOT_FOUND]);
@@ -193,7 +193,7 @@ final class UserController extends Controller
     protected function changeAvatar(QueryBits $queryBits, Request $request): Response
     {
         $userId = $queryBits->getInt(2);
-        $user = User::loadFromDatabase($userId);
+        $user = User::fetchById($userId);
         if ($user === null)
         {
             $page = new SimplePage('Fout bij veranderen avatar', 'Kon gebruiker niet vinden!');

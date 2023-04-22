@@ -210,7 +210,7 @@ final class OrderController extends Controller
 
         $concertId = $post->getInt('concert_id');
 
-        $concert = Concert::loadFromDatabase($concertId);
+        $concert = Concert::fetchById($concertId);
         if ($concert === null)
         {
             throw new InvalidOrder('Concert niet gevonden!');
@@ -533,7 +533,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         /** @var Order $order */
-        $order = Order::loadFromDatabase($id);
+        $order = Order::fetchById($id);
         $order->delete();
 
         return new JsonResponse();
@@ -547,7 +547,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         /** @var Order $order */
-        $order = Order::loadFromDatabase($id);
+        $order = Order::fetchById($id);
         $order->setIsPaid();
 
         return new JsonResponse();
@@ -561,7 +561,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         /** @var Order $order */
-        $order = Order::loadFromDatabase($id);
+        $order = Order::fetchById($id);
         $order->setIsSent();
 
         return new JsonResponse();
@@ -570,7 +570,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
     protected function pay(QueryBits $queryBits): Response
     {
         $orderId = $queryBits->getInt(2);
-        $order = Order::loadFromDatabase($orderId);
+        $order = Order::fetchById($orderId);
         if ($order === null)
         {
             $page = new SimplePage('Fout', 'Order niet gevonden!');
@@ -678,7 +678,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
     protected function getTickets(QueryBits $queryBits): Response
     {
         $orderId = $queryBits->getInt(2);
-        $order = Order::loadFromDatabase($orderId);
+        $order = Order::fetchById($orderId);
         if ($order === null)
         {
             $page = new SimplePage('Fout', 'Bestelling niet gevonden!');
@@ -762,7 +762,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
     protected function checkInGet(QueryBits $queryBits): Response
     {
         $concertId = $queryBits->getInt(2);
-        $concert = Concert::loadFromDatabase($concertId);
+        $concert = Concert::fetchById($concertId);
         if ($concert === null)
         {
             throw new \Exception('Concert niet gevonden!');
@@ -816,7 +816,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
     protected function checkInPost(QueryBits $queryBits, RequestParameters $post): Response
     {
         $concertId = $queryBits->getInt(2);
-        $concert = Concert::loadFromDatabase($concertId);
+        $concert = Concert::fetchById($concertId);
         if ($concert === null)
         {
             throw new \Exception('Concert niet gevonden!');
@@ -851,7 +851,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         if ($queryBits->hasIndex(3))
         {
             $orderId = $queryBits->getInt(2);
-            $order = Order::loadFromDatabase($orderId);
+            $order = Order::fetchById($orderId);
             if ($order !== null && $order->isPaid)
             {
                 $secretCode = $queryBits->getString(3);

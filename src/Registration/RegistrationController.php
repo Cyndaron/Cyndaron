@@ -36,7 +36,7 @@ final class RegistrationController extends Controller
         {
             $eventId = $post->getInt('event_id');
             /** @var Event|null $eventObj */
-            $eventObj = Event::loadFromDatabase($eventId);
+            $eventObj = Event::fetchById($eventId);
             if ($eventObj === null)
             {
                 throw new Exception('Evenement niet gevonden!');
@@ -82,7 +82,7 @@ final class RegistrationController extends Controller
         $eventId = $post->getInt('event_id');
 
         /** @var Event|null $eventObj */
-        $eventObj = Event::loadFromDatabase($eventId);
+        $eventObj = Event::fetchById($eventId);
         if ($eventObj === null)
         {
             throw new Exception('Evenement niet gevonden!');
@@ -215,7 +215,7 @@ final class RegistrationController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         /** @var Registration $registration */
-        $registration = Registration::loadFromDatabase($id);
+        $registration = Registration::fetchById($id);
         $registration->delete();
 
         return new JsonResponse();
@@ -229,7 +229,7 @@ final class RegistrationController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         /** @var Registration $registration */
-        $registration = Registration::loadFromDatabase($id);
+        $registration = Registration::fetchById($id);
         $status = $post->getInt('status');
         switch ($status)
         {
@@ -252,7 +252,7 @@ final class RegistrationController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         /** @var Registration $registration */
-        $registration = Registration::loadFromDatabase($id);
+        $registration = Registration::fetchById($id);
         $registration->setIsPaid();
 
         return new JsonResponse();

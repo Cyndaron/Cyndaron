@@ -83,7 +83,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu, Template
 
         if ($linkParts[0] === 'location' && $linkParts[1] === 'view')
         {
-            $location = Location::loadFromDatabase((int)$linkParts[2]);
+            $location = Location::fetchById((int)$linkParts[2]);
             if ($location === null)
             {
                 return null;

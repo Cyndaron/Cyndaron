@@ -54,7 +54,7 @@ final class Member extends Model
 
     public function getProfile(): User
     {
-        $profile = User::loadFromDatabase($this->userId);
+        $profile = User::fetchById($this->userId);
         assert($profile !== null);
         return $profile;
     }
@@ -71,7 +71,7 @@ final class Member extends Model
         foreach ($hoursArr as $hourArr)
         {
             /** @var Hour $hour */
-            $hour = Hour::loadFromDatabase((int)$hourArr['id']);
+            $hour = Hour::fetchById((int)$hourArr['id']);
             $hours[] = $hour;
         }
 
@@ -390,7 +390,7 @@ final class Member extends Model
         $relatedMembers = DBConnection::doQueryAndFetchAll('SELECT * FROM geelhoed_users_members WHERE userId = ?', [$user->id]) ?: [];
         foreach ($relatedMembers as $relatedMemberArray)
         {
-            $member = self::loadFromDatabase((int)$relatedMemberArray['memberId']);
+            $member = self::fetchById((int)$relatedMemberArray['memberId']);
             if ($member !== null)
             {
                 $ret[] = $member;

@@ -39,7 +39,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
 
     public function url(array $linkParts): ?string
     {
-        $model = StaticPageModel::loadFromDatabase((int)$linkParts[1]);
+        $model = StaticPageModel::fetchById((int)$linkParts[1]);
         return $model !== null ? $model->name : null;
     }
 

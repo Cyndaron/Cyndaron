@@ -16,7 +16,7 @@ final class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
     {
         if ($this->id)
         {
-            $this->model = PhotoalbumCaption::loadFromDatabase($this->id);
+            $this->model = PhotoalbumCaption::fetchById($this->id);
             $this->content = $this->model->caption ?? '';
         }
         $_SESSION['referrer'] = Router::referrer();

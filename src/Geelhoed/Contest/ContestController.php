@@ -111,7 +111,7 @@ final class ContestController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $contest = Contest::loadFromDatabase($id);
+        $contest = Contest::fetchById($id);
         if ($contest === null)
         {
             $page = new SimplePage('Onbekende wedstrijd', 'Kon de wedstrijd niet vinden');
@@ -129,7 +129,7 @@ final class ContestController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $contest = Contest::loadFromDatabase($id);
+        $contest = Contest::fetchById($id);
         if ($contest === null)
         {
             $page = new SimplePage('Onbekende wedstrijd', 'Kon de wedstrijd niet vinden');
@@ -137,7 +137,7 @@ final class ContestController extends Controller
         }
 
         $memberId = $post->getInt('memberId');
-        $member = Member::loadFromDatabase($memberId);
+        $member = Member::fetchById($memberId);
         if ($member === null)
         {
             $page = new SimplePage('Onbekend lid', 'Kon het lid niet vinden.');
@@ -320,7 +320,7 @@ final class ContestController extends Controller
         {
             return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
         }
-        $contest = Contest::loadFromDatabase($id);
+        $contest = Contest::fetchById($id);
         if ($contest === null)
         {
             return new Response('Kon de wedstrijd niet vinden!', Response::HTTP_NOT_FOUND);
@@ -336,7 +336,7 @@ final class ContestController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $contest = Contest::loadFromDatabase($id);
+        $contest = Contest::fetchById($id);
         if ($contest === null)
         {
             throw new Exception('Wedstrijd niet gevonden!');
@@ -408,7 +408,7 @@ final class ContestController extends Controller
     public function removeSubscription(RequestParameters $post): JsonResponse
     {
         $id = $post->getInt('id');
-        $contestMember = ContestMember::loadFromDatabase($id);
+        $contestMember = ContestMember::fetchById($id);
         if ($contestMember === null)
         {
             return new JsonResponse(['error' => 'Contest member does not exist!'], Response::HTTP_NOT_FOUND);
@@ -422,7 +422,7 @@ final class ContestController extends Controller
     public function delete(RequestParameters $post): JsonResponse
     {
         $id = $post->getInt('id');
-        $contest = Contest::loadFromDatabase($id);
+        $contest = Contest::fetchById($id);
         if ($contest === null)
         {
             return new JsonResponse(['error' => 'Contest does not exist!'], Response::HTTP_NOT_FOUND);
@@ -438,7 +438,7 @@ final class ContestController extends Controller
         $id = $post->getInt('id');
         if ($id > 0)
         {
-            $contest = Contest::loadFromDatabase($id);
+            $contest = Contest::fetchById($id);
             if ($contest === null)
             {
                 return new JsonResponse(['error' => 'Contest does not exist!'], Response::HTTP_NOT_FOUND);
@@ -467,7 +467,7 @@ final class ContestController extends Controller
     public function updatePaymentStatus(RequestParameters $post): JsonResponse
     {
         $id = $post->getInt('id');
-        $contestMember = ContestMember::loadFromDatabase($id);
+        $contestMember = ContestMember::fetchById($id);
         if ($contestMember === null)
         {
             return new JsonResponse(['error' => 'Contest member does not exist!'], Response::HTTP_NOT_FOUND);
@@ -601,7 +601,7 @@ final class ContestController extends Controller
         {
             return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
         }
-        $contest = Contest::loadFromDatabase($id);
+        $contest = Contest::fetchById($id);
         if ($contest === null)
         {
             return new Response('Wedstrijd bestaat niet!', Response::HTTP_NOT_FOUND);
@@ -631,7 +631,7 @@ final class ContestController extends Controller
         {
             return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
         }
-        $contest = Contest::loadFromDatabase($id);
+        $contest = Contest::fetchById($id);
         if ($contest === null)
         {
             return new Response('Wedstrijd bestaat niet!', Response::HTTP_NOT_FOUND);
@@ -666,7 +666,7 @@ final class ContestController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $contest = Contest::loadFromDatabase($contestId);
+        $contest = Contest::fetchById($contestId);
         if ($contest === null)
         {
             return new JsonResponse(['error' => 'Wedstrijd bestaat niet!'], Response::HTTP_NOT_FOUND);
@@ -702,7 +702,7 @@ final class ContestController extends Controller
         {
             return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
         }
-        $contestDate = ContestDate::loadFromDatabase($contestDateId);
+        $contestDate = ContestDate::fetchById($contestDateId);
         if ($contestDate === null)
         {
             return new Response('Wedstrijddatum bestaat niet!', Response::HTTP_NOT_FOUND);
@@ -716,7 +716,7 @@ final class ContestController extends Controller
     public function editSubscription(QueryBits $queryBits, RequestParameters $post, ?User $currentUser): Response
     {
         $id = $queryBits->getInt(2);
-        $subscription = ContestMember::loadFromDatabase($id);
+        $subscription = ContestMember::fetchById($id);
         if ($subscription === null)
         {
             return new Response('Record bestaat niet!', Response::HTTP_NOT_FOUND);
@@ -765,7 +765,7 @@ final class ContestController extends Controller
     public function editSubscriptionPage(QueryBits $queryBits, ?User $currentUser): Response
     {
         $id = $queryBits->getInt(2);
-        $subscription = ContestMember::loadFromDatabase($id);
+        $subscription = ContestMember::fetchById($id);
         if ($subscription === null)
         {
             return new Response('Record bestaat niet!', Response::HTTP_NOT_FOUND);
@@ -818,13 +818,13 @@ final class ContestController extends Controller
         {
             return new Response((new SimplePage('Fout', 'U kunt deze judoka niet beheren!'))->render(), Response::HTTP_BAD_REQUEST);
         }
-        $member = Member::loadFromDatabase($memberId);
+        $member = Member::fetchById($memberId);
         if ($member === null)
         {
             return new Response((new SimplePage('Fout', 'Lid niet gevonden!'))->render(), Response::HTTP_NOT_FOUND);
         }
 
-        $contest = Contest::loadFromDatabase($contestId);
+        $contest = Contest::fetchById($contestId);
         if ($contest === null)
         {
             return new Response((new SimplePage('Fout', 'Wedstrijd niet gevonden!'))->render(), Response::HTTP_NOT_FOUND);
@@ -899,7 +899,7 @@ final class ContestController extends Controller
     public function deleteParentAccount(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        $user = User::loadFromDatabase($id);
+        $user = User::fetchById($id);
         if ($user === null)
         {
             return new JsonResponse(['error' => 'Gebruiker bestaat niet!'], Response::HTTP_NOT_FOUND);
@@ -916,7 +916,7 @@ final class ContestController extends Controller
     public function deleteFromParentAccount(RequestParameters $post): JsonResponse
     {
         $userId = $post->getInt('userId');
-        $user = User::loadFromDatabase($userId);
+        $user = User::fetchById($userId);
         if ($user === null)
         {
             return new JsonResponse(['error' => 'Gebruiker bestaat niet!'], Response::HTTP_NOT_FOUND);
@@ -939,14 +939,14 @@ final class ContestController extends Controller
     public function addToParentAccount(RequestParameters $post): Response
     {
         $userId = $post->getInt('userId');
-        $user = User::loadFromDatabase($userId);
+        $user = User::fetchById($userId);
         if ($user === null)
         {
             return new Response((new SimplePage('Fout', 'Gebruiker bestaat niet!'))->render(), Response::HTTP_NOT_FOUND);
         }
 
         $memberId = $post->getInt('memberId');
-        $member = Member::loadFromDatabase($memberId);
+        $member = Member::fetchById($memberId);
         if ($member === null)
         {
             return new Response((new SimplePage('Fout', 'Lid bestaat niet!'))->render(), Response::HTTP_NOT_FOUND);
@@ -959,7 +959,7 @@ final class ContestController extends Controller
     public function cancelSubscription(QueryBits $queryBits, User $currentUser): JsonResponse
     {
         $contestMemberId = $queryBits->getInt(2);
-        $contestMember = ContestMember::loadFromDatabase($contestMemberId);
+        $contestMember = ContestMember::fetchById($contestMemberId);
         if ($contestMember === null)
         {
             return new JsonResponse(['message' => 'Gebruiker bestaat niet!'], Response::HTTP_NOT_FOUND);

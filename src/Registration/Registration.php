@@ -64,7 +64,7 @@ final class Registration extends Model
 
     public function getEvent(): Event
     {
-        $event = Event::loadFromDatabase($this->eventId);
+        $event = Event::fetchById($this->eventId);
         assert($event !== null);
         return $event;
     }

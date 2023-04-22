@@ -30,7 +30,7 @@ final class StaticPageModel extends ModelWithCategory
         $oldData = null;
         if ($this->id !== null)
         {
-            $oldData = self::loadFromDatabase($this->id);
+            $oldData = self::fetchById($this->id);
         }
         $result = parent::save();
         if ($result && $oldData !== null)

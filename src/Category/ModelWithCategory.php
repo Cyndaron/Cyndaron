@@ -96,7 +96,7 @@ abstract class ModelWithCategory extends Model
         foreach ($entries as $entry)
         {
             /** @var Category $category */
-            $category = Category::loadFromDatabase($entry['categoryId']);
+            $category = Category::fetchById($entry['categoryId']);
             $categories[] = $category;
         }
 
@@ -148,7 +148,7 @@ abstract class ModelWithCategory extends Model
         $ret = [];
         foreach ($entries as $entry)
         {
-            $model = static::loadFromDatabase($entry['id']);
+            $model = static::fetchById($entry['id']);
             assert($model !== null);
             $model->priority = $entry['priority'];
             $ret[] = $model;

@@ -17,7 +17,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     {
         if ($this->id)
         {
-            $this->model = Mailform::loadFromDatabase($this->id);
+            $this->model = Mailform::fetchById($this->id);
             assert($this->model !== null);
             $this->content = $this->model->confirmationText ?? '';
             $this->contentTitle = $this->model->name;

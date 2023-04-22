@@ -18,7 +18,7 @@ final class Graduation extends Model
     {
         if (!array_key_exists($this->sportId, self::$sportCache))
         {
-            self::$sportCache[$this->sportId] = Sport::loadFromDatabase($this->sportId);
+            self::$sportCache[$this->sportId] = Sport::fetchById($this->sportId);
         }
 
         return self::$sportCache[$this->sportId];

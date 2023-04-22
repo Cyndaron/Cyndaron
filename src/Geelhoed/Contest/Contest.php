@@ -53,7 +53,7 @@ final class Contest extends Model
 
     public function getSport(): Sport
     {
-        $ret = Sport::loadFromDatabase($this->sportId);
+        $ret = Sport::fetchById($this->sportId);
         assert($ret !== null);
         return $ret;
     }

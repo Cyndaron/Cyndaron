@@ -40,7 +40,7 @@ final class PhotoalbumController extends Controller
             $page = new SimplePage('Fotoalbum', 'Ongeldige parameter.');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
         }
-        $album = Photoalbum::loadFromDatabase($id);
+        $album = Photoalbum::fetchById($id);
         if ($album === null)
         {
             return new JsonResponse(['error' => 'Album does not exist!'], Response::HTTP_NOT_FOUND);
@@ -65,7 +65,7 @@ final class PhotoalbumController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $album = Photoalbum::loadFromDatabase($id);
+        $album = Photoalbum::fetchById($id);
         if ($album === null)
         {
             throw new \Exception('Photo album not found!');
@@ -90,7 +90,7 @@ final class PhotoalbumController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $album = Photoalbum::loadFromDatabase($id);
+        $album = Photoalbum::fetchById($id);
         if ($album === null)
         {
             return new JsonResponse(['error' => 'Photo album not found!'], Response::HTTP_NOT_FOUND);
@@ -145,7 +145,7 @@ final class PhotoalbumController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $album = Photoalbum::loadFromDatabase($id);
+        $album = Photoalbum::fetchById($id);
         if ($album === null)
         {
             throw new \Exception('Photo album not found!');
@@ -181,7 +181,7 @@ final class PhotoalbumController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $album = Photoalbum::loadFromDatabase($id);
+        $album = Photoalbum::fetchById($id);
         if ($album === null)
         {
             throw new \Exception('Photoalbum not found!');

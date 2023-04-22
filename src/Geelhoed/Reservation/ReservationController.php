@@ -49,7 +49,7 @@ final class ReservationController extends Controller
     public function lesson(QueryBits $queryBits): Response
     {
         $hourId = $queryBits->getInt(2);
-        $hour = Hour::loadFromDatabase($hourId);
+        $hour = Hour::fetchById($hourId);
         if ($hour === null)
         {
             return new ErrorPageResponse('Fout', 'Lesuur bestaat niet!', Response::HTTP_NOT_FOUND);
@@ -75,7 +75,7 @@ final class ReservationController extends Controller
     public function step2(RequestParameters $post): Response
     {
         $hourId = $post->getInt('hourId');
-        $hour = Hour::loadFromDatabase($hourId);
+        $hour = Hour::fetchById($hourId);
         if ($hour === null)
         {
             return new ErrorPageResponse('Fout', 'Lesuur bestaat niet!', Response::HTTP_NOT_FOUND);
@@ -88,7 +88,7 @@ final class ReservationController extends Controller
     public function step3(RequestParameters $post): Response
     {
         $hourId = $post->getInt('hourId');
-        $hour = Hour::loadFromDatabase($hourId);
+        $hour = Hour::fetchById($hourId);
         if ($hour === null)
         {
             return new ErrorPageResponse('Fout', 'Lesuur bestaat niet!', Response::HTTP_NOT_FOUND);
@@ -108,7 +108,7 @@ final class ReservationController extends Controller
     public function stepLast(RequestParameters $post): Response
     {
         $hourId = $post->getInt('hourId');
-        $hour = Hour::loadFromDatabase($hourId);
+        $hour = Hour::fetchById($hourId);
         if ($hour === null)
         {
             return new ErrorPageResponse('Fout', 'Lesuur bestaat niet!', Response::HTTP_NOT_FOUND);

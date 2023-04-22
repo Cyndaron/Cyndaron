@@ -18,7 +18,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
         $tags = '';
         if ($this->id)
         {
-            $staticPage = StaticPageModel::loadFromDatabase($this->id);
+            $staticPage = StaticPageModel::fetchById($this->id);
             $this->model = $staticPage;
             $table = ($this->vvstring !== '') ? 'sub_backups' : self::TABLE;
             /** @noinspection SqlResolve */

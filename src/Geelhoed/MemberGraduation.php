@@ -29,7 +29,7 @@ final class MemberGraduation extends Model
     {
         if (!array_key_exists($this->graduationId, self::$graduationCache))
         {
-            self::$graduationCache[$this->graduationId] = Graduation::loadFromDatabase($this->graduationId);
+            self::$graduationCache[$this->graduationId] = Graduation::fetchById($this->graduationId);
         }
 
         return self::$graduationCache[$this->graduationId];

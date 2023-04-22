@@ -23,7 +23,7 @@ final class RichLinkController extends Controller
         $id = $post->getInt('id');
         if ($id > 0)
         {
-            $richlink = RichLink::loadFromDatabase($id);
+            $richlink = RichLink::fetchById($id);
             if ($richlink === null)
             {
                 return new JsonResponse(['error' => 'RichLink does not exist!'], Response::HTTP_NOT_FOUND);
@@ -64,7 +64,7 @@ final class RichLinkController extends Controller
     public function delete(RequestParameters $post): JsonResponse
     {
         $id = $post->getInt('id');
-        $richlink = RichLink::loadFromDatabase($id);
+        $richlink = RichLink::fetchById($id);
         if ($richlink === null)
         {
             return new JsonResponse(['error' => 'RichLink does not exist!'], Response::HTTP_NOT_FOUND);

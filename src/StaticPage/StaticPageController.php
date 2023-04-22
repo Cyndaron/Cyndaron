@@ -30,7 +30,7 @@ final class StaticPageController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $model = StaticPageModel::loadFromDatabase($id);
+        $model = StaticPageModel::fetchById($id);
         if ($model === null)
         {
             $page = new SimplePage('Fout', 'Statische pagina niet gevonden.');
@@ -72,7 +72,7 @@ final class StaticPageController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $model = StaticPageModel::loadFromDatabase($id);
+        $model = StaticPageModel::fetchById($id);
         if ($model === null)
         {
             $page = new SimplePage('Fout', 'Statische pagina niet gevonden.');

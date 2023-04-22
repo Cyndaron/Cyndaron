@@ -27,7 +27,7 @@ final class Module implements Datatypes, UrlProvider, Routes
 
     public function url(array $linkParts): ?string
     {
-        $richLink = RichLink::loadFromDatabase((int)$linkParts[1]);
+        $richLink = RichLink::fetchById((int)$linkParts[1]);
         return $richLink->name ?? null;
     }
 

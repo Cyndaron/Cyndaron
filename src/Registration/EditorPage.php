@@ -18,7 +18,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     {
         if ($this->id)
         {
-            $this->model = Event::loadFromDatabase($this->id);
+            $this->model = Event::fetchById($this->id);
             assert($this->model !== null);
             $this->content = $this->model->description;
             $this->contentTitle = $this->model->name;
