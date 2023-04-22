@@ -70,8 +70,7 @@ final class Member extends Model
         $hours = [];
         foreach ($hoursArr as $hourArr)
         {
-            /** @var Hour $hour */
-            $hour = Hour::fetchById((int)$hourArr['id']);
+            $hour = Hour::fromArray($hourArr);
             $hours[] = $hour;
         }
 
