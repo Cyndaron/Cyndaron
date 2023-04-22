@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\User;
 
+use Cyndaron\DBAL\CacheableModel;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Util\Mail\Mail;
@@ -38,7 +39,7 @@ use function count;
 use function array_filter;
 use function password_verify;
 
-final class User extends Model
+final class User extends CacheableModel
 {
     public const TABLE = 'users';
     public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'initials', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city', 'dateOfBirth', 'optOut', 'notes'];

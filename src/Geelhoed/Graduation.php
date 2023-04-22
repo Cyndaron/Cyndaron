@@ -12,16 +12,9 @@ final class Graduation extends Model
     public int $sportId;
     public string $name;
 
-    private static array $sportCache = [];
-
     public function getSport(): Sport
     {
-        if (!array_key_exists($this->sportId, self::$sportCache))
-        {
-            self::$sportCache[$this->sportId] = Sport::fetchById($this->sportId);
-        }
-
-        return self::$sportCache[$this->sportId];
+        return Sport::fetchById($this->sportId);
     }
 
     /**

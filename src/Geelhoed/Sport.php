@@ -1,9 +1,9 @@
 <?php
 namespace Cyndaron\Geelhoed;
 
-use Cyndaron\DBAL\Model;
+use Cyndaron\DBAL\CacheableModel;
 
-final class Sport extends Model
+final class Sport extends CacheableModel
 {
     public const TABLE = 'geelhoed_sports';
     public const TABLE_FIELDS = ['name', 'juniorFee', 'seniorFee'];

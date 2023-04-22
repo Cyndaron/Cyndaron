@@ -3,17 +3,16 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Hour;
 
+use Cyndaron\DBAL\CacheableModel;
 use Cyndaron\Geelhoed\Department;
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Sport;
-use Cyndaron\DBAL\Model;
 use Cyndaron\View\Template\ViewHelpers;
 
 use function sprintf;
 use function assert;
-use function array_key_exists;
 
-final class Hour extends Model
+final class Hour extends CacheableModel
 {
     public const TABLE = 'geelhoed_hours';
     public const TABLE_FIELDS = ['locationId', 'day', 'description', 'from', 'until', 'sportId', 'sportOverride', 'departmentId', 'capacity', 'notes'];
@@ -28,9 +27,6 @@ final class Hour extends Model
     public int $departmentId;
     public int $capacity;
     public string $notes;
-
-    /** @var Hour[] */
-    private static array $cache = [];
 
     public function getLocation(): Location
     {
@@ -65,25 +61,6 @@ final class Hour extends Model
     public function getRange(): string
     {
         return sprintf('%s – %s', ViewHelpers::filterHm($this->from), ViewHelpers::filterHm($this->until));
-    }
-
-    /**
-     * @param int $id
-     * @throws \Exception
-     * @return Hour|null
-     */
-    public static function fetchById(int $id): ?Hour
-    {
-        if (array_key_exists($id, self::$cache))
-        {
-            return self::$cache[$id];
-        }
-
-        /** @var static $object */
-        $object = parent::fetchById($id);
-        self::$cache[$id] = $object;
-
-        return $object;
     }
 
     /**
