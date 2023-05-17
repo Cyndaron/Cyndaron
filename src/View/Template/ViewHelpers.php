@@ -4,6 +4,7 @@ namespace Cyndaron\View\Template;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Photoalbum\PhotoalbumPage;
 use Cyndaron\User\User;
+use DateTimeInterface;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
@@ -116,11 +117,18 @@ final class ViewHelpers
         return "$parts[0]:$parts[1]";
     }
 
-    public static function filterDutchDate(string $date): string
+    public static function filterDutchDate(string|DateTimeInterface $date): string
     {
         try
         {
-            $timestamp = strtotime($date);
+            if ($date instanceof DateTimeInterface)
+            {
+                $timestamp = (int)$date->format('U');
+            }
+            else
+            {
+                $timestamp = strtotime($date);
+            }
         }
         catch (DatetimeException $e)
         {
@@ -132,11 +140,18 @@ final class ViewHelpers
         return sprintf('%s %s %s', $day, $month, $year);
     }
 
-    public static function filterDutchDateTime(string $date): string
+    public static function filterDutchDateTime(string|DateTimeInterface $date): string
     {
         try
         {
-            $timestamp = strtotime($date);
+            if ($date instanceof DateTimeInterface)
+            {
+                $timestamp = (int)$date->format('U');
+            }
+            else
+            {
+                $timestamp = strtotime($date);
+            }
         }
         catch (DatetimeException $e)
         {
