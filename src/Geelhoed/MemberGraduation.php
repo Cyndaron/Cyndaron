@@ -30,6 +30,8 @@ final class MemberGraduation extends Model
             self::$byMemberCacheHandle->load(self::$byMemberCache);
         }
 
+        self::$byMemberCache = [];
+
         $memberGraduations = self::fetchAll([], [], 'ORDER BY date');
         foreach ($memberGraduations as $memberGraduation)
         {

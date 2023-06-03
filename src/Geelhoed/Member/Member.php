@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Member;
 
-use Cyndaron\DBAL\CacheableModel;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Hour\Hour;
@@ -28,7 +27,7 @@ use function reset;
 use function array_filter;
 use function assert;
 
-final class Member extends CacheableModel
+final class Member extends Model
 {
     public const TABLE = 'geelhoed_members';
     public const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'ibanHolder', 'paymentProblem', 'paymentProblemNote', 'freeParticipation', 'discount', 'temporaryStop', 'joinedAt', 'jbnNumber', 'jbnNumberLocation'];
@@ -73,11 +72,28 @@ final class Member extends CacheableModel
         return $profile;
     }
 
-    /**
-     * @throws \Exception
-     * @return Hour[]
-     */
-    public function getHours(): array
+    private function rebuildHoursCache(): void
+    {
+        $records = DBConnection::doQueryAndFetchAll('SELECT * FROM geelhoed_members_hours') ?: [];
+        foreach ($records as $record)
+        {
+            $memberId = (int)$record['memberId'];
+            if (!array_key_exists($memberId, self::$hoursCache))
+            {
+                self::$hoursCache[$memberId] = [];
+            }
+
+            $hourId = (int)$record['hourId'];
+            /** @var Hour $hour */
+            $hour = Hour::fetchById($hourId);
+
+            self::$hoursCache[$memberId][] = $hour;
+        }
+
+        self::$hoursCacheHandle->save(self::$hoursCache);
+    }
+
+    private function loadHoursCache(): void
     {
         if (empty(self::$hoursCacheHandle))
         {
@@ -87,24 +103,17 @@ final class Member extends CacheableModel
 
         if (empty(self::$hoursCache))
         {
-            $records = DBConnection::doQueryAndFetchAll('SELECT * FROM geelhoed_members_hours') ?: [];
-            foreach ($records as $record)
-            {
-                $memberId = (int)$record['memberId'];
-                if (!array_key_exists($memberId, self::$hoursCache))
-                {
-                    self::$hoursCache[$memberId] = [];
-                }
-
-                $hourId = (int)$record['hourId'];
-                /** @var Hour $hour */
-                $hour = Hour::fetchById($hourId);
-
-                self::$hoursCache[$memberId][] = $hour;
-            }
-
-            self::$hoursCacheHandle->save(self::$hoursCache);
+            $this->rebuildHoursCache();
         }
+    }
+
+    /**
+     * @throws \Exception
+     * @return Hour[]
+     */
+    public function getHours(): array
+    {
+        $this->loadHoursCache();
 
         return self::$hoursCache[$this->id] ?? [];
     }
@@ -114,6 +123,8 @@ final class Member extends CacheableModel
      */
     public function setHours(array $hours): void
     {
+        $this->loadHoursCache();
+
         assert(is_int($this->id));
         DBConnection::doQuery('DELETE FROM geelhoed_members_hours WHERE memberId = ?', [$this->id]);
 
@@ -316,18 +327,16 @@ final class Member extends CacheableModel
             self::$monthlyFeeCacheHandle->load(self::$monthlyFeeCache);
         }
 
-        if (empty(self::$monthlyFeeCache))
+        self::$monthlyFeeCache = [];
+        $members = self::fetchAll();
+        foreach ($members as $member)
         {
-            $members = self::fetchAll();
-            foreach ($members as $member)
-            {
-                assert(is_int($member->id));
-                $fee = $member->getMonthlyFeeUncached();
-                self::$monthlyFeeCache[$member->id] = $fee;
-            }
-
-            self::$monthlyFeeCacheHandle->save(self::$monthlyFeeCache);
+            assert(is_int($member->id));
+            $fee = $member->getMonthlyFeeUncached();
+            self::$monthlyFeeCache[$member->id] = $fee;
         }
+
+        self::$monthlyFeeCacheHandle->save(self::$monthlyFeeCache);
     }
 
     /**
@@ -365,20 +374,6 @@ final class Member extends CacheableModel
      */
     public static function fetchAll(array $where = [], array $args = [], string $afterWhere = 'ORDER BY lastname,tussenvoegsel,firstname'): array
     {
-        $saveResultToCache = false;
-        if ($where === [] && $args === [] && $afterWhere === 'ORDER BY lastname,tussenvoegsel,firstname')
-        {
-            self::loadCache();
-
-            if (!empty(self::$cache[self::TABLE]))
-            {
-                return self::$cache[self::TABLE];
-            }
-
-            $saveResultToCache = true;
-        }
-
-
         $whereString = '';
         if (count($where) > 0)
         {
@@ -394,12 +389,6 @@ final class Member extends CacheableModel
                 $obj->updateFromArray($result);
                 $ret[] = $obj;
             }
-        }
-
-        if ($saveResultToCache)
-        {
-            self::$cache[self::TABLE] = $ret;
-            self::saveCache();
         }
 
         return $ret;
