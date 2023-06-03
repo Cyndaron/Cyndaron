@@ -37,6 +37,8 @@ class Util
         'A', 'C', 'D', 'E', 'F', 'H', 'J', 'L', 'M', 'N', 'Q', 'R', 'T',
         '3', '4', '7', '8'];
 
+    public const SQL_DATE_FORMAT = 'Y-m-d H:i:s';
+
     public static function generatePassword(int $length = 10): string
     {
         $gencode = '';
