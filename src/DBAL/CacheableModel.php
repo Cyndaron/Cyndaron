@@ -25,7 +25,7 @@ abstract class CacheableModel extends Model
 
     protected static function createCache(): void
     {
-        $objects = self::fetchAll();
+        $objects = static::fetchAll();
         foreach ($objects as $object)
         {
             assert($object->id !== null);
@@ -58,6 +58,7 @@ abstract class CacheableModel extends Model
 
     public function save(): bool
     {
+        self::loadCache();
         $result = parent::save();
         if ($result)
         {
