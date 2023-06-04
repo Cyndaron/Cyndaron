@@ -11,6 +11,7 @@ use Cyndaron\Geelhoed\Location\LocationController;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberController;
 use Cyndaron\Geelhoed\Reservation\ReservationController;
+use Cyndaron\Geelhoed\Tryout\TryoutController;
 use Cyndaron\Geelhoed\Volunteer\VolunteerController;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
@@ -61,6 +62,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu, Template
             'contest' => ContestController::class,
             'reservation' => ReservationController::class,
             'vrijwilligers' => VolunteerController::class,
+            'tryout' => TryoutController::class,
         ];
     }
 
