@@ -12,6 +12,7 @@
                 @if (isset($step)) step="{{ $step }}" @endif
                 @if (isset($pattern)) pattern="{{ $pattern }}" @endif
                 @if (isset($datalist)) list="{{ $datalist }}" @endif
+                @if (isset($accept)) accept="{{ $accept }}" @endif
                 @if (!empty($required)) required @endif>
     @endslot
 @endcomponent
