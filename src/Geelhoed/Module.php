@@ -60,7 +60,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu, Template
             'member' => MemberController::class,
             'contest' => ContestController::class,
             'reservation' => ReservationController::class,
-            'volunteer' => VolunteerController::class,
+            'vrijwilligers' => VolunteerController::class,
         ];
     }
 
