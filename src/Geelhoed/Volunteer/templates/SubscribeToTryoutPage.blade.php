@@ -2,11 +2,12 @@
 
 @section('contents')
     <form id="subscribe-form">
-        @include('View/Widget/Form/BasicInput', ['id' => 'name', 'label' => 'Naam', 'required' => true])
-        @include('View/Widget/Form/BasicInput', ['id' => 'email', 'label' => 'E-mailadres', 'type' => 'email', 'required' => true])
+        @include('View/Widget/Form/BasicInput', ['id' => 'name', 'label' => 'Naam (*)', 'required' => true])
+        @include('View/Widget/Form/BasicInput', ['id' => 'email', 'label' => 'E-mailadres  (*)', 'type' => 'email', 'required' => true])
+        @include('View/Widget/Form/BasicInput', ['id' => 'phone', 'label' => 'Telefoon', 'type' => 'phone', 'required' => false])
 
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Ik wil graag helpen als:</label>
+        <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Ik wil graag helpen als (*):</label>
         <div class="col-sm-5">
             @foreach ($helpTypes as $key => $description)
                 @php $disabled = $fullTypes[$key] @endphp
@@ -19,7 +20,7 @@
     </div>
 
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Ik wil graag helpen in:</label>
+        <label class="col-sm-3 col-form-label">Ik wil graag helpen in (*):</label>
         <div class="col-sm-5">
             @for ($i = 0; $i < $numRounds; $i++)
                 @php $disabled = $fullRounds[$i]; @endphp

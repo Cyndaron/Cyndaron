@@ -46,4 +46,5 @@ create index geelhoed_volunteer_event_participation_et
 create index geelhoed_volunteer_event_participation_eventId
     on geelhoed_volunteer_event_participation (eventId);
 
-
+alter table geelhoed_volunteer_event_participation
+    add phone varchar(30) not null after email;

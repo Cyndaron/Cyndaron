@@ -71,6 +71,7 @@ class VolunteerController extends Controller
         {
             return new JsonResponse(['status' => 'error', 'message' => 'Je hebt niet opgegeven waarmee je wilt helpen!'], Response::HTTP_BAD_REQUEST);
         }
+        $phone = $post->getSimpleString('phone');
         $comments = $post->getSimpleString('comments');
         if ($status['fullTypes'][$type])
         {
@@ -107,8 +108,8 @@ class VolunteerController extends Controller
 
         $jsonData = json_encode(['rounds' => $rounds], JSON_THROW_ON_ERROR);
 
-        $sql = 'INSERT INTO geelhoed_volunteer_event_participation(`eventId`, `name`, `email`, `type`, `data`, `comments`) VALUES (?, ?, ?, ?, ?, ?);';
-        DBConnection::doQuery($sql, [$event->id, $name, $email, $type, $jsonData, $comments]);
+        $sql = 'INSERT INTO geelhoed_volunteer_event_participation(`eventId`, `name`, `email`, `phone`, `type`, `data`, `comments`) VALUES (?, ?, ?, ?, ?, ?, ?);';
+        DBConnection::doQuery($sql, [$event->id, $name, $email, $phone, $type, $jsonData, $comments]);
 
         return new JsonResponse([]);
     }
