@@ -18,7 +18,7 @@ final class Photo
 {
     public const THUMBNAIL_WIDTH = 270;
     public const THUMBNAIL_HEIGHT = 200;
-    public const MAX_DIMENSION = 1024;
+    public const MAX_DIMENSION = 1280;
 
     public string $filename;
     public string $hash;
