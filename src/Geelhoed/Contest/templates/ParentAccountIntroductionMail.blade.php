@@ -12,8 +12,6 @@ Voor wie het allemaal een beetje (te) spannend is: Spanning hoort er bij, dat ge
 
 Veel succes!
 
-Tonny Mulder
-
 -------------
 Inloggegevens
 -------------
