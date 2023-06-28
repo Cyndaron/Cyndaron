@@ -26,6 +26,9 @@
                     <div><span>Stemsoort</span></div>
                 </th>
                 <th class="rotate">
+                    <div><span>Voorkeur koor 1/2</span></div>
+                </th>
+                <th class="rotate">
                     <div><span>Koor</span></div>
                 </th>
                 <th class="rotate">
@@ -61,6 +64,9 @@
                 </td>
                 <td>
                     {{ $registration->vocalRange }}
+                </td>
+                <td>
+                    {{ $registration->choirPreference }}
                 </td>
                 <td>
                     {{ $registration->currentChoir }}

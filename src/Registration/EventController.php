@@ -98,7 +98,7 @@ final class EventController extends Controller
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $headers = ['Achternaam', 'Voornaam', 'Woonplaats', 'E-mailadres', 'Telefoonnummer', 'Leeftijdscategorie', 'Stemsoort', 'Lid van', 'Opmerkingen'];
+        $headers = ['Achternaam', 'Voornaam', 'Woonplaats', 'E-mailadres', 'Telefoonnummer', 'Leeftijdscategorie', 'Stemsoort', 'Koorvoorkeur', 'Lid van', 'Opmerkingen'];
         foreach ($headers as $key => $value)
         {
             $column = chr(ord('A') + $key);
@@ -117,8 +117,9 @@ final class EventController extends Controller
             $sheet->setCellValue("E{$row}", $registration->phone);
             $sheet->setCellValue("F{$row}", $registration->birthYear ? \Cyndaron\Registration\Util::birthYearToCategory($event, $registration->birthYear) : 'Onbekend');
             $sheet->setCellValue("G{$row}", $registration->vocalRange);
-            $sheet->setCellValue("H{$row}", $registration->currentChoir ?: 'Geen/ander koor');
-            $sheet->setCellValue("I{$row}", $registration->comments);
+            $sheet->setCellValue("H{$row}", $registration->choirPreference);
+            $sheet->setCellValue("I{$row}", $registration->currentChoir ?: 'Geen/ander koor');
+            $sheet->setCellValue("J{$row}", $registration->comments);
 
             $row++;
         }

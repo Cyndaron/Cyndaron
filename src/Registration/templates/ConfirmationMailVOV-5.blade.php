@@ -11,6 +11,7 @@ Woonplaats: {{ $registration->city }}
 Stemsoort: {{ $registration->vocalRange }}
 Lid van: {{ $registration->currentChoir ?: 'Geen koor / ander koor' }}
 Opmerkingen: {{ $registration->comments }}
+Koorvoorkeur: {{ $registration->choirPreference }}
 {{ $registration->participatedBefore }} keer de Matthäus gezongen
 
 @if (!$event->hideRegistrationFee)Totaalbedrag: {{ \Cyndaron\View\Template\ViewHelpers::formatEuro($registrationTotal) }}@endif
