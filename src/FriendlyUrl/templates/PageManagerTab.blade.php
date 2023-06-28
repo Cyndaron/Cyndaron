@@ -22,7 +22,7 @@
         <tr id="pm-row-friendlyurl-{{ $friendlyurl->id }}">
             <td>{{ $friendlyurl->id }}</td>
             <td>
-                <strong>{{ $friendlyurl->name }}</strong>
+                <a href="/{{ $friendlyurl->name }}">{{ $friendlyurl->name }}</a>
             </td>
             <td>
                 {{ $friendlyurl->target }}
