@@ -25,11 +25,11 @@ final class PhotoalbumController extends Controller
     ];
 
     protected array $apiPostRoutes = [
-        'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
+        'add' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_EDIT, 'function' => 'add'],
         'addPhoto' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_UPLOAD, 'function' => 'addPhotoApi'],
         'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
+        'edit' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_EDIT, 'function' => 'edit'],
     ];
 
     protected function routeGet(QueryBits $queryBits, ?User $currentUser): Response

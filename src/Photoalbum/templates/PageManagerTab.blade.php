@@ -24,9 +24,11 @@
             </td>
             <td>
                 <div class="btn-group">
-                    @include('View/Widget/Button', ['kind' => 'edit', 'link' => "/editor/photoalbum/{$photoalbum->id}", 'title' => 'Bewerk dit fotoalbum', 'size' => 16])
-                    <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="photoalbum" data-id="{{ $photoalbum->id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('photoalbum', 'delete') }}"><span class="glyphicon glyphicon-trash" title="Verwijder dit fotoalbum"></span></button>
-                    <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="photoalbum" data-id="{{ $photoalbum->id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('photoalbum', 'addtomenu') }}"><span class="glyphicon glyphicon-bookmark" title="Voeg dit fotoalbum toe aan het menu"></span></button>
+                    @if ($currentUser->isAdmin())
+                        @include('View/Widget/Button', ['kind' => 'edit', 'link' => "/editor/photoalbum/{$photoalbum->id}", 'title' => 'Bewerk dit fotoalbum', 'size' => 16])
+                        <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="photoalbum" data-id="{{ $photoalbum->id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('photoalbum', 'delete') }}"><span class="glyphicon glyphicon-trash" title="Verwijder dit fotoalbum"></span></button>
+                        <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="photoalbum" data-id="{{ $photoalbum->id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('photoalbum', 'addtomenu') }}"><span class="glyphicon glyphicon-bookmark" title="Voeg dit fotoalbum toe aan het menu"></span></button>
+                    @endif
                 </div>
             </td>
         </tr>

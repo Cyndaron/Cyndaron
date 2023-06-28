@@ -7,6 +7,7 @@ use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\User\User;
 use Cyndaron\View\Template\Template;
 
 final class Module implements Datatypes, Routes, UrlProvider, Linkable
@@ -55,9 +56,12 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         return DBConnection::doQueryAndFetchAll('SELECT CONCAT(\'/photoalbum/\', id) AS link, CONCAT(\'Fotoalbum: \', name) AS name FROM photoalbums') ?: [];
     }
 
-    public static function pageManagerTab(): string
+    public static function pageManagerTab(User $currentUser): string
     {
-        $templateVars = ['photoalbums' => Photoalbum::fetchAll([], [], 'ORDER BY name')];
+        $templateVars = [
+            'photoalbums' => Photoalbum::fetchAll([], [], 'ORDER BY name'),
+            'currentUser' => $currentUser,
+        ];
         return (new Template())->render('Photoalbum/PageManagerTab', $templateVars);
     }
 }
