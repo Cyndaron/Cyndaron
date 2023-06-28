@@ -49,6 +49,7 @@ class Controller extends \Cyndaron\Routing\Controller
     protected array $postRoutes = [
         'subscribe' => ['level' => UserLevel::ANONYMOUS, 'function' => 'subscribe'],
         'unsubscribe' => ['level' => UserLevel::ADMIN, 'function' => 'unsubscribe'],
+        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'unsubscribe'],
     ];
 
     protected array $apiPostRoutes = [
@@ -268,6 +269,45 @@ class Controller extends \Cyndaron\Routing\Controller
         else
         {
             $notifcation = "Adres uitgeschreven.
+                {$changes['users']} gebruikersrecord(s), {$changes['members']} ledenrecord(s) en {$changes['subscribers']} nieuwsbriefinschrijver(s) aangepast.";
+            User::addNotification($notifcation);
+        }
+
+        return new RedirectResponse('/newsletter/viewSubscribers#unsubscribe');
+    }
+
+    protected function delete(RequestParameters $post): Response
+    {
+        $changes = [
+            'users' => 0,
+            'members' => 0,
+            'subscribers' => 0,
+        ];
+
+        $email = $post->getEmail('email');
+        $pdo = DBConnection::getPDO();
+        $prep = $pdo->prepare('UPDATE users SET email = NULL WHERE email = ?');
+        $prep->execute([$email]);
+        $changes['users'] = $prep->rowCount();
+
+        if (class_exists('\Cyndaron\Geelhoed\Member\Member'))
+        {
+            $prep = $pdo->prepare('UPDATE geelhoed_members SET parentEmail = NULL WHERE parentEmail = ?');
+            $prep->execute([$email]);
+            $changes['members'] = $prep->rowCount();
+        }
+
+        $prep = $pdo->prepare('DELETE FROM newsletter_subscriber WHERE email = ?');
+        $prep->execute([$email]);
+        $changes['subscribers'] = $prep->rowCount();
+
+        if (array_sum($changes) === 0)
+        {
+            User::addNotification('Adres niet gevonden!');
+        }
+        else
+        {
+            $notifcation = "Adres verwijderd.
                 {$changes['users']} gebruikersrecord(s), {$changes['members']} ledenrecord(s) en {$changes['subscribers']} nieuwsbriefinschrijver(s) aangepast.";
             User::addNotification($notifcation);
         }

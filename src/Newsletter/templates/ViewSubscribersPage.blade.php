@@ -38,4 +38,12 @@
         <input type="submit" class="btn btn-primary" value="Uitschrijven"/>
     </form>
 
+    <h3 id="delete">Foutieve adressen verwijderen</h3>
+
+    <form method="post" action="/newsletter/delete">
+        @include('View/Widget/Form/Email', ['id' => 'email', 'label' => 'E-mailadres', 'value' => ''])
+        <input type="hidden" name="csrfToken" value="{{ $csrfTokenDelete }}"/>
+        <input type="submit" class="btn btn-primary" value="Verwijderen"/>
+    </form>
+
 @endsection

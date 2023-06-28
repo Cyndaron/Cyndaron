@@ -20,6 +20,7 @@ class ViewSubscribersPage extends Page
         $this->addTemplateVars([
             'subscribers' => Subscriber::fetchAll([], [], 'ORDER BY name'),
             'csrfTokenUnsubscribe' => User::getCSRFToken('newsletter', 'unsubscribe'),
+            'csrfTokenDelete' => User::getCSRFToken('newsletter', 'delete'),
         ]);
     }
 }
