@@ -3,45 +3,69 @@ declare(strict_types=1);
 
 namespace Cyndaron\PageManager;
 
+use Cyndaron\User\User;
 use Cyndaron\View\Page;
 use function array_merge;
+use function is_callable;
+use function assert;
 
 final class PageManagerPage extends Page
 {
-    private static array $pageTypes = [];
+    /** @var PageManagerTab[] */
+    private static array $tabs = [];
 
-    public function __construct(string $currentPage)
+    public function __construct(User $currentUser, string $currentPage)
     {
         $this->addScript('/src/PageManager/js/PageManagerPage.js');
         parent::__construct('Paginaoverzicht');
 
         $pageTabs = [];
-        foreach (self::$pageTypes as $pageType => $data)
+        $firstVisibleType = null;
+        foreach (self::$tabs as $tab)
         {
-            $pageTabs[$pageType] = $data['name'];
+            $pageType = $tab->type;
+            if ($currentUser->hasRight("{$pageType}_edit"))
+            {
+                $pageTabs[$pageType] = $tab->name;
+                if ($firstVisibleType === null)
+                {
+                    $firstVisibleType = $pageType;
+                }
+            }
         }
 
-        $pageDef = self::$pageTypes[$currentPage];
-        $tabContents = $pageDef['tabDraw']();
+        if ($firstVisibleType === null)
+        {
+            throw new \RuntimeException('Er zijn geen datatypes die u kunt beheren!');
+        }
+        if (!$currentUser->hasRight($currentPage))
+        {
+            $currentPage = $firstVisibleType;
+        }
+
+        $tab = self::$tabs[$currentPage];
+        $drawingFunction = $tab->tabDraw;
+        assert(is_callable($drawingFunction));
+        $tabContents = $drawingFunction($currentUser);
 
         $this->addTemplateVars([
             'pageTabs' => $pageTabs,
             'currentPage' => $currentPage,
             'tabContents' => $tabContents,
         ]);
-        if (!empty($pageDef['js']))
+        if (!empty($tab->js))
         {
-            $this->addScript($pageDef['js']);
+            $this->addScript($tab->js);
         }
     }
 
     /**
      * Adds a tab definition to the page manager.
      *
-     * @param array $pageType
+     * @param PageManagerTab $tab
      */
-    public static function addPageType(array $pageType): void
+    public static function addTab(PageManagerTab $tab): void
     {
-        self::$pageTypes = array_merge(self::$pageTypes, $pageType);
+        self::$tabs[$tab->type] = $tab;
     }
 }

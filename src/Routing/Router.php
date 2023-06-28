@@ -12,6 +12,7 @@ use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\UserMenu;
+use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\View\Page;
 use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\Request\QueryBits;
@@ -313,13 +314,7 @@ final class Router implements HttpKernelInterface
                     }
                     if (isset($definition->pageManagerTab))
                     {
-                        PageManagerPage::addPageType([
-                            $dataTypeName => [
-                                'name' => $definition->plural,
-                                'tabDraw' => $definition->pageManagerTab,
-                                'js' => $definition->pageManagerJS ?? null,
-                            ]
-                        ]);
+                        PageManagerPage::addTab(new PageManagerTab($dataTypeName, $definition->plural, $definition->pageManagerTab, $definition->pageManagerJS ?? null));
                     }
                     if ($module instanceof UrlProvider)
                     {
