@@ -15,8 +15,12 @@ $('#currentChoir').on('change', function () {
 $('input[name=participatedBefore]').on('change', function()
 {
     let explanationWrapper = $('#participatedBeforeWrapper');
-    if ($(this).val() === '1')
-        explanationWrapper.css('display', 'block');
-    else
-        explanationWrapper.css('display', 'none');
+    if (explanationWrapper)
+    {
+        if ($(this).val() === '1')
+            explanationWrapper.css('display', 'block');
+        else
+            explanationWrapper.css('display', 'none');
+    }
+
 });

@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use function implode;
 use function assert;
 use function strcasecmp;
+use function min;
 
 final class RegistrationController extends Controller
 {
@@ -131,7 +132,7 @@ final class RegistrationController extends Controller
         $registration->bhv = $post->getBool('bhv');
         $registration->kleinkoor = $post->getBool('kleinkoor');
         $registration->kleinkoorExplanation = $post->getSimpleString('kleinkoorExplanation');
-        $registration->participatedBefore = $post->getBool('participatedBefore');
+        $registration->participatedBefore = min(9, $post->getInt('participatedBefore'));
         $registration->numPosters = $post->getInt('numPosters');
         $registration->email = $post->getEmail('email');
         $registration->phone = $post->getPhone('phone');

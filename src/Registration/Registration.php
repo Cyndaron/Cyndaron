@@ -36,7 +36,7 @@ final class Registration extends Model
     public bool $bhv = false;
     public bool $kleinkoor = false;
     public string $kleinkoorExplanation = '';
-    public bool $participatedBefore = false;
+    public int $participatedBefore = 0;
     public int $numPosters = 0;
     public string $email = '';
     public string $phone = '';
