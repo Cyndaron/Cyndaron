@@ -1,5 +1,9 @@
 Hartelijk dank voor uw inschrijving voor {{ $event->name }}.
-Zodra de inschrijving is gesloten krijgt u van ons een nader bericht over het vervolg.
+Na 1 oktober krijgt u een nader bericht van ons, inclusief een betalingsverzoek.
+Voor vragen kunt u e-mailen naar info@zeeuwsconcertkoor.nl
+
+Bestuur VOV / Zeeuws Concertkoor
+
 
 Hieronder volgt een overzicht van uw inschrijving.
 

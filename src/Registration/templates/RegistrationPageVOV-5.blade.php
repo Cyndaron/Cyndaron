@@ -35,9 +35,7 @@
                         <option data-registration-group="0" value="COV Goes">COV Goes</option>
                         <option data-registration-group="2" value="Vocaal Ensembe Cantare">Vocaal Ensembe Cantare</option>
                         <option data-registration-group="0" value="COV Te Deum Laudamus Kapelle">COV Te Deum Laudamus Kapelle</option>
-                        <option data-registration-group="0" value="Zwinkoor Sluis">Zwinkoor Sluis</option>
                         <option data-registration-group="0" value="Hét Concertkoor Bergen op Zoom">Hét Concertkoor Bergen op Zoom</option>
-                        <option data-registration-group="0" value="COV Soli Deo Gloria Sliedrecht">COV Soli Deo Gloria Sliedrecht</option>
                         <option data-registration-group="0" value="">Geen koor / een ander koor</option>
                     </select>
                 </div>
