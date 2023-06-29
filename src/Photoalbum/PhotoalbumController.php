@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use function base64_decode;
 use function count;
+use function pathinfo;
 
 final class PhotoalbumController extends Controller
 {
@@ -57,27 +58,31 @@ final class PhotoalbumController extends Controller
         return new JsonResponse();
     }
 
-    public function addPhoto(QueryBits $queryBits): Response
+    private function addPhotoCommon(Photoalbum $album): void
     {
-        $id = $queryBits->getInt(2);
-        if ($id < 1)
-        {
-            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $album = Photoalbum::fetchById($id);
-        if ($album === null)
-        {
-            throw new \Exception('Photo album not found!');
-        }
         $numPhotos = count($_FILES['newFiles']['name']);
         for ($i = 0; $i < $numPhotos; $i++)
         {
             if (!$_FILES['newFiles']['error'][$i])
             {
-                Photo::create($album, $_FILES['newFiles']['tmp_name'][$i], $_FILES['newFiles']['name'][$i]);
+                $tempName = $_FILES['newFiles']['tmp_name'][$i];
+                $originalName = $_FILES['newFiles']['name'][$i];
+                $proposedName = pathinfo($originalName, PATHINFO_FILENAME) . '.webp';
+                Photo::create($album, $tempName, $proposedName);
             }
         }
+    }
+
+    public function addPhoto(QueryBits $queryBits): Response
+    {
+        $id = $queryBits->getInt(2);
+        $album = Photoalbum::fetchById($id);
+        if ($album === null)
+        {
+            throw new \Exception('Photo album not found!');
+        }
+
+        $this->addPhotoCommon($album);
 
         return new RedirectResponse("/photoalbum/{$album->id}");
     }
@@ -85,25 +90,13 @@ final class PhotoalbumController extends Controller
     public function addPhotoApi(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        if ($id < 1)
-        {
-            return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
-        }
-
         $album = Photoalbum::fetchById($id);
         if ($album === null)
         {
             return new JsonResponse(['error' => 'Photo album not found!'], Response::HTTP_NOT_FOUND);
         }
 
-        $numPhotos = count($_FILES['newFiles']['name']);
-        for ($i = 0; $i < $numPhotos; $i++)
-        {
-            if (!$_FILES['newFiles']['error'][$i])
-            {
-                Photo::create($album, $_FILES['newFiles']['tmp_name'][$i], $_FILES['newFiles']['name'][$i]);
-            }
-        }
+        $this->addPhotoCommon($album);
 
         return new JsonResponse([]);
     }
