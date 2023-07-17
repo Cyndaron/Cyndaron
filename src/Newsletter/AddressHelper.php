@@ -53,7 +53,7 @@ final class AddressHelper
         $numChangedMembers = 0;
         if (class_exists('\Cyndaron\Geelhoed\Member\Member'))
         {
-            $prep = $pdo->prepare('UPDATE geelhoed_members SET parentEmail = NULL WHERE parentEmail = ?');
+            $prep = $pdo->prepare('UPDATE geelhoed_members SET parentEmail = \'\' WHERE parentEmail = ?');
             $prep->execute([$email]);
             $numChangedMembers = $prep->rowCount();
         }
