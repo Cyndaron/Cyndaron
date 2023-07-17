@@ -38,7 +38,7 @@ class Controller extends \Cyndaron\Routing\Controller
     protected array $postRoutes = [
         'subscribe' => ['level' => UserLevel::ANONYMOUS, 'function' => 'subscribe'],
         'unsubscribe' => ['level' => UserLevel::ADMIN, 'function' => 'unsubscribeAdmin'],
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'unsubscribe'],
+        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
     ];
 
     protected array $apiPostRoutes = [
