@@ -33,7 +33,7 @@
                     <table class="table table-striped table-bordered location-overview">
                         <thead>
                             <tr>
-                                <th>Groep</th><th>Lestijd</th><th>Training</th><th>Afdeling</th>
+                                <th>Leeftijd</th><th>Lestijd</th><th>Training</th><th>Afdeling</th>
                             </tr>
                         </thead>
                         <tbody>
