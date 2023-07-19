@@ -1,23 +1,22 @@
 <?php
 namespace Cyndaron\Geelhoed\Contest;
 
-use Cyndaron\Geelhoed\Member\Member;
-use Cyndaron\Geelhoed\Sport;
 use Cyndaron\DBAL\Model;
+use Cyndaron\Geelhoed\Member\Member;
+use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\User\User;
 use Cyndaron\Util\Util;
-
+use function array_filter;
+use function array_map;
+use function assert;
+use function count;
+use function file_exists;
+use function implode;
+use function is_dir;
+use function reset;
 use function Safe\scandir;
 use function Safe\strtotime;
 use function substr;
-use function assert;
-use function file_exists;
-use function is_dir;
-use function array_filter;
-use function reset;
-use function count;
-use function array_map;
-use function implode;
 use function time;
 
 final class Contest extends Model

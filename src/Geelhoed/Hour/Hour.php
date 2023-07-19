@@ -6,11 +6,10 @@ namespace Cyndaron\Geelhoed\Hour;
 use Cyndaron\DBAL\CacheableModel;
 use Cyndaron\Geelhoed\Department;
 use Cyndaron\Geelhoed\Location\Location;
-use Cyndaron\Geelhoed\Sport;
+use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\View\Template\ViewHelpers;
-
-use function sprintf;
 use function assert;
+use function sprintf;
 
 final class Hour extends CacheableModel
 {

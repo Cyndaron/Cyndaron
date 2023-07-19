@@ -4,28 +4,26 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
-use Cyndaron\Geelhoed\Sport;
-use Cyndaron\DBAL\Model;
-use Cyndaron\Util\FileCache;
-use Cyndaron\View\Page;
+use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\User\User;
+use Cyndaron\Util\FileCache;
 use Cyndaron\Util\Util;
-
+use function array_filter;
 use function array_key_exists;
+use function array_reverse;
+use function assert;
+use function count;
+use function explode;
+use function implode;
 use function is_int;
+use function reset;
+use function trim;
 use function uasort;
 use function usort;
-use function trim;
-use function explode;
-use function array_reverse;
-use function implode;
-use function count;
-use function reset;
-use function array_filter;
-use function assert;
 
 final class Member extends Model
 {

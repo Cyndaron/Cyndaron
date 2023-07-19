@@ -11,6 +11,7 @@ use Cyndaron\Geelhoed\Location\LocationController;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberController;
 use Cyndaron\Geelhoed\Reservation\ReservationController;
+use Cyndaron\Geelhoed\Sport\SportController;
 use Cyndaron\Geelhoed\Tryout\TryoutController;
 use Cyndaron\Geelhoed\Volunteer\VolunteerController;
 use Cyndaron\Module\Datatype;
@@ -50,6 +51,12 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu, Template
                 'pageManagerTab' => PageManagerTabs::class . '::contestsTab',
                 'pageManagerJS' => '/src/Geelhoed/Contest/js/ContestManager.js',
             ]),
+            'sport' => Datatype::fromArray([
+                'singular' => 'Sport',
+                'plural' => 'Sporten',
+                'pageManagerTab' => PageManagerTabs::class . '::sportsTab',
+                'pageManagerJS' => '/src/Geelhoed/Sport/js/PageManagerTab.js',
+            ]),
         ];
     }
 
@@ -63,6 +70,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu, Template
             'reservation' => ReservationController::class,
             'vrijwilligers' => VolunteerController::class,
             'tryout' => TryoutController::class,
+            'sport' => SportController::class,
         ];
     }
 

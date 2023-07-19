@@ -2,7 +2,7 @@
 namespace Cyndaron\Geelhoed;
 
 use Cyndaron\DBAL\Model;
-use function array_key_exists;
+use Cyndaron\Geelhoed\Sport\Sport;
 
 final class Graduation extends Model
 {

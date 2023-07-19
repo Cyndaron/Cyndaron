@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Geelhoed;
+namespace Cyndaron\Geelhoed\Sport;
 
 use Cyndaron\DBAL\CacheableModel;
 

@@ -20,7 +20,7 @@
             Sport:
             <select id="gum-filter-sport" class="custom-select form-control-inline">
                 <option value="-1">(Alles)</option>
-                @foreach (\Cyndaron\Geelhoed\Sport::fetchAll() as $sport)
+                @foreach (\Cyndaron\Geelhoed\Sport\Sport::fetchAll() as $sport)
                     <option value="{{ $sport->id }}">{{ $sport->name }}</option>
                 @endforeach
             </select>
@@ -104,7 +104,7 @@
                     @foreach ($member->getSports() as $sport)
                         data-sport-{{ $sport->id }}="1"
                     @endforeach
-                    @foreach (\Cyndaron\Geelhoed\Sport::fetchAll() as $sport)
+                    @foreach (\Cyndaron\Geelhoed\Sport\Sport::fetchAll() as $sport)
                         @php $graduation = $member->getHighestGraduation($sport) @endphp
                         @if ($graduation !== null)
                             data-graduation-{{ $graduation->id }}="1"

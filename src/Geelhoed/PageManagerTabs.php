@@ -6,6 +6,7 @@ namespace Cyndaron\Geelhoed;
 use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Member\Member;
+use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\View\Template\Template;
 
 final class PageManagerTabs
@@ -27,5 +28,11 @@ final class PageManagerTabs
     {
         $contests = Contest::fetchAll([], [], 'ORDER BY registrationDeadline DESC');
         return (new Template())->render('Geelhoed/Contest/PageManagerTab', ['contests' => $contests]);
+    }
+
+    public static function sportsTab(): string
+    {
+        $sports = Sport::fetchAll();
+        return (new Template())->render('Geelhoed/Sport/PageManagerTab', ['sports' => $sports]);
     }
 }

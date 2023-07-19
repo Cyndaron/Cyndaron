@@ -1,23 +1,23 @@
 <?php
 namespace Cyndaron\Geelhoed\Contest;
 
-use Cyndaron\Payment\Currency;
-use Cyndaron\Request\QueryBits;
-use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
-use Cyndaron\Geelhoed\Sport;
-use Cyndaron\View\Page;
-use Cyndaron\Util\Mail\Mail;
+use Cyndaron\Geelhoed\Sport\Sport;
+use Cyndaron\Payment\Currency;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\Controller;
+use Cyndaron\User\User;
+use Cyndaron\User\UserLevel;
+use Cyndaron\Util\Mail\Mail;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\Util;
+use Cyndaron\View\Page;
 use Cyndaron\View\SimplePage;
 use Cyndaron\View\Template\Template;
 use Cyndaron\View\Template\ViewHelpers;
-use Cyndaron\User\User;
-use Cyndaron\User\UserLevel;
-use Cyndaron\Util\Util;
 use Exception;
 use Mollie\Api\Resources\Payment;
 use PhpOffice\PhpSpreadsheet\Shared\Date as PHPSpreadsheetDate;
@@ -26,25 +26,22 @@ use Safe\DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-
 use Symfony\Component\Mime\Address;
-use function array_key_exists;
+use function array_map;
+use function assert;
+use function basename;
+use function chr;
+use function count;
+use function file_exists;
+use function implode;
+use function in_array;
+use function move_uploaded_file;
+use function ord;
 use function Safe\date;
 use function Safe\error_log;
-use function sprintf;
 use function Safe\strtotime;
-use function number_format;
-use function implode;
-use function count;
-use function chr;
-use function ord;
-use function basename;
-use function move_uploaded_file;
-use function file_exists;
+use function sprintf;
 use function time;
-use function assert;
-use function in_array;
-use function array_map;
 
 final class ContestController extends Controller
 {
