@@ -2,12 +2,13 @@
 @extends ('Editor/PageBase')
 
 @section ('contentSpecificButtons')
-    <div class="form-group">
-        <label for="descriptionWhenClosed">Beschijving indien gesloten:</label>
-        <textarea class="form-control" id="descriptionWhenClosed" name="descriptionWhenClosed"
-                  rows="3">{!! $descriptionWhenClosed !!}</textarea>
-    </div>
+
     @include('View/Widget/Form/Checkbox', ['id' => 'openForSales', 'label' => 'Open voor verkoop', 'checked' => (bool)($model->openForSales ?? false)])
+
+    <div class="form-group">
+        <label>Beschijving indien gesloten:</label>
+        @include('View/Widget/Form/Editor', ['id' => 'descriptionWhenClosed', 'value' => $descriptionWhenClosed])
+    </div>
 
     @include('View/Widget/Form/Select', ['id' => 'delivery', 'label' => 'Kaartlevering', 'required' => true, 'selected' => $delivery, 'options' => [
         0 => 'Bij kerk of opsturen',
