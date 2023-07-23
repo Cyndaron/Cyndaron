@@ -44,19 +44,7 @@
                 </label>
         @endif
 
-        <textarea id="ckeditor-parent" name="artikel" rows="25" cols="125">{{ $article }}</textarea>
-
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label" for="verwijzing">Interne link maken: </label>
-            <div class="col-sm-5">
-                <select id="verwijzing" class="form-control form-control-inline custom-select">
-                    @foreach ($internalLinks as $link)
-                        <option value="{{ $link['link'] }}">{{ $link['name'] }}</option>
-                    @endforeach
-                </select>
-                <input type="button" id="plaklink" class="btn btn-outline-cyndaron" value="Invoegen"/>
-            </div>
-        </div>
+        @include('View/Widget/Form/Editor', ['id' => 'artikel', 'value' => $article, 'internalLinks' => $internalLinks])
 
         @if ($hasCategory)
         <div class="form-group row" id="categories-accordion">

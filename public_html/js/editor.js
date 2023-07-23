@@ -1,31 +1,36 @@
 /**
- * Copyright © 2009-2020 Michael Steenbeek
+ * Copyright © 2009-2023 Michael Steenbeek
  *
  * Cyndaron is licensed under the MIT License. See the LICENSE file for more details.
  */
 
 "use strict";
 
-function plakLink()
-{
-    // Open het dialoogvenster voor het invoeren van een link
-    $('.cke_button__link').first().click();
+$('.internal-link-insert').on('click', function() {
+    const target = $(this).data('target');
+    const linkButton = $(`#cke_${target} .cke_button__link`).first();
+    if (linkButton.length === 0)
+    {
+        return;
+    }
+
+    // Open the Insert Link dialog
+    linkButton.click();
 
     setTimeout(function ()
     {
-        var link = $('#verwijzing').val();
-        var focus = $(':focus');
-        // Het veld voor de link heeft standaardfocus
-        focus.val(link);
+        const href = $(`.internal-link-href[data-target=${target}]`).val();
+        // After opening the dialog, the focus will be on the link field, so we can simply "paste" our value
+        const linkInput = $(':focus');
+        linkInput.val(href);
 
-        // Zet de selector voor het linktype op 'anders'
-        focus.parent().parent().parent().parent().parent().find('select').val('');
+        // Set the selector for the protocol to "other", to allow for relative URLs
+        const protocolSelector = focus.parent().parent().parent().parent().parent().find('select');
+        protocolSelector.val('');
     }, 800);
-}
+});
 
-$('#plaklink').on('click', function() {plakLink();});
-
-CKEDITOR.replace('ckeditor-parent', {
+CKEDITOR.replaceAll('ckeditor-parent', {
     removePlugins: 'flash',
     customConfig: '/js/ckeditor-config.js'
 });

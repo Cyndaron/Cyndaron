@@ -11,9 +11,9 @@ $(document).ready(function ()
             return;
         }
 
-        CKEDITOR.instances['ckeditor-parent'].updateElement();
+        CKEDITOR.instances['newsletter-body'].updateElement();
 
-        let body = $('#ckeditor-parent').val();
+        let body = $('#newsletter-body').val();
         if (body === '')
         {
             alert('Er is geen tekst ingevoerd!');

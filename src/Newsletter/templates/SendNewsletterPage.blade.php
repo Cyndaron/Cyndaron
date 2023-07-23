@@ -5,7 +5,7 @@
 
     @include('View/Widget/Form/BasicInput', ['id' => 'subject', 'label' => 'Onderwerp', 'value' => ''])
 
-    <textarea id="ckeditor-parent" name="body" rows="15" cols="75"></textarea>
+    @include('View/Widget/Form/Editor', ['id' => 'newsletter-body', 'name' => 'body'])
 
     <label for="attachment-1">Bijlagen:</label><input id="attachments" name="attachments" type="file" multiple>
 
