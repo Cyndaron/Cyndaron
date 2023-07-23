@@ -64,10 +64,11 @@ final class Hour extends CacheableModel
 
     /**
      * @param int $age
+     * @param Sport $sport
      * @return self[]
      */
-    public static function fetchByAge(int $age): array
+    public static function fetchByAgeAndSport(int $age, Sport $sport): array
     {
-        return self::fetchAll(['minAge <= ? AND (maxAge IS NULL OR maxAge >= ?)'], [$age, $age], 'ORDER BY locationId, day');
+        return self::fetchAll(['minAge <= ?', '(maxAge IS NULL OR maxAge >= ?)', 'sportId = ?'], [$age, $age, $sport->id], 'ORDER BY locationId, day');
     }
 }

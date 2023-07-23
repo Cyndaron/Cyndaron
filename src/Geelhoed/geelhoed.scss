@@ -33,3 +33,28 @@ table.location-overview
         margin: 10px 0;
     }
 }
+
+.location-search-block
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+
+    > div
+    {
+        margin-top: 15px;
+        margin-bottom: 15px;
+
+        > a
+        {
+            display: block;
+            height: 100%;
+
+            > div.card
+            {
+                height: 100%;
+                background-color: #cccccc;
+            }
+        }
+    }
+}

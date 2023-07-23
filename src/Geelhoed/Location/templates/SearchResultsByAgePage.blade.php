@@ -7,7 +7,7 @@
 
     @else
 
-        Als {{ $age }}-jarige kun je op de volgende tijden en plaatsen trainen:<br><br>
+        Als {{ $age }}-jarige kun je op de volgende tijden en plaatsen trainen voor {{ $sport->name }}:<br><br>
 
         <table class="table table-bordered table-striped">
             <thead>

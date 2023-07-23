@@ -9,6 +9,7 @@ namespace Cyndaron\Util;
 use RuntimeException;
 use Safe\DateTimeImmutable;
 use Safe\Exceptions\FilesystemException;
+use function Safe\preg_replace;
 use function Safe\date;
 use function Safe\mkdir;
 use function sprintf;
@@ -169,5 +170,13 @@ class Util
             'content-disposition' => 'attachment;filename="' . $filename . '"',
             'cache-control' => 'max-age=0'
         ];
+    }
+
+    public static function getSlug(string $url): string
+    {
+        $firstPass = preg_replace('/[^0-9a-z\-]+/', '-', strtolower($url));
+        /** @var string $dedoubled */
+        $dedoubled = str_replace('--', '-', $firstPass);
+        return $dedoubled;
     }
 }

@@ -4,17 +4,19 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Location;
 
 use Cyndaron\Geelhoed\Hour\Hour;
+use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\View\Page;
 
 class SearchResultsByAgePage extends Page
 {
-    public function __construct(int $age)
+    public function __construct(int $age, Sport $sport)
     {
         parent::__construct('Lessen zoeken');
 
         $this->addTemplateVars([
             'age' => $age,
-            'hours' => Hour::fetchByAge($age),
+            'hours' => Hour::fetchByAgeAndSport($age, $sport),
+            'sport' => $sport,
         ]);
     }
 }

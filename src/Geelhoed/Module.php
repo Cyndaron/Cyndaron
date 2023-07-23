@@ -64,7 +64,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenu, Template
     {
         return [
             'hour' => HourController::class,
-            'location' =>  LocationController::class,
+            'locaties' =>  LocationController::class,
             'member' => MemberController::class,
             'contest' => ContestController::class,
             'reservation' => ReservationController::class,

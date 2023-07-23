@@ -15,4 +15,18 @@
     .gcv-member-subscription.card {
       margin: 10px 0; } }
 
+.location-search-block {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch; }
+  .location-search-block > div {
+    margin-top: 15px;
+    margin-bottom: 15px; }
+    .location-search-block > div > a {
+      display: block;
+      height: 100%; }
+      .location-search-block > div > a > div.card {
+        height: 100%;
+        background-color: #cccccc; }
+
 /*# sourceMappingURL=geelhoed.css.map */
