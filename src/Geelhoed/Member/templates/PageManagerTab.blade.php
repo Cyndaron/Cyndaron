@@ -1,4 +1,4 @@
-<link href="/src/Geelhoed/geelhoed.css" type="text/css" rel="stylesheet" />
+<link href="/src/Geelhoed/geelhoed.css" type="text/css" rel="stylesheet"/>
 
 <div id="geelhoed-membermanager">
     @component('View/Widget/Toolbar')
@@ -29,7 +29,8 @@
             <select id="gum-filter-graduation" class="custom-select form-control-inline">
                 <option value="-1">(Alles)</option>
                 @foreach (\Cyndaron\Geelhoed\Graduation::fetchAll() as $graduation)
-                    <option value="{{ $graduation->id }}">{{ $graduation->getSport()->name }}, {{ $graduation->name }}</option>
+                    <option value="{{ $graduation->id }}">{{ $graduation->getSport()->name }}
+                        , {{ $graduation->name }}</option>
                 @endforeach
             </select>
 
@@ -56,9 +57,11 @@
             </select>
 
             Geb. datum start:
-            <input id="gum-filter-dateOfBirth-start" class="gum-filter-dateOfBirth form-control form-control-inline" type="date"/>
+            <input id="gum-filter-dateOfBirth-start" class="gum-filter-dateOfBirth form-control form-control-inline"
+                   type="date"/>
             Geb. datum eind:
-            <input id="gum-filter-dateOfBirth-end" class="gum-filter-dateOfBirth form-control form-control-inline" type="date"/>
+            <input id="gum-filter-dateOfBirth-end" class="gum-filter-dateOfBirth form-control form-control-inline"
+                   type="date"/>
 
             Wedstrijdjudoka:
             <select id="gum-filter-isContestant" class="custom-select form-control-inline">
@@ -69,7 +72,8 @@
         @endslot
         @slot('right')
             <a href="/member/directDebitList" class="btn btn-outline-cyndaron">Incassolijst</a>
-            <button type="button" id="gum-new" class="btn btn-success" data-toggle="modal" data-target="#gum-edit-user-dialog">
+            <button type="button" id="gum-new" class="btn btn-success" data-toggle="modal"
+                    data-target="#gum-edit-user-dialog">
                 <span class="glyphicon glyphicon-plus"></span>Nieuw lid
             </button>
         @endslot
@@ -99,7 +103,7 @@
                     data-paymentProblem="{{ (int)$member->paymentProblem }}"
                     data-isContestant="{{ (int)$member->isContestant }}"
                     @if ($profile->dateOfBirth)
-                         data-dateOfBirth="{{ date('Y-m-d', strtotime($profile->dateOfBirth)) }}"
+                        data-dateOfBirth="{{ date('Y-m-d', strtotime($profile->dateOfBirth)) }}"
                     @endif
                     @foreach ($member->getSports() as $sport)
                         data-sport-{{ $sport->id }}="1"
@@ -109,7 +113,7 @@
                         @if ($graduation !== null)
                             data-graduation-{{ $graduation->id }}="1"
                         @endif
-                    @endforeach
+                        @endforeach
                 >
                     <td>{{ $member->id }}</td>
                     <td>
@@ -126,8 +130,11 @@
                     </td>
                     <td>
                         @foreach ($member->getHours() as $hour)
-                            {{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($hour->day) }} {{ $hour->from|hm }} - {{ $hour->until|hm }} ({{ $hour->getSportName() }}, {{ $hour->getLocation()->getName() }})
-                            @if (!$loop->last) <br>@endif
+                            {{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($hour->day) }} {{ $hour->from|hm }}
+                            - {{ $hour->until|hm }} ({{ $hour->getSportName() }}, {{ $hour->getLocation()->getName() }})
+                            @if (!$loop->last)
+                                <br>
+                            @endif
                         @endforeach
                     </td>
                     <td>
@@ -135,14 +142,26 @@
                         <abbr title="Voor kwartaal dat begint op {{ \Cyndaron\Util\Util::getStartOfNextQuarter()->format('d-m-Y') }}">Kw.bedrag: </abbr>{{ \Cyndaron\View\Template\ViewHelpers::formatEuro($member->getQuarterlyFee()) }}
                     </td>
                     <td>
-                        @if ($member->isContestant)<abbr title="Wedstrijdjudoka">W</abbr><br>@endif
-                        @if ($member->getProfile()->canLogin())<abbr title="Kan inloggen">I</abbr><br>@endif
-                        @if ($member->isSenior())<abbr title="Is senior">S</abbr>@endif
+                        @if ($member->isContestant)
+                            <abbr title="Wedstrijdjudoka">W</abbr><br>
+                        @endif
+                        @if ($member->getProfile()->canLogin())
+                            <abbr title="Kan inloggen">I</abbr><br>
+                        @endif
+                        @if ($member->isSenior())
+                            <abbr title="Is senior">S</abbr>
+                        @endif
                     </td>
                     <td>
                         <div class="btn-group">
-                            <button type="button" class="btn btn-outline-cyndaron btn-sm btn-gum-edit" data-toggle="modal" data-target="#gum-edit-user-dialog" data-id="{{ $member->id }}"><span class="glyphicon glyphicon-pencil" title="Bewerk dit lid"></span></button>
-                            <button type="button" class="btn btn-danger btn-sm pm-delete" data-type="member" data-id="{{ $member->id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('member', 'delete') }}"><span class="glyphicon glyphicon-trash" title="Verwijder deze locatie"></span></button>
+                            <button type="button" class="btn btn-outline-cyndaron btn-sm btn-gum-edit"
+                                    data-toggle="modal" data-target="#gum-edit-user-dialog" data-id="{{ $member->id }}">
+                                <span class="glyphicon glyphicon-pencil" title="Bewerk dit lid"></span></button>
+                            <button type="button" class="btn btn-danger btn-sm pm-delete" data-type="member"
+                                    data-id="{{ $member->id }}"
+                                    data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('member', 'delete') }}"><span
+                                        class="glyphicon glyphicon-trash" title="Verwijder deze locatie"></span>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -161,26 +180,33 @@
 
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="user-data-tab" data-toggle="tab" href="#user-data" role="tab" aria-controls="user-data" aria-selected="true">Gebruikersgegevens</a>
+                    <a class="nav-link active" id="user-data-tab" data-toggle="tab" href="#user-data" role="tab"
+                       aria-controls="user-data" aria-selected="true">Gebruikersgegevens</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="personal-data-tab" data-toggle="tab" href="#personal-data" role="tab" aria-controls="personal-data" aria-selected="false">Persoonsgegevens</a>
+                    <a class="nav-link" id="personal-data-tab" data-toggle="tab" href="#personal-data" role="tab"
+                       aria-controls="personal-data" aria-selected="false">Persoonsgegevens</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="sport-tab" data-toggle="tab" href="#sport" role="tab" aria-controls="sport" aria-selected="false">Sportgegevens</a>
+                    <a class="nav-link" id="sport-tab" data-toggle="tab" href="#sport" role="tab" aria-controls="sport"
+                       aria-selected="false">Sportgegevens</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="lessons-tab" data-toggle="tab" href="#lessons" role="tab" aria-controls="lessons" aria-selected="false">Lessen</a>
+                    <a class="nav-link" id="lessons-tab" data-toggle="tab" href="#lessons" role="tab"
+                       aria-controls="lessons" aria-selected="false">Lessen</a>
                 </li>
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="user-data" role="tabpanel" aria-labelledby="user-data-tab">
                     <p>De onderstaande gegevens zijn nodig voor het inloggen. Let op: het e-mailadres moet uniek zijn.
-                    Is de judoka te jong om een eigen, uniek e-mailadres te hebben, laat het vak dan leeg en vul alleen het e-mailadres
-                    van de ouders in (onder “Persoonsgegevens”).</p>
+                        Is de judoka te jong om een eigen, uniek e-mailadres te hebben, laat het vak dan leeg en vul
+                        alleen het e-mailadres
+                        van de ouders in (onder “Persoonsgegevens”).</p>
                     <input type="hidden" name="id" value="0">
-                    <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('member', 'save') }}">
-                    <input type="hidden" name="csrfTokenRemoveGraduation" value="{{ \Cyndaron\User\User::getCSRFToken('member', 'removeGraduation') }}">
+                    <input type="hidden" name="csrfToken"
+                           value="{{ \Cyndaron\User\User::getCSRFToken('member', 'save') }}">
+                    <input type="hidden" name="csrfTokenRemoveGraduation"
+                           value="{{ \Cyndaron\User\User::getCSRFToken('member', 'removeGraduation') }}">
                     @include('View/Widget/Form/BasicInput', ['id' => 'username', 'label' => 'Gebruikersnaam', 'placeholder' => 'Bijv.: ammulder', 'value' => ''])
                     @include('View/Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'Eigen e-mailadres', 'value' => ''])
                 </div>
@@ -225,39 +251,45 @@
                     <ul id="gum-user-dialog-graduation-list">
 
                     </ul>
-                    Nieuwe graduatie: <select id="new-graduation-id" name="new-graduation-id" class="form-control form-control-inline custom-select">
+                    Nieuwe graduatie: <select id="new-graduation-id" name="new-graduation-id"
+                                              class="form-control form-control-inline custom-select">
                         <option value=""></option>
                         @foreach (\Cyndaron\Geelhoed\Graduation::fetchAll() as $graduation)
-                            <option value="{{ $graduation->id }}">{{ $graduation->getSport()->name }}: {{ $graduation->name }}</option>
+                            <option value="{{ $graduation->id }}">{{ $graduation->getSport()->name }}
+                                : {{ $graduation->name }}</option>
                         @endforeach
-                    </select> <input id="new-graduation-date" name="new-graduation-date" type="date" class="form-control form-control-inline">
+                    </select> <input id="new-graduation-date" name="new-graduation-date" type="date"
+                                     class="form-control form-control-inline">
 
                 </div>
                 <div class="tab-pane fade" id="lessons" role="tabpanel" aria-labelledby="lessons-tab">
                     <div id="accordion">
                         @foreach (\Cyndaron\Geelhoed\Location\Location::fetchAll([], [], 'ORDER BY city') as $location)
                             @php $hours = $location->getHours(\Cyndaron\Geelhoed\Department::DEPARTMENT_ID_T_MULDER) @endphp
-                        @if (empty($hours))
-                            @continue
-                        @endif
-                        <div class="card">
-                            <div class="card-header" id="heading{{ $location->id }}">
-                                <h5 class="mb-0">
-                                    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ $location->id }}" aria-expanded="true" aria-controls="collapse{{ $location->id }}">
-                                        {{ $location->city }}, {{ $location->getName() }}
-                                    </button>
-                                </h5>
-                            </div>
+                            @if (empty($hours))
+                                @continue
+                            @endif
+                            <div class="card">
+                                <div class="card-header" id="heading{{ $location->id }}">
+                                    <h5 class="mb-0">
+                                        <button type="button" class="btn btn-link" data-toggle="collapse"
+                                                data-target="#collapse{{ $location->id }}" aria-expanded="true"
+                                                aria-controls="collapse{{ $location->id }}">
+                                            {{ $location->city }}, {{ $location->getName() }}
+                                        </button>
+                                    </h5>
+                                </div>
 
-                            <div id="collapse{{ $location->id }}" class="collapse" aria-labelledby="heading{{ $location->id }}" data-parent="#accordion">
-                                <div class="card-body">
-                                    @foreach ($hours as $hour)
-                                        @php $weekday = \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($hour->day) @endphp
-                                        @include('View/Widget/Form/Checkbox', ['id' => "hour-{$hour->id}", 'label' => "{$weekday}, {$hour->getRange()} {$hour->getSportName()}"])
-                                    @endforeach
+                                <div id="collapse{{ $location->id }}" class="collapse"
+                                     aria-labelledby="heading{{ $location->id }}" data-parent="#accordion">
+                                    <div class="card-body">
+                                        @foreach ($hours as $hour)
+                                            @php $weekday = \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($hour->day) @endphp
+                                            @include('View/Widget/Form/Checkbox', ['id' => "hour-{$hour->id}", 'label' => "{$weekday}, {$hour->getRange()} {$hour->getSportName()}"])
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         @endforeach
                     </div>
                 </div>
@@ -266,7 +298,9 @@
         @endslot
         @slot ('footer')
             <button id="gum-popup-save" type="button" class="btn btn-primary">Opslaan</button>
-            <button type="button" class="btn btn-outline-cyndaron" data-dismiss="modal" aria-label="Annuleren">Annuleren</button>
+            <button type="button" class="btn btn-outline-cyndaron" data-dismiss="modal" aria-label="Annuleren">
+                Annuleren
+            </button>
         @endslot
     @endcomponent
 </form>
