@@ -16,8 +16,6 @@ use function file_exists;
 
 final class Photo
 {
-    public const THUMBNAIL_WIDTH = 270;
-    public const THUMBNAIL_HEIGHT = 200;
     public const MAX_DIMENSION = 1280;
 
     public string $filename;
@@ -87,7 +85,7 @@ final class Photo
         copy($filename, $filenameThumb);
 
         self::resizeMainPhoto($filename);
-        self::createThumbnail($filenameThumb);
+        self::createThumbnail($filenameThumb, $album->thumbnailWidth, $album->thumbnailHeight);
     }
 
     protected static function resizeMainPhoto(string $filename): bool
@@ -101,11 +99,11 @@ final class Photo
         return $image->writeImage($filename);
     }
 
-    protected static function createThumbnail(string $filename): bool
+    protected static function createThumbnail(string $filename, int $thumbnailWidth, int $thumbnailHeight): bool
     {
         $image = new Imagick($filename);
         self::autoRotate($image);
-        $image->cropThumbnailImage(self::THUMBNAIL_WIDTH, self::THUMBNAIL_HEIGHT);
+        $image->cropThumbnailImage($thumbnailWidth, $thumbnailHeight);
         return $image->writeImage($filename);
     }
 

@@ -19,6 +19,8 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $photoalbum->showBreadcrumbs = $post->getBool('showBreadcrumbs');
         $photoalbum->hideFromOverview = $post->getBool('hideFromOverview');
         $photoalbum->viewMode = $post->getInt('viewMode');
+        $photoalbum->thumbnailWidth = $post->getInt('thumbnailWidth');
+        $photoalbum->thumbnailHeight = $post->getInt('thumbnailHeight');
         $this->saveHeaderAndPreviewImage($photoalbum, $post, $request);
         $photoalbum->save();
         $this->saveCategories($photoalbum, $post);

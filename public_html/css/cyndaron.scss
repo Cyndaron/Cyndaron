@@ -531,3 +531,22 @@ input[type=color].form-control
     padding: 0;
     width: calc(1.5em + .75rem + 2px) !important; // Matches the height that Bootstrap gives them
 }
+
+.widget-dimensions > *:first-child
+{
+    border-top-left-radius: .25rem;
+    border-bottom-left-radius: .25rem;
+}
+
+.widget-dimensions > *:last-child
+{
+    border-top-right-radius: .25rem !important;
+    border-bottom-right-radius: .25rem !important;
+}
+
+.widget-dimensions > span
+{
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+}

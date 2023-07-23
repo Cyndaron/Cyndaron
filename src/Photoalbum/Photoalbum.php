@@ -24,7 +24,7 @@ final class Photoalbum extends ModelWithCategory
 {
     public const TABLE = 'photoalbums';
     public const CATEGORY_TABLE = 'photoalbum_categories';
-    public const TABLE_FIELDS = ['name', 'image', 'previewImage', 'blurb', 'notes', 'showBreadcrumbs', 'hideFromOverview', 'viewMode'];
+    public const TABLE_FIELDS = ['name', 'image', 'previewImage', 'blurb', 'notes', 'showBreadcrumbs', 'hideFromOverview', 'viewMode', 'thumbnailWidth', 'thumbnailHeight'];
 
     public const VIEWMODE_REGULAR = 0;
     public const VIEWMODE_PORTFOLIO = 1;
@@ -40,6 +40,8 @@ final class Photoalbum extends ModelWithCategory
     public string $notes = '';
     public bool $hideFromOverview = false;
     public int $viewMode = self::VIEWMODE_REGULAR;
+    public int $thumbnailWidth = 270;
+    public int $thumbnailHeight = 200;
 
     public static function create(string $name, string $notes = '', bool $showBreadcrumbs = false): ?int
     {
