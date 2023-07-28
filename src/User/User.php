@@ -296,15 +296,15 @@ Uw nieuwe wachtwoord is: %s';
 
         if ($_SESSION['redirect'])
         {
-            $_SESSION['request'] = $_SESSION['redirect'];
+            $redirect = $_SESSION['redirect'];
             $_SESSION['redirect'] = null;
         }
         else
         {
-            $_SESSION['request'] = '/';
+            $redirect = '/';
         }
 
-        return $_SESSION['request'];
+        return $redirect;
     }
 
     public static function logout(): void
