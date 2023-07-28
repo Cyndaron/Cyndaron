@@ -80,8 +80,8 @@ class TryoutController extends Controller
             {
                 try
                 {
-                    $date = DateTimeImmutable::createFromFormat(Util::SQL_DATE_FORMAT, $punt['datum']);
-                    $time = DateTimeImmutable::createFromFormat(Util::SQL_DATE_FORMAT, $punt['tijd']);
+                    $date = DateTimeImmutable::createFromFormat(Util::SQL_DATE_TIME_FORMAT, $punt['datum']);
+                    $time = DateTimeImmutable::createFromFormat(Util::SQL_DATE_TIME_FORMAT, $punt['tijd']);
                     $datetime = $date->setTime((int)$time->format('H'), (int)$time->format('i'), (int)$time->format('s'));
                 }
                 catch(Throwable)
@@ -93,7 +93,7 @@ class TryoutController extends Controller
 
                 $vars[] = (int)$punt['Id'];
                 $vars[] = (int)$punt['code'];
-                $vars[] = $datetime?->format(Util::SQL_DATE_FORMAT);
+                $vars[] = $datetime?->format(Util::SQL_DATE_TIME_FORMAT);
                 $vars[] = (int)$punt['punten'];
             }
 

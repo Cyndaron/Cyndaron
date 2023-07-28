@@ -10,8 +10,8 @@ use Exception;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionProperty;
-
 use ReflectionUnionType;
+
 use function is_scalar;
 use function sprintf;
 use function array_merge;
@@ -25,6 +25,7 @@ use function is_int;
 use function is_float;
 use function assert;
 use function is_a;
+use function str_contains;
 
 abstract class Model
 {
@@ -276,7 +277,7 @@ abstract class Model
         }
         if ($var instanceof DateTimeInterface)
         {
-            return $var->format(Util::SQL_DATE_FORMAT);
+            return $var->format(Util::SQL_DATE_TIME_FORMAT);
         }
 
         assert(is_scalar($var));
@@ -325,8 +326,10 @@ abstract class Model
         }
         if (is_a($typeName, DateTimeInterface::class, true))
         {
+            $format = str_contains($var, ' ') ? Util::SQL_DATE_TIME_FORMAT : Util::SQL_DATE_FORMAT;
+
             // @phpstan-ignore-next-line
-            return $typeName::createFromFormat(Util::SQL_DATE_FORMAT, $var);
+            return $typeName::createFromFormat($format, $var);
         }
 
         return $var;

@@ -40,7 +40,7 @@ class ScoresPage extends Page
             return null;
         }
 
-        $date = DateTimeImmutable::createFromFormat(Util::SQL_DATE_FORMAT, $datetime);
+        $date = DateTimeImmutable::createFromFormat(Util::SQL_DATE_TIME_FORMAT, $datetime);
         if ($date === false)
         {
             return null;

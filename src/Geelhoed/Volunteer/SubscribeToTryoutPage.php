@@ -14,7 +14,7 @@ final class SubscribeToTryoutPage extends Page
     public function __construct(Event $event)
     {
         $json = $event->getJsonData();
-        $startDate = \Safe\DateTimeImmutable::createFromFormat(Util::SQL_DATE_FORMAT, $event->start);
+        $startDate = \Safe\DateTimeImmutable::createFromFormat(Util::SQL_DATE_TIME_FORMAT, $event->start);
         $title = 'Inschrijven voor tryout-toernooi ' . ViewHelpers::filterDutchDate($startDate);
         $numRounds = $event->getTryoutNumRounds();
         $status = $event->getTryoutStatus();
