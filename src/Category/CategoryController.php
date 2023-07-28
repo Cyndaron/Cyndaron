@@ -185,11 +185,12 @@ final class CategoryController extends Controller
             return new JsonResponse(['error' => 'Category does not exist!'], Response::HTTP_NOT_FOUND);
         }
 
-        $underlyingPages = $category->getUnderlyingPages('name');
-        array_walk($underlyingPages, static function(ModelWithCategory $model)
+        $underlyingPages = [];
+        foreach ($category->getUnderlyingPages('name') as $underlyingPage)
         {
+            $entry = (array)$underlyingPage;
             $class = 'unknown';
-            switch (get_class($model))
+            switch (get_class($underlyingPage))
             {
                 case StaticPageModel::class:
                     $class = 'sub';
@@ -204,9 +205,11 @@ final class CategoryController extends Controller
                     $class = 'richlink';
                     break;
             }
-            /** @noinspection PhpUndefinedFieldInspection */
-            $model->type = $class;
-        });
+
+            $entry['type'] = $class;
+
+            $underlyingPages[] = $entry;
+        }
 
         return new JsonResponse($underlyingPages);
     }
