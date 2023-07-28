@@ -23,7 +23,6 @@ use function Safe\imagecreatefromgif;
 use function Safe\imagecreatefromjpeg;
 use function Safe\imagecreatefrompng;
 use function Safe\imagepng;
-use function Safe\password_hash;
 use function Safe\session_destroy;
 use function sprintf;
 use function substr;
@@ -38,6 +37,7 @@ use function random_int;
 use function count;
 use function array_filter;
 use function password_verify;
+use function password_hash;
 
 final class User extends CacheableModel
 {
