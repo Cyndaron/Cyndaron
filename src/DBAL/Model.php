@@ -1,12 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace Cyndaron\DBAL;
 
-use Cyndaron\Ticketsale\Order\Order;
+use Cyndaron\Util\Util;
+use DateTime;
+use DateTimeInterface;
 use Exception;
+use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionProperty;
 
+use ReflectionUnionType;
+use function is_scalar;
 use function sprintf;
 use function array_merge;
 use function reset;
@@ -15,6 +21,10 @@ use function array_fill;
 use function count;
 use function implode;
 use function is_bool;
+use function is_int;
+use function is_float;
+use function assert;
+use function is_a;
 
 abstract class Model
 {
@@ -23,8 +33,8 @@ abstract class Model
     public const TABLE_FIELDS = [];
 
     public ?int $id;
-    public string $modified;
-    public string $created;
+    public DateTime $modified;
+    public DateTime $created;
 
     final public function __construct(?int $id = null)
     {
@@ -82,7 +92,7 @@ abstract class Model
         }
         foreach (self::getExtendedTableFields() as $tableField)
         {
-            $this->$tableField = $record[$tableField];
+            $this->$tableField = $this->convertSQLValueforProperty($tableField, $record[$tableField]);
         }
         return true;
     }
@@ -173,7 +183,7 @@ abstract class Model
         {
             if (array_key_exists($tableField, $newArray))
             {
-                $this->$tableField = $newArray[$tableField];
+                $this->$tableField = $this->convertSQLValueforProperty($tableField, $newArray[$tableField]);
             }
             else
             {
@@ -214,7 +224,7 @@ abstract class Model
             $placeholders = implode(',', array_fill(0, count(static::TABLE_FIELDS), '?'));
             foreach (static::TABLE_FIELDS as $tableField)
             {
-                $arguments[] = $this->mangleVar($this->$tableField);
+                $arguments[] = $this->convertVarForSQL($this->$tableField);
             }
 
             $result = DBConnection::doQuery('INSERT INTO ' . static::TABLE . ' (' . implode(',', static::TABLE_FIELDS) . ') VALUES (' . $placeholders . ')', $arguments);
@@ -231,7 +241,7 @@ abstract class Model
 
             foreach (static::TABLE_FIELDS as $tableField)
             {
-                $mangledField = $this->mangleVar($this->$tableField);
+                $mangledField = $this->convertVarForSQL($this->$tableField);
                 if ($mangledField !== null)
                 {
                     $setStrings[] = $tableField . '=?';
@@ -250,47 +260,73 @@ abstract class Model
         return $result !== false;
     }
 
+    private function convertVarForSQL(DateTimeInterface|string|float|int|bool|null $var): string|int|float|null
+    {
+        if ($var === null)
+        {
+            return null;
+        }
+        if (is_bool($var))
+        {
+            return (string)(int)$var;
+        }
+        if (is_int($var) || is_float($var))
+        {
+            return $var;
+        }
+        if ($var instanceof DateTimeInterface)
+        {
+            return $var->format(Util::SQL_DATE_FORMAT);
+        }
+
+        assert(is_scalar($var));
+        // At this point, the value _has_ to be a string.
+        return $var;
+    }
+
     /**
+     * @param string $property
      * @param mixed $var
-     * @return string|null
+     *
+     * @throws \ReflectionException
+     * @return string|int|float|bool|DateTimeInterface|null
      */
-    private function mangleVar($var): ?string
+    private function convertSQLValueforProperty(string $property, mixed $var): DateTimeInterface|bool|int|float|string|null
     {
         if ($var === null)
         {
             return null;
         }
 
-        if (is_bool($var))
-        {
-            $var = (int)$var;
-        }
-        return (string)$var;
-    }
-
-    /**
-     * @param string $property
-     * @param string $var
-     *
-     * @throws \ReflectionException
-     * @return string|int|bool
-     */
-    public static function mangleVarForProperty(string $property, string $var)
-    {
         $rp = new ReflectionProperty(static::class, $property);
-        /** @var ReflectionNamedType|null $type */
+        /** @var ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $type */
         $type = $rp->getType();
         if ($type === null)
         {
             return $var;
         }
 
-        switch ($type->getName())
+        if ($type instanceof ReflectionUnionType || $type instanceof ReflectionIntersectionType)
+        {
+            $type = $type->getTypes()[0];
+        }
+
+        $typeName = $type->getName();
+        switch ($typeName)
         {
             case 'int':
                 return (int)$var;
+            case 'float':
+                return (float)$var;
             case 'bool':
                 return (bool)(int)$var;
+            case 'string':
+                return $var;
+        }
+        if (is_a($typeName, DateTimeInterface::class, true))
+        {
+            // @phpstan-ignore-next-line
+            return $typeName::createFromFormat(Util::SQL_DATE_FORMAT, $var);
         }
 
         return $var;

@@ -78,7 +78,7 @@ final class Category extends ModelWithCategory
                 }
 
                 // In the case of the same priority: newest first.
-                return strtotime($m2->created) <=> strtotime($m1->created);
+                return $m2->created <=> $m1->created;
             });
         }
 
