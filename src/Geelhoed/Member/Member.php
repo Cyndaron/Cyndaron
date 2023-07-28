@@ -174,7 +174,7 @@ final class Member extends Model
 
     public function isSenior(): bool
     {
-        $dateOfBirth = $this->getProfile()->getDateOfBirth();
+        $dateOfBirth = $this->getProfile()->dateOfBirth;
         if ($dateOfBirth === null)
         {
             return true;

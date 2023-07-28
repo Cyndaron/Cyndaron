@@ -8,6 +8,8 @@ use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\Util;
+use Safe\DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -157,7 +159,7 @@ final class MemberController extends Controller
         $user->houseNumberAddition = $post->getSimpleString('houseNumberAddition');
         $user->postalCode = $post->getPostcode('postalCode');
         $user->city = $post->getSimpleString('city');
-        $user->dateOfBirth = $post->getDate('dateOfBirth');
+        $user->dateOfBirth = DateTime::createFromFormat(Util::SQL_DATE_FORMAT, $post->getDate('dateOfBirth'));
         $user->notes = $post->getHTML('notes');
         $user->optOut = $post->getBool('optOut');
 

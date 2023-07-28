@@ -12,7 +12,7 @@ use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Exception;
 use finfo;
-use Safe\DateTime;
+use DateTime;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\ImageException;
 
@@ -64,7 +64,7 @@ final class User extends CacheableModel
     public ?string $houseNumberAddition = null;
     public ?string $postalCode = null;
     public ?string $city = null;
-    public ?string $dateOfBirth = null;
+    public DateTime|null $dateOfBirth = null;
     public bool $optOut = false;
     public string $notes = '';
 
@@ -333,16 +333,6 @@ Uw nieuwe wachtwoord is: %s';
         return $ret;
     }
 
-    public function getDateOfBirth(): ?\DateTimeImmutable
-    {
-        if ($this->dateOfBirth === null || $this->dateOfBirth === '')
-        {
-            return null;
-        }
-
-        return \DateTimeImmutable::createFromFormat('!Y-m-d', $this->dateOfBirth) ?: null;
-    }
-
     public function save(): bool
     {
         if (empty($this->username))
@@ -396,12 +386,11 @@ Uw nieuwe wachtwoord is: %s';
             return 0;
         }
 
-        $date = new DateTime($this->dateOfBirth);
         if ($on === null)
         {
             $on = new DateTime();
         }
-        $interval = $on->diff($date);
+        $interval = $on->diff($this->dateOfBirth);
         return $interval->y;
     }
 

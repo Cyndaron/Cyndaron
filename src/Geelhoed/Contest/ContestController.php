@@ -362,7 +362,7 @@ final class ContestController extends Controller
             $sheet->setCellValue("E{$row}", $profile->city);
             if ($profile->dateOfBirth !== null)
             {
-                $dobExcel = PHPSpreadsheetDate::PHPToExcel(date($profile->dateOfBirth));
+                $dobExcel = PHPSpreadsheetDate::PHPToExcel($profile->dateOfBirth);
                 $sheet->setCellValue("F{$row}", $dobExcel);
                 $sheet->getStyle("F{$row}")->getNumberFormat()->setFormatCode('dd-mm-yyyy');
             }
@@ -514,7 +514,7 @@ final class ContestController extends Controller
             $sheet->setCellValue("E{$row}", $profile->city);
             if ($profile->dateOfBirth !== null)
             {
-                $dobExcel = PHPSpreadsheetDate::PHPToExcel(date($profile->dateOfBirth));
+                $dobExcel = PHPSpreadsheetDate::PHPToExcel($profile->dateOfBirth);
                 $sheet->setCellValue("F{$row}", $dobExcel);
                 $sheet->getStyle("F{$row}")->getNumberFormat()->setFormatCode('dd-mm-yyyy');
             }
