@@ -95,7 +95,7 @@ abstract class Model
         }
         foreach (self::getExtendedTableFields() as $tableField)
         {
-            $this->$tableField = $this->convertSQLValueforProperty($tableField, $record[$tableField]);
+            $this->$tableField = ValueConverter::sqlToPhp($record[$tableField], static::class, $tableField);
         }
         return true;
     }
@@ -186,7 +186,7 @@ abstract class Model
         {
             if (array_key_exists($tableField, $newArray))
             {
-                $this->$tableField = $this->convertSQLValueforProperty($tableField, $newArray[$tableField]);
+                $this->$tableField = ValueConverter::sqlToPhp($newArray[$tableField], static::class, $tableField);
             }
             else
             {
@@ -227,7 +227,7 @@ abstract class Model
             $placeholders = implode(',', array_fill(0, count(static::TABLE_FIELDS), '?'));
             foreach (static::TABLE_FIELDS as $tableField)
             {
-                $arguments[] = $this->convertVarForSQL($this->$tableField);
+                $arguments[] = ValueConverter::phpToSql($this->$tableField);
             }
 
             $result = DBConnection::doQuery('INSERT INTO ' . static::TABLE . ' (' . implode(',', static::TABLE_FIELDS) . ') VALUES (' . $placeholders . ')', $arguments);
@@ -244,7 +244,7 @@ abstract class Model
 
             foreach (static::TABLE_FIELDS as $tableField)
             {
-                $mangledField = $this->convertVarForSQL($this->$tableField);
+                $mangledField = ValueConverter::phpToSql($this->$tableField);
                 if ($mangledField !== null)
                 {
                     $setStrings[] = $tableField . '=?';
@@ -261,88 +261,6 @@ abstract class Model
         }
 
         return $result !== false;
-    }
-
-    private function convertVarForSQL(DateTimeInterface|string|float|int|bool|BackedEnum|null $var): string|int|float|null
-    {
-        if ($var === null)
-        {
-            return null;
-        }
-        if (is_bool($var))
-        {
-            return (string)(int)$var;
-        }
-        if (is_int($var) || is_float($var))
-        {
-            return $var;
-        }
-        if ($var instanceof BackedEnum)
-        {
-            return $var->value;
-        }
-        if ($var instanceof DateTimeInterface)
-        {
-            return $var->format(Util::SQL_DATE_TIME_FORMAT);
-        }
-
-        assert(is_scalar($var));
-        // At this point, the value _has_ to be a string.
-        return $var;
-    }
-
-    /**
-     * @param string $property
-     * @param mixed $var
-     *
-     * @throws \ReflectionException
-     * @return string|int|float|bool|DateTimeInterface|null
-     */
-    private function convertSQLValueforProperty(string $property, mixed $var): DateTimeInterface|bool|int|float|string|null
-    {
-        if ($var === null)
-        {
-            return null;
-        }
-
-        $rp = new ReflectionProperty(static::class, $property);
-        /** @var ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $type */
-        $type = $rp->getType();
-        if ($type === null)
-        {
-            return $var;
-        }
-
-        if ($type instanceof ReflectionUnionType || $type instanceof ReflectionIntersectionType)
-        {
-            $type = $type->getTypes()[0];
-        }
-
-        $typeName = $type->getName();
-        switch ($typeName)
-        {
-            case 'int':
-                return (int)$var;
-            case 'float':
-                return (float)$var;
-            case 'bool':
-                return (bool)(int)$var;
-            case 'string':
-                return $var;
-        }
-        if (is_a($typeName, DateTimeInterface::class, true))
-        {
-            $format = str_contains($var, ' ') ? Util::SQL_DATE_TIME_FORMAT : Util::SQL_DATE_FORMAT;
-
-            // @phpstan-ignore-next-line
-            return $typeName::createFromFormat($format, $var);
-        }
-        if (enum_exists($typeName))
-        {
-            return $typeName::from($var);
-        }
-
-        return $var;
     }
 
     public static function deleteById(int $id): bool
