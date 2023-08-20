@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\DBAL;
 
+use BackedEnum;
 use Cyndaron\Util\Util;
 use DateTime;
 use DateTimeInterface;
@@ -12,6 +13,7 @@ use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionUnionType;
 
+use function enum_exists;
 use function is_scalar;
 use function sprintf;
 use function array_merge;
@@ -261,7 +263,7 @@ abstract class Model
         return $result !== false;
     }
 
-    private function convertVarForSQL(DateTimeInterface|string|float|int|bool|null $var): string|int|float|null
+    private function convertVarForSQL(DateTimeInterface|string|float|int|bool|BackedEnum|null $var): string|int|float|null
     {
         if ($var === null)
         {
@@ -274,6 +276,10 @@ abstract class Model
         if (is_int($var) || is_float($var))
         {
             return $var;
+        }
+        if ($var instanceof BackedEnum)
+        {
+            return $var->value;
         }
         if ($var instanceof DateTimeInterface)
         {
@@ -330,6 +336,10 @@ abstract class Model
 
             // @phpstan-ignore-next-line
             return $typeName::createFromFormat($format, $var);
+        }
+        if (enum_exists($typeName))
+        {
+            return $typeName::from($var);
         }
 
         return $var;
