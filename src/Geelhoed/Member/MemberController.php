@@ -46,6 +46,12 @@ final class MemberController extends Controller
         if ($member !== null)
         {
             $ret = array_merge($member->asArray(), $member->getProfile()->asArray());
+            $dob = $member->getProfile()->dateOfBirth;
+            if ($dob !== null)
+            {
+                $ret['dateOfBirth'] = $dob->format(Util::SQL_DATE_FORMAT);
+            }
+
             foreach ($member->getHours() as $hour)
             {
                 $ret["hour-{$hour->id}"] = true;

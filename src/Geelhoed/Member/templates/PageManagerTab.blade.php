@@ -103,7 +103,7 @@
                     data-paymentProblem="{{ (int)$member->paymentProblem }}"
                     data-isContestant="{{ (int)$member->isContestant }}"
                     @if ($profile->dateOfBirth)
-                        data-dateOfBirth="{{ date('Y-m-d', strtotime($profile->dateOfBirth)) }}"
+                        data-dateOfBirth="{{ $profile->dateOfBirth->format('Y-m-d') }}"
                     @endif
                     @foreach ($member->getSports() as $sport)
                         data-sport-{{ $sport->id }}="1"

@@ -27,7 +27,7 @@
                     <td>
                         @if (!empty($profile->dateOfBirth))
                             {{ $profile->getAge() }}
-                            @if (date('m-d') === date('m-d', strtotime($profile->dateOfBirth))) (jarig) @endif
+                            @if (date('m-d') === $profile->dateOfBirth->format('m-d')) (jarig) @endif
                         @endif
                     </td>
                     <td>
