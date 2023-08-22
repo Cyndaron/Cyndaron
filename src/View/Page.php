@@ -11,11 +11,13 @@ namespace Cyndaron\View;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\CyndaronInfo;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Module\PagePreProcessor;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\ViewHelpers;
 use Cyndaron\User\User;
 use Cyndaron\DBAL\Model;
 
+use function array_key_exists;
 use function sprintf;
 use function substr;
 use function assert;
@@ -47,6 +49,9 @@ class Page
 
     protected string $template = '';
     protected array $templateVars = ['contents' => ''];
+
+    /** @var PagePreProcessor[] */
+    private static $preProcessors = [];
 
     public function __construct(string $title)
     {
@@ -191,6 +196,11 @@ class Page
 
         $this->renderSkeleton();
 
+        foreach (self::$preProcessors as $processor)
+        {
+            $processor->process($this);
+        }
+
         $template = new \Cyndaron\View\Template\Template();
         return $template->render($this->template, $this->templateVars);
     }
@@ -265,5 +275,30 @@ class Page
     public function addTemplateVars(array $vars): void
     {
         $this->templateVars = array_merge($this->templateVars, $vars);
+    }
+
+    public function addHeadLine(string $line): void
+    {
+        if (!array_key_exists('extraHeadLines', $this->templateVars))
+        {
+            $this->templateVars['extraHeadLines'] = [];
+        }
+
+        $this->templateVars['extraHeadLines'][] = $line;
+    }
+
+    public function getTemplate(): string
+    {
+        return $this->template;
+    }
+
+    public function getTemplateVar(string $name): mixed
+    {
+        return $this->templateVars[$name] ?? null;
+    }
+
+    public static function addPreprocessor(PagePreProcessor $processor): void
+    {
+        self::$preProcessors[] = $processor;
     }
 }

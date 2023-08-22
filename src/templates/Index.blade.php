@@ -49,6 +49,9 @@
     @foreach ($preloadLinks ?? [] as $preloadLink)
         <link rel="prefetch" href="{!! $preloadLink !!}"/>
     @endforeach
+    @foreach ($extraHeadLines ?? [] as $extraHeadLine)
+        {!! $extraHeadLine !!}}
+    @endforeach
     {!! $extraHead !!}
 </head>
 <body class="cyndaron {{ $extraBodyClasses }} {{ \Cyndaron\Util\Util::slug($title) }}" data-articleColor="{{ $articleColor }}">

@@ -12,6 +12,7 @@ use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\UserMenu;
+use Cyndaron\Module\WithPageProcessors;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\View\Page;
 use Cyndaron\PageManager\PageManagerPage;
@@ -334,6 +335,13 @@ final class Router implements HttpKernelInterface
             if ($module instanceof Templated)
             {
                 TemplateFinder::addTemplateRoot($module->getTemplateRoot());
+            }
+            if ($module instanceof WithPageProcessors)
+            {
+                foreach ($module->getPageprocessors() as $processor)
+                {
+                    Page::addPreprocessor(new $processor());
+                }
             }
         }
     }
