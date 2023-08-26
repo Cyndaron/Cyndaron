@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\MailAdmin;
 
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Setting;
@@ -14,6 +15,7 @@ use function mb_substr;
 use function rtrim;
 use function base64_encode;
 use function random_bytes;
+use function str_contains;
 
 class Controller extends \Cyndaron\Routing\Controller
 {
@@ -21,8 +23,11 @@ class Controller extends \Cyndaron\Routing\Controller
         'overview' => ['function' => 'overview', 'level' => UserLevel::ADMIN],
     ];
     protected array $postRoutes = [
+        'addAlias' => ['function' => 'addAlias', 'level' => UserLevel::ADMIN],
         'addDomain' => ['function' => 'addDomain', 'level' => UserLevel::ADMIN],
         'addEmail' => ['function' => 'addEmail', 'level' => UserLevel::ADMIN],
+        'deleteAlias' => ['function' => 'deleteAlias', 'level' => UserLevel::ADMIN],
+        'deleteEmail' => ['function' => 'deleteEmail', 'level' => UserLevel::ADMIN],
     ];
 
     public function createPDO(): PDO
@@ -54,6 +59,29 @@ class Controller extends \Cyndaron\Routing\Controller
         return new RedirectResponse('/mailadmin/overview');
     }
 
+    public function addAlias(RequestParameters $post): RedirectResponse
+    {
+        $pdo = $this->createPDO();
+
+        $user = $post->getSimpleString('user');
+        $destination = $post->getEmail('destination');
+        $domainId = $post->getInt('domainId');
+        $prep = $pdo->prepare('SELECT name FROM virtual_domains WHERE id = ?');
+        $prep->execute([$domainId]);
+        $domain = $prep->fetchColumn();
+
+        $source = "{$user}@{$domain}";
+        if (!str_contains($destination, '@'))
+        {
+            $destination .= "@{$domain}";
+        }
+
+        $prep = $pdo->prepare("INSERT INTO virtual_aliases(`domain_id`, `source`, `destination`) VALUES (?, ?, ?)");
+        $prep->execute([$domainId, $source, $destination]);
+
+        return new RedirectResponse('/mailadmin/overview');
+    }
+
     public function addEmail(RequestParameters $post): RedirectResponse
     {
         $pdo = $this->createPDO();
@@ -78,5 +106,27 @@ class Controller extends \Cyndaron\Routing\Controller
     {
         $salt = mb_substr(rtrim(base64_encode(random_bytes(16)), '='), 0, 16, '8bit');
         return crypt($input, '$6$' . $salt);
+    }
+
+    public function deleteAlias(QueryBits $queryBits): RedirectResponse
+    {
+        $id = $queryBits->getInt(2);
+
+        $pdo = $this->createPDO();
+        $prep = $pdo->prepare("DELETE FROM virtual_aliases WHERE id = ?");
+        $prep->execute([$id]);
+
+        return new RedirectResponse('/mailadmin/overview');
+    }
+
+    public function deleteEmail(QueryBits $queryBits): RedirectResponse
+    {
+        $id = $queryBits->getInt(2);
+
+        $pdo = $this->createPDO();
+        $prep = $pdo->prepare("DELETE FROM virtual_users WHERE id = ?");
+        $prep->execute([$id]);
+
+        return new RedirectResponse('/mailadmin/overview');
     }
 }
