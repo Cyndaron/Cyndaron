@@ -49,6 +49,10 @@ class OverviewPage extends Page
             $addressesPerDomain[$domainId]->addresses[] = new AliasEntry($id, $domainId, $alias['source'], $alias['destination']);
         }
 
+        usort($addressesPerDomain, static function(Domain $domain1, Domain $domain2)
+        {
+            return $domain1->name <=> $domain2->name;
+        });
         foreach ($addressesPerDomain as $domain)
         {
             usort($domain->addresses, static function(EmailEntry $entry1, EmailEntry $entry2)
