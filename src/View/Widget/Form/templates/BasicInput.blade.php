@@ -4,7 +4,7 @@
                 type="{{ $inputType ?? $type ?? 'text' }}"
                 class="form-control"
                 id="{{ $id }}"
-                name="{{ $id }}"
+                name="{{ $name ?? $id }}"
                 value="{{ $value ?? '' }}"
                 @if (isset($placeholder)) placeholder="{{ $placeholder }}" @endif
                 @if (isset($min)) min="{{ $min }}" @endif
