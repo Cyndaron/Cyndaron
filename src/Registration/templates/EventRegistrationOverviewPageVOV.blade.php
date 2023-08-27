@@ -78,7 +78,7 @@
                     {{ $registration->city }}
                 </td>
                 <td>
-                    {{ date('d-m-Y', strtotime($registration->created)) }}
+                    {{ $registration->created->format('d-m-Y') }}
                 </td>
                 <td>
                     {{ $registration->isPaid|boolToText }}
