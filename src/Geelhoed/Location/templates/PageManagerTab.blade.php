@@ -16,9 +16,9 @@
         @php /** @var \Cyndaron\Geelhoed\Location\Location[] $locations */ @endphp
         @foreach ($locations as $location)
         <tr>
-            <td><a href="/location/view/{{ $location->id }}">{{ $location->id }}</a></td>
+            <td><a href="/locaties/details/{{ $location->id }}">{{ $location->id }}</a></td>
             <td>
-                <a href="/location/view/{{ $location->id }}">{{ $location->getName() }}</a>
+                <a href="/locaties/details/{{ $location->id }}">{{ $location->getName() }}</a>
                 @foreach ($location->getHours() as $hour)
                     <br>
                     {{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($hour->day) }} {{ $hour->from|hm }} - {{ $hour->until|hm }}: {{ $hour->description }} ({{ $hour->getSportName() }}) (<a href="/hour/memberList/{{ $hour->id }}">ledenlijst</a>)

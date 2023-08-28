@@ -26,7 +26,7 @@
                     @php $location = $hour->getLocation() @endphp
                     <tr>
                         <td>
-                            <a href="/location/view/{{ $location->id }}">
+                            <a href="/locaties/details/{{ $location->id }}">
                                 {{ $location->city }}, {{ $location->street }}
                             </a>
                         </td>

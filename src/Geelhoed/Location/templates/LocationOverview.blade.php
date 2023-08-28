@@ -25,7 +25,7 @@
                 {{ $location->street }} {{ $location->houseNumber }}<br>
                 {{ $location->postalCode }} {{ $location->city }}<br>
 
-                <a href="/location/view/{{ $location->id }}">Meer informatie</a>
+                <a href="/locaties/details/{{ $location->id }}">Meer informatie</a>
 
                 @foreach ($hoursPerWeekday as $weekDay => $hours)
                     <h4>{{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($weekDay) }}</h4>
