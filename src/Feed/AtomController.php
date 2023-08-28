@@ -41,9 +41,10 @@ final class AtomController extends Controller
         }
 
         $selfUri = $request->getSchemeAndHttpHost() . $request->getBaseUrl() . $request->getPathInfo();
+        $siteName = Setting::get('siteName');
 
         $args = [
-            'title' => "Atomfeed voor categorie {$category->name}",
+            'title' => "{$category->name} - {$siteName}",
             'organisation' => Setting::get(Setting::ORGANISATION),
             'selfUri' => $selfUri,
             'category' => $category,
