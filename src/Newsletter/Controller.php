@@ -60,7 +60,7 @@ class Controller extends \Cyndaron\Routing\Controller
     protected function subscribe(RequestParameters $post): Response
     {
         $antiSpam = $post->getUnfilteredString('antispam');
-        if ($antiSpam !== '')
+        if ($antiSpam !== 'geelhoed')
         {
             $page = new SimplePage('Inschrijving nieuwsbrief', 'Er is iets misgegaan bij het invullen van het formulier.');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
