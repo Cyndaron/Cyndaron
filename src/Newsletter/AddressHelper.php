@@ -6,6 +6,7 @@ namespace Cyndaron\Newsletter;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
+use RuntimeException;
 use Symfony\Component\Mime\Address;
 use function base64_encode;
 use function class_exists;
@@ -156,6 +157,10 @@ final class AddressHelper
     public static function calculateHash(string $email): string
     {
         $salt = Setting::get('newsletter_salt');
+        if ($salt === '')
+        {
+            throw new RuntimeException('Salt is niet ingesteld!');
+        }
         return hash('sha256', $email . $salt);
     }
 }
