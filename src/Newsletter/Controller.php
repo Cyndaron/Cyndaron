@@ -165,7 +165,7 @@ class Controller extends \Cyndaron\Routing\Controller
         $code = $queryBits->getString(3);
         if ($code !== AddressHelper::calculateHash($email))
         {
-            return new Response((new SimplePage('Uitschrijven', 'Controlecode klopt niet! Mogelijk heeft u een oude link gebruik of klopt de configuratie niet.'))->render(), Response::HTTP_BAD_REQUEST);
+            return new Response((new SimplePage('Uitschrijven', 'Controlecode klopt niet! Mogelijk heeft u een oude link gebruikt of klopt de configuratie niet.'))->render(), Response::HTTP_BAD_REQUEST);
         }
 
         $changes = AddressHelper::unsubscribe($email);
