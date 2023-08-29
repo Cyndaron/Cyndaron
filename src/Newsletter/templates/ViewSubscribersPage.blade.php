@@ -8,6 +8,7 @@
             <tr>
                 <th>Naam</th>
                 <th>E-mailadres</th>
+                <th>Bevestigd</th>
             </tr>
         </thead>
         <tbody>
@@ -16,6 +17,7 @@
                 <tr>
                     <td>{{ $subscriber->name }}</td>
                     <td><a href="mailto:{{ $subscriber->email }}">{{ $subscriber->email }}</a></td>
+                    <td>{{ $subscriber->confirmed|boolToDingbat }}</td>
                 </tr>
             @endforeach
         </tbody>

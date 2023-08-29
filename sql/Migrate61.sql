@@ -112,3 +112,7 @@ alter table photoalbums
 
 alter table photoalbums
     add thumbnailHeight int default 200 not null after thumbnailWidth;
+
+alter table newsletter_subscriber
+    add confirmed tinyint(1) default 0 null after email;
+

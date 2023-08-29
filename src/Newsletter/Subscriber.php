@@ -17,4 +17,5 @@ class Subscriber extends Model
 
     public string $name = '';
     public string $email = '';
+    public bool $confirmed = false;
 }

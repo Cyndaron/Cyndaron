@@ -8,19 +8,24 @@ declare(strict_types=1);
 
 namespace Cyndaron\Newsletter;
 
+use Cassandra\Set;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\User\User;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\Setting;
 use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport\SendmailTransport;
 use Symfony\Component\Mime\Address;
 
+use Symfony\Component\Mime\Email;
 use function array_map;
 use function array_sum;
 use function base64_decode;
@@ -33,6 +38,7 @@ class Controller extends \Cyndaron\Routing\Controller
         'viewSubscribers' => ['level' => UserLevel::ADMIN, 'function' => 'viewSubscribers'],
         'compose' => ['level' => UserLevel::ADMIN, 'function' => 'compose'],
         'unsubscribe' => ['level' => UserLevel::ANONYMOUS, 'function' => 'unsubscribeUser'],
+        'confirm' => ['level' => UserLevel::ANONYMOUS, 'function' => 'confirm'],
     ];
 
     protected array $postRoutes = [
@@ -60,7 +66,8 @@ class Controller extends \Cyndaron\Routing\Controller
     protected function subscribe(RequestParameters $post): Response
     {
         $antiSpam = $post->getUnfilteredString('antispam');
-        if ($antiSpam !== 'geelhoed')
+        $antiSpam2 = $post->getUnfilteredString('new_password');
+        if ($antiSpam !== 'geelhoed' || $antiSpam2 !== '')
         {
             $page = new SimplePage('Inschrijving nieuwsbrief', 'Er is iets misgegaan bij het invullen van het formulier.');
             return new Response($page->render(), Response::HTTP_BAD_REQUEST);
@@ -79,13 +86,34 @@ class Controller extends \Cyndaron\Routing\Controller
             $subscription = new Subscriber();
             $subscription->name = $name;
             $subscription->email = $email;
+            $subscription->confirmed = false;
             $subscription->save();
 
-            $message = 'U bent ingeschreven voor de nieuwsbrief.';
+            $this->sendConfirmationMail(new Address($email, $name));
+
+            $message = 'Wij hebben een e-mail gestuurd naar uw e-mailadres. Klik op de link in de e-mail om de inschrijving te bevestigen.';
         }
 
         $page = new SimplePage('Inschrijving nieuwsbrief', $message);
         return new Response($page->render());
+    }
+
+    private function sendConfirmationMail(Address $toAddress): void
+    {
+        $replyToAddress = AddressHelper::getReplyToAddress();
+        $fromAddress = AddressHelper::getFromAddress();
+        $organisation = Setting::get(Setting::ORGANISATION);
+        $confirmationLink = AddressHelper::getConfirmationLink($toAddress->getAddress());
+
+        $transport = new SendmailTransport();
+        $mailer = new Mailer($transport);
+        $email = (new Email())
+            ->from($fromAddress)
+            ->to($toAddress)
+            ->subject('Inschrijving bevestigen')
+            ->addReplyTo($replyToAddress)
+            ->html("Om uw nieuwsbriefinschrijving voor {$organisation} te bevestigen, <a href=\"{$confirmationLink}\">klikt u hier</a>.");
+        $mailer->send($email);
     }
 
     private function getResponse(int $numFailed, int $total): JsonResponse
@@ -175,6 +203,32 @@ class Controller extends \Cyndaron\Routing\Controller
         }
 
         return new Response((new SimplePage('Uitgeschreven', 'U bent uitgeschreven voor de nieuwsbrief.'))->render());
+    }
+
+    protected function confirm(QueryBits $queryBits): Response
+    {
+        $email = base64_decode($queryBits->getString(2), true);
+        if ($email === false)
+        {
+            return new Response((new SimplePage('Inschrijven', 'Ongeldig e-mailadres!.'))->render(), Response::HTTP_BAD_REQUEST);
+        }
+
+        $code = $queryBits->getString(3);
+        if ($code !== AddressHelper::calculateHash($email))
+        {
+            return new Response((new SimplePage('Inschrijven', 'Controlecode klopt niet! Mogelijk heeft u een oude link gebruikt of klopt de configuratie niet.'))->render(), Response::HTTP_BAD_REQUEST);
+        }
+
+        $subscription = Subscriber::fetch(['email = ?'], [$email]);
+        if ($subscription === null)
+        {
+            return new Response((new SimplePage('Inschrijven', 'Wij konden uw adres niet vinden. Probeer opnieuw in te schrijven.'))->render(), Response::HTTP_BAD_REQUEST);
+        }
+
+        $subscription->confirmed = true;
+        $subscription->save();
+
+        return new Response((new SimplePage('Inschrijven', 'U bent ingeschreven voor de nieuwsbrief.'))->render());
     }
 
     protected function unsubscribeAdmin(RequestParameters $post): Response

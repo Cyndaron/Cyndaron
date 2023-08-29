@@ -14,6 +14,14 @@ use function hash;
 
 final class AddressHelper
 {
+    public static function getConfirmationLink(string $email): string
+    {
+        $base64email = base64_encode($email);
+        $code = self::calculateHash($email);
+        $domain = Util::getDomain();
+        return "https://{$domain}/newsletter/confirm/$base64email/$code";
+    }
+
     public static function getUnsubscribeLink(string $email): string
     {
         $base64email = base64_encode($email);
@@ -107,7 +115,7 @@ final class AddressHelper
     public static function getSubscriberAddresses(): array
     {
         $subscriberAddresses = [];
-        foreach (Subscriber::fetchAll() as $subscriber)
+        foreach (Subscriber::fetchAll(['confirmed = 1']) as $subscriber)
         {
             try
             {
