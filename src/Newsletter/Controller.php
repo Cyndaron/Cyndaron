@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Newsletter;
 
-use Cassandra\Set;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\User\User;
