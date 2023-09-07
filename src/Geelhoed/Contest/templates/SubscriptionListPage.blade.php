@@ -49,7 +49,7 @@
                         {{ $profile->postalCode }} {{ $profile->city }}
                     </td>
                     <td>
-                        <abbr title="@if ($profile->dateOfBirth){{ date('d-m-Y', strtotime($profile->dateOfBirth)) }}@endif">
+                        <abbr title="@if ($profile->dateOfBirth){{ $profile->dateOfBirth->format('d-m-Y') }}@endif">
                             {{ $profile->getAge($contestDateObject) }}
                         </abbr>
                     </td>
