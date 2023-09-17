@@ -72,7 +72,7 @@ final class Member extends Model
 
     private function rebuildHoursCache(): void
     {
-        $records = DBConnection::doQueryAndFetchAll('SELECT * FROM geelhoed_members_hours') ?: [];
+        $records = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM geelhoed_members_hours') ?: [];
         foreach ($records as $record)
         {
             $memberId = (int)$record['memberId'];
@@ -124,7 +124,7 @@ final class Member extends Model
         $this->loadHoursCache();
 
         assert(is_int($this->id));
-        DBConnection::doQuery('DELETE FROM geelhoed_members_hours WHERE memberId = ?', [$this->id]);
+        DBConnection::getPDO()->executeQuery('DELETE FROM geelhoed_members_hours WHERE memberId = ?', [$this->id]);
 
         if (empty($hours))
         {
@@ -138,7 +138,7 @@ final class Member extends Model
         }
 
         $sql = trim($sql, ' ,');
-        DBConnection::doQuery($sql);
+        DBConnection::getPDO()->executeQuery($sql);
 
         self::$hoursCache[$this->id] = $hours;
         self::$hoursCacheHandle->save(self::$hoursCache);
@@ -377,7 +377,7 @@ final class Member extends Model
         {
             $whereString = 'WHERE ' . implode(' AND ', $where);
         }
-        $results = DBConnection::doQueryAndFetchAll('SELECT *,gm.id AS id FROM `geelhoed_members` gm INNER JOIN `users` u on gm.userId = u.id ' . $whereString . ' ' . $afterWhere, $args);
+        $results = DBConnection::getPDO()->doQueryAndFetchAll('SELECT *,gm.id AS id FROM `geelhoed_members` gm INNER JOIN `users` u on gm.userId = u.id ' . $whereString . ' ' . $afterWhere, $args);
         $ret = [];
         if ($results)
         {
@@ -400,7 +400,7 @@ final class Member extends Model
      */
     public static function fetchAllByHour(Hour $hour): array
     {
-        $results = DBConnection::doQueryAndFetchAll('SELECT * FROM `geelhoed_members` WHERE id IN (SELECT memberId FROM geelhoed_members_hours WHERE hourId = ?)', [$hour->id]);
+        $results = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM `geelhoed_members` WHERE id IN (SELECT memberId FROM geelhoed_members_hours WHERE hourId = ?)', [$hour->id]);
         $ret = [];
         if ($results)
         {
@@ -461,7 +461,7 @@ final class Member extends Model
             $ret[] = $ownMember;
         }
 
-        $relatedMembers = DBConnection::doQueryAndFetchAll('SELECT * FROM geelhoed_users_members WHERE userId = ?', [$user->id]) ?: [];
+        $relatedMembers = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM geelhoed_users_members WHERE userId = ?', [$user->id]) ?: [];
         foreach ($relatedMembers as $relatedMemberArray)
         {
             $member = self::fetchById((int)$relatedMemberArray['memberId']);

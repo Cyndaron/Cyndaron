@@ -21,10 +21,18 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
             $staticPage = StaticPageModel::fetchById($this->id);
             $this->model = $staticPage;
             $table = ($this->vvstring !== '') ? 'sub_backups' : self::TABLE;
-            /** @noinspection SqlResolve */
-            $this->content = DBConnection::doQueryAndFetchOne('SELECT text FROM ' . $table . ' WHERE id=?', [$this->id]);
-            /** @noinspection SqlResolve */
-            $this->contentTitle = DBConnection::doQueryAndFetchOne('SELECT name FROM ' . $table . ' WHERE id=?', [$this->id]);
+            /**
+             * @noinspection SqlResolve
+             * @var string $content
+             */
+            $content = DBConnection::getPDO()->doQueryAndFetchOne('SELECT text FROM ' . $table . ' WHERE id=?', [$this->id]);
+            $this->content = $content;
+            /**
+             * @noinspection SqlResolve
+             * @var string $contentTitle
+             */
+            $contentTitle = DBConnection::getPDO()->doQueryAndFetchOne('SELECT name FROM ' . $table . ' WHERE id=?', [$this->id]);
+            $this->contentTitle = $contentTitle;
 
             if ($staticPage !== null)
             {

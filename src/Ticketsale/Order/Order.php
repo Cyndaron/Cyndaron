@@ -57,7 +57,7 @@ final class Order extends Model
         $concert = Concert::fetchById($this->concertId);
         assert($concert !== null);
 
-        DBConnection::doQuery('UPDATE ticketsale_orders SET `isPaid`=1 WHERE id=?', [$this->id]);
+        DBConnection::getPDO()->executeQuery('UPDATE ticketsale_orders SET `isPaid`=1 WHERE id=?', [$this->id]);
         $this->isPaid = true;
 
         $organisation = Setting::get(Setting::ORGANISATION);
@@ -93,7 +93,7 @@ final class Order extends Model
             throw new IncompleteData('id is null!');
         }
 
-        $result = DBConnection::doQuery('UPDATE ticketsale_orders SET `isDelivered`=1 WHERE id=?', [$this->id]);
+        $result = DBConnection::getPDO()->insert('UPDATE ticketsale_orders SET `isDelivered`=1 WHERE id=?', [$this->id]);
         return (bool)$result;
     }
 

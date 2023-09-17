@@ -29,7 +29,8 @@ final class MenuItem extends Model
     {
         if (!$this->priority)
         {
-            $priority = DBConnection::doQueryAndFetchOne('SELECT MAX(priority) FROM menu WHERE id <> ?', [$this->id]) + 1;
+            $currentHighPriority = (int)(DBConnection::getPDO()->doQueryAndFetchOne('SELECT MAX(priority) FROM menu WHERE id <> ?', [$this->id]));
+            $priority = $currentHighPriority + 1;
             $this->priority = $priority;
         }
         return parent::save();
@@ -92,7 +93,7 @@ final class MenuItem extends Model
     {
         // TODO: handle this via the module system
         $id = (int)str_replace('/category/', '', $this->link);
-        $pagesInCategory = DBConnection::doQueryAndFetchAll(
+        $pagesInCategory = DBConnection::getPDO()->doQueryAndFetchAll(
             "
             SELECT * FROM
             (

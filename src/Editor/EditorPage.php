@@ -94,7 +94,7 @@ abstract class EditorPage extends Page
             if ($this->id)
             {
                 /** @noinspection SqlResolve */
-                $showBreadcrumbs = (bool)DBConnection::doQueryAndFetchOne('SELECT showBreadcrumbs FROM ' . static::TABLE . ' WHERE id=?', [$this->id]);
+                $showBreadcrumbs = (bool)DBConnection::getPDO()->doQueryAndFetchOne('SELECT showBreadcrumbs FROM ' . static::TABLE . ' WHERE id=?', [$this->id]);
             }
 
             $this->templateVars['showBreadcrumbs'] = $showBreadcrumbs;

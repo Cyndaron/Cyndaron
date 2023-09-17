@@ -42,7 +42,7 @@ final class EventRegistrationOverviewPage extends Page
      */
     private function getTicketTypesByRegistration(): array
     {
-        $boughtTicketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM `registration_orders_tickettypes`') ?: [];
+        $boughtTicketTypes = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM `registration_orders_tickettypes`') ?: [];
 
         $ticketTypesByRegistration = [];
         foreach ($boughtTicketTypes as $boughtTicketType)

@@ -343,7 +343,7 @@ final class OrderController extends Controller
             $reservedSeats = $concert->reserveSeats($orderId, $totalNumTickets);
             if ($reservedSeats === null)
             {
-                DBConnection::doQuery('UPDATE ticketsale_orders SET hasReservedSeats = 0 WHERE id=?', [$orderId]);
+                DBConnection::getPDO()->executeQuery('UPDATE ticketsale_orders SET hasReservedSeats = 0 WHERE id=?', [$orderId]);
                 $totalAmount -= $totalNumTickets * $concert->reservedSeatCharge;
                 $reserveSeats = -1;
             }

@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\User\UserLevel;
 use Exception;
@@ -26,7 +26,7 @@ final class EventController extends Controller
         'registrationListExcel' => ['level' => UserLevel::ADMIN, 'function' => 'registrationListExcel'],
     ];
 
-    protected function getEventInfo(QueryBits $queryBits): JsonResponse
+    protected function getEventInfo(QueryBits $queryBits, Connection $db): JsonResponse
     {
         $eventId = $queryBits->getInt(2);
         $event = Event::fetchById($eventId);
@@ -35,7 +35,7 @@ final class EventController extends Controller
             return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
         }
 
-        $ticketTypes = DBConnection::doQueryAndFetchAll('SELECT * FROM registration_tickettypes WHERE eventId=? ORDER BY price DESC', [$eventId]);
+        $ticketTypes = $db->doQueryAndFetchAll('SELECT * FROM registration_tickettypes WHERE eventId=? ORDER BY price DESC', [$eventId]);
 
         $answer = [
             'registrationCost0' => $event->registrationCost0,

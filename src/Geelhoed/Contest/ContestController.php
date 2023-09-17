@@ -2,6 +2,7 @@
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
 use Cyndaron\Geelhoed\Sport\Sport;
@@ -911,7 +912,7 @@ final class ContestController extends Controller
         return new JsonResponse();
     }
 
-    public function deleteFromParentAccount(RequestParameters $post): JsonResponse
+    public function deleteFromParentAccount(RequestParameters $post, Connection $db): JsonResponse
     {
         $userId = $post->getInt('userId');
         $user = User::fetchById($userId);
@@ -930,11 +931,11 @@ final class ContestController extends Controller
             return new JsonResponse(['error' => 'Ouder kan dit lid niet beheren!'], Response::HTTP_NOT_FOUND);
         }
 
-        DBConnection::doQuery('DELETE FROM geelhoed_users_members WHERE userId = ? AND memberId = ?', [$userId, $memberToRemoveId]);
+        $db->executeQuery('DELETE FROM geelhoed_users_members WHERE userId = ? AND memberId = ?', [$userId, $memberToRemoveId]);
         return new JsonResponse();
     }
 
-    public function addToParentAccount(RequestParameters $post): Response
+    public function addToParentAccount(RequestParameters $post, Connection $db): Response
     {
         $userId = $post->getInt('userId');
         $user = User::fetchById($userId);
@@ -950,7 +951,7 @@ final class ContestController extends Controller
             return new Response((new SimplePage('Fout', 'Lid bestaat niet!'))->render(), Response::HTTP_NOT_FOUND);
         }
 
-        DBConnection::doQuery('INSERT INTO geelhoed_users_members(`userId`, `memberId`) VALUES(?, ?)', [$userId, $memberId]);
+        $db->executeQuery('INSERT INTO geelhoed_users_members(`userId`, `memberId`) VALUES(?, ?)', [$userId, $memberId]);
         return new RedirectResponse('/contest/parentAccounts');
     }
 

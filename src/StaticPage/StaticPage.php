@@ -11,7 +11,7 @@ final class StaticPage extends Page
     {
         $this->model = $model;
 
-        $replies = DBConnection::doQueryAndFetchAll(
+        $replies = DBConnection::getPDO()->doQueryAndFetchAll(
             "SELECT *,DATE_FORMAT(created, '%d-%m-%Y') AS friendlyDate,DATE_FORMAT(created, '%H:%i') AS friendlyTime FROM sub_replies WHERE subId=? ORDER BY created ASC",
             [$model->id]
         );

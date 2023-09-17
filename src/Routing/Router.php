@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cyndaron\Routing;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Editor\EditorController;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
@@ -160,6 +161,9 @@ final class Router implements HttpKernelInterface
             $dic->add($request);
             $dic->add($post);
             $dic->add(new QueryBits($this->requestVars));
+            $pdo = DBConnection::getPDO();
+            $dic->add($pdo);
+            $dic->add($pdo, \PDO::class);
             $user = User::fromSession();
             if ($user !== null)
             {
@@ -214,7 +218,7 @@ final class Router implements HttpKernelInterface
             return new RedirectResponse('/', Response::HTTP_MOVED_PERMANENTLY);
         }
         // Redirect if a friendly url exists for the requested unfriendly url
-        if ($_SERVER['REQUEST_URI'] !== '/' && $url = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target = ?', [$_SERVER['REQUEST_URI']]))
+        if ($_SERVER['REQUEST_URI'] !== '/' && $url = DBConnection::getPDO()->doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target = ?', [$_SERVER['REQUEST_URI']]))
         {
             return new RedirectResponse("/$url", Response::HTTP_MOVED_PERMANENTLY);
         }
@@ -375,7 +379,7 @@ final class Router implements HttpKernelInterface
             $this->updateRequestVars((string)$frontpage);
         }
         // Known friendly URL
-        elseif ($url = DBConnection::doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$request]))
+        elseif ($url = DBConnection::getPDO()->doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$request]))
         {
             $this->updateRequestVars($this->rewriteFriendlyUrl(new Url($url)));
         }

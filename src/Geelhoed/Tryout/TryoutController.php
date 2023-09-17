@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Tryout;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\MDB\MDBFile;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
@@ -56,17 +57,17 @@ class TryoutController extends Controller
         return new Response($page->render());
     }
 
-    public function updatePost(Request $request): Response
+    public function updatePost(Request $request, Connection $db): Response
     {
         /** @var UploadedFile $file */
         $file = $request->files->get('datatot');
         $file = new MDBFile($file->getPathname());
-        $this->updateFromFile($file);
+        $this->updateFromFile($file, $db);
         $page = new UpdatePage();
         return new Response($page->render());
     }
 
-    private function updateFromFile(MDBFile $file): void
+    private function updateFromFile(MDBFile $file, Connection $db): void
     {
         $punten = $file->getTableData('punten');
 
@@ -97,7 +98,7 @@ class TryoutController extends Controller
                 $vars[] = (int)$punt['punten'];
             }
 
-            DBConnection::doQuery(self::QUERY . implode(',', $placeholders), $vars);
+            $db->executeQuery(self::QUERY . implode(',', $placeholders), $vars);
         }
     }
 }

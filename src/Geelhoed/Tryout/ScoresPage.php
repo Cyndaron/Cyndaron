@@ -14,7 +14,7 @@ class ScoresPage extends Page
     {
         parent::__construct('Punten opvragen: ' . $code);
 
-        $pointsRecords = DBConnection::doQueryAndFetchAll(
+        $pointsRecords = DBConnection::getPDO()->doQueryAndFetchAll(
             'SELECT * FROM geelhoed_tryout_points WHERE code = :code ORDER BY datetime',
             [':code' => $code]
         ) ?: [];

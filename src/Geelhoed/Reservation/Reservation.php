@@ -29,7 +29,7 @@ final class Reservation extends Model
     public static function getHoursAndDatesStatistics(): array
     {
         $today = new DateTimeImmutable();
-        return DBConnection::doQueryAndFetchAll('SELECT `date`,`hourId`, COUNT(*) as count FROM `geelhoed_reservation` WHERE date >= ? GROUP BY `date`,`hourId` ORDER BY `date`,`hourId`', [$today->format('Y-m-d')]) ?: [];
+        return DBConnection::getPDO()->doQueryAndFetchAll('SELECT `date`,`hourId`, COUNT(*) as count FROM `geelhoed_reservation` WHERE date >= ? GROUP BY `date`,`hourId` ORDER BY `date`,`hourId`', [$today->format('Y-m-d')]) ?: [];
     }
 
     /**

@@ -19,7 +19,7 @@ class SearchPage extends Page
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $this->addScript('/src/Geelhoed/Location/js/SearchPage.js');
 
-        $dayRecords = DBConnection::doQueryAndFetchAll('SELECT DISTINCT(day) AS number FROM geelhoed_hours ORDER by number') ?: [];
+        $dayRecords = DBConnection::getPDO()->doQueryAndFetchAll('SELECT DISTINCT(day) AS number FROM geelhoed_hours ORDER by number') ?: [];
         $days = [];
         foreach ($dayRecords as $dayRecord)
         {

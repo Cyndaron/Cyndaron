@@ -14,9 +14,13 @@ final class DependencyInjectionContainer
 {
     private array $objects = [];
 
-    public function add(object $object): void
+    public function add(object $object, string|null $className = null): void
     {
-        $className = get_class($object);
+        if ($className === null)
+        {
+            $className = get_class($object);
+        }
+
         $this->objects[$className] = $object;
     }
 

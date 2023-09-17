@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Photoalbum\Photoalbum;
@@ -126,7 +127,7 @@ final class CategoryController extends Controller
         return new JsonResponse();
     }
 
-    public function changeOrder(QueryBits $queryBits, RequestParameters $post): JsonResponse
+    public function changeOrder(QueryBits $queryBits, RequestParameters $post, Connection $db): JsonResponse
     {
         $categoryId = $queryBits->getInt(2);
         if ($categoryId < 1)
@@ -152,16 +153,16 @@ final class CategoryController extends Controller
             switch ($type)
             {
                 case 'sub':
-                    DBConnection::doQuery('REPLACE INTO sub_categories(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
+                    $db->executeQuery('REPLACE INTO sub_categories(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
                     break;
                 case 'category':
-                    DBConnection::doQuery('REPLACE INTO category_categories(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
+                    $db->executeQuery('REPLACE INTO category_categories(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
                     break;
                 case 'photoalbum':
-                    DBConnection::doQuery('REPLACE INTO photoalbum_categories(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
+                    $db->executeQuery('REPLACE INTO photoalbum_categories(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
                     break;
                 case 'richlink':
-                    DBConnection::doQuery('REPLACE INTO richlink_category(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
+                    $db->executeQuery('REPLACE INTO richlink_category(id, categoryId, priority) VALUES (?, ?, ?)', [$id, $categoryId, $priority]);
                     break;
             }
         }

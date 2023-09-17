@@ -91,7 +91,7 @@ final class AddressHelper
                 SELECT email AS mail FROM users AS een WHERE optout <> 1
                 {$parentMail}
             ) AS drie WHERE mail IS NOT NULL;";
-        $records = DBConnection::doQueryAndFetchAll($sql) ?: [];
+        $records = DBConnection::getPDO()->doQueryAndFetchAll($sql) ?: [];
 
         $memberAddresses = [];
         foreach ($records as $record)

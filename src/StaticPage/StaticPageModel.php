@@ -22,7 +22,7 @@ final class StaticPageModel extends ModelWithCategory
     public function delete(): void
     {
         parent::delete();
-        DBConnection::doQuery('DELETE FROM sub_backups WHERE id = ?', [$this->id]);
+        DBConnection::getPDO()->executeQuery('DELETE FROM sub_backups WHERE id = ?', [$this->id]);
     }
 
     public function save(): bool
@@ -35,14 +35,14 @@ final class StaticPageModel extends ModelWithCategory
         $result = parent::save();
         if ($result && $oldData !== null)
         {
-            DBConnection::doQuery('REPLACE INTO sub_backups(`id`, `name`, `text`) VALUES (?,?,?)', [$oldData->id, $oldData->name, $oldData->text]);
+            DBConnection::getPDO()->executeQuery('REPLACE INTO sub_backups(`id`, `name`, `text`) VALUES (?,?,?)', [$oldData->id, $oldData->name, $oldData->text]);
         }
         return $result;
     }
 
     public function hasBackup(): bool
     {
-        return (bool)DBConnection::doQueryAndFetchOne('SELECT * FROM sub_backups WHERE id= ?', [$this->id]);
+        return (bool)DBConnection::getPDO()->doQueryAndFetchOne('SELECT * FROM sub_backups WHERE id= ?', [$this->id]);
     }
 
     public function react(string $author, string $reactie, string $antispam): bool

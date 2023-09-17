@@ -36,7 +36,7 @@ final class Module implements Routes, Datatypes, Templated
 
     public function getList(): array
     {
-        return DBConnection::doQueryAndFetchAll('SELECT CONCAT(\'/concert/order/\', id) AS link, CONCAT(\'Concert: \', name) AS name FROM ticketsale_concerts') ?: [];
+        return DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/concert/order/\', id) AS link, CONCAT(\'Concert: \', name) AS name FROM ticketsale_concerts') ?: [];
     }
 
     public function getTemplateRoot(): TemplateRoot

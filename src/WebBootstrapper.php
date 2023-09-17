@@ -2,6 +2,7 @@
 namespace Cyndaron;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Util\Error\BootFailure;
 use Cyndaron\Routing\Router;
 use Cyndaron\Util\Setting;
@@ -79,8 +80,8 @@ final class WebBootstrapper
             throw new BootFailure('Geen instellingenbestand gevonden!');
         }
 
-        $this->connectToDatabase($settingsFile);
-        Setting::load(DBConnection::getPDO());
+        $pdo = $this->connectToDatabase($settingsFile);
+        Setting::load($pdo);
     }
 
     private function handleRequest(): void
@@ -90,10 +91,7 @@ final class WebBootstrapper
         $response->send();
     }
 
-    /**
-     * @param string $settingsFile
-     */
-    private function connectToDatabase(string $settingsFile): void
+    private function connectToDatabase(string $settingsFile): Connection
     {
         $dbmethode = 'mysql';
         $dbuser = 'root';
@@ -104,7 +102,9 @@ final class WebBootstrapper
         /** @noinspection PhpIncludeInspection */
         include $settingsFile;
 
-        DBConnection::connect($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass);
+        $connection = Connection::connect($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass);
+        DBConnection::connect($connection);
+        return $connection;
     }
 
     private function getSettingsFile(): ?string

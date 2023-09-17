@@ -76,7 +76,7 @@ final class Location extends CacheableModel
     public static function getCities(): array
     {
         $ret = [];
-        $results = DBConnection::doQueryAndFetchAll('SELECT DISTINCT city FROM geelhoed_locations ORDER BY city') ?: [];
+        $results = DBConnection::getPDO()->doQueryAndFetchAll('SELECT DISTINCT city FROM geelhoed_locations ORDER BY city') ?: [];
         foreach ($results as $result)
         {
             $ret[] = $result['city'];

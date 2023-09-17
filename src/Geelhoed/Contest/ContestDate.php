@@ -34,7 +34,7 @@ final class ContestDate extends Model
 
     public function addClass(ContestClass $class): bool
     {
-        $result = DBConnection::doQuery('REPLACE INTO geelhoed_contests_dates_classes(`contestDateId`, `classId`) VALUES (?, ?)', [$this->id, $class->id]);
+        $result = DBConnection::getPDO()->insert('REPLACE INTO geelhoed_contests_dates_classes(`contestDateId`, `classId`) VALUES (?, ?)', [$this->id, $class->id]);
         return $result !== false;
     }
 
@@ -47,7 +47,7 @@ final class ContestDate extends Model
 
     public function delete(): void
     {
-        DBConnection::doQuery('DELETE FROM geelhoed_contests_dates_classes WHERE contestDateId = ?', [$this->id]);
+        DBConnection::getPDO()->executeQuery('DELETE FROM geelhoed_contests_dates_classes WHERE contestDateId = ?', [$this->id]);
         parent::delete();
     }
 }

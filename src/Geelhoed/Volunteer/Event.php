@@ -66,7 +66,7 @@ final class Event extends Model
             ];
         }
 
-        $records = DBConnection::doQueryAndFetchAll('SELECT * FROM geelhoed_volunteer_event_participation WHERE eventId = ?', [$this->id]) ?: [];
+        $records = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM geelhoed_volunteer_event_participation WHERE eventId = ?', [$this->id]) ?: [];
         foreach ($records as $participation)
         {
             $decoded = json_decode($participation['data'], true);

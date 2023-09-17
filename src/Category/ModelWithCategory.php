@@ -92,7 +92,7 @@ abstract class ModelWithCategory extends Model
         $tableName = static::CATEGORY_TABLE;
         $categories = [];
         /** @noinspection SqlResolve */
-        $entries = DBConnection::doQueryAndFetchAll("SELECT categoryId FROM {$tableName} WHERE id = ?", [$this->id]) ?: [];
+        $entries = DBConnection::getPDO()->doQueryAndFetchAll("SELECT categoryId FROM {$tableName} WHERE id = ?", [$this->id]) ?: [];
         foreach ($entries as $entry)
         {
             /** @var Category $category */
@@ -124,14 +124,14 @@ abstract class ModelWithCategory extends Model
     {
         $tableName = static::CATEGORY_TABLE;
         /** @noinspection SqlResolve */
-        DBConnection::doQuery("INSERT IGNORE INTO {$tableName}(id, categoryId) VALUES (?, ?)", [$this->id, $category->id]);
+        DBConnection::getPDO()->executeQuery("INSERT IGNORE INTO {$tableName}(id, categoryId) VALUES (?, ?)", [$this->id, $category->id]);
     }
 
     public function removeCategory(Category $category): void
     {
         $tableName = static::CATEGORY_TABLE;
         /** @noinspection SqlResolve */
-        DBConnection::doQuery("DELETE FROM {$tableName} WHERE id = ? AND categoryId = ?", [$this->id, $category->id]);
+        DBConnection::getPDO()->executeQuery("DELETE FROM {$tableName} WHERE id = ? AND categoryId = ?", [$this->id, $category->id]);
     }
 
     /**
@@ -144,7 +144,7 @@ abstract class ModelWithCategory extends Model
     {
         $tableName = static::CATEGORY_TABLE;
         /** @noinspection SqlResolve */
-        $entries = DBConnection::doQueryAndFetchAll("SELECT DISTINCT id, priority FROM {$tableName} WHERE categoryId = ? " . $afterWhere, [$category->id]) ?: [];
+        $entries = DBConnection::getPDO()->doQueryAndFetchAll("SELECT DISTINCT id, priority FROM {$tableName} WHERE categoryId = ? " . $afterWhere, [$category->id]) ?: [];
         $ret = [];
         foreach ($entries as $entry)
         {

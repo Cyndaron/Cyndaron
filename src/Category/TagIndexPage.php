@@ -19,7 +19,7 @@ final class TagIndexPage extends Page
         $tags = [];
         $pages = [];
 
-        $subs = DBConnection::doQueryAndReturnFetchable('SELECT * FROM subs WHERE `tags` LIKE ? ORDER BY id DESC', ["%$tag%"]);
+        $subs = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM subs WHERE `tags` LIKE ? ORDER BY id DESC', ["%$tag%"]);
         foreach ($subs as $sub)
         {
             $sub = StaticPageModel::fromArray($sub);

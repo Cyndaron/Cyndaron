@@ -13,7 +13,7 @@ final class ShowReservedSeats
     {
         $bookedSeats = [];
 
-        $seatBookings = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$concert->id]) ?: [];
+        $seatBookings = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$concert->id]) ?: [];
         foreach ($seatBookings as $currentBooking)
         {
             /** @var Order|null $order */

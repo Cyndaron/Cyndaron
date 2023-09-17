@@ -88,8 +88,8 @@ abstract class Model
 
         $table = static::TABLE;
         /** @noinspection SqlResolve */
-        $record = DBConnection::doQueryAndFetchFirstRow("SELECT * FROM {$table} WHERE id = ?", [$this->id]);
-        if ($record === false)
+        $record = DBConnection::getPDO()->doQueryAndFetchFirstRow("SELECT * FROM {$table} WHERE id = ?", [$this->id]);
+        if ($record === null)
         {
             return false;
         }
@@ -113,7 +113,7 @@ abstract class Model
         {
             $whereString = 'WHERE ' . implode(' AND ', $where);
         }
-        $results = DBConnection::doQueryAndFetchAll('SELECT * FROM ' . static::TABLE . ' ' . $whereString . ' ' . $afterWhere, $args) ?: [];
+        $results = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM ' . static::TABLE . ' ' . $whereString . ' ' . $afterWhere, $args) ?: [];
         return self::DBResultsToModels($results);
     }
 
@@ -206,7 +206,7 @@ abstract class Model
 
         $table = static::TABLE;
         /** @noinspection SqlResolve */
-        DBConnection::doQuery("DELETE FROM {$table} WHERE id = ?", [$this->id]);
+        DBConnection::getPDO()->executeQuery("DELETE FROM {$table} WHERE id = ?", [$this->id]);
     }
 
     public function save(): bool
@@ -230,7 +230,7 @@ abstract class Model
                 $arguments[] = ValueConverter::phpToSql($this->$tableField);
             }
 
-            $result = DBConnection::doQuery('INSERT INTO ' . static::TABLE . ' (' . implode(',', static::TABLE_FIELDS) . ') VALUES (' . $placeholders . ')', $arguments);
+            $result = DBConnection::getPDO()->insert('INSERT INTO ' . static::TABLE . ' (' . implode(',', static::TABLE_FIELDS) . ') VALUES (' . $placeholders . ')', $arguments);
             if ($result !== false)
             {
                 $this->id = (int)$result;
@@ -257,7 +257,7 @@ abstract class Model
             }
 
             $arguments[] = $this->id;
-            $result = DBConnection::doQuery('UPDATE ' . static::TABLE . ' SET ' . implode(',', $setStrings) . ' WHERE id=?', $arguments);
+            $result = DBConnection::getPDO()->insert('UPDATE ' . static::TABLE . ' SET ' . implode(',', $setStrings) . ' WHERE id=?', $arguments);
         }
 
         return $result !== false;
@@ -266,7 +266,7 @@ abstract class Model
     public static function deleteById(int $id): bool
     {
         /** @noinspection SqlResolve */
-        DBConnection::doQuery(sprintf('DELETE FROM %s WHERE id = ?', static::TABLE), [$id]);
+        DBConnection::getPDO()->executeQuery(sprintf('DELETE FROM %s WHERE id = ?', static::TABLE), [$id]);
 
         return true;
     }

@@ -261,7 +261,7 @@ Uw nieuwe wachtwoord is: %s';
             $updateQuery = 'UPDATE users SET password=? WHERE username=?';
         }
 
-        $userdata = DBConnection::doQueryAndFetchFirstRow($query, [$identification]);
+        $userdata = DBConnection::getPDO()->doQueryAndFetchFirstRow($query, [$identification]);
 
         if (!$userdata)
         {
@@ -276,7 +276,7 @@ Uw nieuwe wachtwoord is: %s';
             if (password_needs_rehash($userdata['password'], PASSWORD_DEFAULT))
             {
                 $password = password_hash($password, PASSWORD_DEFAULT);
-                DBConnection::doQuery($updateQuery, [$password, $identification]);
+                DBConnection::getPDO()->executeQuery($updateQuery, [$password, $identification]);
             }
         }
 
@@ -370,7 +370,7 @@ Uw nieuwe wachtwoord is: %s';
             return true;
         }
 
-        $records = DBConnection::doQueryAndFetchAll('SELECT * FROM user_rights WHERE `userId` = ? AND `right` = ?', [$this->id, $right]);
+        $records = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM user_rights WHERE `userId` = ? AND `right` = ?', [$this->id, $right]);
         if ($records !== false && count($records) > 0)
         {
             return true;
@@ -451,7 +451,7 @@ Uw nieuwe wachtwoord is: %s';
             throw new \Exception('ID not set!');
         }
 
-        $result = DBConnection::doQuery('INSERT INTO user_rights(`userId`, `right`) VALUES (?, ?)', [$this->id, $right]);
+        $result = DBConnection::getPDO()->insert('INSERT INTO user_rights(`userId`, `right`) VALUES (?, ?)', [$this->id, $right]);
         return (bool)$result;
     }
 

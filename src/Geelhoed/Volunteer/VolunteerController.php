@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Volunteer;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Error\ErrorPageResponse;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
@@ -48,7 +49,7 @@ class VolunteerController extends Controller
         return new Response($page->render());
     }
 
-    public function subscribeToTryoutPost(QueryBits $queryBits, RequestParameters $post): JsonResponse
+    public function subscribeToTryoutPost(QueryBits $queryBits, RequestParameters $post, Connection $db): JsonResponse
     {
         $event = Event::fetchById($queryBits->getInt(2));
         if ($event === null)
@@ -109,7 +110,7 @@ class VolunteerController extends Controller
         $jsonData = json_encode(['rounds' => $rounds], JSON_THROW_ON_ERROR);
 
         $sql = 'INSERT INTO geelhoed_volunteer_event_participation(`eventId`, `name`, `email`, `phone`, `type`, `data`, `comments`) VALUES (?, ?, ?, ?, ?, ?, ?);';
-        DBConnection::doQuery($sql, [$event->id, $name, $email, $phone, $type, $jsonData, $comments]);
+        $db->executeQuery($sql, [$event->id, $name, $email, $phone, $type, $jsonData, $comments]);
 
         return new JsonResponse([]);
     }

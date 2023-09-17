@@ -66,7 +66,7 @@ final class EditorController extends Controller
         }
         catch (\PDOException $e)
         {
-            $page = new SimplePage('Fout bij opslaan', $e->getFile() . ':' . $e->getLine() . ' ' . $e->getTraceAsString() . PHP_EOL . $e->getMessage() . ': ' . var_export(DBConnection::errorInfo(), true));
+            $page = new SimplePage('Fout bij opslaan', $e->getFile() . ':' . $e->getLine() . ' ' . $e->getTraceAsString() . PHP_EOL . $e->getMessage());
             return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

@@ -15,7 +15,7 @@ final class FriendlyUrl extends Model
 
     public static function fetchByName(string $name): ?self
     {
-        $result = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM friendlyurls WHERE name=?', [ltrim($name, '/')]);
+        $result = DBConnection::getPDO()->doQueryAndFetchFirstRow('SELECT * FROM friendlyurls WHERE name=?', [ltrim($name, '/')]);
         if (empty($result))
         {
             return null;

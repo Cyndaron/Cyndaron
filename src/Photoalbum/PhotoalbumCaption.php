@@ -14,15 +14,15 @@ final class PhotoalbumCaption extends Model
 
     public static function create(string $hash, string $caption): bool
     {
-        DBConnection::doQueryAndFetchOne('DELETE FROM photoalbum_captions WHERE hash = ?', [$hash]);
-        return (bool)DBConnection::doQueryAndFetchOne('INSERT INTO photoalbum_captions(hash,caption) VALUES (?,?)', [$hash, $caption]);
+        DBConnection::getPDO()->doQueryAndFetchOne('DELETE FROM photoalbum_captions WHERE hash = ?', [$hash]);
+        return (bool)DBConnection::getPDO()->doQueryAndFetchOne('INSERT INTO photoalbum_captions(hash,caption) VALUES (?,?)', [$hash, $caption]);
     }
 
     public static function loadByHash(string $hash): ?PhotoalbumCaption
     {
         $obj = null;
-        $result = DBConnection::doQueryAndFetchFirstRow('SELECT * FROM photoalbum_captions WHERE hash=?', [$hash]);
-        if ($result !== null && $result !== false)
+        $result = DBConnection::getPDO()->doQueryAndFetchFirstRow('SELECT * FROM photoalbum_captions WHERE hash=?', [$hash]);
+        if ($result !== null)
         {
             $obj = new static();
             $obj->id = $result['id'];

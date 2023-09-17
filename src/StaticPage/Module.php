@@ -45,7 +45,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
 
     public function getList(): array
     {
-        return DBConnection::doQueryAndFetchAll('SELECT CONCAT(\'/sub/\', id) AS link, CONCAT(\'Statische pag.: \', name) AS name FROM subs') ?: [];
+        return DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/sub/\', id) AS link, CONCAT(\'Statische pag.: \', name) AS name FROM subs') ?: [];
     }
 
     public static function pageManagerTab(): string
@@ -53,7 +53,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         $template = new Template();
         $templateVars = [];
 
-        $subs = DBConnection::doQueryAndFetchAll('SELECT s.id,s.name,c.name AS category,IF(sb.text IS NOT NULL, 1, 0) AS hasBackup FROM subs s LEFT JOIN sub_categories sc ON s.id = sc.id LEFT JOIN categories c ON sc.categoryId = c.id LEFT JOIN sub_backups sb ON s.id = sb.id ORDER BY category, name, id ASC') ?: [];
+        $subs = DBConnection::getPDO()->doQueryAndFetchAll('SELECT s.id,s.name,c.name AS category,IF(sb.text IS NOT NULL, 1, 0) AS hasBackup FROM subs s LEFT JOIN sub_categories sc ON s.id = sc.id LEFT JOIN categories c ON sc.categoryId = c.id LEFT JOIN sub_backups sb ON s.id = sb.id ORDER BY category, name, id ASC') ?: [];
         $subsPerCategory = [];
 
         foreach ($subs as $sub)

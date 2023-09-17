@@ -25,7 +25,7 @@ final class Url
 
     public function getFriendly(): string
     {
-        if ($friendly = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target=?', [$this->url]))
+        if ($friendly = DBConnection::getPDO()->doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target=?', [$this->url]))
         {
             return '/' . $friendly;
         }
@@ -35,7 +35,7 @@ final class Url
 
     public function getUnfriendly(): string
     {
-        if ($unfriendly = DBConnection::doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [trim($this->url, '/')]))
+        if ($unfriendly = DBConnection::getPDO()->doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [trim($this->url, '/')]))
         {
             return $unfriendly;
         }
@@ -62,7 +62,7 @@ final class Url
         {
             throw new IncompleteData('Cannot create friendly URL with no name or no URL!');
         }
-        if (DBConnection::doQuery('INSERT INTO friendlyurls(name,target) VALUES (?,?)', [$name, $this->url]) === false)
+        if (DBConnection::getPDO()->insert('INSERT INTO friendlyurls(name,target) VALUES (?,?)', [$name, $this->url]) === false)
         {
             throw new DatabaseError('Could not insert friendly URL! Is the URL unique?');
         }
@@ -86,7 +86,7 @@ final class Url
             }
         }
 
-        if ($name = DBConnection::doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target=?', [$link]))
+        if ($name = DBConnection::getPDO()->doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target=?', [$link]))
         {
             return $name;
         }

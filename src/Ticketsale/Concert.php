@@ -51,7 +51,7 @@ final class Concert extends Model
         $foundEnoughSeats = false;
         $reservedSeats = [];
 
-        $reservedSeatsPerOrder = DBConnection::doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$this->id]) ?: [];
+        $reservedSeatsPerOrder = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$this->id]) ?: [];
         foreach ($reservedSeatsPerOrder as $reservedSeatsForThisOrder)
         {
             for ($i = $reservedSeatsForThisOrder['firstSeat']; $i <= $reservedSeatsForThisOrder['lastSeat']; $i++)
@@ -86,7 +86,7 @@ final class Concert extends Model
 
         if ($foundEnoughSeats)
         {
-            DBConnection::doQuery('INSERT INTO ticketsale_reservedseats(`orderId`, `row`, `firstSeat`, `lastSeat`) VALUES(?, \'A\', ?, ?)', [$orderId, $firstSeat, $lastSeat]);
+            DBConnection::getPDO()->executeQuery('INSERT INTO ticketsale_reservedseats(`orderId`, `row`, `firstSeat`, `lastSeat`) VALUES(?, \'A\', ?, ?)', [$orderId, $firstSeat, $lastSeat]);
             return range($firstSeat, $lastSeat);
         }
 
