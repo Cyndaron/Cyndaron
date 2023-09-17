@@ -3,7 +3,11 @@
 namespace Cyndaron\View\Template;
 
 use Cyndaron\Util\Util;
+use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\View\DynamicComponent;
+use Illuminate\View\Engines\CompilerEngine;
 use Pine\BladeFilters\BladeFilters;
+use function tap;
 
 final class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
 {
@@ -31,6 +35,8 @@ final class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
         }
     }
 
+
+
     /**
      * Register the view finder implementation.
      *
@@ -41,6 +47,61 @@ final class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
         $this->app->bind('view.finder', static function($app)
         {
             return new ViewFinder($app['files'], $app['config']['view.paths']);
+        });
+    }
+
+    /**
+     * Register the view environment.
+     *
+     * @return void
+     */
+    public function registerFactory(): void
+    {
+        $this->app->singleton('view', function ($app) {
+            // Next we need to grab the engine resolver instance that will be used by the
+            // environment. The resolver will be used by an environment to get each of
+            // the various engine implementations such as plain PHP or Blade engine.
+            $resolver = $app['view.engine.resolver'];
+
+            $finder = $app['view.finder'];
+
+            $factory = $this->createFactory($resolver, $finder, $app['events']);
+
+            // We will also set the container instance on this view environment since the
+            // view composers may be classes registered in the container, which allows
+            // for great testable, flexible composers for the application developer.
+            $factory->setContainer($app);
+
+            $factory->share('app', $app);
+
+            return $factory;
+        });
+    }
+
+    public function registerBladeCompiler(): void
+    {
+        $this->app->singleton('blade.compiler', function ($app) {
+            return tap(new BladeCompiler(
+                $app['files'],
+                $app['config']['view.compiled'],
+            ), static function ($blade) {
+                $blade->component('dynamic-component', DynamicComponent::class);
+            });
+        });
+    }
+
+    /**
+     * Register the Blade engine implementation.
+     *
+     * @param  \Illuminate\View\Engines\EngineResolver  $resolver
+     * @return void
+     */
+    public function registerBladeEngine($resolver): void
+    {
+        $resolver->register('blade', function () {
+            $compiler = new CompilerEngine($this->app['blade.compiler'], $this->app['files']);
+
+            return $compiler;
         });
     }
 }
