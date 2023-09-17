@@ -115,12 +115,12 @@ abstract class EditorSavePage
 
         $files = $request->files;
         $image = $post->getUrl('editorHeaderImage');
-        if ($file = $files->get('header-image-upload'))
+        $headerImageFile = $files->get('header-image-upload');
+        if ($headerImageFile instanceof \Symfony\Component\HttpFoundation\File\UploadedFile)
         {
             try
             {
-                /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
-                $file = $file->move(self::PAGE_HEADER_DIR, $file->getClientOriginalName());
+                $file = $headerImageFile->move(self::PAGE_HEADER_DIR, $headerImageFile->getClientOriginalName());
                 $image = Util::filenameToUrl($file->getPathname());
             }
             catch (FileException $e)
@@ -129,12 +129,12 @@ abstract class EditorSavePage
             }
         }
         $previewImage = $post->getUrl('editorPreviewImage');
-        if ($file = $files->get('preview-image-upload'))
+        $previewImageFile = $files->get('preview-image-upload');
+        if ($previewImageFile instanceof \Symfony\Component\HttpFoundation\File\UploadedFile)
         {
             try
             {
-                /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
-                $file = $file->move(self::PAGE_PREVIEW_DIR, $file->getClientOriginalName());
+                $file = $previewImageFile->move(self::PAGE_PREVIEW_DIR, $previewImageFile->getClientOriginalName());
                 $previewImage = Util::filenameToUrl($file->getPathname());
             }
             catch (FileException $e)

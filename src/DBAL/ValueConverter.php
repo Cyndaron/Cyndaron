@@ -16,6 +16,7 @@ use function is_bool;
 use function is_float;
 use function is_int;
 use function is_scalar;
+use function is_string;
 use function str_contains;
 
 final class ValueConverter
@@ -48,7 +49,7 @@ final class ValueConverter
         return $var;
     }
 
-    public static function sqlToPhp(mixed $var, string $class, string $property):  DateTimeInterface|BackedEnum|bool|int|float|string|null
+    public static function sqlToPhp(string|int|float|null $var, string $class, string $property):  DateTimeInterface|BackedEnum|bool|int|float|string|null
     {
         if ($var === null)
         {
@@ -82,6 +83,7 @@ final class ValueConverter
         }
         if (is_a($typeName, DateTimeInterface::class, true))
         {
+            assert(is_string($var));
             if (!str_contains($var, ' '))
             {
                 $var .= ' 00:00:00';
@@ -92,6 +94,7 @@ final class ValueConverter
         }
         if (is_a($typeName, BackedEnum::class, true))
         {
+            assert(is_string($var));
             return $typeName::from($var);
         }
 

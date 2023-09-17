@@ -44,11 +44,18 @@ final class Blade implements FactoryContract
         /** @noinspection PhpParamsInspection @phpstan-ignore-next-line */
         (new ViewServiceProvider($this->container))->register();
 
-        $this->factory = $this->container->get('view');
-        $this->compiler = $this->container->get('blade.compiler');
+        /** @var Factory $factory */
+        $factory = $this->container->get('view');
+        /** @var BladeCompiler $compiler */
+        $compiler = $this->container->get('blade.compiler');
+
+        $this->factory = $factory;
+        $this->compiler = $compiler;
         $this->compiler->extend(function($view)
         {
-            return $this->container[BladeFiltersCompiler::class]->compile($view);
+            /** @var BladeFiltersCompiler $compiler */
+            $compiler = $this->container[BladeFiltersCompiler::class];
+            return $compiler->compile($view);
         });
     }
 

@@ -58,6 +58,9 @@ final class Util extends \Cyndaron\Util\Util
         {
             $constName = "\Cyndaron\Registration\Util::AGE_RANGES_VOV_1";
         }
-        return constant($constName);
+
+        /** @var array $ret */
+        $ret = constant($constName);
+        return $ret;
     }
 }

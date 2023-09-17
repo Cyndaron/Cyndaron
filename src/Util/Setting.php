@@ -4,9 +4,11 @@ namespace Cyndaron\Util;
 use PDO;
 use function file_exists;
 use function file_put_contents;
+use function is_array;
 use function var_export;
 use const ROOT_DIR;
 use function dirname;
+use function assert;
 
 final class Setting
 {
@@ -73,6 +75,7 @@ final class Setting
         $settings->execute([]);
         while ($row = $settings->fetch())
         {
+            assert(is_array($row));
             $data[$row['name']] = $row['value'];
         }
 

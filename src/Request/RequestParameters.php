@@ -20,8 +20,9 @@ final class RequestParameters
 
     public function __construct(array $vars)
     {
-        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
-        $this->vars = $this->stripInvalidCharacters($vars);
+        /** @var array $stripped */
+        $stripped = $this->stripInvalidCharacters($vars);
+        $this->vars = $stripped;
     }
 
     public function getRaw(): array
@@ -34,12 +35,7 @@ final class RequestParameters
         return array_keys($this->vars);
     }
 
-    /**
-     * @param mixed $parameter
-     * @throws Exception
-     * @return mixed|null
-     */
-    public function stripInvalidCharacters($parameter)
+    public function stripInvalidCharacters(array|string|int|float|bool|null $parameter): array|string|int|float|bool|null
     {
         if (is_array($parameter))
         {
@@ -54,10 +50,6 @@ final class RequestParameters
             $parameter = mb_convert_encoding($parameter, 'UTF-8', 'UTF-8');
             // Remove control codes, except for \r and \n.
             $parameter = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $parameter);
-        }
-        elseif (!is_scalar($parameter))
-        {
-            throw new Exception('Unrecognized parameter type');
         }
 
         return $parameter;

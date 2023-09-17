@@ -44,6 +44,8 @@ use function session_start;
 use function strpos;
 use function substr;
 use function trim;
+use const FILTER_SANITIZE_URL;
+use const INPUT_SERVER;
 
 /**
  * Zorgt voor correct doorverwijzen van verzoeken.
@@ -363,7 +365,9 @@ final class Router implements HttpKernelInterface
 
     public static function referrer(): string
     {
-        return filter_input(INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL) ?: '';
+        /** @var string|null $sanitized */
+        $sanitized = filter_input(INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL);
+        return $sanitized ?? '';
     }
 
     /**

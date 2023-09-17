@@ -5,9 +5,11 @@ namespace Cyndaron\Geelhoed\Volunteer;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
+use function is_array;
 use function Safe\json_decode;
 use function array_fill;
 use function count;
+use function assert;
 
 final class Event extends Model
 {
@@ -21,7 +23,9 @@ final class Event extends Model
 
     public function getJsonData(): array
     {
-        return json_decode($this->data, true);
+        $decoded = json_decode($this->data, true);
+        assert(is_array($decoded));
+        return $decoded;
     }
 
     /**
@@ -69,6 +73,7 @@ final class Event extends Model
         $records = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM geelhoed_volunteer_event_participation WHERE eventId = ?', [$this->id]) ?: [];
         foreach ($records as $participation)
         {
+            /** @var array $decoded */
             $decoded = json_decode($participation['data'], true);
             $type = $participation['type'];
             foreach ($decoded['rounds'] as $round)

@@ -139,7 +139,10 @@ abstract class Controller
 
             $params[] = $dic->get($className);
         }
-        return $reflectionMethod->invokeArgs($this, $params);
+
+        /** @var Response $ret */
+        $ret = $reflectionMethod->invokeArgs($this, $params);
+        return $ret;
     }
 
     /**

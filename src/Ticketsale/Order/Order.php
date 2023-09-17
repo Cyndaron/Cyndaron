@@ -14,6 +14,7 @@ use Cyndaron\Util\Setting;
 use Safe\Exceptions\JsonException;
 use Symfony\Component\Mime\Address;
 use function assert;
+use function is_array;
 use function Safe\json_decode;
 use function Safe\json_encode;
 
@@ -160,7 +161,9 @@ final class Order extends Model
     {
         try
         {
-            return json_decode($this->additionalData, true);
+            $decoded = json_decode($this->additionalData, true);
+            assert(is_array($decoded));
+            return $decoded;
         }
         catch (JsonException $e)
         {
