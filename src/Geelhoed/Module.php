@@ -20,13 +20,13 @@ use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\UrlProvider;
-use Cyndaron\Module\UserMenu;
+use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
-use function implode;
 use function array_key_exists;
+use function implode;
 
-final class Module implements Datatypes, Routes, UrlProvider, UserMenu, Templated
+final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, Templated
 {
     /**
      * @return Datatype[]

@@ -11,9 +11,8 @@ use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\UrlProvider;
-use Cyndaron\Module\UserMenu;
-use Cyndaron\Module\WithPageProcessors;
 use Cyndaron\Module\WithTextPostProcessors;
+use Cyndaron\Page\Module\WithPageProcessors;
 use Cyndaron\Page\Page;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\PageManager\PageManagerPage;
@@ -21,6 +20,7 @@ use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
+use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
@@ -331,7 +331,7 @@ final class Router implements HttpKernelInterface
                 }
             }
 
-            if ($module instanceof UserMenu)
+            if ($module instanceof UserMenuProvider)
             {
                 User::$userMenu = array_merge(User::$userMenu, $module->getUserMenuItems($currentUser));
             }

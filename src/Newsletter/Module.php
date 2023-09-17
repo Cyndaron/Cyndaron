@@ -9,11 +9,11 @@ declare(strict_types=1);
 namespace Cyndaron\Newsletter;
 
 use Cyndaron\Module\Routes;
-use Cyndaron\Module\UserMenu;
+use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 
-final class Module implements Routes, UserMenu
+final class Module implements Routes, UserMenuProvider
 {
     public function routes(): array
     {

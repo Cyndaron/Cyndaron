@@ -12,7 +12,7 @@ use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\CyndaronInfo;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Menu\MenuItem;
-use Cyndaron\Module\PagePreProcessor;
+use Cyndaron\Page\Module\PagePreProcessor;
 use Cyndaron\User\User;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\ViewHelpers;

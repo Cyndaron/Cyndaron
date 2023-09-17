@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Module;
+namespace Cyndaron\Page\Module;
 
 interface WithPageProcessors
 {

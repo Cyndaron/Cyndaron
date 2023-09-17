@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Feed;
 
 use Cyndaron\Module\Routes;
-use Cyndaron\Module\WithPageProcessors;
+use Cyndaron\Page\Module\WithPageProcessors;
 
 final class Module implements Routes, WithPageProcessors
 {
