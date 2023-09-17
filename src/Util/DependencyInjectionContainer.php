@@ -12,8 +12,14 @@ use function get_class;
 
 final class DependencyInjectionContainer
 {
+    /** @var array<class-string, object> */
     private array $objects = [];
 
+    /**
+     * @param object $object
+     * @param class-string|null $className
+     * @return void
+     */
     public function add(object $object, string|null $className = null): void
     {
         if ($className === null)

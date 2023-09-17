@@ -11,10 +11,10 @@ final class ViewFinder extends FileViewFinder
      * Find the given view in the list of paths.
      *
      * @param  string  $name
+     * @phpstan-ignore-next-line
      * @param  array   $paths
      * @throws InvalidArgumentException
      * @return string
-     *
      */
     protected function findInPaths($name, $paths): string
     {

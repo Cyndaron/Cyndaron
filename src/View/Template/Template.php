@@ -30,7 +30,7 @@ final class Template
 
     /**
      * @param string $template
-     * @param array $data
+     * @param array<string, mixed> $data
      * @throws FilesystemException
      * @return string
      */

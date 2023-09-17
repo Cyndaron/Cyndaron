@@ -14,8 +14,13 @@ final class FileCache
     public const CACHE_DIR = ROOT_DIR . '/cache/cyndaron';
 
     public readonly string $filename;
+    /** @var class-string[] */
     public readonly array $allowedClasses;
 
+    /**
+     * @param string $cacheKey
+     * @param class-string[] $allowedClasses
+     */
     public function __construct(string $cacheKey, array $allowedClasses)
     {
         $this->filename = self::CACHE_DIR . "/$cacheKey.phps";
@@ -29,7 +34,7 @@ final class FileCache
             $serialized = file_get_contents($this->filename);
             if ($serialized)
             {
-                $unserialized = unserialize($serialized, $this->allowedClasses);
+                $unserialized = unserialize($serialized, ['allowed_classes' => $this->allowedClasses]);
                 if ($unserialized)
                 {
                     $target = $unserialized;

@@ -16,6 +16,9 @@ use function assert;
 
 final class TemplateFinder
 {
+    /**
+     * @var array<string, string>
+     */
     private static array $templateRoots = [
         'View' => __DIR__ . '/../',
     ];
