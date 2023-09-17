@@ -80,7 +80,7 @@ final class WebBootstrapper
         }
 
         $this->connectToDatabase($settingsFile);
-        Setting::load();
+        Setting::load(DBConnection::getPDO());
     }
 
     private function handleRequest(): void

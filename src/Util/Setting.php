@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Util;
 
-use Cyndaron\DBAL\DBConnection;
+use PDO;
 use function file_exists;
 use function file_put_contents;
 use function var_export;
@@ -22,6 +22,8 @@ final class Setting
     /** @var string[] */
     public static array $cache = [];
 
+    private static PDO $pdo;
+
     /**
      * @param string $name
      * @return string
@@ -33,8 +35,7 @@ final class Setting
 
     public static function set(string $name, string $value): void
     {
-        $connection = DBConnection::getPDO();
-        $setting = $connection->prepare('REPLACE INTO settings(`name`, `value`) VALUES (?, ?)');
+        $setting = self::$pdo->prepare('REPLACE INTO settings(`name`, `value`) VALUES (?, ?)');
         $setting->execute([$name, $value]);
     }
 
@@ -52,8 +53,9 @@ final class Setting
         return '';
     }
 
-    public static function load(): void
+    public static function load(PDO $pdo): void
     {
+        self::$pdo = $pdo;
         if (file_exists(self::CACHE_FILE))
         {
             self::$cache = require self::CACHE_FILE;
@@ -67,8 +69,7 @@ final class Setting
     public static function buildCache(): void
     {
         $data = [];
-        $connection = DBConnection::getPDO();
-        $settings = $connection->prepare('SELECT name,value FROM settings');
+        $settings = self::$pdo->prepare('SELECT name,value FROM settings');
         $settings->execute([]);
         while ($row = $settings->fetch())
         {
