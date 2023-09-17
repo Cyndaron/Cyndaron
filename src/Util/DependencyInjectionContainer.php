@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace Cyndaron\Routing;
+namespace Cyndaron\Util;
 
 use function get_class;
 

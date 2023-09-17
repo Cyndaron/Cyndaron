@@ -6,6 +6,7 @@ namespace Cyndaron\Routing;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\DependencyInjectionContainer;
 use ReflectionNamedType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;

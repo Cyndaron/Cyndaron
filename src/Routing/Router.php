@@ -22,6 +22,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
 use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
+use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Renderer\TextRenderer;

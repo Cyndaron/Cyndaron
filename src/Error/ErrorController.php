@@ -5,7 +5,7 @@ namespace Cyndaron\Error;
 
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Routing\Controller;
-use Cyndaron\Routing\DependencyInjectionContainer;
+use Cyndaron\Util\DependencyInjectionContainer;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 
