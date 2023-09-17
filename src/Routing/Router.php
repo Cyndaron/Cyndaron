@@ -13,12 +13,14 @@ use Cyndaron\Module\Templated;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\UserMenu;
 use Cyndaron\Module\WithPageProcessors;
+use Cyndaron\Module\WithTextPostProcessors;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\View\Page;
 use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Util\Setting;
+use Cyndaron\View\Renderer\TextRenderer;
 use Cyndaron\View\SimplePage;
 use Cyndaron\View\Template\TemplateFinder;
 use Cyndaron\Url;
@@ -277,6 +279,8 @@ final class Router implements HttpKernelInterface
     private function loadModules(?User $currentUser): void
     {
         $modules = [
+            \Cyndaron\User\Module::class,
+            \Cyndaron\View\Module::class,
             \Cyndaron\StaticPage\Module::class,
             \Cyndaron\Category\Module::class,
             \Cyndaron\Photoalbum\Module::class,
@@ -341,6 +345,13 @@ final class Router implements HttpKernelInterface
                 foreach ($module->getPageprocessors() as $processor)
                 {
                     Page::addPreprocessor(new $processor());
+                }
+            }
+            if ($module instanceof WithTextPostProcessors)
+            {
+                foreach ($module->getTextPostProcessors() as $processor)
+                {
+                    TextRenderer::addTextPostProcessor(new $processor());
                 }
             }
         }

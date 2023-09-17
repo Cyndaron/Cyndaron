@@ -15,6 +15,7 @@ final class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
         'boolToText' => ViewHelpers::class . '::boolToText',
         'boolToDingbat' => ViewHelpers::class . '::boolToDingbat',
         'slug' => Util::class . '::getSlug',
+        'parse' => ViewHelpers::class . '::parseText',
     ];
 
     public function register(): void

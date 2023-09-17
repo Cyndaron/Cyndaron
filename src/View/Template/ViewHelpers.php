@@ -1,27 +1,22 @@
 <?php
 namespace Cyndaron\View\Template;
 
-use Cyndaron\Photoalbum\Photoalbum;
-use Cyndaron\Photoalbum\PhotoalbumPage;
-use Cyndaron\User\User;
+use Cyndaron\View\Renderer\TextRenderer;
 use DateTimeInterface;
-
 use Safe\Exceptions\ArrayException;
 use Safe\Exceptions\DatetimeException;
-use function Safe\date;
-use function Safe\preg_replace;
-use function sprintf;
-use function Safe\strtotime;
-use function strip_tags;
-use function count;
-use function implode;
-use function array_slice;
-use function number_format;
-use function explode;
 use function array_key_exists;
-use function natsort;
-use function preg_replace_callback;
+use function array_slice;
 use function array_unique;
+use function count;
+use function explode;
+use function implode;
+use function natsort;
+use function number_format;
+use function Safe\date;
+use function Safe\strtotime;
+use function sprintf;
+use function strip_tags;
 
 final class ViewHelpers
 {
@@ -41,7 +36,6 @@ final class ViewHelpers
         'delete' => 'btn-danger',
     ];
 
-    private const YOUTUBE = '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="https://www.youtube.com/embed/$1" sandbox="allow-scripts allow-same-origin allow-popups allow-presentation" allowfullscreen></iframe></div>';
 
     /**
      * Zet een maandnummer om in de naam.
@@ -180,26 +174,8 @@ final class ViewHelpers
 
     public static function parseText(string $text): string
     {
-        $text = preg_replace_callback('/%slider\|(\d+)%/', static function($matches)
-        {
-            $album = Photoalbum::fetchById((int)$matches[1]);
-            if ($album !== null)
-            {
-                $page = new PhotoalbumPage($album, null, Photoalbum::VIEWMODE_PORTFOLIO);
-                return $page->drawSlider($album);
-            }
-            return '';
-        }, $text);
-
-        $text = preg_replace('/%youtube\|([A-Za-z0-9_\-]+)%/', self::YOUTUBE, $text ?? '');
-
-        /** @var string $text */
-        $text = preg_replace_callback('/%csrfToken\|([A-Za-z0-9_\-]+)\|([A-Za-z0-9_\-]+)%/', static function($matches)
-        {
-            return User::getCSRFToken($matches[1], $matches[2]);
-        }, $text);
-
-        return $text;
+        $textRenderer = new TextRenderer($text);
+        return $textRenderer->render();
     }
 
     /**
