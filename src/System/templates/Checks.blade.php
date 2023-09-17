@@ -14,11 +14,12 @@
                 </tr>
             </thead>
             <tbody>
+                @php /** @var \Cyndaron\System\ExpectedResult[] $folderResults */ @endphp
                 @foreach ($folderResults as $folder => $result)
                     <tr>
                         <td>{{ $folder }}</td>
-                        <td>{{ $result['expected'] }}</td>
-                        <td>{{ $result['result'] ? 'OK' : 'Incorrect' }}</td>
+                        <td>{{ $result->expected }}</td>
+                        <td>{{ $result->result ? 'OK' : 'Incorrect' }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -34,11 +35,12 @@
                 </tr>
             </thead>
             <tbody>
+                @php /** @var \Cyndaron\System\ExpectedResult[] $settings */ @endphp
                 @foreach ($settings as $setting => $definition)
                     <tr>
                         <td>{{ $setting }}</td>
-                        <td>{{ $definition['expected'] }}</td>
-                        <td>{{ $definition['result'] }}</td>
+                        <td>{{ $definition->expected }}</td>
+                        <td>{{ $definition->result }}</td>
                     </tr>
                 @endforeach
             </tbody>

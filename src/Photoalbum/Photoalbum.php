@@ -74,6 +74,10 @@ final class Photoalbum extends ModelWithCategory
         return $url->getFriendly();
     }
 
+    /**
+     * @return string[]
+     * @throws \Safe\Exceptions\ErrorfuncException
+     */
     public function getPhotos(): array
     {
         $ret = [];

@@ -5,15 +5,14 @@ use Cyndaron\Category\Category;
 use Cyndaron\CyndaronInfo;
 use Cyndaron\Page\Page;
 use Cyndaron\Util\Setting;
-use function array_merge;
 use function is_writable;
 use function ob_get_clean;
 use function Safe\ini_get;
-use function Safe\ksort;
 use function Safe\ob_start;
 use function Safe\phpinfo;
 use function Safe\preg_match;
 use function Safe\preg_replace;
+use function ksort;
 use function strtr;
 use function ucfirst;
 
@@ -44,15 +43,15 @@ final class SystemPage extends Page
     ];
 
     private const SETTINGS = [
-        'post_max_size' => ['expected' => '25M'],
-        'upload_max_filesize' => ['expected' => '25M'],
-        'max_file_uploads' => ['expected' => '50'],
-        'session.cookie_httponly' => ['expected' => 1],
-        'session.cookie_secure' => ['expected' => 1],
-        'session.use_only_cookies' => ['expected' => 1],
-        'session.use_strict_mode' => ['expected' => 1],
-        'session.cookie_samesite' => ['expected' => 1],
-        'memory_limit' => ['expected' => '96M of meer'],
+        'post_max_size' => '25M',
+        'upload_max_filesize' => '25M',
+        'max_file_uploads' => '50',
+        'session.cookie_httponly' => '1',
+        'session.cookie_secure' => '1',
+        'session.use_only_cookies' => '1',
+        'session.use_strict_mode' => '1',
+        'session.cookie_samesite' => '1',
+        'memory_limit' => '96M of meer',
     ];
     public function __construct(string $currentPage)
     {
@@ -170,36 +169,33 @@ final class SystemPage extends Page
      * Checks if folders that need write rights have them,
      * and that folders that shouldn't be writable don't.
      *
-     * @throws \Safe\Exceptions\ArrayException
-     * @return array
+     * @return array<string, ExpectedResult>
      */
     private function checkFolderRights(): array
     {
         $folderResults = [];
         foreach (self::WRITABLE_FILES_AND_FOLDERS as $folder)
         {
-            $folderResults[$folder] = [
-                'expected' => 'Schrijfbaar',
-                'result' => is_writable(__DIR__ . '/../..' . $folder),
-            ];
+            $folderResults[$folder] = new ExpectedResult('Schrijfbaar', is_writable(__DIR__ . '/../..' . $folder));
         }
         foreach (self::UNWRITEABLE_FILES_AND_FOLDERS as $folder)
         {
-            $folderResults[$folder] = [
-                'expected' => 'Niet schrijfbaar',
-                'result' => !is_writable(__DIR__ . '/../..' . $folder),
-            ];
+            $folderResults[$folder] = new ExpectedResult('Niet schrijfbaar', !is_writable(__DIR__ . '/../..' . $folder));
         }
         ksort($folderResults);
         return $folderResults;
     }
 
+    /**
+     * @return array<string, ExpectedResult>
+     * @throws \Safe\Exceptions\InfoException
+     */
     private function getSettings(): array
     {
         $ret = [];
-        foreach (self::SETTINGS as $setting => $definition)
+        foreach (self::SETTINGS as $setting => $expectedValue)
         {
-            $ret[$setting] = array_merge($definition, ['result' => ini_get($setting)]);
+            $ret[$setting] = new ExpectedResult($expectedValue, ini_get($setting));
         }
         return $ret;
     }

@@ -23,6 +23,7 @@ use function basename;
 use function count;
 use function dirname;
 use function file_exists;
+use function is_array;
 use function ob_get_clean;
 use function Safe\ob_start;
 use function sprintf;
@@ -32,14 +33,21 @@ use function substr;
 
 class Page
 {
-    public const DEFAULT_SCRIPTS = [
+    private const DEFAULT_SCRIPTS = [
         '/vendor/components/jquery/jquery.min.js',
         '/vendor/twbs/bootstrap/dist/js/bootstrap.min.js',
         '/js/cyndaron.js',
     ];
+    private const INCLUDES_MAPPING = [
+        'extraHead' => 'extra-head',
+        'extraBodyStart' => 'extra-body-start',
+        'extraBodyEnd' => 'extra-body-end'
+    ];
 
     protected string $title = '';
+    /** @var string[] */
     protected array $extraScripts = [];
+    /** @var string[] */
     protected array $extraCss = [];
     protected string $websiteName = '';
     protected string $extraBodyClasses = '';
@@ -47,6 +55,7 @@ class Page
     protected ?Model $model = null;
 
     protected string $template = '';
+    /** @var array<string, mixed> */
     protected array $templateVars = ['contents' => ''];
 
     /** @var PagePreProcessor[] */
@@ -129,13 +138,7 @@ class Page
         $this->templateVars['extraCss'] = $this->extraCss;
         $this->templateVars['extraBodyClasses'] = $this->extraBodyClasses;
 
-        static $includes = [
-            'extraHead' => 'extra-head',
-            'extraBodyStart' => 'extra-body-start',
-            'extraBodyEnd' => 'extra-body-end'
-        ];
-
-        foreach ($includes as $varName => $filename)
+        foreach (self::INCLUDES_MAPPING as $varName => $filename)
         {
             $this->templateVars[$varName] = '';
             /** @noinspection PhpUndefinedConstantInspection */
@@ -189,6 +192,11 @@ class Page
         return $template->render('Menu', $vars);
     }
 
+    /**
+     * @param array<string, mixed> $vars
+     * @return string
+     * @throws \Safe\Exceptions\FilesystemException
+     */
     public function render(array $vars = []): string
     {
         $this->addTemplateVars($vars);
@@ -214,6 +222,9 @@ class Page
         $this->extraCss[] = $filename;
     }
 
+    /**
+     * @return MenuItem[]
+     */
     public function getMenu(): array
     {
         if (!User::hasSufficientReadLevel())
@@ -266,11 +277,15 @@ class Page
      * @param string $varName
      * @param mixed $var
      */
-    public function addTemplateVar(string $varName, $var): void
+    public function addTemplateVar(string $varName, mixed $var): void
     {
         $this->templateVars[$varName] = $var;
     }
 
+    /**
+     * @param array<string, mixed> $vars
+     * @return void
+     */
     public function addTemplateVars(array $vars): void
     {
         $this->templateVars = array_merge($this->templateVars, $vars);
@@ -283,6 +298,7 @@ class Page
             $this->templateVars['extraHeadLines'] = [];
         }
 
+        assert(is_array($this->templateVars['extraHeadLines']));
         $this->templateVars['extraHeadLines'][] = $line;
     }
 

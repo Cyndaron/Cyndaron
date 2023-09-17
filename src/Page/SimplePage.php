@@ -16,6 +16,10 @@ final class SimplePage
         $this->page->addTemplateVar('contents', $body);
     }
 
+    /**
+     * @param array<string, mixed> $vars
+     * @return string
+     */
     public function render(array $vars = []): string
     {
         return $this->page->render($vars);

@@ -106,16 +106,17 @@ final class RegistrationController extends Controller
             throw new IncompleteData($message);
         }
 
+        /** @var array<int, int> $registrationTicketTypes */
         $registrationTicketTypes = [];
         $ticketTypes = EventTicketType::loadByEvent($eventObj);
         foreach ($ticketTypes as $ticketType)
         {
+            assert($ticketType->id !== null);
             $registrationTicketTypes[$ticketType->id] = $post->getInt('tickettype-' . $ticketType->id);
         }
 
         assert($eventObj->id !== null);
         $registration = new Registration();
-        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $registration->eventId = $eventObj->id;
         $registration->lastName = $post->getSimpleString('lastName');
         // May double as first name!
@@ -165,9 +166,7 @@ final class RegistrationController extends Controller
             if ($registrationTicketTypes[$ticketType->id] > 0)
             {
                 $ott = new RegistrationTicketType();
-                /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
                 $ott->orderId = $registration->id;
-                /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
                 $ott->tickettypeId = $ticketType->id;
                 $ott->amount = $registrationTicketTypes[$ticketType->id];
                 $result = $ott->save();
@@ -181,6 +180,11 @@ final class RegistrationController extends Controller
         return $registration->sendIntroductionMail($registrationTotal, $registrationTicketTypes);
     }
 
+    /**
+     * @param Event $event
+     * @param RequestParameters $post
+     * @return string[]
+     */
     private function checkForm(Event $event, RequestParameters $post): array
     {
         $errorFields = [];

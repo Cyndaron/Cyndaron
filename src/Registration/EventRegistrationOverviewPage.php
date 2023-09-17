@@ -38,7 +38,7 @@ final class EventRegistrationOverviewPage extends Page
     }
 
     /**
-     * @return array
+     * @return array<int, array<int, int>>
      */
     private function getTicketTypesByRegistration(): array
     {
@@ -47,22 +47,22 @@ final class EventRegistrationOverviewPage extends Page
         $ticketTypesByRegistration = [];
         foreach ($boughtTicketTypes as $boughtTicketType)
         {
-            $registrationId = $boughtTicketType['orderId'];
-            $ticketType = $boughtTicketType['tickettypeId'];
+            $registrationId = (int)$boughtTicketType['orderId'];
+            $ticketType = (int)$boughtTicketType['tickettypeId'];
             if (!array_key_exists($registrationId, $ticketTypesByRegistration))
             {
                 $ticketTypesByRegistration[$registrationId] = [];
             }
 
-            $ticketTypesByRegistration[$registrationId][$ticketType] = $boughtTicketType['amount'];
+            $ticketTypesByRegistration[$registrationId][$ticketType] = (int)$boughtTicketType['amount'];
         }
         return $ticketTypesByRegistration;
     }
 
     /**
      * @param Registration[] $registrations
-     * @param array $ticketTypesByRegistration
-     * @return array
+     * @param array<int, array<int, int>> $ticketTypesByRegistration
+     * @return array<string, array<int, array{num: int, amount: float}>>
      */
     private function calculateTotals(array $registrations, array $ticketTypesByRegistration): array
     {

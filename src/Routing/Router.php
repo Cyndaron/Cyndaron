@@ -53,9 +53,13 @@ use const INPUT_SERVER;
  */
 final class Router implements HttpKernelInterface
 {
+    /** @var string[] */
     private array $requestVars = [''];
     private bool $isApiCall = false;
 
+    /**
+     * @var array<string, class-string>
+     */
     protected array $endpoints = [
         // Default endpoints
         'editor' => \Cyndaron\Editor\EditorController::class,
@@ -416,6 +420,11 @@ final class Router implements HttpKernelInterface
         return $response;
     }
 
+    /**
+     * @param string $path
+     * @param class-string $controller
+     * @return void
+     */
     public function addRoute(string $path, string $controller): void
     {
         $this->endpoints[$path] = $controller;

@@ -48,7 +48,7 @@ final class ConcertOrderOverviewPage extends Page
 
     /**
      * @param Concert $concert
-     * @return array
+     * @return array<int, array<int, int>>
      */
     private function getTicketTypesPerOrder(Concert $concert): array
     {
@@ -56,14 +56,14 @@ final class ConcertOrderOverviewPage extends Page
         $ticketTypesByOrder = [];
         foreach ($boughtTicketTypes as $boughtTicketType)
         {
-            $orderId = $boughtTicketType['orderId'];
-            $ticketTypeId = $boughtTicketType['tickettypeId'];
+            $orderId = (int)$boughtTicketType['orderId'];
+            $ticketTypeId = (int)$boughtTicketType['tickettypeId'];
             if (!array_key_exists($orderId, $ticketTypesByOrder))
             {
                 $ticketTypesByOrder[$orderId] = [];
             }
 
-            $ticketTypesByOrder[$orderId][$ticketTypeId] = $boughtTicketType['amount'];
+            $ticketTypesByOrder[$orderId][$ticketTypeId] = (int)$boughtTicketType['amount'];
         }
 
         return $ticketTypesByOrder;

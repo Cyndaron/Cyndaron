@@ -8,6 +8,7 @@ use function count;
 final class SkinRendererSVG extends SkinRenderer
 {
     private Template $template;
+    /** @var array<string, mixed> */
     private array $templateVars = [];
 
     protected function setupTarget(): void

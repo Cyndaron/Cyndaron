@@ -19,6 +19,10 @@ final class Helper
         return ob_get_clean() ?: '';
     }
 
+    /**
+     * @param string $filename
+     * @return array<string, string>
+     */
     public static function getResponseHeadersForFilename(string $filename): array
     {
         $filename = str_replace('"', "'", $filename);

@@ -66,6 +66,7 @@ abstract class SkinRenderer
     protected SkinRendererParameters $parameters;
 
     protected array $times = [];
+    /** @var array<string, string> */
     protected array $headers = [];
     protected array $partsAngles = [];
 

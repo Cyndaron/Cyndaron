@@ -71,7 +71,7 @@ final class Registration extends Model
 
     /**
      * @param float $registrationTotal
-     * @param array $registrationTicketTypes
+     * @param array<int, int> $registrationTicketTypes
      * @throws \Safe\Exceptions\FilesystemException
      * @return bool
      */
@@ -154,6 +154,10 @@ Stichting Bijzondere Koorprojecten';
         return $mail->send();
     }
 
+    /**
+     * @param array<int, int> $registrationTicketTypes
+     * @return float
+     */
     public function calculateTotal(array $registrationTicketTypes = []): float
     {
         $event = $this->getEvent();

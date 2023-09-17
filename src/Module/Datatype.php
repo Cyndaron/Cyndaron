@@ -14,6 +14,10 @@ final class Datatype
     public string $pageManagerTab;
     public string $pageManagerJS;
 
+    /**
+     * @param array<string, mixed> $array
+     * @return self
+     */
     public static function fromArray(array $array): self
     {
         $object = new self();

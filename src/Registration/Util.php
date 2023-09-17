@@ -51,6 +51,10 @@ final class Util extends \Cyndaron\Util\Util
         return 'Niet opgegeven';
     }
 
+    /**
+     * @param Event $event
+     * @return list<array{0: int|float, 1: int|float}>
+     */
     public static function getAgeRanges(Event $event): array
     {
         $constName = "\Cyndaron\Registration\Util::AGE_RANGES_VOV_{$event->id}";
@@ -59,7 +63,7 @@ final class Util extends \Cyndaron\Util\Util
             $constName = "\Cyndaron\Registration\Util::AGE_RANGES_VOV_1";
         }
 
-        /** @var array $ret */
+        /** @var list<array{0: int|float, 1: int|float}> $ret */
         $ret = constant($constName);
         return $ret;
     }

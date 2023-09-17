@@ -26,13 +26,13 @@ abstract class Controller
     protected int $minLevelGet = UserLevel::ANONYMOUS;
     protected int $minLevelPost = UserLevel::ADMIN;
 
-    /** @var array<string, array{level: int, function: string }> */
+    /** @var array<string, array{function: string, level?: int, right?: string }> */
     protected array $getRoutes = [];
-    /** @var array<string, array{level: int, function: string }> */
+    /** @var array<string, array{function: string, level?: int, right?: string }> */
     protected array $postRoutes = [];
-    /** @var array<string, array{level: int, function: string }> */
+    /** @var array<string, array{function: string, level?: int, right?: string }> */
     protected array $apiGetRoutes = [];
-    /** @var array<string, array{level: int, function: string }> */
+    /** @var array<string, array{function: string, level?: int, right?: string }> */
     protected array $apiPostRoutes = [];
 
     public function __construct(string $module, string $action, bool $isApiCall = false)
@@ -89,7 +89,7 @@ abstract class Controller
             $route = $routesTable[$this->action];
             if (is_array($route))
             {
-                $route = new Route($route['function'], $route['level']?? UserLevel::ADMIN, $route['right'] ?? null);
+                $route = new Route($route['function'], $route['level'] ?? UserLevel::ADMIN, $route['right'] ?? null);
             }
             $right = $route->right;
             $hasRight = !empty($right) && !empty($_SESSION['profile']) && $_SESSION['profile']->hasRight($right);
