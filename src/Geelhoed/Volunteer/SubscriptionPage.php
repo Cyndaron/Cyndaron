@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Volunteer;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 
 final class SubscriptionPage extends Page
 {

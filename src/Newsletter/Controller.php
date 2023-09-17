@@ -8,13 +8,12 @@ declare(strict_types=1);
 
 namespace Cyndaron\Newsletter;
 
-use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
-use Cyndaron\User\User;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Setting;
-use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -23,13 +22,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport\SendmailTransport;
 use Symfony\Component\Mime\Address;
-
 use Symfony\Component\Mime\Email;
-use function array_map;
-use function array_sum;
-use function base64_decode;
-use function class_exists;
 use function array_udiff;
+use function base64_decode;
 
 class Controller extends \Cyndaron\Routing\Controller
 {

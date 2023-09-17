@@ -2,7 +2,7 @@
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\View\Template\ViewHelpers;
 
 final class StaticPage extends Page

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
+use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
@@ -10,24 +11,21 @@ use Cyndaron\Ticketsale\Order\Order;
 use Cyndaron\Ticketsale\Order\OrderTicketsPage;
 use Cyndaron\Ticketsale\Order\OrderTicketTypes;
 use Cyndaron\User\UserLevel;
-use Cyndaron\View\Page;
-use Cyndaron\View\SimplePage;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
-use Mpdf\Tag\P;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Safe\DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use function array_keys;
 use function array_key_exists;
+use function array_keys;
 use function assert;
 use function chr;
 use function count;
+use function in_array;
 use function is_bool;
 use function ord;
 use function property_exists;
-use function in_array;
 
 final class ConcertController extends Controller
 {

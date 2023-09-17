@@ -2,18 +2,13 @@
 namespace Cyndaron\Geelhoed\Location;
 
 use Cyndaron\Geelhoed\Sport\Sport;
+use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
-use Cyndaron\Util\Util;
-use Cyndaron\View\Page;
 use Cyndaron\User\UserLevel;
-use Cyndaron\View\SimplePage;
-use Cyndaron\View\Template\ViewHelpers;
+use Cyndaron\Util\Util;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use function Safe\preg_replace;
-use function urldecode;
-use function var_dump;
 
 final class LocationController extends Controller
 {

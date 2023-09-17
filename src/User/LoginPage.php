@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\User;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 
 final class LoginPage extends Page
 {

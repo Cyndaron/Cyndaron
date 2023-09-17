@@ -14,35 +14,34 @@ use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\UserMenu;
 use Cyndaron\Module\WithPageProcessors;
 use Cyndaron\Module\WithTextPostProcessors;
-use Cyndaron\PageManager\PageManagerTab;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
+use Cyndaron\Page\SimplePage;
 use Cyndaron\PageManager\PageManagerPage;
+use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Util\Setting;
-use Cyndaron\View\Renderer\TextRenderer;
-use Cyndaron\View\SimplePage;
-use Cyndaron\View\Template\TemplateFinder;
 use Cyndaron\Url;
 use Cyndaron\User\User;
+use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
+use Cyndaron\View\Renderer\TextRenderer;
+use Cyndaron\View\Template\TemplateFinder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-
-use function Safe\error_log;
-use function substr;
-use function session_start;
-use function strpos;
 use function array_key_exists;
-use function explode;
-use function trim;
+use function array_merge;
 use function array_shift;
 use function defined;
-use function array_merge;
+use function explode;
 use function filter_input;
+use function Safe\error_log;
+use function session_start;
+use function strpos;
+use function substr;
+use function trim;
 
 /**
  * Zorgt voor correct doorverwijzen van verzoeken.

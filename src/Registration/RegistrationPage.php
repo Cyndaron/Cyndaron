@@ -1,13 +1,11 @@
 <?php
 namespace Cyndaron\Registration;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\Util\Setting;
 use Phan\Library\Set;
-use function constant;
-use function Safe\date;
 use function file_exists;
-use function defined;
+use function Safe\date;
 
 final class RegistrationPage extends Page
 {

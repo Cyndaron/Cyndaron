@@ -3,22 +3,21 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
-use Cyndaron\Request\QueryBits;
-use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DatabaseError;
-use Cyndaron\Util\Error\IncompleteData;
-use Cyndaron\View\Page;
+use Cyndaron\Page\SimplePage;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Util\Setting;
+use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
-use Cyndaron\View\SimplePage;
+use Cyndaron\Util\Error\IncompleteData;
+use Cyndaron\Util\Setting;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use function implode;
 use function assert;
-use function strcasecmp;
+use function implode;
 use function min;
+use function strcasecmp;
 
 final class RegistrationController extends Controller
 {

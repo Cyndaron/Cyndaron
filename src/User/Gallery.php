@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\User;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\Util\Setting;
 
 final class Gallery extends Page

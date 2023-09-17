@@ -6,7 +6,7 @@ namespace Cyndaron\Feed;
 use Cyndaron\Category\Category;
 use Cyndaron\Category\CategoryIndexPage;
 use Cyndaron\Module\PagePreProcessor;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use function sprintf;
 
 final class FeedLinkInjector implements PagePreProcessor

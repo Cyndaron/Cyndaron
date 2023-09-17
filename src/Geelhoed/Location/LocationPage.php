@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Location;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\Util\Setting;
 
 final class LocationPage extends Page

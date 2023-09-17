@@ -3,23 +3,22 @@ declare(strict_types=1);
 
 namespace Cyndaron\Editor;
 
-use Cyndaron\Request\QueryBits;
-use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\Linkable;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
+use Cyndaron\Page\SimplePage;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
-use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
-use function usort;
-use function strlen;
 use function array_key_exists;
-use function var_export;
 use function array_merge;
+use function strlen;
+use function usort;
+use function var_export;
 
 final class EditorController extends Controller
 {

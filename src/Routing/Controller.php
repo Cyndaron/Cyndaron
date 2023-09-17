@@ -3,21 +3,17 @@ declare(strict_types=1);
 
 namespace Cyndaron\Routing;
 
-use Cyndaron\View\Page;
-use Cyndaron\Request\QueryBits;
-use Cyndaron\Request\RequestParameters;
+use Cyndaron\Page\SimplePage;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
-use Cyndaron\View\SimplePage;
 use ReflectionNamedType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-
-use function method_exists;
-use function Safe\session_destroy;
 use function array_key_exists;
 use function is_array;
+use function method_exists;
+use function Safe\session_destroy;
 use function session_start;
 
 abstract class Controller

@@ -4,11 +4,10 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Geelhoed\Member\Member;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\User\User;
-use function count;
-use function assert;
 use function array_map;
+use function count;
 use function implode;
 
 final class MyContestsPage extends Page

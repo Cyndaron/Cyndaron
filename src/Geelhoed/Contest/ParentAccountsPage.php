@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Contest;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\User\User;
 use function usort;
 

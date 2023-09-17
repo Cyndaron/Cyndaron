@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Tryout;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Page\Page;
 use Cyndaron\Util\Util;
-use Cyndaron\View\Page;
 use DateTimeImmutable;
 
 class ScoresPage extends Page

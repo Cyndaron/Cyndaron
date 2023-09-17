@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\Request\QueryBits;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Menu\MenuItem;
-use Cyndaron\User\User;
-use Cyndaron\View\Page;
+use Cyndaron\Page\SimplePage;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\Controller;
+use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
-use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;

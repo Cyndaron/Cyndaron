@@ -3,20 +3,19 @@ namespace Cyndaron\System;
 
 use Cyndaron\Category\Category;
 use Cyndaron\CyndaronInfo;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\Util\Setting;
-
-use function Safe\ksort;
+use function array_merge;
+use function is_writable;
+use function ob_get_clean;
 use function Safe\ini_get;
+use function Safe\ksort;
+use function Safe\ob_start;
 use function Safe\phpinfo;
 use function Safe\preg_match;
 use function Safe\preg_replace;
-use function ucfirst;
-use function Safe\ob_start;
-use function ob_get_clean;
 use function strtr;
-use function is_writable;
-use function array_merge;
+use function ucfirst;
 
 final class SystemPage extends Page
 {

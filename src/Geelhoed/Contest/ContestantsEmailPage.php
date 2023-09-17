@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Geelhoed\Member\Member;
+use Cyndaron\Page\Page;
 use Cyndaron\User\User;
-use Cyndaron\View\Page;
 
 final class ContestantsEmailPage extends Page
 {

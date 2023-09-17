@@ -5,9 +5,9 @@
 namespace Cyndaron;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\User\User;
-use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 

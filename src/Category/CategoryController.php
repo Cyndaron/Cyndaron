@@ -3,25 +3,22 @@ declare(strict_types=1);
 
 namespace Cyndaron\Category;
 
-use Cyndaron\Request\QueryBits;
-use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Menu\MenuItem;
-use Cyndaron\Category\ModelWithCategory;
-use Cyndaron\View\Page;
+use Cyndaron\Page\SimplePage;
 use Cyndaron\Photoalbum\Photoalbum;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\RichLink\RichLink;
+use Cyndaron\Routing\Controller;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\User\UserLevel;
-use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use function assert;
-use function strpos;
 use function explode;
-use function array_walk;
 use function get_class;
+use function strpos;
 
 final class CategoryController extends Controller
 {

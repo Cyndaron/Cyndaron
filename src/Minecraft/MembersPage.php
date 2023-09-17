@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 
 final class MembersPage extends Page
 {

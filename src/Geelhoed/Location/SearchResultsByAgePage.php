@@ -5,7 +5,7 @@ namespace Cyndaron\Geelhoed\Location;
 
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\Sport\Sport;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 
 class SearchResultsByAgePage extends Page
 {

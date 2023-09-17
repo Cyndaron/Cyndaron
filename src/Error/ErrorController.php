@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Error;
 
+use Cyndaron\Page\SimplePage;
 use Cyndaron\Routing\Controller;
-use Cyndaron\View\Page;
 use Cyndaron\Routing\DependencyInjectionContainer;
-use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 

@@ -3,28 +3,21 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
-use Cyndaron\Request\QueryBits;
-use Cyndaron\Util\Mail\Mail;
-use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DatabaseError;
-use Cyndaron\Util\Error\IncompleteData;
-use Cyndaron\View\Page;
+use Cyndaron\Page\SimplePage;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Util\Setting;
+use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
-use Cyndaron\Util\Util;
-use Cyndaron\View\SimplePage;
+use Cyndaron\Util\Error\IncompleteData;
+use Cyndaron\Util\Mail\Mail;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-
 use Symfony\Component\Mime\Address;
-use function sprintf;
 use function in_array;
 use function strcasecmp;
 use function strtr;
-use function html_entity_decode;
-use function mail;
 
 final class MailformController extends Controller
 {

@@ -1,10 +1,10 @@
 <?php
 namespace Cyndaron\Ticketsale\Order;
 
+use Cyndaron\Page\Page;
 use Cyndaron\Ticketsale\Concert;
 use Cyndaron\Ticketsale\TicketType;
 use Cyndaron\Util\Setting;
-use Cyndaron\View\Page;
 use function file_exists;
 use function strtoupper;
 

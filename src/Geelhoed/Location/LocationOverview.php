@@ -1,9 +1,9 @@
 <?php
 namespace Cyndaron\Geelhoed\Location;
 
-use Cyndaron\Util\Util;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\Util;
 use Cyndaron\View\Template\ViewHelpers;
 use function array_filter;
 

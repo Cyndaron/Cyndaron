@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Volunteer;
 
+use Cyndaron\Page\Page;
 use Cyndaron\User\User;
 use Cyndaron\Util\Util;
-use Cyndaron\View\Page;
 use Cyndaron\View\Template\ViewHelpers;
-use DateTimeImmutable;
 
 final class SubscribeToTryoutPage extends Page
 {

@@ -2,19 +2,18 @@
 namespace Cyndaron\Editor;
 
 use Cyndaron\Category\Category;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Category\ModelWithCategory;
-use Cyndaron\View\Page;
-use Cyndaron\Util\Setting;
+use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Page\Page;
 use Cyndaron\Url;
+use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
-
+use function array_filter;
+use function is_dir;
 use function Safe\scandir;
 use function sprintf;
 use function substr;
 use function trim;
-use function is_dir;
-use function array_filter;
 
 abstract class EditorPage extends Page
 {

@@ -10,7 +10,6 @@ namespace Cyndaron\Geelhoed\Reservation;
 
 use Cyndaron\Error\ErrorPageResponse;
 use Cyndaron\Geelhoed\Hour\Hour;
-use Cyndaron\View\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
@@ -19,12 +18,12 @@ use Cyndaron\User\UserLevel;
 use DateTimeImmutable;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use function is_array;
-use function array_walk;
-use function filter_var;
-use function trim;
 use function array_filter;
+use function array_walk;
 use function count;
+use function filter_var;
+use function is_array;
+use function trim;
 
 final class ReservationController extends Controller
 {

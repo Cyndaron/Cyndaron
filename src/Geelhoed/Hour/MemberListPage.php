@@ -2,9 +2,8 @@
 namespace Cyndaron\Geelhoed\Hour;
 
 use Cyndaron\Geelhoed\Member\Member;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\View\Template\ViewHelpers;
-
 use function sprintf;
 
 final class MemberListPage extends Page

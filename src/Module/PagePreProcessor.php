@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Module;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 
 interface PagePreProcessor
 {

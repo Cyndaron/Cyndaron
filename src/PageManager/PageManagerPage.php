@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace Cyndaron\PageManager;
 
+use Cyndaron\Page\Page;
 use Cyndaron\User\User;
-use Cyndaron\View\Page;
-use function array_merge;
-use function is_callable;
 use function assert;
+use function is_callable;
 
 final class PageManagerPage extends Page
 {

@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Contest;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 
 final class SubscriptionListPage extends Page
 {

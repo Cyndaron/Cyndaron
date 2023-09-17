@@ -6,30 +6,29 @@
  */
 /** @noinspection PhpIncludeInspection */
 
-namespace Cyndaron\View;
+namespace Cyndaron\Page;
 
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\CyndaronInfo;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Module\PagePreProcessor;
+use Cyndaron\User\User;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\ViewHelpers;
-use Cyndaron\User\User;
-use Cyndaron\DBAL\Model;
-
 use function array_key_exists;
-use function sprintf;
-use function substr;
-use function assert;
-use function dirname;
-use function str_replace;
-use function basename;
-use function strrchr;
-use function file_exists;
-use function Safe\ob_start;
-use function ob_get_clean;
-use function count;
 use function array_merge;
+use function assert;
+use function basename;
+use function count;
+use function dirname;
+use function file_exists;
+use function ob_get_clean;
+use function Safe\ob_start;
+use function sprintf;
+use function str_replace;
+use function strrchr;
+use function substr;
 
 class Page
 {

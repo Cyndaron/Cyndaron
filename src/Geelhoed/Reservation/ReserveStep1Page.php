@@ -9,10 +9,9 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Reservation;
 
 use Cyndaron\Geelhoed\Hour\Hour;
-use Cyndaron\View\Page;
-use Cyndaron\View\Template\ViewHelpers;
+use Cyndaron\Page\Page;
 use Cyndaron\User\User;
-use Cyndaron\Util\Util;
+use Cyndaron\View\Template\ViewHelpers;
 use function count;
 
 final class ReserveStep1Page extends Page

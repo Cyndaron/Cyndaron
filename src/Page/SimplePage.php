@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\View;
+namespace Cyndaron\Page;
 
 /**
  * A simple page class, useful for pages with just a title and a few sentences of text.

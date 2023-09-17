@@ -2,7 +2,7 @@
 namespace Cyndaron\Registration;
 
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\Util\Setting;
 use function array_key_exists;
 

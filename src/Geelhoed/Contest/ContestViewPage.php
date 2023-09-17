@@ -2,9 +2,8 @@
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Geelhoed\Member\Member;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\User\User;
-
 use function sprintf;
 
 final class ContestViewPage extends Page

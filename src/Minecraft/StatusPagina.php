@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use function array_walk;
 
 final class StatusPagina extends Page

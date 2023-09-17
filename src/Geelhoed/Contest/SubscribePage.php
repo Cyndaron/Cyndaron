@@ -2,7 +2,7 @@
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Geelhoed\Member\Member;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 
 final class SubscribePage extends Page
 {

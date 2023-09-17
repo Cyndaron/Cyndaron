@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Category;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\Photoalbum\Photoalbum;
 
 final class PhotoalbumIndexPage extends Page

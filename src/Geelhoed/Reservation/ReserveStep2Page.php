@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Reservation;
 
 use Cyndaron\Geelhoed\Hour\Hour;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\User\User;
 
 final class ReserveStep2Page extends Page

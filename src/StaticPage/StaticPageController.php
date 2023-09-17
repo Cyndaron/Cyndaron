@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace Cyndaron\StaticPage;
 
-use Cyndaron\Request\QueryBits;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Menu\MenuItem;
-use Cyndaron\View\Page;
+use Cyndaron\Page\SimplePage;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
-use Cyndaron\View\SimplePage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;

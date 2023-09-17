@@ -8,8 +8,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Newsletter;
 
+use Cyndaron\Page\Page;
 use Cyndaron\User\User;
-use Cyndaron\View\Page;
 
 class ViewSubscribersPage extends Page
 {

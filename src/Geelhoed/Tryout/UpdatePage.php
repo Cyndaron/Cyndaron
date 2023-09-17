@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Tryout;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 
 class UpdatePage extends Page
 {

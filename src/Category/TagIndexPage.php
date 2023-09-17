@@ -2,11 +2,11 @@
 namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\StaticPage\StaticPageModel;
-use function ucfirst;
 use function in_array;
 use function strtolower;
+use function ucfirst;
 
 final class TagIndexPage extends Page
 {

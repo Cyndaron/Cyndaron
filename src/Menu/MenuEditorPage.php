@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Menu;
 
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 
 final class MenuEditorPage extends Page
 {

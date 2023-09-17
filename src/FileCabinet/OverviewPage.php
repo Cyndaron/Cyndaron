@@ -1,14 +1,15 @@
 <?php
 namespace Cyndaron\FileCabinet;
 
-use Cyndaron\View\Page;
-use Cyndaron\Util\Setting;
+use Cyndaron\Page\Page;
 use Cyndaron\User\User;
+use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
-
 use ErrorException;
 use Safe\Exceptions\DirException;
-use Safe\Exceptions\FilesystemException;
+use function closedir;
+use function natsort;
+use function readdir;
 use function Safe\fclose;
 use function Safe\filectime;
 use function Safe\filesize;
@@ -19,9 +20,6 @@ use function Safe\preg_match;
 use function Safe\preg_replace;
 use function substr;
 use function usort;
-use function natsort;
-use function readdir;
-use function closedir;
 
 final class OverviewPage extends Page
 {

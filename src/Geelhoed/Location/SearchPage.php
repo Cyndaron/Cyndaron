@@ -5,7 +5,7 @@ namespace Cyndaron\Geelhoed\Location;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Geelhoed\Sport\Sport;
-use Cyndaron\View\Page;
+use Cyndaron\Page\Page;
 use Cyndaron\View\Template\ViewHelpers;
 
 class SearchPage extends Page

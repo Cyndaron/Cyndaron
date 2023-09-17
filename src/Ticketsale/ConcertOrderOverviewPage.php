@@ -2,8 +2,8 @@
 namespace Cyndaron\Ticketsale;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Page\Page;
 use Cyndaron\Ticketsale\Order\Order;
-use Cyndaron\View\Page;
 use function array_key_exists;
 
 final class ConcertOrderOverviewPage extends Page
