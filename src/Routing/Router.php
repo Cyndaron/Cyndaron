@@ -317,11 +317,11 @@ final class Router implements HttpKernelInterface
                 {
                     if (isset($definition->editorPage))
                     {
-                        EditorController::addEditorPage([$dataTypeName => $definition->editorPage]);
+                        EditorController::addEditorPage($dataTypeName, $definition->editorPage);
                     }
                     if (isset($definition->editorSavePage))
                     {
-                        EditorController::addEditorSavePage([$dataTypeName => $definition->editorSavePage]);
+                        EditorController::addEditorSavePage($dataTypeName, $definition->editorSavePage);
                     }
                     if (isset($definition->pageManagerTab))
                     {

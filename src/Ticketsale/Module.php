@@ -6,12 +6,15 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
+use Cyndaron\Module\InternalLink;
+use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Ticketsale\Order\OrderController;
+use function array_map;
 
-final class Module implements Routes, Datatypes, Templated
+final class Module implements Routes, Datatypes, Templated, Linkable
 {
     public function routes(): array
     {
@@ -36,7 +39,12 @@ final class Module implements Routes, Datatypes, Templated
 
     public function getList(): array
     {
-        return DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/concert/order/\', id) AS link, CONCAT(\'Concert: \', name) AS name FROM ticketsale_concerts') ?: [];
+        /** @var list<array{name: string, link: string}> $list */
+        $list = DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/concert/order/\', id) AS link, CONCAT(\'Concert: \', name) AS name FROM ticketsale_concerts');
+        return array_map(static function (array $item)
+        {
+            return InternalLink::fromArray($item);
+        }, $list);
     }
 
     public function getTemplateRoot(): TemplateRoot

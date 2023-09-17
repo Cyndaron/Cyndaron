@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Editor;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Module\InternalLink;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Page\Page;
 use Cyndaron\Page\SimplePage;
@@ -24,19 +25,22 @@ final class EditorController extends Controller
 {
     protected int $minLevelGet = UserLevel::ADMIN;
 
+    /** @var array<string, class-string> */
     protected static array $editorPages = [];
+    /** @var array<string, class-string> */
     protected static array $savePages = [];
+    /** @var array<class-string> */
     protected static array $internalLinkTypes = [];
 
     protected function routeGet(QueryBits $queryBits): Response
     {
         $type = $queryBits->getString(1);
-        if (!array_key_exists($type, static::$editorPages))
+        if (!array_key_exists($type, self::$editorPages))
         {
             throw new \Exception('Onbekend paginatype: ' . $type);
         }
 
-        $class = static::$editorPages[$type];
+        $class = self::$editorPages[$type];
         $id = $queryBits->getNullableInt(2);
         $previous = $queryBits->getString(3) === 'previous';
         /** @var Page $editorPage */
@@ -50,14 +54,14 @@ final class EditorController extends Controller
     protected function routePost(QueryBits $queryBits, RequestParameters $post, Request $request): Response
     {
         $type = $queryBits->getString(1);
-        if (!array_key_exists($type, static::$savePages))
+        if (!array_key_exists($type, self::$savePages))
         {
             throw new \Exception('Onbekend paginatype: ' . $type);
         }
 
         $id = $queryBits->getNullableInt(2);
 
-        $class = static::$savePages[$type];
+        $class = self::$savePages[$type];
         try
         {
             /** @var EditorSavePage $editorSavePage */
@@ -71,34 +75,52 @@ final class EditorController extends Controller
         }
     }
 
+    /**
+     * @return InternalLink[]
+     */
     protected function getInternalLinks(): array
     {
+        /** @var InternalLink[] $internalLinks */
         $internalLinks = [];
-        foreach (static::$internalLinkTypes as $internalLinkType)
+        foreach (self::$internalLinkTypes as $internalLinkType)
         {
             /** @var Linkable $class */
             $class = new $internalLinkType();
             $internalLinks = array_merge($internalLinks, $class->getList());
         }
-        usort($internalLinks, static function(array $link1, array $link2)
+        usort($internalLinks, static function(InternalLink $link1, InternalLink $link2)
         {
-            return $link1['name'] <=> $link2['name'];
+            return $link1->name <=> $link2->name;
         });
         return $internalLinks;
     }
 
-    public static function addEditorPage(array $page): void
+    /**
+     * @param string $dataTypeName
+     * @param class-string $className
+     * @return void
+     */
+    public static function addEditorPage(string $dataTypeName, string $className): void
     {
-        static::$editorPages = array_merge(static::$editorPages, $page);
+        self::$editorPages[$dataTypeName] = $className;
     }
 
-    public static function addEditorSavePage(array $page): void
+    /**
+     * @param string $dataTypeName
+     * @param class-string $className
+     * @return void
+     */
+    public static function addEditorSavePage(string $dataTypeName, string $className): void
     {
-        static::$savePages = array_merge(static::$savePages, $page);
+        self::$savePages[$dataTypeName] = $className;
     }
 
+    /**
+     * @param class-string $moduleClass
+     * @return void
+     */
     public static function addInternalLinkType(string $moduleClass): void
     {
-        static::$internalLinkTypes[] = $moduleClass;
+        self::$internalLinkTypes[] = $moduleClass;
     }
 }

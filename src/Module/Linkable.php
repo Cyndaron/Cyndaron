@@ -5,5 +5,8 @@ namespace Cyndaron\Module;
 
 interface Linkable
 {
+    /**
+     * @return InternalLink[]
+     */
     public function getList(): array;
 }

@@ -6,7 +6,7 @@ namespace Cyndaron\Module;
 interface Datatypes
 {
     /**
-     * @return Datatype[]
+     * @return array<string, Datatype>
      */
     public function dataTypes(): array;
 }

@@ -7,7 +7,9 @@ final class Datatype
 {
     public string $singular;
     public string $plural;
+    /** @var class-string */
     public string $editorPage;
+    /** @var class-string */
     public string $editorSavePage;
     public string $pageManagerTab;
     public string $pageManagerJS;

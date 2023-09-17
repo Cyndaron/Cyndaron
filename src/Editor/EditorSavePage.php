@@ -72,6 +72,13 @@ abstract class EditorSavePage
         return $result;
     }
 
+    /**
+     * @param array<string> $matches
+     * @return string
+     * @throws \Safe\Exceptions\DatetimeException
+     * @throws \Safe\Exceptions\FilesystemException
+     * @throws \Safe\Exceptions\UrlException
+     */
     protected static function extractImages(array $matches): string
     {
         [$type, $image] = explode(';', $matches[2]);
