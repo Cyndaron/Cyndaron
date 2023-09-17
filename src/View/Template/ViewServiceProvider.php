@@ -99,6 +99,7 @@ final class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
     public function registerBladeEngine($resolver): void
     {
         $resolver->register('blade', function () {
+            /** @phpstan-ignore-next-line */
             $compiler = new CompilerEngine($this->app['blade.compiler'], $this->app['files']);
 
             return $compiler;

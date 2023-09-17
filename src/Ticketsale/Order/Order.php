@@ -98,6 +98,10 @@ final class Order extends Model
         return (bool)$result;
     }
 
+    /**
+     * @param Concert $concert
+     * @return self[]
+     */
     public static function fetchByConcert(Concert $concert): array
     {
         return self::fetchAll(['concertId = ?'], [$concert->id]);
@@ -157,6 +161,9 @@ final class Order extends Model
         return $totalCost;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAdditionalData(): array
     {
         try
@@ -172,7 +179,7 @@ final class Order extends Model
     }
 
     /**
-     * @param array $data
+     * @param array<string, mixed> $data
      * @throws JsonException
      */
     public function setAdditonalData(array $data): void
@@ -191,14 +198,5 @@ final class Order extends Model
     {
         $host = "https://{$_SERVER['HTTP_HOST']}";
         return "{$host}/concert-order/getTickets/{$this->id}/{$this->secretCode}";
-    }
-
-    /**
-     * @param Concert $concert
-     * @return self[]
-     */
-    public static function loadByConcert(Concert $concert): array
-    {
-        return self::fetchAll(['concertId = ?'], [$concert->id], 'ORDER BY id');
     }
 }

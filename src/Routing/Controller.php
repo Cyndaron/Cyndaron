@@ -26,13 +26,13 @@ abstract class Controller
     protected int $minLevelGet = UserLevel::ANONYMOUS;
     protected int $minLevelPost = UserLevel::ADMIN;
 
-    /** @var array[] $getRoutes */
+    /** @var array<string, array{level: int, function: string }> */
     protected array $getRoutes = [];
-    /** @var array[] $postRoutes */
+    /** @var array<string, array{level: int, function: string }> */
     protected array $postRoutes = [];
-    /** @var array[] $apiGetRoutes */
+    /** @var array<string, array{level: int, function: string }> */
     protected array $apiGetRoutes = [];
-    /** @var array[] $apiPostRoutes */
+    /** @var array<string, array{level: int, function: string }> */
     protected array $apiPostRoutes = [];
 
     public function __construct(string $module, string $action, bool $isApiCall = false)

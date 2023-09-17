@@ -2,6 +2,7 @@
 
 namespace Cyndaron\View\Template;
 
+use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\View\Factory as FactoryContract;
 use Illuminate\Contracts\View\View;
@@ -59,6 +60,12 @@ final class Blade implements FactoryContract
         });
     }
 
+    /**
+     * @param string $view
+     * @param mixed[] $data
+     * @param mixed[] $mergeData
+     * @return string
+     */
     public function render(string $view, array $data = [], array $mergeData = []): string
     {
         return $this->make($view, $data, $mergeData)->render();
@@ -91,22 +98,42 @@ final class Blade implements FactoryContract
         return $this->factory->file($path, $data, $mergeData);
     }
 
+    /**
+     * @param mixed[]|string $key
+     * @param mixed $value
+     * @return mixed|void
+     */
     public function share($key, $value = null)
     {
         assert(is_string($key));
         return $this->factory->shared($key, $value);
     }
 
+    /**
+     * @param mixed[]|string $views
+     * @param Closure|string $callback
+     * @return mixed[]
+     */
     public function composer($views, $callback): array
     {
         return $this->factory->composer($views, $callback);
     }
 
+    /**
+     * @param mixed[]|string $views
+     * @param Closure|string $callback
+     * @return mixed[]
+     */
     public function creator($views, $callback): array
     {
         return $this->factory->creator($views, $callback);
     }
 
+    /**
+     * @param string $namespace
+     * @param mixed[]|string $hints
+     * @return $this
+     */
     public function addNamespace($namespace, $hints): self
     {
         $this->factory->addNamespace($namespace, $hints);
@@ -114,6 +141,11 @@ final class Blade implements FactoryContract
         return $this;
     }
 
+    /**
+     * @param string $namespace
+     * @param mixed[]|string $hints
+     * @return $this
+     */
     public function replaceNamespace($namespace, $hints): self
     {
         $this->factory->replaceNamespace($namespace, $hints);
@@ -123,7 +155,7 @@ final class Blade implements FactoryContract
 
     /**
      * @param string $method
-     * @param array $params
+     * @param mixed[] $params
      * @return mixed
      */
     public function __call(string $method, array $params)
@@ -132,6 +164,11 @@ final class Blade implements FactoryContract
         return call_user_func_array([$this->factory, $method], $params);
     }
 
+    /**
+     * @param mixed[] $viewPaths
+     * @param string $cachePath
+     * @return void
+     */
     protected function setupContainer(array $viewPaths, string $cachePath): void
     {
         $this->container->bindIf('files', static function()

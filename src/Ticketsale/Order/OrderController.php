@@ -353,6 +353,12 @@ final class OrderController extends Controller
         return $order;
     }
 
+    /**
+     * @param bool $forcedDelivery
+     * @param bool $memberDelivery
+     * @param RequestParameters $post
+     * @return string[]
+     */
     private function checkForm(bool $forcedDelivery, bool $memberDelivery, RequestParameters $post): array
     {
         $incorrectFields = [];
@@ -774,6 +780,12 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         return $this->checkInPage($concert);
     }
 
+    /**
+     * @param RequestParameters $post
+     * @param Concert $concert
+     * @return array{0: bool, 1: string}
+     * @throws \Cyndaron\DBAL\ImproperSubclassing
+     */
     private function checkScannedBarcode(RequestParameters $post, Concert $concert): array
     {
         $barcode = $post->getSimpleString('barcode');

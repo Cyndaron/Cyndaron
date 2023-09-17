@@ -157,7 +157,7 @@ final class ConcertController extends Controller
             $fields[] = 'Aant. ' . $ticketType->name;
         }
 
-        $orders = Order::loadByConcert($concert);
+        $orders = Order::fetchByConcert($concert);
         foreach ($orders as $order)
         {
             $additionalData = $order->getAdditionalData();
