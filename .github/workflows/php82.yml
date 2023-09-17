@@ -39,4 +39,4 @@ jobs:
         run: composer run-script phpstan
 
       - name: Run PHP Coding Standards Fixer
-        run: composer run-script cscheck
+        run: composer run-script cs-check

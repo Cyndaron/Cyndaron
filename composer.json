@@ -72,7 +72,7 @@
         "phpstan": [
             "vendor/bin/phpstan analyse src --level 8"
         ],
-        "cscheck": [
+        "cs-check": [
             "vendor/bin/php-cs-fixer fix src/ --allow-risky=yes --dry-run --diff"
         ],
         "cs-fix": [
