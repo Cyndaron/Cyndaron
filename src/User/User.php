@@ -5,6 +5,7 @@ namespace Cyndaron\User;
 
 use Cyndaron\DBAL\CacheableModel;
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Util\Mail\Mail;
 use Cyndaron\DBAL\Model;
@@ -73,6 +74,9 @@ final class User extends CacheableModel
 
 Uw nieuwe wachtwoord is: %s';
 
+    /**
+     * @var UserMenuItem[]
+     */
     public static array $userMenu = [];
 
     public static function isAdmin(): bool
@@ -410,16 +414,19 @@ Uw nieuwe wachtwoord is: %s';
         return $_SESSION['profile'] ?? null;
     }
 
+    /**
+     * @return UserMenuItem[]
+     */
     public static function getUserMenuFiltered(): array
     {
-        return array_filter(self::$userMenu, static function($userMenuItem)
+        return array_filter(self::$userMenu, static function(UserMenuItem $userMenuItem)
         {
-            $level = $userMenuItem['level'] ?? UserLevel::ADMIN;
+            $level = $userMenuItem->level;
             if (User::getLevel() >= $level)
             {
                 return true;
             }
-            $right = $userMenuItem['right'] ?? '';
+            $right = $userMenuItem->right ?? '';
             $profile = self::fromSession();
             if ($right !== '' && $profile !== null && $profile->hasRight($right))
             {

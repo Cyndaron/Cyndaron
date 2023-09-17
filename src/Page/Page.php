@@ -176,7 +176,7 @@ class Page
         ];
         foreach (User::getUserMenuFiltered() as $extraItem)
         {
-            $userMenuItems[] = ['link' => $extraItem['link'], 'title' => $extraItem['label'], 'icon' => $extraItem['icon'] ?? ''];
+            $userMenuItems[] = ['link' => $extraItem->link, 'title' => $extraItem->label, 'icon' => $extraItem->icon ?? ''];
         }
         $userMenuItems[] = ['link' => '/user/changePassword', 'title' => 'Wachtwoord wijzigen', 'icon' => 'lock'];
         $userMenuItems[] = ['link' => '/user/logout', 'title' => 'Uitloggen', 'icon' => 'log-out'];

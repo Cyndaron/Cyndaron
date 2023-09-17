@@ -20,6 +20,7 @@ use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
@@ -109,11 +110,11 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
     public function getUserMenuItems(?User $profile): array
     {
         $ret = [
-            ['label' => 'Wedstrijdbeheer', 'link' => '/contest/manageOverview', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
-            ['label' => 'E-mailadressen wedstrijdjudoka\'s', 'link' => '/contest/contestantsEmail', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
-            ['label' => 'Overzicht wedstrijdjudoka\'s', 'link' => '/contest/contestantsList', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
-            ['label' => 'Overzicht ouderaccounts', 'link' => '/contest/parentAccounts', 'right' => Contest::RIGHT_MANAGE, 'level' => UserLevel::ADMIN],
-            ['label' => 'Overzicht reserveringen', 'link' => '/reservation/overview', 'level' => UserLevel::ADMIN],
+            new UserMenuItem('Wedstrijdbeheer', '/contest/manageOverview', UserLevel::ADMIN, Contest::RIGHT_MANAGE),
+            new UserMenuItem('E-mailadressen wedstrijdjudoka\'s', '/contest/contestantsEmail', UserLevel::ADMIN, Contest::RIGHT_MANAGE),
+            new UserMenuItem('Overzicht wedstrijdjudoka\'s', '/contest/contestantsList', UserLevel::ADMIN, Contest::RIGHT_MANAGE),
+            new UserMenuItem('Overzicht ouderaccounts', '/contest/parentAccounts', UserLevel::ADMIN, Contest::RIGHT_MANAGE),
+            new UserMenuItem('Overzicht reserveringen', '/reservation/overview', UserLevel::ADMIN),
         ];
 
         if ($profile !== null)
@@ -124,8 +125,8 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
 
             if ($isContestant || $isContestantParent)
             {
-                $ret[] = ['label' => 'Mijn wedstrijden', 'link' => '/contest/myContests', 'level' => UserLevel::LOGGED_IN];
-                $ret[] = ['label' => 'Wedstrijdagenda', 'link' => '/contest/overview', 'level' => UserLevel::LOGGED_IN];
+                $ret[] = new UserMenuItem('Mijn wedstrijden', '/contest/myContests', UserLevel::LOGGED_IN);
+                $ret[] = new UserMenuItem('Wedstrijdagenda', '/contest/overview', UserLevel::LOGGED_IN);
             }
         }
 

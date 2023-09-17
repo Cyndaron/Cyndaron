@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Cyndaron\Newsletter;
 
 use Cyndaron\Module\Routes;
+use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
@@ -25,8 +26,8 @@ final class Module implements Routes, UserMenuProvider
     public function getUserMenuItems(?User $profile): array
     {
         return [
-            ['label' => 'Nieuwsbrief versturen', 'link' => '/newsletter/compose', 'level' => UserLevel::ADMIN],
-            ['label' => 'Abonnees nieuwsbrief', 'link' => '/newsletter/viewSubscribers', 'level' => UserLevel::ADMIN],
+            new UserMenuItem('Nieuwsbrief versturen', '/newsletter/compose', UserLevel::ADMIN),
+            new UserMenuItem('Abonnees nieuwsbrief', '/newsletter/viewSubscribers', UserLevel::ADMIN),
         ];
     }
 }
