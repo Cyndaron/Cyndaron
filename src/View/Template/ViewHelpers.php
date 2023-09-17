@@ -5,13 +5,10 @@ use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Photoalbum\PhotoalbumPage;
 use Cyndaron\User\User;
 use DateTimeInterface;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 use Safe\Exceptions\ArrayException;
 use Safe\Exceptions\DatetimeException;
 use function Safe\date;
-use function Safe\ob_start;
 use function Safe\preg_replace;
 use function sprintf;
 use function Safe\strtotime;
@@ -23,7 +20,6 @@ use function number_format;
 use function explode;
 use function array_key_exists;
 use function natsort;
-use function ob_get_clean;
 use function preg_replace_callback;
 use function array_unique;
 
@@ -180,14 +176,6 @@ final class ViewHelpers
         }
 
         return [$icon, $btnClass];
-    }
-
-    public static function spreadsheetToString(Spreadsheet $spreadsheet): string
-    {
-        ob_start();
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save('php://output');
-        return ob_get_clean() ?: '';
     }
 
     public static function parseText(string $text): string

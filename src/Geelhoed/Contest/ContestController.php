@@ -9,6 +9,7 @@ use Cyndaron\Payment\Currency;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Mail\Mail;
@@ -397,9 +398,9 @@ final class ContestController extends Controller
 
         $firstDate = $contest->getFirstDate();
         $date = $firstDate !== null ? date('Y-m-d', strtotime($firstDate)) : 'onbekende datum';
-        $httpHeaders = Util::spreadsheetHeadersForFilename("Deelnemers {$contest->name} ($date).xlsx");
+        $httpHeaders = SpreadsheetHelper::getResponseHeadersForFilename("Deelnemers {$contest->name} ($date).xlsx");
 
-        return new Response(ViewHelpers::spreadsheetToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
+        return new Response(SpreadsheetHelper::convertToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
     }
 
     public function removeSubscription(RequestParameters $post): JsonResponse
@@ -544,9 +545,9 @@ final class ContestController extends Controller
         }
 
         $date = date('Y-m-d');
-        $httpHeaders = Util::spreadsheetHeadersForFilename("Wedstrijdjudoka's (uitvoer {$date}).xlsx");
+        $httpHeaders = SpreadsheetHelper::getResponseHeadersForFilename("Wedstrijdjudoka's (uitvoer {$date}).xlsx");
 
-        return new Response(ViewHelpers::spreadsheetToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
+        return new Response(SpreadsheetHelper::convertToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
     }
 
     public function myContests(User $currentUser): Response

@@ -6,9 +6,8 @@ namespace Cyndaron\Registration;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\User\UserLevel;
-use Cyndaron\Util\Util;
-use Cyndaron\View\Template\ViewHelpers;
 use Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Safe\DateTime;
@@ -131,8 +130,8 @@ final class EventController extends Controller
         }
 
         $date = (new DateTime())->format('Y-m-d H.i.s');
-        $httpHeaders = Util::spreadsheetHeadersForFilename("Deelnemers {$event->name} (export $date).xlsx");
+        $httpHeaders = SpreadsheetHelper::getResponseHeadersForFilename("Deelnemers {$event->name} (export $date).xlsx");
 
-        return new Response(ViewHelpers::spreadsheetToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
+        return new Response(SpreadsheetHelper::convertToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
     }
 }

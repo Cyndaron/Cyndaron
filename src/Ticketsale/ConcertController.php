@@ -5,6 +5,7 @@ namespace Cyndaron\Ticketsale;
 
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\Ticketsale\Order\Order;
 use Cyndaron\Ticketsale\Order\OrderTicketsPage;
 use Cyndaron\Ticketsale\Order\OrderTicketTypes;
@@ -245,8 +246,8 @@ final class ConcertController extends Controller
         }
 
         $date = (new DateTime())->format('Y-m-d H.i.s');
-        $httpHeaders = \Cyndaron\Util\Util::spreadsheetHeadersForFilename("Kaartverkoop {$concert->name} (export $date).xlsx");
+        $httpHeaders = SpreadsheetHelper::getResponseHeadersForFilename("Kaartverkoop {$concert->name} (export $date).xlsx");
 
-        return new Response(ViewHelpers::spreadsheetToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
+        return new Response(SpreadsheetHelper::convertToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
     }
 }
