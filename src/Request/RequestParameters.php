@@ -16,32 +16,50 @@ use function filter_var;
 
 final class RequestParameters
 {
+    /** @var array<string, string> */
     private array $vars;
 
+    /**
+     * @param array<string, string> $vars
+     */
     public function __construct(array $vars)
     {
-        /** @var array $stripped */
+        /** @var array<string, string> $stripped */
         $stripped = $this->stripInvalidCharacters($vars);
         $this->vars = $stripped;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getRaw(): array
     {
         return $this->vars;
     }
 
+    /**
+     * @return string[]
+     */
     public function getKeys(): array
     {
         return array_keys($this->vars);
     }
 
-    public function stripInvalidCharacters(array|string|int|float|bool|null $parameter): array|string|int|float|bool|null
+    /**
+     * @param array<int|string, string>|string $parameter
+     * @return array<int|string, string>|string
+     * @throws PcreException
+     * @throws \Safe\Exceptions\MbstringException
+     */
+    private function stripInvalidCharacters(array|string $parameter): array|string
     {
         if (is_array($parameter))
         {
             foreach ($parameter as $key => $value)
             {
-                $parameter[$key] = $this->stripInvalidCharacters($value);
+                /** @var string $stripped */
+                $stripped = $this->stripInvalidCharacters($value);
+                $parameter[$key] = $stripped;
             }
         }
         elseif (is_string($parameter))
@@ -83,7 +101,7 @@ final class RequestParameters
         }
 
         $value = $this->vars[$name];
-        $value = str_replace(',', '.', $value);
+        $value = str_replace(',', '.', (string)$value);
 
         return (float)filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     }
@@ -103,7 +121,7 @@ final class RequestParameters
      * @param mixed|null $default
      * @return mixed|null
      */
-    public function get(string $name, $default = null)
+    public function get(string $name, mixed $default = null): mixed
     {
         if (!$this->hasVar($name))
         {

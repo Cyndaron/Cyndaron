@@ -5,8 +5,12 @@ use function count;
 
 final class QueryBits
 {
+    /** @var array<int, string> */
     private array $vars;
 
+    /**
+     * @param array<int, string> $vars
+     */
     public function __construct(array $vars)
     {
         $this->vars = $vars;
@@ -16,7 +20,7 @@ final class QueryBits
      * @param int $index
      * @return string|null
      */
-    public function get(int $index): mixed
+    public function get(int $index): string|null
     {
         if (!$this->hasIndex($index))
         {
