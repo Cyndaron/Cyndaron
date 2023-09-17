@@ -28,7 +28,7 @@ final class DynmapProxy
     public function __construct(Server $server, QueryBits $queryBits)
     {
         $link = '';
-        for ($i = 3; $linkpart = $queryBits->get($i); $i++)
+        for ($i = 3; $linkpart = $queryBits->getString($i); $i++)
         {
             $link .= '/' . $linkpart;
         }

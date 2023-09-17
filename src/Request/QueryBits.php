@@ -14,14 +14,13 @@ final class QueryBits
 
     /**
      * @param int $index
-     * @param mixed|null $fallback
      * @return string|null
      */
-    public function get(int $index, $fallback = null): ?string
+    public function get(int $index): mixed
     {
         if (!$this->hasIndex($index))
         {
-            return $fallback;
+            return null;
         }
 
         return $this->vars[$index];
@@ -29,20 +28,20 @@ final class QueryBits
 
     public function getInt(int $index, int $fallback = 0): int
     {
-        $ret = $this->get($index, $fallback);
+        $ret = $this->get($index);
         return ($ret === null) ? $fallback : (int)$ret;
     }
 
-    public function getNullableInt(int $index, ?int $fallback = null): ?int
+    public function getNullableInt(int $index, int|null $fallback = null): int|null
     {
-        $ret = $this->get($index, $fallback);
-        return ($ret === null) ? null : (int)$ret;
+        $ret = $this->get($index);
+        return ($ret === null) ? $fallback : (int)$ret;
     }
 
     public function getString(int $index, string $fallback = ''): string
     {
-        $ret = $this->get($index, $fallback);
-        return $ret ?? $fallback;
+        $ret = $this->get($index);
+        return ($ret === null) ? $fallback : (string)$ret;
     }
 
     public function hasIndex(int $index): bool
