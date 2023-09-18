@@ -44,6 +44,10 @@ final class MDBFile
         return $tables;
     }
 
+    /**
+     * @param string $table
+     * @return array<array<string, string>>
+     */
     public function getTableData(string $table): array
     {
         $tempname = tempnam('/tmp', 'mdb');

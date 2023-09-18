@@ -5,6 +5,7 @@ namespace Cyndaron\Menu;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
+use Cyndaron\Util\Link;
 use Cyndaron\Util\Setting;
 use Cyndaron\Url;
 
@@ -89,6 +90,9 @@ final class MenuItem extends Model
         return strpos($this->link, '/category/') === 0 && $this->isDropdown;
     }
 
+    /**
+     * @return Link[]
+     */
     public function getSubmenu(): array
     {
         // TODO: handle this via the module system
@@ -113,9 +117,9 @@ final class MenuItem extends Model
         foreach ($pagesInCategory as $page)
         {
             $urlString = $page['url'] ?: sprintf('/%s/%d', $page['type'], $page['id']);
-            $url = $url = new Url($urlString);
+            $url = new Url($urlString);
             $link = $url->getFriendly();
-            $items[] = ['link' => $link, 'title' => $page['name']];
+            $items[] = new Link($link, $page['name']);
         }
         return $items;
     }

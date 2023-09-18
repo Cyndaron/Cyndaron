@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Editor;
 
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Module\InternalLink;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Page\Page;
 use Cyndaron\Page\SimplePage;
@@ -12,6 +11,8 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\Link;
+use Mpdf\Tag\Li;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,11 +77,11 @@ final class EditorController extends Controller
     }
 
     /**
-     * @return InternalLink[]
+     * @return Link[]
      */
     protected function getInternalLinks(): array
     {
-        /** @var InternalLink[] $internalLinks */
+        /** @var Link[] $internalLinks */
         $internalLinks = [];
         foreach (self::$internalLinkTypes as $internalLinkType)
         {
@@ -88,7 +89,7 @@ final class EditorController extends Controller
             $class = new $internalLinkType();
             $internalLinks = array_merge($internalLinks, $class->getList());
         }
-        usort($internalLinks, static function(InternalLink $link1, InternalLink $link2)
+        usort($internalLinks, static function(Link $link1, Link $link2)
         {
             return $link1->name <=> $link2->name;
         });

@@ -4,12 +4,12 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
-use Cyndaron\Module\InternalLink;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\WithTextPostProcessors;
 use Cyndaron\User\User;
+use Cyndaron\Util\Link;
 use Cyndaron\View\Template\Template;
 use function array_map;
 
@@ -60,7 +60,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
         $list = DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/photoalbum/\', id) AS link, CONCAT(\'Fotoalbum: \', name) AS name FROM photoalbums');
         return array_map(static function (array $item)
         {
-            return InternalLink::fromArray($item);
+            return Link::fromArray($item);
         }, $list);
     }
 

@@ -4,10 +4,10 @@ namespace Cyndaron\Category;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
-use Cyndaron\Module\InternalLink;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\Util\Link;
 use Cyndaron\View\Template\Template;
 
 final class Module implements Datatypes, Routes, UrlProvider, Linkable
@@ -56,7 +56,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         $list = DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/category/\', id) AS link, CONCAT(\'Categorie: \', name) AS name FROM categories');
         return array_map(static function (array $item)
         {
-            return InternalLink::fromArray($item);
+            return Link::fromArray($item);
         }, $list);
     }
 

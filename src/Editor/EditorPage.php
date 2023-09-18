@@ -4,9 +4,9 @@ namespace Cyndaron\Editor;
 use Cyndaron\Category\Category;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Module\InternalLink;
 use Cyndaron\Page\Page;
 use Cyndaron\Url;
+use Cyndaron\Util\Link;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use function array_filter;
@@ -38,7 +38,7 @@ abstract class EditorPage extends Page
     protected string $template = 'Editor/PageBase';
 
     /**
-     * @param InternalLink[] $internalLinks
+     * @param Link[] $internalLinks
      * @param int|null $id
      * @param bool $previous
      * @throws \Safe\Exceptions\DirException

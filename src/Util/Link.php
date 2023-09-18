@@ -1,23 +1,23 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Module;
+namespace Cyndaron\Util;
 
-final class InternalLink
+class Link
 {
     public function __construct(
-        public readonly string $name,
         public readonly string $link,
+        public readonly string $name,
     )
     {
     }
 
     /**
-     * @param array{name: string, link: string} $input
+     * @param array{link: string, name: string} $input
      * @return self
      */
     public static function fromArray(array $input): self
     {
-        return new self($input['name'], $input['link']);
+        return new self($input['link'], $input['name']);
     }
 }

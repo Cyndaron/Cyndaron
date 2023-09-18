@@ -14,6 +14,8 @@ use Cyndaron\DBAL\Model;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\Module\PagePreProcessor;
 use Cyndaron\User\User;
+use Cyndaron\Util\Link;
+use Cyndaron\Util\LinkWithIcon;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\ViewHelpers;
 use function array_key_exists;
@@ -169,20 +171,20 @@ class Page
 
         $vars['menuItems'] = $this->getMenu();
         $vars['configMenuItems'] = [
-            ['link' => '/system', 'title' => 'Systeembeheer', 'icon' => 'cog'],
-            ['link' => '/pagemanager', 'title' => 'Pagina-overzicht', 'icon' => 'th-list'],
-            ['link' => '/menu-editor', 'title' => 'Menu bewerken', 'icon' => 'menu-hamburger'],
-            ['link' => '/user/manager', 'title' => 'Gebruikersbeheer', 'icon' => 'user'],
+            new LinkWithIcon('/system', 'Systeembeheer', 'cog'),
+            new LinkWithIcon('/pagemanager', 'Pagina-overzicht', 'th-list'),
+            new LinkWithIcon('/menu-editor', 'Menu bewerken', 'menu-hamburger'),
+            new LinkWithIcon('/user/manager', 'Gebruikersbeheer', 'user'),
         ];
         $userMenuItems = [
-            ['link' => '', 'title' => $_SESSION['username'] ?? ''],
+            new LinkWithIcon('', $_SESSION['username'], 'user'),
         ];
         foreach (User::getUserMenuFiltered() as $extraItem)
         {
-            $userMenuItems[] = ['link' => $extraItem->link, 'title' => $extraItem->label, 'icon' => $extraItem->icon ?? ''];
+            $userMenuItems[] = $extraItem->link;
         }
-        $userMenuItems[] = ['link' => '/user/changePassword', 'title' => 'Wachtwoord wijzigen', 'icon' => 'lock'];
-        $userMenuItems[] = ['link' => '/user/logout', 'title' => 'Uitloggen', 'icon' => 'log-out'];
+        $userMenuItems[] = new LinkWithIcon('/user/changePassword', 'Wachtwoord wijzigen', 'lock');
+        $userMenuItems[] = new LinkWithIcon('/user/logout', 'Uitloggen', 'log-out');
 
         $vars['userMenuItems'] = $userMenuItems;
 

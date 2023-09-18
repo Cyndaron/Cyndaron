@@ -3,14 +3,15 @@
         @if (!empty($icon)) <span class="glyphicon glyphicon-{{ $icon }}"></span> @endif {{ $title }}
     </a>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        @php /** @var \Cyndaron\Util\Link[] $items */ @endphp
         @foreach ($items as $item)
-            @if ($item['link'])
-                <a class="dropdown-item" href="{{ $item['link'] }}">
-                    @if (!empty($item['icon']))<span class="glyphicon glyphicon-{{ $item['icon'] }}"></span>&nbsp; @endif{{ $item['title'] }}
+            @if ($item->link)
+                <a class="dropdown-item" href="{{ $item->link }}">
+                    @if ($item instanceof \Cyndaron\Util\LinkWithIcon)<span class="glyphicon glyphicon-{{ $item->icon }}"></span>&nbsp; @endif{{ $item->name }}
                 </a>
             @else
                 <span class="dropdown-item">
-                    @if (!empty($item['icon']))<span class="glyphicon glyphicon-{{ $item['icon'] }}"></span>&nbsp; @endif<i>{{ $item['title'] }}</i>
+                    @if ($item instanceof \Cyndaron\Util\LinkWithIcon)<span class="glyphicon glyphicon-{{ $item->icon }}"></span>&nbsp; @endif<i>{{ $item->name }}</i>
                 </span>
             @endif
         @endforeach

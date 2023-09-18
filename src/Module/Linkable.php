@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace Cyndaron\Module;
 
+use Cyndaron\Util\Link;
+
 interface Linkable
 {
     /**
-     * @return InternalLink[]
+     * @return Link[]
      */
     public function getList(): array;
 }
