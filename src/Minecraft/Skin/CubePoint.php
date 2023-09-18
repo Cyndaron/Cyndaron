@@ -3,13 +3,12 @@ namespace Cyndaron\Minecraft\Skin;
 
 final class CubePoint
 {
-    private Point $point;
-    private array $places;
-
-    public function __construct(Point $point, array $places)
+    /**
+     * @param Point $point
+     * @param string[] $places
+     */
+    public function __construct(private readonly Point $point, private readonly array $places)
     {
-        $this->point = $point;
-        $this->places = $places;
     }
 
     public function getPoint(): Point
@@ -17,6 +16,9 @@ final class CubePoint
         return $this->point;
     }
 
+    /**
+     * @return string[]
+     */
     public function getPlaces(): array
     {
         return $this->places;

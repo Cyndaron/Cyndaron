@@ -31,20 +31,6 @@ abstract class SkinRenderer
         'bottom',
     ];
 
-    public const VISIBLE_FACES_FORMAT = [
-        'front' => [],
-        'back' => [],
-    ];
-
-    public const CUBE_FACES_FORMAT = [
-        'front' => [],
-        'back' => [],
-        'top' => [],
-        'bottom' => [],
-        'right' => [],
-        'left' => [],
-    ];
-
     public const LEG_LENGTH = 12;
     public const ARM_LENGTH = 12;
     public const TORSO_LENGTH = 12;
@@ -65,10 +51,11 @@ abstract class SkinRenderer
 
     protected SkinRendererParameters $parameters;
 
+    /** @var array<int, array{0: string, 1: float}> */
     protected array $times = [];
     /** @var array<string, string> */
     protected array $headers = [];
-    protected array $partsAngles = [];
+    protected PartsAngles $partsAngles;
 
     public function __construct(Skin $skin, SkinRendererParameters $parameters)
     {
@@ -141,9 +128,9 @@ abstract class SkinRenderer
 
         $this->times[] = ['Members-rotation', $this->microtimeFloat()];
 
-        foreach ($polygons as $piece)
+        foreach ((array)$polygons as $piece)
         {
-            foreach ($piece as $face)
+            foreach ((array)$piece as $face)
             {
                 foreach ($face as $poly)
                 {
@@ -178,7 +165,7 @@ abstract class SkinRenderer
             {
                 foreach ($faces as $face)
                 {
-                    foreach ($polygons[$piece][$face] as $poly)
+                    foreach ($polygons->$piece->$face as $poly)
                     {
                         $this->addPolygon($poly);
                     }
@@ -193,62 +180,65 @@ abstract class SkinRenderer
 
     public function determinePartsAngles(): void
     {
-        // Head, Helmet, Torso, Arms, Legs
-        $parts_angles = [];
-        $parts_angles['torso'] = [
-            'cos_alpha' => cos(0),
-            'sin_alpha' => sin(0),
-            'cos_omega' => cos(0),
-            'sin_omega' => sin(0),
-        ];
         $alpha_head = 0;
         $omega_head = deg2rad((float)$this->parameters->hrh);
-        $parts_angles['head'] = [
-            'cos_alpha' => cos($alpha_head),
-            'sin_alpha' => sin($alpha_head),
-            'cos_omega' => cos($omega_head),
-            'sin_omega' => sin($omega_head),
-        ];
-        $parts_angles['helmet'] = [
-            'cos_alpha' => cos($alpha_head),
-            'sin_alpha' => sin($alpha_head),
-            'cos_omega' => cos($omega_head),
-            'sin_omega' => sin($omega_head),
-        ];
+
         $alpha_right_arm = deg2rad((float)$this->parameters->vrra);
         $omega_right_arm = 0;
-        $parts_angles['rightArm'] = [
-            'cos_alpha' => cos($alpha_right_arm),
-            'sin_alpha' => sin($alpha_right_arm),
-            'cos_omega' => cos($omega_right_arm),
-            'sin_omega' => sin($omega_right_arm),
-        ];
+
         $alpha_left_arm = deg2rad((float)$this->parameters->vrla);
         $omega_left_arm = 0;
-        $parts_angles['leftArm'] = [
-            'cos_alpha' => cos($alpha_left_arm),
-            'sin_alpha' => sin($alpha_left_arm),
-            'cos_omega' => cos($omega_left_arm),
-            'sin_omega' => sin($omega_left_arm),
-        ];
+
         $alpha_right_leg = deg2rad((float)$this->parameters->vrrl);
         $omega_right_leg = 0;
-        $parts_angles['rightLeg'] = [
-            'cos_alpha' => cos($alpha_right_leg),
-            'sin_alpha' => sin($alpha_right_leg),
-            'cos_omega' => cos($omega_right_leg),
-            'sin_omega' => sin($omega_right_leg),
-        ];
+
         $alpha_left_leg = deg2rad((float)$this->parameters->vrll);
         $omega_left_leg = 0;
-        $parts_angles['leftLeg'] = [
-            'cos_alpha' => cos($alpha_left_leg),
-            'sin_alpha' => sin($alpha_left_leg),
-            'cos_omega' => cos($omega_left_leg),
-            'sin_omega' => sin($omega_left_leg),
-        ];
 
-        $this->partsAngles = $parts_angles;
+        $this->partsAngles = new PartsAngles(
+            torso: new PartAngles(
+                cos(0),
+                sin(0),
+                cos(0),
+                sin(0)
+            ),
+            head: new PartAngles(
+                cos($alpha_head),
+                sin($alpha_head),
+                cos($omega_head),
+                sin($omega_head),
+            ),
+            helmet: new PartAngles(
+                cos($alpha_head),
+                sin($alpha_head),
+                cos($omega_head),
+                sin($omega_head),
+            ),
+            rightArm: new PartAngles(
+                cos($alpha_right_arm),
+                sin($alpha_right_arm),
+                cos($omega_right_arm),
+                sin($omega_right_arm),
+            ),
+            leftArm: new PartAngles(
+                cos($alpha_left_arm),
+                sin($alpha_left_arm),
+                cos($omega_left_arm),
+                sin($omega_left_arm),
+            ),
+            rightLeg: new PartAngles(
+                cos($alpha_right_leg),
+                sin($alpha_right_leg),
+                cos($omega_right_leg),
+                sin($omega_right_leg),
+            ),
+            leftLeg: new PartAngles(
+                cos($alpha_left_leg),
+                sin($alpha_left_leg),
+                cos($omega_left_leg),
+                sin($omega_left_leg),
+            )
+        );
 
         $this->times[] = ['Angle-Calculations', $this->microtimeFloat()];
     }
@@ -280,140 +270,146 @@ abstract class SkinRenderer
         return $cubePoints;
     }
 
+    /**
+     * @param string[] $frontFaces
+     * @param string[] $backFaces
+     * @param array<string, VisibleFaces> $visibleFaces
+     * @return array<array<string, string[]>>
+     */
     private function determineDisplayOrder(array $frontFaces, array $backFaces, array $visibleFaces): array
     {
-        $display_order = [];
+        $displayOrder = [];
         if (in_array('top', $frontFaces, true))
         {
             if (in_array('right', $frontFaces, true))
             {
-                $display_order[] = ['leftLeg' => $backFaces];
-                $display_order[] = ['leftLeg' => $visibleFaces['leftLeg']['front']];
-                $display_order[] = ['rightLeg' => $backFaces];
-                $display_order[] = ['rightLeg' => $visibleFaces['rightLeg']['front']];
-                $display_order[] = ['leftArm' => $backFaces];
-                $display_order[] = ['leftArm' => $visibleFaces['leftArm']['front']];
-                $display_order[] = ['torso' => $backFaces];
-                $display_order[] = ['torso' => $visibleFaces['torso']['front']];
-                $display_order[] = ['rightArm' => $backFaces];
-                $display_order[] = ['rightArm' => $visibleFaces['rightArm']['front']];
+                $displayOrder[] = ['leftLeg' => $backFaces];
+                $displayOrder[] = ['leftLeg' => $visibleFaces['leftLeg']->front];
+                $displayOrder[] = ['rightLeg' => $backFaces];
+                $displayOrder[] = ['rightLeg' => $visibleFaces['rightLeg']->front];
+                $displayOrder[] = ['leftArm' => $backFaces];
+                $displayOrder[] = ['leftArm' => $visibleFaces['leftArm']->front];
+                $displayOrder[] = ['torso' => $backFaces];
+                $displayOrder[] = ['torso' => $visibleFaces['torso']->front];
+                $displayOrder[] = ['rightArm' => $backFaces];
+                $displayOrder[] = ['rightArm' => $visibleFaces['rightArm']->front];
             }
             else
             {
-                $display_order[] = ['rightLeg' => $backFaces];
-                $display_order[] = ['rightLeg' => $visibleFaces['rightLeg']['front']];
-                $display_order[] = ['leftLeg' => $backFaces];
-                $display_order[] = ['leftLeg' => $visibleFaces['leftLeg']['front']];
-                $display_order[] = ['rightArm' => $backFaces];
-                $display_order[] = ['rightArm' => $visibleFaces['rightArm']['front']];
-                $display_order[] = ['torso' => $backFaces];
-                $display_order[] = ['torso' => $visibleFaces['torso']['front']];
-                $display_order[] = ['leftArm' => $backFaces];
-                $display_order[] = ['leftArm' => $visibleFaces['leftArm']['front']];
+                $displayOrder[] = ['rightLeg' => $backFaces];
+                $displayOrder[] = ['rightLeg' => $visibleFaces['rightLeg']->front];
+                $displayOrder[] = ['leftLeg' => $backFaces];
+                $displayOrder[] = ['leftLeg' => $visibleFaces['leftLeg']->front];
+                $displayOrder[] = ['rightArm' => $backFaces];
+                $displayOrder[] = ['rightArm' => $visibleFaces['rightArm']->front];
+                $displayOrder[] = ['torso' => $backFaces];
+                $displayOrder[] = ['torso' => $visibleFaces['torso']->front];
+                $displayOrder[] = ['leftArm' => $backFaces];
+                $displayOrder[] = ['leftArm' => $visibleFaces['leftArm']->front];
             }
-            $display_order[] = ['helmet' => $backFaces];
-            $display_order[] = ['head' => $backFaces];
-            $display_order[] = ['head' => $visibleFaces['head']['front']];
-            $display_order[] = ['helmet' => $visibleFaces['head']['front']];
+            $displayOrder[] = ['helmet' => $backFaces];
+            $displayOrder[] = ['head' => $backFaces];
+            $displayOrder[] = ['head' => $visibleFaces['head']->front];
+            $displayOrder[] = ['helmet' => $visibleFaces['head']->front];
         }
         else
         {
-            $display_order[] = ['helmet' => $backFaces];
-            $display_order[] = ['head' => $backFaces];
-            $display_order[] = ['head' => $visibleFaces['head']['front']];
-            $display_order[] = ['helmet' => $visibleFaces['head']['front']];
+            $displayOrder[] = ['helmet' => $backFaces];
+            $displayOrder[] = ['head' => $backFaces];
+            $displayOrder[] = ['head' => $visibleFaces['head']->front];
+            $displayOrder[] = ['helmet' => $visibleFaces['head']->front];
             if (in_array('right', $frontFaces, true))
             {
-                $display_order[] = ['leftArm' => $backFaces];
-                $display_order[] = ['leftArm' => $visibleFaces['leftArm']['front']];
-                $display_order[] = ['torso' => $backFaces];
-                $display_order[] = ['torso' => $visibleFaces['torso']['front']];
-                $display_order[] = ['rightArm' => $backFaces];
-                $display_order[] = ['rightArm' => $visibleFaces['rightArm']['front']];
-                $display_order[] = ['leftLeg' => $backFaces];
-                $display_order[] = ['leftLeg' => $visibleFaces['leftLeg']['front']];
-                $display_order[] = ['rightLeg' => $backFaces];
-                $display_order[] = ['rightLeg' => $visibleFaces['rightLeg']['front']];
+                $displayOrder[] = ['leftArm' => $backFaces];
+                $displayOrder[] = ['leftArm' => $visibleFaces['leftArm']->front];
+                $displayOrder[] = ['torso' => $backFaces];
+                $displayOrder[] = ['torso' => $visibleFaces['torso']->front];
+                $displayOrder[] = ['rightArm' => $backFaces];
+                $displayOrder[] = ['rightArm' => $visibleFaces['rightArm']->front];
+                $displayOrder[] = ['leftLeg' => $backFaces];
+                $displayOrder[] = ['leftLeg' => $visibleFaces['leftLeg']->front];
+                $displayOrder[] = ['rightLeg' => $backFaces];
+                $displayOrder[] = ['rightLeg' => $visibleFaces['rightLeg']->front];
             }
             else
             {
-                $display_order[] = ['rightArm' => $backFaces];
-                $display_order[] = ['rightArm' => $visibleFaces['rightArm']['front']];
-                $display_order[] = ['torso' => $backFaces];
-                $display_order[] = ['torso' => $visibleFaces['torso']['front']];
-                $display_order[] = ['leftArm' => $backFaces];
-                $display_order[] = ['leftArm' => $visibleFaces['leftArm']['front']];
-                $display_order[] = ['rightLeg' => $backFaces];
-                $display_order[] = ['rightLeg' => $visibleFaces['rightLeg']['front']];
-                $display_order[] = ['leftLeg' => $backFaces];
-                $display_order[] = ['leftLeg' => $visibleFaces['leftLeg']['front']];
+                $displayOrder[] = ['rightArm' => $backFaces];
+                $displayOrder[] = ['rightArm' => $visibleFaces['rightArm']->front];
+                $displayOrder[] = ['torso' => $backFaces];
+                $displayOrder[] = ['torso' => $visibleFaces['torso']->front];
+                $displayOrder[] = ['leftArm' => $backFaces];
+                $displayOrder[] = ['leftArm' => $visibleFaces['leftArm']->front];
+                $displayOrder[] = ['rightLeg' => $backFaces];
+                $displayOrder[] = ['rightLeg' => $visibleFaces['rightLeg']->front];
+                $displayOrder[] = ['leftLeg' => $backFaces];
+                $displayOrder[] = ['leftLeg' => $visibleFaces['leftLeg']->front];
             }
         }
 
-        return $display_order;
+        return $displayOrder;
     }
 
-    private function rotateMembers(array $polygons, array $parts_angles, bool $displayHair): void
+    private function rotateMembers(FacesByBodyPart $polygons, PartsAngles $partsAngles, bool $displayHair): void
     {
-        foreach ($polygons['head'] as $face)
+        foreach ((array)$polygons->head as $face)
         {
             foreach ($face as $poly)
             {
                 /** @var Polygon $poly */
-                $poly->preProject(new CoordsXYZ(4, 8, 2), $parts_angles['head']['cos_alpha'], $parts_angles['head']['sin_alpha'], $parts_angles['head']['cos_omega'], $parts_angles['head']['sin_omega']);
+                $poly->preProject(new CoordsXYZ(4, 8, 2), $partsAngles->head->cosAlpha, $partsAngles->head->sinAlpha, $partsAngles->head->cosOmega, $partsAngles->head->sinOmega);
             }
         }
         if ($displayHair)
         {
-            foreach ($polygons['helmet'] as $face)
+            foreach ((array)$polygons->helmet as $face)
             {
                 foreach ($face as $poly)
                 {
                     /** @var Polygon $poly */
-                    $poly->preProject(new CoordsXYZ(4, 8, 2), $parts_angles['head']['cos_alpha'], $parts_angles['head']['sin_alpha'], $parts_angles['head']['cos_omega'], $parts_angles['head']['sin_omega']);
+                    $poly->preProject(new CoordsXYZ(4, 8, 2), $partsAngles->head->cosAlpha, $partsAngles->head->sinAlpha, $partsAngles->head->cosOmega, $partsAngles->head->sinOmega);
                 }
             }
         }
 
-        foreach ($polygons['rightArm'] as $face)
+        foreach ((array)$polygons->rightArm as $face)
         {
             foreach ($face as $poly)
             {
                 /** @var Polygon $poly */
-                $poly->preProject(new CoordsXYZ(-2, 8, 2), $parts_angles['rightArm']['cos_alpha'], $parts_angles['rightArm']['sin_alpha'], $parts_angles['rightArm']['cos_omega'], $parts_angles['rightArm']['sin_omega']);
+                $poly->preProject(new CoordsXYZ(-2, 8, 2), $partsAngles->rightArm->cosAlpha, $partsAngles->rightArm->sinAlpha, $partsAngles->rightArm->cosOmega, $partsAngles->rightArm->sinOmega);
             }
         }
-        foreach ($polygons['leftArm'] as $face)
+        foreach ((array)$polygons->leftArm as $face)
         {
             /** @var Polygon $poly */
             foreach ($face as $poly)
             {
-                $poly->preProject(new CoordsXYZ(10, 8, 2), $parts_angles['leftArm']['cos_alpha'], $parts_angles['leftArm']['sin_alpha'], $parts_angles['leftArm']['cos_omega'], $parts_angles['leftArm']['sin_omega']);
-            }
-        }
-
-        $z = ($parts_angles['rightLeg']['sin_alpha'] < 0 ? 0 : 4);
-        foreach ($polygons['rightLeg'] as $face)
-        {
-            /** @var Polygon $poly */
-            foreach ($face as $poly)
-            {
-                $poly->preProject(new CoordsXYZ(2, 20, $z), $parts_angles['rightLeg']['cos_alpha'], $parts_angles['rightLeg']['sin_alpha'], $parts_angles['rightLeg']['cos_omega'], $parts_angles['rightLeg']['sin_omega']);
+                $poly->preProject(new CoordsXYZ(10, 8, 2), $partsAngles->leftArm->cosAlpha, $partsAngles->leftArm->sinAlpha, $partsAngles->leftArm->cosOmega, $partsAngles->leftArm->sinOmega);
             }
         }
 
-        $z = ($parts_angles['leftLeg']['sin_alpha'] < 0 ? 0 : 4);
-        foreach ($polygons['leftLeg'] as $face)
+        $z = ($partsAngles->rightLeg->sinAlpha < 0 ? 0 : 4);
+        foreach ((array)$polygons->rightLeg as $face)
         {
             /** @var Polygon $poly */
             foreach ($face as $poly)
             {
-                $poly->preProject(new CoordsXYZ(6, 20, $z), $parts_angles['leftLeg']['cos_alpha'], $parts_angles['leftLeg']['sin_alpha'], $parts_angles['leftLeg']['cos_omega'], $parts_angles['leftLeg']['sin_omega']);
+                $poly->preProject(new CoordsXYZ(2, 20, $z), $partsAngles->rightLeg->cosAlpha, $partsAngles->rightLeg->sinAlpha, $partsAngles->rightLeg->cosOmega, $partsAngles->rightLeg->sinOmega);
+            }
+        }
+
+        $z = ($partsAngles->leftLeg->sinAlpha < 0 ? 0 : 4);
+        foreach ((array)$polygons->leftLeg as $face)
+        {
+            /** @var Polygon $poly */
+            foreach ($face as $poly)
+            {
+                $poly->preProject(new CoordsXYZ(6, 20, $z), $partsAngles->leftLeg->cosAlpha, $partsAngles->leftLeg->sinAlpha, $partsAngles->leftLeg->cosOmega, $partsAngles->leftLeg->sinOmega);
             }
         }
     }
 
-    private function determineHeadPolygons(): array
+    private function determineHeadPolygons(): PolygonsInFace
     {
         $volumePoints = [];
         for ($i = 0; $i < 9 * $this->hdRatio; $i++)
@@ -459,13 +455,13 @@ abstract class SkinRenderer
             }
         }
 
-        $polygons = self::CUBE_FACES_FORMAT;
+        $polygons = new PolygonsInFace();
         for ($i = 0; $i < 8 * $this->hdRatio; $i++)
         {
             for ($j = 0; $j < 8 * $this->hdRatio; $j++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, (32 * $this->hdRatio - 1) - $i, 8 * $this->hdRatio + $j));
-                $polygons['back'][] = new Polygon([
+                $polygons->back[] = new Polygon([
                     $volumePoints[$i][$j][-2 * $this->hdRatio],
                     $volumePoints[$i + 1][$j][-2 * $this->hdRatio],
                     $volumePoints[$i + 1][$j + 1][-2 * $this->hdRatio],
@@ -473,7 +469,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 8 * $this->hdRatio + $i, 8 * $this->hdRatio + $j));
-                $polygons['front'][] = new Polygon([
+                $polygons->front[] = new Polygon([
                     $volumePoints[$i][$j][6 * $this->hdRatio],
                     $volumePoints[$i + 1][$j][6 * $this->hdRatio],
                     $volumePoints[$i + 1][$j + 1][6 * $this->hdRatio],
@@ -486,7 +482,7 @@ abstract class SkinRenderer
             for ($faceName = -2 * $this->hdRatio; $faceName < 6 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, $faceName + 2 * $this->hdRatio, 8 * $this->hdRatio + $j));
-                $polygons['right'][] = new Polygon([
+                $polygons->right[] = new Polygon([
                     $volumePoints[0][$j][$faceName],
                     $volumePoints[0][$j][$faceName + 1],
                     $volumePoints[0][$j + 1][$faceName + 1],
@@ -494,7 +490,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, (24 * $this->hdRatio - 1) - $faceName - 2 * $this->hdRatio, 8 * $this->hdRatio + $j));
-                $polygons['left'][] = new Polygon([
+                $polygons->left[] = new Polygon([
                     $volumePoints[8 * $this->hdRatio][$j][$faceName],
                     $volumePoints[8 * $this->hdRatio][$j][$faceName + 1],
                     $volumePoints[8 * $this->hdRatio][$j + 1][$faceName + 1],
@@ -507,7 +503,7 @@ abstract class SkinRenderer
             for ($faceName = -2 * $this->hdRatio; $faceName < 6 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 8 * $this->hdRatio + $i, $faceName + 2 * $this->hdRatio));
-                $polygons['top'][] = new Polygon([
+                $polygons->top[] = new Polygon([
                     $volumePoints[$i][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName + 1],
@@ -515,7 +511,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 16 * $this->hdRatio + $i, (8 * $this->hdRatio - 1) - ($faceName + 2 * $this->hdRatio)));
-                $polygons['bottom'][] = new Polygon([
+                $polygons->bottom[] = new Polygon([
                     $volumePoints[$i][8 * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][8 * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][8 * $this->hdRatio][$faceName + 1],
@@ -527,9 +523,9 @@ abstract class SkinRenderer
         return $polygons;
     }
 
-    private function determineHairPolygons(): array
+    private function determineHairPolygons(): PolygonsInFace
     {
-        $polygons = self::CUBE_FACES_FORMAT;
+        $polygons = new PolygonsInFace();
         if (!$this->parameters->displayHair)
         {
             return $polygons;
@@ -584,7 +580,7 @@ abstract class SkinRenderer
             for ($j = 0; $j < 8 * $this->hdRatio; $j++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 32 * $this->hdRatio + (32 * $this->hdRatio - 1) - $i, 8 * $this->hdRatio + $j));
-                $polygons['back'][] = new Polygon([
+                $polygons->back[] = new Polygon([
                     $volumePoints[$i][$j][-2 * $this->hdRatio],
                     $volumePoints[$i + 1][$j][-2 * $this->hdRatio],
                     $volumePoints[$i + 1][$j + 1][-2 * $this->hdRatio],
@@ -592,7 +588,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 32 * $this->hdRatio + 8 * $this->hdRatio + $i, 8 * $this->hdRatio + $j));
-                $polygons['front'][] = new Polygon([
+                $polygons->front[] = new Polygon([
                     $volumePoints[$i][$j][6 * $this->hdRatio],
                     $volumePoints[$i + 1][$j][6 * $this->hdRatio],
                     $volumePoints[$i + 1][$j + 1][6 * $this->hdRatio],
@@ -605,7 +601,7 @@ abstract class SkinRenderer
             for ($faceName = -2 * $this->hdRatio; $faceName < 6 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 32 * $this->hdRatio + $faceName + 2 * $this->hdRatio, 8 * $this->hdRatio + $j));
-                $polygons['right'][] = new Polygon([
+                $polygons->right[] = new Polygon([
                     $volumePoints[0][$j][$faceName],
                     $volumePoints[0][$j][$faceName + 1],
                     $volumePoints[0][$j + 1][$faceName + 1],
@@ -613,7 +609,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 32 * $this->hdRatio + (24 * $this->hdRatio - 1) - $faceName - 2 * $this->hdRatio, 8 * $this->hdRatio + $j));
-                $polygons['left'][] = new Polygon([
+                $polygons->left[] = new Polygon([
                     $volumePoints[8 * $this->hdRatio][$j][$faceName],
                     $volumePoints[8 * $this->hdRatio][$j][$faceName + 1],
                     $volumePoints[8 * $this->hdRatio][$j + 1][$faceName + 1],
@@ -626,7 +622,7 @@ abstract class SkinRenderer
             for ($faceName = -2 * $this->hdRatio; $faceName < 6 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 32 * $this->hdRatio + 8 * $this->hdRatio + $i, $faceName + 2 * $this->hdRatio));
-                $polygons['top'][] = new Polygon([
+                $polygons->top[] = new Polygon([
                     $volumePoints[$i][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName + 1],
@@ -634,7 +630,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 32 * $this->hdRatio + 16 * $this->hdRatio + $i, (8 * $this->hdRatio - 1) - ($faceName + 2 * $this->hdRatio)));
-                $polygons['bottom'][] = new Polygon([
+                $polygons->bottom[] = new Polygon([
                     $volumePoints[$i][8 * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][8 * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][8 * $this->hdRatio][$faceName + 1],
@@ -646,7 +642,7 @@ abstract class SkinRenderer
         return $polygons;
     }
 
-    private function determineTorsoPolygons(): array
+    private function determineTorsoPolygons(): PolygonsInFace
     {
         $volumePoints = [];
         for ($i = 0; $i < 9 * $this->hdRatio; $i++)
@@ -692,13 +688,13 @@ abstract class SkinRenderer
             }
         }
 
-        $polygons = self::CUBE_FACES_FORMAT;
+        $polygons = new PolygonsInFace();
         for ($i = 0; $i < self::TORSO_WIDTH * $this->hdRatio; $i++)
         {
             for ($j = 0; $j < self::TORSO_LENGTH * $this->hdRatio; $j++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, (40 * $this->hdRatio - 1) - $i, 20 * $this->hdRatio + $j));
-                $polygons['back'][] = new Polygon([
+                $polygons->back[] = new Polygon([
                     $volumePoints[$i][$j][0],
                     $volumePoints[$i + 1][$j][0],
                     $volumePoints[$i + 1][$j + 1][0],
@@ -706,7 +702,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 20 * $this->hdRatio + $i, 20 * $this->hdRatio + $j));
-                $polygons['front'][] = new Polygon([
+                $polygons->front[] = new Polygon([
                     $volumePoints[$i][$j][4 * $this->hdRatio],
                     $volumePoints[$i + 1][$j][4 * $this->hdRatio],
                     $volumePoints[$i + 1][$j + 1][4 * $this->hdRatio],
@@ -719,7 +715,7 @@ abstract class SkinRenderer
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 16 * $this->hdRatio + $faceName, 20 * $this->hdRatio + $j));
-                $polygons['right'][] = new Polygon([
+                $polygons->right[] = new Polygon([
                     $volumePoints[0][$j][$faceName],
                     $volumePoints[0][$j][$faceName + 1],
                     $volumePoints[0][$j + 1][$faceName + 1],
@@ -727,7 +723,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, (32 * $this->hdRatio - 1) - $faceName, 20 * $this->hdRatio + $j));
-                $polygons['left'][] = new Polygon([
+                $polygons->left[] = new Polygon([
                     $volumePoints[self::TORSO_WIDTH * $this->hdRatio][$j][$faceName],
                     $volumePoints[self::TORSO_WIDTH * $this->hdRatio][$j][$faceName + 1],
                     $volumePoints[self::TORSO_WIDTH * $this->hdRatio][$j + 1][$faceName + 1],
@@ -740,7 +736,7 @@ abstract class SkinRenderer
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 20 * $this->hdRatio + $i, 16 * $this->hdRatio + $faceName));
-                $polygons['top'][] = new Polygon([
+                $polygons->top[] = new Polygon([
                     $volumePoints[$i][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName + 1],
@@ -748,7 +744,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 28 * $this->hdRatio + $i, (20 * $this->hdRatio - 1) - $faceName));
-                $polygons['bottom'][] = new Polygon([
+                $polygons->bottom[] = new Polygon([
                     $volumePoints[$i][self::TORSO_LENGTH * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][self::TORSO_LENGTH * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][self::TORSO_LENGTH * $this->hdRatio][$faceName + 1],
@@ -760,7 +756,7 @@ abstract class SkinRenderer
         return $polygons;
     }
 
-    private function determineRightArmPolygons(): array
+    private function determineRightArmPolygons(): PolygonsInFace
     {
         $volumePoints = [];
         for ($i = 0; $i < 9 * $this->hdRatio; $i++)
@@ -806,13 +802,13 @@ abstract class SkinRenderer
             }
         }
 
-        $polygons = self::CUBE_FACES_FORMAT;
+        $polygons = new PolygonsInFace();
         for ($i = 0; $i < 4 * $this->hdRatio; $i++)
         {
             for ($j = 0; $j < self::ARM_LENGTH * $this->hdRatio; $j++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, (56 * $this->hdRatio - 1) - $i, 20 * $this->hdRatio + $j));
-                $polygons['back'][] = new Polygon([
+                $polygons->back[] = new Polygon([
                     $volumePoints[$i][$j][0],
                     $volumePoints[$i + 1][$j][0],
                     $volumePoints[$i + 1][$j + 1][0],
@@ -820,7 +816,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 44 * $this->hdRatio + $i, 20 * $this->hdRatio + $j));
-                $polygons['front'][] = new Polygon([
+                $polygons->front[] = new Polygon([
                     $volumePoints[$i][$j][4 * $this->hdRatio],
                     $volumePoints[$i + 1][$j][4 * $this->hdRatio],
                     $volumePoints[$i + 1][$j + 1][4 * $this->hdRatio],
@@ -833,7 +829,7 @@ abstract class SkinRenderer
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 40 * $this->hdRatio + $faceName, 20 * $this->hdRatio + $j));
-                $polygons['right'][] = new Polygon([
+                $polygons->right[] = new Polygon([
                     $volumePoints[0][$j][$faceName],
                     $volumePoints[0][$j][$faceName + 1],
                     $volumePoints[0][$j + 1][$faceName + 1],
@@ -841,7 +837,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, (52 * $this->hdRatio - 1) - $faceName, 20 * $this->hdRatio + $j));
-                $polygons['left'][] = new Polygon([
+                $polygons->left[] = new Polygon([
                     $volumePoints[4 * $this->hdRatio][$j][$faceName],
                     $volumePoints[4 * $this->hdRatio][$j][$faceName + 1],
                     $volumePoints[4 * $this->hdRatio][$j + 1][$faceName + 1],
@@ -854,7 +850,7 @@ abstract class SkinRenderer
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 44 * $this->hdRatio + $i, 16 * $this->hdRatio + $faceName));
-                $polygons['top'][] = new Polygon([
+                $polygons->top[] = new Polygon([
                     $volumePoints[$i][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName + 1],
@@ -862,7 +858,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 48 * $this->hdRatio + $i, (20 * $this->hdRatio - 1) - $faceName));
-                $polygons['bottom'][] = new Polygon([
+                $polygons->bottom[] = new Polygon([
                     $volumePoints[$i][self::ARM_LENGTH * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][self::ARM_LENGTH * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][self::ARM_LENGTH * $this->hdRatio][$faceName + 1],
@@ -874,7 +870,7 @@ abstract class SkinRenderer
         return $polygons;
     }
 
-    private function determineLeftArmPolygons(): array
+    private function determineLeftArmPolygons(): PolygonsInFace
     {
         $volumePoints = [];
         for ($i = 0; $i < 9 * $this->hdRatio; $i++)
@@ -920,13 +916,13 @@ abstract class SkinRenderer
             }
         }
 
-        $polygons = self::CUBE_FACES_FORMAT;
+        $polygons = new PolygonsInFace();
         for ($i = 0; $i < 4 * $this->hdRatio; $i++)
         {
             for ($j = 0; $j < self::ARM_LENGTH * $this->hdRatio; $j++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, (56 * $this->hdRatio - 1) - ((4 * $this->hdRatio - 1) - $i), 20 * $this->hdRatio + $j));
-                $polygons['back'][] = new Polygon([
+                $polygons->back[] = new Polygon([
                     $volumePoints[$i][$j][0],
                     $volumePoints[$i + 1][$j][0],
                     $volumePoints[$i + 1][$j + 1][0],
@@ -934,7 +930,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 44 * $this->hdRatio + ((4 * $this->hdRatio - 1) - $i), 20 * $this->hdRatio + $j));
-                $polygons['front'][] = new Polygon([
+                $polygons->front[] = new Polygon([
                     $volumePoints[$i][$j][4 * $this->hdRatio],
                     $volumePoints[$i + 1][$j][4 * $this->hdRatio],
                     $volumePoints[$i + 1][$j + 1][4 * $this->hdRatio],
@@ -947,7 +943,7 @@ abstract class SkinRenderer
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 40 * $this->hdRatio + ((4 * $this->hdRatio - 1) - $faceName), 20 * $this->hdRatio + $j));
-                $polygons['right'][] = new Polygon([
+                $polygons->right[] = new Polygon([
                     $volumePoints[0][$j][$faceName],
                     $volumePoints[0][$j][$faceName + 1],
                     $volumePoints[0][$j + 1][$faceName + 1],
@@ -955,7 +951,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, (52 * $this->hdRatio - 1) - ((4 * $this->hdRatio - 1) - $faceName), 20 * $this->hdRatio + $j));
-                $polygons['left'][] = new Polygon([
+                $polygons->left[] = new Polygon([
                     $volumePoints[4 * $this->hdRatio][$j][$faceName],
                     $volumePoints[4 * $this->hdRatio][$j][$faceName + 1],
                     $volumePoints[4 * $this->hdRatio][$j + 1][$faceName + 1],
@@ -968,7 +964,7 @@ abstract class SkinRenderer
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 44 * $this->hdRatio + ((4 * $this->hdRatio - 1) - $i), 16 * $this->hdRatio + $faceName));
-                $polygons['top'][] = new Polygon([
+                $polygons->top[] = new Polygon([
                     $volumePoints[$i][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName + 1],
@@ -976,7 +972,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 48 * $this->hdRatio + ((4 * $this->hdRatio - 1) - $i), (20 * $this->hdRatio - 1) - $faceName));
-                $polygons['bottom'][] = new Polygon([
+                $polygons->bottom[] = new Polygon([
                     $volumePoints[$i][self::ARM_LENGTH * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][self::ARM_LENGTH * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][self::ARM_LENGTH * $this->hdRatio][$faceName + 1],
@@ -988,7 +984,7 @@ abstract class SkinRenderer
         return $polygons;
     }
 
-    private function determineRightLegPolygons(): array
+    private function determineRightLegPolygons(): PolygonsInFace
     {
         $volumePoints = [];
         for ($i = 0; $i < 9 * $this->hdRatio; $i++)
@@ -1034,13 +1030,13 @@ abstract class SkinRenderer
             }
         }
 
-        $polygons = self::CUBE_FACES_FORMAT;
+        $polygons = new PolygonsInFace();
         for ($i = 0; $i < 4 * $this->hdRatio; $i++)
         {
             for ($j = 0; $j < self::LEG_LENGTH * $this->hdRatio; $j++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, (16 * $this->hdRatio - 1) - $i, 20 * $this->hdRatio + $j));
-                $polygons['back'][] = new Polygon([
+                $polygons->back[] = new Polygon([
                     $volumePoints[$i][$j][0],
                     $volumePoints[$i + 1][$j][0],
                     $volumePoints[$i + 1][$j + 1][0],
@@ -1048,7 +1044,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 4 * $this->hdRatio + $i, 20 * $this->hdRatio + $j));
-                $polygons['front'][] = new Polygon([
+                $polygons->front[] = new Polygon([
                     $volumePoints[$i][$j][4 * $this->hdRatio],
                     $volumePoints[$i + 1][$j][4 * $this->hdRatio],
                     $volumePoints[$i + 1][$j + 1][4 * $this->hdRatio],
@@ -1061,7 +1057,7 @@ abstract class SkinRenderer
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 0 + $faceName, 20 * $this->hdRatio + $j));
-                $polygons['right'][] = new Polygon([
+                $polygons->right[] = new Polygon([
                     $volumePoints[0][$j][$faceName],
                     $volumePoints[0][$j][$faceName + 1],
                     $volumePoints[0][$j + 1][$faceName + 1],
@@ -1069,7 +1065,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, (self::LEG_LENGTH * $this->hdRatio - 1) - $faceName, 20 * $this->hdRatio + $j));
-                $polygons['left'][] = new Polygon([
+                $polygons->left[] = new Polygon([
                     $volumePoints[4 * $this->hdRatio][$j][$faceName],
                     $volumePoints[4 * $this->hdRatio][$j][$faceName + 1],
                     $volumePoints[4 * $this->hdRatio][$j + 1][$faceName + 1],
@@ -1082,7 +1078,7 @@ abstract class SkinRenderer
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 4 * $this->hdRatio + $i, 16 * $this->hdRatio + $faceName));
-                $polygons['top'][] = new Polygon([
+                $polygons->top[] = new Polygon([
                     $volumePoints[$i][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName + 1],
@@ -1090,7 +1086,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 8 * $this->hdRatio + $i, (20 * $this->hdRatio - 1) - $faceName));
-                $polygons['bottom'][] = new Polygon([
+                $polygons->bottom[] = new Polygon([
                     $volumePoints[$i][self::LEG_LENGTH * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][self::LEG_LENGTH * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][self::LEG_LENGTH * $this->hdRatio][$faceName + 1],
@@ -1102,7 +1098,7 @@ abstract class SkinRenderer
         return $polygons;
     }
 
-    private function determineLeftLegPolygons(): array
+    private function determineLeftLegPolygons(): PolygonsInFace
     {
         $volumePoints = [];
         for ($i = 0; $i < 9 * $this->hdRatio; $i++)
@@ -1148,13 +1144,13 @@ abstract class SkinRenderer
             }
         }
 
-        $polygons = self::CUBE_FACES_FORMAT;
+        $polygons = new PolygonsInFace();
         for ($i = 0; $i < 4 * $this->hdRatio; $i++)
         {
             for ($j = 0; $j < self::LEG_LENGTH * $this->hdRatio; $j++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, (16 * $this->hdRatio - 1) - ((4 * $this->hdRatio - 1) - $i), 20 * $this->hdRatio + $j));
-                $polygons['back'][] = new Polygon([
+                $polygons->back[] = new Polygon([
                     $volumePoints[$i][$j][0],
                     $volumePoints[$i + 1][$j][0],
                     $volumePoints[$i + 1][$j + 1][0],
@@ -1162,7 +1158,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 4 * $this->hdRatio + ((4 * $this->hdRatio - 1) - $i), 20 * $this->hdRatio + $j));
-                $polygons['front'][] = new Polygon([
+                $polygons->front[] = new Polygon([
                     $volumePoints[$i][$j][4 * $this->hdRatio],
                     $volumePoints[$i + 1][$j][4 * $this->hdRatio],
                     $volumePoints[$i + 1][$j + 1][4 * $this->hdRatio],
@@ -1175,7 +1171,7 @@ abstract class SkinRenderer
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 0 + ((4 * $this->hdRatio - 1) - $faceName), 20 * $this->hdRatio + $j));
-                $polygons['right'][] = new Polygon([
+                $polygons->right[] = new Polygon([
                     $volumePoints[0][$j][$faceName],
                     $volumePoints[0][$j][$faceName + 1],
                     $volumePoints[0][$j + 1][$faceName + 1],
@@ -1183,7 +1179,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, (self::LEG_LENGTH * $this->hdRatio - 1) - ((4 * $this->hdRatio - 1) - $faceName), 20 * $this->hdRatio + $j));
-                $polygons['left'][] = new Polygon([
+                $polygons->left[] = new Polygon([
                     $volumePoints[4 * $this->hdRatio][$j][$faceName],
                     $volumePoints[4 * $this->hdRatio][$j][$faceName + 1],
                     $volumePoints[4 * $this->hdRatio][$j + 1][$faceName + 1],
@@ -1196,7 +1192,7 @@ abstract class SkinRenderer
             for ($faceName = 0; $faceName < 4 * $this->hdRatio; $faceName++)
             {
                 $rgba = new RGBA(imagecolorat($this->skinSource, 4 * $this->hdRatio + ((4 * $this->hdRatio - 1) - $i), 16 * $this->hdRatio + $faceName));
-                $polygons['top'][] = new Polygon([
+                $polygons->top[] = new Polygon([
                     $volumePoints[$i][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName],
                     $volumePoints[$i + 1][0][$faceName + 1],
@@ -1204,7 +1200,7 @@ abstract class SkinRenderer
                 ], $rgba);
 
                 $rgba = new RGBA(imagecolorat($this->skinSource, 8 * $this->hdRatio + ((4 * $this->hdRatio - 1) - $i), (20 * $this->hdRatio - 1) - $faceName));
-                $polygons['bottom'][] = new Polygon([
+                $polygons->bottom[] = new Polygon([
                     $volumePoints[$i][self::LEG_LENGTH * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][self::LEG_LENGTH * $this->hdRatio][$faceName],
                     $volumePoints[$i + 1][self::LEG_LENGTH * $this->hdRatio][$faceName + 1],
@@ -1216,39 +1212,44 @@ abstract class SkinRenderer
         return $polygons;
     }
 
-    private function determinePolygons(): array
+    private function determinePolygons(): FacesByBodyPart
     {
-        return [
-            'helmet' => $this->determineHairPolygons(),
-            'head' => $this->determineHeadPolygons(),
-            'torso' => $this->determineTorsoPolygons(),
-            'rightArm' => $this->determineRightArmPolygons(),
-            'leftArm' => $this->determineLeftArmPolygons(),
-            'rightLeg' => $this->determineRightLegPolygons(),
-            'leftLeg' => $this->determineLeftLegPolygons(),
-        ];
+        return new FacesByBodyPart(
+            helmet: $this->determineHairPolygons(),
+            head: $this->determineHeadPolygons(),
+            torso: $this->determineTorsoPolygons(),
+            rightArm: $this->determineRightArmPolygons(),
+            leftArm: $this->determineLeftArmPolygons(),
+            rightLeg: $this->determineRightLegPolygons(),
+            leftLeg: $this->determineLeftLegPolygons(),
+        );
     }
 
-    public function determineVisibleFaces(array $parts_angles): array
+    /**
+     * @param PartsAngles $partsAngles
+     * @return array<string, VisibleFaces>
+     */
+    public function determineVisibleFaces(PartsAngles $partsAngles): array
     {
-        $visible_faces = [
-            'head' => self::VISIBLE_FACES_FORMAT,
-            'torso' => self::VISIBLE_FACES_FORMAT,
-            'rightArm' => self::VISIBLE_FACES_FORMAT,
-            'leftArm' => self::VISIBLE_FACES_FORMAT,
-            'rightLeg' => self::VISIBLE_FACES_FORMAT,
-            'leftLeg' => self::VISIBLE_FACES_FORMAT,
+        $faceNames = [
+            'head',
+            'torso',
+            'rightArm',
+            'leftArm',
+            'rightLeg',
+            'leftLeg',
         ];
+        $visibleFaces = [];
 
         // Loop each preProject and Project then calculate the visible faces for each - also display
-        foreach ($visible_faces as $faceName => &$faceFormat)
+        foreach ($faceNames as $faceName)
         {
             $cubePoints = $this->generateCubePoints();
             $cubeMaxDepthFaces = $cubePoints[0];
 
             foreach ($cubePoints as $cubePoint)
             {
-                $cubePoint->getPoint()->preProject(new CoordsXYZ(0, 0, 0), $parts_angles[$faceName]['cos_alpha'], $parts_angles[$faceName]['sin_alpha'], $parts_angles[$faceName]['cos_omega'], $parts_angles[$faceName]['sin_omega']);
+                $cubePoint->getPoint()->preProject(new CoordsXYZ(0, 0, 0), $partsAngles->$faceName->cosAlpha, $partsAngles->$faceName->sinAlpha, $partsAngles->$faceName->cosOmega, $partsAngles->$faceName->sinOmega);
                 $cubePoint->getPoint()->project();
 
                 if ($cubeMaxDepthFaces->getPoint()->getDepth() > $cubePoint->getPoint()->getDepth())
@@ -1256,10 +1257,13 @@ abstract class SkinRenderer
                     $cubeMaxDepthFaces = $cubePoint;
                 }
             }
-            $faceFormat['back'] = $cubeMaxDepthFaces->getPlaces();
-            $faceFormat['front'] = array_diff(self::ALL_FACES, $faceFormat['back']);
+
+            $backFaces = $cubeMaxDepthFaces->getPlaces();
+            $frontFaces = array_diff(self::ALL_FACES, $backFaces);
+
+            $visibleFaces[$faceName] = new VisibleFaces($frontFaces, $backFaces);
         }
 
-        return $visible_faces;
+        return $visibleFaces;
     }
 }
