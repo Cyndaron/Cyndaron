@@ -6,7 +6,6 @@ namespace Cyndaron\Logger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
 use Stringable;
-use function array_values;
 
 final class MultiLogger implements LoggerInterface
 {
