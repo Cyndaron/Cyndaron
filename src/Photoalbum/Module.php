@@ -58,7 +58,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
     {
         /** @var list<array{name: string, link: string}> $list */
         $list = DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/photoalbum/\', id) AS link, CONCAT(\'Fotoalbum: \', name) AS name FROM photoalbums');
-        return array_map(static function (array $item)
+        return array_map(static function(array $item)
         {
             return Link::fromArray($item);
         }, $list);

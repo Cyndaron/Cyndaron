@@ -196,8 +196,8 @@ class Page
 
     /**
      * @param array<string, mixed> $vars
-     * @return string
      * @throws \Safe\Exceptions\FilesystemException
+     * @return string
      */
     public function render(array $vars = []): string
     {

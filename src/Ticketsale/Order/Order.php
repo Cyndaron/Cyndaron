@@ -85,7 +85,10 @@ final class Order extends Model
         }
 
         $mail = UtilMail::createMailWithDefaults(
-            new Address($this->email), 'Betalingsbevestiging', $text);
+            new Address($this->email),
+            'Betalingsbevestiging',
+            $text
+        );
         return $mail->send();
     }
 

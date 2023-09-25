@@ -74,10 +74,10 @@ abstract class EditorSavePage
 
     /**
      * @param array<string> $matches
-     * @return string
      * @throws \Safe\Exceptions\DatetimeException
      * @throws \Safe\Exceptions\FilesystemException
      * @throws \Safe\Exceptions\UrlException
+     * @return string
      */
     protected static function extractImages(array $matches): string
     {

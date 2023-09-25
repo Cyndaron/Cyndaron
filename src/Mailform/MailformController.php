@@ -158,7 +158,10 @@ final class MailformController extends Controller
             if ($form->sendConfirmation && $sender && $form->confirmationText !== null)
             {
                 $mail = UtilMail::createMailWithDefaults(
-                    new Address($sender), 'Ontvangstbevestiging', $form->confirmationText);
+                    new Address($sender),
+                    'Ontvangstbevestiging',
+                    $form->confirmationText
+                );
                 $mail->addReplyTo(new Address($recipient));
                 $mail->send();
             }

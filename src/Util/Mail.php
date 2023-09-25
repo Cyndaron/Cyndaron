@@ -25,8 +25,7 @@ final class Mail
         string $subject,
         string|null $plainTextMessage = null,
         string|null $htmlMessage = null
-    ): \Cyndaron\Mail\Mail
-    {
+    ): \Cyndaron\Mail\Mail {
         $from = self::getNoreplyAddress();
         return new \Cyndaron\Mail\Mail($from, $to, $subject, $plainTextMessage, $htmlMessage);
     }

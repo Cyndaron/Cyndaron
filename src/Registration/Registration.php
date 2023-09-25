@@ -87,7 +87,10 @@ final class Registration extends Model
 Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur je via de mail weten of je als koorzanger kunt deelnemen in het SBK-koor. Je hoeft nu dus nog niet te betalen.';
 
             $mail = UtilMail::createMailWithDefaults(
-                new Address($this->email), 'Aanmelding ' . $event->name . ' ontvangen', $text);
+                new Address($this->email),
+                'Aanmelding ' . $event->name . ' ontvangen',
+                $text
+            );
             return $mail->send();
         }
 
@@ -153,7 +156,10 @@ Stichting Bijzondere Koorprojecten';
         }
 
         $mail = UtilMail::createMailWithDefaults(
-            new Address($this->email), 'Betalingsbevestiging ' . $event->name, $text);
+            new Address($this->email),
+            'Betalingsbevestiging ' . $event->name,
+            $text
+        );
         return $mail->send();
     }
 
@@ -263,7 +269,10 @@ Stichting Bijzondere Koorprojecten';
         }
 
         $mail = UtilMail::createMailWithDefaults(
-            new Address($this->email), 'Aanmelding ' . $event->name . ' goedgekeurd', $text);
+            new Address($this->email),
+            'Aanmelding ' . $event->name . ' goedgekeurd',
+            $text
+        );
         return $mail->send();
     }
 
@@ -290,7 +299,10 @@ Met vriendelijke groet,
 Stichting Bijzondere Koorprojecten';
 
             $mail =UtilMail::createMailWithDefaults(
-                new Address($this->email), 'Aanmelding ' . $event->name, $text);
+                new Address($this->email),
+                'Aanmelding ' . $event->name,
+                $text
+            );
             return $mail->send();
         }
 
@@ -304,7 +316,10 @@ Stichting Bijzondere Koorprojecten';
         }
 
         $mail = UtilMail::createMailWithDefaults(
-            new Address($this->email), 'Aanmelding ' . $event->name, $text);
+            new Address($this->email),
+            'Aanmelding ' . $event->name,
+            $text
+        );
         return $mail->send();
     }
 

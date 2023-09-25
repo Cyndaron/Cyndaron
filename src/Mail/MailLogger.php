@@ -38,7 +38,8 @@ final class MailLogger implements LoggerInterface
 
     public function log(mixed $level, Stringable|string $message, array $context = []): void
     {
-        if (!$this->shouldLog($level)) {
+        if (!$this->shouldLog($level))
+        {
             return;
         }
 

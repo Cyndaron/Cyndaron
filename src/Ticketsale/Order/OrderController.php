@@ -527,7 +527,10 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         }
 
         $mail = UtilMail::createMailWithDefaults(
-            new Address($order->email), 'Bestelling concertkaarten', $text);
+            new Address($order->email),
+            'Bestelling concertkaarten',
+            $text
+        );
         return $mail->send();
     }
 
@@ -785,8 +788,8 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
     /**
      * @param RequestParameters $post
      * @param Concert $concert
-     * @return array{0: bool, 1: string}
      * @throws \Cyndaron\DBAL\ImproperSubclassing
+     * @return array{0: bool, 1: string}
      */
     private function checkScannedBarcode(RequestParameters $post, Concert $concert): array
     {

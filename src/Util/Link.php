@@ -8,8 +8,7 @@ class Link
     public function __construct(
         public readonly string $link,
         public readonly string $name,
-    )
-    {
+    ) {
     }
 
     /**

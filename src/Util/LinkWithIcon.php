@@ -9,8 +9,7 @@ final class LinkWithIcon extends Link
         string $link,
         string $name,
         public readonly string $icon,
-    )
-    {
+    ) {
         parent::__construct($link, $name);
     }
 

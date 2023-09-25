@@ -47,9 +47,9 @@ final class RequestParameters
 
     /**
      * @param array<int|string, string>|string $parameter
-     * @return array<int|string, string>|string
      * @throws PcreException
      * @throws \Safe\Exceptions\MbstringException
+     * @return array<int|string, string>|string
      */
     private function stripInvalidCharacters(array|string $parameter): array|string
     {

@@ -41,7 +41,7 @@ final class Module implements Routes, Datatypes, Templated, Linkable
     {
         /** @var list<array{name: string, link: string}> $list */
         $list = DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/concert/order/\', id) AS link, CONCAT(\'Concert: \', name) AS name FROM ticketsale_concerts');
-        return array_map(static function (array $item)
+        return array_map(static function(array $item)
         {
             return Link::fromArray($item);
         }, $list);

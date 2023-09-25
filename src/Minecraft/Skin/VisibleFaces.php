@@ -10,7 +10,6 @@ final class VisibleFaces
         public readonly array $front,
         /** @var string[] */
         public readonly array $back,
-    )
-    {
+    ) {
     }
 }

@@ -187,8 +187,8 @@ final class SystemPage extends Page
     }
 
     /**
-     * @return array<string, ExpectedResult>
      * @throws \Safe\Exceptions\InfoException
+     * @return array<string, ExpectedResult>
      */
     private function getSettings(): array
     {

@@ -13,7 +13,6 @@ final class FacesByBodyPart
         public readonly PolygonsInFace $leftArm,
         public readonly PolygonsInFace $rightLeg,
         public readonly PolygonsInFace $leftLeg,
-    )
-    {
+    ) {
     }
 }

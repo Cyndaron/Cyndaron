@@ -49,7 +49,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
     {
         /** @var list<array{name: string, link: string}> $list */
         $list = DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/sub/\', id) AS link, CONCAT(\'Statische pag.: \', name) AS name FROM subs');
-        return array_map(static function (array $item)
+        return array_map(static function(array $item)
         {
             return Link::fromArray($item);
         }, $list);

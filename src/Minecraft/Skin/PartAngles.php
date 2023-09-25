@@ -10,7 +10,6 @@ final class PartAngles
         public readonly float $sinAlpha,
         public readonly float $cosOmega,
         public readonly float $sinOmega,
-    )
-    {
+    ) {
     }
 }

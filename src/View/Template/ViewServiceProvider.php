@@ -57,7 +57,8 @@ final class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
      */
     public function registerFactory(): void
     {
-        $this->app->singleton('view', function ($app) {
+        $this->app->singleton('view', function($app)
+        {
             // Next we need to grab the engine resolver instance that will be used by the
             // environment. The resolver will be used by an environment to get each of
             // the various engine implementations such as plain PHP or Blade engine.
@@ -80,11 +81,13 @@ final class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
 
     public function registerBladeCompiler(): void
     {
-        $this->app->singleton('blade.compiler', function ($app) {
+        $this->app->singleton('blade.compiler', function($app)
+        {
             return tap(new BladeCompiler(
                 $app['files'],
                 $app['config']['view.compiled'],
-            ), static function ($blade) {
+            ), static function($blade)
+            {
                 $blade->component('dynamic-component', DynamicComponent::class);
             });
         });
@@ -98,7 +101,8 @@ final class ViewServiceProvider extends \Illuminate\View\ViewServiceProvider
      */
     public function registerBladeEngine($resolver): void
     {
-        $resolver->register('blade', function () {
+        $resolver->register('blade', function()
+        {
             /** @phpstan-ignore-next-line */
             $compiler = new CompilerEngine($this->app['blade.compiler'], $this->app['files']);
 

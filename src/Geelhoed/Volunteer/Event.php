@@ -22,8 +22,8 @@ final class Event extends Model
     public string $data;
 
     /**
-     * @return mixed[]
      * @throws \Safe\Exceptions\JsonException
+     * @return mixed[]
      */
     public function getJsonData(): array
     {

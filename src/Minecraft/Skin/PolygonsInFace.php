@@ -18,7 +18,6 @@ final class PolygonsInFace
         public array $front = [],
         /** @var Polygon[] */
         public array $back = [],
-    )
-    {
+    ) {
     }
 }

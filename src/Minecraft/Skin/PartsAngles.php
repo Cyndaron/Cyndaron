@@ -13,7 +13,6 @@ final class PartsAngles
         public readonly PartAngles $leftArm,
         public readonly PartAngles $rightLeg,
         public readonly PartAngles $leftLeg,
-    )
-    {
+    ) {
     }
 }

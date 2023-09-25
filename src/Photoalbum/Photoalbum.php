@@ -75,8 +75,8 @@ final class Photoalbum extends ModelWithCategory
     }
 
     /**
-     * @return string[]
      * @throws \Safe\Exceptions\ErrorfuncException
+     * @return string[]
      */
     public function getPhotos(): array
     {
