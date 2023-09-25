@@ -9,6 +9,8 @@ namespace Cyndaron\Util;
 use RuntimeException;
 use Safe\DateTimeImmutable;
 use Safe\Exceptions\FilesystemException;
+use Symfony\Component\Mime\Address;
+use function html_entity_decode;
 use function Safe\preg_replace;
 use function Safe\date;
 use function Safe\mkdir;
@@ -62,12 +64,6 @@ class Util
     public static function getDomain(): string
     {
         return str_replace(['www.', 'http://', 'https://', '/'], '', $_SERVER['HTTP_HOST']);
-    }
-
-    public static function getNoreplyAddress(): string
-    {
-        $domain = static::getDomain();
-        return "noreply@$domain";
     }
 
     public static function slug(string $string): string

@@ -9,6 +9,7 @@ use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Mail\Mail;
 use Cyndaron\DBAL\Model;
+use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Exception;
@@ -202,7 +203,7 @@ Uw nieuwe wachtwoord is: %s';
             throw new Exception('No email address specified!');
         }
 
-        $mail = new Mail(
+        $mail = UtilMail::createMailWithDefaults(
             new Address($this->email),
             'Nieuw wachtwoord ingesteld',
             sprintf(self::RESET_PASSWORD_MAIL_TEXT, Setting::get('siteName'), $password)

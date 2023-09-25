@@ -11,6 +11,7 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Mail\Mail;
+use Cyndaron\Util\Mail as UtilMail;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -145,7 +146,7 @@ final class MailformController extends Controller
         $subject = $form->name;
         $sender = $post->getEmail('E-mailadres');
 
-        $mail = new Mail(new Address($recipient), $subject, $mailBody);
+        $mail = UtilMail::createMailWithDefaults(new Address($recipient), $subject, $mailBody);
         if ($sender !== '')
         {
             $mail->addReplyTo(new Address($sender));
@@ -156,7 +157,8 @@ final class MailformController extends Controller
         {
             if ($form->sendConfirmation && $sender && $form->confirmationText !== null)
             {
-                $mail = new Mail(new Address($sender), 'Ontvangstbevestiging', $form->confirmationText);
+                $mail = UtilMail::createMailWithDefaults(
+                    new Address($sender), 'Ontvangstbevestiging', $form->confirmationText);
                 $mail->addReplyTo(new Address($recipient));
                 $mail->send();
             }

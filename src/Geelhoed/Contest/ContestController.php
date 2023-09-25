@@ -16,6 +16,7 @@ use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Mail\Mail;
+use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Template\Template;
@@ -753,7 +754,7 @@ final class ContestController extends Controller
             {
                 $mailText = "{$subscription->getMember()->getProfile()->getFullName()} heeft zijn/haar inschrijving voor {$subscription->getContest()->name} gewijzigd. Het gewicht is nu {$subscription->weight} kg en de graduatie is: {$subscription->getGraduation()->name}.";
                 $to = Setting::get('geelhoed_contestMaintainerMail');
-                $mail = new Mail(new Address($to), 'Wijziging inschrijving', $mailText);
+                $mail = UtilMail::createMailWithDefaults(new Address($to), 'Wijziging inschrijving', $mailText);
                 $mail->send();
             }
         }
@@ -891,7 +892,7 @@ final class ContestController extends Controller
         ]);
 
         assert($user->email !== null);
-        $mail = new Mail(new Address($user->email), 'Ouderaccount aangemaakt', $mailBody);
+        $mail = UtilMail::createMailWithDefaults(new Address($user->email), 'Ouderaccount aangemaakt', $mailBody);
         return $mail->send();
     }
 

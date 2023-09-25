@@ -3,6 +3,7 @@ namespace Cyndaron\Mailform;
 
 use Cyndaron\Mail\Mail;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\View\Template\Template;
 use Symfony\Component\Mime\Address;
 
@@ -56,7 +57,7 @@ final class MailFormLDBF
 
     public function sendMail(string $requesterMail): bool
     {
-        $mail1 = new Mail(
+        $mail1 = UtilMail::createMailWithDefaults(
             new Address('voorzitter@leendebroekertfonds.nl'),
             'Nieuwe aanvraag',
             null,
@@ -64,7 +65,7 @@ final class MailFormLDBF
         );
         $mail1->addReplyTo(new Address($requesterMail));
 
-        $mail2 = new Mail(
+        $mail2 = UtilMail::createMailWithDefaults(
             new Address($requesterMail),
             'Kopie aanvraag',
             null,

@@ -6,6 +6,7 @@ namespace Cyndaron\Registration;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Mail\Mail;
+use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\Template;
 use Cyndaron\View\Template\ViewHelpers;
@@ -85,7 +86,8 @@ final class Registration extends Model
 
 Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur je via de mail weten of je als koorzanger kunt deelnemen in het SBK-koor. Je hoeft nu dus nog niet te betalen.';
 
-            $mail = new Mail(new Address($this->email), 'Aanmelding ' . $event->name . ' ontvangen', $text);
+            $mail = UtilMail::createMailWithDefaults(
+                new Address($this->email), 'Aanmelding ' . $event->name . ' ontvangen', $text);
             return $mail->send();
         }
 
@@ -117,7 +119,7 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
         // We're sending a plaintext mail, so avoid displaying html entities.
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
-        $mail = new Mail(new Address($this->email), 'Inschrijving ' . $event->name, $text);
+        $mail = UtilMail::createMailWithDefaults(new Address($this->email), 'Inschrijving ' . $event->name, $text);
         return $mail->send();
     }
 
@@ -150,7 +152,8 @@ Met vriendelijke groet,
 Stichting Bijzondere Koorprojecten';
         }
 
-        $mail = new Mail(new Address($this->email), 'Betalingsbevestiging ' . $event->name, $text);
+        $mail = UtilMail::createMailWithDefaults(
+            new Address($this->email), 'Betalingsbevestiging ' . $event->name, $text);
         return $mail->send();
     }
 
@@ -259,7 +262,8 @@ Met vriendelijke groet,
 Stichting Bijzondere Koorprojecten';
         }
 
-        $mail = new Mail(new Address($this->email), 'Aanmelding ' . $event->name . ' goedgekeurd', $text);
+        $mail = UtilMail::createMailWithDefaults(
+            new Address($this->email), 'Aanmelding ' . $event->name . ' goedgekeurd', $text);
         return $mail->send();
     }
 
@@ -285,7 +289,8 @@ Met vriendelijke groet,
 
 Stichting Bijzondere Koorprojecten';
 
-            $mail = new Mail(new Address($this->email), 'Aanmelding ' . $event->name, $text);
+            $mail =UtilMail::createMailWithDefaults(
+                new Address($this->email), 'Aanmelding ' . $event->name, $text);
             return $mail->send();
         }
 
@@ -298,7 +303,8 @@ Stichting Bijzondere Koorprojecten';
             $text = 'Uw aanmelding is geannuleerd. Eventuele betalingen zullen worden teruggestort.';
         }
 
-        $mail = new Mail(new Address($this->email), 'Aanmelding ' . $event->name, $text);
+        $mail = UtilMail::createMailWithDefaults(
+            new Address($this->email), 'Aanmelding ' . $event->name, $text);
         return $mail->send();
     }
 

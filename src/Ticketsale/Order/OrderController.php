@@ -20,6 +20,7 @@ use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Mail\Mail;
+use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\Template;
 use Cyndaron\View\Template\ViewHelpers;
@@ -525,7 +526,8 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
             }
         }
 
-        $mail = new Mail(new Address($order->email), 'Bestelling concertkaarten', $text);
+        $mail = UtilMail::createMailWithDefaults(
+            new Address($order->email), 'Bestelling concertkaarten', $text);
         return $mail->send();
     }
 

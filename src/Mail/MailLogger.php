@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mail;
 
-use Cyndaron\Util\Setting;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
 use Psr\Log\LogLevel;
@@ -14,8 +13,11 @@ final class MailLogger implements LoggerInterface
 {
     use LoggerTrait;
 
-    public function __construct(private readonly Address $recipient)
-    {
+    public function __construct(
+        private readonly Address $sender,
+        private readonly Address $recipient,
+        private readonly string $sitename
+    ) {
     }
 
     private function shouldLog(mixed $level): bool
@@ -40,8 +42,7 @@ final class MailLogger implements LoggerInterface
             return;
         }
 
-        $sitename = Setting::get('siteName');
-        $mail = new Mail($this->recipient, "Fout in {$sitename}", (string)$message);
+        $mail = new Mail($this->sender, $this->recipient, "Fout in {$this->sitename}", (string)$message);
         $mail->send();
     }
 }

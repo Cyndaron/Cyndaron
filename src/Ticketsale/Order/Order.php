@@ -10,6 +10,7 @@ use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
 use Cyndaron\Ticketsale\TicketDelivery;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Mail\Mail;
+use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Safe\Exceptions\JsonException;
 use Symfony\Component\Mime\Address;
@@ -83,7 +84,8 @@ final class Order extends Model
             $text .= 'Uw kaarten zullen op de avond van het concert voor u klaarliggen bij de kassa.';
         }
 
-        $mail = new Mail(new Address($this->email), 'Betalingsbevestiging', $text);
+        $mail = UtilMail::createMailWithDefaults(
+            new Address($this->email), 'Betalingsbevestiging', $text);
         return $mail->send();
     }
 
