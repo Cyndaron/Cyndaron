@@ -177,7 +177,7 @@ class Page
             new LinkWithIcon('/user/manager', 'Gebruikersbeheer', 'user'),
         ];
         $userMenuItems = [
-            new LinkWithIcon('', $_SESSION['username'], 'user'),
+            new LinkWithIcon('', $_SESSION['username'] ?? '', 'user'),
         ];
         foreach (User::getUserMenuFiltered() as $extraItem)
         {
