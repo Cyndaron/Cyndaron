@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Mailform;
 
-use Cyndaron\Util\Mail\Mail;
+use Cyndaron\Mail\Mail;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\View\Template\Template;
 use Symfony\Component\Mime\Address;

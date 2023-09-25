@@ -5,7 +5,7 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\DBAL\Model;
-use Cyndaron\Util\Mail\Mail;
+use Cyndaron\Mail\Mail;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\Template;
 use Cyndaron\View\Template\ViewHelpers;

@@ -15,7 +15,7 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
-use Cyndaron\Util\Mail\Mail;
+use Cyndaron\Mail\Mail;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Template\Template;

@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Util\Mail;
+namespace Cyndaron\Mail;
 
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;

@@ -19,7 +19,7 @@ use Cyndaron\Ticketsale\TicketType;
 use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
-use Cyndaron\Util\Mail\Mail;
+use Cyndaron\Mail\Mail;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\Template;
 use Cyndaron\View\Template\ViewHelpers;

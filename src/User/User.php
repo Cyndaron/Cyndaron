@@ -7,7 +7,7 @@ use Cyndaron\DBAL\CacheableModel;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\Util\Error\IncompleteData;
-use Cyndaron\Util\Mail\Mail;
+use Cyndaron\Mail\Mail;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;

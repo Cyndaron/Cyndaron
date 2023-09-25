@@ -32,7 +32,8 @@
         "conedevelopment/blade-filters": "*",
         "mollie/mollie-api-php": "^2.32",
         "phpoffice/phpspreadsheet": "^1.18",
-        "mpdf/mpdf": "*"
+        "mpdf/mpdf": "*",
+        "psr/log": "^2.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

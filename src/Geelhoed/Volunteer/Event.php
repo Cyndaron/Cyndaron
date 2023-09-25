@@ -21,6 +21,10 @@ final class Event extends Model
     public string $end;
     public string $data;
 
+    /**
+     * @return mixed[]
+     * @throws \Safe\Exceptions\JsonException
+     */
     public function getJsonData(): array
     {
         $decoded = json_decode($this->data, true);

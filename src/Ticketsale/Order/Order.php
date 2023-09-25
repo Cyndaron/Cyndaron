@@ -9,7 +9,7 @@ use Cyndaron\Ticketsale\Concert;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
 use Cyndaron\Ticketsale\TicketDelivery;
 use Cyndaron\Util\Error\IncompleteData;
-use Cyndaron\Util\Mail\Mail;
+use Cyndaron\Mail\Mail;
 use Cyndaron\Util\Setting;
 use Safe\Exceptions\JsonException;
 use Symfony\Component\Mime\Address;

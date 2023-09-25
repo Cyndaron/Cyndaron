@@ -10,7 +10,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Error\IncompleteData;
-use Cyndaron\Util\Mail\Mail;
+use Cyndaron\Mail\Mail;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
