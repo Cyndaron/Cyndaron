@@ -72,7 +72,7 @@ final class ContestMember extends Model
     }
 
     /**
-     * @param array $members
+     * @param Member[] $members
      * @return self[]
      */
     public static function fetchAllByMembers(array $members): array

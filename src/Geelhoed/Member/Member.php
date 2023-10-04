@@ -144,6 +144,9 @@ final class Member extends Model
         self::$hoursCacheHandle->save(self::$hoursCache);
     }
 
+    /**
+     * @return string[]
+     */
     public function getPhoneNumbers(): array
     {
         if ($this->phoneNumbers === '')
@@ -153,6 +156,10 @@ final class Member extends Model
         return explode(',', $this->phoneNumbers);
     }
 
+    /**
+     * @param string[] $numbers
+     * @return void
+     */
     public function setPhoneNumbers(array $numbers): void
     {
         $this->phoneNumbers = implode(',', $numbers);
@@ -365,8 +372,8 @@ final class Member extends Model
     }
 
     /**
-     * @param array $where
-     * @param array $args
+     * @param string[] $where
+     * @param list<string|int|float|null> $args
      * @param string $afterWhere
      * @return static[]
      */
@@ -396,7 +403,7 @@ final class Member extends Model
      * @param Hour $hour
      * @throws \Safe\Exceptions\ArrayException
      * @throws \Safe\Exceptions\ArrayException
-     * @return Member[]
+     * @return self[]
      */
     public static function fetchAllByHour(Hour $hour): array
     {
@@ -474,6 +481,10 @@ final class Member extends Model
         return $ret;
     }
 
+    /**
+     * @throws \Exception
+     * @return self[]
+     */
     public static function fetchAllByLoggedInUser(): array
     {
         if (!User::isLoggedIn())
@@ -490,6 +501,11 @@ final class Member extends Model
         return self::fetchAllByUser($profile);
     }
 
+    /**
+     * @param User $profile
+     * @throws \Exception
+     * @return self[]
+     */
     public static function fetchAllContestantsByUser(User $profile): array
     {
         return array_filter(self::fetchAllByUser($profile), static function(Member $member)

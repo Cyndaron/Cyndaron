@@ -23,8 +23,8 @@ class ScoresPage extends Page
         $accTotal = 0;
         foreach ($pointsRecords as $record)
         {
-            $accTotal += $record['points'];
-            $rows[] = new PointsRow($this->getDate($record['datetime']), (int)$record['points'], $accTotal);
+            $accTotal += (int)$record['points'];
+            $rows[] = new PointsRow($this->getDate((string)$record['datetime']), (int)$record['points'], $accTotal);
         }
 
         $this->addTemplateVars([

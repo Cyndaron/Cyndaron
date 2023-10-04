@@ -9,6 +9,9 @@ enum TryoutHelpType : string
     case SCHEIDSRECHTER = 'scheidsrechter';
     case GROEPJESBEGELEIDER = 'groepjesbegeleider';
 
+    /**
+     * @return array<string, string>
+     */
     public static function getFriendlyNames(): array
     {
         return [

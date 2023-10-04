@@ -40,6 +40,7 @@ use function count;
 use function array_filter;
 use function password_verify;
 use function password_hash;
+use function str_contains;
 
 final class User extends CacheableModel
 {
@@ -243,7 +244,6 @@ Uw nieuwe wachtwoord is: %s';
 
     /**
      * @param string $newPassword
-     * @throws \Safe\Exceptions\PasswordException
      * @return bool
      */
     public function setPassword(string $newPassword): bool
@@ -255,30 +255,28 @@ Uw nieuwe wachtwoord is: %s';
 
     public static function login(string $identification, string $password): string
     {
-        if (strpos($identification, '@') !== false)
+        if (str_contains($identification, '@'))
         {
-            $query = 'SELECT * FROM users WHERE email=?';
+            $user = self::fetch(['email = ?'], [$identification]);
             $updateQuery = 'UPDATE users SET password=? WHERE email=?';
         }
         else
         {
-            $query = 'SELECT * FROM users WHERE username=?';
+            $user = self::fetch(['username = ?'], [$identification]);
             $updateQuery = 'UPDATE users SET password=? WHERE username=?';
         }
 
-        $userdata = DBConnection::getPDO()->doQueryAndFetchFirstRow($query, [$identification]);
-
-        if (!$userdata)
+        if ($user === null)
         {
             throw new IncorrectCredentials('Onbekende gebruikersnaam of e-mailadres.');
         }
 
         $loginSucceeded = false;
-        if (password_verify($password, $userdata['password']))
+        if (password_verify($password, $user->password))
         {
             $loginSucceeded = true;
 
-            if (password_needs_rehash($userdata['password'], PASSWORD_DEFAULT))
+            if (password_needs_rehash($user->password, PASSWORD_DEFAULT))
             {
                 $password = password_hash($password, PASSWORD_DEFAULT);
                 DBConnection::getPDO()->executeQuery($updateQuery, [$password, $identification]);
@@ -290,12 +288,12 @@ Uw nieuwe wachtwoord is: %s';
             throw new IncorrectCredentials('Verkeerd wachtwoord.');
         }
 
-        $_SESSION['userId'] = $userdata['id'];
-        $_SESSION['profile'] = self::fromArray($userdata);
-        $_SESSION['username'] = $userdata['username'];
-        $_SESSION['email'] = $userdata['email'];
+        $_SESSION['userId'] = $user->id;
+        $_SESSION['profile'] = $user;
+        $_SESSION['username'] = $user->username;
+        $_SESSION['email'] = $user->email;
         $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
-        $_SESSION['level'] = $userdata['level'];
+        $_SESSION['level'] = $user->level;
 
         self::addNotification('U bent ingelogd.');
 

@@ -14,6 +14,12 @@ use function Safe\error_log;
 
 final class Connection extends PDO
 {
+    /**
+     * @param string $dsn
+     * @param string|null $username
+     * @param string|null $password
+     * @param array<string, string|int>|null $options
+     */
     public function __construct(string $dsn, string|null $username = null, string|null $password = null, array|null $options = null)
     {
         parent::__construct($dsn, $username, $password, $options);
@@ -40,7 +46,7 @@ final class Connection extends PDO
 
     /**
      * @param string $query
-     * @param array $vars
+     * @param array<int|string, string|int|float|null> $vars
      * @throws PDOException
      * @return PDOStatement
      */
@@ -52,6 +58,12 @@ final class Connection extends PDO
         return $prep;
     }
 
+    /**
+     * @param string $query
+     * @phpstan-ignore-next-line
+     * @param array<string, string|int> $options
+     * @return PDOStatement
+     */
     public function prepare(string $query, array $options = []): PDOStatement
     {
         $result = parent::prepare($query, $options);
@@ -59,6 +71,11 @@ final class Connection extends PDO
         return $result;
     }
 
+    /**
+     * @param string $query
+     * @param array<int|string, string|int|float|null> $vars
+     * @return int|false
+     */
     public function insert(string $query, array $vars = []): int|false
     {
         $this->executeQuery($query, $vars);
@@ -68,8 +85,8 @@ final class Connection extends PDO
 
     /**
      * @param string $query
-     * @param array $vars
-     * @return array
+     * @param array<int|string, string|int|float|null> $vars
+     * @return list<array<string, float|int|string|null>>
      */
     public function doQueryAndFetchAll(string $query, array $vars = []): array
     {
@@ -80,8 +97,8 @@ final class Connection extends PDO
 
     /**
      * @param string $query
-     * @param array $vars
-     * @return array|null Returns null if there are no matching rows.
+     * @param array<int|string, string|int|float|null> $vars
+     * @return array<string, float|int|string|null>|null Returns null if there are no matching rows.
      */
     public function doQueryAndFetchFirstRow(string $query, array $vars = []): array|null
     {
@@ -97,7 +114,7 @@ final class Connection extends PDO
 
     /**
      * @param string $query
-     * @param array $vars
+     * @param array<int|string, string|int|float|null> $vars
      * @return string|null Returns null if there are no matching rows.
      */
     public function doQueryAndFetchOne(string $query, array $vars = []): string|null

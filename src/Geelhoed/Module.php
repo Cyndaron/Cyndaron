@@ -30,9 +30,6 @@ use function implode;
 
 final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, Templated
 {
-    /**
-     * @return Datatype[]
-     */
     public function dataTypes(): array
     {
         return [

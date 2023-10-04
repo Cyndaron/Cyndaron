@@ -23,8 +23,8 @@ final class SubscribeToTryoutPage extends Page
             'event' => $event,
             'numRounds' => $numRounds,
             'helpTypes' => TryoutHelpType::getFriendlyNames(),
-            'fullTypes' => $status['fullTypes'],
-            'fullRounds' => $status['fullRounds'],
+            'fullTypes' => $status->fullTypes,
+            'fullRounds' => $status->fullRounds,
             'csrfToken' => User::getCSRFToken('vrijwilligers', 'inschrijven-voor-tryout'),
         ]);
     }

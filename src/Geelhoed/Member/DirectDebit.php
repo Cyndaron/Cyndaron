@@ -16,6 +16,11 @@ final class DirectDebit
     /** @var Member[] */
     public array $members = [];
 
+    /**
+     * @param string $iban
+     * @param string $ibanHolder
+     * @param Member[] $members
+     */
     public function __construct(string $iban, string $ibanHolder, array $members = [])
     {
         $this->iban = $iban;

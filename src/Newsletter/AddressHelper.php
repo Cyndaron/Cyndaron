@@ -98,7 +98,9 @@ final class AddressHelper
         {
             try
             {
-                $address = new Address($record['mail']);
+                /** @var string $mail */
+                $mail = $record['mail'];
+                $address = new Address($mail);
                 $memberAddresses[] = $address;
             }
             catch (\Exception)

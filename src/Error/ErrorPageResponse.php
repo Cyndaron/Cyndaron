@@ -22,7 +22,7 @@ class ErrorPageResponse extends Response
      * @param string $title
      * @param string $body
      * @param int $status A HTTP status code that is appropriate for the error.
-     * @param array $headers Extra HTTP headers (optional)
+     * @param array<string, string> $headers Extra HTTP headers (optional)
      */
     public function __construct(string $title, string $body, int $status = Response::HTTP_INTERNAL_SERVER_ERROR, array $headers = [])
     {

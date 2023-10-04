@@ -38,7 +38,7 @@ final class Photo
             $photo->album = $album;
             $photo->filename = $filename;
             $photo->hash = md5_file($photo->getFullPath());
-            $photo->caption = PhotoalbumCaption::loadByHash($photo->hash);
+            $photo->caption = PhotoalbumCaption::fetchByHash($photo->hash);
             $ret[] = $photo;
         }
 

@@ -6,6 +6,7 @@ use Cyndaron\DBAL\Model;
 use Cyndaron\Util\FileCache;
 use function array_key_exists;
 use function in_array;
+use function assert;
 
 final class MemberGraduation extends Model
 {
@@ -16,6 +17,7 @@ final class MemberGraduation extends Model
     public int $graduationId;
     public string $date;
 
+    /** @var array<int, Graduation> */
     private static array $graduationCache = [];
 
     /** @var array<int, MemberGraduation[]> */
@@ -61,11 +63,18 @@ final class MemberGraduation extends Model
         return self::$byMemberCache[$member->id] ?? [];
     }
 
+    private function getGraduationUncached(): Graduation
+    {
+        $ret = Graduation::fetchById($this->graduationId);
+        assert($ret !== null);
+        return $ret;
+    }
+
     public function getGraduation(): Graduation
     {
         if (!array_key_exists($this->graduationId, self::$graduationCache))
         {
-            self::$graduationCache[$this->graduationId] = Graduation::fetchById($this->graduationId);
+            self::$graduationCache[$this->graduationId] = $this->getGraduationUncached();
         }
 
         return self::$graduationCache[$this->graduationId];

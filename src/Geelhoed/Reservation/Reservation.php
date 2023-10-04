@@ -26,16 +26,21 @@ final class Reservation extends Model
     public string $name = '';
     public string $date;
 
+    /**
+     * @return array{id: int, hourId: int, date: string, name: string, created: string, modified: string}
+     */
     public static function getHoursAndDatesStatistics(): array
     {
         $today = new DateTimeImmutable();
-        return DBConnection::getPDO()->doQueryAndFetchAll('SELECT `date`,`hourId`, COUNT(*) as count FROM `geelhoed_reservation` WHERE date >= ? GROUP BY `date`,`hourId` ORDER BY `date`,`hourId`', [$today->format('Y-m-d')]) ?: [];
+        /** @var array{id: int, hourId: int, date: string, name: string, created: string, modified: string} $ret */
+        $ret = DBConnection::getPDO()->doQueryAndFetchAll('SELECT `date`,`hourId`, COUNT(*) as count FROM `geelhoed_reservation` WHERE date >= ? GROUP BY `date`,`hourId` ORDER BY `date`,`hourId`', [$today->format('Y-m-d')]) ?: [];
+        return $ret;
     }
 
     /**
      * @param Hour $hour
      * @param int $dayRange
-     * @return array
+     * @return list<array{date: DateTimeInterface, leftoverPlaces: int}>
      */
     public static function getDatesForHour(Hour $hour, int $dayRange = 15): array
     {

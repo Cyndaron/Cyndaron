@@ -61,6 +61,9 @@ final class Event extends Model
         return 3;
     }
 
+    /**
+     * @return array<int, array<string, list<EventParticipation>>>
+     */
     public function getTryoutParticipationData(): array
     {
         $numRounds = $this->getTryoutNumRounds();
@@ -74,12 +77,11 @@ final class Event extends Model
             ];
         }
 
-        $records = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM geelhoed_volunteer_event_participation WHERE eventId = ?', [$this->id]) ?: [];
-        foreach ($records as $participation)
+        $participations = EventParticipation::fetchAll(['eventId = ?'], [$this->id]);
+        foreach ($participations as $participation)
         {
-            /** @var array $decoded */
-            $decoded = json_decode($participation['data'], true);
-            $type = $participation['type'];
+            $decoded = $participation->getJsonData();
+            $type = $participation->type;
             foreach ($decoded['rounds'] as $round)
             {
                 $ret[$round][$type][] = $participation;
@@ -89,7 +91,7 @@ final class Event extends Model
         return $ret;
     }
 
-    public function getTryoutStatus(): array
+    public function getTryoutStatus(): TryoutStatus
     {
         $participationData = $this->getTryoutParticipationData();
         $neededNumbers = $this->getNeededNumbers();
@@ -120,10 +122,6 @@ final class Event extends Model
             }
         }
 
-        return [
-            'fullStatus' => $fullStatus,
-            'fullRounds' => $fullRounds,
-            'fullTypes' => $fullTypes,
-        ];
+        return new TryoutStatus($fullStatus, $fullRounds, $fullTypes);
     }
 }

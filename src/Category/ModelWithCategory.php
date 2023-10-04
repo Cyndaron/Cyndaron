@@ -95,8 +95,10 @@ abstract class ModelWithCategory extends Model
         $entries = DBConnection::getPDO()->doQueryAndFetchAll("SELECT categoryId FROM {$tableName} WHERE id = ?", [$this->id]) ?: [];
         foreach ($entries as $entry)
         {
+            /** @var int $id */
+            $id = $entry['categoryId'];
             /** @var Category $category */
-            $category = Category::fetchById($entry['categoryId']);
+            $category = Category::fetchById($id);
             $categories[] = $category;
         }
 
@@ -148,9 +150,11 @@ abstract class ModelWithCategory extends Model
         $ret = [];
         foreach ($entries as $entry)
         {
-            $model = static::fetchById($entry['id']);
+            /** @var int $id */
+            $id = $entry['id'];
+            $model = static::fetchById($id);
             assert($model !== null);
-            $model->priority = $entry['priority'];
+            $model->priority = (int)$entry['priority'];
             $ret[] = $model;
         }
 

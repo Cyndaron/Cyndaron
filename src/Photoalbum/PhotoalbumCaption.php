@@ -18,16 +18,8 @@ final class PhotoalbumCaption extends Model
         return (bool)DBConnection::getPDO()->doQueryAndFetchOne('INSERT INTO photoalbum_captions(hash,caption) VALUES (?,?)', [$hash, $caption]);
     }
 
-    public static function loadByHash(string $hash): ?PhotoalbumCaption
+    public static function fetchByHash(string $hash): PhotoalbumCaption|null
     {
-        $obj = null;
-        $result = DBConnection::getPDO()->doQueryAndFetchFirstRow('SELECT * FROM photoalbum_captions WHERE hash=?', [$hash]);
-        if ($result !== null)
-        {
-            $obj = new static();
-            $obj->id = $result['id'];
-            $obj->updateFromArray($result);
-        }
-        return $obj;
+        return self::fetch(['hash = ?'], [$hash]);
     }
 }

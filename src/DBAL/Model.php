@@ -62,7 +62,7 @@ abstract class Model
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public static function getExtendedTableFields(): array
     {
@@ -101,8 +101,8 @@ abstract class Model
     }
 
     /**
-     * @param array $where
-     * @param array $args
+     * @param string[] $where
+     * @param list<string|int|float|null> $args
      * @param string $afterWhere
      * @return static[]
      */
@@ -117,6 +117,10 @@ abstract class Model
         return self::DBResultsToModels($results);
     }
 
+    /**
+     * @param list<array<string, float|int|string|null>> $results
+     * @return static[]
+     */
     protected static function DBResultsToModels(array $results): array
     {
         $ret = [];
@@ -129,7 +133,7 @@ abstract class Model
     }
 
     /**
-     * @param array $result
+     * @param array<string, float|int|string|null> $result
      * @return static
      */
     protected static function DBResultToModel(array $result): self
@@ -140,8 +144,8 @@ abstract class Model
     }
 
     /**
-     * @param array $where
-     * @param array $args
+     * @param string[] $where
+     * @param list<string|int|float|null> $args
      * @param string $afterWhere
      * @return static|null
      */
@@ -157,7 +161,9 @@ abstract class Model
         return null;
     }
 
-
+    /**
+     * @return array<string, float|int|string|null>
+     */
     public function asArray(): array
     {
         $return = [];
@@ -169,7 +175,7 @@ abstract class Model
     }
 
     /**
-     * @param array $array
+     * @param array<string, float|int|string|null> $array
      * @return static
      */
     public static function fromArray(array $array): self
@@ -179,6 +185,10 @@ abstract class Model
         return $sub;
     }
 
+    /**
+     * @param array<string, float|int|string|null> $newArray
+     * @return bool
+     */
     public function updateFromArray(array $newArray): bool
     {
         $couldUpdateAll = true;

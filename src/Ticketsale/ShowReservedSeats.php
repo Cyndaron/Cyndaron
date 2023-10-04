@@ -17,7 +17,7 @@ final class ShowReservedSeats
         foreach ($seatBookings as $currentBooking)
         {
             /** @var Order|null $order */
-            $order = Order::fetchById($currentBooking['orderId']);
+            $order = Order::fetchById((int)$currentBooking['orderId']);
             if ($order === null)
             {
                 continue;

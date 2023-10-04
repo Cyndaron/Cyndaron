@@ -1,7 +1,7 @@
 parameters:
     bootstrapFiles:
         - .phpstan_bootstrap.php
-    checkMissingIterableValueType: false
+    checkMissingIterableValueType: true
     polluteScopeWithLoopInitialAssignments: false
     polluteScopeWithAlwaysIterableForeach: false
     checkAlwaysTrueInstanceof: true

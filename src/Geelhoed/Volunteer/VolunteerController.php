@@ -74,7 +74,7 @@ class VolunteerController extends Controller
         }
         $phone = $post->getSimpleString('phone');
         $comments = $post->getSimpleString('comments');
-        if ($status['fullTypes'][$type])
+        if ($status->fullTypes[$type])
         {
             return new JsonResponse(['status' => 'full', 'message' => "Wij hebben intussen al voldoende {$type}s. Eventueel kun je je nog als iets anders inschrijven"], Response::HTTP_BAD_REQUEST);
         }
@@ -87,7 +87,7 @@ class VolunteerController extends Controller
             if ($on)
             {
                 $rounds[] = $i;
-                if ($status['fullStatus'][$i][$type])
+                if ($status->fullStatus[$i][$type])
                 {
                     $alreadyFilledRounds[] = $i + 1;
                 }

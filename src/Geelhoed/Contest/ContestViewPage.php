@@ -32,6 +32,11 @@ final class ContestViewPage extends Page
         $this->addScript('/src/Geelhoed/Contest/js/MemberSubscriptionStatus.js');
     }
 
+    /**
+     * @param bool $currentUserCanManageContests
+     * @param Member[] $controlledMembers
+     * @return bool
+     */
     private function loggedInUserMayViewOtherContestants(bool $currentUserCanManageContests, array $controlledMembers): bool
     {
         if ($currentUserCanManageContests)
@@ -50,6 +55,11 @@ final class ContestViewPage extends Page
         return false;
     }
 
+    /**
+     * @param Contest $contest
+     * @param Member[] $controlledMembers
+     * @return bool
+     */
     private function areAllSubscribed(Contest $contest, array $controlledMembers): bool
     {
         foreach ($controlledMembers as $controlledMember)

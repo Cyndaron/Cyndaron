@@ -116,10 +116,10 @@ final class MenuItem extends Model
         $items = [];
         foreach ($pagesInCategory as $page)
         {
-            $urlString = $page['url'] ?: sprintf('/%s/%d', $page['type'], $page['id']);
+            $urlString = (string)$page['url'] ?: sprintf('/%s/%d', $page['type'], $page['id']);
             $url = new Url($urlString);
             $link = $url->getFriendly();
-            $items[] = new Link($link, $page['name']);
+            $items[] = new Link($link, (string)$page['name']);
         }
         return $items;
     }

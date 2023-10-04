@@ -68,7 +68,7 @@ final class OverviewPage extends Page
     /**
      * @param string $orderBy
      * @throws \Safe\Exceptions\StringsException
-     * @return array
+     * @return string[]
      */
     private function getFileList(string $orderBy): array
     {
@@ -96,6 +96,12 @@ final class OverviewPage extends Page
         return $dirArray;
     }
 
+    /**
+     * @param string[] $fileList
+     * @param string $orderBy
+     * @throws \Safe\Exceptions\FilesystemException
+     * @return void
+     */
     private function sortFileList(array &$fileList, string $orderBy): void
     {
         if ($orderBy === 'date')

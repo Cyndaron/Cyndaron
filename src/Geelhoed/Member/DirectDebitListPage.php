@@ -7,6 +7,9 @@ use Cyndaron\Page\Page;
 
 class DirectDebitListPage extends Page
 {
+    /**
+     * @param DirectDebit[] $directDebits
+     */
     public function __construct(array $directDebits)
     {
         parent::__construct('Incassolijst');

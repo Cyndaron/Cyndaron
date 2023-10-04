@@ -30,7 +30,7 @@ final class CategoryIndexPage extends Page
 
     /**
      * @param StaticPageModel[] $subs
-     * @return array
+     * @return string[]
      */
     protected function getTags(array $subs): array
     {
@@ -46,6 +46,10 @@ final class CategoryIndexPage extends Page
         return $tags;
     }
 
+    /**
+     * @throws \Exception
+     * @return array<string, list<StaticPageModel>>
+     */
     protected function getPortfolioContent(): array
     {
         $portfolioContent = [];

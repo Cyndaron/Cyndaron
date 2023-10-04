@@ -34,6 +34,9 @@ final class Location extends CacheableModel
         return Hour::fetchAll(['locationId = ?'], [$this->id], 'ORDER BY `day`, `from`');
     }
 
+    /**
+     * @return array<int, Hour[]>
+     */
     public function getHoursSortedByWeekday(): array
     {
         $ret = [];
@@ -71,15 +74,15 @@ final class Location extends CacheableModel
     /**
      * Get all the cities where we have lessons.
      *
-     * @return array
+     * @return string[]
      */
     public static function getCities(): array
     {
         $ret = [];
-        $results = DBConnection::getPDO()->doQueryAndFetchAll('SELECT DISTINCT city FROM geelhoed_locations ORDER BY city') ?: [];
+        $results = self::fetchAll([], [], 'ORDER BY city');
         foreach ($results as $result)
         {
-            $ret[] = $result['city'];
+            $ret[] = $result->city;
         }
         return $ret;
     }

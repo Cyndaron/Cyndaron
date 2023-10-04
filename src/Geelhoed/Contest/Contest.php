@@ -70,6 +70,10 @@ final class Contest extends Model
         return false;
     }
 
+    /**
+     * @throws \Safe\Exceptions\DirException
+     * @return string[]
+     */
     public function getAttachments(): array
     {
         $folder = Util::UPLOAD_DIR . '/contest/' . $this->id . '/attachments';
@@ -112,6 +116,11 @@ final class Contest extends Model
         return self::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_dates WHERE datetime > CURRENT_TIMESTAMP)'], [], 'ORDER BY registrationDeadline DESC');
     }
 
+    /**
+     * @param User $user
+     * @throws \Safe\Exceptions\DatetimeException
+     * @return array{0: float, 1: ContestMember[]}
+     */
     public static function getTotalDue(User $user): array
     {
         $members = Member::fetchAllContestantsByUser($user);
