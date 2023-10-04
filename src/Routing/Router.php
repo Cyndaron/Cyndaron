@@ -7,6 +7,9 @@ namespace Cyndaron\Routing;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Editor\EditorController;
+use Cyndaron\Logger\FileLogger;
+use Cyndaron\Logger\MultiLogger;
+use Cyndaron\Mail\MailLogger;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
@@ -24,15 +27,18 @@ use Cyndaron\Url;
 use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
 use Cyndaron\Util\DependencyInjectionContainer;
+use Cyndaron\Util\Mail;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Renderer\TextRenderer;
 use Cyndaron\View\Template\TemplateFinder;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Mime\Address;
 use function array_key_exists;
 use function array_merge;
 use function array_shift;
@@ -170,6 +176,20 @@ final class Router implements HttpKernelInterface
             $pdo = DBConnection::getPDO();
             $dic->add($pdo);
             $dic->add($pdo, \PDO::class);
+
+            $fileLogger = new FileLogger(ROOT_DIR . '/var/log/cyndaron.log');
+            $mailRecipient = Setting::get('mail_logRecipient');
+            if (!empty($mailRecipient))
+            {
+                $mailLogger = new MailLogger(Mail::getNoreplyAddress(), new Address($mailRecipient), Setting::get('siteName'));
+                $multiLogger = new MultiLogger($fileLogger, $mailLogger);
+            }
+            else
+            {
+                $multiLogger = new MultiLogger($fileLogger);
+            }
+            $dic->add($multiLogger, LoggerInterface::class);
+
             $user = User::fromSession();
             if ($user !== null)
             {
