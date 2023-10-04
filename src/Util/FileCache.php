@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Util;
 
+use DateTime;
+use DateTimeImmutable;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
@@ -23,6 +25,11 @@ final class FileCache
      */
     public function __construct(string $cacheKey, array $allowedClasses)
     {
+        $allowedClasses[] = DateTime::class;
+        $allowedClasses[] = DateTimeImmutable::class;
+        $allowedClasses[] = \Safe\DateTime::class;
+        $allowedClasses[] = \Safe\DateTimeImmutable::class;
+
         $this->filename = self::CACHE_DIR . "/$cacheKey.phps";
         $this->allowedClasses = $allowedClasses;
     }
