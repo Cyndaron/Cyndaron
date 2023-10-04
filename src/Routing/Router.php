@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Mime\Address;
+use Throwable;
 use function array_key_exists;
 use function array_merge;
 use function array_shift;
@@ -47,6 +48,7 @@ use function explode;
 use function filter_input;
 use function Safe\error_log;
 use function session_start;
+use function set_exception_handler;
 use function strpos;
 use function substr;
 use function trim;
@@ -149,6 +151,17 @@ final class Router implements HttpKernelInterface
         return $ret;
     }
 
+    private function setExceptionHandler(LoggerInterface $logger): void
+    {
+        set_exception_handler(static function(Throwable $t) use ($logger)
+        {
+            $logger->error((string)$t);
+            $page = new SimplePage('Fout', 'Er ging iets mis bij het laden van deze pagina!');
+            $response = new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response->send();
+        });
+    }
+
     private function getResponse(Controller $route): Response
     {
         $request = Request::createFromGlobals();
@@ -190,6 +203,8 @@ final class Router implements HttpKernelInterface
             }
             $dic->add($multiLogger, LoggerInterface::class);
 
+            $this->setExceptionHandler($multiLogger);
+
             $user = User::fromSession();
             if ($user !== null)
             {
@@ -198,10 +213,18 @@ final class Router implements HttpKernelInterface
 
             return $route->route($dic);
         }
-        catch (\Exception $e)
+        catch (Throwable $t)
         {
-            /** @noinspection ForgottenDebugOutputInspection */
-            error_log($e->__toString());
+            if (isset($multiLogger))
+            {
+                $multiLogger->error((string)$t);
+            }
+            else
+            {
+                /** @noinspection ForgottenDebugOutputInspection */
+                error_log($t->__toString());
+            }
+
             if ($this->isApiCall)
             {
                 return new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);
