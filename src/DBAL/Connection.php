@@ -9,7 +9,6 @@ use PDOStatement;
 use function assert;
 use function is_array;
 use function is_scalar;
-use function is_string;
 use function Safe\error_log;
 
 final class Connection extends PDO

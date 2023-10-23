@@ -3,19 +3,10 @@ declare(strict_types=1);
 
 namespace Cyndaron\DBAL;
 
-use BackedEnum;
-use Cyndaron\Util\Util;
 use DateTime;
-use DateTimeInterface;
 use Exception;
-use ReflectionIntersectionType;
-use ReflectionNamedType;
-use ReflectionProperty;
-use ReflectionUnionType;
 
 use function array_map;
-use function enum_exists;
-use function is_scalar;
 use function sprintf;
 use function array_merge;
 use function reset;
@@ -23,12 +14,6 @@ use function array_key_exists;
 use function array_fill;
 use function count;
 use function implode;
-use function is_bool;
-use function is_int;
-use function is_float;
-use function assert;
-use function is_a;
-use function str_contains;
 
 abstract class Model
 {
