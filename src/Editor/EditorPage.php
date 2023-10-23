@@ -29,7 +29,7 @@ abstract class EditorPage extends Page
         '/vendor/ckeditor/ckeditor/skins/moono-lisa/icons_hidpi.png',
     ];
 
-    protected ?int $id = null;
+    protected int|null $id = null;
 
     protected bool $vorigeversie = false;
     protected string $vvstring = '';
@@ -43,7 +43,7 @@ abstract class EditorPage extends Page
      * @param bool $previous
      * @throws \Safe\Exceptions\DirException
      */
-    public function __construct(array $internalLinks, ?int $id, bool $previous)
+    public function __construct(array $internalLinks, int|null $id, bool $previous)
     {
         $this->id = $id;
         $this->vorigeversie = $previous;

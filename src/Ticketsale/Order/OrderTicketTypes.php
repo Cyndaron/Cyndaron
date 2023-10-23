@@ -16,11 +16,11 @@ final class OrderTicketTypes extends Model
     public int $tickettypeId;
     /** @deprecated  */
     public int $amount = 1;
-    public ?string $secretCode;
+    public string|null $secretCode;
     public bool $hasBeenScanned = false;
 
-    private ?Order $order = null;
-    private ?TicketType $ticketType = null;
+    private Order|null $order = null;
+    private TicketType|null $ticketType = null;
 
     public function setOrder(Order $order): void
     {

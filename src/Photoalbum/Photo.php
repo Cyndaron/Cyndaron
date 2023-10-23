@@ -21,7 +21,7 @@ final class Photo
     public string $filename;
     public string $hash;
     public Photoalbum $album;
-    public ?PhotoalbumCaption $caption = null;
+    public PhotoalbumCaption|null $caption = null;
     public string $link = '';
 
     /**

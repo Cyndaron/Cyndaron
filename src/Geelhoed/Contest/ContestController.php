@@ -104,7 +104,7 @@ final class ContestController extends Controller
         return new Response($page->render());
     }
 
-    public function view(QueryBits $queryBits, ?User $currentUser): Response
+    public function view(QueryBits $queryBits, User|null $currentUser): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -713,7 +713,7 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/view/' . $contest->id);
     }
 
-    public function editSubscription(QueryBits $queryBits, RequestParameters $post, ?User $currentUser): Response
+    public function editSubscription(QueryBits $queryBits, RequestParameters $post, User|null $currentUser): Response
     {
         $id = $queryBits->getInt(2);
         $subscription = ContestMember::fetchById($id);
@@ -762,7 +762,7 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/myContests');
     }
 
-    public function editSubscriptionPage(QueryBits $queryBits, ?User $currentUser): Response
+    public function editSubscriptionPage(QueryBits $queryBits, User|null $currentUser): Response
     {
         $id = $queryBits->getInt(2);
         $subscription = ContestMember::fetchById($id);

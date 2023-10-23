@@ -51,7 +51,7 @@ final class User extends CacheableModel
 
     public string $username = '';
     public string $password = '';
-    public ?string $email = null;
+    public string|null $email = null;
     public int $level = UserLevel::LOGGED_IN;
     public string $firstName = '';
     public string $initials = '';
@@ -61,12 +61,12 @@ final class User extends CacheableModel
     public string $comments = '';
     public string $avatar = '';
     public bool $hideFromMemberList = false;
-    public ?string $gender = null;
-    public ?string $street = null;
-    public ?int $houseNumber = null;
-    public ?string $houseNumberAddition = null;
-    public ?string $postalCode = null;
-    public ?string $city = null;
+    public string|null $gender = null;
+    public string|null $street = null;
+    public int|null $houseNumber = null;
+    public string|null $houseNumberAddition = null;
+    public string|null $postalCode = null;
+    public string|null $city = null;
     public DateTime|null $dateOfBirth = null;
     public bool $optOut = false;
     public string $notes = '';
@@ -99,7 +99,7 @@ Uw nieuwe wachtwoord is: %s';
     /**
      * @return string[]|null
      */
-    public static function getNotifications(): ?array
+    public static function getNotifications(): array|null
     {
         $return = $_SESSION['notifications'] ?? null;
         $_SESSION['notifications'] = null;
@@ -408,7 +408,7 @@ Uw nieuwe wachtwoord is: %s';
         return Util::filenameToUrl($filename);
     }
 
-    public static function fromSession(): ?self
+    public static function fromSession(): self|null
     {
         return $_SESSION['profile'] ?? null;
     }

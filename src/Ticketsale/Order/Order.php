@@ -40,13 +40,13 @@ final class Order extends Model
     public bool $deliveryByMember;
     public string $deliveryMemberName = '';
     public bool $addressIsAbroad = false;
-    public ?string $transactionCode = null;
-    public ?string $secretCode = null;
+    public string|null $transactionCode = null;
+    public string|null $secretCode = null;
     public string $comments = '';
     protected string $additionalData = '';
 
     /** @var OrderTicketTypes[]|null  */
-    private ?array $cachedTicketTypes = null;
+    private array|null $cachedTicketTypes = null;
 
     public function setIsPaid(): bool
     {

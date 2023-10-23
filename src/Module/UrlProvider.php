@@ -9,5 +9,5 @@ interface UrlProvider
      * @param string[] $linkParts
      * @return string|null
      */
-    public function url(array $linkParts): ?string;
+    public function url(array $linkParts): string|null;
 }

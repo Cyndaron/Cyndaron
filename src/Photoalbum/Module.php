@@ -48,7 +48,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
         ];
     }
 
-    public function url(array $linkParts): ?string
+    public function url(array $linkParts): string|null
     {
         $album = Photoalbum::fetchById((int)$linkParts[1]);
         return $album !== null ? $album->name : null;

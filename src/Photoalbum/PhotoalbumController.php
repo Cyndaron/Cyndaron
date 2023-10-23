@@ -32,7 +32,7 @@ final class PhotoalbumController extends Controller
         'edit' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_EDIT, 'function' => 'edit'],
     ];
 
-    protected function routeGet(QueryBits $queryBits, ?User $currentUser): Response
+    protected function routeGet(QueryBits $queryBits, User|null $currentUser): Response
     {
         $id = $queryBits->getInt(1);
         if ($id < 1)

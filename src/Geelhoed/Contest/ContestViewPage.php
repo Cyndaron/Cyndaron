@@ -8,7 +8,7 @@ use function sprintf;
 
 final class ContestViewPage extends Page
 {
-    public function __construct(Contest $contest, ?User $currentUser)
+    public function __construct(Contest $contest, User|null $currentUser)
     {
         $controlledMembers = $currentUser !== null ? Member::fetchAllContestantsByUser($currentUser) : [];
         $canManage = $currentUser !== null && $currentUser->hasRight(Contest::RIGHT_MANAGE);

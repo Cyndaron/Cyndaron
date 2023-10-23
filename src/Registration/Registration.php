@@ -31,7 +31,7 @@ final class Registration extends Model
     public string $initials;
     public int $registrationGroup = 0;
     public string $vocalRange;
-    public ?int $birthYear = null;
+    public int|null $birthYear = null;
     public bool $lunch = false;
     public string $lunchType = '';
     public bool $bhv = false;

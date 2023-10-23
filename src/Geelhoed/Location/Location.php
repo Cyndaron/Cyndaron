@@ -24,7 +24,7 @@ final class Location extends CacheableModel
      * @param int|null $departmentId
      * @return Hour[]
      */
-    public function getHours(?int $departmentId = null): array
+    public function getHours(int|null $departmentId = null): array
     {
         if ($departmentId !== null)
         {

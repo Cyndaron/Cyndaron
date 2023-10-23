@@ -73,7 +73,7 @@ abstract class ModelWithCategory extends Model
      * @throws \Exception
      * @return Category|null
      */
-    public function getFirstCategory(): ?Category
+    public function getFirstCategory(): Category|null
     {
         $categories = $this->getCategories();
         if (empty($categories))

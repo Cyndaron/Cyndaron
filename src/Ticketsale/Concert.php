@@ -41,7 +41,7 @@ final class Concert extends Model
      * @throws Exception
      * @return int[]|null Which seats were reserved, if there were enough, null otherwise
      */
-    public function reserveSeats(int $orderId, int $numTickets): ?array
+    public function reserveSeats(int $orderId, int $numTickets):array|null
     {
         if (!$this->id)
         {

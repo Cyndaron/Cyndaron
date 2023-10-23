@@ -22,7 +22,7 @@ final class Util extends \Cyndaron\Util\Util
         return (new Template())->render('Registration/PageManagerTab', $templateVars);
     }
 
-    public static function birthYearToCategory(Event $event, ?int $birthYear): string
+    public static function birthYearToCategory(Event $event, int|null $birthYear): string
     {
         if ($birthYear === null)
         {

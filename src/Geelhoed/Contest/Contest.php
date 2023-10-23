@@ -97,7 +97,7 @@ final class Contest extends Model
         return ContestDate::fetchAll(['contestId = ?'], [$this->id], 'ORDER BY datetime');
     }
 
-    public function getFirstDate(): ?string
+    public function getFirstDate(): string|null
     {
         $dates = $this->getDates();
         if (count($dates) === 0)

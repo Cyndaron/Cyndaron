@@ -21,10 +21,10 @@ final class MenuItem extends Model
     public const TABLE_FIELDS = ['link', 'alias', 'isDropdown', 'isImage', 'priority'];
 
     public string $link;
-    public ?string $alias = null;
+    public string|null $alias = null;
     public bool $isDropdown = false;
     public bool $isImage = false;
-    public ?int $priority = null;
+    public int|null $priority = null;
 
     public function save(): bool
     {

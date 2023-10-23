@@ -29,7 +29,7 @@ final class TemplateFinder
      * @param string $name
      * @return string|null
      */
-    public function path(string $name): ?string
+    public function path(string $name): string|null
     {
         // Full path?
         if (file_exists($name))
@@ -54,7 +54,7 @@ final class TemplateFinder
      * @param string $name
      * @return string|null
      */
-    private function searchPath(string $path, string $name): ?string
+    private function searchPath(string $path, string $name): string|null
     {
         $baseName = $path . $name;
         $files = [
@@ -78,7 +78,7 @@ final class TemplateFinder
      * @param string $fullName
      * @return string|null
      */
-    private function searchSrcAndVendor(string $fullName): ?string
+    private function searchSrcAndVendor(string $fullName): string|null
     {
         $template = null;
         $parts = explode('/', $fullName);

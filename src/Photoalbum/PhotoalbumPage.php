@@ -9,7 +9,7 @@ use Cyndaron\View\Template\Template;
 
 final class PhotoalbumPage extends Page
 {
-    public function __construct(Photoalbum $album, ?User $currentUser, int $viewMode = Photoalbum::VIEWMODE_REGULAR)
+    public function __construct(Photoalbum $album, User|null $currentUser, int $viewMode = Photoalbum::VIEWMODE_REGULAR)
     {
         $this->model = $album;
         parent::__construct($album->name);

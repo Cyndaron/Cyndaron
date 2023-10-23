@@ -30,7 +30,7 @@ final class DependencyInjectionContainer
         $this->objects[$className] = $object;
     }
 
-    public function get(string $className): ?object
+    public function get(string $className):object|null
     {
         return $this->objects[$className] ?? null;
     }

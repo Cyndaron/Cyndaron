@@ -21,11 +21,11 @@ abstract class Model
     // Override to include the fields for that particular model
     public const TABLE_FIELDS = [];
 
-    public ?int $id;
+    public int|null $id;
     public DateTime $modified;
     public DateTime $created;
 
-    final public function __construct(?int $id = null)
+    final public function __construct(int|null $id = null)
     {
         $this->id = $id;
     }
@@ -35,7 +35,7 @@ abstract class Model
      * @throws Exception
      * @return static|null
      */
-    public static function fetchById(int $id): ?Model
+    public static function fetchById(int $id): Model|null
     {
         // Needed to make sure an object of the derived class is returned, not one of the base class.
         $object = new static($id);
@@ -135,7 +135,7 @@ abstract class Model
      * @param string $afterWhere
      * @return static|null
      */
-    public static function fetch(array $where = [], array $args = [], string $afterWhere = ''): ?self
+    public static function fetch(array $where = [], array $args = [], string $afterWhere = ''): self|null
     {
         $results = static::fetchAll($where, $args, $afterWhere);
         if (count($results) > 0)

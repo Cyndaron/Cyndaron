@@ -117,7 +117,7 @@ final class Router implements HttpKernelInterface
         return $this->routeEndpoint();
     }
 
-    private function routeFoundNowCheckLogin(): ?RedirectResponse
+    private function routeFoundNowCheckLogin():RedirectResponse|null
     {
         $userLevel = User::getLevel();
         $isLoggingIn = $this->requestVars[0] === 'user' && $this->requestVars[1] === 'login';
@@ -259,7 +259,7 @@ final class Router implements HttpKernelInterface
      * @param string $request
      * @return RedirectResponse|null
      */
-    private function redirectOldUrls(string $request): ?RedirectResponse
+    private function redirectOldUrls(string $request):RedirectResponse|null
     {
         $frontPage = $this->getFrontpageUrl();
         if ($frontPage->equals(new Url($_SERVER['REQUEST_URI'])))
@@ -305,7 +305,7 @@ final class Router implements HttpKernelInterface
      * @throws \Safe\Exceptions\StringsException
      * @return RedirectResponse|null
      */
-    private function blockPathTraversal(string $request): ?RedirectResponse
+    private function blockPathTraversal(string $request):RedirectResponse|null
     {
         if ($request !== '/' && (substr($request, 0, 1) === '.' || substr($request, 0, 1) === '/'))
         {

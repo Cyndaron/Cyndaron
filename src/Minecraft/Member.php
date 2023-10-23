@@ -11,7 +11,7 @@ final class Member extends Model
     public const TABLE_FIELDS = ['userName', 'uuid', 'realName', 'level', 'status', 'donor', 'skinUrl', 'renderAvatarHair', 'newRenderer'];
 
     public string $userName;
-    public ?string $uuid;
+    public string|null $uuid;
     public string $realName;
     public int $level;
     public string $status;
@@ -20,7 +20,7 @@ final class Member extends Model
     public bool $renderAvatarHair;
     public bool $newRenderer = false;
 
-    public static function loadByUsername(string $username): ?self
+    public static function loadByUsername(string $username): self|null
     {
         $results = self::fetchAll(['userName = ?'], [$username]);
         if (count($results) === 0)

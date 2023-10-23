@@ -847,7 +847,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         return $this->checkInPage($concert, $message, $isCorrect);
     }
 
-    private function checkInPage(Concert $concert, ?string $message = null, ?bool $isPositive = false): Response
+    private function checkInPage(Concert $concert, string|null $message = null, bool|null $isPositive = false): Response
     {
         $templateVars = [
             'concert' => $concert,

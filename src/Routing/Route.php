@@ -14,9 +14,9 @@ final class Route
 {
     public string $method = '';
     public int $level = UserLevel::ADMIN;
-    public ?string $right = null;
+    public string|null $right = null;
 
-    public function __construct(string $method, int $level = UserLevel::ADMIN, ?string $right = null)
+    public function __construct(string $method, int $level = UserLevel::ADMIN, string|null $right = null)
     {
         $this->method = $method;
         $this->level = $level;

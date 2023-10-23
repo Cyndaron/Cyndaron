@@ -26,14 +26,14 @@ abstract class EditorSavePage
 {
     public const TYPE = '';
 
-    protected ?int $id = null;
+    protected int|null $id = null;
     protected string $returnUrl = '';
 
     public const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
     public const PAGE_HEADER_DIR = Util::UPLOAD_DIR . '/images/page-header';
     public const PAGE_PREVIEW_DIR = Util::UPLOAD_DIR . '/images/page-preview';
 
-    public function __construct(?int $id, RequestParameters $post, Request $request)
+    public function __construct(int|null $id, RequestParameters $post, Request $request)
     {
         $this->id = $id;
 

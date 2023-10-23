@@ -50,7 +50,7 @@ abstract class CacheableModel extends Model
         self::saveCache();
     }
 
-    public static function fetchById(int $id): ?static
+    public static function fetchById(int $id): static|null
     {
         self::loadCache();
         return self::$cache[static::TABLE][$id] ?? null;

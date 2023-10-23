@@ -18,7 +18,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     protected string $template = '';
 
     /** @var Concert|null  */
-    protected ?Model $model = null;
+    protected Model|null $model = null;
 
     protected function prepare(): void
     {

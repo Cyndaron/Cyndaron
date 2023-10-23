@@ -16,9 +16,9 @@ final class Skin
     public const SECONDS_TO_CACHE = 604800; // Cache for 7 days
     public const FALLBACK_IMAGE = __DIR__ . '/char.png';
 
-    private ?string $url;
+    private string|null $url;
 
-    public function __construct(?string $skinUrl)
+    public function __construct(string|null $skinUrl)
     {
         $this->url = $skinUrl;
     }

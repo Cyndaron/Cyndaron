@@ -19,8 +19,8 @@ use function session_start;
 
 abstract class Controller
 {
-    protected ?string $module = null;
-    protected ?string $action = null;
+    protected string|null $module = null;
+    protected string|null $action = null;
     protected bool $isApiCall = false;
 
     protected int $minLevelGet = UserLevel::ANONYMOUS;
@@ -151,7 +151,7 @@ abstract class Controller
      * @throws \Safe\Exceptions\SessionException
      * @return Response|null A Response if the user level is insufficient, null otherwise.
      */
-    public function checkUserLevel(int $requiredLevel): ?Response
+    public function checkUserLevel(int $requiredLevel):Response|null
     {
         if ($requiredLevel > UserLevel::ANONYMOUS && !User::isLoggedIn())
         {

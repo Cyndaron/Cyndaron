@@ -43,7 +43,7 @@ final class Photoalbum extends ModelWithCategory
     public int $thumbnailWidth = 270;
     public int $thumbnailHeight = 200;
 
-    public static function create(string $name, string $notes = '', bool $showBreadcrumbs = false): ?int
+    public static function create(string $name, string $notes = '', bool $showBreadcrumbs = false): int|null
     {
         if ($name === '')
         {

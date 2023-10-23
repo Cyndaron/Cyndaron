@@ -54,7 +54,7 @@ class Page
     protected string $websiteName = '';
     protected string $extraBodyClasses = '';
 
-    protected ?Model $model = null;
+    protected Model|null $model = null;
 
     protected string $template = '';
     /** @var array<string, mixed> */

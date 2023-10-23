@@ -107,7 +107,7 @@ final class WebBootstrapper
         return $connection;
     }
 
-    private function getSettingsFile(): ?string
+    private function getSettingsFile(): string|null
     {
         static $settingsFiles = [
             __DIR__ . '/../config.php',

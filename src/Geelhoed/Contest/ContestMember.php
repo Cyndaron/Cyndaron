@@ -20,7 +20,7 @@ final class ContestMember extends Model
     public int $memberId;
     public int $graduationId;
     public int $weight;
-    public ?string $molliePaymentId = null;
+    public string|null $molliePaymentId = null;
     public bool $isPaid = false;
     public string $comments = '';
 
@@ -45,7 +45,7 @@ final class ContestMember extends Model
         return $ret;
     }
 
-    public static function fetchByContestAndMember(Contest $contest, Member $member): ?self
+    public static function fetchByContestAndMember(Contest $contest, Member $member): self|null
     {
         $results = self::fetchAll(['contestId = ?', 'memberId = ?'], [$contest->id, $member->id]);
         if (count($results) <= 0)

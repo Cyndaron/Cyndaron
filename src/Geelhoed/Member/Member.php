@@ -42,7 +42,7 @@ final class Member extends Model
     public bool $freeParticipation = false;
     public float $discount;
     public bool $temporaryStop = false;
-    public ?string $joinedAt = null;
+    public string|null $joinedAt = null;
     public string $jbnNumber = '';
     public string $jbnNumberLocation = '';
 
@@ -208,7 +208,7 @@ final class Member extends Model
         return $sports;
     }
 
-    public function getHighestGraduation(Sport $sport): ?Graduation
+    public function getHighestGraduation(Sport $sport):Graduation|null
     {
         $graduations = MemberGraduation::fetchAllByMember($this);
         // Results are ordered by date, so the reverse it to start with the highest ones.
@@ -440,7 +440,7 @@ final class Member extends Model
         return $ret;
     }
 
-    public static function loadFromProfile(User $profile): ?self
+    public static function loadFromProfile(User $profile): self|null
     {
         $results = self::fetchAll(['userId = ?'], [$profile->id]);
         if (count($results) <= 0)

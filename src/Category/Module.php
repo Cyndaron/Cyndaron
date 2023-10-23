@@ -40,7 +40,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         ];
     }
 
-    public function url(array $linkParts): ?string
+    public function url(array $linkParts): string|null
     {
         if ((int)$linkParts[1] === 0 || $linkParts[1] === 'fotoboeken')
         {
