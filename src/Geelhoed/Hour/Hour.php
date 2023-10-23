@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Hour;
 
-use Cyndaron\DBAL\CacheableModel;
+use Cyndaron\DBAL\FileCachedModel;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Department;
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Sport\Sport;
@@ -11,8 +12,10 @@ use Cyndaron\View\Template\ViewHelpers;
 use function assert;
 use function sprintf;
 
-final class Hour extends CacheableModel
+final class Hour extends Model
 {
+    use FileCachedModel;
+
     public const TABLE = 'geelhoed_hours';
     public const TABLE_FIELDS = ['locationId', 'day', 'description', 'from', 'until', 'sportId', 'sportOverride', 'departmentId', 'capacity', 'notes'];
 

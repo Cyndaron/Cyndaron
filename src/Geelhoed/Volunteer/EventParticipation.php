@@ -3,12 +3,15 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Volunteer;
 
-use Cyndaron\DBAL\CacheableModel;
+use Cyndaron\DBAL\FileCachedModel;
+use Cyndaron\DBAL\Model;
 use Safe\Exceptions\JsonException;
 use function Safe\json_decode;
 
-final class EventParticipation extends CacheableModel
+final class EventParticipation extends Model
 {
+    use FileCachedModel;
+
     public const TABLE = 'geelhoed_volunteer_event_participation';
     // Override to include the fields for that particular model
     public const TABLE_FIELDS = ['eventId', 'name', 'email', 'phone', 'type', 'data', 'comments'];

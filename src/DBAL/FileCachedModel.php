@@ -6,7 +6,7 @@ namespace Cyndaron\DBAL;
 use Cyndaron\Util\FileCache;
 use function assert;
 
-abstract class CacheableModel extends Model
+trait FileCachedModel
 {
     /** @var array<string, static[]> */
     protected static array $cache = [];

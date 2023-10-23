@@ -3,14 +3,16 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Location;
 
-use Cyndaron\DBAL\CacheableModel;
-use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\FileCachedModel;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Hour\Hour;
 use function urlencode;
 use function implode;
 
-final class Location extends CacheableModel
+final class Location extends Model
 {
+    use FileCachedModel;
+
     public const TABLE = 'geelhoed_locations';
     public const TABLE_FIELDS = ['name', 'street', 'houseNumber', 'postalCode', 'city'];
 

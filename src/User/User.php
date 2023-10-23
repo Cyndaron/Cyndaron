@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace Cyndaron\User;
 
-use Cyndaron\DBAL\CacheableModel;
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\Util\Error\IncompleteData;
-use Cyndaron\Mail\Mail;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
@@ -31,7 +30,6 @@ use function substr;
 use function Safe\unlink;
 use function file_exists;
 use function basename;
-use function strpos;
 use function password_needs_rehash;
 use function session_start;
 use function strtolower;
@@ -42,8 +40,10 @@ use function password_verify;
 use function password_hash;
 use function str_contains;
 
-final class User extends CacheableModel
+final class User extends Model
 {
+    use FileCachedModel;
+
     public const TABLE = 'users';
     public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'initials', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city', 'dateOfBirth', 'optOut', 'notes'];
 
