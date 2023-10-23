@@ -13,6 +13,7 @@ use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionUnionType;
 
+use function array_map;
 use function enum_exists;
 use function is_scalar;
 use function sprintf;
@@ -240,7 +241,8 @@ abstract class Model
                 $arguments[] = ValueConverter::phpToSql($this->$tableField);
             }
 
-            $result = DBConnection::getPDO()->insert('INSERT INTO ' . static::TABLE . ' (' . implode(',', static::TABLE_FIELDS) . ') VALUES (' . $placeholders . ')', $arguments);
+            $quotedTableFields = array_map(static fn (string $fieldName) => "`$fieldName`", static::TABLE_FIELDS);
+            $result = DBConnection::getPDO()->insert('INSERT INTO ' . static::TABLE . ' (' . implode(',', $quotedTableFields) . ') VALUES (' . $placeholders . ')', $arguments);
             if ($result !== false)
             {
                 $this->id = (int)$result;
@@ -257,12 +259,12 @@ abstract class Model
                 $mangledField = ValueConverter::phpToSql($this->$tableField);
                 if ($mangledField !== null)
                 {
-                    $setStrings[] = $tableField . '=?';
+                    $setStrings[] = "`{$tableField}`=?";
                     $arguments[] = $mangledField;
                 }
                 else
                 {
-                    $setStrings[] = $tableField . '= NULL';
+                    $setStrings[] = "`$tableField`= NULL";
                 }
             }
 
