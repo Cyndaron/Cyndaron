@@ -28,6 +28,8 @@ abstract class Model
     final public function __construct(int|null $id = null)
     {
         $this->id = $id;
+        $this->created = new DateTime();
+        $this->modified = new DateTime();
     }
 
     /**
@@ -231,6 +233,8 @@ abstract class Model
             if ($result !== false)
             {
                 $this->id = (int)$result;
+                $this->created = new DateTime();
+                $this->modified = new DateTime();
             }
         }
         // Modify existing entry
@@ -255,6 +259,10 @@ abstract class Model
 
             $arguments[] = $this->id;
             $result = DBConnection::getPDO()->insert('UPDATE ' . static::TABLE . ' SET ' . implode(',', $setStrings) . ' WHERE id=?', $arguments);
+            if ($result !== false)
+            {
+                $this->modified = new DateTime();
+            }
         }
 
         return $result !== false;
