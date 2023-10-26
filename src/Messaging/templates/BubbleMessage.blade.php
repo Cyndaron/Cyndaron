@@ -1,24 +1,26 @@
 @php
+    /** @var \Cyndaron\Messaging\MessageInterface $message */
     $isMe ??= false;
 
     $class = 'bubble-message';
     $class .= $isMe ? ' bubble-right' : ' bubble-left';
-    $class .= $isRead ? '' : ' bubble-unread';
+    $class .= $message->isRead() ? '' : ' bubble-unread';
 @endphp
 
 <div class="{{ $class }}">
 
-    @if (isset($profileLink))
-        <a href="{!! $profileLink !!}">
-            <img class="bubble-avatar" src="{{ $profileAvatar }}" alt="">
+    @if ($message->getUserLink())
+        <a href="{!! $message->getUserLink() !!}">
+            <img class="bubble-avatar" src="{{ $message->getUserAvatar() }}" alt="">
         </a>
-    @elseif ($profileAvatar)
-        <img class="bubble-avatar" src="{{ $profileAvatar }}" alt="">
+    @elseif ($message->getUserAvatar())
+        <img class="bubble-avatar" src="{{ $message->getUserAvatar() }}" alt="">
     @endif
 
     <div class="berichtboven">
-        <div class="berichtstatusbox-bubbel"><span>Verstuurd: {{ $dateTime|dmyHm }}</span>
-            @if (!$isRead)
+        <div class="berichtstatusbox-bubbel">
+            <span>Verstuurd: @if ($message->getDateTime()) {{ $message->getDateTime()|dmyHm }} @else onbekend @endif</span>
+            @if (!$message->isRead())
                 &nbsp; <span class="glyphicon glyphicon-eye-close" title="Dit bericht is nog niet gelezen door de ontvanger"></span>
             @endif
         </div>
@@ -29,5 +31,5 @@
             </div>
         @endif
     </div>
-    {!! $message !!}
+    {!! $message->getBody() !!}
 </div>
