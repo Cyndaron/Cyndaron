@@ -1,8 +1,8 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
+use Cyndaron\Imaging\ImageTransformer;
 use Cyndaron\Util\Util;
-use Imagick;
 
 use Safe\Exceptions\PcreException;
 use function Safe\copy;
@@ -90,8 +90,9 @@ final class Photo
 
     protected static function resizeMainPhoto(string $filename): bool
     {
-        $image = new Imagick($filename);
-        self::autoRotate($image);
+        $transformer = ImageTransformer::fromFilename($filename);
+        $transformer->autoRotate();
+        $image = $transformer->getImage();
         if ($image->getImageWidth() > self::MAX_DIMENSION || $image->getImageHeight() > self::MAX_DIMENSION)
         {
             $image->scaleImage(self::MAX_DIMENSION, self::MAX_DIMENSION, true);
@@ -101,38 +102,11 @@ final class Photo
 
     protected static function createThumbnail(string $filename, int $thumbnailWidth, int $thumbnailHeight): bool
     {
-        $image = new Imagick($filename);
-        self::autoRotate($image);
+        $transformer = ImageTransformer::fromFilename($filename);
+        $transformer->autoRotate();
+        $image = $transformer->getImage();
         $image->cropThumbnailImage($thumbnailWidth, $thumbnailHeight);
         return $image->writeImage($filename);
-    }
-
-    /**
-     * Courtesy of https://www.php.net/manual/en/imagick.getimageorientation.php#111448.
-     *
-     * @param Imagick $image
-     */
-    protected static function autoRotate(Imagick $image): void
-    {
-        $orientation = $image->getImageOrientation();
-
-        switch ($orientation)
-        {
-            case Imagick::ORIENTATION_BOTTOMRIGHT:
-                $image->rotateImage('#000', 180);
-                break;
-
-            case Imagick::ORIENTATION_RIGHTTOP:
-                $image->rotateImage('#000', 90);
-                break;
-
-            case Imagick::ORIENTATION_LEFTBOTTOM:
-                $image->rotateImage('#000', -90);
-                break;
-        }
-
-        // Now that it's auto-rotated, make sure the EXIF data is correct in case the EXIF gets saved with the image!
-        $image->setImageOrientation(Imagick::ORIENTATION_TOPLEFT);
     }
 
     /**
