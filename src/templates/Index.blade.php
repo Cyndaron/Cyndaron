@@ -50,7 +50,7 @@
         <link rel="prefetch" href="{!! $preloadLink !!}"/>
     @endforeach
     @foreach ($extraHeadLines ?? [] as $extraHeadLine)
-        {!! $extraHeadLine !!}}
+        {!! $extraHeadLine !!}
     @endforeach
     {!! $extraHead !!}
 </head>
