@@ -4,21 +4,14 @@
     <form name="bewerkartikel" method="post" action="{{ $saveUrl }}" class="form-horizontal" enctype="multipart/form-data">
 
         @if ($hasTitle)
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label" for="titel">Titel: </label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" id="titel" name="titel" required
-                           value="{{ $contentTitle }}"/>
-                </div>
-            </div>
+            @include('View/Widget/Form/BasicInput', ['id' => 'titel', 'required' => true, 'value' => $contentTitle, 'label' => 'Titel'])
 
             @if ($hasCategory)
                 @include ('View/Widget/Form/Checkbox', ['id' => 'showBreadcrumbs', 'description' => 'Titel tonen als breadcrumbs', 'checked' => $showBreadcrumbs])
             @endif
 
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label" for="friendlyUrl">Friendly URL: </label>
-                <div class="col-sm-5">
+            @component('View/Widget/Form/FormWrapper', ['id' => 'friendlyUrl', 'label' => 'Friendly URL'])
+                @slot('right')
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
@@ -27,8 +20,8 @@
                         <input type="text" class="form-control" id="friendlyUrl" name="friendlyUrl"
                                aria-describedby="basic-addon3" value="{{ $friendlyUrl }}"/>
                     </div>
-                </div>
-            </div>
+                @endslot
+            @endcomponent
         @endif
 
         @if ($hasCategory)
