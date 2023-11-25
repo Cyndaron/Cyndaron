@@ -6,6 +6,7 @@ cyn2
 .sass-cache/
 .php_cs.cache
 cache/
+var/
 
 # Site-specific
 config.php
