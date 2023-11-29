@@ -454,7 +454,7 @@ final class Router implements HttpKernelInterface
             session_start();
         }
 
-        $requestStr = (new RequestParameters($request->query->all()))->getUrl('page') ?: '/';
+        $requestStr = ltrim($request->getRequestUri(), '/') ?: '/';
         $this->updateRequestVars($requestStr);
         $cspHeader = $this->getCSPHeader();
         $response = $this->getEndpointOrRedirect($requestStr);
