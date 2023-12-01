@@ -64,7 +64,7 @@ final class WebBootstrapper
         // Prevent users from specifying their own session ID.
         ini_set('session.use_strict_mode', '1');
         // Ensure SameSite attribute is set on all cookies.
-        ini_set('session.cookie_samesite', '1');
+        ini_set('session.cookie_samesite', 'Lax');
     }
 
     private function registerAutoloaders(): void
