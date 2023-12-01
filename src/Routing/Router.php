@@ -46,6 +46,7 @@ use function array_shift;
 use function defined;
 use function explode;
 use function filter_input;
+use function parse_url;
 use function Safe\error_log;
 use function session_start;
 use function set_exception_handler;
@@ -54,6 +55,7 @@ use function substr;
 use function trim;
 use const FILTER_SANITIZE_URL;
 use const INPUT_SERVER;
+use const PHP_URL_PATH;
 
 /**
  * Zorgt voor correct doorverwijzen van verzoeken.
@@ -454,7 +456,8 @@ final class Router implements HttpKernelInterface
             session_start();
         }
 
-        $requestStr = ltrim(parse_url($request->getRequestUri(), PHP_URL_PATH), '/') ?: '/';
+        $requestStr = parse_url($request->getRequestUri(), PHP_URL_PATH) ?: '';
+        $requestStr = ltrim($requestStr, '/') ?: '/';
         $this->updateRequestVars($requestStr);
         $cspHeader = $this->getCSPHeader();
         $response = $this->getEndpointOrRedirect($requestStr);
