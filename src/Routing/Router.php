@@ -56,6 +56,7 @@ use function trim;
 use const FILTER_SANITIZE_URL;
 use const INPUT_SERVER;
 use const PHP_URL_PATH;
+use function ltrim;
 
 /**
  * Zorgt voor correct doorverwijzen van verzoeken.
