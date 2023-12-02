@@ -1,25 +1,27 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Geelhoed\Volunteer;
+namespace Cyndaron\Geelhoed\Tryout;
 
-use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Calendar\CalendarAppointment;
 use Cyndaron\DBAL\Model;
+use DateTime;
+use function array_fill;
+use function assert;
+use function count;
 use function is_array;
 use function Safe\json_decode;
-use function array_fill;
-use function count;
-use function assert;
 
-final class Event extends Model
+final class Tryout extends Model implements CalendarAppointment
 {
-    public const TABLE = 'geelhoed_volunteer_event';
-    public const TABLE_FIELDS = ['name', 'start', 'end', 'data'];
+    public const TABLE = 'geelhoed_volunteer_tot';
+    public const TABLE_FIELDS = ['name', 'start', 'end', 'data', 'photoalbumLink'];
 
     public string $name = '';
-    public string $start;
-    public string $end;
+    public DateTime $start;
+    public DateTime $end;
     public string $data;
+    public string $photoalbumLink;
 
     /**
      * @throws \Safe\Exceptions\JsonException
@@ -62,7 +64,7 @@ final class Event extends Model
     }
 
     /**
-     * @return array<int, array<string, list<EventParticipation>>>
+     * @return array<int, array<string, list<TryoutParticipation>>>
      */
     public function getTryoutParticipationData(): array
     {
@@ -77,7 +79,7 @@ final class Event extends Model
             ];
         }
 
-        $participations = EventParticipation::fetchAll(['eventId = ?'], [$this->id]);
+        $participations = TryoutParticipation::fetchAll(['eventId = ?'], [$this->id]);
         foreach ($participations as $participation)
         {
             $decoded = $participation->getJsonData();
@@ -123,5 +125,30 @@ final class Event extends Model
         }
 
         return new TryoutStatus($fullStatus, $fullRounds, $fullTypes);
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getDescription(): string
+    {
+        return '';
+    }
+
+    public function getLocation(): string
+    {
+        return '';
+    }
+
+    public function getStart(): \DateTimeInterface
+    {
+        return $this->start;
+    }
+
+    public function getEnd(): \DateTimeInterface
+    {
+        return $this->end;
     }
 }

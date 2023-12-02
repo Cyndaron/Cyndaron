@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed;
 
+use Cyndaron\Calendar\CalendarAppointmentsProvider;
 use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Contest\ContestController;
 use Cyndaron\Geelhoed\Hour\HourController;
@@ -12,6 +13,7 @@ use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberController;
 use Cyndaron\Geelhoed\Reservation\ReservationController;
 use Cyndaron\Geelhoed\Sport\SportController;
+use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Geelhoed\Tryout\TryoutController;
 use Cyndaron\Geelhoed\Volunteer\VolunteerController;
 use Cyndaron\Module\Datatype;
@@ -28,7 +30,7 @@ use Cyndaron\Util\Link;
 use function array_key_exists;
 use function implode;
 
-final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, Templated
+final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, Templated, CalendarAppointmentsProvider
 {
     public function dataTypes(): array
     {
@@ -56,6 +58,12 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
                 'pageManagerTab' => PageManagerTabs::class . '::sportsTab',
                 'pageManagerJS' => '/src/Geelhoed/Sport/js/PageManagerTab.js',
             ]),
+            'tryout' => Datatype::fromArray([
+                'singular' => 'Tryout-toernooi',
+                'plural' => 'Tryout-toernooien',
+                'pageManagerTab' => PageManagerTabs::class . '::tryoutTab',
+                'pageManagerJS' => '/src/Geelhoed/Tryout/js/PageManagerTab.js',
+            ])
         ];
     }
 
@@ -134,5 +142,10 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
     public function getTemplateRoot(): TemplateRoot
     {
         return new TemplateRoot('Geelhoed', __DIR__);
+    }
+
+    public function getAppointments(): array
+    {
+        return Tryout::fetchAll();
     }
 }

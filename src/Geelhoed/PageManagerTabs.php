@@ -7,6 +7,8 @@ use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Sport\Sport;
+use Cyndaron\Geelhoed\Tryout\Tryout;
+use Cyndaron\User\User;
 use Cyndaron\View\Template\Template;
 
 final class PageManagerTabs
@@ -34,5 +36,15 @@ final class PageManagerTabs
     {
         $sports = Sport::fetchAll();
         return (new Template())->render('Geelhoed/Sport/PageManagerTab', ['sports' => $sports]);
+    }
+
+    public static function tryoutTab(): string
+    {
+        $csrfTokenCreatePhotoalbums = User::getCSRFToken('tryout', 'create-photoalbums');
+        $tryouts = Tryout::fetchAll();
+        return (new Template())->render('Geelhoed/Tryout/PageManagerTab', [
+            'tryouts' => $tryouts,
+            'csrfTokenCreatePhotoalbums' => $csrfTokenCreatePhotoalbums,
+        ]);
     }
 }

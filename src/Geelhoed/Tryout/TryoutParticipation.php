@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Geelhoed\Volunteer;
+namespace Cyndaron\Geelhoed\Tryout;
 
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Safe\Exceptions\JsonException;
 use function Safe\json_decode;
 
-final class EventParticipation extends Model
+final class TryoutParticipation extends Model
 {
     use FileCachedModel;
 
-    public const TABLE = 'geelhoed_volunteer_event_participation';
+    public const TABLE = 'geelhoed_volunteer_tot_participation';
     // Override to include the fields for that particular model
     public const TABLE_FIELDS = ['eventId', 'name', 'email', 'phone', 'type', 'data', 'comments'];
 

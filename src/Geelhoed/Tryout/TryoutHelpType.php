@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Geelhoed\Volunteer;
+namespace Cyndaron\Geelhoed\Tryout;
 
 enum TryoutHelpType : string
 {

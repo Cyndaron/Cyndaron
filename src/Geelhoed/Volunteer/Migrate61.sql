@@ -11,13 +11,13 @@ create table geelhoed_volunteer_event
 );
 
 create index geelhoed_volunteer_event_end
-    on geelhoed_volunteer_event (end);
+    on geelhoed_volunteer_tot (end);
 
 create index geelhoed_volunteer_event_start
-    on geelhoed_volunteer_event (start);
+    on geelhoed_volunteer_tot (start);
 
 create index geelhoed_volunteer_event_start_end
-    on geelhoed_volunteer_event (start, end);
+    on geelhoed_volunteer_tot (start, end);
 
 
 create table geelhoed_volunteer_event_participation
@@ -33,18 +33,18 @@ create table geelhoed_volunteer_event_participation
     created  datetime default CURRENT_TIMESTAMP not null,
     modified datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
     constraint geelhoed_volunteer_event_participation_id_fk
-        foreign key (eventId) references geelhoed_volunteer_event (id)
+        foreign key (eventId) references geelhoed_volunteer_tot (id)
             on update cascade on delete cascade
 );
 
 create index geelhoed_volunteer_event_participation_email
-    on geelhoed_volunteer_event_participation (email);
+    on geelhoed_volunteer_tot_participation (email);
 
 create index geelhoed_volunteer_event_participation_et
-    on geelhoed_volunteer_event_participation (eventId, type);
+    on geelhoed_volunteer_tot_participation (eventId, type);
 
 create index geelhoed_volunteer_event_participation_eventId
-    on geelhoed_volunteer_event_participation (eventId);
+    on geelhoed_volunteer_tot_participation (eventId);
 
-alter table geelhoed_volunteer_event_participation
+alter table geelhoed_volunteer_tot_participation
     add phone varchar(30) not null after email;

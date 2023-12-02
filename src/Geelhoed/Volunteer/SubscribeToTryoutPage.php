@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Volunteer;
 
+use Cyndaron\Geelhoed\Tryout\Tryout;
+use Cyndaron\Geelhoed\Tryout\TryoutHelpType;
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
 use Cyndaron\Util\Util;
@@ -10,11 +12,10 @@ use Cyndaron\View\Template\ViewHelpers;
 
 final class SubscribeToTryoutPage extends Page
 {
-    public function __construct(Event $event)
+    public function __construct(Tryout $event)
     {
         $json = $event->getJsonData();
-        $startDate = \Safe\DateTimeImmutable::createFromFormat(Util::SQL_DATE_TIME_FORMAT, $event->start);
-        $title = 'Inschrijven voor tryout-toernooi ' . ViewHelpers::filterDutchDate($startDate);
+        $title = 'Inschrijven voor tryout-toernooi ' . ViewHelpers::filterDutchDate($event->start);
         $numRounds = $event->getTryoutNumRounds();
         $status = $event->getTryoutStatus();
         parent::__construct($title);

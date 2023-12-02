@@ -3,19 +3,19 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Volunteer;
 
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Error\ErrorPageResponse;
+use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use const JSON_THROW_ON_ERROR;
 use function count;
 use function implode;
 use function json_encode;
+use const JSON_THROW_ON_ERROR;
 
 class VolunteerController extends Controller
 {
@@ -40,7 +40,7 @@ class VolunteerController extends Controller
 
     public function subscribeToTryoutGet(QueryBits $queryBits): Response
     {
-        $event = Event::fetchById($queryBits->getInt(2));
+        $event = Tryout::fetchById($queryBits->getInt(2));
         if ($event === null)
         {
             return new ErrorPageResponse('Fout', 'Evenement niet gevonden!');
@@ -51,7 +51,7 @@ class VolunteerController extends Controller
 
     public function subscribeToTryoutPost(QueryBits $queryBits, RequestParameters $post, Connection $db): JsonResponse
     {
-        $event = Event::fetchById($queryBits->getInt(2));
+        $event = Tryout::fetchById($queryBits->getInt(2));
         if ($event === null)
         {
             return new JsonResponse(['status' => 'error', 'message' => 'Evenement niet gevonden!'], Response::HTTP_BAD_REQUEST);
@@ -109,7 +109,7 @@ class VolunteerController extends Controller
 
         $jsonData = json_encode(['rounds' => $rounds], JSON_THROW_ON_ERROR);
 
-        $sql = 'INSERT INTO geelhoed_volunteer_event_participation(`eventId`, `name`, `email`, `phone`, `type`, `data`, `comments`) VALUES (?, ?, ?, ?, ?, ?, ?);';
+        $sql = 'INSERT INTO geelhoed_volunteer_tot_participation(`eventId`, `name`, `email`, `phone`, `type`, `data`, `comments`) VALUES (?, ?, ?, ?, ?, ?, ?);';
         $db->executeQuery($sql, [$event->id, $name, $email, $phone, $type, $jsonData, $comments]);
 
         return new JsonResponse([]);
