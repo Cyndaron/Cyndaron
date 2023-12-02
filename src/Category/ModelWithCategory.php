@@ -122,11 +122,11 @@ abstract class ModelWithCategory extends Model
         return $ret;
     }
 
-    public function addCategory(Category $category): void
+    public function addCategory(Category $category, int $priority = 0): void
     {
         $tableName = static::CATEGORY_TABLE;
         /** @noinspection SqlResolve */
-        DBConnection::getPDO()->executeQuery("INSERT IGNORE INTO {$tableName}(id, categoryId) VALUES (?, ?)", [$this->id, $category->id]);
+        DBConnection::getPDO()->executeQuery("INSERT IGNORE INTO {$tableName}(id, categoryId, priority) VALUES (?, ?, ?)", [$this->id, $category->id, $priority]);
     }
 
     public function removeCategory(Category $category): void
