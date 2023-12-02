@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Routing;
 
+use Cyndaron\Calendar\CalendarAppointmentsProvider;
+use Cyndaron\Calendar\Registry;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Editor\EditorController;
@@ -409,6 +411,10 @@ final class Router implements HttpKernelInterface
                 {
                     TextRenderer::addTextPostProcessor(new $processor());
                 }
+            }
+            if ($module instanceof CalendarAppointmentsProvider)
+            {
+                Registry::addProvider($module);
             }
         }
     }
