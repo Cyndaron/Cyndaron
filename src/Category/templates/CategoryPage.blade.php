@@ -11,7 +11,7 @@
     <div id="category-main">
         {!! $model ? \Cyndaron\View\Template\ViewHelpers::parseText($model->description) : '' !!}
 
-    @if ($viewMode === 0)
+    @if ($viewMode === \Cyndaron\Category\ViewMode::Regular)
         <div class="category-listview">
         @foreach ($pages as $page)
             <div>
@@ -20,13 +20,13 @@
             </div>
         @endforeach
         </div>
-    @elseif ($viewMode === 1)
+    @elseif ($viewMode === \Cyndaron\Category\ViewMode::Titles)
     <ul class="zonderbullets">
         @foreach ($pages as $page)
             <li><h3><a href="{{ $page->getFriendlyUrl() }}" @if ($page->openInNewTab) target="_blank" @endif>{{ $page->name }}</a></h3></li>
         @endforeach
     </ul>
-    @elseif ($viewMode === 2)
+    @elseif ($viewMode === \Cyndaron\Category\ViewMode::Blog)
         <div class="category-blockview">
             @foreach ($pages as $page)
                 <div class="category-block">
@@ -38,7 +38,7 @@
                 </div>
             @endforeach
         </div>
-    @elseif ($viewMode === 3)
+    @elseif ($viewMode === \Cyndaron\Category\ViewMode::Portfolio)
         @foreach ($portfolioContent as $albumname => $albumcontent)
             <h2>{{ $albumname }}</h2>
             @foreach ($albumcontent as $page)
@@ -51,7 +51,7 @@
                 </div>
             @endforeach
         @endforeach
-    @elseif ($viewMode === 4)
+    @elseif ($viewMode === \Cyndaron\Category\ViewMode::Horizontal)
         <div class="category-horizontalview">
             @foreach ($pages as $page)
                 <div class="category-block">

@@ -12,19 +12,19 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     protected function prepare(): void
     {
-        $currentViewMode = Category::VIEWMODE_REGULAR;
+        $currentViewMode = ViewMode::Regular;
         if ($this->id)
         {
             $this->model = Category::fetchById($this->id);
             $this->content = $this->model->description ?? '';
             $this->contentTitle = $this->model->name ?? '';
-            $currentViewMode = $this->model->viewMode ?? Category::VIEWMODE_REGULAR;
+            $currentViewMode = $this->model->viewMode ?? ViewMode::Regular;
         }
 
         $this->addTemplateVars([
             'id' => 'viewMode',
             'label' => 'Weergave',
-            'options' => Category::VIEWMODE_DESCRIPTIONS,
+            'options' => ViewMode::cases(),
             'selected' => $currentViewMode,
         ]);
     }

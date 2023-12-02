@@ -16,7 +16,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $category->name = $post->getHTML('titel');
         $category->blurb = $post->getHTML('blurb');
         $category->description = $this->parseTextForInlineImages($post->getHTML('artikel'));
-        $category->viewMode = $post->getInt('viewMode');
+        $category->viewMode = ViewMode::from($post->getInt('viewMode'));
         $category->showBreadcrumbs = $post->getBool('showBreadcrumbs');
         $this->saveHeaderAndPreviewImage($category, $post, $request);
         $category->save();

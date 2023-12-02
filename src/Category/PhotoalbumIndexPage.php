@@ -18,7 +18,7 @@ final class PhotoalbumIndexPage extends Page
             'model' => null,
             'pages' => $photoalbums,
             'tags' => [],
-            'viewMode' => Category::VIEWMODE_TITLES
+            'viewMode' => ViewMode::Titles,
         ]);
     }
 }

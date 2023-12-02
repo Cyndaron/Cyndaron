@@ -38,7 +38,7 @@ final class TagIndexPage extends Page
             'type' => 'tag',
             'pages' => $pages,
             'tags' => $tags,
-            'viewMode' => Category::VIEWMODE_BLOG,
+            'viewMode' => ViewMode::Blog,
         ]);
     }
 }
