@@ -6,6 +6,7 @@ namespace Cyndaron\Geelhoed\Location;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Hour\Hour;
+use function array_unique;
 use function urlencode;
 use function implode;
 
@@ -86,6 +87,6 @@ final class Location extends Model
         {
             $ret[] = $result->city;
         }
-        return $ret;
+        return array_unique($ret);
     }
 }
