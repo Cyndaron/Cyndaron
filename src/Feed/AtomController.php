@@ -29,12 +29,12 @@ final class AtomController extends Controller
             return new ErrorPageResponse('Fout', 'Categorie niet gevonden!', Response::HTTP_NOT_FOUND);
         }
 
-        /** @var \DateTimeInterface|null $savedDate */
-        $savedDate = null;
+        /** @var \DateTimeInterface $savedDate */
+        $savedDate = $category->created;
         $underlyingPages = $category->getUnderlyingPages();
         foreach ($underlyingPages as $underlyingPage)
         {
-            if ($savedDate === null || $underlyingPage->created->diff($savedDate)->invert)
+            if ($underlyingPage->created->diff($savedDate)->invert)
             {
                 $savedDate = $underlyingPage->created;
             }
