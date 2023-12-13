@@ -5,6 +5,7 @@ namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Connection;
+use Cyndaron\Error\ErrorPageResponse;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Photoalbum\Photoalbum;
@@ -62,7 +63,11 @@ final class CategoryController extends Controller
         }
 
         $category = Category::fetchById((int)$id);
-        assert($category !== null);
+        if ($category === null)
+        {
+            return new ErrorPageResponse('Fout', 'Categorie niet gevonden!', Response::HTTP_NOT_FOUND);
+        }
+
         $page = new CategoryIndexPage($category);
         return new Response($page->render());
     }
