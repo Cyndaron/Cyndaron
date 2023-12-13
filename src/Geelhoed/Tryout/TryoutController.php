@@ -181,10 +181,10 @@ class TryoutController extends Controller
 
         foreach ($toAddresses as $toAddress)
         {
-            $plainText = "Er zijn fotopagina’s aangemaakt voor het Tryouttoernooi van " . $date . PHP_EOL. PHP_EOL;
+            $plainText = "Er zijn fotopagina’s aangemaakt voor het Tryouttoernooi van " . $date . ':' . PHP_EOL. PHP_EOL;
             foreach ($roundUrls as $roundUrl)
             {
-                $plainText .= $roundUrl . PHP_EOL;
+                $plainText .= 'https://' . Util::getDomain() . $roundUrl . PHP_EOL;
             }
 
             $mail = \Cyndaron\Util\Mail::createMailWithDefaults($toAddress, 'Fotoalbums aangemaakt', $plainText);
