@@ -37,7 +37,7 @@ final class PageManagerPage extends Page
         {
             throw new \RuntimeException('Er zijn geen datatypes die u kunt beheren!');
         }
-        if (!$currentUser->hasRight($currentPage))
+        if (!$currentUser->hasRight("{$currentPage}_edit"))
         {
             $currentPage = $firstVisibleType;
         }
