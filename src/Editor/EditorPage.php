@@ -24,6 +24,7 @@ abstract class EditorPage extends Page
     public const HAS_CATEGORY = false;
     public const SAVE_URL = '';
 
+    // Listed here to ensure they get copied to public_html
     public const CKEDITOR_IMAGES = [
         '/vendor/ckeditor/ckeditor/skins/moono-lisa/icons.png',
         '/vendor/ckeditor/ckeditor/skins/moono-lisa/icons_hidpi.png',
