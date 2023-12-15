@@ -32,8 +32,7 @@ abstract class EditorPage extends Page
 
     protected int|null $id = null;
 
-    protected bool $vorigeversie = false;
-    protected string $vvstring = '';
+    protected bool $useBackup = false;
     protected string $content = '';
     protected string $contentTitle = '';
     protected string $template = 'Editor/PageBase';
@@ -41,14 +40,13 @@ abstract class EditorPage extends Page
     /**
      * @param Link[] $internalLinks
      * @param int|null $id
-     * @param bool $previous
+     * @param bool $useBackup
      * @throws \Safe\Exceptions\DirException
      */
-    public function __construct(array $internalLinks, int|null $id, bool $previous)
+    public function __construct(array $internalLinks, int|null $id, bool $useBackup)
     {
         $this->id = $id;
-        $this->vorigeversie = $previous;
-        $this->vvstring = $this->vorigeversie ? 'vorige' : '';
+        $this->useBackup = $useBackup;
 
         $this->prepare();
 
