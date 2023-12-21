@@ -58,7 +58,7 @@ final class ImageExtractor
         $image = str_replace('base64,', '', $image);
         $image = base64_decode(str_replace(' ', '+', $image), true);
         $destinationFilename = $this->outputDir . '/' . date('c') . '-' . md5($image) . '.' . $extension;
-        Util::createDir($this->outputDir);
+        Util::ensureDirectoryExists($this->outputDir);
         file_put_contents($destinationFilename, $image);
 
         return 'src="' . Util::filenameToUrl($destinationFilename) . '"';
