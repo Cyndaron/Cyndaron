@@ -7,6 +7,7 @@ use Cyndaron\FriendlyUrl\FriendlyUrl;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
+use Cyndaron\Util\Filetypes;
 use Cyndaron\Util\Util;
 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -63,8 +64,7 @@ abstract class EditorSavePage
 
     protected function parseTextForInlineImages(string $text): string
     {
-        /** @phpstan-ignore-next-line (false positive, callback _works_) */
-        $result = preg_replace_callback('/src="(data:)([^"]*)"/', 'static::extractImages', $text);
+        $result = preg_replace_callback('/src="(data:)([^"]*)"/', static::extractImages(...), $text);
         if (!is_string($result))
         {
             throw new \Exception('Error while parsing text for inline images!');
@@ -83,22 +83,10 @@ abstract class EditorSavePage
     {
         [$type, $image] = explode(';', $matches[2]);
 
-        switch ($type)
+        $extension = Filetypes::MIME_TYPE_TO_EXTENSION[$type] ?? null;
+        if ($extension === null)
         {
-            case 'image/gif':
-                $extension = 'gif';
-                break;
-            case 'image/jpeg':
-                $extension = 'jpg';
-                break;
-            case 'image/png':
-                $extension = 'png';
-                break;
-            case 'image/bmp':
-                $extension = 'bmp';
-                break;
-            default:
-                return 'src="' . $matches[0] . '"';
+            return 'src="' . $matches[0] . '"';
         }
 
         $image = str_replace('base64,', '', $image);
