@@ -32,8 +32,6 @@
             ])
         @endif
 
-        {!! $contents !!}
-
         @yield ('contentSpecificButtons')
 
 
