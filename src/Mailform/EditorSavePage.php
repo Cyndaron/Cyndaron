@@ -19,7 +19,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $mailform->email = $post->getEmail('email');
         $mailform->antiSpamAnswer = $post->getAlphaNum('antiSpamAnswer');
         $mailform->sendConfirmation = $post->getBool('sendConfirmation');
-        $mailform->confirmationText = $this->parseTextForInlineImages($post->getHTML('artikel'));
+        $mailform->confirmationText = $this->imageExtractor->process($post->getHTML('artikel'));
 
         if ($mailform->save())
         {

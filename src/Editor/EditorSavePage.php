@@ -5,6 +5,7 @@ use Cyndaron\Category\Category;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\FriendlyUrl\FriendlyUrl;
 use Cyndaron\Category\ModelWithCategory;
+use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
 use Cyndaron\Util\Filetypes;
@@ -33,10 +34,12 @@ abstract class EditorSavePage
     public const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
     public const PAGE_HEADER_DIR = Util::UPLOAD_DIR . '/images/page-header';
     public const PAGE_PREVIEW_DIR = Util::UPLOAD_DIR . '/images/page-preview';
+    protected readonly ImageExtractor $imageExtractor;
 
     public function __construct(int|null $id, RequestParameters $post, Request $request)
     {
         $this->id = $id;
+        $this->imageExtractor = new ImageExtractor(self::IMAGE_DIR);
 
         $this->prepare($post, $request);
 
@@ -61,42 +64,6 @@ abstract class EditorSavePage
     }
 
     abstract protected function prepare(RequestParameters $post, Request $request): void;
-
-    protected function parseTextForInlineImages(string $text): string
-    {
-        $result = preg_replace_callback('/src="(data:)([^"]*)"/', static::extractImages(...), $text);
-        if (!is_string($result))
-        {
-            throw new \Exception('Error while parsing text for inline images!');
-        }
-        return $result;
-    }
-
-    /**
-     * @param array<string> $matches
-     * @throws \Safe\Exceptions\DatetimeException
-     * @throws \Safe\Exceptions\FilesystemException
-     * @throws \Safe\Exceptions\UrlException
-     * @return string
-     */
-    protected static function extractImages(array $matches): string
-    {
-        [$type, $image] = explode(';', $matches[2]);
-
-        $extension = Filetypes::MIME_TYPE_TO_EXTENSION[$type] ?? null;
-        if ($extension === null)
-        {
-            return 'src="' . $matches[0] . '"';
-        }
-
-        $image = str_replace('base64,', '', $image);
-        $image = base64_decode(str_replace(' ', '+', $image), true);
-        $destinationFilename = self::IMAGE_DIR . '/' . date('c') . '-' . md5($image) . '.' . $extension;
-        Util::createDir(self::IMAGE_DIR);
-        file_put_contents($destinationFilename, $image);
-
-        return 'src="' . Util::filenameToUrl($destinationFilename) . '"';
-    }
 
     public function getReturnUrl(): string
     {

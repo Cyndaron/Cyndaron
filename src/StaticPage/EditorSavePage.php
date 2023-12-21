@@ -13,7 +13,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
     protected function prepare(RequestParameters $post, Request $request): void
     {
         $titel = $post->getHTML('titel');
-        $text = $this->parseTextForInlineImages($post->getHTML('artikel'));
+        $text = $this->imageExtractor->process($post->getHTML('artikel'));
         $enableComments = $post->getBool('enableComments');
         $showBreadcrumbs = $post->getBool('showBreadcrumbs');
         $tags = trim($post->getSimpleString('tags'), "; \t\n\r\0\x0B");

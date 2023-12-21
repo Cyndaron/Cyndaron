@@ -14,8 +14,8 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $concert = new Concert($this->id);
         $concert->loadIfIdIsSet();
         $concert->name = $post->getHTML('titel');
-        $concert->description = $this->parseTextForInlineImages($post->getHTML('artikel'));
-        $concert->descriptionWhenClosed = $this->parseTextForInlineImages($post->getHTML('descriptionWhenClosed'));
+        $concert->description = $this->imageExtractor->process($post->getHTML('artikel'));
+        $concert->descriptionWhenClosed = $this->imageExtractor->process($post->getHTML('descriptionWhenClosed'));
         $concert->openForSales = $post->getBool('openForSales');
         $concert->deliveryCost = $post->getFloat('deliveryCost');
         $concert->hasReservedSeats = $post->getBool('hasReservedSeats');

@@ -14,8 +14,8 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $event = new Event($this->id);
         $event->loadIfIdIsSet();
         $event->name = $post->getHTML('titel');
-        $event->description = $this->parseTextForInlineImages($post->getHTML('artikel'));
-        $event->descriptionWhenClosed = $this->parseTextForInlineImages($post->getHTML('descriptionWhenClosed'));
+        $event->description = $this->imageExtractor->process($post->getHTML('artikel'));
+        $event->descriptionWhenClosed = $this->imageExtractor->process($post->getHTML('descriptionWhenClosed'));
         $event->openForRegistration = $post->getBool('openForRegistration');
         $event->registrationCost0 = $post->getFloat('registrationCost0');
         $event->registrationCost1 = $post->getFloat('registrationCost1');
