@@ -102,6 +102,8 @@ $('#gum-popup-save').on('click keyup', function ()
         data: $('#gum-user-popup').serialize(),
     }).done(function (record)
     {
+        $('#gum-edit-user-dialog').modal('hide');
+
         const gumTableBody = document.getElementById('gum-table-body');
         const startOfNextQuarter = gumTableBody.attributes['data-next-quarter-start'].value;
         const csrfTokenMemberDelete = gumTableBody.attributes['data-csrf-token-member-delete'].value;
@@ -111,7 +113,7 @@ $('#gum-popup-save').on('click keyup', function ()
 
         addMemberToGrid(gumTableBody, startOfNextQuarter, csrfTokenMemberDelete, record);
         sortGrid();
-        $('#gum-edit-user-dialog').modal('hide');
+
         setNormalPointer();
     });
 
