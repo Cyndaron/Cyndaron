@@ -503,7 +503,7 @@ final class ContestController extends Controller
             $sheet->setCellValue("{$column}1", $value);
         }
 
-        $contestants = Member::fetchAll(['isContestant = 1'], [], 'ORDER BY lastName,tussenvoegsel,firstName');
+        $contestants = Member::fetchAllAndSortByName(['isContestant = 1']);
         $sports = Sport::fetchAll();
         $row = 2;
         foreach ($contestants as $member)

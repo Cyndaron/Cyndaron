@@ -12,7 +12,7 @@ final class ContestantsListPage extends Page
     public function __construct()
     {
         parent::__construct('Overzicht wedstrijdjudoka\'s');
-        $contestants = Member::fetchAll(['isContestant = 1'], [], 'ORDER BY lastName,tussenvoegsel,firstName');
+        $contestants = Member::fetchAllAndSortByName(['isContestant = 1']);
         $sports = Sport::fetchAll();
         $this->addTemplateVars(['contestants' => $contestants, 'sports' => $sports]);
     }

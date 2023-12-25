@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Hour\Hour;
@@ -21,12 +22,15 @@ use function explode;
 use function implode;
 use function is_int;
 use function reset;
+use function strtolower;
 use function trim;
 use function uasort;
 use function usort;
 
 final class Member extends Model
 {
+    use FileCachedModel;
+
     public const TABLE = 'geelhoed_members';
     public const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'ibanHolder', 'paymentProblem', 'paymentProblemNote', 'freeParticipation', 'discount', 'temporaryStop', 'joinedAt', 'jbnNumber', 'jbnNumberLocation'];
 
@@ -362,34 +366,6 @@ final class Member extends Model
     }
 
     /**
-     * @param string[] $where
-     * @param list<string|int|float|null> $args
-     * @param string $afterWhere
-     * @return static[]
-     */
-    public static function fetchAll(array $where = [], array $args = [], string $afterWhere = 'ORDER BY lastname,tussenvoegsel,firstname'): array
-    {
-        $whereString = '';
-        if (count($where) > 0)
-        {
-            $whereString = 'WHERE ' . implode(' AND ', $where);
-        }
-        $results = DBConnection::getPDO()->doQueryAndFetchAll('SELECT *,gm.id AS id FROM `geelhoed_members` gm INNER JOIN `users` u on gm.userId = u.id ' . $whereString . ' ' . $afterWhere, $args);
-        $ret = [];
-        if ($results)
-        {
-            foreach ($results as $result)
-            {
-                $obj = new static((int)$result['id']);
-                $obj->updateFromArray($result);
-                $ret[] = $obj;
-            }
-        }
-
-        return $ret;
-    }
-
-    /**
      * @param Hour $hour
      * @throws \Safe\Exceptions\ArrayException
      * @throws \Safe\Exceptions\ArrayException
@@ -408,24 +384,7 @@ final class Member extends Model
                 $ret[] = $obj;
             }
         }
-        usort($ret, static function(Member $m1, Member $m2)
-        {
-            $p1 = $m1->getProfile();
-            $p2 = $m2->getProfile();
-            $lastname = $p1->lastName <=> $p2->lastName;
-            if ($lastname !== 0)
-            {
-                return $lastname;
-            }
-
-            $tussenvoegsel = $p1->tussenvoegsel <=> $p2->tussenvoegsel;
-            if ($tussenvoegsel !== 0)
-            {
-                return $tussenvoegsel;
-            }
-
-            return $p1->firstName <=> $p2->firstName;
-        });
+        self::sortByName($ret);
 
         return $ret;
     }
@@ -522,5 +481,51 @@ final class Member extends Model
             self::rebuildMonthlyFeeCache();
         }
         return $result;
+    }
+
+    /**
+     * @param string[] $where
+     * @param list<string|int|float|null> $args
+     * @param string $afterWhere
+     * @return static[]
+     */
+    public static function fetchAllAndSortByName(array $where = [], array $args = [], string $afterWhere = ''): array
+    {
+        $list = self::fetchAll($where, $args, $afterWhere);
+        self::sortByName($list);
+        return $list;
+    }
+
+    /**
+     * @param Member $m1
+     * @param Member $m2
+     * @return int<-1,1>
+     */
+    public static function compareByName(self $m1, self $m2): int
+    {
+        $p1 = $m1->getProfile();
+        $p2 = $m2->getProfile();
+        $lastname = strtolower($p1->lastName) <=> strtolower($p2->lastName);
+        if ($lastname !== 0)
+        {
+            return $lastname;
+        }
+
+        $tussenvoegsel = strtolower($p1->tussenvoegsel) <=> strtolower($p2->tussenvoegsel);
+        if ($tussenvoegsel !== 0)
+        {
+            return $tussenvoegsel;
+        }
+
+        return strtolower($p1->firstName) <=> strtolower($p2->firstName);
+    }
+
+    /**
+     * @param self[] $results
+     * @return void
+     */
+    private static function sortByName(array &$results): void
+    {
+        usort($results, self::compareByName(...));
     }
 }

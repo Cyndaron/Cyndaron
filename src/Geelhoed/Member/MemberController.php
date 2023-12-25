@@ -75,7 +75,7 @@ final class MemberController extends Controller
     public function getGrid(): JsonResponse
     {
         $ret = [];
-        foreach (Member::fetchAll() as $member)
+        foreach (Member::fetchAllAndSortByName() as $member)
         {
             $ret[] = PageManagerMemberGridItem::createFromMember($member);
         }

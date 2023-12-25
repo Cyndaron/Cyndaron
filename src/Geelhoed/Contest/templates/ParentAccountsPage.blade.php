@@ -21,7 +21,7 @@
             @php $deleteFromToken = \Cyndaron\User\User::getCSRFToken('contest', 'deleteFromParentAccount') @endphp
             @php $addToToken = \Cyndaron\User\User::getCSRFToken('contest', 'addToParentAccount') @endphp
             @php $resetPasswordToken = \Cyndaron\User\User::getCSRFToken('user', 'resetpassword') @endphp
-            @php $contestants = \Cyndaron\Geelhoed\Member\Member::fetchAll(['isContestant = 1'], [], 'ORDER BY lastname') @endphp
+            @php $contestants = \Cyndaron\Geelhoed\Member\Member::fetchAllAndSortByName(['isContestant = 1']) @endphp
             @foreach ($users as $user)
                 @php $controlledMembers = \Cyndaron\Geelhoed\Member\Member::fetchAllByUser($user) @endphp
                 @php $controlledMemberIds = array_map(static function($member) { return $member->id; }, $controlledMembers) @endphp

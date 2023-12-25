@@ -13,7 +13,7 @@ final class ContestantsEmailPage extends Page
     {
         parent::__construct('E-mailadressen wedstrijdjudoka\'s');
         $parents = User::fetchAll(['id IN (SELECT `userId` FROM `user_rights` WHERE `right` = ?)'], [Contest::RIGHT_PARENT]);
-        $independentContestants = Member::fetchAll(['isContestant = 1', 'gm.id NOT IN (SELECT memberId FROM geelhoed_users_members)'], [], 'ORDER BY lastName,tussenvoegsel,firstName');
+        $independentContestants = Member::fetchAll(['isContestant = 1', 'id NOT IN (SELECT memberId FROM geelhoed_users_members)']);
         $pairs = [];
 
         foreach ($parents as $parent)
