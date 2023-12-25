@@ -74,13 +74,8 @@ final class MemberController extends Controller
 
     public function getGrid(): JsonResponse
     {
-        $ret = [];
-        foreach (Member::fetchAllAndSortByName() as $member)
-        {
-            $ret[] = PageManagerMemberGridItem::createFromMember($member);
-        }
-
-        return new JsonResponse($ret);
+        $grid = new PageManagerMemberGrid();
+        return new JsonResponse($grid->get());
     }
 
     public function removeGraduation(QueryBits $queryBits): JsonResponse
@@ -151,6 +146,9 @@ final class MemberController extends Controller
             }
         }
         $member->setHours($hours);
+        $grid = new PageManagerMemberGrid();
+        $grid->rebuild();
+
         $gridItem = PageManagerMemberGridItem::createFromMember($member);
 
         return new JsonResponse($gridItem);
