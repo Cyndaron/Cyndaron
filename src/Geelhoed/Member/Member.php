@@ -274,48 +274,38 @@ final class Member extends Model
 
     private function getMonthlyFeeUncached(): float
     {
-        $currentProfile = $this->getProfile();
-        $membersOnSameAddress = self::fetchAll(
-            ['street = ?', 'houseNumber = ?', 'houseNumberAddition = ?', 'city = ?'],
-            [$currentProfile->street, $currentProfile->houseNumber, $currentProfile->houseNumberAddition, $currentProfile->city]
-        );
+        $membersOnSameAccount = self::fetchAll(['iban = ?'], [$this->iban]);
 
-        if (count($membersOnSameAddress) === 1)
+        if (count($membersOnSameAccount) === 1)
         {
             return $this->getMonthlyFeeRaw();
         }
 
-        $feesOnThisAddress = [];
-        foreach ($membersOnSameAddress as $memberOnAddress)
+        $feesOnThisAccount = [];
+        foreach ($membersOnSameAccount as $memberOnAccount)
         {
-            $feesOnThisAddress[$memberOnAddress->id] = $memberOnAddress->getMonthlyFeeRaw();
+            $feesOnThisAccount[$memberOnAccount->id] = $memberOnAccount->getMonthlyFeeRaw();
         }
 
         // Sort fees, with the highest coming first.
-        uasort($feesOnThisAddress, static function(float $fee1, float $fee2)
+        uasort($feesOnThisAccount, static function(float $fee1, float $fee2)
         {
             return $fee2 <=> $fee1;
         });
 
         $currentMemberIndex = 0;
-        foreach ($feesOnThisAddress as $memberId => $fee)
+        foreach ($feesOnThisAccount as $memberId => $fee)
         {
             if ($memberId === $this->id)
             {
-                switch ($currentMemberIndex)
+                return match ($currentMemberIndex)
                 {
-                    case 0:
-                        return $fee;
-                    case 1:
-                        return $fee * 0.9;
-                    case 2:
-                        return $fee * 0.8;
-                    case 3:
-                        return $fee * 0.7;
-                    case 4:
-                    default:
-                        return $fee * 0.6;
-                }
+                    0 => $fee,
+                    1 => $fee * 0.9,
+                    2 => $fee * 0.8,
+                    3 => $fee * 0.7,
+                    default => $fee * 0.6,
+                };
             }
             $currentMemberIndex++;
         }
