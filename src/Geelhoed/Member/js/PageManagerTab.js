@@ -4,7 +4,8 @@ function clearPopUpFields()
 {
     $('.remove-member-graduation').off();
 
-    $('#gum-edit-user-dialog input,textarea,select').each(function () {
+    $('#gum-edit-user-dialog input,textarea,select').each(function ()
+    {
         let element = $(this);
         let elementName = element.prop('name');
         if (!elementName.startsWith('csrfToken'))
@@ -26,7 +27,7 @@ function clearPopUpFields()
     $('#gum-user-dialog-graduation-list').html('');
 }
 
-$('#gum-new').on('click', function()
+$('#gum-new').on('click', function ()
 {
     clearPopUpFields();
 });
@@ -37,7 +38,8 @@ const gumEditHandler = function ()
 
     let memberId = $(this).data('id');
     $.get('/api/member/get/' + memberId, {}, null, 'json')
-        .done(function (data) {
+        .done(function (data)
+            {
 
                 for (let property in data)
                 {
@@ -46,12 +48,14 @@ const gumEditHandler = function ()
                         if (property === 'graduationList')
                         {
                             $('#gum-user-dialog-graduation-list').html(data[property]);
-                            $('.remove-member-graduation').on('click', function() {
+                            $('.remove-member-graduation').on('click', function ()
+                            {
                                 let id = $(this).data('id');
                                 $.post({
                                     url: '/api/member/removeGraduation/' + id,
-                                    data: { 'csrfToken': $('[name=csrfTokenRemoveGraduation]').first().val()},
-                                }).done(function() {
+                                    data: {'csrfToken': $('[name=csrfTokenRemoveGraduation]').first().val()},
+                                }).done(function ()
+                                {
                                     $('#member-graduation-' + id).remove();
                                 });
                             });
@@ -85,7 +89,7 @@ const gumEditHandler = function ()
     $('#gum-edit-user-dialog [name=id]').val(memberId);
 }
 
-$(document).on('submit', '.myForm', function(e)
+$(document).on('submit', '.myForm', function (e)
 {
     e.preventDefault();
 });
@@ -96,7 +100,8 @@ $('#gum-popup-save').on('click keyup', function ()
     $.post({
         url: '/api/member/save',
         data: $('#gum-user-popup').serialize(),
-    }).done(function (record) {
+    }).done(function (record)
+    {
         const gumTableBody = document.getElementById('gum-table-body');
         const startOfNextQuarter = gumTableBody.attributes['data-next-quarter-start'].value;
         const csrfTokenMemberDelete = gumTableBody.attributes['data-csrf-token-member-delete'].value;
@@ -114,7 +119,7 @@ $('#gum-popup-save').on('click keyup', function ()
 
 $('#gum-filter-iban').on('change', function ()
 {
-    let value = parseInt($( "#gum-filter-iban option:selected" ).val());
+    let value = parseInt($("#gum-filter-iban option:selected").val());
     $('.geelhoed-member-entry').show();
 
     if (value === 1)
@@ -129,7 +134,7 @@ $('#gum-filter-iban').on('change', function ()
 
 $('#gum-filter-gender').on('change', function ()
 {
-    let value = $( "#gum-filter-gender option:selected" ).val();
+    let value = $("#gum-filter-gender option:selected").val();
     $('.geelhoed-member-entry').show();
 
     if (value !== '')
@@ -140,7 +145,7 @@ $('#gum-filter-gender').on('change', function ()
 
 $('#gum-filter-temporaryStop').on('change', function ()
 {
-    let value = parseInt($( "#gum-filter-temporaryStop option:selected" ).val());
+    let value = parseInt($("#gum-filter-temporaryStop option:selected").val());
     $('.geelhoed-member-entry').show();
 
     if (value !== -1)
@@ -151,7 +156,7 @@ $('#gum-filter-temporaryStop').on('change', function ()
 
 $('#gum-filter-paymentProblem').on('change', function ()
 {
-    let value = parseInt($( "#gum-filter-paymentProblem option:selected" ).val());
+    let value = parseInt($("#gum-filter-paymentProblem option:selected").val());
     $('.geelhoed-member-entry').show();
 
     if (value !== -1)
@@ -162,7 +167,7 @@ $('#gum-filter-paymentProblem').on('change', function ()
 
 $('#gum-filter-isContestant').on('change', function ()
 {
-    let value = parseInt($( "#gum-filter-isContestant option:selected" ).val());
+    let value = parseInt($("#gum-filter-isContestant option:selected").val());
     $('.geelhoed-member-entry').show();
 
     if (value !== -1)
@@ -173,7 +178,7 @@ $('#gum-filter-isContestant').on('change', function ()
 
 $('#gum-filter-sport').on('change', function ()
 {
-    let value = parseInt($( "#gum-filter-sport option:selected" ).val());
+    let value = parseInt($("#gum-filter-sport option:selected").val());
     $('.geelhoed-member-entry').show();
 
     if (value !== -1)
@@ -184,7 +189,7 @@ $('#gum-filter-sport').on('change', function ()
 
 $('#gum-filter-graduation').on('change', function ()
 {
-    let value = parseInt($( "#gum-filter-graduation option:selected" ).val());
+    let value = parseInt($("#gum-filter-graduation option:selected").val());
     $('.geelhoed-member-entry').show();
 
     if (value !== -1)
@@ -195,7 +200,7 @@ $('#gum-filter-graduation').on('change', function ()
 
 $('#gum-filter-paymentMethod').on('change', function ()
 {
-    let value = $( "#gum-filter-paymentMethod option:selected" ).val();
+    let value = $("#gum-filter-paymentMethod option:selected").val();
     $('.geelhoed-member-entry').show();
 
     if (value !== '')
@@ -370,13 +375,14 @@ function loadMembers()
         );
 }
 
-document.addEventListener("DOMContentLoaded", function (event) {
+document.addEventListener("DOMContentLoaded", function (event)
+{
     loadMembers();
 });
 
 function setWaitingPointer()
 {
-    document.body.style.cursor='wait';
+    document.body.style.cursor = 'wait';
 }
 
 function setNormalPointer()
@@ -387,27 +393,28 @@ function setNormalPointer()
 function sortGrid()
 {
     const tableBody = document.getElementById("gum-table-body");
-    let switching = true;
-    /* Make a loop that will continue until
-    no switching has been done: */
-    while (switching) {
-        // Start by saying: no switching is done:
-        switching = false;
+    let isSorting = true;
+    while (isSorting)
+    {
+        isSorting = false;
         let rows = tableBody.rows;
         let shouldSwitch = false;
         let i = 0;
-        for (i = 0; i < (rows.length - 1); i++) {
+        for (i = 0; i < (rows.length - 1); i++)
+        {
             shouldSwitch = false;
             let x = rows[i].attributes['data-name'].value.toLowerCase();
             let y = rows[i + 1].attributes['data-name'].value.toLowerCase();
-            if (x > y) {
+            if (x > y)
+            {
                 shouldSwitch = true;
                 break;
             }
         }
-        if (shouldSwitch) {
+        if (shouldSwitch)
+        {
             rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-            switching = true;
+            isSorting = true;
         }
     }
 }
