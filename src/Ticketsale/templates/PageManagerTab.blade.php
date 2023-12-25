@@ -9,6 +9,8 @@
         <tr>
             <th>ID</th>
             <th>Naam</th>
+            <th>Kaartsoorten</th>
+            <th>Ga naar</th>
             <th>Acties</th>
         </tr>
     </thead>
@@ -19,9 +21,25 @@
             <td>{{ $concert->id }}</td>
             <td>
                 {{ $concert->name }}
-                (<a href="/concert/order/{{ $concert->id }}">bestelpagina</a>,
+            </td>
+            <td>
+                <ul>
+                    @foreach (\Cyndaron\Ticketsale\TicketType::loadByConcert($concert) as $ticketType)
+                        <li>
+                            {{ $ticketType->name }}: {{ $ticketType->price|euro }}
+{{--                            <button type="button" class="btn btn-sm btn-outline-cyndaron"><span class="glyphicon glyphicon-trash"></span></button>--}}
+                        </li>
+                    @endforeach
+                </ul>
+{{--                <button type="button" class="btn btn-sm btn-outline-cyndaron">--}}
+{{--                    <span class="glyphicon glyphicon-plus"></span>--}}
+{{--                    Toevoegen--}}
+{{--                </button>--}}
+            </td>
+            <td>
+                <a href="/concert/order/{{ $concert->id }}">bestelpagina</a>,
                 <a href="/concert/viewOrders/{{ $concert->id }}">overzicht bestellingen</a>,
-                <a href="/concert-order/checkIn/{{ $concert->id }}/{{ $concert->secretCode }}">incheckpagina</a>)
+                <a href="/concert-order/checkIn/{{ $concert->id }}/{{ $concert->secretCode }}">incheckpagina</a>
             </td>
             <td>
                 <div class="btn-group">
