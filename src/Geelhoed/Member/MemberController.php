@@ -22,11 +22,12 @@ final class MemberController extends Controller
 {
     protected array $apiGetRoutes = [
         'get' => ['level' => UserLevel::ADMIN, 'function' => 'get'],
+        'getGrid' => ['level' => UserLevel::ADMIN, 'function' => 'getGrid'],
     ];
     protected array $apiPostRoutes = [
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
         'removeGraduation' => ['level' => UserLevel::ADMIN, 'function' => 'removeGraduation'],
-        'save' => ['level' => UserLevel::ADMIN, 'function' => 'save']
+        'save' => ['level' => UserLevel::ADMIN, 'function' => 'save'],
     ];
 
     protected array $getRoutes = [
@@ -66,6 +67,17 @@ final class MemberController extends Controller
             }
 
             $ret['graduationList'] = implode($list);
+        }
+
+        return new JsonResponse($ret);
+    }
+
+    public function getGrid(): JsonResponse
+    {
+        $ret = [];
+        foreach (Member::fetchAll() as $member)
+        {
+            $ret[] = PageManagerMemberGridItem::createFromMember($member);
         }
 
         return new JsonResponse($ret);
@@ -139,8 +151,9 @@ final class MemberController extends Controller
             }
         }
         $member->setHours($hours);
+        $gridItem = PageManagerMemberGridItem::createFromMember($member);
 
-        return new JsonResponse();
+        return new JsonResponse($gridItem);
     }
 
     /**

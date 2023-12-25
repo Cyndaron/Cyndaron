@@ -22,8 +22,7 @@ final class PageManagerTabs
 
     public static function membersTab(): string
     {
-        $members = Member::fetchAll();
-        return (new Template())->render('Geelhoed/Member/PageManagerTab', ['members' => $members]);
+        return (new Template())->render('Geelhoed/Member/PageManagerTab');
     }
 
     public static function contestsTab(): string

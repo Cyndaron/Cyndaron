@@ -78,7 +78,7 @@
             </button>
         @endslot
     @endcomponent
-    <table class="table table-striped table-bordered pm-table">
+    <table id="gum-table" class="table table-striped table-bordered pm-table">
         <thead>
             <tr>
                 <th>ID</th>
@@ -90,82 +90,11 @@
                 <th>Acties</th>
             </tr>
         </thead>
-        <tbody>
-            @php /** @var \Cyndaron\Geelhoed\Member\Member[] $members */ @endphp
-            @foreach ($members as $member)
-                @php $profile = $member->getProfile() @endphp
-                <tr id="pm-row-member-{{ $member->id }}"
-                    class="geelhoed-member-entry"
-                    data-iban="{{ $member->iban }}"
-                    data-gender="{{ $profile->gender ?? '' }}"
-                    data-temporaryStop="{{ (int)$member->temporaryStop }}"
-                    data-paymentMethod="{{ $member->paymentMethod }}"
-                    data-paymentProblem="{{ (int)$member->paymentProblem }}"
-                    data-isContestant="{{ (int)$member->isContestant }}"
-                    @if ($profile->dateOfBirth)
-                        data-dateOfBirth="{{ $profile->dateOfBirth->format('Y-m-d') }}"
-                    @endif
-                    @foreach ($member->getSports() as $sport)
-                        data-sport-{{ $sport->id }}="1"
-                    @endforeach
-                    @foreach (\Cyndaron\Geelhoed\Sport\Sport::fetchAll() as $sport)
-                        @php $graduation = $member->getHighestGraduation($sport) @endphp
-                        @if ($graduation !== null)
-                            data-graduation-{{ $graduation->id }}="1"
-                        @endif
-                        @endforeach
-                >
-                    <td>{{ $member->id }}</td>
-                    <td>
-                        {{ $profile->lastName }} {{ $profile->tussenvoegsel }} {{ $profile->firstName }}<br>
-                        {{ $profile->street }} {{ $profile->houseNumber ?: '' }} {{ $profile->houseNumberAddition }}<br>
-                        {{ $profile->postalCode }} {{ $profile->city }}
-                    </td>
-                    <td>
-                        E-mail: <a href="mailto:{{ $member->getEmail() }}">{{ $member->getEmail() }}</a>
-                        @foreach ($member->getPhoneNumbers() as $phoneNumber)
-                            <br>
-                            Tel.nr. {{ $loop->iteration }}: {{ $phoneNumber }}
-                        @endforeach
-                    </td>
-                    <td>
-                        @foreach ($member->getHours() as $hour)
-                            {{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($hour->day) }} {{ $hour->from|hm }}
-                            - {{ $hour->until|hm }} ({{ $hour->getSportName() }}, {{ $hour->getLocation()->getName() }})
-                            @if (!$loop->last)
-                                <br>
-                            @endif
-                        @endforeach
-                    </td>
-                    <td>
-                        {{ $member->iban }}<br>
-                        <abbr title="Voor kwartaal dat begint op {{ \Cyndaron\Util\Util::getStartOfNextQuarter()->format('d-m-Y') }}">Kw.bedrag: </abbr>{{ \Cyndaron\View\Template\ViewHelpers::formatEuro($member->getQuarterlyFee()) }}
-                    </td>
-                    <td>
-                        @if ($member->isContestant)
-                            <abbr title="Wedstrijdjudoka">W</abbr><br>
-                        @endif
-                        @if ($member->getProfile()->canLogin())
-                            <abbr title="Kan inloggen">I</abbr><br>
-                        @endif
-                        @if ($member->isSenior())
-                            <abbr title="Is senior">S</abbr>
-                        @endif
-                    </td>
-                    <td>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-outline-cyndaron btn-sm btn-gum-edit"
-                                    data-toggle="modal" data-target="#gum-edit-user-dialog" data-id="{{ $member->id }}">
-                                <span class="glyphicon glyphicon-pencil" title="Bewerk dit lid"></span></button>
-                            <button type="button" class="btn btn-danger btn-sm pm-delete" data-type="member"
-                                    data-id="{{ $member->id }}"
-                                    data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('member', 'delete') }}"><span
-                                        class="glyphicon glyphicon-trash" title="Verwijder deze locatie"></span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            @endforeach
+        <tbody
+            id="gum-table-body"
+            data-next-quarter-start="{{ \Cyndaron\Util\Util::getStartOfNextQuarter()->format('d-m-Y') }}"
+            data-csrf-token-member-delete="{{ \Cyndaron\User\User::getCSRFToken('member', 'delete') }}"
+        >
         </tbody>
     </table>
 </div>
