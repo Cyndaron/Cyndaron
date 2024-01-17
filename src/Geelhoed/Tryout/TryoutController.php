@@ -187,7 +187,7 @@ class TryoutController extends Controller
             $round = 1;
             foreach ($roundUrls as $roundUrl)
             {
-                $plainText .= "Ronde {$round}: {$domain}{$roundUrl}\n";
+                $plainText .= "Ronde {$round}: {$domain}/{$roundUrl}\n";
                 $round++;
             }
 
