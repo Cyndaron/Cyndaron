@@ -129,7 +129,6 @@ abstract class Controller
     protected function callMethodWithDependencyInjection(string $method, DependencyInjectionContainer $dic): Response
     {
         $reflectionMethod = new \ReflectionMethod($this, $method);
-        $reflectionMethod->setAccessible(true);
 
         $params = [];
         foreach ($reflectionMethod->getParameters() as $parameter)
