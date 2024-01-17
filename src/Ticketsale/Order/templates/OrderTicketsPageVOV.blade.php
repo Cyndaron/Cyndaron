@@ -48,6 +48,7 @@
                     </tr>
                 @endforeach
             </table>
+            <div class="alert alert-info">Voor donateurs van de Stichting Vrienden van de VOV zijn in het middenschip van de kerk aparte plaatsen gereserveerd.</div>
             <div @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\TicketDelivery::COLLECT_OR_DELIVER) style="display:none" @endif>
                 <input id="bezorgen" name="bezorgen" type="checkbox" value="1" class="recalculateTotal">
                 <label for="bezorgen">
@@ -155,7 +156,7 @@
 
             @include ('View/Widget/Form/Checkbox', ['id' => 'subscribeToNewsletter', 'description' => 'Ik wil mij graag inschrijven voor de nieuwsbrief'])
 
-            <div class="radio">
+            <!--<div class="radio">
                 <label for="donor-yes">
                     <input id="donor-yes" name="donor" type="radio" value="1"/>
                     Ik ben donateur
@@ -166,7 +167,7 @@
                     <input id="donor-no" name="donor" type="radio" value="0" />
                     Ik ben geen donateur
                 </label>
-            </div>
+            </div>-->
 
             <h3 id="adresgegevensKop">Uw adresgegevens:</h3>
 

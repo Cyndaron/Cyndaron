@@ -72,6 +72,7 @@
                     $orderId = $order->id;
                     $deliveryCost = $order->delivery * $concert->deliveryCost;
                     $reservedSeatCharge = $order->hasReservedSeats * $concert->reservedSeatCharge;
+                    $isDonor = $order->getAdditionalData()['donor'] ?? false;
                 @endphp
 
                 <tr>
@@ -89,6 +90,7 @@
                         <td>
                         @if (\array_key_exists($order->id, $ticketTypesByOrder) && \array_key_exists($ticketType['id'], $ticketTypesByOrder[$order->id]))
                             <b>{{ $ticketTypesByOrder[$order->id][$ticketType['id']] }}</b>
+                            @php $isDonor = $isDonor || str_contains(strtolower($ticketType['name']), 'donateur'); @endphp
                         @else
                             &nbsp;
                         @endif
@@ -123,7 +125,6 @@
                         {{ $order->isPaid|boolToDingbat }}
                     </td>
                     <td>
-                        @php $isDonor = $order->getAdditionalData()['donor'] ?? false @endphp
                         {{ $isDonor|boolToDingbat }}
                     </td>
                     <td>
