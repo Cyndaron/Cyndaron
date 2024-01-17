@@ -11,6 +11,7 @@ use Cyndaron\DBAL\Model;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
+use DateTimeInterface;
 use Exception;
 use finfo;
 use DateTime;
@@ -382,7 +383,7 @@ Uw nieuwe wachtwoord is: %s';
         return false;
     }
 
-    public function getAge(?DateTime $on = null): int
+    public function getAge(?DateTimeInterface $on = null): int
     {
         if ($this->dateOfBirth === null)
         {

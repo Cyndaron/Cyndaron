@@ -54,7 +54,7 @@ final class Tryout extends Model implements CalendarAppointment
                 TryoutHelpType::TAFELMEDEWERKER->value => 20,
                 TryoutHelpType::SCHEIDSRECHTER->value => 10,
                 TryoutHelpType::GROEPJESBEGELEIDER->value => 0,
-            ]
+            ],
         ];
     }
 
@@ -150,5 +150,10 @@ final class Tryout extends Model implements CalendarAppointment
     public function getEnd(): \DateTimeInterface
     {
         return $this->end;
+    }
+
+    public function getUrl(): string|null
+    {
+        return null;
     }
 }

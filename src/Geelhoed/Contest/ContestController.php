@@ -352,6 +352,7 @@ final class ContestController extends Controller
             $sheet->setCellValue("{$column}1", $value);
         }
 
+        $firstDate = $contest->getFirstDate();
         $row = 2;
         foreach ($contest->getContestMembers() as $contestMember)
         {
@@ -374,14 +375,7 @@ final class ContestController extends Controller
                 $sheet->setCellValue("F{$row}", '');
             }
 
-            $firstDate = $contest->getFirstDate();
-            $contestDateObject = null;
-            if ($firstDate !== null)
-            {
-                $contestDateObject = new DateTime($firstDate);
-            }
-
-            $sheet->setCellValue("G{$row}", $profile->getAge($contestDateObject));
+            $sheet->setCellValue("G{$row}", $profile->getAge($firstDate));
             $sheet->setCellValue("H{$row}", $contestMember->getGraduation()->name);
             $sheet->setCellValue("I{$row}", $contestMember->weight);
             $sheet->setCellValue("J{$row}", $member->jbnNumber);
@@ -398,8 +392,7 @@ final class ContestController extends Controller
             $dimension->setAutoSize(true);
         }
 
-        $firstDate = $contest->getFirstDate();
-        $date = $firstDate !== null ? date('Y-m-d', strtotime($firstDate)) : 'onbekende datum';
+        $date = $firstDate !== null ? $firstDate->format('Y-m-d') : 'onbekende datum';
         $httpHeaders = SpreadsheetHelper::getResponseHeadersForFilename("Deelnemers {$contest->name} ($date).xlsx");
 
         return new Response(SpreadsheetHelper::convertToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
@@ -672,9 +665,12 @@ final class ContestController extends Controller
             return new JsonResponse(['error' => 'Wedstrijd bestaat niet!'], Response::HTTP_NOT_FOUND);
         }
 
+        $startDateTime = $post->getDate('date') . ' ' . $post->getDate('startTime') . ':00';
+        $endDateTime = $post->getDate('date') . ' ' . $post->getDate('endTime') . ':00';
         $contestDate = new ContestDate();
         $contestDate->contestId = $contestId;
-        $contestDate->datetime = $post->getDate('date') . ' ' . $post->getDate('time') . ':00';
+        $contestDate->start =  DateTime::createFromFormat(Util::SQL_DATE_TIME_FORMAT, $startDateTime);
+        $contestDate->end =  DateTime::createFromFormat(Util::SQL_DATE_TIME_FORMAT, $endDateTime);
         $contestDate->save();
 
         $contestDateId = $contestDate->id;

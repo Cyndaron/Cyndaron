@@ -6,6 +6,7 @@ namespace Cyndaron\Geelhoed;
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
 use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Contest\ContestController;
+use Cyndaron\Geelhoed\Contest\ContestDate;
 use Cyndaron\Geelhoed\Hour\HourController;
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Location\LocationController;
@@ -28,6 +29,7 @@ use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Link;
 use function array_key_exists;
+use function array_merge;
 use function implode;
 
 final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, Templated, CalendarAppointmentsProvider
@@ -146,6 +148,6 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
 
     public function getAppointments(): array
     {
-        return Tryout::fetchAll();
+        return array_merge(Tryout::fetchAll(), ContestDate::fetchAll());
     }
 }

@@ -10,4 +10,5 @@ interface CalendarAppointment
     public function getLocation(): string;
     public function getStart(): \DateTimeInterface;
     public function getEnd(): \DateTimeInterface;
+    public function getUrl(): string|null;
 }

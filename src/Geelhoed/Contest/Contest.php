@@ -94,10 +94,10 @@ final class Contest extends Model
      */
     public function getDates(): array
     {
-        return ContestDate::fetchAll(['contestId = ?'], [$this->id], 'ORDER BY datetime');
+        return ContestDate::fetchAll(['contestId = ?'], [$this->id], 'ORDER BY start');
     }
 
-    public function getFirstDate(): string|null
+    public function getFirstDate(): \DateTimeInterface|null
     {
         $dates = $this->getDates();
         if (count($dates) === 0)
@@ -105,7 +105,7 @@ final class Contest extends Model
             return null;
         }
 
-        return reset($dates)->datetime;
+        return reset($dates)->start;
     }
 
     /**
@@ -113,7 +113,7 @@ final class Contest extends Model
      */
     public static function fetchAllCurrentWithDate(): array
     {
-        return self::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_dates WHERE datetime > CURRENT_TIMESTAMP)'], [], 'ORDER BY registrationDeadline DESC');
+        return self::fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_dates WHERE start > CURRENT_TIMESTAMP)'], [], 'ORDER BY registrationDeadline DESC');
     }
 
     /**

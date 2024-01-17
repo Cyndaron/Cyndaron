@@ -31,7 +31,10 @@ final class Registry
         $appointments = [];
         foreach (self::$providers as $provider)
         {
-            $appointments = array_merge($appointments, $provider->getAppointments());
+            foreach ($provider->getAppointments() as $appointment)
+            {
+                $appointments[] = $appointment;
+            }
         }
 
         return $appointments;
