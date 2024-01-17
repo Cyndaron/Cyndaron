@@ -12,7 +12,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class SystemController extends Controller
 {
-    protected int $minLevelGet = UserLevel::ADMIN;
+    protected array $getRoutes = [
+        '' => ['level' => UserLevel::ADMIN, 'function' => 'routeGet'],
+    ];
+    protected array $postRoutes = [
+        '' => ['level' => UserLevel::ADMIN, 'function' => 'routeGet'],
+    ];
 
     protected function routeGet(QueryBits $queryBits): Response
     {
@@ -21,7 +26,7 @@ final class SystemController extends Controller
         return new Response($page->render());
     }
 
-    protected function routePost(QueryBits $queryBits, RequestParameters $post): Response
+    protected function routePost(RequestParameters $post): Response
     {
         Setting::set('siteName', $post->getHTML('siteName'));
         Setting::set('organisation', $post->getHTML('organisation'));

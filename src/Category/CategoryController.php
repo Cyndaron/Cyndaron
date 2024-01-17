@@ -24,6 +24,10 @@ use function strpos;
 
 final class CategoryController extends Controller
 {
+    protected array $getRoutes = [
+        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
+    ];
+
     protected array $apiGetRoutes = [
         'underlyingPages' => ['level' => UserLevel::ANONYMOUS, 'function' => 'underlyingPages'],
     ];
@@ -36,7 +40,7 @@ final class CategoryController extends Controller
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
     ];
 
-    protected function routeGet(QueryBits $queryBits): Response
+    protected function view(QueryBits $queryBits): Response
     {
         $id = $queryBits->getString(1);
 

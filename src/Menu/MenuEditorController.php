@@ -10,7 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class MenuEditorController extends Controller
 {
-    protected int $minLevelGet = UserLevel::ADMIN;
+    protected array $getRoutes = [
+        '' => ['level' => UserLevel::ADMIN, 'function' => 'routeGet'],
+    ];
 
     protected function routeGet(QueryBits $queryBits): Response
     {

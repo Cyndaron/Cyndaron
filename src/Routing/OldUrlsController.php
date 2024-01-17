@@ -7,12 +7,20 @@ use Cyndaron\Error\ErrorPageResponse;
 use Cyndaron\Mailform\MailformController;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class OldUrlsController extends Controller
 {
+    protected array $getRoutes = [
+        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routeGet'],
+    ];
+    protected array $postRoutes = [
+        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routePost'],
+    ];
+
     public function routeGet(Request $request): Response
     {
         switch ($this->module)

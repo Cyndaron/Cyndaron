@@ -23,9 +23,6 @@ abstract class Controller
     protected string|null $action = null;
     protected bool $isApiCall = false;
 
-    protected int $minLevelGet = UserLevel::ANONYMOUS;
-    protected int $minLevelPost = UserLevel::ADMIN;
-
     /** @var array<string, array{function: string, level?: int, right?: string }> */
     protected array $getRoutes = [];
     /** @var array<string, array{function: string, level?: int, right?: string }> */
@@ -57,6 +54,30 @@ abstract class Controller
         return true;
     }
 
+    /**
+     * @param array{function: string, level?: int, right?: string }|Route $route
+     * @return Response
+     */
+    private function callRoute(array|Route $route, DependencyInjectionContainer $dic): Response
+    {
+        if (is_array($route))
+        {
+            $route = new Route($route['function'], $route['level'] ?? UserLevel::ADMIN, $route['right'] ?? null);
+        }
+        $right = $route->right;
+        $hasRight = !empty($right) && !empty($_SESSION['profile']) && $_SESSION['profile']->hasRight($right);
+        if (!$hasRight)
+        {
+            $response = $this->checkUserLevel($route->level);
+            if ($response !== null)
+            {
+                return $response;
+            }
+        }
+
+        return $this->callMethodWithDependencyInjection($route->function, $dic);
+    }
+
     public function route(DependencyInjectionContainer $dic): Response
     {
         $getRoutes = ($this->isApiCall && !empty($this->apiGetRoutes)) ? $this->apiGetRoutes : $this->getRoutes;
@@ -66,13 +87,9 @@ abstract class Controller
         {
             case 'GET':
                 $routesTable = $getRoutes;
-                $oldRouteFunction = 'routeGet';
-                $oldMinLevel = $this->minLevelGet;
                 break;
             case 'POST':
                 $routesTable = $postRoutes;
-                $oldRouteFunction = 'routePost';
-                $oldMinLevel = $this->minLevelPost;
                 break;
             default:
                 if ($this->isApiCall)
@@ -86,44 +103,14 @@ abstract class Controller
 
         if ($this->action !== null && array_key_exists($this->action, $routesTable))
         {
-            $route = $routesTable[$this->action];
-            if (is_array($route))
-            {
-                $route = new Route($route['function'], $route['level'] ?? UserLevel::ADMIN, $route['right'] ?? null);
-            }
-            $right = $route->right;
-            $hasRight = !empty($right) && !empty($_SESSION['profile']) && $_SESSION['profile']->hasRight($right);
-            if (!$hasRight)
-            {
-                $response = $this->checkUserLevel($route->level);
-                if ($response !== null)
-                {
-                    return $response;
-                }
-            }
-
-            return $this->callMethodWithDependencyInjection($route->method, $dic);
+            return $this->callRoute($routesTable[$this->action], $dic);
         }
-
-        // Do not fall back to old functions for API calls.
-        if ($this->isApiCall)
+        if (array_key_exists('', $routesTable))
         {
-            return new JsonResponse(['error' => 'Route not found!'], Response::HTTP_NOT_FOUND);
+            return $this->callRoute($routesTable[''], $dic);
         }
 
-        // Fall back to old functions
-        if (!method_exists($this, $oldRouteFunction))
-        {
-            return new Response('Route niet gevonden!', Response::HTTP_NOT_FOUND);
-        }
-
-        $response = $this->checkUserLevel($oldMinLevel);
-        if ($response !== null)
-        {
-            return $response;
-        }
-
-        return $this->callMethodWithDependencyInjection($oldRouteFunction, $dic);
+        return new JsonResponse(['error' => 'Route not found!'], Response::HTTP_NOT_FOUND);
     }
 
     protected function callMethodWithDependencyInjection(string $method, DependencyInjectionContainer $dic): Response

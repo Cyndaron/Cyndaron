@@ -26,8 +26,12 @@ use function var_export;
 
 final class EditorController extends Controller
 {
-    protected int $minLevelGet = UserLevel::LOGGED_IN;
-    protected int $minLevelPost = UserLevel::LOGGED_IN;
+    protected array $getRoutes = [
+        '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routeGet'],
+    ];
+    protected array $postRoutes = [
+        '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routePost'],
+    ];
 
     /** @var array<string, class-string> */
     protected static array $editorPages = [];

@@ -16,6 +16,10 @@ use function strtolower;
 
 final class StaticPageController extends Controller
 {
+    protected array $getRoutes = [
+        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routeGet'],
+    ];
+
     protected array $postRoutes = [
         'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],

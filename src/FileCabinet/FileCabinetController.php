@@ -17,6 +17,10 @@ use function file_exists;
 
 final class FileCabinetController extends Controller
 {
+    protected array $getRoutes = [
+        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routeGet'],
+    ];
+
     protected array $postRoutes = [
         'addItem' => ['level' => UserLevel::ADMIN, 'function' => 'addItem'],
         'deleteItem' => ['level' => UserLevel::ADMIN, 'function' => 'deleteItem']
