@@ -141,12 +141,13 @@ class TryoutController extends Controller
         $category->save();
         $categoryId = $category->id;
         assert($categoryId !== null);
+        $categoryUrl = "/{$slug}";
         $friendlyUrl = new FriendlyUrl();
         $friendlyUrl->name = $slug;
         $friendlyUrl->target = '/category/' . $categoryId;
         $friendlyUrl->save();
 
-        $tryout->photoalbumLink = "/{$slug}";
+        $tryout->photoalbumLink = $categoryUrl;
         $tryout->save();
 
         $roundUrls = [];
@@ -179,13 +180,18 @@ class TryoutController extends Controller
             }
         }
 
+        $domain = 'https://' . Util::getDomain();
         foreach ($toAddresses as $toAddress)
         {
-            $plainText = "Er zijn fotopagina’s aangemaakt voor het Tryouttoernooi van " . $date . ':' . PHP_EOL. PHP_EOL;
+            $plainText = "Er zijn fotopagina’s aangemaakt voor het Tryouttoernooi van $date:\n\n";
+            $round = 1;
             foreach ($roundUrls as $roundUrl)
             {
-                $plainText .= 'https://' . Util::getDomain() . $roundUrl . PHP_EOL;
+                $plainText .= "Ronde {$round}: {$domain}{$roundUrl}\n";
+                $round++;
             }
+
+            $plainText .= PHP_EOL . "De overzichtspagina is te vinden op: {$domain}{$categoryUrl}\n";
 
             $mail = \Cyndaron\Util\Mail::createMailWithDefaults($toAddress, 'Fotoalbums aangemaakt', $plainText);
             $mail->send();
