@@ -17,6 +17,11 @@
     <tbody>
         @php /** @var \Cyndaron\Ticketsale\Concert[] $concerts */ @endphp
         @foreach ($concerts as $concert)
+            @php
+                $concertUrl = (new \Cyndaron\Url("/concert/order/{$concert->id}"))->getFriendly();
+                $encodedUrl = 'https://' . rawurlencode($_SERVER['HTTP_HOST'] . $concertUrl);
+                $qrUrl = "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl={$encodedUrl}&choe=UTF-8";
+            @endphp
         <tr>
             <td>{{ $concert->id }}</td>
             <td>
@@ -37,9 +42,11 @@
 {{--                </button>--}}
             </td>
             <td>
-                <a href="/concert/order/{{ $concert->id }}">bestelpagina</a>,
-                <a href="/concert/viewOrders/{{ $concert->id }}">overzicht bestellingen</a>,
-                <a href="/concert-order/checkIn/{{ $concert->id }}/{{ $concert->secretCode }}">incheckpagina</a>
+                <ul>
+                    <li><a href="/concert/order/{{ $concert->id }}">bestelpagina</a> (<a href="{{ $qrUrl }}" target="_blank">QR-code</a>)</li>
+                    <li><a href="/concert/viewOrders/{{ $concert->id }}">overzicht bestellingen</a></li>
+                    <li><a href="/concert-order/checkIn/{{ $concert->id }}/{{ $concert->secretCode }}">incheckpagina</a></li>
+                </ul>
             </td>
             <td>
                 <div class="btn-group">
