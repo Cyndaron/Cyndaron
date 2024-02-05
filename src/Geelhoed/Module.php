@@ -122,6 +122,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
             new UserMenuItem(new Link('/contest/contestantsEmail', 'E-mailadressen wedstrijdjudoka\'s'), UserLevel::ADMIN, Contest::RIGHT_MANAGE),
             new UserMenuItem(new Link('/contest/contestantsList', 'Overzicht wedstrijdjudoka\'s'), UserLevel::ADMIN, Contest::RIGHT_MANAGE),
             new UserMenuItem(new Link('/contest/parentAccounts', 'Overzicht ouderaccounts'), UserLevel::ADMIN, Contest::RIGHT_MANAGE),
+            new UserMenuItem(new Link('/contest/linkContestantsToParentAccounts', 'Wedstrijdjudoka’s linken'), UserLevel::ADMIN, Contest::RIGHT_MANAGE),
             new UserMenuItem(new Link('/reservation/overview', 'Overzicht reserveringen'), UserLevel::ADMIN),
         ];
 

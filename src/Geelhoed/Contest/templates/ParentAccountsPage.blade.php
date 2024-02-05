@@ -31,7 +31,7 @@
                     <td>
                         <ul>
                             @foreach ($controlledMembers as $member)
-                                <li>{{ $member->getProfile()->getFullName() }} <button class="btn btn-danger btn-sm gpm-delete-from-parent-account" data-user-id="{{ $user->id }}" data-member-id="{{ $member->id }}" data-csrf-token="{{ $deleteFromToken }}"><span class="glyphicon glyphicon-trash"></span></button></li>
+                                <li>{{ $member->getProfile()->getFullName() }} <button title="Ontkoppelen" class="btn btn-warning btn-sm gpm-delete-from-parent-account" data-user-id="{{ $user->id }}" data-member-id="{{ $member->id }}" data-csrf-token="{{ $deleteFromToken }}"><span class="glyphicon glyphicon-trash"></span></button></li>
                             @endforeach
                         </ul>
                         <form method="post" action="/contest/addToParentAccount" class="form-inline">
@@ -48,8 +48,8 @@
 
                     </td>
                     <td>
-                        <button data-id="{{ $user->id }}" data-csrf-token="{{ $resetPasswordToken }}" class="btn btn-sm btn-outline-cyndaron gpm-reset-password"><span class="glyphicon glyphicon-repeat"></span></button>
-                        <button data-id="{{ $user->id }}" data-csrf-token="{{ $deleteToken }}" class="btn btn-sm btn-danger gpm-delete-parent-account"><span class="glyphicon glyphicon-trash"></span></button>
+                        <button data-id="{{ $user->id }}" data-csrf-token="{{ $resetPasswordToken }}" title="Nieuw wachtwoord opsturen" class="btn btn-sm btn-outline-cyndaron gpm-reset-password"><span class="glyphicon glyphicon-repeat"></span></button>
+                        <button data-id="{{ $user->id }}" data-csrf-token="{{ $deleteToken }}" title="Account verwijderen(!)" class="btn btn-sm btn-danger gpm-delete-parent-account"><span class="glyphicon glyphicon-trash"></span></button>
                     </td>
                 </tr>
             @endforeach

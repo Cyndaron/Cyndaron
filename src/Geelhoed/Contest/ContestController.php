@@ -53,6 +53,7 @@ final class ContestController extends Controller
         'contestantsList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsList'],
         'contestantsListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsListExcel'],
         'editSubscription' => ['level' => UserLevel::LOGGED_IN, 'function' => 'editSubscriptionPage'],
+        'linkContestantsToParentAccounts' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'linkContestantsToParentAccounts'],
         'manageOverview' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'manageOverview'],
         'myContests' => ['level' => UserLevel::LOGGED_IN, 'function' => 'myContests'],
         'overview' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overview'],
@@ -796,6 +797,12 @@ final class ContestController extends Controller
     public function parentAccounts(): Response
     {
         $page = new ParentAccountsPage();
+        return new Response($page->render());
+    }
+
+    public function linkContestantsToParentAccounts(): Response
+    {
+        $page = new LinkContestantsToParentAccountsPage();
         return new Response($page->render());
     }
 
