@@ -107,8 +107,13 @@ final class ViewHelpers
         return "$parts[0]:$parts[1]";
     }
 
-    public static function filterDutchDate(string|DateTimeInterface $date): string
+    public static function filterDutchDate(string|DateTimeInterface|null $date): string
     {
+        if ($date === null)
+        {
+            return '(onbekend)';
+        }
+
         try
         {
             if ($date instanceof DateTimeInterface)
@@ -120,7 +125,7 @@ final class ViewHelpers
                 $timestamp = strtotime($date);
             }
         }
-        catch (DatetimeException $e)
+        catch (DatetimeException)
         {
             return 'Ongeldige datum';
         }
@@ -130,8 +135,13 @@ final class ViewHelpers
         return sprintf('%s %s %s', $day, $month, $year);
     }
 
-    public static function filterDutchDateTime(string|DateTimeInterface $date): string
+    public static function filterDutchDateTime(string|DateTimeInterface|null $date): string
     {
+        if ($date === null)
+        {
+            return '(onbekend)';
+        }
+
         try
         {
             if ($date instanceof DateTimeInterface)
@@ -143,7 +153,7 @@ final class ViewHelpers
                 $timestamp = strtotime($date);
             }
         }
-        catch (DatetimeException $e)
+        catch (DatetimeException)
         {
             return 'Ongeldige datum en tijd';
         }
