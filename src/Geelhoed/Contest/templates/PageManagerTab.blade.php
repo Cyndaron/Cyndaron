@@ -22,7 +22,7 @@
             <tr>
                 <td>{{ $contest->id }}</td>
                 <td>{{ $contest->name }}</td>
-                <td>{{ $contest->getFirstDate() }}</td>
+                <td>{{ $contest->getFirstDate()|dmy }}</td>
                 <td>
                     <div class="btn-group">
                         <a title="Naar de inschrijfpagina" href="/contest/view/{{ $contest->id }}"
