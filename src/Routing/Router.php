@@ -288,7 +288,7 @@ final class Router implements HttpKernelInterface
         return new Url(Setting::get('frontPage') ?: '');
     }
 
-    private function getCSPHeader(): string
+    private function getCSPHeader(bool $https): string
     {
         // Unfortunately, CKeditor still needs inline scripting. Only allow this on editor pages,
         // in order to prevent degrading the security of the rest of the system.
@@ -302,7 +302,8 @@ final class Router implements HttpKernelInterface
             $scriptSrc = "'self' 'nonce-{$nonce}' 'strict-dynamic'";
         }
 
-        return "upgrade-insecure-requests; frame-ancestors 'self'; default-src 'none'; base-uri 'none'; child-src 'none'; connect-src 'self'; font-src 'self'; frame-src 'self' youtube.com *.youtube.com youtu.be; img-src 'self' https: data:;  manifest-src 'none'; media-src 'self' data: https:; object-src 'none'; prefetch-src 'self'; script-src $scriptSrc; style-src 'self' 'unsafe-inline'";
+        $upgradeInsecureRequests = $https ? 'upgrade-insecure-requests;' : '';
+        return "{$upgradeInsecureRequests} frame-ancestors 'self'; default-src 'none'; base-uri 'none'; child-src 'none'; connect-src 'self'; font-src 'self'; frame-src 'self' youtube.com *.youtube.com youtu.be; img-src 'self' https: data:;  manifest-src 'none'; media-src 'self' data: https:; object-src 'none'; prefetch-src 'self'; script-src $scriptSrc; style-src 'self' 'unsafe-inline'";
     }
 
     /**
@@ -466,7 +467,7 @@ final class Router implements HttpKernelInterface
         $requestStr = parse_url($request->getRequestUri(), PHP_URL_PATH) ?: '';
         $requestStr = ltrim($requestStr, '/') ?: '/';
         $this->updateRequestVars($requestStr);
-        $cspHeader = $this->getCSPHeader();
+        $cspHeader = $this->getCSPHeader((bool)($_SERVER['HTTPS'] ?? false));
         $response = $this->getEndpointOrRedirect($requestStr);
         $response->headers->set('Content-Security-Policy', $cspHeader);
 
