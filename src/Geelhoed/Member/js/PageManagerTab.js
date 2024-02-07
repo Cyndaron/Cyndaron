@@ -40,7 +40,6 @@ const gumEditHandler = function ()
     $.get('/api/member/get/' + memberId, {}, null, 'json')
         .done(function (data)
             {
-
                 for (let property in data)
                 {
                     if (data.hasOwnProperty(property))
@@ -87,6 +86,59 @@ const gumEditHandler = function ()
         );
 
     $('#gum-edit-user-dialog [name=id]').val(memberId);
+}
+
+const gumDuplicateHandler = function ()
+{
+    clearPopUpFields();
+
+    let memberId = $(this).data('id');
+    $.get('/api/member/get/' + memberId, {}, null, 'json')
+        .done(function (data)
+            {
+                for (let property in data)
+                {
+                    if (data.hasOwnProperty(property))
+                    {
+                        if (property === 'username')
+                        {
+                            continue;
+                        }
+
+                        if (property === 'graduationList')
+                        {
+                            $('#gum-user-dialog-graduation-list').html(data[property]);
+                            $('.remove-member-graduation').on('click', function ()
+                            {
+                                let id = $(this).data('id');
+                                $('#member-graduation-' + id).remove();
+                            });
+                        }
+                        else
+                        {
+                            let element = $('#gum-edit-user-dialog [name=' + property + ']').first();
+                            if (element)
+                            {
+                                if (element.is(':checkbox'))
+                                {
+                                    element.prop('checked', data[property]);
+                                }
+                                else if (element.is('select'))
+                                {
+                                    $('#gum-edit-user-dialog [name=' + property + '] option').prop('selected', false);
+                                    if (data[property])
+                                        $('#gum-edit-user-dialog [name=' + property + '] option[value=' + data[property] + ']').prop('selected', true);
+                                }
+                                else
+                                {
+                                    element.val(data[property])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        );
 }
 
 $(document).on('submit', '.myForm', function (e)
@@ -340,6 +392,15 @@ function addMemberToGrid(gumTableBody, startOfNextQuarter, csrfTokenMemberDelete
     editButton.innerHTML = '<span class="glyphicon glyphicon-pencil" title="Bewerk dit lid"></span>';
     editButton.addEventListener('click', gumEditHandler);
 
+    const duplicateButton = document.createElement('button');
+    duplicateButton.setAttribute('type', 'button');
+    duplicateButton.setAttribute('class', 'btn btn-outline-cyndaron btn-sm btn-gum-duplicate');
+    duplicateButton.setAttribute('data-toggle', 'modal');
+    duplicateButton.setAttribute('data-target', '#gum-edit-user-dialog');
+    duplicateButton.setAttribute('data-id', record.id);
+    duplicateButton.innerHTML = '<span class="glyphicon glyphicon-copy" title="Dupliceer dit lid"></span>';
+    duplicateButton.addEventListener('click', gumDuplicateHandler);
+
     const deleteButton = document.createElement('button');
     deleteButton.setAttribute('type', 'button');
     deleteButton.setAttribute('class', 'btn btn-danger btn-sm pm-delete');
@@ -351,6 +412,7 @@ function addMemberToGrid(gumTableBody, startOfNextQuarter, csrfTokenMemberDelete
 
     const actionsColumn = document.createElement('td');
     actionsColumn.appendChild(editButton);
+    actionsColumn.appendChild(duplicateButton);
     actionsColumn.appendChild(deleteButton);
     tr.appendChild(actionsColumn);
 }
