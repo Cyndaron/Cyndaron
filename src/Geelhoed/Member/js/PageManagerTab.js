@@ -141,6 +141,12 @@ const gumDuplicateHandler = function ()
         );
 }
 
+const gumDeleteHandler = function()
+{
+    const totalCountElement = document.getElementById('gum-num-members')
+    totalCountElement.innerText = (parseInt(totalCountElement.innerText) - 1).toString();
+}
+
 $(document).on('submit', '.myForm', function (e)
 {
     e.preventDefault();
@@ -161,7 +167,14 @@ $('#gum-popup-save').on('click keyup', function ()
         const csrfTokenMemberDelete = gumTableBody.attributes['data-csrf-token-member-delete'].value;
         const existingElement = document.getElementById('pm-row-member-' + record.id);
         if (existingElement)
+        {
             existingElement.remove();
+        }
+        else
+        {
+            const totalCountElement = document.getElementById('gum-num-members');
+            totalCountElement.innerText = (parseInt(totalCountElement.innerText) + 1).toString();
+        }
 
         addMemberToGrid(gumTableBody, startOfNextQuarter, csrfTokenMemberDelete, record);
         sortGrid();
@@ -238,6 +251,17 @@ $('#gum-filter-sport').on('change', function ()
     if (value !== -1)
     {
         $('.geelhoed-member-entry:not([data-sport-' + value + '="1"])').hide();
+    }
+});
+
+$('#gum-filter-location').on('change', function ()
+{
+    let value = parseInt($("#gum-filter-location option:selected").val());
+    $('.geelhoed-member-entry').show();
+
+    if (value !== -1)
+    {
+        $('.geelhoed-member-entry:not([data-location-' + value + '="1"])').hide();
     }
 });
 
@@ -328,6 +352,10 @@ function addMemberToGrid(gumTableBody, startOfNextQuarter, csrfTokenMemberDelete
     for (const graduationId of record.graduations)
     {
         tr.setAttribute('data-graduation-' + graduationId, '1');
+    }
+    for (const locationId of record.locations)
+    {
+        tr.setAttribute('data-location-' + locationId, '1');
     }
     gumTableBody.appendChild(tr);
 
@@ -429,11 +457,14 @@ function loadMembers()
         .then((response) => response.json()
             .then((decodedResponse) =>
             {
+                let numMembers = 0;
                 for (const record of decodedResponse)
                 {
                     addMemberToGrid(gumTableBody, startOfNextQuarter, csrfTokenMemberDelete, record);
+                    numMembers++;
                 }
                 //sortGrid();
+                document.getElementById('gum-num-members').innerText = numMembers.toString();
                 setNormalPointer();
             })
         );
@@ -442,6 +473,7 @@ function loadMembers()
 document.addEventListener("DOMContentLoaded", function (event)
 {
     loadMembers();
+    document.getElementById('confirm-dangerous-yes').addEventListener('click', gumDeleteHandler);
 });
 
 function setWaitingPointer()

@@ -5,6 +5,8 @@ namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\View\Template\ViewHelpers;
+use function array_keys;
+use function array_values;
 use function assert;
 use function str_replace;
 
@@ -36,6 +38,8 @@ final class PageManagerMemberGridItem
         public readonly array $sports,
         /** @var int[] */
         public readonly array $graduations,
+        /** @var int[] */
+        public readonly array $locations,
     ) {
     }
 
@@ -65,13 +69,18 @@ final class PageManagerMemberGridItem
             }
         }
         $hours = [];
+        $locations = [];
         foreach ($member->getHours() as $hour)
         {
             $dayName = ViewHelpers::getDutchWeekday($hour->day);
             $from = ViewHelpers::filterHm($hour->from);
             $until = ViewHelpers::filterHm($hour->until);
-            $hours[] = "{$dayName} {$from}-{$until} ({$hour->getSportName()}, {$hour->getLocation()->getName()})";
+            $location = $hour->getLocation();
+            assert($location->id !== null);
+            $hours[] = "{$dayName} {$from}-{$until} ({$hour->getSportName()}, {$location->getName()})";
+            $locations[$location->id] = $location->id;
         }
+        $locations = array_values($locations);
 
         return new self(
             (int)$member->id,
@@ -93,6 +102,7 @@ final class PageManagerMemberGridItem
             $dateOfBirth ?? '',
             $sports,
             $graduations,
+            $locations,
         );
     }
 }

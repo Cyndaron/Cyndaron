@@ -22,7 +22,9 @@ final class PageManagerTabs
 
     public static function membersTab(): string
     {
-        return (new Template())->render('Geelhoed/Member/PageManagerTab');
+        return (new Template())->render('Geelhoed/Member/PageManagerTab', [
+            'locations' => \Cyndaron\Geelhoed\Location\Location::fetchAll(afterWhere: 'ORDER BY city, street'),
+        ]);
     }
 
     public static function contestsTab(): string
