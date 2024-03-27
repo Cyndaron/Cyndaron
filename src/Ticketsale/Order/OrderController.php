@@ -20,6 +20,7 @@ use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Mail\Mail;
+use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\Template;
@@ -426,7 +427,7 @@ final class OrderController extends Controller
             $orderTicketTypeStats[$key]++;
         }
 
-        $organisation = Setting::get(Setting::ORGANISATION);
+        $organisation = Setting::get(BuiltinSetting::ORGANISATION);
 
         $deliveryType = $concert->getDelivery();
         if ($deliveryType === TicketDelivery::DIGITAL)
@@ -713,7 +714,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
 
         $logoFilename = PUB_DIR . Setting::get('logo');
         $logoSrc = is_file($logoFilename) ? file_get_contents($logoFilename) : '';
-        $organisation = Setting::get(Setting::ORGANISATION);
+        $organisation = Setting::get(BuiltinSetting::ORGANISATION);
 
         foreach ($order->getTicketTypes() as $orderTicketType)
         {

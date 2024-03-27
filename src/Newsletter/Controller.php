@@ -13,6 +13,7 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -96,7 +97,7 @@ class Controller extends \Cyndaron\Routing\Controller
     {
         $replyToAddress = AddressHelper::getReplyToAddress();
         $fromAddress = AddressHelper::getFromAddress();
-        $organisation = Setting::get(Setting::ORGANISATION);
+        $organisation = Setting::get(BuiltinSetting::ORGANISATION);
         $confirmationLink = AddressHelper::getConfirmationLink($toAddress->getAddress());
 
         $transport = new SendmailTransport();

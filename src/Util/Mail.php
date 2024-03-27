@@ -16,7 +16,7 @@ final class Mail
 
     public static function getNoreplyAddress(): Address
     {
-        $fromName = html_entity_decode(Setting::get(Setting::ORGANISATION) ?: Setting::get('siteName'));
+        $fromName = html_entity_decode(Setting::get(BuiltinSetting::ORGANISATION) ?: Setting::get('siteName'));
         return new Address(self::getNoreplyAddressRaw(), $fromName);
     }
 

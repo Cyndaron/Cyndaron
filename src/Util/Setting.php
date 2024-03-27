@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Util;
 
+use BackedEnum;
 use PDO;
 use function file_exists;
 use function file_put_contents;
@@ -12,8 +13,6 @@ use function assert;
 
 final class Setting
 {
-    public const ORGANISATION = 'organisation';
-
     public const VALUE_ORGANISATION_VOV = 'Vlissingse Oratorium Vereniging';
     public const VALUE_ORGANISATION_ZCK = 'Zeeuws Concertkoor';
     public const VALUE_ORGANISATION_TFR = 'The Flood Requiem 1953';
@@ -25,24 +24,30 @@ final class Setting
 
     private static PDO $pdo;
 
-    /**
-     * @param string $name
-     * @return string
-     */
-    public static function get(string $name): string
+    public static function get(string|BuiltinSetting|BackedEnum $name): string
     {
+        if ($name instanceof BackedEnum)
+        {
+            $name = $name->value;
+        }
+
         return self::$cache[$name] ?? '';
     }
 
-    public static function set(string $name, string $value): void
+    public static function set(string|BuiltinSetting|BackedEnum $name, string $value): void
     {
+        if ($name instanceof BackedEnum)
+        {
+            $name = $name->value;
+        }
+
         $setting = self::$pdo->prepare('REPLACE INTO settings(`name`, `value`) VALUES (?, ?)');
         $setting->execute([$name, $value]);
     }
 
     public static function getShortCode(): string
     {
-        switch (self::get(self::ORGANISATION))
+        switch (self::get(BuiltinSetting::ORGANISATION))
         {
             case self::VALUE_ORGANISATION_VOV:
             case self::VALUE_ORGANISATION_ZCK:

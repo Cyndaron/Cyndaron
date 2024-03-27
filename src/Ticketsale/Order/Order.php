@@ -8,6 +8,7 @@ use Cyndaron\DBAL\Model;
 use Cyndaron\Ticketsale\Concert;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
 use Cyndaron\Ticketsale\TicketDelivery;
+use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Mail\Mail;
 use Cyndaron\Util\Mail as UtilMail;
@@ -62,7 +63,7 @@ final class Order extends Model
         DBConnection::getPDO()->executeQuery('UPDATE ticketsale_orders SET `isPaid`=1 WHERE id=?', [$this->id]);
         $this->isPaid = true;
 
-        $organisation = Setting::get(Setting::ORGANISATION);
+        $organisation = Setting::get(BuiltinSetting::ORGANISATION);
 
         $text = "Hartelijk dank voor uw bestelling bij {$organisation}. Wij hebben uw betaling in goede orde ontvangen.\n";
         $ticketDelivery = $concert->getDelivery();

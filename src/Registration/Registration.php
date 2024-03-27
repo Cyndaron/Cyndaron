@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
+use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Mail\Mail;
@@ -91,7 +92,7 @@ final class Registration extends Model
         ];
 
         $templateFile = 'Registration/ConfirmationMail';
-        $organisation = Setting::get(Setting::ORGANISATION);
+        $organisation = Setting::get(BuiltinSetting::ORGANISATION);
         if ($organisation === Setting::VALUE_ORGANISATION_VOV || $organisation === Setting::VALUE_ORGANISATION_ZCK)
         {
             $templateFile = 'Registration/ConfirmationMailVOV';
@@ -124,7 +125,7 @@ final class Registration extends Model
         $this->isPaid = true;
         $this->save();
 
-        $organisation = Setting::get(Setting::ORGANISATION);
+        $organisation = Setting::get(BuiltinSetting::ORGANISATION);
         $text = "Hartelijk dank voor uw inschrijving bij $organisation. Wij hebben uw betaling in goede orde ontvangen.\n";
         if ($organisation !== Setting::VALUE_ORGANISATION_VOV && $organisation !== Setting::VALUE_ORGANISATION_ZCK)
         {

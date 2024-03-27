@@ -8,6 +8,7 @@ use Cyndaron\Error\ErrorPageResponse;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Template\Template;
@@ -45,7 +46,7 @@ final class AtomController extends Controller
 
         $args = [
             'title' => "{$category->name} - {$siteName}",
-            'organisation' => Setting::get(Setting::ORGANISATION),
+            'organisation' => Setting::get(BuiltinSetting::ORGANISATION),
             'selfUri' => $selfUri,
             'category' => $category,
             'underlyingPages' => $underlyingPages,

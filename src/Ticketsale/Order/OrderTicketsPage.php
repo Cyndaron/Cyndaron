@@ -4,6 +4,7 @@ namespace Cyndaron\Ticketsale\Order;
 use Cyndaron\Page\Page;
 use Cyndaron\Ticketsale\Concert;
 use Cyndaron\Ticketsale\TicketType;
+use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
 use function file_exists;
 use function strtoupper;
@@ -34,7 +35,7 @@ final class OrderTicketsPage extends Page
 
         $this->addCss('/src/Ticketsale/css/Ticketsale.min.css');
         $this->addTemplateVars([
-            'organisation' => Setting::get(Setting::ORGANISATION),
+            'organisation' => Setting::get(BuiltinSetting::ORGANISATION),
             'concert' => $concert,
             'ticketTypes' => $ticketTypes,
         ]);

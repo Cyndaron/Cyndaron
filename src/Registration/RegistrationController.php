@@ -9,6 +9,7 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Util\Setting;
 use Exception;

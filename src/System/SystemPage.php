@@ -4,6 +4,7 @@ namespace Cyndaron\System;
 use Cyndaron\Category\Category;
 use Cyndaron\CyndaronInfo;
 use Cyndaron\Page\Page;
+use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
 use function is_writable;
 use function ob_get_clean;
@@ -93,7 +94,7 @@ final class SystemPage extends Page
 
         $formItems = [
             ['name' => 'siteName', 'description' => 'Naam website', 'type' => 'text', 'value' => Setting::get('siteName')],
-            ['name' => 'organisation', 'description' => 'Organisatie', 'type' => 'text', 'value' => Setting::get(Setting::ORGANISATION)],
+            ['name' => 'organisation', 'description' => 'Organisatie', 'type' => 'text', 'value' => Setting::get(BuiltinSetting::ORGANISATION)],
             ['name' => 'logo', 'description' => 'Websitelogo', 'type' => 'text', 'value' => Setting::get('logo')],
             ['name' => 'subTitle', 'description' => 'Ondertitel', 'type' => 'text', 'value' => Setting::get('subTitle')],
             ['name' => 'favicon', 'description' => 'Websitepictogram', 'type' => 'text', 'value' => Setting::get('favicon')],

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Registration;
 
 use Cyndaron\DBAL\Model;
+use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
 
 final class Event extends Model
@@ -35,7 +36,7 @@ final class Event extends Model
      */
     public function getAntispam(): string
     {
-        switch (Setting::get(Setting::ORGANISATION))
+        switch (Setting::get(BuiltinSetting::ORGANISATION))
         {
             case Setting::VALUE_ORGANISATION_VOV:
             case Setting::VALUE_ORGANISATION_ZCK:
