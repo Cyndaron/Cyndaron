@@ -47,6 +47,12 @@ final class Setting
 
     public static function getShortCode(): string
     {
+        $value = self::get(BuiltinSetting::SHORT_CODE);
+        if ($value !== '')
+        {
+            return $value;
+        }
+
         switch (self::get(BuiltinSetting::ORGANISATION))
         {
             case self::VALUE_ORGANISATION_VOV:

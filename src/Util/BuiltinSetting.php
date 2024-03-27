@@ -6,4 +6,5 @@ namespace Cyndaron\Util;
 enum BuiltinSetting : string
 {
     case ORGANISATION = 'organisation';
+    case SHORT_CODE = 'shortCode';
 }

@@ -30,6 +30,7 @@ final class SystemController extends Controller
     {
         Setting::set('siteName', $post->getHTML('siteName'));
         Setting::set('organisation', $post->getHTML('organisation'));
+        Setting::set('shortCode', $post->getHTML('shortCode'));
         Setting::set('logo', $post->getFilenameWithDirectory('logo'));
         Setting::set('subTitle', $post->getHTML('subTitle'));
         Setting::set('favicon', $post->getFilenameWithDirectory('favicon'));
