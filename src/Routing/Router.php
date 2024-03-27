@@ -33,23 +33,7 @@ final class Router
     /**
      * @var array<string, class-string>
      */
-    public static array $endpoints = [
-        // Default endpoints
-        'editor' => \Cyndaron\Editor\EditorController::class,
-        'error' => \Cyndaron\Error\ErrorController::class,
-        'menu' => \Cyndaron\Menu\MenuController::class,
-        'menu-editor' => \Cyndaron\Menu\MenuEditorController::class,
-        'migrate' => \Cyndaron\MigrateController::class,
-        'pagemanager' => \Cyndaron\PageManager\PageManagerController::class,
-        'system' => \Cyndaron\System\SystemController::class,
-        'user' => \Cyndaron\User\UserController::class,
-
-        'tooncategorie.php' => \Cyndaron\Routing\OldUrlsController::class,
-        'toonphoto.php' => \Cyndaron\Routing\OldUrlsController::class,
-        'toonphotoalbum.php' => \Cyndaron\Routing\OldUrlsController::class,
-        'toonsub.php' => \Cyndaron\Routing\OldUrlsController::class,
-        'verwerkmailformulier.php' => \Cyndaron\Routing\OldUrlsController::class,
-    ];
+    public static array $endpoints = [];
 
     public function __construct(private readonly DependencyInjectionContainer $dic)
     {

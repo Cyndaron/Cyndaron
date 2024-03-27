@@ -156,6 +156,8 @@ final class Kernel implements HttpKernelInterface
     private function loadModules(?User $currentUser): void
     {
         $modules = [
+            \Cyndaron\Base\Module::class,
+            \Cyndaron\Migration\Module::class,
             \Cyndaron\User\Module::class,
             \Cyndaron\View\Module::class,
             \Cyndaron\StaticPage\Module::class,

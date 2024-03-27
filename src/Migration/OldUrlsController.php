@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Routing;
+namespace Cyndaron\Migration;
 
 use Cyndaron\Error\ErrorPageResponse;
 use Cyndaron\Mailform\MailformController;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

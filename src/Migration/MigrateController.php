@@ -2,9 +2,8 @@
 /** @noinspection PhpUnusedPrivateMethodInspection */
 /** @noinspection SqlResolve */
 
-namespace Cyndaron;
+namespace Cyndaron\Migration;
 
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
