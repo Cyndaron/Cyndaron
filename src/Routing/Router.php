@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Routing;
 
+use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
@@ -30,12 +31,10 @@ use const PHP_URL_PATH;
 
 final class Router
 {
-    /**
-     * @var array<string, class-string>
-     */
-    public static array $endpoints = [];
-
-    public function __construct(private readonly DependencyInjectionContainer $dic)
+    public function __construct(
+        private readonly DependencyInjectionContainer $dic,
+        private readonly ModuleRegistry $moduleRegistry
+    )
     {
     }
 
@@ -169,7 +168,9 @@ final class Router
         $module = $queryBits->getString(0);
         $action = $queryBits->getString(1);
 
-        if (!array_key_exists($module, self::$endpoints))
+        $controllers = $this->moduleRegistry->controllers;
+
+        if (!array_key_exists($module, $controllers))
         {
             return $this->sendNotFound($isApiCall);
         }
@@ -190,7 +191,7 @@ final class Router
             $this->dic->add($_SESSION['profile']);
         }
 
-        $classname = self::$endpoints[$module];
+        $classname = $controllers[$module];
         /** @var Controller $controller */
         $controller = new $classname($module, $action, $isApiCall);
 
@@ -343,15 +344,5 @@ final class Router
         }
 
         return null;
-    }
-
-    /**
-     * @param string $path
-     * @param class-string $controller
-     * @return void
-     */
-    public static function addController(string $path, string $controller): void
-    {
-        self::$endpoints[$path] = $controller;
     }
 }

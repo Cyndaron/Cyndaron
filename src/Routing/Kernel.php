@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Routing;
 
+use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
 use Cyndaron\Calendar\Registry;
 use Cyndaron\DBAL\DBConnection;
@@ -102,11 +103,11 @@ final class Kernel implements HttpKernelInterface
         return $dic;
     }
 
-    private function route(DependencyInjectionContainer $dic, Request $request): Response
+    private function route(DependencyInjectionContainer $dic, ModuleRegistry $registry, Request $request): Response
     {
         try
         {
-            $router = new Router($dic);
+            $router = new Router($dic, $registry);
             return $router->route($request);
         }
         catch (Throwable $t)
@@ -153,8 +154,9 @@ final class Kernel implements HttpKernelInterface
         return "{$upgradeInsecureRequests} frame-ancestors 'self'; default-src 'none'; base-uri 'none'; child-src 'none'; connect-src 'self'; font-src 'self'; frame-src 'self' youtube.com *.youtube.com youtu.be; img-src 'self' https: data:;  manifest-src 'none'; media-src 'self' data: https:; object-src 'none'; prefetch-src 'self'; script-src $scriptSrc; style-src 'self' 'unsafe-inline'";
     }
 
-    private function loadModules(?User $currentUser): void
+    private function loadModules(?User $currentUser): ModuleRegistry
     {
+        $registry = new ModuleRegistry();
         $modules = [
             \Cyndaron\Base\Module::class,
             \Cyndaron\Migration\Module::class,
@@ -181,7 +183,7 @@ final class Kernel implements HttpKernelInterface
             {
                 foreach ($module->routes() as $path => $controller)
                 {
-                    Router::addController($path, $controller);
+                    $registry->addController($path, $controller);
                 }
             }
             if ($module instanceof Datatypes)
@@ -238,6 +240,8 @@ final class Kernel implements HttpKernelInterface
                 Registry::addProvider($module);
             }
         }
+
+        return $registry;
     }
 
     public static function referrer(): string
@@ -265,9 +269,9 @@ final class Kernel implements HttpKernelInterface
             session_start();
         }
 
-        $this->loadModules(User::fromSession());
+        $registry = $this->loadModules(User::fromSession());
         $dic = $this->buildDIC();
-        $response = $this->route($dic, $request);
+        $response = $this->route($dic, $registry, $request);
         $queryBits = $dic->get(QueryBits::class);
         $cspHeader = $this->getCSPHeader((bool)($_SERVER['HTTPS'] ?? false), $queryBits);
         $response->headers->set('Content-Security-Policy', $cspHeader);
