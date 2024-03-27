@@ -1,7 +1,10 @@
 <?php
 namespace Cyndaron\Request;
 
+use function array_shift;
 use function count;
+use function explode;
+use function trim;
 
 final class QueryBits
 {
@@ -51,5 +54,16 @@ final class QueryBits
     public function hasIndex(int $index): bool
     {
         return $index >= 0 && $index < count($this->vars);
+    }
+
+    public static function fromString(string $request): self
+    {
+        $vars = explode('/', trim($request, '/'));
+        if ($vars[0] === 'api')
+        {
+            array_shift($vars);
+        }
+
+        return new self($vars);
     }
 }

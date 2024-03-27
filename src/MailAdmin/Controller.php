@@ -19,10 +19,10 @@ use function str_contains;
 
 class Controller extends \Cyndaron\Routing\Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'overview' => ['function' => 'overview', 'level' => UserLevel::ADMIN],
     ];
-    protected array $postRoutes = [
+    public array $postRoutes = [
         'addAlias' => ['function' => 'addAlias', 'level' => UserLevel::ADMIN],
         'addDomain' => ['function' => 'addDomain', 'level' => UserLevel::ADMIN],
         'addEmail' => ['function' => 'addEmail', 'level' => UserLevel::ADMIN],

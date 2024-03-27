@@ -26,10 +26,10 @@ use function var_export;
 
 final class EditorController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routeGet'],
     ];
-    protected array $postRoutes = [
+    public array $postRoutes = [
         '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routePost'],
     ];
 

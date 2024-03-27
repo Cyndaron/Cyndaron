@@ -22,10 +22,10 @@ use function strcasecmp;
 
 final class RegistrationController extends Controller
 {
-    protected array $postRoutes = [
+    public array $postRoutes = [
         'add' => ['level' => UserLevel::ANONYMOUS, 'function' => 'add'],
     ];
-    protected array $apiPostRoutes = [
+    public array $apiPostRoutes = [
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
         'setApprovalStatus' => ['level' => UserLevel::ADMIN, 'function' => 'setApprovalStatus'],
         'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],

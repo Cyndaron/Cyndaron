@@ -8,7 +8,7 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
-use Cyndaron\Routing\Router;
+use Cyndaron\Routing\Kernel;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Exception;
@@ -20,7 +20,7 @@ use function strlen;
 
 final class UserController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'changePassword' => ['level' => UserLevel::LOGGED_IN, 'function' => 'changePasswordGet'],
         'gallery' => ['level' => UserLevel::LOGGED_IN, 'function' => 'gallery'],
         'login' => ['level' => UserLevel::ANONYMOUS, 'function' => 'loginGet'],
@@ -28,27 +28,28 @@ final class UserController extends Controller
         'manager' => ['level' => UserLevel::ADMIN, 'function' => 'manager'],
     ];
 
-    protected array $postRoutes = [
+    public array $postRoutes = [
         'changePassword' => ['level' => UserLevel::LOGGED_IN, 'function' => 'changePasswordPost'],
         'login' => ['level' => UserLevel::ANONYMOUS, 'function' => 'loginPost'],
         'changeAvatar' => ['level' => UserLevel::ADMIN, 'function' => 'changeAvatar'],
     ];
 
-    protected array $apiPostRoutes = [
+    public array $apiPostRoutes = [
         'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
         'resetpassword' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'resetPassword'],
     ];
 
-    protected function gallery(): Response
+    protected function gallery(User|null $currentUser): Response
     {
         // Has to be done here because you cannot specify the expression during member variable initialization.
         $minLevel = (int)Setting::get('userGalleryMinLevel') ?: UserLevel::ADMIN;
-        $response = $this->checkUserLevel($minLevel);
-        if ($response !== null)
+        $userLevel = $currentUser !== null ? $currentUser->level : UserLevel::ANONYMOUS;
+        if ($userLevel < $minLevel)
         {
-            return $response;
+            $page = new SimplePage('Fout', 'U heeft onvoldoende rechten om deze pagina te bekijken.');
+            return new Response($page->render(), Response::HTTP_UNAUTHORIZED);
         }
 
         $page = new Gallery();
@@ -59,7 +60,7 @@ final class UserController extends Controller
     {
         if (empty($_SESSION['redirect']))
         {
-            $_SESSION['redirect'] = Router::referrer();
+            $_SESSION['redirect'] = Kernel::referrer();
         }
         $page = new LoginPage();
         return new Response($page->render());
@@ -68,7 +69,7 @@ final class UserController extends Controller
     protected function logout(): Response
     {
         User::logout();
-        return new RedirectResponse('/', Response::HTTP_FOUND, Router::HEADERS_DO_NOT_CACHE);
+        return new RedirectResponse('/', Response::HTTP_FOUND, Kernel::HEADERS_DO_NOT_CACHE);
     }
 
     protected function manager(): Response

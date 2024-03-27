@@ -52,9 +52,9 @@ abstract class SkinRenderer
     protected SkinRendererParameters $parameters;
 
     /** @var array<int, array{0: string, 1: float}> */
-    protected array $times = [];
+    public array $times = [];
     /** @var array<string, string> */
-    protected array $headers = [];
+    public array $headers = [];
     protected PartsAngles $partsAngles;
 
     public function __construct(Skin $skin, SkinRendererParameters $parameters)

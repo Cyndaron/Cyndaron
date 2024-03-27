@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class PageManagerController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routeGet'],
     ];
 

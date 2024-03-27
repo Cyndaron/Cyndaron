@@ -1,79 +1,39 @@
 <?php
-/** @noinspection PhpFullyQualifiedNameUsageInspection */
 declare(strict_types=1);
 
 namespace Cyndaron\Routing;
 
-use Cyndaron\Calendar\CalendarAppointmentsProvider;
-use Cyndaron\Calendar\Registry;
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\DBAL\Connection;
-use Cyndaron\Editor\EditorController;
-use Cyndaron\Logger\FileLogger;
-use Cyndaron\Logger\MultiLogger;
-use Cyndaron\Mail\MailLogger;
-use Cyndaron\Module\Datatypes;
-use Cyndaron\Module\Linkable;
-use Cyndaron\Module\Routes;
-use Cyndaron\Module\Templated;
-use Cyndaron\Module\UrlProvider;
-use Cyndaron\Module\WithTextPostProcessors;
-use Cyndaron\Page\Module\WithPageProcessors;
-use Cyndaron\Page\Page;
 use Cyndaron\Page\SimplePage;
-use Cyndaron\PageManager\PageManagerPage;
-use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url;
-use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
+use Cyndaron\User\UserLevel;
 use Cyndaron\Util\DependencyInjectionContainer;
-use Cyndaron\Util\Mail;
 use Cyndaron\Util\Setting;
-use Cyndaron\Util\Util;
-use Cyndaron\View\Renderer\TextRenderer;
-use Cyndaron\View\Template\TemplateFinder;
-use Psr\Log\LoggerInterface;
+use ReflectionNamedType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Mime\Address;
-use Throwable;
 use function array_key_exists;
-use function array_merge;
-use function array_shift;
-use function defined;
-use function explode;
-use function filter_input;
+use function in_array;
+use function ltrim;
 use function parse_url;
-use function Safe\error_log;
+use function Safe\session_destroy;
 use function session_start;
-use function set_exception_handler;
+use function str_starts_with;
 use function strpos;
 use function substr;
-use function trim;
-use const FILTER_SANITIZE_URL;
-use const INPUT_SERVER;
 use const PHP_URL_PATH;
-use function ltrim;
 
-/**
- * Zorgt voor correct doorverwijzen van verzoeken.
- * @package Cyndaron
- */
-final class Router implements HttpKernelInterface
+final class Router
 {
-    /** @var string[] */
-    private array $requestVars = [''];
-    private bool $isApiCall = false;
-
     /**
      * @var array<string, class-string>
      */
-    protected array $endpoints = [
+    public static array $endpoints = [
         // Default endpoints
         'editor' => \Cyndaron\Editor\EditorController::class,
         'error' => \Cyndaron\Error\ErrorController::class,
@@ -91,153 +51,250 @@ final class Router implements HttpKernelInterface
         'verwerkmailformulier.php' => \Cyndaron\Routing\OldUrlsController::class,
     ];
 
-    public const HEADERS_DO_NOT_CACHE = [
-        'cache-control' => 'no-cache, no-store, must-revalidate',
-        'pragma' => 'no-cache',
-        'expires' => 0,
-    ];
-
-    private function getEndpointOrRedirect(string $request): Response
+    public function __construct(private readonly DependencyInjectionContainer $dic)
     {
-        $redirect = $this->blockPathTraversal($request);
-        if ($redirect !== null)
-        {
-            return $redirect;
-        }
-
-        $redirect = $this->redirectOldUrls($request);
-        if ($redirect !== null)
-        {
-            return $redirect;
-        }
-
-        $this->loadModules(User::fromSession());
-        $this->rewriteFriendlyUrls($request);
-
-        if (!array_key_exists($this->requestVars[0], $this->endpoints))
-        {
-            $this->updateRequestVars('/error/404');
-        }
-
-        return $this->routeEndpoint();
     }
 
-    private function routeFoundNowCheckLogin():RedirectResponse|null
+    public function findRoute(string|null $action, Controller $controller, bool $isApiCall): Route|null
     {
-        $userLevel = User::getLevel();
-        $isLoggingIn = $this->requestVars[0] === 'user' && $this->requestVars[1] === 'login';
-        if (!$isLoggingIn && !User::hasSufficientReadLevel())
+        $getRoutes = ($isApiCall && !empty($controller->apiGetRoutes)) ? $controller->apiGetRoutes : $controller->getRoutes;
+        $postRoutes = ($isApiCall && !empty($controller->apiPostRoutes)) ? $controller->apiPostRoutes : $controller->postRoutes;
+
+        switch ($_SERVER['REQUEST_METHOD'])
         {
-            if ($userLevel > 0)
+            case 'GET':
+                $routesTable = $getRoutes;
+                break;
+            case 'POST':
+                $routesTable = $postRoutes;
+                break;
+            default:
+                return null;
+        }
+
+        /** @var array{function: string, level?: int, right?: string, skipCSRFCheck?: bool }|null $route */
+        $route = null;
+        if ($action !== null && array_key_exists($action, $routesTable))
+        {
+            $route = $routesTable[$action];
+        }
+        if (array_key_exists('', $routesTable))
+        {
+            $route = $routesTable[''];
+        }
+
+        if ($route === null)
+        {
+            return null;
+        }
+
+        return new Route(
+            $route['function'],
+            $route['level'] ?? UserLevel::ADMIN,
+            $route['right'] ?? null,
+            $route['skipCSRFCheck'] ?? false,
+        );
+    }
+
+    private function sendNotFound(bool $isApiCall): Response
+    {
+        if (!in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST'], true))
+        {
+            if ($isApiCall)
             {
-                return new RedirectResponse('/error/403', Response::HTTP_FOUND, self::HEADERS_DO_NOT_CACHE);
+                return new JsonResponse(['error' => 'Unacceptable request method!'], Response::HTTP_METHOD_NOT_ALLOWED, ['allow' => 'GET, POST']);
             }
 
-            User::addNotification('U moet inloggen om deze site te bekijken');
-            $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
-            return new RedirectResponse('/user/login', Response::HTTP_FOUND, self::HEADERS_DO_NOT_CACHE);
+            $page = new SimplePage('Verkeerde aanvraag', 'U kunt geen aanvraag doen met deze methode.');
+            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse(['error' => 'Route not found!'], Response::HTTP_NOT_FOUND);
+    }
+
+    private function getFrontpageUrl(): Url
+    {
+        return new Url(Setting::get('frontPage') ?: '');
+    }
+
+    /**
+     * @param string $request
+     * @return RedirectResponse|null
+     */
+    private function getRedirect(string $request): RedirectResponse|null
+    {
+        $frontPage = $this->getFrontpageUrl();
+        if ($frontPage->equals(new Url($request)))
+        {
+            return new RedirectResponse('/', Response::HTTP_MOVED_PERMANENTLY);
+        }
+        // Redirect if a friendly url exists for the requested unfriendly url
+        if ($_SERVER['REQUEST_URI'] !== '/' && $url = DBConnection::getPDO()->doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target = ?', [$request]))
+        {
+            return new RedirectResponse("/$url", Response::HTTP_MOVED_PERMANENTLY);
         }
 
         return null;
     }
 
-    private function routeEndpoint(): Response
+    private function containsPathTraversal(string $request): bool
     {
-        $ret = $this->routeFoundNowCheckLogin();
+        return ($request !== '/' && (substr($request, 0, 1) === '.' || substr($request, 0, 1) === '/'));
+    }
 
-        if ($ret === null)
+    private function getLoginStatus(QueryBits $queryBits): LoginStatus
+    {
+        $isLoggingIn = $queryBits->getString(0) === 'user' && $queryBits->getString(1) === 'login';
+        if ($isLoggingIn)
         {
-            $classname = $this->endpoints[$this->requestVars[0]];
-            /** @var Controller $route */
-            $route = new $classname($this->requestVars[0], $this->requestVars[1] ?? '', $this->isApiCall);
-            $ret = $this->getResponse($route);
+            return LoginStatus::OK;
         }
 
-        return $ret;
-    }
-
-    private function setExceptionHandler(LoggerInterface $logger): void
-    {
-        set_exception_handler(static function(Throwable $t) use ($logger)
+        if (User::hasSufficientReadLevel())
         {
-            $logger->error((string)$t);
-            $page = new SimplePage('Fout', 'Er ging iets mis bij het laden van deze pagina!');
-            $response = new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
-            $response->send();
-        });
+            return LoginStatus::OK;
+        }
+
+        $userLevel = User::getLevel();
+        if ($userLevel > UserLevel::ANONYMOUS)
+        {
+            return LoginStatus::INSUFFICIENT_RIGHTS;
+        }
+
+        return LoginStatus::NEEDS_LOGIN;
     }
 
-    private function getResponse(Controller $route): Response
+    public function route(Request $request): Response
     {
-        $request = Request::createFromGlobals();
+        $requestStr = parse_url($request->getRequestUri(), PHP_URL_PATH) ?: '';
+        $requestStr = ltrim($requestStr, '/') ?: '/';
+
+        if ($this->containsPathTraversal($requestStr))
+        {
+            return new RedirectResponse('/error/403');
+        }
+
+        $redirect = $this->getRedirect($_SERVER['REQUEST_URI']);
+        if ($redirect)
+        {
+            return $redirect;
+        }
+
+        $isApiCall = str_starts_with($requestStr, '/api');
+        $queryBits = $this->rewriteFriendlyUrls($requestStr);
+        $module = $queryBits->getString(0);
+        $action = $queryBits->getString(1);
+
+        if (!array_key_exists($module, self::$endpoints))
+        {
+            return $this->sendNotFound($isApiCall);
+        }
+
+        $redirect = $this->getLoginRedirect($queryBits);
+        if ($redirect !== null)
+        {
+            return $redirect;
+        }
+
         $post = new RequestParameters($request->request->all());
 
-        $token = $post->getAlphaNum('csrfToken');
-        $tokenCorrect = $route->checkCSRFToken($token);
-        if (!$tokenCorrect)
+        $this->dic->add($request);
+        $this->dic->add($post);
+        $this->dic->add($queryBits);
+        if (isset($_SESSION['profile']))
         {
-            if ($this->isApiCall)
-            {
-                return new JsonResponse(['error' => 'CSRF token incorrect!'], Response::HTTP_FORBIDDEN);
-            }
-
-            $page = new SimplePage('Controle CSRF-token gefaald!', 'Uw CSRF-token is niet correct.');
-            return new Response($page->render(), Response::HTTP_FORBIDDEN);
+            $this->dic->add($_SESSION['profile']);
         }
 
-        try
+        $classname = self::$endpoints[$module];
+        /** @var Controller $controller */
+        $controller = new $classname($module, $action, $isApiCall);
+
+        $route = $this->findRoute($action, $controller, $isApiCall);
+        if ($route === null)
         {
-            $dic = new DependencyInjectionContainer();
-            $dic->add($request);
-            $dic->add($post);
-            $dic->add(new QueryBits($this->requestVars));
-            $pdo = DBConnection::getPDO();
-            $dic->add($pdo);
-            $dic->add($pdo, \PDO::class);
-
-            $fileLogger = new FileLogger(ROOT_DIR . '/var/log/cyndaron.log');
-            $mailRecipient = Setting::get('mail_logRecipient');
-            if (!empty($mailRecipient))
-            {
-                $mailLogger = new MailLogger(Mail::getNoreplyAddress(), new Address($mailRecipient), Setting::get('siteName'));
-                $multiLogger = new MultiLogger($fileLogger, $mailLogger);
-            }
-            else
-            {
-                $multiLogger = new MultiLogger($fileLogger);
-            }
-            $dic->add($multiLogger, LoggerInterface::class);
-
-            $this->setExceptionHandler($multiLogger);
-
-            $user = User::fromSession();
-            if ($user !== null)
-            {
-                $dic->add($user);
-            }
-
-            return $route->route($dic);
+            return $this->sendNotFound($isApiCall);
         }
-        catch (Throwable $t)
+
+        if (!$route->skipCSRFCheck)
         {
-            if (isset($multiLogger))
+            $post = $this->dic->get(RequestParameters::class);
+            $token = $post !== null ? $post->getAlphaNum('csrfToken') : '';
+            $tokenCorrect = $this->checkCSRFToken($_SERVER['REQUEST_METHOD'], $module, $action, $token);
+            if (!$tokenCorrect)
             {
-                $multiLogger->error((string)$t);
-            }
-            else
-            {
-                /** @noinspection ForgottenDebugOutputInspection */
-                error_log($t->__toString());
-            }
+                if ($isApiCall)
+                {
+                    return new JsonResponse(['error' => 'CSRF token incorrect!'], Response::HTTP_FORBIDDEN);
+                }
 
-            if ($this->isApiCall)
-            {
-                return new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);
+                $page = new SimplePage('Controle CSRF-token gefaald!', 'Uw CSRF-token is niet correct.');
+                return new Response($page->render(), Response::HTTP_FORBIDDEN);
             }
-
-            $page = new SimplePage('Fout', 'Er ging iets mis bij het laden van deze pagina!');
-            return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        return $this->callRoute($controller, $route);
+    }
+
+    public function getLoginRedirect(QueryBits $queryBits): RedirectResponse|null
+    {
+        $loginStatus = $this->getLoginStatus($queryBits);
+        switch ($loginStatus)
+        {
+            case LoginStatus::OK:
+                return null;
+            case LoginStatus::INSUFFICIENT_RIGHTS:
+                return new RedirectResponse('/error/403', Response::HTTP_FOUND, Kernel::HEADERS_DO_NOT_CACHE);
+            case LoginStatus::NEEDS_LOGIN:
+            default:
+                User::addNotification('U moet inloggen om deze site te bekijken');
+                $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
+                return new RedirectResponse('/user/login', Response::HTTP_FOUND, Kernel::HEADERS_DO_NOT_CACHE);
+        }
+    }
+
+    public function checkCSRFToken(string $requestMethod, string $module, string $action, string $token): bool
+    {
+        if ($requestMethod === 'POST' && !User::checkToken($module, $action, $token))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function callRoute(Controller $controller, Route $route): Response
+    {
+        $right = $route->right;
+        $hasRight = !empty($right) && !empty($_SESSION['profile']) && $_SESSION['profile']->hasRight($right);
+        if (!$hasRight)
+        {
+            $response = $this->checkUserLevel($route->level);
+            if ($response !== null)
+            {
+                return $response;
+            }
+        }
+
+        return $this->callMethodWithDependencyInjection($controller, $route->function);
+    }
+
+    private function rewriteFriendlyUrls(string $request): QueryBits
+    {
+        $queryBits = QueryBits::fromString($request);
+        // Frontpage
+        if ($queryBits->getString(0) === '')
+        {
+            $frontpage = $this->getFrontpageUrl();
+            return QueryBits::fromString((string)$frontpage);
+        }
+        // Known friendly URL
+        if ($url = DBConnection::getPDO()->doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$request]))
+        {
+            return QueryBits::fromString($this->rewriteFriendlyUrl(new Url($url)));
+        }
+
+        return $queryBits;
     }
 
     /**
@@ -260,218 +317,48 @@ final class Router implements HttpKernelInterface
         return $file;
     }
 
-    /**
-     * @param string $request
-     * @return RedirectResponse|null
-     */
-    private function redirectOldUrls(string $request):RedirectResponse|null
+    private function callMethodWithDependencyInjection(Controller $controller, string $method): Response
     {
-        $frontPage = $this->getFrontpageUrl();
-        if ($frontPage->equals(new Url($_SERVER['REQUEST_URI'])))
+        $reflectionMethod = new \ReflectionMethod($controller, $method);
+
+        $params = [];
+        foreach ($reflectionMethod->getParameters() as $parameter)
         {
-            return new RedirectResponse('/', Response::HTTP_MOVED_PERMANENTLY);
-        }
-        // Redirect if a friendly url exists for the requested unfriendly url
-        if ($_SERVER['REQUEST_URI'] !== '/' && $url = DBConnection::getPDO()->doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target = ?', [$_SERVER['REQUEST_URI']]))
-        {
-            return new RedirectResponse("/$url", Response::HTTP_MOVED_PERMANENTLY);
+            $type = $parameter->getType();
+            /** @var class-string $className */
+            $className = ($type instanceof ReflectionNamedType) ? $type->getName() : '';
+
+            $params[] = $this->dic->get($className);
         }
 
-        return null;
+        /** @var Response $ret */
+        $ret = $reflectionMethod->invokeArgs($controller, $params);
+        return $ret;
     }
 
     /**
-     * @return Url
+     * @param int $requiredLevel
+     * @throws \Safe\Exceptions\SessionException
+     * @throws \Safe\Exceptions\SessionException
+     * @return Response|null A Response if the user level is insufficient, null otherwise.
      */
-    private function getFrontpageUrl(): Url
+    public function checkUserLevel(int $requiredLevel): Response|null
     {
-        return new Url(Setting::get('frontPage') ?: '');
-    }
-
-    private function getCSPHeader(bool $https): string
-    {
-        // Unfortunately, CKeditor still needs inline scripting. Only allow this on editor pages,
-        // in order to prevent degrading the security of the rest of the system.
-        if ($this->requestVars[0] === 'editor' || ($this->requestVars[0] === 'newsletter' && $this->requestVars[1] === 'compose'))
+        if ($requiredLevel > UserLevel::ANONYMOUS && !User::isLoggedIn())
         {
-            $scriptSrc = "'self' 'unsafe-inline'";
-        }
-        else
-        {
-            $nonce = self::getScriptNonce();
-            $scriptSrc = "'self' 'nonce-{$nonce}' 'strict-dynamic'";
-        }
-
-        $upgradeInsecureRequests = $https ? 'upgrade-insecure-requests;' : '';
-        return "{$upgradeInsecureRequests} frame-ancestors 'self'; default-src 'none'; base-uri 'none'; child-src 'none'; connect-src 'self'; font-src 'self'; frame-src 'self' youtube.com *.youtube.com youtu.be; img-src 'self' https: data:;  manifest-src 'none'; media-src 'self' data: https:; object-src 'none'; prefetch-src 'self'; script-src $scriptSrc; style-src 'self' 'unsafe-inline'";
-    }
-
-    /**
-     * @param string $request
-     * @throws \Safe\Exceptions\StringsException
-     * @return RedirectResponse|null
-     */
-    private function blockPathTraversal(string $request):RedirectResponse|null
-    {
-        if ($request !== '/' && (substr($request, 0, 1) === '.' || substr($request, 0, 1) === '/'))
-        {
-            return new RedirectResponse('/error/403');
-        }
-
-        return null;
-    }
-
-    /**
-     * @param string $request
-     */
-    private function updateRequestVars(string $request): void
-    {
-        $vars = explode('/', trim($request, '/'));
-        if ($vars[0] === 'api')
-        {
-            array_shift($vars);
-            $this->isApiCall = true;
-        }
-        $this->requestVars = $vars;
-    }
-
-    private function loadModules(?User $currentUser): void
-    {
-        $modules = [
-            \Cyndaron\User\Module::class,
-            \Cyndaron\View\Module::class,
-            \Cyndaron\StaticPage\Module::class,
-            \Cyndaron\Category\Module::class,
-            \Cyndaron\Photoalbum\Module::class,
-            \Cyndaron\FriendlyUrl\Module::class,
-            \Cyndaron\Mailform\Module::class,
-            \Cyndaron\RichLink\Module::class,
-        ];
-
-        if (defined('MODULES'))
-        {
-            $modules = array_merge($modules, MODULES);
-        }
-
-        foreach ($modules as $moduleClass)
-        {
-            $module = new $moduleClass();
-
-            if ($module instanceof Routes)
-            {
-                foreach ($module->routes() as $path => $controller)
-                {
-                    $this->addRoute($path, $controller);
-                }
-            }
-            if ($module instanceof Datatypes)
-            {
-                foreach ($module->dataTypes() as $dataTypeName => $definition)
-                {
-                    if (isset($definition->editorPage))
-                    {
-                        EditorController::addEditorPage($dataTypeName, $definition->editorPage);
-                    }
-                    if (isset($definition->editorSavePage))
-                    {
-                        EditorController::addEditorSavePage($dataTypeName, $definition->editorSavePage);
-                    }
-                    if (isset($definition->pageManagerTab))
-                    {
-                        PageManagerPage::addTab(new PageManagerTab($dataTypeName, $definition->plural, $definition->pageManagerTab, $definition->pageManagerJS ?? null));
-                    }
-                    if ($module instanceof UrlProvider)
-                    {
-                        Url::addUrlProvider($dataTypeName, $moduleClass);
-                    }
-                    if ($module instanceof Linkable)
-                    {
-                        EditorController::addInternalLinkType($moduleClass);
-                    }
-                }
-            }
-
-            if ($module instanceof UserMenuProvider)
-            {
-                User::$userMenu = array_merge(User::$userMenu, $module->getUserMenuItems($currentUser));
-            }
-            if ($module instanceof Templated)
-            {
-                TemplateFinder::addTemplateRoot($module->getTemplateRoot());
-            }
-            if ($module instanceof WithPageProcessors)
-            {
-                foreach ($module->getPageprocessors() as $processor)
-                {
-                    Page::addPreprocessor(new $processor());
-                }
-            }
-            if ($module instanceof WithTextPostProcessors)
-            {
-                foreach ($module->getTextPostProcessors() as $processor)
-                {
-                    TextRenderer::addTextPostProcessor(new $processor());
-                }
-            }
-            if ($module instanceof CalendarAppointmentsProvider)
-            {
-                Registry::addProvider($module);
-            }
-        }
-    }
-
-    public static function referrer(): string
-    {
-        /** @var string|null $sanitized */
-        $sanitized = filter_input(INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL);
-        return $sanitized ?? '';
-    }
-
-    /**
-     * @param string $request
-     * @throws \Safe\Exceptions\StringsException
-     */
-    private function rewriteFriendlyUrls(string $request): void
-    {
-        // Frontpage
-        if ($this->requestVars[0] === '')
-        {
-            $frontpage = $this->getFrontpageUrl();
-            $this->updateRequestVars((string)$frontpage);
-        }
-        // Known friendly URL
-        elseif ($url = DBConnection::getPDO()->doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$request]))
-        {
-            $this->updateRequestVars($this->rewriteFriendlyUrl(new Url($url)));
-        }
-    }
-
-    public static function getScriptNonce(): string
-    {
-        static $nonce;
-        if (empty($nonce))
-        {
-            $nonce = Util::generateToken(16);
-        }
-
-        return $nonce;
-    }
-
-    public function handle(Request $request, int $type = self::MASTER_REQUEST, bool $catch = true): Response
-    {
-        if (empty($_SESSION))
-        {
+            session_destroy();
             session_start();
+            User::addNotification('U moet inloggen om deze pagina te bekijken');
+            $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
+
+            return new RedirectResponse('/user/login', );
+        }
+        if (User::getLevel() < $requiredLevel)
+        {
+            return new Response('Insufficient user rights!', Response::HTTP_FORBIDDEN);
         }
 
-        $requestStr = parse_url($request->getRequestUri(), PHP_URL_PATH) ?: '';
-        $requestStr = ltrim($requestStr, '/') ?: '/';
-        $this->updateRequestVars($requestStr);
-        $cspHeader = $this->getCSPHeader((bool)($_SERVER['HTTPS'] ?? false));
-        $response = $this->getEndpointOrRedirect($requestStr);
-        $response->headers->set('Content-Security-Policy', $cspHeader);
-
-        return $response;
+        return null;
     }
 
     /**
@@ -479,8 +366,8 @@ final class Router implements HttpKernelInterface
      * @param class-string $controller
      * @return void
      */
-    public function addRoute(string $path, string $controller): void
+    public static function addController(string $path, string $controller): void
     {
-        $this->endpoints[$path] = $controller;
+        self::$endpoints[$path] = $controller;
     }
 }

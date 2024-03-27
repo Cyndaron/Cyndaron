@@ -51,9 +51,9 @@ class Page
 
     protected string $title = '';
     /** @var string[] */
-    protected array $extraScripts = [];
+    public array $extraScripts = [];
     /** @var string[] */
-    protected array $extraCss = [];
+    public array $extraCss = [];
     protected string $websiteName = '';
     protected string $extraBodyClasses = '';
 
@@ -61,7 +61,7 @@ class Page
 
     protected string $template = '';
     /** @var array<string, mixed> */
-    protected array $templateVars = ['contents' => ''];
+    public array $templateVars = ['contents' => ''];
 
     /** @var PagePreProcessor[] */
     private static $preProcessors = [];

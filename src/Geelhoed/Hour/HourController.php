@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class HourController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'memberList' => ['level' => UserLevel::ADMIN, 'function' => 'memberList'],
     ];
 

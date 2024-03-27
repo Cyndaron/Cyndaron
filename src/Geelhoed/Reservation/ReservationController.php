@@ -27,13 +27,13 @@ use function trim;
 
 final class ReservationController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'lesson' => ['level' => UserLevel::ADMIN, 'function' => 'lesson'],
         'overview' => ['level' => UserLevel::ADMIN, 'function' => 'overview'],
         'step-1' => ['level' => UserLevel::ANONYMOUS, 'function' => 'step1'],
     ];
 
-    protected array $postRoutes = [
+    public array $postRoutes = [
         'step-2' => ['level' => UserLevel::ANONYMOUS, 'function' => 'step2'],
         'step-3' => ['level' => UserLevel::ANONYMOUS, 'function' => 'step3'],
         'step-last' => ['level' => UserLevel::ANONYMOUS, 'function' => 'stepLast'],

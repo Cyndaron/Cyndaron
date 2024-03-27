@@ -4,7 +4,7 @@ namespace Cyndaron;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Util\Error\BootFailure;
-use Cyndaron\Routing\Router;
+use Cyndaron\Routing\Kernel;
 use Cyndaron\Util\Setting;
 use ErrorException;
 use RuntimeException;
@@ -90,7 +90,7 @@ final class WebBootstrapper
 
     private function handleRequest(): void
     {
-        $route = new Router();
+        $route = new Kernel();
         $response = $route->handle(Request::createFromGlobals());
         $response->send();
     }

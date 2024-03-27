@@ -5,12 +5,20 @@ namespace Cyndaron\Error;
 
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Routing\Controller;
+use Cyndaron\User\UserLevel;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 
 final class ErrorController extends Controller
 {
+    public array $getRoutes = [
+        '' => ['function' => 'show', 'level' => UserLevel::ANONYMOUS],
+    ];
+    public array $postRoutes = [
+        '' => ['function' => 'show', 'level' => UserLevel::ANONYMOUS, 'skipCSRFCheck' => true],
+    ];
+
     public const KNOWN_ERRORS = [
         '403' => [
             'pageTitle' => '403: Forbidden',
@@ -22,23 +30,18 @@ final class ErrorController extends Controller
         ],
     ];
 
-    // Overridden, since both GET and POST requests may end up here, and checking user rights is not necessary.
-    public function route(DependencyInjectionContainer $dic): Response
+    public function show(): Response
     {
-        if ($this->action === null)
-        {
-            $this->action = 'null';
-        }
+        $code = (int)$this->action;
 
-        if (!array_key_exists($this->action, self::KNOWN_ERRORS))
+        if (!array_key_exists($code, self::KNOWN_ERRORS))
         {
-            $page = new SimplePage('Onbekende fout', 'Er is een onbekende fout opgetreden. Code: ' . $this->action);
+            $page = new SimplePage('Onbekende fout', 'Er is een onbekende fout opgetreden. Code: ' . $code);
             return new Response($page->render());
         }
 
-        $error = self::KNOWN_ERRORS[$this->action];
-        $statusCode = (int)$this->action;
+        $error = self::KNOWN_ERRORS[$code];
         $page = new SimplePage($error['pageTitle'], $error['notification']);
-        return new Response($page->render(), $statusCode);
+        return new Response($page->render(), $code);
     }
 }

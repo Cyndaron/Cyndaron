@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class MenuController extends Controller
 {
-    protected array $apiPostRoutes = [
+    public array $apiPostRoutes = [
         'addItem' => ['level' => UserLevel::ADMIN, 'function' => 'addItem'],
         'editItem' => ['level' => UserLevel::ADMIN, 'function' => 'editItem'],
         'deleteItem' => ['level' => UserLevel::ADMIN, 'function' => 'deleteItem'],

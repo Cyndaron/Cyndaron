@@ -36,14 +36,14 @@ class TryoutController extends Controller
     private const BATCH_SIZE = 250;
     private const QUERY = 'REPLACE INTO geelhoed_tryout_points(`id`, `code`, `datetime`, `points`) VALUES ';
 
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'scores' => ['function' => 'scores', 'level' => UserLevel::ANONYMOUS],
         'update' => ['function' => 'updateGet', 'level' => UserLevel::ADMIN, 'right' => self::RIGHT_UPLOAD],
     ];
-    protected array $postRoutes = [
+    public array $postRoutes = [
         'update' => ['function' => 'updatePost', 'level' => UserLevel::ADMIN, 'right' => self::RIGHT_UPLOAD],
     ];
-    protected array $apiPostRoutes = [
+    public array $apiPostRoutes = [
         'create-photoalbums' => ['function' => 'createPhotoalbums', 'level' => UserLevel::ADMIN],
     ];
 

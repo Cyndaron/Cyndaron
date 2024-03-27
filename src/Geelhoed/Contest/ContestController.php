@@ -48,7 +48,7 @@ use function time;
 
 final class ContestController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'contestantsEmail' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsEmail'],
         'contestantsList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsList'],
         'contestantsListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsListExcel'],
@@ -65,7 +65,7 @@ final class ContestController extends Controller
         'view' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
     ];
 
-    protected array $postRoutes = [
+    public array $postRoutes = [
         'addAttachment' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addAttachment'],
         'addToParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addToParentAccount'],
         'deleteAttachment' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteAttachment'],
@@ -74,7 +74,7 @@ final class ContestController extends Controller
         'subscribe' => ['level' => UserLevel::LOGGED_IN, 'function' => 'subscribe'],
     ];
 
-    protected array $apiPostRoutes = [
+    public array $apiPostRoutes = [
         'addDate' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addDate'],
         'cancelSubscription' => ['level' => UserLevel::LOGGED_IN, 'function' => 'cancelSubscription'],
         'createParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'createParentAccount'],
@@ -82,22 +82,10 @@ final class ContestController extends Controller
         'deleteFromParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteFromParentAccount'],
         'edit' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'createOrEdit'],
         'delete' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'delete'],
-        'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook'],
+        'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook', 'skipCSRFCheck' => true],
         'updatePaymentStatus' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'updatePaymentStatus'],
         'removeSubscription' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'removeSubscription'],
     ];
-
-    public function checkCSRFToken(string $token): bool
-    {
-        // Mollie webhook does not need a CSRF token.
-        // It only notifies us of a status change and it's up to us to check with them what that status is.
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $this->action === 'mollieWebhook')
-        {
-            return true;
-        }
-
-        return parent::checkCSRFToken($token);
-    }
 
     public function overview(): Response
     {

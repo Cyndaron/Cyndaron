@@ -53,40 +53,24 @@ final class OrderController extends Controller
 {
     private const MAX_SECRET_CODE_RETRIES = 10;
 
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'afterPayment' => ['level' => UserLevel::ANONYMOUS, 'function' => 'afterPayment'],
         'checkIn' => ['level' => UserLevel::ANONYMOUS, 'function' => 'checkInGet'],
         'getTickets' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getTickets'],
         'pay' => ['level' => UserLevel::ANONYMOUS, 'function' => 'pay'],
     ];
 
-    protected array $postRoutes = [
+    public array $postRoutes = [
         'add' => ['level' => UserLevel::ANONYMOUS, 'function' => 'add'],
-        'checkIn' => ['level' => UserLevel::ANONYMOUS, 'function' => 'checkInPost'],
+        'checkIn' => ['level' => UserLevel::ANONYMOUS, 'function' => 'checkInPost', 'skipCSRFCheck' => true],
     ];
 
-    protected array $apiPostRoutes = [
+    public array $apiPostRoutes = [
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook'],
+        'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook', 'skipCSRFCheck' => true],
         'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
         'setIsSent' => ['level' => UserLevel::ADMIN, 'function' => 'setIsSent'],
     ];
-
-    public function checkCSRFToken(string $token): bool
-    {
-        if ($this->action === 'checkIn')
-        {
-            return true;
-        }
-        // Mollie webhook does not need a CSRF token.
-        // It only notifies us of a status change and it’s up to us to check with them what that status is.
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $this->action === 'mollieWebhook')
-        {
-            return true;
-        }
-
-        return parent::checkCSRFToken($token);
-    }
 
     protected function add(RequestParameters $post): Response
     {
@@ -854,7 +838,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
             'concert' => $concert,
             'message' => $message,
             'isPositive' => $isPositive,
-            'nonce' => \Cyndaron\Routing\Router::getScriptNonce(),
+            'nonce' => \Cyndaron\Routing\Kernel::getScriptNonce(),
         ];
 
         $template = new Template();

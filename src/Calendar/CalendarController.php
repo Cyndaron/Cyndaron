@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CalendarController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'overzicht' => ['function' => 'overview', 'level' => UserLevel::ANONYMOUS],
     ];
 

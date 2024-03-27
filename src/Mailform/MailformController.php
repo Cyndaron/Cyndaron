@@ -22,23 +22,13 @@ use function strtr;
 
 final class MailformController extends Controller
 {
-    protected array $postRoutes = [
-        'process' => ['level' => UserLevel::ANONYMOUS, 'function' => 'process'],
-        'process-ldbf' => ['level' => UserLevel::ANONYMOUS, 'function' => 'processLDBF'],
+    public array $postRoutes = [
+        'process' => ['level' => UserLevel::ANONYMOUS, 'function' => 'process', 'skipCSRFCheck' => true],
+        'process-ldbf' => ['level' => UserLevel::ANONYMOUS, 'function' => 'processLDBF', 'skipCSRFCheck' => true],
     ];
-    protected array $apiPostRoutes = [
+    public array $apiPostRoutes = [
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
     ];
-
-    public function checkCSRFToken(string $token): bool
-    {
-        if (in_array($this->action, ['process', 'process-ldbf'], true))
-        {
-            return true;
-        }
-
-        return parent::checkCSRFToken($token);
-    }
 
     /**
      * @param RequestParameters $post

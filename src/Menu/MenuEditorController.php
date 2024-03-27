@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class MenuEditorController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         '' => ['level' => UserLevel::ADMIN, 'function' => 'routeGet'],
     ];
 

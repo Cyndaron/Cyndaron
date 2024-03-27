@@ -16,6 +16,7 @@ final class Route
         public readonly string $function,
         public readonly int $level = UserLevel::ADMIN,
         public readonly string|null $right = null,
+        public readonly bool $skipCSRFCheck = false,
     ) {
     }
 }

@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class SportController extends Controller
 {
-    protected array $apiPostRoutes = [
+    public array $apiPostRoutes = [
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'apiEdit'],
     ];
 

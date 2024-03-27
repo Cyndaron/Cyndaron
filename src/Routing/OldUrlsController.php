@@ -14,11 +14,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OldUrlsController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routeGet'],
     ];
-    protected array $postRoutes = [
-        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routePost'],
+    public array $postRoutes = [
+        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routePost', 'skipCSRFCheck' => true],
     ];
 
     public function routeGet(Request $request): Response
@@ -73,15 +73,5 @@ class OldUrlsController extends Controller
     {
         $id = $request->query->getInt('boekid');
         return new RedirectResponse("/photoalbum/$id");
-    }
-
-    public function checkCSRFToken(string $token): bool
-    {
-        if ($this->module === 'verwerkmailformulier.php')
-        {
-            return true;
-        }
-
-        return parent::checkCSRFToken($token);
     }
 }

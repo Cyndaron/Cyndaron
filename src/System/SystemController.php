@@ -12,10 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class SystemController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         '' => ['level' => UserLevel::ADMIN, 'function' => 'routeGet'],
     ];
-    protected array $postRoutes = [
+    public array $postRoutes = [
         '' => ['level' => UserLevel::ADMIN, 'function' => 'routePost'],
     ];
 

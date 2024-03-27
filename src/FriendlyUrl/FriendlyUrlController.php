@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class FriendlyUrlController extends Controller
 {
-    protected array $apiPostRoutes = [
+    public array $apiPostRoutes = [
         'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
         'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],

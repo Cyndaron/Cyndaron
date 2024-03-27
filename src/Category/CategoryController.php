@@ -24,15 +24,15 @@ use function strpos;
 
 final class CategoryController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
     ];
 
-    protected array $apiGetRoutes = [
+    public array $apiGetRoutes = [
         'underlyingPages' => ['level' => UserLevel::ANONYMOUS, 'function' => 'underlyingPages'],
     ];
 
-    protected array $apiPostRoutes = [
+    public array $apiPostRoutes = [
         'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
         'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
         'changeOrder' => ['level' => UserLevel::ADMIN, 'function' => 'changeOrder'],

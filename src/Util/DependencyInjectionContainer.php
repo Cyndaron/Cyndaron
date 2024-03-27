@@ -30,8 +30,16 @@ final class DependencyInjectionContainer
         $this->objects[$className] = $object;
     }
 
-    public function get(string $className):object|null
+    /**
+     * @template T
+     *
+     * @param class-string<T> $className
+     * @return T|null
+     */
+    public function get(string $className)
     {
-        return $this->objects[$className] ?? null;
+        /** @var T|null $ret */
+        $ret = $this->objects[$className] ?? null;
+        return $ret;
     }
 }

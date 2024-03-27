@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class AtomController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'category' => ['level' => UserLevel::ANONYMOUS, 'function' => 'category'],
     ];
 

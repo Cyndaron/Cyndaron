@@ -44,7 +44,7 @@ final class ConcertController extends Controller
         'subscribeToNewsletter' => 'Inschrijven voor nieuwsbrief',
     ];
 
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'getInfo' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getConcertInfo'],
         'order' => ['level' => UserLevel::ANONYMOUS, 'function' => 'order'],
         'orderListExcel' => ['level' => UserLevel::ADMIN, 'function' => 'orderListExcel'],

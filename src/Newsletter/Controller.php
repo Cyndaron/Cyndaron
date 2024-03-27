@@ -29,20 +29,20 @@ use function base64_decode;
 
 class Controller extends \Cyndaron\Routing\Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'viewSubscribers' => ['level' => UserLevel::ADMIN, 'function' => 'viewSubscribers'],
         'compose' => ['level' => UserLevel::ADMIN, 'function' => 'compose'],
         'unsubscribe' => ['level' => UserLevel::ANONYMOUS, 'function' => 'unsubscribeUser'],
         'confirm' => ['level' => UserLevel::ANONYMOUS, 'function' => 'confirm'],
     ];
 
-    protected array $postRoutes = [
+    public array $postRoutes = [
         'subscribe' => ['level' => UserLevel::ANONYMOUS, 'function' => 'subscribe'],
         'unsubscribe' => ['level' => UserLevel::ADMIN, 'function' => 'unsubscribeAdmin'],
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
     ];
 
-    protected array $apiPostRoutes = [
+    public array $apiPostRoutes = [
         'send' => ['level' => UserLevel::ADMIN, 'function' => 'send'],
     ];
 

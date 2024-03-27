@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class LocationController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'details' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
         'overzicht' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overview'],
         'in-stad' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overviewByCity'],

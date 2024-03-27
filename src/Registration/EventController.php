@@ -19,7 +19,7 @@ use function ord;
 
 final class EventController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         'getInfo' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getEventInfo'],
         'register' => ['level' => UserLevel::ANONYMOUS, 'function' => 'register'],
         'viewRegistrations' => ['level' => UserLevel::ADMIN, 'function' => 'viewRegistrations'],

@@ -19,16 +19,16 @@ use function pathinfo;
 
 final class PhotoalbumController extends Controller
 {
-    protected array $getRoutes = [
+    public array $getRoutes = [
         '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routeGet'],
     ];
 
-    protected array $postRoutes = [
+    public array $postRoutes = [
         'addPhoto' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_UPLOAD, 'function' => 'addPhoto'],
         'deletePhoto' => ['level' => UserLevel::ADMIN, 'function' => 'deletePhoto'],
     ];
 
-    protected array $apiPostRoutes = [
+    public array $apiPostRoutes = [
         'add' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_EDIT, 'function' => 'add'],
         'addPhoto' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_UPLOAD, 'function' => 'addPhotoApi'],
         'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
