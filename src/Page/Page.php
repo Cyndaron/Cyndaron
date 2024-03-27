@@ -14,6 +14,7 @@ use Cyndaron\DBAL\Model;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\Module\PagePreProcessor;
 use Cyndaron\User\User;
+use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\LinkWithIcon;
 use Cyndaron\Util\Setting;
@@ -31,7 +32,9 @@ use function Safe\ob_start;
 use function sprintf;
 use function str_replace;
 use function strrchr;
+use function strtoupper;
 use function substr;
+use function var_dump;
 
 class Page
 {
@@ -72,24 +75,34 @@ class Page
 
     protected function updateTemplate(): void
     {
-        if (empty($this->template))
+        if (!empty($this->template))
         {
-            $rc = new \ReflectionClass(static::class);
-            $filename = $rc->getFileName();
-            assert($filename !== false);
-            $dir = dirname($filename) . '/templates';
+            return;
+        }
 
-            $file = str_replace('.php', '.blade.php', basename($filename));
-            $testPath = "$dir/$file";
+        $rc = new \ReflectionClass(static::class);
+        $filename = $rc->getFileName();
+        assert($filename !== false);
+        $dir = dirname($filename) . '/templates';
+        $baseFilename = str_replace('.php', '', basename($filename));
 
-            if (file_exists($testPath))
-            {
-                $this->template = $testPath;
-            }
-            else
-            {
-                $this->template = 'Index';
-            }
+        $shortCode = strtoupper(Setting::get(BuiltinSetting::SHORT_CODE));
+        $filenameWithShortcode = $baseFilename . $shortCode . '.blade.php';
+        $pathWithShortcode = "$dir/$filenameWithShortcode";
+        $filenameWithoutShortcode = $baseFilename . '.blade.php';
+        $pathWithoutShortcode = "$dir/$filenameWithoutShortcode";
+
+        if (file_exists($pathWithShortcode))
+        {
+            $this->template = $pathWithShortcode;
+        }
+        elseif (file_exists($pathWithoutShortcode))
+        {
+            $this->template = $pathWithoutShortcode;
+        }
+        else
+        {
+            $this->template = 'Index';
         }
     }
 

@@ -13,14 +13,6 @@ final class EventRegistrationOverviewPage extends Page
 
     public function __construct(Event $event)
     {
-        switch (Setting::get(BuiltinSetting::ORGANISATION))
-        {
-            case Setting::VALUE_ORGANISATION_VOV:
-            case Setting::VALUE_ORGANISATION_ZCK:
-                $this->template = 'Registration/EventRegistrationOverviewPageVOV';
-                break;
-        }
-
         $ticketTypes = EventTicketType::loadByEvent($event);
         $registrations = Registration::loadByEvent($event);
 

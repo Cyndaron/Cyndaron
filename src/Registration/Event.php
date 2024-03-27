@@ -5,6 +5,7 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\DBAL\Model;
 use Cyndaron\Util\BuiltinSetting;
+use Cyndaron\Util\KnownShortCodes;
 use Cyndaron\Util\Setting;
 
 final class Event extends Model
@@ -36,10 +37,9 @@ final class Event extends Model
      */
     public function getAntispam(): string
     {
-        switch (Setting::get(BuiltinSetting::ORGANISATION))
+        switch (Setting::get(BuiltinSetting::SHORT_CODE))
         {
-            case Setting::VALUE_ORGANISATION_VOV:
-            case Setting::VALUE_ORGANISATION_ZCK:
+            case KnownShortCodes::VOV:
                 return 'Vlissingen';
         }
 

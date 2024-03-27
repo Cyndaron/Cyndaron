@@ -13,10 +13,6 @@ use function assert;
 
 final class Setting
 {
-    public const VALUE_ORGANISATION_VOV = 'Vlissingse Oratorium Vereniging';
-    public const VALUE_ORGANISATION_ZCK = 'Zeeuws Concertkoor';
-    public const VALUE_ORGANISATION_TFR = 'The Flood Requiem 1953';
-
     public const CACHE_FILE = ROOT_DIR . '/cache/cyndaron/settings.php';
 
     /** @var string[] */
@@ -43,26 +39,6 @@ final class Setting
 
         $setting = self::$pdo->prepare('REPLACE INTO settings(`name`, `value`) VALUES (?, ?)');
         $setting->execute([$name, $value]);
-    }
-
-    public static function getShortCode(): string
-    {
-        $value = self::get(BuiltinSetting::SHORT_CODE);
-        if ($value !== '')
-        {
-            return $value;
-        }
-
-        switch (self::get(BuiltinSetting::ORGANISATION))
-        {
-            case self::VALUE_ORGANISATION_VOV:
-            case self::VALUE_ORGANISATION_ZCK:
-                return 'vov';
-            case self::VALUE_ORGANISATION_TFR:
-                return 'tfr';
-        }
-
-        return '';
     }
 
     public static function load(PDO $pdo): void

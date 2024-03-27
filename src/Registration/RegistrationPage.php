@@ -3,6 +3,7 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\Page\Page;
 use Cyndaron\Util\BuiltinSetting;
+use Cyndaron\Util\KnownShortCodes;
 use Cyndaron\Util\Setting;
 use Phan\Library\Set;
 use function file_exists;
@@ -18,9 +19,9 @@ final class RegistrationPage extends Page
         $this->addCss('/src/Registration/css/RegistrationPage.css');
         $this->addCss('/src/Ticketsale/css/Ticketsale.min.css');
 
-        $organisation = Setting::get(BuiltinSetting::ORGANISATION);
+        $shortCode = Setting::get(BuiltinSetting::SHORT_CODE);
 
-        if ($organisation === Setting::VALUE_ORGANISATION_VOV || $organisation === Setting::VALUE_ORGANISATION_ZCK)
+        if ($shortCode === KnownShortCodes::VOV)
         {
             $template = 'Registration/RegistrationPageVOV';
             if (file_exists(__DIR__ . '/templates/RegistrationPageVOV-' . $event->id . '.blade.php'))

@@ -7,6 +7,7 @@ use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Mail\Mail;
+use Cyndaron\Util\KnownShortCodes;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\Template;
@@ -92,8 +93,8 @@ final class Registration extends Model
         ];
 
         $templateFile = 'Registration/ConfirmationMail';
-        $organisation = Setting::get(BuiltinSetting::ORGANISATION);
-        if ($organisation === Setting::VALUE_ORGANISATION_VOV || $organisation === Setting::VALUE_ORGANISATION_ZCK)
+        $shortCode = Setting::get(BuiltinSetting::SHORT_CODE);
+        if ($shortCode === KnownShortCodes::VOV)
         {
             $templateFile = 'Registration/ConfirmationMailVOV';
             if (file_exists(__DIR__ . '/templates/ConfirmationMailVOV-' . $event->id . '.blade.php'))
@@ -127,7 +128,7 @@ final class Registration extends Model
 
         $organisation = Setting::get(BuiltinSetting::ORGANISATION);
         $text = "Hartelijk dank voor uw inschrijving bij $organisation. Wij hebben uw betaling in goede orde ontvangen.\n";
-        if ($organisation !== Setting::VALUE_ORGANISATION_VOV && $organisation !== Setting::VALUE_ORGANISATION_ZCK)
+        if (Setting::get(BuiltinSetting::SHORT_CODE) !== KnownShortCodes::VOV)
         {
             $text .= 'Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaarliggen bij de kassa.';
         }

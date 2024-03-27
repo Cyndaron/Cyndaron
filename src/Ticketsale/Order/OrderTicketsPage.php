@@ -15,7 +15,7 @@ final class OrderTicketsPage extends Page
     {
         $this->addScript('/src/Ticketsale/Order/js/OrderTicketsPage.js?r=1');
 
-        $shortCode = strtoupper(Setting::getShortCode());
+        $shortCode = strtoupper(Setting::get(BuiltinSetting::SHORT_CODE));
         $specificTemplate = "OrderTicketsPage{$shortCode}-{$concert->id}";
         $orgTemplate = "OrderTicketsPage{$shortCode}";
         if (file_exists(__DIR__ . "/templates/$specificTemplate.blade.php"))
