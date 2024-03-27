@@ -16,7 +16,7 @@ final class SystemController extends Controller
         '' => ['level' => UserLevel::ADMIN, 'function' => 'routeGet'],
     ];
     protected array $postRoutes = [
-        '' => ['level' => UserLevel::ADMIN, 'function' => 'routeGet'],
+        '' => ['level' => UserLevel::ADMIN, 'function' => 'routePost'],
     ];
 
     protected function routeGet(QueryBits $queryBits): Response
