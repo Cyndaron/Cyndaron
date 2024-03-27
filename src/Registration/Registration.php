@@ -80,20 +80,6 @@ final class Registration extends Model
     {
         $event = $this->getEvent();
 
-        if (Setting::get(Setting::ORGANISATION) === Setting::VALUE_ORGANISATION_SBK)
-        {
-            $text = 'Hartelijk dank voor je aanmelding op de SBK-website voor deelname als koorzanger voor ' . $event->name . '. Je aanmelding is door het SBK-bestuur in goede orde ontvangen.
-
-Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur je via de mail weten of je als koorzanger kunt deelnemen in het SBK-koor. Je hoeft nu dus nog niet te betalen.';
-
-            $mail = UtilMail::createMailWithDefaults(
-                new Address($this->email),
-                'Aanmelding ' . $event->name . ' ontvangen',
-                $text
-            );
-            return $mail->send();
-        }
-
         $ticketTypes = EventTicketType::loadByEvent($event);
         $lunchText = ($this->lunch) ? $this->lunchType : 'Geen';
         $extraFields = [
@@ -143,16 +129,6 @@ Zo spoedig mogelijk na sluiting van de aanmeldingsprocedure laat het SBK-bestuur
         if ($organisation !== Setting::VALUE_ORGANISATION_VOV && $organisation !== Setting::VALUE_ORGANISATION_ZCK)
         {
             $text .= 'Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaarliggen bij de kassa.';
-        }
-        if ($organisation === Setting::VALUE_ORGANISATION_SBK)
-        {
-            $text = 'Beste koorzanger,
-
-Je betaling is ontvangen waarmee je plaatsing op de deelnemerslijst definitief is geworden. Tot ziens op de eerste repetitie!
-
-Met vriendelijke groet,
-
-Stichting Bijzondere Koorprojecten';
         }
 
         $mail = UtilMail::createMailWithDefaults(
@@ -248,25 +224,6 @@ Stichting Bijzondere Koorprojecten';
         $event = $this->getEvent();
 
         $text = '';
-        if (Setting::get(Setting::ORGANISATION) === Setting::VALUE_ORGANISATION_SBK)
-        {
-            $registrationTotal = $this->calculateTotal();
-
-            $text = 'Beste koorzanger,
-
-Nogmaals dank voor je belangstelling voor ' . $event->name . '. Inmiddels zijn alle aanmeldingen bekeken en kunnen we je met plezier melden dat je bent geplaatst op de deelnemerslijst. Die plaatsing wordt definitief na ontvangst van de bijdrage in de kosten ad ' . ViewHelpers::formatEuro($registrationTotal) . '. Wij vragen je dat binnen twee weken te doen waarna je bericht krijgt van de definitieve plaatsing.
-
-Gebruik bij het betalen de volgende gegevens:
-   Rekeningnummer: NL72 RABO 0342 0672 22 t.n.v. Bijzondere Koorprojecten
-   Bedrag: ' . ViewHelpers::formatEuro($registrationTotal) . '
-   Onder vermelding van: aanmeldingsnummer ' . $this->id . '
-
-We kijken uit naar plezierige repetities en een mooi concert!
-
-Met vriendelijke groet,
-
-Stichting Bijzondere Koorprojecten';
-        }
 
         $mail = UtilMail::createMailWithDefaults(
             new Address($this->email),
@@ -287,24 +244,6 @@ Stichting Bijzondere Koorprojecten';
         $this->save();
 
         $event = $this->getEvent();
-
-        if (Setting::get(Setting::ORGANISATION) === Setting::VALUE_ORGANISATION_SBK)
-        {
-            $text = 'Beste koorzanger,
-
-Nogmaals dank voor je belangstelling voor ' . $event->name . '. Inmiddels zijn alle aanmeldingen bekeken. Bij de indeling speelt de balans in stemsoorten de belangrijkste rol. Dat betekent helaas dat we je niet hebben kunnen plaatsen.
-
-Met vriendelijke groet,
-
-Stichting Bijzondere Koorprojecten';
-
-            $mail =UtilMail::createMailWithDefaults(
-                new Address($this->email),
-                'Aanmelding ' . $event->name,
-                $text
-            );
-            return $mail->send();
-        }
 
         if ($event->requireApproval)
         {

@@ -16,7 +16,6 @@ final class Setting
 
     public const VALUE_ORGANISATION_VOV = 'Vlissingse Oratorium Vereniging';
     public const VALUE_ORGANISATION_ZCK = 'Zeeuws Concertkoor';
-    public const VALUE_ORGANISATION_SBK = 'Stichting Bijzondere Koorprojecten';
     public const VALUE_ORGANISATION_TFR = 'The Flood Requiem 1953';
 
     public const CACHE_FILE = ROOT_DIR . '/cache/cyndaron/settings.php';

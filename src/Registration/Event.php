@@ -40,8 +40,6 @@ final class Event extends Model
             case Setting::VALUE_ORGANISATION_VOV:
             case Setting::VALUE_ORGANISATION_ZCK:
                 return 'Vlissingen';
-            case Setting::VALUE_ORGANISATION_SBK:
-                return 'Mozart';
         }
 
         return 'Scratch';

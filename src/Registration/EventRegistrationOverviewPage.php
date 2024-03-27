@@ -18,9 +18,6 @@ final class EventRegistrationOverviewPage extends Page
             case Setting::VALUE_ORGANISATION_ZCK:
                 $this->template = 'Registration/EventRegistrationOverviewPageVOV';
                 break;
-            case 'Stichting Bijzondere Koorprojecten':
-                $this->template = 'Registration/EventRegistrationOverviewPageSBK';
-                break;
         }
 
         $ticketTypes = EventTicketType::loadByEvent($event);

@@ -50,10 +50,6 @@ final class RegistrationPage extends Page
 
             $this->addTemplateVar('ageRanges', $ageRanges);
         }
-        elseif ($organisation === 'Stichting Bijzondere Koorprojecten')
-        {
-            $this->template = 'Registration/RegistrationPageSBK';
-        }
 
         $this->addTemplateVars([
             'event' => $event,
