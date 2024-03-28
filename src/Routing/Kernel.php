@@ -201,7 +201,8 @@ final class Kernel implements HttpKernelInterface
                     }
                     if (isset($definition->pageManagerTab))
                     {
-                        PageManagerPage::addTab(new PageManagerTab($dataTypeName, $definition->plural, $definition->pageManagerTab, $definition->pageManagerJS ?? null));
+                        $tab = new PageManagerTab($dataTypeName, $definition->plural, $definition->pageManagerTab, $definition->pageManagerJS ?? null);
+                        $registry->addPageManagerTab($tab);
                     }
                     if ($module instanceof UrlProvider)
                     {

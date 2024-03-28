@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\PageManager;
 
+use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPageResponse;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
@@ -16,12 +17,12 @@ final class PageManagerController extends Controller
         '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routeGet'],
     ];
 
-    protected function routeGet(QueryBits $queryBits, User $currentUser): Response
+    protected function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry): Response
     {
         $currentPage = $queryBits->getString(1, 'sub');
         try
         {
-            $page = new PageManagerPage($currentUser, $currentPage);
+            $page = new PageManagerPage($currentUser, $currentPage, $registry);
             return new Response($page->render());
         }
         catch (\RuntimeException)

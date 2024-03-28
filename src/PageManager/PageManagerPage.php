@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\PageManager;
 
+use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
 use function assert;
@@ -10,17 +11,14 @@ use function is_callable;
 
 final class PageManagerPage extends Page
 {
-    /** @var PageManagerTab[] */
-    private static array $tabs = [];
-
-    public function __construct(User $currentUser, string $currentPage)
+    public function __construct(User $currentUser, string $currentPage, ModuleRegistry $registry)
     {
         $this->addScript('/src/PageManager/js/PageManagerPage.js');
         parent::__construct('Paginaoverzicht');
 
         $pageTabs = [];
         $firstVisibleType = null;
-        foreach (self::$tabs as $tab)
+        foreach ($registry->pageManagerTabs as $tab)
         {
             $pageType = $tab->type;
             if ($currentUser->hasRight("{$pageType}_edit"))
@@ -42,7 +40,7 @@ final class PageManagerPage extends Page
             $currentPage = $firstVisibleType;
         }
 
-        $tab = self::$tabs[$currentPage];
+        $tab = $registry->pageManagerTabs[$currentPage];
         $drawingFunction = $tab->tabDraw;
         assert(is_callable($drawingFunction));
         $tabContents = $drawingFunction($currentUser);
@@ -56,15 +54,5 @@ final class PageManagerPage extends Page
         {
             $this->addScript($tab->js);
         }
-    }
-
-    /**
-     * Adds a tab definition to the page manager.
-     *
-     * @param PageManagerTab $tab
-     */
-    public static function addTab(PageManagerTab $tab): void
-    {
-        self::$tabs[$tab->type] = $tab;
     }
 }

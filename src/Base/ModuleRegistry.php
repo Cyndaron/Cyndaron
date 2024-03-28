@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Base;
 
+use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Routing\Controller;
 
 final class ModuleRegistry
@@ -15,6 +16,9 @@ final class ModuleRegistry
 
     /** @var array<string, class-string> */
     public array $editorSavePages = [];
+
+    /** @var PageManagerTab[] */
+    public array $pageManagerTabs = [];
 
     /**
      * @param string $module
@@ -44,5 +48,10 @@ final class ModuleRegistry
     public function addEditorSavePage(string $module, string $className): void
     {
         $this->editorSavePages[$module] = $className;
+    }
+
+    public function addPageManagerTab(PageManagerTab $tab): void
+    {
+        $this->pageManagerTabs[$tab->type] = $tab;
     }
 }
