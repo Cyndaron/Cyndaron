@@ -6,7 +6,6 @@ namespace Cyndaron\Routing;
 
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
-use Cyndaron\Calendar\Registry;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Editor\EditorController;
 use Cyndaron\Logger\FileLogger;
@@ -239,7 +238,7 @@ final class Kernel implements HttpKernelInterface
             }
             if ($module instanceof CalendarAppointmentsProvider)
             {
-                Registry::addProvider($module);
+                $registry->addCalendarAppointmentsProvider($module);
             }
         }
 

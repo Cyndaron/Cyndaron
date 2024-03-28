@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Base;
 
+use Cyndaron\Calendar\CalendarAppointmentsProvider;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Routing\Controller;
@@ -25,6 +26,9 @@ final class ModuleRegistry
 
     /** @var class-string<UrlProvider>[] $urlProviders */
     public array $urlProviders = [];
+
+    /** @var CalendarAppointmentsProvider[] */
+    public array $calendarAppointmentsProviders;
 
     /**
      * @param string $module
@@ -70,5 +74,10 @@ final class ModuleRegistry
         {
             $this->urlProviders[$urlBase] = $class;
         }
+    }
+
+    public function addCalendarAppointmentsProvider(CalendarAppointmentsProvider $provider): void
+    {
+        $this->calendarAppointmentsProviders[] = $provider;
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Calendar;
 
+use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,9 +14,9 @@ class CalendarController extends Controller
         'overzicht' => ['function' => 'overview', 'level' => UserLevel::ANONYMOUS],
     ];
 
-    public function overview(): Response
+    public function overview(ModuleRegistry $moduleRegistry): Response
     {
-        $page = new CalendarIndexPage();
+        $page = new CalendarIndexPage($moduleRegistry);
         return new Response($page->render());
     }
 }

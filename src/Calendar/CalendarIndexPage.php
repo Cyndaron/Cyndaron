@@ -3,17 +3,19 @@ declare(strict_types=1);
 
 namespace Cyndaron\Calendar;
 
+use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Page\Page;
 use function array_filter;
 use function usort;
 
 final class CalendarIndexPage extends Page
 {
-    public function __construct()
+    public function __construct(ModuleRegistry $moduleRegistry)
     {
         parent::__construct('Agenda');
 
-        $appointments = Registry::getAllAppointments();
+        $calendarRegistry = new Registry($moduleRegistry);
+        $appointments = $calendarRegistry->getAllAppointments();
         $now = new \DateTimeImmutable();
         $appointments = array_filter($appointments, static function($appointment) use ($now)
         {
