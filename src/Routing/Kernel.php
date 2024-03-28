@@ -206,7 +206,7 @@ final class Kernel implements HttpKernelInterface
                     }
                     if ($module instanceof UrlProvider)
                     {
-                        Url::addUrlProvider($dataTypeName, $moduleClass);
+                        $registry->addUrlProvider($dataTypeName, $moduleClass);
                     }
                     if ($module instanceof Linkable)
                     {
@@ -243,6 +243,7 @@ final class Kernel implements HttpKernelInterface
             }
         }
 
+        Url::setRegistry($registry);
         return $registry;
     }
 

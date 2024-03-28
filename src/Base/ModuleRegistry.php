@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace Cyndaron\Base;
 
+use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Routing\Controller;
+use function in_array;
+use function Safe\class_implements;
 
 final class ModuleRegistry
 {
@@ -19,6 +22,9 @@ final class ModuleRegistry
 
     /** @var PageManagerTab[] */
     public array $pageManagerTabs = [];
+
+    /** @var class-string<UrlProvider>[] $urlProviders */
+    public array $urlProviders = [];
 
     /**
      * @param string $module
@@ -53,5 +59,16 @@ final class ModuleRegistry
     public function addPageManagerTab(PageManagerTab $tab): void
     {
         $this->pageManagerTabs[$tab->type] = $tab;
+    }
+
+    /**
+     * @param class-string<UrlProvider> $class
+     */
+    public function addUrlProvider(string $urlBase, string $class): void
+    {
+        if (in_array(UrlProvider::class, class_implements($class), true))
+        {
+            $this->urlProviders[$urlBase] = $class;
+        }
     }
 }

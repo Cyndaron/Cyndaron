@@ -1,22 +1,21 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Module\UrlProvider;
 
-use function Safe\class_implements;
 use function trim;
 use function explode;
 use function array_key_exists;
-use function in_array;
 
 final class Url
 {
     private string $url;
-    /** @var string[] $urlProviders */
-    protected static array $urlProviders = [];
+    // TODO Refactor class into factory
+    private static ModuleRegistry $registry;
 
     public function __construct(string $url)
     {
@@ -73,9 +72,9 @@ final class Url
         $link = trim($this->getUnfriendly(), '/');
         $linkParts = explode('/', $link);
 
-        if (array_key_exists($linkParts[0], self::$urlProviders))
+        if (array_key_exists($linkParts[0], self::$registry->urlProviders))
         {
-            $classname = self::$urlProviders[$linkParts[0]];
+            $classname = self::$registry->urlProviders[$linkParts[0]];
             /** @var UrlProvider $class */
             $class = new $classname();
             $result = $class->url($linkParts);
@@ -94,11 +93,8 @@ final class Url
         return $link;
     }
 
-    public static function addUrlProvider(string $urlBase, string $class): void
+    public static function setRegistry(ModuleRegistry $registry): void
     {
-        if (in_array(UrlProvider::class, class_implements($class), true))
-        {
-            self::$urlProviders[$urlBase] = $class;
-        }
+        self::$registry = $registry;
     }
 }
