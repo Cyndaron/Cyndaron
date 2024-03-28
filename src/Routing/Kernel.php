@@ -72,7 +72,7 @@ final class Kernel implements HttpKernelInterface
         });
     }
 
-    private function buildDIC(ModuleRegistry $registry): DependencyInjectionContainer
+    private function buildDIC(ModuleRegistry $registry, User|null $user): DependencyInjectionContainer
     {
         $dic = new DependencyInjectionContainer();
         $dic->add($registry);
@@ -94,7 +94,6 @@ final class Kernel implements HttpKernelInterface
         $dic->add($multiLogger, LoggerInterface::class);
         $this->setExceptionHandler($multiLogger);
 
-        $user = User::fromSession();
         if ($user !== null)
         {
             $dic->add($user);
@@ -271,8 +270,9 @@ final class Kernel implements HttpKernelInterface
             session_start();
         }
 
-        $registry = $this->loadModules(User::fromSession());
-        $dic = $this->buildDIC($registry);
+        $user = User::fromSession();
+        $registry = $this->loadModules($user);
+        $dic = $this->buildDIC($registry, $user);
         $response = $this->route($dic, $registry, $request);
         $queryBits = $dic->get(QueryBits::class);
         $cspHeader = $this->getCSPHeader((bool)($_SERVER['HTTPS'] ?? false), $queryBits);
