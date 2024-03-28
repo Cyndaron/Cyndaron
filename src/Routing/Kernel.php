@@ -73,9 +73,10 @@ final class Kernel implements HttpKernelInterface
         });
     }
 
-    private function buildDIC(): DependencyInjectionContainer
+    private function buildDIC(ModuleRegistry $registry): DependencyInjectionContainer
     {
         $dic = new DependencyInjectionContainer();
+        $dic->add($registry);
         $pdo = DBConnection::getPDO();
         $dic->add($pdo);
         $dic->add($pdo, \PDO::class);
@@ -192,11 +193,11 @@ final class Kernel implements HttpKernelInterface
                 {
                     if (isset($definition->editorPage))
                     {
-                        EditorController::addEditorPage($dataTypeName, $definition->editorPage);
+                        $registry->addEditorPage($dataTypeName, $definition->editorPage);
                     }
                     if (isset($definition->editorSavePage))
                     {
-                        EditorController::addEditorSavePage($dataTypeName, $definition->editorSavePage);
+                        $registry->addEditorSavePage($dataTypeName, $definition->editorSavePage);
                     }
                     if (isset($definition->pageManagerTab))
                     {
@@ -270,7 +271,7 @@ final class Kernel implements HttpKernelInterface
         }
 
         $registry = $this->loadModules(User::fromSession());
-        $dic = $this->buildDIC();
+        $dic = $this->buildDIC($registry);
         $response = $this->route($dic, $registry, $request);
         $queryBits = $dic->get(QueryBits::class);
         $cspHeader = $this->getCSPHeader((bool)($_SERVER['HTTPS'] ?? false), $queryBits);

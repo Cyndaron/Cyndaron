@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Editor;
 
-use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPageResponse;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Page\Page;
@@ -14,7 +14,6 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Link;
-use Mpdf\Tag\Li;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +21,6 @@ use function array_key_exists;
 use function array_merge;
 use function strlen;
 use function usort;
-use function var_export;
 
 final class EditorController extends Controller
 {
@@ -33,17 +31,13 @@ final class EditorController extends Controller
         '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routePost'],
     ];
 
-    /** @var array<string, class-string> */
-    protected static array $editorPages = [];
-    /** @var array<string, class-string> */
-    protected static array $savePages = [];
     /** @var array<class-string> */
     protected static array $internalLinkTypes = [];
 
-    protected function routeGet(QueryBits $queryBits, User $currentUser): Response
+    protected function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry): Response
     {
         $type = $queryBits->getString(1);
-        if (!array_key_exists($type, self::$editorPages))
+        if (!array_key_exists($type, $registry->editorPages))
         {
             throw new \Exception('Onbekend paginatype: ' . $type);
         }
@@ -52,7 +46,7 @@ final class EditorController extends Controller
             return new ErrorPageResponse('Fout', 'U heeft onvoldoende rechten om deze functie te gebruiken!', Response::HTTP_UNAUTHORIZED);
         }
 
-        $class = self::$editorPages[$type];
+        $class = $registry->editorPages[$type];
         $id = $queryBits->getNullableInt(2);
         $previous = $queryBits->getString(3) === 'previous';
         /** @var Page $editorPage */
@@ -63,10 +57,10 @@ final class EditorController extends Controller
         return new Response($editorPage->render());
     }
 
-    protected function routePost(QueryBits $queryBits, RequestParameters $post, Request $request, User $currentUser): Response
+    protected function routePost(QueryBits $queryBits, RequestParameters $post, Request $request, User $currentUser, ModuleRegistry $registry): Response
     {
         $type = $queryBits->getString(1);
-        if (!array_key_exists($type, self::$savePages))
+        if (!array_key_exists($type, $registry->editorSavePages))
         {
             throw new \Exception('Onbekend paginatype: ' . $type);
         }
@@ -77,7 +71,7 @@ final class EditorController extends Controller
 
         $id = $queryBits->getNullableInt(2);
 
-        $class = self::$savePages[$type];
+        $class = $registry->editorSavePages[$type];
         try
         {
             /** @var EditorSavePage $editorSavePage */
@@ -109,26 +103,6 @@ final class EditorController extends Controller
             return $link1->name <=> $link2->name;
         });
         return $internalLinks;
-    }
-
-    /**
-     * @param string $dataTypeName
-     * @param class-string $className
-     * @return void
-     */
-    public static function addEditorPage(string $dataTypeName, string $className): void
-    {
-        self::$editorPages[$dataTypeName] = $className;
-    }
-
-    /**
-     * @param string $dataTypeName
-     * @param class-string $className
-     * @return void
-     */
-    public static function addEditorSavePage(string $dataTypeName, string $className): void
-    {
-        self::$savePages[$dataTypeName] = $className;
     }
 
     /**
