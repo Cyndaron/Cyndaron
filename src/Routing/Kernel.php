@@ -255,13 +255,6 @@ final class Kernel implements HttpKernelInterface
         return $registry;
     }
 
-    public static function referrer(): string
-    {
-        /** @var string|null $sanitized */
-        $sanitized = filter_input(INPUT_SERVER, 'HTTP_REFERER', FILTER_SANITIZE_URL);
-        return $sanitized ?? '';
-    }
-
     public static function getScriptNonce(): string
     {
         static $nonce;

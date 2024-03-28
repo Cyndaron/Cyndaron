@@ -5,6 +5,7 @@ use Cyndaron\Category\Category;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page\Page;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Url;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\Setting;
@@ -36,6 +37,7 @@ abstract class EditorPage extends Page
     protected string $content = '';
     protected string $contentTitle = '';
     protected string $template = 'Editor/PageBase';
+    protected QueryBits $queryBits;
 
     /**
      * @param Link[] $internalLinks
@@ -43,8 +45,9 @@ abstract class EditorPage extends Page
      * @param bool $useBackup
      * @throws \Safe\Exceptions\DirException
      */
-    public function __construct(array $internalLinks, int|null $id, bool $useBackup)
+    final public function __construct(QueryBits $queryBits, array $internalLinks, int|null $id, bool $useBackup)
     {
+        $this->queryBits = $queryBits;
         $this->id = $id;
         $this->useBackup = $useBackup;
 

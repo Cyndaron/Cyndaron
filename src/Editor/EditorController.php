@@ -50,8 +50,8 @@ final class EditorController extends Controller
         $class = $registry->editorPages[$type];
         $id = $queryBits->getNullableInt(2);
         $previous = $queryBits->getString(3) === 'previous';
-        /** @var Page $editorPage */
-        $editorPage = new $class($this->getInternalLinks(), $id, $previous);
+        /** @var EditorPage $editorPage */
+        $editorPage = new $class($queryBits, $this->getInternalLinks(), $id, $previous);
         $hash = $queryBits->getString(3);
         $hash = strlen($hash) > 20 ? $hash : '';
         $editorPage->addTemplateVar('hash', $hash);

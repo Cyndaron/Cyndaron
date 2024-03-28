@@ -56,11 +56,11 @@ final class UserController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
-    protected function loginGet(): Response
+    protected function loginGet(Request $request): Response
     {
         if (empty($_SESSION['redirect']))
         {
-            $_SESSION['redirect'] = Kernel::referrer();
+            $_SESSION['redirect'] = $request->get('referer');
         }
         $page = new LoginPage();
         return $this->pageRenderer->renderResponse($page);

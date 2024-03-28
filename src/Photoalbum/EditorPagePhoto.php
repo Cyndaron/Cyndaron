@@ -1,7 +1,7 @@
 <?php
-namespace Cyndaron\Photoalbum;
+declare(strict_types=1);
 
-use Cyndaron\Routing\Kernel;
+namespace Cyndaron\Photoalbum;
 
 final class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
 {
@@ -17,8 +17,10 @@ final class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
         if ($this->id)
         {
             $this->model = PhotoalbumCaption::fetchById($this->id);
-            $this->content = $this->model->caption ?? '';
+            $this->content = $this->model?->caption ?? '';
         }
-        $_SESSION['referrer'] = Kernel::referrer();
+
+        $photoalbumId = $this->queryBits->getInt(4);
+        $this->addTemplateVar('photoalbumId', $photoalbumId);
     }
 }

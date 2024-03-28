@@ -11,11 +11,12 @@ final class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
 
     protected function prepare(RequestParameters $post, Request $request): void
     {
+        $photoalbumId = $post->getInt('photoalbumId');
         $hash = $post->getAlphaNum('hash');
         $caption = $this->imageExtractor->process($post->getHTML('artikel'));
 
         PhotoalbumCaption::create($hash, $caption);
         User::addNotification('Bijschrift bewerkt.');
-        $this->returnUrl = $_SESSION['referrer'];
+        $this->returnUrl = '/photoalbum/' . $photoalbumId;
     }
 }
