@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Feed;
 
 use Cyndaron\Category\Category;
-use Cyndaron\Error\ErrorPageResponse;
+use Cyndaron\Error\ErrorPage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
@@ -27,7 +27,7 @@ final class AtomController extends Controller
         $category = Category::fetchById($categoryId);
         if ($category === null)
         {
-            return new ErrorPageResponse('Fout', 'Categorie niet gevonden!', Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Categorie niet gevonden!', Response::HTTP_NOT_FOUND));
         }
 
         /** @var \DateTimeInterface $savedDate */

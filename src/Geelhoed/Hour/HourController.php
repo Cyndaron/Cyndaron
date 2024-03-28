@@ -25,6 +25,6 @@ final class HourController extends Controller
             return new Response('Les bestaat niet!', Response::HTTP_NOT_FOUND);
         }
         $page = new MemberListPage($hour);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 }

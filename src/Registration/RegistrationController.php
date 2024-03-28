@@ -55,12 +55,12 @@ final class RegistrationController extends Controller
                 'Aanmelding verwerkt',
                 $body
             );
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
         catch (Exception $e)
         {
             $page = new SimplePage('Fout bij verwerken aanmelding', $e->getMessage());
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
     }
 

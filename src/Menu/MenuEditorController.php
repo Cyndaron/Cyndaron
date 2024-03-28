@@ -17,6 +17,6 @@ final class MenuEditorController extends Controller
     protected function routeGet(QueryBits $queryBits): Response
     {
         $page = new MenuEditorPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 }

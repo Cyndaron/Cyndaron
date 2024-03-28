@@ -1,12 +1,12 @@
 <?php
 namespace Cyndaron\Geelhoed\Contest;
 
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\Page\Page;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Payment\Currency;
 use Cyndaron\Request\QueryBits;
@@ -15,7 +15,6 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
-use Cyndaron\Mail\Mail;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
@@ -90,7 +89,7 @@ final class ContestController extends Controller
     public function overview(): Response
     {
         $page = new OverviewPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function view(QueryBits $queryBits, User|null $currentUser): Response
@@ -104,11 +103,11 @@ final class ContestController extends Controller
         if ($contest === null)
         {
             $page = new SimplePage('Onbekende wedstrijd', 'Kon de wedstrijd niet vinden');
-            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         $page = new ContestViewPage($contest, $currentUser);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function subscribe(QueryBits $queryBits, RequestParameters $post): Response
@@ -122,7 +121,7 @@ final class ContestController extends Controller
         if ($contest === null)
         {
             $page = new SimplePage('Onbekende wedstrijd', 'Kon de wedstrijd niet vinden');
-            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         $memberId = $post->getInt('memberId');
@@ -130,7 +129,7 @@ final class ContestController extends Controller
         if ($member === null)
         {
             $page = new SimplePage('Onbekend lid', 'Kon het lid niet vinden.');
-            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
         $controlledMemberIds = array_map(static function(Member $member)
         {
@@ -139,7 +138,7 @@ final class ContestController extends Controller
         if (!in_array($memberId, $controlledMemberIds, true))
         {
             $page = new SimplePage('Fout', 'U mag dit lid niet beheren.');
-            return new Response($page->render(), Response::HTTP_FORBIDDEN);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_FORBIDDEN);
         }
 
         assert($contest->id !== null);
@@ -163,7 +162,7 @@ final class ContestController extends Controller
         if (!$contestMember->save())
         {
             $page = new SimplePage('Fout bij inschrijven', 'Kon de inschrijving niet opslaan!');
-            return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
 //        // No need to pay, so just redirect.
@@ -209,7 +208,7 @@ final class ContestController extends Controller
         if (empty($molliePayment->id))
         {
             $page = new SimplePage('Fout bij inschrijven', 'Betaling niet gevonden!');
-            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         foreach ($contestMembers as $contestMember)
@@ -218,7 +217,7 @@ final class ContestController extends Controller
             if (!$contestMember->save())
             {
                 $page = new SimplePage('Fout bij inschrijven', 'Kon de betalings-ID niet opslaan!');
-                return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+                return $this->pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 
@@ -299,7 +298,7 @@ final class ContestController extends Controller
     {
         $page = new Page('Overzicht wedstrijden');
         $page->addScript('/src/Geelhoed/Contest/js/ContestManager.js');
-        return new Response($page->render(['contents' => PageManagerTabs::contestsTab()]));
+        return $this->pageRenderer->renderResponse($page, ['contents' => PageManagerTabs::contestsTab()]);
     }
 
     public function subscriptionList(QueryBits $queryBits): Response
@@ -315,7 +314,7 @@ final class ContestController extends Controller
             return new Response('Kon de wedstrijd niet vinden!', Response::HTTP_NOT_FOUND);
         }
         $page = new SubscriptionListPage($contest);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function subScriptionListExcel(QueryBits $queryBits): Response
@@ -464,13 +463,13 @@ final class ContestController extends Controller
     public function contestantsList(): Response
     {
         $page = new ContestantsListPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function contestantsEmail(): Response
     {
         $page = new ContestantsEmailPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function contestantsListExcel(): Response
@@ -537,7 +536,7 @@ final class ContestController extends Controller
     public function myContests(User $currentUser): Response
     {
         $page = new MyContestsPage($currentUser);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function payFullDue(User $currentUser): Response
@@ -779,19 +778,19 @@ final class ContestController extends Controller
         }
 
         $page = new EditSubscriptionPage($subscription);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function parentAccounts(): Response
     {
         $page = new ParentAccountsPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function linkContestantsToParentAccounts(): Response
     {
         $page = new LinkContestantsToParentAccountsPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function subscribePage(QueryBits $queryBits, User $currentUser): Response
@@ -807,32 +806,32 @@ final class ContestController extends Controller
 
         if (!in_array($memberId, $memberIds, true))
         {
-            return new Response((new SimplePage('Fout', 'U kunt deze judoka niet beheren!'))->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'U kunt deze judoka niet beheren!'), status:  Response::HTTP_BAD_REQUEST);
         }
         $member = Member::fetchById($memberId);
         if ($member === null)
         {
-            return new Response((new SimplePage('Fout', 'Lid niet gevonden!'))->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Lid niet gevonden!'), status:  Response::HTTP_NOT_FOUND);
         }
 
         $contest = Contest::fetchById($contestId);
         if ($contest === null)
         {
-            return new Response((new SimplePage('Fout', 'Wedstrijd niet gevonden!'))->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Wedstrijd niet gevonden!'), status:  Response::HTTP_NOT_FOUND);
         }
 
         $contestMember = ContestMember::fetchByContestAndMember($contest, $member);
         if ($contestMember !== null)
         {
-            return new Response((new SimplePage('Fout', 'Deze judoka is al ingeschreven!'))->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Deze judoka is al ingeschreven!'), status:  Response::HTTP_NOT_FOUND);
         }
 
         if (strtotime($contest->registrationDeadline) < time())
         {
-            return new Response((new SimplePage('Fout', 'Voor deze wedstrijd kan niet meer worden ingeschreven!'))->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Voor deze wedstrijd kan niet meer worden ingeschreven!'), status:  Response::HTTP_BAD_REQUEST);
         }
 
-        return new Response((new SubscribePage($contest, $member))->render());
+        return $this->pageRenderer->renderResponse(new SubscribePage($contest, $member));
     }
 
     public function createParentAccount(RequestParameters $post): JsonResponse
@@ -933,14 +932,14 @@ final class ContestController extends Controller
         $user = User::fetchById($userId);
         if ($user === null)
         {
-            return new Response((new SimplePage('Fout', 'Gebruiker bestaat niet!'))->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Gebruiker bestaat niet!'), status:  Response::HTTP_NOT_FOUND);
         }
 
         $memberId = $post->getInt('memberId');
         $member = Member::fetchById($memberId);
         if ($member === null)
         {
-            return new Response((new SimplePage('Fout', 'Lid bestaat niet!'))->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Lid bestaat niet!'), status:  Response::HTTP_NOT_FOUND);
         }
 
         $db->executeQuery('INSERT INTO geelhoed_users_members(`userId`, `memberId`) VALUES(?, ?)', [$userId, $memberId]);

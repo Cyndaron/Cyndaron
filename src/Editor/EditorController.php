@@ -4,9 +4,10 @@ declare(strict_types=1);
 namespace Cyndaron\Editor;
 
 use Cyndaron\Base\ModuleRegistry;
-use Cyndaron\Error\ErrorPageResponse;
+use Cyndaron\Error\ErrorPage;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Page\Page;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
@@ -43,7 +44,7 @@ final class EditorController extends Controller
         }
         if (!$currentUser->hasRight("{$type}_edit"))
         {
-            return new ErrorPageResponse('Fout', 'U heeft onvoldoende rechten om deze functie te gebruiken!', Response::HTTP_UNAUTHORIZED);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'U heeft onvoldoende rechten om deze functie te gebruiken!', Response::HTTP_UNAUTHORIZED));
         }
 
         $class = $registry->editorPages[$type];
@@ -54,7 +55,7 @@ final class EditorController extends Controller
         $hash = $queryBits->getString(3);
         $hash = strlen($hash) > 20 ? $hash : '';
         $editorPage->addTemplateVar('hash', $hash);
-        return new Response($editorPage->render());
+        return $this->pageRenderer->renderResponse($editorPage);
     }
 
     protected function routePost(QueryBits $queryBits, RequestParameters $post, Request $request, User $currentUser, ModuleRegistry $registry): Response
@@ -66,7 +67,7 @@ final class EditorController extends Controller
         }
         if (!$currentUser->hasRight("{$type}_edit"))
         {
-            return new ErrorPageResponse('Fout', 'U heeft onvoldoende rechten om deze functie te gebruiken!', Response::HTTP_UNAUTHORIZED);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'U heeft onvoldoende rechten om deze functie te gebruiken!', Response::HTTP_UNAUTHORIZED));
         }
 
         $id = $queryBits->getNullableInt(2);
@@ -81,7 +82,7 @@ final class EditorController extends Controller
         catch (\PDOException $e)
         {
             $page = new SimplePage('Fout bij opslaan', $e->getFile() . ':' . $e->getLine() . ' ' . $e->getTraceAsString() . PHP_EOL . $e->getMessage());
-            return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

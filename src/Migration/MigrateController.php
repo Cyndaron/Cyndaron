@@ -5,6 +5,7 @@
 namespace Cyndaron\Migration;
 
 use Cyndaron\DBAL\Connection;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\User\User;
@@ -18,7 +19,7 @@ final class MigrateController extends \Cyndaron\Routing\Controller
         '6.0' => 'migrate60',
     ];
 
-    protected function routeGet(QueryBits $queryBits, Connection $db): Response
+    protected function routeGet(Connection $db): Response
     {
         $version = $this->action;
 
@@ -28,15 +29,15 @@ final class MigrateController extends \Cyndaron\Routing\Controller
             if ($this->$method($db))
             {
                 $page = new SimplePage('Upgrade naar versie ' . $version, 'De upgrade is voltooid.');
-                return new Response($page->render());
+                return $this->pageRenderer->renderResponse($page);
             }
 
             $page = new SimplePage('Upgrade mislukt', 'Onbekende oorzaak');
-            return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $page = new SimplePage('Upgrade mislukt', 'Onbekende versie');
-        return new Response($page->render(), Response::HTTP_NOT_FOUND);
+        return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
     }
 
     private function migrate53(Connection $db): bool

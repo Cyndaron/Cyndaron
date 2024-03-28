@@ -5,6 +5,7 @@ namespace Cyndaron\Routing;
 
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
@@ -33,9 +34,9 @@ final class Router
 {
     public function __construct(
         private readonly DependencyInjectionContainer $dic,
-        private readonly ModuleRegistry $moduleRegistry
-    )
-    {
+        private readonly ModuleRegistry $moduleRegistry,
+        private readonly PageRenderer $pageRenderer,
+    ) {
     }
 
     public function findRoute(string|null $action, Controller $controller, bool $isApiCall): Route|null
@@ -89,7 +90,7 @@ final class Router
             }
 
             $page = new SimplePage('Verkeerde aanvraag', 'U kunt geen aanvraag doen met deze methode.');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
         return new JsonResponse(['error' => 'Route not found!'], Response::HTTP_NOT_FOUND);
@@ -193,7 +194,7 @@ final class Router
 
         $classname = $controllers[$module];
         /** @var Controller $controller */
-        $controller = new $classname($module, $action, $isApiCall);
+        $controller = new $classname($module, $action, $isApiCall, $this->pageRenderer);
 
         $route = $this->findRoute($action, $controller, $isApiCall);
         if ($route === null)
@@ -203,7 +204,7 @@ final class Router
 
         if (!$route->skipCSRFCheck)
         {
-            $post = $this->dic->get(RequestParameters::class);
+            $post = $this->dic->tryGet(RequestParameters::class);
             $token = $post !== null ? $post->getAlphaNum('csrfToken') : '';
             $tokenCorrect = $this->checkCSRFToken($_SERVER['REQUEST_METHOD'], $module, $action, $token);
             if (!$tokenCorrect)
@@ -214,7 +215,7 @@ final class Router
                 }
 
                 $page = new SimplePage('Controle CSRF-token gefaald!', 'Uw CSRF-token is niet correct.');
-                return new Response($page->render(), Response::HTTP_FORBIDDEN);
+                return $this->pageRenderer->renderResponse($page, status: Response::HTTP_FORBIDDEN);
             }
         }
 
@@ -313,7 +314,7 @@ final class Router
             /** @var class-string $className */
             $className = ($type instanceof ReflectionNamedType) ? $type->getName() : '';
 
-            $params[] = $this->dic->get($className);
+            $params[] = $this->dic->tryGet($className);
         }
 
         /** @var Response $ret */

@@ -49,13 +49,13 @@ class Controller extends \Cyndaron\Routing\Controller
     protected function viewSubscribers(): Response
     {
         $page = new ViewSubscribersPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     protected function compose(): Response
     {
         $page = new SendNewsletterPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     protected function subscribe(RequestParameters $post): Response
@@ -65,7 +65,7 @@ class Controller extends \Cyndaron\Routing\Controller
         if ($antiSpam !== 'geelhoed' || $antiSpam2 !== '')
         {
             $page = new SimplePage('Inschrijving nieuwsbrief', 'Er is iets misgegaan bij het invullen van het formulier.');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
         $name = $post->getSimpleString('name');
@@ -90,7 +90,7 @@ class Controller extends \Cyndaron\Routing\Controller
         }
 
         $page = new SimplePage('Inschrijving nieuwsbrief', $message);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     private function sendConfirmationMail(Address $toAddress): void
@@ -182,22 +182,22 @@ class Controller extends \Cyndaron\Routing\Controller
         $email = base64_decode($queryBits->getString(2), true);
         if ($email === false)
         {
-            return new Response((new SimplePage('Uitschrijven', 'Ongeldig e-mailadres!.'))->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse(new SimplePage('Uitschrijven', 'Ongeldig e-mailadres!.'), status:  Response::HTTP_BAD_REQUEST);
         }
 
         $code = $queryBits->getString(3);
         if ($code !== AddressHelper::calculateHash($email))
         {
-            return new Response((new SimplePage('Uitschrijven', 'Controlecode klopt niet! Mogelijk heeft u een oude link gebruikt of klopt de configuratie niet.'))->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse(new SimplePage('Uitschrijven', 'Controlecode klopt niet! Mogelijk heeft u een oude link gebruikt of klopt de configuratie niet.'), status:  Response::HTTP_BAD_REQUEST);
         }
 
         $changes = AddressHelper::unsubscribe($email);
         if ($changes->total() === 0)
         {
-            return new Response((new SimplePage('Uitschrijven', 'Wij konden uw adres niet vinden. Mogelijk bent u al uitgeschreven.'))->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse(new SimplePage('Uitschrijven', 'Wij konden uw adres niet vinden. Mogelijk bent u al uitgeschreven.'), status:  Response::HTTP_BAD_REQUEST);
         }
 
-        return new Response((new SimplePage('Uitgeschreven', 'U bent uitgeschreven voor de nieuwsbrief.'))->render());
+        return $this->pageRenderer->renderResponse(new SimplePage('Uitgeschreven', 'U bent uitgeschreven voor de nieuwsbrief.'));
     }
 
     protected function confirm(QueryBits $queryBits): Response
@@ -205,25 +205,25 @@ class Controller extends \Cyndaron\Routing\Controller
         $email = base64_decode($queryBits->getString(2), true);
         if ($email === false)
         {
-            return new Response((new SimplePage('Inschrijven', 'Ongeldig e-mailadres!.'))->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse(new SimplePage('Inschrijven', 'Ongeldig e-mailadres!.'), status:  Response::HTTP_BAD_REQUEST);
         }
 
         $code = $queryBits->getString(3);
         if ($code !== AddressHelper::calculateHash($email))
         {
-            return new Response((new SimplePage('Inschrijven', 'Controlecode klopt niet! Mogelijk heeft u een oude link gebruikt of klopt de configuratie niet.'))->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse(new SimplePage('Inschrijven', 'Controlecode klopt niet! Mogelijk heeft u een oude link gebruikt of klopt de configuratie niet.'), status:  Response::HTTP_BAD_REQUEST);
         }
 
         $subscription = Subscriber::fetch(['email = ?'], [$email]);
         if ($subscription === null)
         {
-            return new Response((new SimplePage('Inschrijven', 'Wij konden uw adres niet vinden. Probeer opnieuw in te schrijven.'))->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse(new SimplePage('Inschrijven', 'Wij konden uw adres niet vinden. Probeer opnieuw in te schrijven.'), status:  Response::HTTP_BAD_REQUEST);
         }
 
         $subscription->confirmed = true;
         $subscription->save();
 
-        return new Response((new SimplePage('Inschrijven', 'U bent ingeschreven voor de nieuwsbrief.'))->render());
+        return $this->pageRenderer->renderResponse(new SimplePage('Inschrijven', 'U bent ingeschreven voor de nieuwsbrief.'));
     }
 
     protected function unsubscribeAdmin(RequestParameters $post): Response

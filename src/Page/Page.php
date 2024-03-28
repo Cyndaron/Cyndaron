@@ -36,7 +36,7 @@ use function strtoupper;
 use function substr;
 use function var_dump;
 
-class Page
+class Page implements Pageable
 {
     private const DEFAULT_SCRIPTS = [
         '/vendor/components/jquery/jquery.min.js',
@@ -330,5 +330,10 @@ class Page
     public static function addPreprocessor(PagePreProcessor $processor): void
     {
         self::$preProcessors[] = $processor;
+    }
+
+    public function toPage(): Page
+    {
+        return $this;
     }
 }

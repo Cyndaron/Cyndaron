@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Reservation;
 
-use Cyndaron\Error\ErrorPageResponse;
+use Cyndaron\Error\ErrorPage;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
@@ -42,7 +42,7 @@ final class ReservationController extends Controller
     public function overview(): Response
     {
         $page = new OverviewPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function lesson(QueryBits $queryBits): Response
@@ -51,24 +51,24 @@ final class ReservationController extends Controller
         $hour = Hour::fetchById($hourId);
         if ($hour === null)
         {
-            return new ErrorPageResponse('Fout', 'Lesuur bestaat niet!', Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Lesuur bestaat niet!', Response::HTTP_NOT_FOUND));
         }
 
         $dateString = $queryBits->getString(3);
         $date = DateTimeImmutable::createFromFormat('Y-m-d', $dateString);
         if ($date === false)
         {
-            return new ErrorPageResponse('Fout', 'Datum klopt niet!', Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Datum klopt niet!', Response::HTTP_BAD_REQUEST));
         }
 
         $page = new LessonPage($hour, $date);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function step1(): Response
     {
         $page = new ReserveStep1Page();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function step2(RequestParameters $post): Response
@@ -77,11 +77,11 @@ final class ReservationController extends Controller
         $hour = Hour::fetchById($hourId);
         if ($hour === null)
         {
-            return new ErrorPageResponse('Fout', 'Lesuur bestaat niet!', Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Lesuur bestaat niet!', Response::HTTP_NOT_FOUND));
         }
 
         $page = new ReserveStep2Page($hour);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function step3(RequestParameters $post): Response
@@ -90,18 +90,18 @@ final class ReservationController extends Controller
         $hour = Hour::fetchById($hourId);
         if ($hour === null)
         {
-            return new ErrorPageResponse('Fout', 'Lesuur bestaat niet!', Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Lesuur bestaat niet!', Response::HTTP_NOT_FOUND));
         }
 
         $dateString = $post->getDate('date');
         $date = DateTimeImmutable::createFromFormat('Y-m-d', $dateString);
         if ($date === false)
         {
-            return new ErrorPageResponse('Fout', 'Datum klopt niet!', Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Datum klopt niet!', Response::HTTP_BAD_REQUEST));
         }
 
         $page = new ReserveStep3Page($hour, $date);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function stepLast(RequestParameters $post): Response
@@ -110,20 +110,20 @@ final class ReservationController extends Controller
         $hour = Hour::fetchById($hourId);
         if ($hour === null)
         {
-            return new ErrorPageResponse('Fout', 'Lesuur bestaat niet!', Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Lesuur bestaat niet!', Response::HTTP_NOT_FOUND));
         }
 
         $dateString = $post->getDate('date');
         $date = DateTimeImmutable::createFromFormat('Y-m-d', $dateString);
         if ($date === false)
         {
-            return new ErrorPageResponse('Fout', 'Datum klopt niet!', Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Datum klopt niet!', Response::HTTP_BAD_REQUEST));
         }
 
         $names = $post->get('name');
         if (!is_array($names))
         {
-            return new ErrorPageResponse('Fout', 'Geen namen opgegeven a!', Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Geen namen opgegeven a!', Response::HTTP_BAD_REQUEST));
         }
 
         array_walk($names, static function(&$name)
@@ -139,7 +139,7 @@ final class ReservationController extends Controller
         $numNames = count($names);
         if ($numNames === 0)
         {
-            return new ErrorPageResponse('Fout', 'Geen namen opgegeven!', Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Geen namen opgegeven!', Response::HTTP_BAD_REQUEST));
         }
 
         $leftoverPlaces = Reservation::getLeftoverPlacesByHourAndDate($hour, $date);
@@ -164,7 +164,7 @@ final class ReservationController extends Controller
 
         if ($savedNames < $numNames)
         {
-            return new ErrorPageResponse('Fout', "Kon niet alle namen opslaan! {$savedNames} van de {$numNames} namen zijn opgeslagen. Waarschijnlijk zit de les vol.", Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', "Kon niet alle namen opslaan! {$savedNames} van de {$numNames} namen zijn opgeslagen. Waarschijnlijk zit de les vol.", Response::HTTP_INTERNAL_SERVER_ERROR));
         }
 
         User::addNotification('De reservering is succesvol verlopen.');

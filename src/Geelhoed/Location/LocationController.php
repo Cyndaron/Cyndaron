@@ -33,17 +33,17 @@ final class LocationController extends Controller
         if ($location === null)
         {
             $page = new SimplePage('Fout bij laden locatie', 'Locatie niet gevonden!');
-            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         $page = new LocationPage($location);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function overview(): Response
     {
         $page = new LocationOverview();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function overviewByCity(QueryBits $queryBits): Response
@@ -51,20 +51,20 @@ final class LocationController extends Controller
         // Run the value through the slug again to filter out any unwanted characters.
         $city = Util::getSlug($queryBits->getString(2));
         $page = new LocationOverview(LocationFilter::CITY, $city);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function overviewByDay(QueryBits $queryBits): Response
     {
         $day = $queryBits->getInt(2);
         $page = new LocationOverview(LocationFilter::DAY, (string)$day);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function search(): Response
     {
         $page = new SearchPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function searchByAge(QueryBits $queryBits): Response
@@ -73,17 +73,17 @@ final class LocationController extends Controller
         if ($age <= 0)
         {
             $page = new SimplePage('Fout bij zoeken', 'Ongeldige leeftijd opgegeven!');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
         $sportId = $queryBits->getInt(3);
         $sport = Sport::fetchById($sportId);
         if ($sport === null)
         {
             $page = new SimplePage('Fout bij zoeken', 'Ongeldige sport opgegeven!');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
         $page = new SearchResultsByAgePage($age, $sport);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 }

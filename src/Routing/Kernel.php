@@ -19,6 +19,7 @@ use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\WithTextPostProcessors;
 use Cyndaron\Page\Module\WithPageProcessors;
 use Cyndaron\Page\Page;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\PageManager\PageManagerTab;
@@ -40,6 +41,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Mime\Address;
 use Throwable;
 use function array_merge;
+use function assert;
 use function defined;
 use function filter_input;
 use function Safe\error_log;
@@ -61,21 +63,25 @@ final class Kernel implements HttpKernelInterface
         'expires' => 0,
     ];
 
-    private function setExceptionHandler(LoggerInterface $logger): void
+    private function setExceptionHandler(LoggerInterface $logger, PageRenderer $pageRenderer): void
     {
-        set_exception_handler(static function(Throwable $t) use ($logger)
+        set_exception_handler(static function(Throwable $t) use ($logger, $pageRenderer)
         {
             $logger->error((string)$t);
             $page = new SimplePage('Fout', 'Er ging iets mis bij het laden van deze pagina!');
-            $response = new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response = $pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
             $response->send();
         });
     }
 
-    private function buildDIC(ModuleRegistry $registry, User|null $user): DependencyInjectionContainer
+    private function buildDIC(ModuleRegistry $registry, Request $request, User|null $user): DependencyInjectionContainer
     {
         $dic = new DependencyInjectionContainer();
         $dic->add($registry);
+        $dic->add($request);
+
+        $pageRenderer = new PageRenderer();
+        $dic->add($pageRenderer);
         $pdo = DBConnection::getPDO();
         $dic->add($pdo);
         $dic->add($pdo, \PDO::class);
@@ -92,7 +98,7 @@ final class Kernel implements HttpKernelInterface
             $multiLogger = new MultiLogger($fileLogger);
         }
         $dic->add($multiLogger, LoggerInterface::class);
-        $this->setExceptionHandler($multiLogger);
+        $this->setExceptionHandler($multiLogger, $pageRenderer);
 
         if ($user !== null)
         {
@@ -102,16 +108,20 @@ final class Kernel implements HttpKernelInterface
         return $dic;
     }
 
-    private function route(DependencyInjectionContainer $dic, ModuleRegistry $registry, Request $request): Response
+    private function route(DependencyInjectionContainer $dic): Response
     {
+        $request = $dic->get(Request::class);
+        $registry = $dic->get(ModuleRegistry::class);
+        $pageRenderer = $dic->get(PageRenderer::class);
+
         try
         {
-            $router = new Router($dic, $registry);
+            $router = new Router($dic, $registry, $pageRenderer);
             return $router->route($request);
         }
         catch (Throwable $t)
         {
-            $logger = $dic->get(LoggerInterface::class);
+            $logger = $dic->tryGet(LoggerInterface::class);
             if (isset($logger))
             {
                 $logger->error((string)$t);
@@ -129,7 +139,7 @@ final class Kernel implements HttpKernelInterface
             }
 
             $page = new SimplePage('Fout', 'Er ging iets mis bij het laden van deze pagina!');
-            return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -272,9 +282,9 @@ final class Kernel implements HttpKernelInterface
 
         $user = User::fromSession();
         $registry = $this->loadModules($user);
-        $dic = $this->buildDIC($registry, $user);
-        $response = $this->route($dic, $registry, $request);
-        $queryBits = $dic->get(QueryBits::class);
+        $dic = $this->buildDIC($registry, $request, $user);
+        $response = $this->route($dic);
+        $queryBits = $dic->tryGet(QueryBits::class);
         $cspHeader = $this->getCSPHeader((bool)($_SERVER['HTTPS'] ?? false), $queryBits);
         $response->headers->set('Content-Security-Policy', $cspHeader);
 

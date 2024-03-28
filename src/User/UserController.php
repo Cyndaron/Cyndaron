@@ -49,11 +49,11 @@ final class UserController extends Controller
         if ($userLevel < $minLevel)
         {
             $page = new SimplePage('Fout', 'U heeft onvoldoende rechten om deze pagina te bekijken.');
-            return new Response($page->render(), Response::HTTP_UNAUTHORIZED);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_UNAUTHORIZED);
         }
 
         $page = new Gallery();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     protected function loginGet(): Response
@@ -63,7 +63,7 @@ final class UserController extends Controller
             $_SESSION['redirect'] = Kernel::referrer();
         }
         $page = new LoginPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     protected function logout(): Response
@@ -75,7 +75,7 @@ final class UserController extends Controller
     protected function manager(): Response
     {
         $page = new UserManagerPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     protected function loginPost(RequestParameters $post): Response
@@ -91,12 +91,12 @@ final class UserController extends Controller
         catch (IncorrectCredentials $e)
         {
             $page = new SimplePage('Inloggen mislukt', $e->getMessage());
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
         catch (Exception $e)
         {
             $page = new SimplePage('Inloggen mislukt', 'Onbekende fout: ' . $e->getMessage());
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
     }
 
@@ -197,7 +197,7 @@ final class UserController extends Controller
         if ($user === null)
         {
             $page = new SimplePage('Fout bij veranderen avatar', 'Kon gebruiker niet vinden!');
-            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         $user->uploadNewAvatar($request);
@@ -207,7 +207,7 @@ final class UserController extends Controller
 
     protected function changePasswordGet(): Response
     {
-        return new Response((new ChangePasswordPage())->render());
+        return $this->pageRenderer->renderResponse(new ChangePasswordPage());
     }
 
     protected function changePasswordPost(RequestParameters $post): Response
@@ -215,7 +215,7 @@ final class UserController extends Controller
         $profile = User::fromSession();
         if ($profile === null)
         {
-            return new Response((new SimplePage('Fout', 'Geen profiel gevonden!'))->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Geen profiel gevonden!'), status:  Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $oldPassword = $post->getUnfilteredString('oldPassword');
@@ -243,7 +243,7 @@ final class UserController extends Controller
         $changed = $profile->setPassword($newPassword) && $profile->save();
         if (!$changed)
         {
-            return new Response((new SimplePage('Fout', 'Kon het nieuwe wachtwoord niet opslaan.'))->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Kon het nieuwe wachtwoord niet opslaan.'), status:  Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         User::addNotification('Wachtwoord gewijzigd.');

@@ -56,19 +56,19 @@ class TryoutController extends Controller
         }
 
         $page = new ScoresPage($id);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     private function scoresForm(): Response
     {
         $page = new ScoresFormPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function updateGet(): Response
     {
         $page = new UpdateFormPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function updatePost(Request $request, Connection $db): Response
@@ -78,7 +78,7 @@ class TryoutController extends Controller
         $file = new MDBFile($file->getPathname());
         $this->updateFromFile($file, $db);
         $page = new UpdatePage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     private function updateFromFile(MDBFile $file, Connection $db): void

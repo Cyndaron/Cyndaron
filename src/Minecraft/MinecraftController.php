@@ -47,7 +47,7 @@ final class MinecraftController extends Controller
     public function members(): Response
     {
         $page = new MembersPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function skin(): Response
@@ -69,6 +69,6 @@ final class MinecraftController extends Controller
     public function status(): Response
     {
         $page = new StatusPagina();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\FileCabinet;
 
-use Cyndaron\Request\QueryBits;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
@@ -26,10 +26,10 @@ final class FileCabinetController extends Controller
         'deleteItem' => ['level' => UserLevel::ADMIN, 'function' => 'deleteItem']
     ];
 
-    protected function routeGet(QueryBits $queryBits): Response
+    protected function routeGet(): Response
     {
         $page = new OverviewPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     protected function addItem(): Response

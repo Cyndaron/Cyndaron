@@ -96,12 +96,12 @@ final class OrderController extends Controller
             }
 
 
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
         catch (Exception $e)
         {
             $page = new SimplePage('Fout bij verwerken bestelling', $e->getMessage());
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
     }
 
@@ -568,7 +568,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         if ($order === null)
         {
             $page = new SimplePage('Fout', 'Order niet gevonden!');
-            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         if ($order->isPaid)
@@ -577,12 +577,12 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
                 'Betalen',
                 'Deze order is al betaald! Check uw e-mail voor de betalingsbevestiging, hierin zitten uw kaartjes.'
             );
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
         if (!empty($order->transactionCode) && strtotime($order->modified->format('U')) > strtotime('-30 minutes'))
         {
             $page = new SimplePage('Betalen', 'Er loopt al een betaling voor deze order. Wacht 30 minuten om het opnieuw te proberen.');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
         $concert = $order->getConcert();
@@ -599,14 +599,14 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         if (empty($molliePayment->id))
         {
             $page = new SimplePage('Fout bij inschrijven', 'Betaling niet gevonden!');
-            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         $order->transactionCode = $molliePayment->id;
         if (!$order->save())
         {
             $page = new SimplePage('Fout bij betaling', 'Kon de betalings-ID niet opslaan!');
-            return new Response($page->render(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $redirectUrl = $molliePayment->getCheckoutUrl();
@@ -676,20 +676,20 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         if ($order === null)
         {
             $page = new SimplePage('Fout', 'Bestelling niet gevonden!');
-            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         $secretCode = $queryBits->getString(3);
         if (empty($order->secretCode) || $order->secretCode !== $secretCode)
         {
             $page = new SimplePage('Fout', 'Geheime code klopt niet!');
-            return new Response($page->render(), Response::HTTP_FORBIDDEN);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_FORBIDDEN);
         }
 
         if ($order->isPaid === false)
         {
             $page = new SimplePage('Fout', 'Bestelling is nog niet betaald!');
-            return new Response($page->render(), Response::HTTP_PAYMENT_REQUIRED);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_PAYMENT_REQUIRED);
         }
 
         $concert = $order->getConcert();
@@ -861,7 +861,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
                         'Bestelling verwerkt',
                         sprintf('Hartelijk dank voor uw betaling.<br><br><a href="%s" role="button" class="btn btn-primary" target="_blank">Tickets ophalen</a>', $order->getLinkToTickets()),
                     );
-                    return new Response($page->render());
+                    return $this->pageRenderer->renderResponse($page);
                 }
             }
         }
@@ -870,6 +870,6 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
             'Bestelling verwerkt',
             'Hartelijk dank voor uw bestelling. Als de betaling is gelukt, ontvangt binnen enkele minuten een e-mail met een link om de kaartjes te downloaden.',
         );
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 }

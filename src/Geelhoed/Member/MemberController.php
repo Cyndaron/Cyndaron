@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Member;
 
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Geelhoed\Hour\Hour;
@@ -238,6 +239,6 @@ final class MemberController extends Controller
     {
         $directDebits = DirectDebit::load();
         $page = new DirectDebitListPage($directDebits);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 }

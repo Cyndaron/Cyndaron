@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Migration;
 
-use Cyndaron\Error\ErrorPageResponse;
+use Cyndaron\Error\ErrorPage;
 use Cyndaron\Mailform\MailformController;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
@@ -36,18 +36,18 @@ class OldUrlsController extends Controller
                 return $this->redirectOldStaticPageUrl($request);
         }
 
-        return new ErrorPageResponse('Routingfout', 'Niet-herkende oude URL.');
+        return $this->pageRenderer->renderErrorResponse(new ErrorPage('Routingfout', 'Niet-herkende oude URL.'));
     }
 
     public function routePost(RequestParameters $requestParameters, Request $request): Response
     {
         if ($this->module !== 'verwerkmailformulier.php')
         {
-            return new ErrorPageResponse('Routingfout', 'Niet-herkende oude URL.');
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Routingfout', 'Niet-herkende oude URL.'));
         }
 
         $id = $request->query->getInt('id');
-        $controller = new MailformController('mailform', 'process', false);
+        $controller = new MailformController('mailform', 'process', false, $this->pageRenderer);
         $queryBits = new QueryBits(['mailform', 'process', (string)$id]);
         return $controller->process($queryBits, $requestParameters);
     }

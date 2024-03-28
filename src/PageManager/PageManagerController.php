@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\PageManager;
 
 use Cyndaron\Base\ModuleRegistry;
-use Cyndaron\Error\ErrorPageResponse;
+use Cyndaron\Error\ErrorPage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\User;
@@ -23,11 +23,11 @@ final class PageManagerController extends Controller
         try
         {
             $page = new PageManagerPage($currentUser, $currentPage, $registry);
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
         catch (\RuntimeException)
         {
-            return new ErrorPageResponse('Paginabeheer', 'Er zijn geen datatypes die u kunt beheren!', Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Paginabeheer', 'Er zijn geen datatypes die u kunt beheren!', Response::HTTP_NOT_FOUND));
         }
     }
 }

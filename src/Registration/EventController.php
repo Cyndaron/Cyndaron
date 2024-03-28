@@ -62,7 +62,7 @@ final class EventController extends Controller
             return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
         }
         $page = new RegistrationPage($event);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     protected function viewRegistrations(QueryBits $queryBits): Response
@@ -78,7 +78,7 @@ final class EventController extends Controller
             return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
         }
         $page = new EventRegistrationOverviewPage($event);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     protected function registrationListExcel(QueryBits $queryBits): Response

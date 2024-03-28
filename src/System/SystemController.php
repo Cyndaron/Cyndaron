@@ -23,7 +23,7 @@ final class SystemController extends Controller
     {
         $currentPage = $queryBits->getString(1, 'config');
         $page = new SystemPage($currentPage);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     protected function routePost(RequestParameters $post): Response

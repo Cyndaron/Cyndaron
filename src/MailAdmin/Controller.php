@@ -45,7 +45,7 @@ class Controller extends \Cyndaron\Routing\Controller
     public function overview(): Response
     {
         $page = new OverviewPage($this->createPDO());
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function addDomain(RequestParameters $post): RedirectResponse

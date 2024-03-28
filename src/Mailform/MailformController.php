@@ -52,12 +52,12 @@ final class MailformController extends Controller
             }
             $this->processHelper($form, $post);
             $page = new SimplePage('Formulier verstuurd', 'Het versturen is gelukt.');
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
         catch (Exception $e)
         {
             $page = new SimplePage('Formulier versturen mislukt', $e->getMessage());
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
     }
 
@@ -68,12 +68,12 @@ final class MailformController extends Controller
             $this->processLDBFHelper($post);
 
             $page = new SimplePage('Formulier verstuurd', 'Het versturen is gelukt.');
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
         catch (Exception $e)
         {
             $page = new SimplePage('Formulier versturen mislukt', $e->getMessage());
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
     }
 

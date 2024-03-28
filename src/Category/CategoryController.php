@@ -5,8 +5,9 @@ namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Connection;
-use Cyndaron\Error\ErrorPageResponse;
+use Cyndaron\Error\ErrorPage;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request\QueryBits;
@@ -47,7 +48,7 @@ final class CategoryController extends Controller
         if ($id === '0' || $id === 'fotoboeken')
         {
             $page = new PhotoalbumIndexPage();
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
         if ($id === 'tag')
         {
@@ -55,25 +56,25 @@ final class CategoryController extends Controller
             if ($tag === '')
             {
                 $page = new SimplePage('Foute aanvraag', 'Lege tag ontvangen.');
-                return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+                return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
             }
             $page = new TagIndexPage($tag);
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
         if ($id === '' || $id < 0)
         {
             $page = new SimplePage('Foute aanvraag', 'Incorrecte parameter ontvangen.');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
         $category = Category::fetchById((int)$id);
         if ($category === null)
         {
-            return new ErrorPageResponse('Fout', 'Categorie niet gevonden!', Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Categorie niet gevonden!', Response::HTTP_NOT_FOUND));
         }
 
         $page = new CategoryIndexPage($category);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function add(RequestParameters $post): JsonResponse

@@ -37,10 +37,10 @@ final class StaticPageController extends Controller
         if ($model === null)
         {
             $page = new SimplePage('Fout', 'Statische pagina niet gevonden.');
-            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
         $page = new StaticPage($model);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     protected function addToMenu(QueryBits $queryBits): JsonResponse
@@ -79,7 +79,7 @@ final class StaticPageController extends Controller
         if ($model === null)
         {
             $page = new SimplePage('Fout', 'Statische pagina niet gevonden.');
-            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         $author = $post->getHTML('author');

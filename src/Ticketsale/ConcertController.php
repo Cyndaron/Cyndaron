@@ -92,17 +92,17 @@ final class ConcertController extends Controller
         if ($id < 1)
         {
             $page = new SimplePage('Fout', 'Incorrect ID!');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
         $concert = Concert::fetchById($id);
         if ($concert === null)
         {
             $page = new SimplePage('Fout', 'Concert bestaat niet!');
-            return new Response($page->render(), Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         $page = new OrderTicketsPage($concert);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     protected function viewOrders(QueryBits $queryBits): Response
@@ -111,12 +111,12 @@ final class ConcertController extends Controller
         if ($id < 1)
         {
             $page = new SimplePage('Fout', 'Incorrect ID!');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
         $concert = Concert::fetchById($id);
         assert($concert !== null);
         $page = new ConcertOrderOverviewPage($concert);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     protected function viewReservedSeats(QueryBits $queryBits): Response
@@ -125,7 +125,7 @@ final class ConcertController extends Controller
         if ($id < 1)
         {
             $page = new SimplePage('Fout', 'Incorrect ID!');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
         $concert = Concert::fetchById($id);
         assert($concert !== null);

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Error;
 
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
@@ -37,11 +38,11 @@ final class ErrorController extends Controller
         if (!array_key_exists($code, self::KNOWN_ERRORS))
         {
             $page = new SimplePage('Onbekende fout', 'Er is een onbekende fout opgetreden. Code: ' . $code);
-            return new Response($page->render());
+            return $this->pageRenderer->renderResponse($page);
         }
 
         $error = self::KNOWN_ERRORS[$code];
         $page = new SimplePage($error['pageTitle'], $error['notification']);
-        return new Response($page->render(), $code);
+        return $this->pageRenderer->renderResponse($page, status: $code);
     }
 }

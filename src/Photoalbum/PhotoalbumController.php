@@ -42,7 +42,7 @@ final class PhotoalbumController extends Controller
         if ($id < 1)
         {
             $page = new SimplePage('Fotoalbum', 'Ongeldige parameter.');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
         $album = Photoalbum::fetchById($id);
         if ($album === null)
@@ -50,7 +50,7 @@ final class PhotoalbumController extends Controller
             return new JsonResponse(['error' => 'Album does not exist!'], Response::HTTP_NOT_FOUND);
         }
         $page = new PhotoalbumPage($album, $currentUser);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function add(RequestParameters $post): JsonResponse
@@ -150,20 +150,20 @@ final class PhotoalbumController extends Controller
         if ($filename === '')
         {
             $page = new SimplePage('Fout bij verwijderen foto', 'Geen bestandsnaam opgegeven!');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
         $filename = base64_decode($filename, true);
         if ($filename === false)
         {
             $page = new SimplePage('Fout bij verwijderen foto', 'Bestandsnaam onjuist gecodeerd!');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
         $numDeleted = Photo::deleteByAlbumAndFilename($album, $filename);
         if ($numDeleted === 0)
         {
             $page = new SimplePage('Fout bij verwijderen foto', 'Kon de bestanden niet vinden!');
-            return new Response($page->render(), Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
         return new RedirectResponse("/photoalbum/{$album->id}");

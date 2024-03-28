@@ -6,7 +6,7 @@ namespace Cyndaron\Page;
 /**
  * A simple page class, useful for pages with just a title and a few sentences of text.
  */
-final class SimplePage
+final class SimplePage implements Pageable
 {
     private Page $page;
 
@@ -16,12 +16,8 @@ final class SimplePage
         $this->page->addTemplateVar('contents', $body);
     }
 
-    /**
-     * @param array<string, mixed> $vars
-     * @return string
-     */
-    public function render(array $vars = []): string
+    public function toPage(): Page
     {
-        return $this->page->render($vars);
+        return $this->page;
     }
 }

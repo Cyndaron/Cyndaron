@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Volunteer;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\Error\ErrorPageResponse;
+use Cyndaron\Error\ErrorPage;
 use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
@@ -30,7 +30,7 @@ class VolunteerController extends Controller
     public function subscribe(): Response
     {
         $page = new SubscriptionPage();
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function subscribeToTryoutGet(QueryBits $queryBits): Response
@@ -38,10 +38,10 @@ class VolunteerController extends Controller
         $event = Tryout::fetchById($queryBits->getInt(2));
         if ($event === null)
         {
-            return new ErrorPageResponse('Fout', 'Evenement niet gevonden!');
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Evenement niet gevonden!'));
         }
         $page = new SubscribeToTryoutPage($event);
-        return new Response($page->render());
+        return $this->pageRenderer->renderResponse($page);
     }
 
     public function subscribeToTryoutPost(QueryBits $queryBits, RequestParameters $post, Connection $db): JsonResponse

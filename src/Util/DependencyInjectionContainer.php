@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Util;
 
+use RuntimeException;
 use function get_class;
 
 final class DependencyInjectionContainer
@@ -36,10 +37,28 @@ final class DependencyInjectionContainer
      * @param class-string<T> $className
      * @return T|null
      */
-    public function get(string $className)
+    public function tryGet(string $className)
     {
         /** @var T|null $ret */
         $ret = $this->objects[$className] ?? null;
+        return $ret;
+    }
+
+    /**
+     * @template T
+     *
+     * @param class-string<T> $className
+     * @throws \RuntimeException
+     * @return T
+     */
+    public function get(string $className)
+    {
+        $ret = $this->tryGet($className);
+        if ($ret === null)
+        {
+            throw new RuntimeException('No such class: ' . $className);
+        }
+
         return $ret;
     }
 }
