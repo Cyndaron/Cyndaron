@@ -1,28 +1,40 @@
 <?php
 namespace Cyndaron\Category;
 
+use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Symfony\Component\HttpFoundation\Request;
+use function assert;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'category';
 
-    protected function prepare(RequestParameters $post, Request $request): void
+    public function __construct(
+        private readonly RequestParameters $post,
+        private readonly Request $request,
+        private readonly ImageExtractor $imageExtractor,
+    ) {
+    }
+
+    public function save(int|null $id): int
     {
-        $category = new Category($this->id);
+        $category = new Category($id);
         $category->loadIfIdIsSet();
-        $category->name = $post->getHTML('titel');
-        $category->blurb = $post->getHTML('blurb');
-        $category->description = $this->imageExtractor->process($post->getHTML('artikel'));
-        $category->viewMode = ViewMode::from($post->getInt('viewMode'));
-        $category->showBreadcrumbs = $post->getBool('showBreadcrumbs');
-        $this->saveHeaderAndPreviewImage($category, $post, $request);
+        $category->name = $this->post->getHTML('titel');
+        $category->blurb = $this->post->getHTML('blurb');
+        $category->description = $this->imageExtractor->process($this->post->getHTML('artikel'));
+        $category->viewMode = ViewMode::from($this->post->getInt('viewMode'));
+        $category->showBreadcrumbs = $this->post->getBool('showBreadcrumbs');
+        $this->saveHeaderAndPreviewImage($category, $this->post, $this->request);
         $category->save();
-        $this->saveCategories($category, $post);
+        $this->saveCategories($category, $this->post);
 
         User::addNotification('Categorie bewerkt.');
-        $this->returnUrl = '/category/' . $this->id;
+
+        assert($category->id !== null);
+        $this->returnUrl = '/category/' . $category->id;
+        return $category->id;
     }
 }

@@ -28,25 +28,22 @@ abstract class EditorSavePage
 {
     public const TYPE = '';
 
-    protected int|null $id = null;
     protected string $returnUrl = '';
 
-    public const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
     public const PAGE_HEADER_DIR = Util::UPLOAD_DIR . '/images/page-header';
     public const PAGE_PREVIEW_DIR = Util::UPLOAD_DIR . '/images/page-preview';
-    protected readonly ImageExtractor $imageExtractor;
 
-    public function __construct(int|null $id, RequestParameters $post, Request $request)
+    public function updateFriendlyUrl(int $id, string $friendlyUrl): void
     {
-        $this->id = $id;
-        $this->imageExtractor = new ImageExtractor(self::IMAGE_DIR);
+        // True if content does not support friendly URLs.
+        if ($id <= 0)
+        {
+            return;
+        }
 
-        $this->prepare($post, $request);
-
-        $friendlyUrl = $post->getUrl('friendlyUrl');
         if ($friendlyUrl !== '')
         {
-            $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $this->id);
+            $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $id);
             $oldFriendlyUrl = $unfriendlyUrl->getFriendly();
             $oldFriendlyUrlObj = FriendlyUrl::fetchByName($oldFriendlyUrl);
             if ($oldFriendlyUrlObj !== null)
@@ -57,13 +54,10 @@ abstract class EditorSavePage
             // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast
             DBConnection::getPDO()->executeQuery('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oldFriendlyUrl]);
         }
-        if (!$this->returnUrl && isset($_SESSION['referrer']))
-        {
-            $this->returnUrl = strtr($_SESSION['referrer'], ['&amp;' => '&']);
-        }
+        // TODO oude URL verwijderen
     }
 
-    abstract protected function prepare(RequestParameters $post, Request $request): void;
+    abstract public function save(int|null $id): int;
 
     public function getReturnUrl(): string
     {

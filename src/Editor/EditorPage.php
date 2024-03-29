@@ -3,7 +3,6 @@ namespace Cyndaron\Editor;
 
 use Cyndaron\Category\Category;
 use Cyndaron\Category\ModelWithCategory;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Url;
@@ -100,10 +99,9 @@ abstract class EditorPage extends Page
             }
 
             $showBreadcrumbs = false;
-            if ($this->id)
+            if ($this->model instanceof ModelWithCategory)
             {
-                /** @noinspection SqlResolve */
-                $showBreadcrumbs = (bool)DBConnection::getPDO()->doQueryAndFetchOne('SELECT showBreadcrumbs FROM ' . static::TABLE . ' WHERE id=?', [$this->id]);
+                $showBreadcrumbs = $this->model->showBreadcrumbs;
             }
 
             $this->templateVars['showBreadcrumbs'] = $showBreadcrumbs;

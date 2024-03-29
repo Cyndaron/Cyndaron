@@ -3,31 +3,38 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
+use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
-use Symfony\Component\HttpFoundation\Request;
+use function assert;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
-    protected function prepare(RequestParameters $post, Request $request): void
+    public function __construct(
+        private readonly RequestParameters $post,
+        private readonly ImageExtractor $imageExtractor,
+    ) {
+    }
+
+    public function save(int|null $id): int
     {
-        $event = new Event($this->id);
+        $event = new Event($id);
         $event->loadIfIdIsSet();
-        $event->name = $post->getHTML('titel');
-        $event->description = $this->imageExtractor->process($post->getHTML('artikel'));
-        $event->descriptionWhenClosed = $this->imageExtractor->process($post->getHTML('descriptionWhenClosed'));
-        $event->openForRegistration = $post->getBool('openForRegistration');
-        $event->registrationCost0 = $post->getFloat('registrationCost0');
-        $event->registrationCost1 = $post->getFloat('registrationCost1');
-        $event->registrationCost2 = $post->getFloat('registrationCost2');
-        $event->registrationCost3 = $post->getFloat('registrationCost3');
-        $event->lunchCost = $post->getFloat('lunchCost');
-        $event->maxRegistrations = $post->getInt('maxRegistrations');
-        $event->numSeats = $post->getInt('numSeats');
-        $event->requireApproval = $post->getBool('requireApproval');
-        $event->hideRegistrationFee = $post->getBool('hideRegistrationFee');
-        $event->performedPiece = $post->getHTML('performedPiece');
-        $event->termsAndConditions = $post->getHTML('termsAndConditions');
+        $event->name = $this->post->getHTML('titel');
+        $event->description = $this->imageExtractor->process($this->post->getHTML('artikel'));
+        $event->descriptionWhenClosed = $this->imageExtractor->process($this->post->getHTML('descriptionWhenClosed'));
+        $event->openForRegistration = $this->post->getBool('openForRegistration');
+        $event->registrationCost0 = $this->post->getFloat('registrationCost0');
+        $event->registrationCost1 = $this->post->getFloat('registrationCost1');
+        $event->registrationCost2 = $this->post->getFloat('registrationCost2');
+        $event->registrationCost3 = $this->post->getFloat('registrationCost3');
+        $event->lunchCost = $this->post->getFloat('lunchCost');
+        $event->maxRegistrations = $this->post->getInt('maxRegistrations');
+        $event->numSeats = $this->post->getInt('numSeats');
+        $event->requireApproval = $this->post->getBool('requireApproval');
+        $event->hideRegistrationFee = $this->post->getBool('hideRegistrationFee');
+        $event->performedPiece = $this->post->getHTML('performedPiece');
+        $event->termsAndConditions = $this->post->getHTML('termsAndConditions');
 
         if ($event->save())
         {
@@ -38,6 +45,8 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
             User::addNotification('Fout bij opslaan evenement');
         }
 
+        assert($event->id !== null);
         $this->returnUrl = '/event/register/' . $event->id;
+        return $event->id;
     }
 }

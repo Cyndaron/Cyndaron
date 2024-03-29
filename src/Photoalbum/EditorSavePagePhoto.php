@@ -1,22 +1,30 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
+use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
-use Symfony\Component\HttpFoundation\Request;
 
 final class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'photo';
 
-    protected function prepare(RequestParameters $post, Request $request): void
+    public function __construct(
+        private readonly RequestParameters $post,
+        private readonly ImageExtractor $imageExtractor,
+    ) {
+    }
+
+    public function save(int|null $id): int
     {
-        $photoalbumId = $post->getInt('photoalbumId');
-        $hash = $post->getAlphaNum('hash');
-        $caption = $this->imageExtractor->process($post->getHTML('artikel'));
+        $photoalbumId = $this->post->getInt('photoalbumId');
+        $hash = $this->post->getAlphaNum('hash');
+        $caption = $this->imageExtractor->process($this->post->getHTML('artikel'));
 
         PhotoalbumCaption::create($hash, $caption);
         User::addNotification('Bijschrift bewerkt.');
         $this->returnUrl = '/photoalbum/' . $photoalbumId;
+
+        return -1;
     }
 }

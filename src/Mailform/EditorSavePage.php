@@ -3,23 +3,30 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
+use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
-use Symfony\Component\HttpFoundation\Request;
+use function assert;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'mailform';
 
-    protected function prepare(RequestParameters $post, Request $request): void
+    public function __construct(
+        private readonly RequestParameters $post,
+        private readonly ImageExtractor $imageExtractor,
+    ) {
+    }
+
+    public function save(int|null $id): int
     {
-        $mailform = new Mailform($this->id);
+        $mailform = new Mailform($id);
         $mailform->loadIfIdIsSet();
-        $mailform->name = $post->getHTML('titel');
-        $mailform->email = $post->getEmail('email');
-        $mailform->antiSpamAnswer = $post->getAlphaNum('antiSpamAnswer');
-        $mailform->sendConfirmation = $post->getBool('sendConfirmation');
-        $mailform->confirmationText = $this->imageExtractor->process($post->getHTML('artikel'));
+        $mailform->name = $this->post->getHTML('titel');
+        $mailform->email = $this->post->getEmail('email');
+        $mailform->antiSpamAnswer = $this->post->getAlphaNum('antiSpamAnswer');
+        $mailform->sendConfirmation = $this->post->getBool('sendConfirmation');
+        $mailform->confirmationText = $this->imageExtractor->process($this->post->getHTML('artikel'));
 
         if ($mailform->save())
         {
@@ -31,5 +38,8 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         }
 
         $this->returnUrl = '/pagemanager/mailform';
+
+        assert($mailform->id !== null);
+        return $mailform->id;
     }
 }

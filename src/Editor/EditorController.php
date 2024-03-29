@@ -5,6 +5,7 @@ namespace Cyndaron\Editor;
 
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPage;
+use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
@@ -12,9 +13,10 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Link;
+use Cyndaron\Util\Util;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 use function array_merge;
@@ -23,6 +25,8 @@ use function usort;
 
 final class EditorController extends Controller
 {
+    private const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
+
     public array $getRoutes = [
         '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routeGet'],
     ];
@@ -53,7 +57,7 @@ final class EditorController extends Controller
         return $this->pageRenderer->renderResponse($editorPage);
     }
 
-    protected function routePost(QueryBits $queryBits, RequestParameters $post, Request $request, User $currentUser, ModuleRegistry $registry): Response
+    protected function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorSavePages))
@@ -70,9 +74,16 @@ final class EditorController extends Controller
         $class = $registry->editorSavePages[$type];
         try
         {
+            $imageExtractor = new ImageExtractor(self::IMAGE_DIR);
+            $dic->add($imageExtractor);
+
             /** @var EditorSavePage $editorSavePage */
-            $editorSavePage = new $class($id, $post, $request);
-            return new RedirectResponse($editorSavePage->getReturnUrl() ?: '/');
+            $editorSavePage = $dic->createClassWithDependencyInjection($class);
+            $id = $editorSavePage->save($id);
+            $editorSavePage->updateFriendlyUrl($id, $post->getUrl('friendlyUrl'));
+            $returnUrl = $editorSavePage->getReturnUrl() ?: '/';
+
+            return new RedirectResponse($returnUrl);
         }
         catch (\PDOException $e)
         {

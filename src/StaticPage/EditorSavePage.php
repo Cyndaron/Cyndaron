@@ -1,43 +1,54 @@
 <?php
 namespace Cyndaron\StaticPage;
 
+use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
 use Symfony\Component\HttpFoundation\Request;
 use function trim;
+use function assert;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
     public const TYPE = 'sub';
 
-    protected function prepare(RequestParameters $post, Request $request): void
-    {
-        $titel = $post->getHTML('titel');
-        $text = $this->imageExtractor->process($post->getHTML('artikel'));
-        $enableComments = $post->getBool('enableComments');
-        $showBreadcrumbs = $post->getBool('showBreadcrumbs');
-        $tags = trim($post->getSimpleString('tags'), "; \t\n\r\0\x0B");
+    public function __construct(
+        private readonly RequestParameters $post,
+        private readonly Request $request,
+        private readonly ImageExtractor $imageExtractor,
+    ) {
+    }
 
-        $model = new StaticPageModel($this->id);
+    public function save(int|null $id): int
+    {
+        $titel = $this->post->getHTML('titel');
+        $text = $this->imageExtractor->process($this->post->getHTML('artikel'));
+        $enableComments = $this->post->getBool('enableComments');
+        $showBreadcrumbs = $this->post->getBool('showBreadcrumbs');
+        $tags = trim($this->post->getSimpleString('tags'), "; \t\n\r\0\x0B");
+
+        $model = new StaticPageModel($id);
         $model->loadIfIdIsSet();
         $model->name = $titel;
-        $model->blurb = $post->getHTML('blurb');
+        $model->blurb = $this->post->getHTML('blurb');
         $model->text = $text;
         $model->enableComments = $enableComments;
         $model->showBreadcrumbs = $showBreadcrumbs;
         $model->tags = $tags;
-        $this->saveHeaderAndPreviewImage($model, $post, $request);
+        $this->saveHeaderAndPreviewImage($model, $this->post, $this->request);
         if ($model->save())
         {
-            $this->saveCategories($model, $post);
-            $this->id = $model->id;
+            $this->saveCategories($model, $this->post);
 
             User::addNotification('Pagina bewerkt.');
-            $this->returnUrl = '/sub/' . $this->id;
+            $this->returnUrl = '/sub/' . $id;
         }
         else
         {
             User::addNotification('Pagina opslaan mislukt');
         }
+
+        assert($model->id !== null);
+        return $model->id;
     }
 }
