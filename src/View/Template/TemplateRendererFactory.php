@@ -40,8 +40,7 @@ class TemplateRendererFactory
 
         $events = new Dispatcher();
         $filesystem = new Filesystem();
-        $templateFinder = new TemplateFinder($templateRoots);
-        $viewFinder = new ViewFinder($templateFinder, $filesystem, $viewPaths);
+        $viewFinder = new ViewFinder($templateRoots, $filesystem, $viewPaths);
         $resolver = new EngineResolver();
         $factory = new Factory($resolver, $viewFinder, $events);
         $fileEngine = new FileEngine($filesystem);
@@ -78,7 +77,7 @@ class TemplateRendererFactory
             BladeFilters::macro($filterName, $function);
         }
 
-        return new TemplateRenderer($factory, $templateFinder);
+        return new TemplateRenderer($factory);
     }
 
     private static function createCacheDir(string $engine): string

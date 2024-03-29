@@ -7,7 +7,7 @@ use Illuminate\View\Factory;
 
 class TemplateRenderer
 {
-    public function __construct(private readonly Factory $factory, private readonly TemplateFinder $templateFinder)
+    public function __construct(private readonly Factory $factory)
     {
     }
 
@@ -20,10 +20,5 @@ class TemplateRenderer
     {
         $result = $this->factory->make($template, $data);
         return $result->render();
-    }
-
-    public function templateExists(string $name): bool
-    {
-        return $this->templateFinder->path($name) !== null;
     }
 }
