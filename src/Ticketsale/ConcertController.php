@@ -10,6 +10,7 @@ use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\Ticketsale\Order\Order;
 use Cyndaron\Ticketsale\Order\OrderTicketsPage;
 use Cyndaron\Ticketsale\Order\OrderTicketTypes;
+use Cyndaron\Ticketsale\TicketType\TicketType;
 use Cyndaron\User\UserLevel;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;

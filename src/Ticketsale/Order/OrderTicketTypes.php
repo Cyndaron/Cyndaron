@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\DBAL\Model;
-use Cyndaron\Ticketsale\TicketType;
+use Cyndaron\Ticketsale\TicketType\TicketType;
 use function assert;
 
 final class OrderTicketTypes extends Model

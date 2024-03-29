@@ -6,7 +6,6 @@ namespace Cyndaron\Ticketsale;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
-use Symfony\Component\HttpFoundation\Request;
 use function assert;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage

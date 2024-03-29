@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Ticketsale;
+namespace Cyndaron\Ticketsale\TicketType;
 
 use Cyndaron\DBAL\Model;
+use Cyndaron\Ticketsale\Concert;
 
 final class TicketType extends Model
 {

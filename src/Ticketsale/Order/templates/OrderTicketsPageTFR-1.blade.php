@@ -35,7 +35,7 @@
                     <th>Prijs per stuk:</th>
                     <th>Aantal:</th>
                 </tr>
-                @php /** @var \Cyndaron\Ticketsale\TicketType[] $ticketTypes */ @endphp
+                @php /** @var \Cyndaron\Ticketsale\TicketType\TicketType[] $ticketTypes */ @endphp
                 @foreach ($ticketTypes as $ticketType)
                     <tr>
                         <td>{{ $ticketType->name }}</td>

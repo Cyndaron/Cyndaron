@@ -29,17 +29,20 @@
             </td>
             <td>
                 <ul>
-                    @foreach (\Cyndaron\Ticketsale\TicketType::loadByConcert($concert) as $ticketType)
+                    @foreach (\Cyndaron\Ticketsale\TicketType\TicketType::loadByConcert($concert) as $ticketType)
                         <li>
                             {{ $ticketType->name }}: {{ $ticketType->price|euro }}
+                            <a href="/editor/ticketType/{{ $ticketType->id }}" role="button" class="btn btn-sm btn-outline-cyndaron">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
 {{--                            <button type="button" class="btn btn-sm btn-outline-cyndaron"><span class="glyphicon glyphicon-trash"></span></button>--}}
                         </li>
                     @endforeach
                 </ul>
-{{--                <button type="button" class="btn btn-sm btn-outline-cyndaron">--}}
-{{--                    <span class="glyphicon glyphicon-plus"></span>--}}
-{{--                    Toevoegen--}}
-{{--                </button>--}}
+                <a href="/editor/ticketType/0/{{ $concert->id }}" role="button" class="btn btn-sm btn-outline-cyndaron">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Toevoegen
+                </a>
             </td>
             <td>
                 <ul>

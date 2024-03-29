@@ -1,6 +1,6 @@
 @php /** @var \Cyndaron\Ticketsale\Concert $concert */ @endphp
 @php /** @var \Cyndaron\Ticketsale\Order\Order $order */ @endphp
-@php /** @var \Cyndaron\Ticketsale\TicketType $ticketType */ @endphp
+@php /** @var \Cyndaron\Ticketsale\TicketType\TicketType $ticketType */ @endphp
 @php /** @var \Cyndaron\Ticketsale\Order\OrderTicketTypes $orderTicketType */ @endphp
 
 <div style="width: 100%; position: relative;">
