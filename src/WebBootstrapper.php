@@ -10,7 +10,6 @@ use ErrorException;
 use RuntimeException;
 
 use Symfony\Component\HttpFoundation\Request;
-use function error_log;
 use function Safe\ini_set;
 use function set_error_handler;
 use function file_exists;

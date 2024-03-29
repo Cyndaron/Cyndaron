@@ -1,5 +1,4 @@
 <?php
-/** @noinspection PhpFullyQualifiedNameUsageInspection */
 declare(strict_types=1);
 
 namespace Cyndaron\Routing;
@@ -21,7 +20,6 @@ use Cyndaron\Page\Module\WithPageProcessors;
 use Cyndaron\Page\Page;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
-use Cyndaron\PageManager\PageManagerPage;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Url;
@@ -37,25 +35,16 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Mime\Address;
 use Throwable;
 use function array_merge;
-use function assert;
 use function defined;
-use function filter_input;
 use function Safe\error_log;
 use function session_start;
 use function set_exception_handler;
 use function str_starts_with;
-use const FILTER_SANITIZE_URL;
-use const INPUT_SERVER;
 
-/**
- * Zorgt voor correct doorverwijzen van verzoeken.
- * @package Cyndaron
- */
-final class Kernel implements HttpKernelInterface
+final class Kernel
 {
     public const HEADERS_DO_NOT_CACHE = [
         'cache-control' => 'no-cache, no-store, must-revalidate',
@@ -269,7 +258,7 @@ final class Kernel implements HttpKernelInterface
         return $nonce;
     }
 
-    public function handle(Request $request, int $type = self::MAIN_REQUEST, bool $catch = true): Response
+    public function handle(Request $request): Response
     {
         if (empty($_SESSION))
         {
