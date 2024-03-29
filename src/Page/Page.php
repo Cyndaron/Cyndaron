@@ -13,6 +13,7 @@ use Cyndaron\CyndaronInfo;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\Module\PagePreProcessor;
+use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\User\User;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Link;
@@ -106,7 +107,10 @@ class Page implements Pageable
         }
     }
 
-    protected function renderSkeleton(): void
+    /**
+     * @param UserMenuItem[] $userMenu
+     */
+    protected function renderSkeleton(array $userMenu): void
     {
         $this->websiteName = Setting::get('siteName');
         $this->templateVars['isAdmin'] = User::isAdmin();
@@ -135,7 +139,7 @@ class Page implements Pageable
             $this->templateVars[$setting] = Setting::get($setting);
         }
 
-        $this->templateVars['menu'] = $this->renderMenu();
+        $this->templateVars['menu'] = $this->renderMenu($userMenu);
 
         $jumboContents = Setting::get('jumboContents');
         $this->templateVars['showJumbo'] = $this->isFrontPage() && Setting::get('frontPageIsJumbo') && $jumboContents;
@@ -172,7 +176,10 @@ class Page implements Pageable
         return $_SERVER['REQUEST_URI'] === '/';
     }
 
-    protected function renderMenu(): string
+    /**
+     * @param UserMenuItem[] $userMenu
+     */
+    protected function renderMenu($userMenu): string
     {
         $logo = Setting::get('logo');
         $vars = [
@@ -192,7 +199,7 @@ class Page implements Pageable
         $userMenuItems = [
             new LinkWithIcon('', $_SESSION['username'] ?? '', 'user'),
         ];
-        foreach (User::getUserMenuFiltered() as $extraItem)
+        foreach ($userMenu as $extraItem)
         {
             $userMenuItems[] = $extraItem->link;
         }
@@ -208,15 +215,16 @@ class Page implements Pageable
     }
 
     /**
+     * @param UserMenuItem[] $userMenu
      * @param array<string, mixed> $vars
      * @throws \Safe\Exceptions\FilesystemException
      * @return string
      */
-    public function render(array $vars = []): string
+    public function render(array $userMenu = [], array $vars = []): string
     {
         $this->addTemplateVars($vars);
 
-        $this->renderSkeleton();
+        $this->renderSkeleton($userMenu);
 
         foreach (self::$preProcessors as $processor)
         {

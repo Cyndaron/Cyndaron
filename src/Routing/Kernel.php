@@ -80,7 +80,7 @@ final class Kernel implements HttpKernelInterface
         $dic->add($registry);
         $dic->add($request);
 
-        $pageRenderer = new PageRenderer();
+        $pageRenderer = new PageRenderer($registry, $user);
         $dic->add($pageRenderer);
         $pdo = DBConnection::getPDO();
         $dic->add($pdo);
@@ -225,7 +225,10 @@ final class Kernel implements HttpKernelInterface
 
             if ($module instanceof UserMenuProvider)
             {
-                User::$userMenu = array_merge(User::$userMenu, $module->getUserMenuItems($currentUser));
+                foreach ($module->getUserMenuItems($currentUser) as $userMenuItem)
+                {
+                    $registry->addUserMenuItem($userMenuItem);
+                }
             }
             if ($module instanceof Templated)
             {

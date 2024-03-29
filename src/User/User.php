@@ -77,11 +77,6 @@ final class User extends Model
 
 Uw nieuwe wachtwoord is: %s';
 
-    /**
-     * @var UserMenuItem[]
-     */
-    public static array $userMenu = [];
-
     public static function isAdmin(): bool
     {
         return isset($_SESSION['username']) && $_SESSION['level'] >= 4;
@@ -412,29 +407,6 @@ Uw nieuwe wachtwoord is: %s';
     public static function fromSession(): self|null
     {
         return $_SESSION['profile'] ?? null;
-    }
-
-    /**
-     * @return UserMenuItem[]
-     */
-    public static function getUserMenuFiltered(): array
-    {
-        return array_filter(self::$userMenu, static function(UserMenuItem $userMenuItem)
-        {
-            $level = $userMenuItem->level;
-            if (User::getLevel() >= $level)
-            {
-                return true;
-            }
-            $right = $userMenuItem->right ?? '';
-            $profile = self::fromSession();
-            if ($right !== '' && $profile !== null && $profile->hasRight($right))
-            {
-                return true;
-            }
-
-            return false;
-        });
     }
 
     public function getGenderDisplay(): string

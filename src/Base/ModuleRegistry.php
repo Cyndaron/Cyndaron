@@ -7,6 +7,7 @@ use Cyndaron\Calendar\CalendarAppointmentsProvider;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Routing\Controller;
+use Cyndaron\User\Module\UserMenuItem;
 use function in_array;
 use function Safe\class_implements;
 
@@ -29,6 +30,9 @@ final class ModuleRegistry
 
     /** @var CalendarAppointmentsProvider[] */
     public array $calendarAppointmentsProviders;
+
+    /** @var UserMenuItem[] */
+    public array $userMenuItems = [];
 
     /**
      * @param string $module
@@ -79,5 +83,10 @@ final class ModuleRegistry
     public function addCalendarAppointmentsProvider(CalendarAppointmentsProvider $provider): void
     {
         $this->calendarAppointmentsProviders[] = $provider;
+    }
+
+    public function addUserMenuItem(UserMenuItem $userMenuItem): void
+    {
+        $this->userMenuItems[] = $userMenuItem;
     }
 }
