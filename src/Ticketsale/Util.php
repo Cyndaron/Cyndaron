@@ -5,7 +5,7 @@ use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\View\Template\TemplateRenderer;
 use function random_int;
 
-final class Util extends \Cyndaron\Util\Util
+final class Util
 {
     public const MAX_RESERVED_SEATS = 330;
 

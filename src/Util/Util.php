@@ -32,7 +32,7 @@ use function strlen;
 use function is_dir;
 use function str_replace;
 
-class Util
+final class Util
 {
     public const UPLOAD_DIR = PUB_DIR . '/uploads';
 
