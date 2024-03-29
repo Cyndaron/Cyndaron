@@ -19,7 +19,6 @@ use function trim;
 abstract class EditorPage extends Page
 {
     public const TYPE = null;
-    public const TABLE = null;
     public const HAS_TITLE = true;
     public const HAS_CATEGORY = false;
     public const SAVE_URL = '';

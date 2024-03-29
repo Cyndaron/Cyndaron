@@ -4,7 +4,6 @@ namespace Cyndaron\Category;
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'category';
-    public const TABLE = 'categories';
     public const HAS_CATEGORY = true;
     public const SAVE_URL = '/editor/category/%s';
 

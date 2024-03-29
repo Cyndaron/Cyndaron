@@ -6,7 +6,6 @@ use Cyndaron\DBAL\DBConnection;
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'sub';
-    public const TABLE = 'subs';
     public const SAVE_URL = '/editor/sub/%s';
     public const HAS_CATEGORY = true;
 
@@ -20,7 +19,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
         {
             $staticPage = StaticPageModel::fetchById($this->id);
             $this->model = $staticPage;
-            $table = ($this->useBackup) ? 'sub_backups' : self::TABLE;
+            $table = ($this->useBackup) ? 'sub_backups' : 'subs';
             /**
              * @noinspection SqlResolve
              * @var string $content

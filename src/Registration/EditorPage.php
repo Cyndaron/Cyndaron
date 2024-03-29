@@ -9,7 +9,6 @@ use function assert;
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'event';
-    public const TABLE = 'registration_events';
     public const SAVE_URL = '/editor/event/%s';
 
     protected string $template = '';

@@ -4,7 +4,6 @@ namespace Cyndaron\Photoalbum;
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'photoalbum';
-    public const TABLE = 'photoalbums';
     public const HAS_CATEGORY = true;
     public const SAVE_URL = '/editor/photoalbum/%s';
 

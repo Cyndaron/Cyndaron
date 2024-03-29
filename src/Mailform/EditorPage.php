@@ -8,7 +8,6 @@ use function assert;
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'mailform';
-    public const TABLE = 'mailformulieren';
     public const SAVE_URL = '/editor/mailform/%s';
 
     protected string $template = '';
