@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Ticketsale;
+namespace Cyndaron\Ticketsale\Concert;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page\Page;

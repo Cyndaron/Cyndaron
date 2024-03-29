@@ -1,4 +1,4 @@
-@php /** @var \Cyndaron\Ticketsale\Concert $model */ @endphp
+@php /** @var \Cyndaron\Ticketsale\Concert\Concert $model */ @endphp
 @extends ('Editor/PageBase')
 
 @section ('contentSpecificButtons')

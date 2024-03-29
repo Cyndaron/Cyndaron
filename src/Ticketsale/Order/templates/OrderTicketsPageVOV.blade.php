@@ -7,7 +7,7 @@
 @section('contents')
     <input type="hidden" id="organisation-value" value="{{ $organisation }}"/>
 
-    @php /** @var \Cyndaron\Ticketsale\Concert $concert */ @endphp
+    @php /** @var \Cyndaron\Ticketsale\Concert\Concert $concert */ @endphp
     @if (!$concert->openForSales)
         <div class="alert alert-warning">
             @if ($concert->descriptionWhenClosed)
@@ -49,7 +49,7 @@
                 @endforeach
             </table>
             <div class="alert alert-info">Voor donateurs van de Stichting Vrienden van de VOV zijn in het middenschip van de kerk aparte plaatsen gereserveerd.</div>
-            <div @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\TicketDelivery::COLLECT_OR_DELIVER) style="display:none" @endif>
+            <div @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\Concert\TicketDelivery::COLLECT_OR_DELIVER) style="display:none" @endif>
                 <input id="bezorgen" name="bezorgen" type="checkbox" value="1" class="recalculateTotal">
                 <label for="bezorgen">
                     Bezorg mijn kaarten thuis (hiervoor worden extra kosten in rekening gebracht)
@@ -82,7 +82,7 @@
                 <input id="hasReservedSeats-0" name="hasReservedSeats" type="hidden" value="0">
             @endif
 
-            @if ($concert->getDelivery() === \Cyndaron\Ticketsale\TicketDelivery::FORCED_PHYSICAL)
+            @if ($concert->getDelivery() === \Cyndaron\Ticketsale\Concert\TicketDelivery::FORCED_PHYSICAL)
                 <h3>Bezorging</h3>
                 <p>
                     Bij dit concert is het alleen mogelijk om uw kaarten te laten thuisbezorgen. Als u op Walcheren
@@ -98,7 +98,7 @@
 
                 <div class="radio">
                     <label for="country-nederland">
-                        <input id="country-nederland" name="country" type="radio" value="nederland" checked />
+                        <input id="country-nederland" name="country" type="radio" value="nederland" checked/>
                         Ik woon in Nederland
                     </label>
                 </div>
@@ -177,7 +177,7 @@
                                              class="form-control"/></div>
             </div>
 
-            @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\TicketDelivery::FORCED_PHYSICAL)
+            @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\Concert\TicketDelivery::FORCED_PHYSICAL)
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label" for="postcode">Postcode:</label>
                     <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control" autocomplete="postal-code"/></div>

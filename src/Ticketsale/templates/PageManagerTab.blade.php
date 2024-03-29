@@ -15,7 +15,7 @@
         </tr>
     </thead>
     <tbody>
-        @php /** @var \Cyndaron\Ticketsale\Concert[] $concerts */ @endphp
+        @php /** @var \Cyndaron\Ticketsale\Concert\Concert[] $concerts */ @endphp
         @foreach ($concerts as $concert)
             @php
                 $concertUrl = (new \Cyndaron\Url("/concert/order/{$concert->id}"))->getFriendly();

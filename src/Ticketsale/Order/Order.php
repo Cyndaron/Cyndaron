@@ -5,12 +5,11 @@ namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
-use Cyndaron\Ticketsale\Concert;
+use Cyndaron\Ticketsale\Concert\Concert;
+use Cyndaron\Ticketsale\Concert\TicketDelivery;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
-use Cyndaron\Ticketsale\TicketDelivery;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Error\IncompleteData;
-use Cyndaron\Mail\Mail;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Safe\Exceptions\JsonException;

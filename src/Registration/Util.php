@@ -7,7 +7,7 @@ use function defined;
 use function Safe\date;
 use const INF;
 
-final class Util extends \Cyndaron\Util\Util
+final class Util
 {
     public const AGE_RANGES_VOV_1 = [
         [12, 25], [26, 50], [51, 65], [66, 70], [71, 75], [76, 80], [81, INF]

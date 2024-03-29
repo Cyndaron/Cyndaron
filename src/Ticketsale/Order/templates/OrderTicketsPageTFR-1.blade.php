@@ -7,7 +7,7 @@
 @section('contents')
     <input type="hidden" id="organisation-value" value="{{ $organisation }}"/>
 
-    @php /** @var \Cyndaron\Ticketsale\Concert $concert */ @endphp
+    @php /** @var \Cyndaron\Ticketsale\Concert\Concert $concert */ @endphp
     @if (!$concert->openForSales)
         <div class="alert alert-warning">
             @if ($concert->descriptionWhenClosed)
@@ -81,7 +81,7 @@
                 <input id="hasReservedSeats-0" name="hasReservedSeats" type="hidden" value="0">
             @endif
 
-            @if ($concert->getDelivery() === \Cyndaron\Ticketsale\TicketDelivery::FORCED_PHYSICAL)
+            @if ($concert->getDelivery() === \Cyndaron\Ticketsale\Concert\TicketDelivery::FORCED_PHYSICAL)
                 <h3>Bezorging</h3>
                 <p>
                     Bij dit concert is het alleen mogelijk om uw kaarten te laten thuisbezorgen. Als u op Walcheren

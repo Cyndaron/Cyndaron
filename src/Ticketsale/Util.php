@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Ticketsale;
 
+use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\View\Template\TemplateRenderer;
 use function random_int;
 

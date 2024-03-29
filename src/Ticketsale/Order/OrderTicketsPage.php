@@ -2,7 +2,7 @@
 namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\Page\Page;
-use Cyndaron\Ticketsale\Concert;
+use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\Ticketsale\TicketType\TicketType;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;

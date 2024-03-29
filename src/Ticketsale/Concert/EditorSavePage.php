@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Ticketsale;
+namespace Cyndaron\Ticketsale\Concert;
 
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\User;
 use function assert;
 

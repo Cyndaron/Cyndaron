@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\DeliveryCost;
 
-use Cyndaron\Ticketsale\Concert;
+use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\Ticketsale\Order\Order;
 use Cyndaron\Ticketsale\Order\OrderTicketTypes;
 

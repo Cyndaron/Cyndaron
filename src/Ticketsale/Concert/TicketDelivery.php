@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Ticketsale;
+namespace Cyndaron\Ticketsale\Concert;
 
 final class TicketDelivery
 {
