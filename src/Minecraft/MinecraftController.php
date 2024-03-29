@@ -63,7 +63,7 @@ final class MinecraftController extends Controller
         $parameters = SkinRendererParameters::fromRequestParameters($get);
 
         $handler = new SkinRendererHandler($member, $format, $parameters);
-        return $handler->draw();
+        return $handler->draw($this->templateRenderer);
     }
 
     public function status(): Response

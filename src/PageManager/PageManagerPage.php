@@ -6,12 +6,13 @@ namespace Cyndaron\PageManager;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
+use Cyndaron\Util\DependencyInjectionContainer;
 use function assert;
 use function is_callable;
 
 final class PageManagerPage extends Page
 {
-    public function __construct(User $currentUser, string $currentPage, ModuleRegistry $registry)
+    public function __construct(DependencyInjectionContainer $dic, User $currentUser, string $currentPage, ModuleRegistry $registry)
     {
         $this->addScript('/src/PageManager/js/PageManagerPage.js');
         parent::__construct('Paginaoverzicht');
@@ -43,7 +44,8 @@ final class PageManagerPage extends Page
         $tab = $registry->pageManagerTabs[$currentPage];
         $drawingFunction = $tab->tabDraw;
         assert(is_callable($drawingFunction));
-        $tabContents = $drawingFunction($currentUser);
+        /** @var string $tabContents */
+        $tabContents = $dic->callStaticMethodWithDependencyInjection($drawingFunction);
 
         $this->addTemplateVars([
             'pageTabs' => $pageTabs,

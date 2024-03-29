@@ -5,11 +5,12 @@ namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
-use Cyndaron\View\Template\Template;
+use Cyndaron\View\Renderer\TextRenderer;
+use Cyndaron\View\Template\TemplateRenderer;
 
 final class PhotoalbumPage extends Page
 {
-    public function __construct(Photoalbum $album, User|null $currentUser, int $viewMode = Photoalbum::VIEWMODE_REGULAR)
+    public function __construct(Photoalbum $album, TextRenderer $textRenderer, User|null $currentUser, int $viewMode = Photoalbum::VIEWMODE_REGULAR)
     {
         $this->model = $album;
         parent::__construct($album->name);
@@ -26,6 +27,7 @@ final class PhotoalbumPage extends Page
         }
 
         $this->templateVars['canUpload'] = $canUpload;
+        $this->templateVars['parsedNotes'] = $textRenderer->render($album->notes);
 
         if ($canUpload)
         {
@@ -33,9 +35,9 @@ final class PhotoalbumPage extends Page
         }
     }
 
-    public function drawSlider(Photoalbum $album): string
+    public function drawSlider(Photoalbum $album, TemplateRenderer $templateRenderer): string
     {
         $photos = Photo::fetchAllByAlbum($album);
-        return (new Template())->render('Photoalbum/Photoslider', ['album' => $album, 'photos' => $photos]);
+        return $templateRenderer->render('Photoalbum/Photoslider', ['album' => $album, 'photos' => $photos]);
     }
 }

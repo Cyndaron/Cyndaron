@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Ticketsale;
 
-use Cyndaron\View\Template\Template;
+use Cyndaron\View\Template\TemplateRenderer;
 use function random_int;
 
 final class Util extends \Cyndaron\Util\Util
@@ -13,10 +13,10 @@ final class Util extends \Cyndaron\Util\Util
         return ($postcode >= 4330 && $postcode <= 4399);
     }
 
-    public static function drawPageManagerTab(): string
+    public static function drawPageManagerTab(TemplateRenderer $templateRenderer): string
     {
         $templateVars = ['concerts' => Concert::fetchAll()];
-        return (new Template())->render('Ticketsale/PageManagerTab', $templateVars);
+        return $templateRenderer->render('Ticketsale/PageManagerTab', $templateVars);
     }
 
     public static function generateSecretCode(): string

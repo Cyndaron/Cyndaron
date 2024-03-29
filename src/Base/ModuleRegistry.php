@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Base;
 
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
+use Cyndaron\Module\TextPostProcessor;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Routing\Controller;
@@ -33,6 +34,9 @@ final class ModuleRegistry
 
     /** @var UserMenuItem[] */
     public array $userMenuItems = [];
+
+    /** @var class-string<TextPostProcessor>[] $textPostProcessors */
+    public array $textPostProcessors = [];
 
     /**
      * @param string $module
@@ -88,5 +92,14 @@ final class ModuleRegistry
     public function addUserMenuItem(UserMenuItem $userMenuItem): void
     {
         $this->userMenuItems[] = $userMenuItem;
+    }
+
+    /**
+     * @param class-string<TextPostProcessor> $postProcessor
+     * @return void
+     */
+    public function addTextPostProcessor(string $postProcessor): void
+    {
+        $this->textPostProcessors[] = $postProcessor;
     }
 }

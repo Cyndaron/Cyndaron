@@ -4,7 +4,7 @@ namespace Cyndaron\Mailform;
 use Cyndaron\Mail\Mail;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Util\Mail as UtilMail;
-use Cyndaron\View\Template\Template;
+use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\Mime\Address;
 
 final class MailFormLDBF
@@ -38,9 +38,8 @@ final class MailFormLDBF
 
     private string $mailBody;
 
-    public function fillMailTemplate(RequestParameters $post): void
+    public function fillMailTemplate(RequestParameters $post, TemplateRenderer $templateRenderer): void
     {
-        $mailTemplate = new Template();
         $templateVars = [];
         foreach (self::MAIL_TEMPLATE_VARS as $templateVar)
         {
@@ -52,7 +51,7 @@ final class MailFormLDBF
 
             $templateVars[$templateVar] = $post->getHTML($requestVarName);
         }
-        $this->mailBody = $mailTemplate->render('Mailform/LDBFMail.blade.php', $templateVars);
+        $this->mailBody = $templateRenderer->render('Mailform/LDBFMail.blade.php', $templateVars);
     }
 
     public function sendMail(string $requesterMail): bool

@@ -9,6 +9,7 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\UserLevel;
+use Cyndaron\View\Renderer\TextRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +27,7 @@ final class StaticPageController extends Controller
         'react' => ['level' => UserLevel::ANONYMOUS, 'function' => 'react'],
     ];
 
-    protected function routeGet(QueryBits $queryBits): Response
+    protected function routeGet(QueryBits $queryBits, TextRenderer $textRenderer): Response
     {
         $id = $queryBits->getInt(1);
         if ($id < 1)
@@ -39,7 +40,7 @@ final class StaticPageController extends Controller
             $page = new SimplePage('Fout', 'Statische pagina niet gevonden.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
-        $page = new StaticPage($model);
+        $page = new StaticPage($model, $textRenderer);
         return $this->pageRenderer->renderResponse($page);
     }
 

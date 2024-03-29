@@ -93,6 +93,7 @@ Uw nieuwe wachtwoord is: %s';
     }
 
     /**
+     * @deprecated
      * @return string[]|null
      */
     public static function getNotifications(): array|null

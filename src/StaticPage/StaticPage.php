@@ -3,11 +3,12 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page\Page;
+use Cyndaron\View\Renderer\TextRenderer;
 use Cyndaron\View\Template\ViewHelpers;
 
 final class StaticPage extends Page
 {
-    public function __construct(StaticPageModel $model)
+    public function __construct(StaticPageModel $model, TextRenderer $textRenderer)
     {
         $this->model = $model;
 
@@ -20,7 +21,7 @@ final class StaticPage extends Page
 
         $this->addTemplateVars([
             'model' => $model,
-            'text' => ViewHelpers::parseText($model->text),
+            'text' => $textRenderer->render($model->text),
             'replies' => $replies,
             'pageImage' => $model->getImage(),
         ]);

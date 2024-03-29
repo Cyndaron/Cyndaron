@@ -5,45 +5,44 @@ namespace Cyndaron\Geelhoed;
 
 use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Location\Location;
-use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\User\User;
-use Cyndaron\View\Template\Template;
+use Cyndaron\View\Template\TemplateRenderer;
 
 final class PageManagerTabs
 {
-    public static function locationsTab(): string
+    public static function locationsTab(TemplateRenderer $templateRenderer): string
     {
         $locations = Location::fetchAll();
-        $ret = (new Template())->render('Geelhoed/Location/PageManagerTab', ['locations' => $locations]);
+        $ret = $templateRenderer->render('Geelhoed/Location/PageManagerTab', ['locations' => $locations]);
         return $ret;
     }
 
-    public static function membersTab(): string
+    public static function membersTab(TemplateRenderer $templateRenderer): string
     {
-        return (new Template())->render('Geelhoed/Member/PageManagerTab', [
+        return $templateRenderer->render('Geelhoed/Member/PageManagerTab', [
             'locations' => \Cyndaron\Geelhoed\Location\Location::fetchAll(afterWhere: 'ORDER BY city, street'),
         ]);
     }
 
-    public static function contestsTab(): string
+    public static function contestsTab(TemplateRenderer $templateRenderer): string
     {
         $contests = Contest::fetchAll([], [], 'ORDER BY registrationDeadline DESC');
-        return (new Template())->render('Geelhoed/Contest/PageManagerTab', ['contests' => $contests]);
+        return $templateRenderer->render('Geelhoed/Contest/PageManagerTab', ['contests' => $contests]);
     }
 
-    public static function sportsTab(): string
+    public static function sportsTab(TemplateRenderer $templateRenderer): string
     {
         $sports = Sport::fetchAll();
-        return (new Template())->render('Geelhoed/Sport/PageManagerTab', ['sports' => $sports]);
+        return $templateRenderer->render('Geelhoed/Sport/PageManagerTab', ['sports' => $sports]);
     }
 
-    public static function tryoutTab(): string
+    public static function tryoutTab(TemplateRenderer $templateRenderer): string
     {
         $csrfTokenCreatePhotoalbums = User::getCSRFToken('tryout', 'create-photoalbums');
         $tryouts = Tryout::fetchAll();
-        return (new Template())->render('Geelhoed/Tryout/PageManagerTab', [
+        return $templateRenderer->render('Geelhoed/Tryout/PageManagerTab', [
             'tryouts' => $tryouts,
             'csrfTokenCreatePhotoalbums' => $csrfTokenCreatePhotoalbums,
         ]);

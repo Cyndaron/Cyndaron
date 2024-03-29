@@ -2,6 +2,7 @@
 namespace Cyndaron\Minecraft\Skin;
 
 use Cyndaron\Minecraft\Member;
+use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Response;
 
 /* ***** MINECRAFT 3D Skin Generator *****
@@ -42,20 +43,18 @@ final class SkinRendererHandler
         $this->parameters->displayHair = $this->user->renderAvatarHair;
     }
 
-    public function draw(): Response
+    public function draw(TemplateRenderer $templateRenderer): Response
     {
         $skin = new Skin($this->user->skinUrl);
         if ($this->format === 'svg')
         {
-            $renderClass = SkinRendererSVG::class;
+            $renderer = new SkinRendererSVG($skin, $this->parameters, $templateRenderer);
         }
         else
         {
-            $renderClass = SkinRendererPNG::class;
+            $renderer = new SkinRendererPNG($skin, $this->parameters);
         }
 
-        /** @var SkinRenderer $renderer */
-        $renderer = new $renderClass($skin, $this->parameters);
         return $renderer->render();
     }
 }

@@ -170,7 +170,7 @@ final class RegistrationController extends Controller
             }
         }
 
-        return $registration->sendIntroductionMail($registrationTotal, $registrationTicketTypes);
+        return $registration->sendIntroductionMail($registrationTotal, $registrationTicketTypes, $this->templateRenderer);
     }
 
     /**

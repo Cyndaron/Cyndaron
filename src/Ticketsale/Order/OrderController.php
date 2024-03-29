@@ -23,7 +23,6 @@ use Cyndaron\Mail\Mail;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
-use Cyndaron\View\Template\Template;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
 use Mpdf\Output\Destination;
@@ -727,8 +726,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
                 'rawLogo' => base64_encode($logoSrc),
             ];
 
-            $template = new Template();
-            $output = $template->render('Ticketsale/Order/Ticket', $templateVars);
+            $output = $this->templateRenderer->render('Ticketsale/Order/Ticket', $templateVars);
 
             $pdf->AddPage();
             $pdf->WriteHTML($output);
@@ -841,8 +839,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
             'nonce' => \Cyndaron\Routing\Kernel::getScriptNonce(),
         ];
 
-        $template = new Template();
-        $output = $template->render('Ticketsale/Order/CheckInPage', $templateVars);
+        $output = $this->templateRenderer->render('Ticketsale/Order/CheckInPage', $templateVars);
         return new Response($output);
     }
 

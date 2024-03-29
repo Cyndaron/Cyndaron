@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Registration;
 
-use Cyndaron\View\Template\Template;
+use Cyndaron\View\Template\TemplateRenderer;
 use function constant;
 use function defined;
 use function Safe\date;
@@ -16,10 +16,10 @@ final class Util extends \Cyndaron\Util\Util
         [0, 40], [41, 50], [51, 60], [61, 70], [71, 80], [81, INF]
     ];
 
-    public static function drawPageManagerTab(): string
+    public static function drawPageManagerTab(TemplateRenderer $templateRenderer): string
     {
         $templateVars = ['events' => Event::fetchAll()];
-        return (new Template())->render('Registration/PageManagerTab', $templateVars);
+        return $templateRenderer->render('Registration/PageManagerTab', $templateVars);
     }
 
     public static function birthYearToCategory(Event $event, int|null $birthYear): string

@@ -4,7 +4,7 @@ namespace Cyndaron\FriendlyUrl;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
-use Cyndaron\View\Template\Template;
+use Cyndaron\View\Template\TemplateRenderer;
 
 final class Module implements Datatypes, Routes
 {
@@ -33,9 +33,9 @@ final class Module implements Datatypes, Routes
         ];
     }
 
-    public static function pageManagerTab(): string
+    public static function pageManagerTab(TemplateRenderer $templateRenderer): string
     {
         $templateVars = ['friendlyUrls' => FriendlyUrl::fetchAll([], [], 'ORDER BY name')];
-        return (new Template())->render('FriendlyUrl/PageManagerTab', $templateVars);
+        return $templateRenderer->render('FriendlyUrl/PageManagerTab', $templateVars);
     }
 }

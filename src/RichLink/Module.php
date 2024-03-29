@@ -6,7 +6,7 @@ use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
-use Cyndaron\View\Template\Template;
+use Cyndaron\View\Template\TemplateRenderer;
 
 final class Module implements Datatypes, UrlProvider, Routes
 {
@@ -31,13 +31,13 @@ final class Module implements Datatypes, UrlProvider, Routes
         return $richLink->name ?? null;
     }
 
-    public static function pageManagerTab(): string
+    public static function pageManagerTab(TemplateRenderer $templateRenderer): string
     {
         $templateVars = [
             'richlinks' => RichLink::fetchAll([], [], 'ORDER BY name'),
             'categories' => Category::fetchAll([], [], 'ORDER BY name'),
         ];
-        return (new Template())->render('RichLink/PageManagerTab', $templateVars);
+        return $templateRenderer->render('RichLink/PageManagerTab', $templateVars);
     }
 
     public function routes(): array

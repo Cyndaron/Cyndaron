@@ -18,7 +18,7 @@ use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
-use Cyndaron\View\Template\Template;
+use Cyndaron\View\Template\TemplateRenderer;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
 use Mollie\Api\Resources\Payment;
@@ -294,11 +294,11 @@ final class ContestController extends Controller
         return new JsonResponse();
     }
 
-    public function manageOverview(): Response
+    public function manageOverview(TemplateRenderer $templateRenderer): Response
     {
         $page = new Page('Overzicht wedstrijden');
         $page->addScript('/src/Geelhoed/Contest/js/ContestManager.js');
-        return $this->pageRenderer->renderResponse($page, ['contents' => PageManagerTabs::contestsTab()]);
+        return $this->pageRenderer->renderResponse($page, ['contents' => PageManagerTabs::contestsTab($templateRenderer)]);
     }
 
     public function subscriptionList(QueryBits $queryBits): Response
@@ -859,7 +859,7 @@ final class ContestController extends Controller
 
         if ($post->getBool('sendIntroductionMail'))
         {
-            if (!self::sendParentAccountIntroductionMail($user))
+            if (!$this->sendParentAccountIntroductionMail($user))
             {
                 return new JsonResponse(['error' => 'Account is aangemaakt, maar kon welkomstmail niet versturen'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
@@ -869,13 +869,12 @@ final class ContestController extends Controller
         return new JsonResponse();
     }
 
-    public static function sendParentAccountIntroductionMail(User $user): bool
+    public function sendParentAccountIntroductionMail(User $user): bool
     {
         $password = $user->generatePassword();
         $user->save();
 
-        $template = new Template();
-        $mailBody = $template->render('Geelhoed/Contest/ParentAccountIntroductionMail', [
+        $mailBody = $this->templateRenderer->render('Geelhoed/Contest/ParentAccountIntroductionMail', [
             'fullName' => $user->getFullName(),
             'email' => $user->email,
             'password' => $password,

@@ -11,7 +11,6 @@ use Cyndaron\User\UserLevel;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
-use Cyndaron\View\Template\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -54,8 +53,7 @@ final class AtomController extends Controller
             'updated' => $savedDate,
         ];
 
-        $template = new Template();
-        $text = $template->render('Feed/CategoryFeed', $args);
+        $text = $this->templateRenderer->render('Feed/CategoryFeed', $args);
         return new Response($text, headers: ['Content-Type' => 'application/atom+xml']);
     }
 }

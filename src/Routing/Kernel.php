@@ -31,6 +31,8 @@ use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Renderer\TextRenderer;
 use Cyndaron\View\Template\TemplateFinder;
+use Cyndaron\View\Template\TemplateRenderer;
+use Cyndaron\View\Template\TemplateRendererFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,7 +71,11 @@ final class Kernel
         $dic->add($registry);
         $dic->add($request);
 
-        $pageRenderer = new PageRenderer($registry, $user);
+        $templateRenderer = TemplateRendererFactory::createTemplateRenderer();
+        $textRenderer = new TextRenderer($registry, $dic);
+        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $user);
+        $dic->add($templateRenderer);
+        $dic->add($textRenderer);
         $dic->add($pageRenderer);
         $pdo = DBConnection::getPDO();
         $dic->add($pdo);
@@ -101,11 +107,12 @@ final class Kernel
     {
         $request = $dic->get(Request::class);
         $registry = $dic->get(ModuleRegistry::class);
+        $templateRenderer = $dic->get(TemplateRenderer::class);
         $pageRenderer = $dic->get(PageRenderer::class);
 
         try
         {
-            $router = new Router($dic, $registry, $pageRenderer);
+            $router = new Router($dic, $registry, $templateRenderer, $pageRenderer);
             return $router->route($request);
         }
         catch (Throwable $t)
@@ -234,7 +241,7 @@ final class Kernel
             {
                 foreach ($module->getTextPostProcessors() as $processor)
                 {
-                    TextRenderer::addTextPostProcessor(new $processor());
+                    $registry->addTextPostProcessor($processor);
                 }
             }
             if ($module instanceof CalendarAppointmentsProvider)

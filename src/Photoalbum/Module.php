@@ -10,7 +10,7 @@ use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\WithTextPostProcessors;
 use Cyndaron\User\User;
 use Cyndaron\Util\Link;
-use Cyndaron\View\Template\Template;
+use Cyndaron\View\Template\TemplateRenderer;
 use function array_map;
 
 final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithTextPostProcessors
@@ -64,13 +64,13 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
         }, $list);
     }
 
-    public static function pageManagerTab(User $currentUser): string
+    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer): string
     {
         $templateVars = [
             'photoalbums' => Photoalbum::fetchAll([], [], 'ORDER BY name'),
             'currentUser' => $currentUser,
         ];
-        return (new Template())->render('Photoalbum/PageManagerTab', $templateVars);
+        return $templateRenderer->render('Photoalbum/PageManagerTab', $templateVars);
     }
 
     public function getTextPostProcessors(): array

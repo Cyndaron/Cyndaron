@@ -10,7 +10,7 @@ use Cyndaron\Mail\Mail;
 use Cyndaron\Util\KnownShortCodes;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
-use Cyndaron\View\Template\Template;
+use Cyndaron\View\Template\TemplateRenderer;
 use Cyndaron\View\Template\ViewHelpers;
 use \Exception;
 use Symfony\Component\Mime\Address;
@@ -78,7 +78,7 @@ final class Registration extends Model
      * @throws \Safe\Exceptions\FilesystemException
      * @return bool
      */
-    public function sendIntroductionMail(float $registrationTotal, array $registrationTicketTypes): bool
+    public function sendIntroductionMail(float $registrationTotal, array $registrationTicketTypes, TemplateRenderer $templateRenderer): bool
     {
         $event = $this->getEvent();
 
@@ -103,10 +103,9 @@ final class Registration extends Model
             }
         }
 
-        $template = new Template();
         $registration = $this;
         $args = ['registration' => $registration, 'event' => $event, 'registrationTotal' => $registrationTotal, 'ticketTypes' => $ticketTypes, 'registrationTicketTypes' => $registrationTicketTypes, 'lunchText' => $lunchText, 'extraFields' => $extraFields];
-        $text = $template->render($templateFile, $args);
+        $text = $templateRenderer->render($templateFile, $args);
         // We're sending a plaintext mail, so avoid displaying html entities.
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 

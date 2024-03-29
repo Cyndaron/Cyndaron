@@ -14,6 +14,7 @@ use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Setting;
+use Cyndaron\View\Template\TemplateRenderer;
 use ReflectionNamedType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -35,6 +36,7 @@ final class Router
     public function __construct(
         private readonly DependencyInjectionContainer $dic,
         private readonly ModuleRegistry $moduleRegistry,
+        private readonly TemplateRenderer $templateRenderer,
         private readonly PageRenderer $pageRenderer,
     ) {
     }
@@ -194,7 +196,7 @@ final class Router
 
         $classname = $controllers[$module];
         /** @var Controller $controller */
-        $controller = new $classname($module, $action, $isApiCall, $this->pageRenderer);
+        $controller = new $classname($module, $action, $isApiCall, $this->templateRenderer, $this->pageRenderer);
 
         $route = $this->findRoute($action, $controller, $isApiCall);
         if ($route === null)
@@ -305,21 +307,9 @@ final class Router
 
     private function callMethodWithDependencyInjection(Controller $controller, string $method): Response
     {
-        $reflectionMethod = new \ReflectionMethod($controller, $method);
-
-        $params = [];
-        foreach ($reflectionMethod->getParameters() as $parameter)
-        {
-            $type = $parameter->getType();
-            /** @var class-string $className */
-            $className = ($type instanceof ReflectionNamedType) ? $type->getName() : '';
-
-            $params[] = $this->dic->tryGet($className);
-        }
-
-        /** @var Response $ret */
-        $ret = $reflectionMethod->invokeArgs($controller, $params);
-        return $ret;
+        /** @var Response $response */
+        $response = $this->dic->callMethodWithDependencyInjection($controller, $method);
+        return $response;
     }
 
     /**

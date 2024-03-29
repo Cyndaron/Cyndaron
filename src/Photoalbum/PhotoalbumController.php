@@ -10,6 +10,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\View\Renderer\TextRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,7 +37,7 @@ final class PhotoalbumController extends Controller
         'edit' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_EDIT, 'function' => 'edit'],
     ];
 
-    protected function routeGet(QueryBits $queryBits, User|null $currentUser): Response
+    protected function routeGet(QueryBits $queryBits, TextRenderer $textRenderer, User|null $currentUser): Response
     {
         $id = $queryBits->getInt(1);
         if ($id < 1)
@@ -49,7 +50,7 @@ final class PhotoalbumController extends Controller
         {
             return new JsonResponse(['error' => 'Album does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        $page = new PhotoalbumPage($album, $currentUser);
+        $page = new PhotoalbumPage($album, $textRenderer, $currentUser);
         return $this->pageRenderer->renderResponse($page);
     }
 

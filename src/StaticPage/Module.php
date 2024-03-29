@@ -8,7 +8,7 @@ use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Util\Link;
-use Cyndaron\View\Template\Template;
+use Cyndaron\View\Template\TemplateRenderer;
 use function array_map;
 
 final class Module implements Datatypes, Routes, UrlProvider, Linkable
@@ -55,9 +55,8 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         }, $list);
     }
 
-    public static function pageManagerTab(): string
+    public static function pageManagerTab(TemplateRenderer $templateRenderer): string
     {
-        $template = new Template();
         $templateVars = [];
 
         $subs = DBConnection::getPDO()->doQueryAndFetchAll('SELECT s.id,s.name,c.name AS category,IF(sb.text IS NOT NULL, 1, 0) AS hasBackup FROM subs s LEFT JOIN sub_categories sc ON s.id = sc.id LEFT JOIN categories c ON sc.categoryId = c.id LEFT JOIN sub_backups sb ON s.id = sb.id ORDER BY category, name, id ASC') ?: [];
@@ -75,6 +74,6 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         }
 
         $templateVars['subsPerCategory'] = $subsPerCategory;
-        return $template->render('StaticPage/PageManagerTab', $templateVars);
+        return $templateRenderer->render('StaticPage/PageManagerTab', $templateVars);
     }
 }

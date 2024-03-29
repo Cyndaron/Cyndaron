@@ -19,6 +19,8 @@ use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\LinkWithIcon;
 use Cyndaron\Util\Setting;
+use Cyndaron\View\Renderer\TextRenderer;
+use Cyndaron\View\Template\TemplateRenderer;
 use Cyndaron\View\Template\ViewHelpers;
 use function array_key_exists;
 use function array_merge;
@@ -110,7 +112,7 @@ class Page implements Pageable
     /**
      * @param UserMenuItem[] $userMenu
      */
-    protected function renderSkeleton(array $userMenu): void
+    protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, array $userMenu): void
     {
         $this->websiteName = Setting::get('siteName');
         $this->templateVars['isAdmin'] = User::isAdmin();
@@ -139,11 +141,11 @@ class Page implements Pageable
             $this->templateVars[$setting] = Setting::get($setting);
         }
 
-        $this->templateVars['menu'] = $this->renderMenu($userMenu);
+        $this->templateVars['menu'] = $this->renderMenu($templateRenderer, $userMenu);
 
         $jumboContents = Setting::get('jumboContents');
         $this->templateVars['showJumbo'] = $this->isFrontPage() && Setting::get('frontPageIsJumbo') && $jumboContents;
-        $this->templateVars['jumboContents'] = ViewHelpers::parseText($jumboContents);
+        $this->templateVars['jumboContents'] = $textRenderer->render($jumboContents);
 
         $this->templateVars['pageCaptionClasses'] = '';
         if ($this->isFrontPage())
@@ -166,7 +168,7 @@ class Page implements Pageable
             {
                 ob_start();
                 include $fullPath;
-                $this->templateVars[$varName] = ViewHelpers::parseText(ob_get_clean() ?: '');
+                $this->templateVars[$varName] = $textRenderer->render(ob_get_clean() ?: '');
             }
         }
     }
@@ -179,7 +181,7 @@ class Page implements Pageable
     /**
      * @param UserMenuItem[] $userMenu
      */
-    protected function renderMenu($userMenu): string
+    protected function renderMenu(TemplateRenderer $templateRenderer, $userMenu): string
     {
         $logo = Setting::get('logo');
         $vars = [
@@ -210,8 +212,7 @@ class Page implements Pageable
 
         $vars['notifications'] = User::getNotifications();
 
-        $template = new \Cyndaron\View\Template\Template();
-        return $template->render('Menu', $vars);
+        return $templateRenderer->render('Menu', $vars);
     }
 
     /**
@@ -220,19 +221,18 @@ class Page implements Pageable
      * @throws \Safe\Exceptions\FilesystemException
      * @return string
      */
-    public function render(array $userMenu = [], array $vars = []): string
+    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, array $userMenu = [], array $vars = []): string
     {
         $this->addTemplateVars($vars);
 
-        $this->renderSkeleton($userMenu);
+        $this->renderSkeleton($templateRenderer, $textRenderer, $userMenu);
 
         foreach (self::$preProcessors as $processor)
         {
             $processor->process($this);
         }
 
-        $template = new \Cyndaron\View\Template\Template();
-        return $template->render($this->template, $this->templateVars);
+        return $templateRenderer->render($this->template, $this->templateVars);
     }
 
     public function addScript(string $filename): void

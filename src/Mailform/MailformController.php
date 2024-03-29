@@ -89,7 +89,7 @@ final class MailformController extends Controller
         }
 
         $mailForm = new MailFormLDBF();
-        $mailForm->fillMailTemplate($post);
+        $mailForm->fillMailTemplate($post, $this->templateRenderer);
         $mailSent = $mailForm->sendMail($post->getEmail('E-mailadres'));
 
         if (!$mailSent)

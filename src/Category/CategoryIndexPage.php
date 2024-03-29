@@ -3,13 +3,14 @@ namespace Cyndaron\Category;
 
 use Cyndaron\Page\Page;
 use Cyndaron\StaticPage\StaticPageModel;
+use Cyndaron\View\Renderer\TextRenderer;
 use function count;
 
 final class CategoryIndexPage extends Page
 {
     protected string $template = 'Category/CategoryPage';
 
-    public function __construct(Category $category)
+    public function __construct(Category $category, TextRenderer $textRenderer)
     {
         $this->model = $category;
 
@@ -20,6 +21,7 @@ final class CategoryIndexPage extends Page
         $this->addTemplateVars([
             'type' => 'subs',
             'model' => $category,
+            'parsedDescription' => $textRenderer->render($category->description),
             'viewMode' => $category->viewMode,
             'pages' => $category->getUnderlyingPages(),
             'tags' => $this->getTags($subs),

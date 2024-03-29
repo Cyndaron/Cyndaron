@@ -3,28 +3,44 @@ declare(strict_types=1);
 
 namespace Cyndaron\View\Renderer;
 
+use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Module\TextPostProcessor;
+use Cyndaron\Util\DependencyInjectionContainer;
+use Cyndaron\View\Template\TemplateRenderer;
 
 final class TextRenderer
 {
     /**
      * @var TextPostProcessor[]
      */
-    private static array $textPostProcessors = [];
+    private array $textPostProcessors = [];
+    private bool $initialized = false;
 
-    public static function addTextPostProcessor(TextPostProcessor $postProcessor): void
-    {
-        self::$textPostProcessors[] = $postProcessor;
+    public function __construct(
+        private readonly ModuleRegistry $moduleRegistry,
+        private readonly DependencyInjectionContainer $dic
+    ) {
     }
 
-    public function __construct(public readonly string $original)
+    private function initialize(): void
     {
+        foreach ($this->moduleRegistry->textPostProcessors as $postProcessorClassName)
+        {
+            /** @var TextPostProcessor $postProcessor */
+            $postProcessor = $this->dic->createClassWithDependencyInjection($postProcessorClassName);
+            $this->textPostProcessors[] = $postProcessor;
+        }
     }
 
-    public function render(): string
+    public function render(string $text): string
     {
-        $rendered = $this->original;
-        foreach (self::$textPostProcessors as $postProcessor)
+        if (!$this->initialized)
+        {
+            $this->initialize();
+        }
+
+        $rendered = $text;
+        foreach ($this->textPostProcessors as $postProcessor)
         {
             $rendered = $postProcessor->process($rendered);
         }

@@ -1,12 +1,22 @@
 <?php
 namespace Cyndaron\View\Template;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\View\FileViewFinder;
 use InvalidArgumentException;
 use function strtr;
 
 final class ViewFinder extends FileViewFinder
 {
+    /**
+     * @param TemplateFinder $templateFinder
+     * @param Filesystem $filesystem
+     * @param string[] $viewPaths
+     */
+    public function __construct(private readonly TemplateFinder $templateFinder, Filesystem $filesystem, array $viewPaths)
+    {
+        parent::__construct($filesystem, $viewPaths);
+    }
     /**
      * Find the given view in the list of paths.
      *
@@ -22,8 +32,7 @@ final class ViewFinder extends FileViewFinder
             '.' => '/',
             '.blade.php' => '.blade.php',
         ]);
-        $templateFinder = new TemplateFinder();
-        $path = $templateFinder->path($name);
+        $path = $this->templateFinder->path($name);
 
         if ($path !== null)
         {

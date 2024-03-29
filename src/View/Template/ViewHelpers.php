@@ -36,7 +36,6 @@ final class ViewHelpers
         'delete' => 'btn-danger',
     ];
 
-
     /**
      * Zet een maandnummer om in de naam.
      * Bijvoorbeeld: 1 -> januari.
@@ -180,12 +179,6 @@ final class ViewHelpers
         }
 
         return [$icon, $btnClass];
-    }
-
-    public static function parseText(string $text): string
-    {
-        $textRenderer = new TextRenderer($text);
-        return $textRenderer->render();
     }
 
     /**

@@ -16,6 +16,7 @@ use Cyndaron\RichLink\RichLink;
 use Cyndaron\Routing\Controller;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\User\UserLevel;
+use Cyndaron\View\Renderer\TextRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use function assert;
@@ -41,7 +42,7 @@ final class CategoryController extends Controller
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
     ];
 
-    protected function view(QueryBits $queryBits): Response
+    protected function view(QueryBits $queryBits, TextRenderer $textRenderer): Response
     {
         $id = $queryBits->getString(1);
 
@@ -73,7 +74,7 @@ final class CategoryController extends Controller
             return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Categorie niet gevonden!', Response::HTTP_NOT_FOUND));
         }
 
-        $page = new CategoryIndexPage($category);
+        $page = new CategoryIndexPage($category, $textRenderer);
         return $this->pageRenderer->renderResponse($page);
     }
 

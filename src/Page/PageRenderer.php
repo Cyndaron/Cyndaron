@@ -7,11 +7,18 @@ use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\User\User;
 use Cyndaron\User\UserMenu;
+use Cyndaron\View\Renderer\TextRenderer;
+use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Response;
 
 final class PageRenderer
 {
-    public function __construct(private readonly ModuleRegistry $registry, private readonly User|null $currentUser)
+    public function __construct(
+        private readonly ModuleRegistry $registry,
+        private readonly TemplateRenderer $templateRenderer,
+        private readonly TextRenderer $textRenderer,
+        private readonly User|null $currentUser
+    )
     {
     }
 
@@ -21,7 +28,7 @@ final class PageRenderer
     public function render(Page $page, array $vars = []): string
     {
         $userMenu = UserMenu::getForUser($this->currentUser, $this->registry->userMenuItems);
-        return $page->render($userMenu, $vars);
+        return $page->render($this->templateRenderer, $this->textRenderer, $userMenu, $vars);
     }
 
     /**

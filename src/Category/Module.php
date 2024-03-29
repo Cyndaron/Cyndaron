@@ -9,7 +9,7 @@ use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\User\User;
 use Cyndaron\Util\Link;
-use Cyndaron\View\Template\Template;
+use Cyndaron\View\Template\TemplateRenderer;
 use function array_map;
 
 final class Module implements Datatypes, Routes, UrlProvider, Linkable
@@ -62,12 +62,12 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         }, $list);
     }
 
-    public static function pageManagerTab(User $currentUser): string
+    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer): string
     {
         $templateVars = [
             'categories' => Category::fetchAll([], [], 'ORDER BY name'),
             'currentUser' => $currentUser,
         ];
-        return (new Template())->render('Category/PageManagerTab', $templateVars);
+        return $templateRenderer->render('Category/PageManagerTab', $templateVars);
     }
 }
