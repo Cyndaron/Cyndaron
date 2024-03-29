@@ -104,7 +104,6 @@ final class DependencyInjectionContainer
         $reflectionClass = new ReflectionClass($className);
         $constructor = $reflectionClass->getConstructor();
 
-        /** @var T $ret */
         if ($constructor === null)
         {
             $ret = $reflectionClass->newInstanceWithoutConstructor();

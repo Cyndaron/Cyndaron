@@ -71,7 +71,7 @@ final class Kernel
         $dic->add($registry);
         $dic->add($request);
 
-        $templateRenderer = TemplateRendererFactory::createTemplateRenderer();
+        $templateRenderer = TemplateRendererFactory::createTemplateRenderer($registry->templateRoots);
         $textRenderer = new TextRenderer($registry, $dic);
         $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $user);
         $dic->add($templateRenderer);
@@ -228,7 +228,7 @@ final class Kernel
             }
             if ($module instanceof Templated)
             {
-                TemplateFinder::addTemplateRoot($module->getTemplateRoot());
+                $registry->addTemplateRoot($module->getTemplateRoot());
             }
             if ($module instanceof WithPageProcessors)
             {

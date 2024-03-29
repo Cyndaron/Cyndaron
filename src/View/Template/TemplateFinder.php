@@ -11,17 +11,21 @@ use function count;
 use function array_pop;
 use function implode;
 use function is_string;
-use function rtrim;
 use function assert;
+use function array_merge;
 
 final class TemplateFinder
 {
+    /** @var array<string, string> */
+    private readonly array $templateRoots;
+
     /**
-     * @var array<string, string>
+     * @param array<string, string> $templateRoots
      */
-    private static array $templateRoots = [
-        'View' => __DIR__ . '/../',
-    ];
+    public function __construct(array $templateRoots)
+    {
+        $this->templateRoots = array_merge(['View' => __DIR__ . '/../'], $templateRoots);
+    }
 
     /**
      * Locate actual path to template file (based on current SmartyTools logic)
@@ -97,18 +101,13 @@ final class TemplateFinder
                 $template = $this->searchPath("vendor/cyndaron/cyndaron/src/$module/$pathInModule/templates/", $name);
             }
 
-            if ($template === null && array_key_exists($module, self::$templateRoots))
+            if ($template === null && array_key_exists($module, $this->templateRoots))
             {
-                $root = self::$templateRoots[$module];
+                $root = $this->templateRoots[$module];
                 $template = $this->searchPath("$root/$pathInModule/templates/", $name);
             }
         }
 
         return $template;
-    }
-
-    public static function addTemplateRoot(TemplateRoot $templateRoot): void
-    {
-        self::$templateRoots[$templateRoot->name] = rtrim($templateRoot->root, '/');
     }
 }

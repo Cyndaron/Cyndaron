@@ -4,12 +4,14 @@ declare(strict_types=1);
 namespace Cyndaron\Base;
 
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
+use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\TextPostProcessor;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\Module\UserMenuItem;
 use function in_array;
+use function rtrim;
 use function Safe\class_implements;
 
 final class ModuleRegistry
@@ -37,6 +39,9 @@ final class ModuleRegistry
 
     /** @var class-string<TextPostProcessor>[] $textPostProcessors */
     public array $textPostProcessors = [];
+
+    /** @var array<string, string> */
+    public array $templateRoots = [];
 
     /**
      * @param string $module
@@ -101,5 +106,10 @@ final class ModuleRegistry
     public function addTextPostProcessor(string $postProcessor): void
     {
         $this->textPostProcessors[] = $postProcessor;
+    }
+
+    public function addTemplateRoot(TemplateRoot $templateRoot): void
+    {
+        $this->templateRoots[$templateRoot->name] = rtrim($templateRoot->root, '/');
     }
 }

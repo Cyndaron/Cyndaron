@@ -30,14 +30,17 @@ class TemplateRendererFactory
         'slug' => Util::class . '::getSlug',
     ];
 
-    public static function createTemplateRenderer(): TemplateRenderer
+    /**
+     * @param array<string, string> $templateRoots
+     */
+    public static function createTemplateRenderer(array $templateRoots): TemplateRenderer
     {
         $viewPaths = [];
         $cachePath = self::createCacheDir('blade');
 
         $events = new Dispatcher();
         $filesystem = new Filesystem();
-        $templateFinder = new TemplateFinder();
+        $templateFinder = new TemplateFinder($templateRoots);
         $viewFinder = new ViewFinder($templateFinder, $filesystem, $viewPaths);
         $resolver = new EngineResolver();
         $factory = new Factory($resolver, $viewFinder, $events);
