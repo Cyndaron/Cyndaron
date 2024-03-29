@@ -234,7 +234,7 @@ final class Kernel
             {
                 foreach ($module->getPageprocessors() as $processor)
                 {
-                    Page::addPreprocessor(new $processor());
+                    $registry->addPageProcessor(new $processor());
                 }
             }
             if ($module instanceof WithTextPostProcessors)

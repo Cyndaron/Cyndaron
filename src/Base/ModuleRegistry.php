@@ -7,6 +7,7 @@ use Cyndaron\Calendar\CalendarAppointmentsProvider;
 use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\TextPostProcessor;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\Page\Module\PagePreProcessor;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Routing\Controller;
 use Cyndaron\User\Module\UserMenuItem;
@@ -36,6 +37,9 @@ final class ModuleRegistry
 
     /** @var UserMenuItem[] */
     public array $userMenuItems = [];
+
+    /** @var PagePreProcessor[] $pageProcessors */
+    public array $pageProcessors = [];
 
     /** @var class-string<TextPostProcessor>[] $textPostProcessors */
     public array $textPostProcessors = [];
@@ -97,6 +101,11 @@ final class ModuleRegistry
     public function addUserMenuItem(UserMenuItem $userMenuItem): void
     {
         $this->userMenuItems[] = $userMenuItem;
+    }
+
+    public function addPageProcessor(PagePreProcessor $processor): void
+    {
+        $this->pageProcessors[] = $processor;
     }
 
     /**

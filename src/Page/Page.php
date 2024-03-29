@@ -66,9 +66,6 @@ class Page implements Pageable
     /** @var array<string, mixed> */
     public array $templateVars = ['contents' => ''];
 
-    /** @var PagePreProcessor[] */
-    private static $preProcessors = [];
-
     public function __construct(string $title)
     {
         $this->title = $title;
@@ -216,18 +213,20 @@ class Page implements Pageable
     }
 
     /**
+     * @param TemplateRenderer $templateRenderer
+     * @param TextRenderer $textRenderer
+     * @param PagePreProcessor[] $pageProcessors
      * @param UserMenuItem[] $userMenu
      * @param array<string, mixed> $vars
-     * @throws \Safe\Exceptions\FilesystemException
      * @return string
      */
-    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, array $userMenu = [], array $vars = []): string
+    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, array $pageProcessors, array $userMenu = [], array $vars = []): string
     {
         $this->addTemplateVars($vars);
 
         $this->renderSkeleton($templateRenderer, $textRenderer, $userMenu);
 
-        foreach (self::$preProcessors as $processor)
+        foreach ($pageProcessors as $processor)
         {
             $processor->process($this);
         }
@@ -333,11 +332,6 @@ class Page implements Pageable
     public function getTemplateVar(string $name): mixed
     {
         return $this->templateVars[$name] ?? null;
-    }
-
-    public static function addPreprocessor(PagePreProcessor $processor): void
-    {
-        self::$preProcessors[] = $processor;
     }
 
     public function toPage(): Page
