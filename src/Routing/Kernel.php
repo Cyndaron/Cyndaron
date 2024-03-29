@@ -214,7 +214,7 @@ final class Kernel
                     }
                     if ($module instanceof Linkable)
                     {
-                        EditorController::addInternalLinkType($moduleClass);
+                        $registry->addInternalLinkType($moduleClass);
                     }
                 }
             }

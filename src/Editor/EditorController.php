@@ -6,8 +6,6 @@ namespace Cyndaron\Editor;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Module\Linkable;
-use Cyndaron\Page\Page;
-use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
@@ -32,9 +30,6 @@ final class EditorController extends Controller
         '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routePost'],
     ];
 
-    /** @var array<class-string> */
-    protected static array $internalLinkTypes = [];
-
     protected function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry): Response
     {
         $type = $queryBits->getString(1);
@@ -51,7 +46,7 @@ final class EditorController extends Controller
         $id = $queryBits->getNullableInt(2);
         $previous = $queryBits->getString(3) === 'previous';
         /** @var EditorPage $editorPage */
-        $editorPage = new $class($queryBits, $this->getInternalLinks(), $id, $previous);
+        $editorPage = new $class($queryBits, $this->getInternalLinks($registry->internalLinkTypes), $id, $previous);
         $hash = $queryBits->getString(3);
         $hash = strlen($hash) > 20 ? $hash : '';
         $editorPage->addTemplateVar('hash', $hash);
@@ -87,15 +82,15 @@ final class EditorController extends Controller
     }
 
     /**
+     * @param class-string<Linkable>[] $internalLinkTypes
      * @return Link[]
      */
-    protected function getInternalLinks(): array
+    protected function getInternalLinks(array $internalLinkTypes): array
     {
         /** @var Link[] $internalLinks */
         $internalLinks = [];
-        foreach (self::$internalLinkTypes as $internalLinkType)
+        foreach ($internalLinkTypes as $internalLinkType)
         {
-            /** @var Linkable $class */
             $class = new $internalLinkType();
             $internalLinks = array_merge($internalLinks, $class->getList());
         }
@@ -104,14 +99,5 @@ final class EditorController extends Controller
             return $link1->name <=> $link2->name;
         });
         return $internalLinks;
-    }
-
-    /**
-     * @param class-string $moduleClass
-     * @return void
-     */
-    public static function addInternalLinkType(string $moduleClass): void
-    {
-        self::$internalLinkTypes[] = $moduleClass;
     }
 }

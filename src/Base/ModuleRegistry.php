@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Base;
 
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
+use Cyndaron\Module\Linkable;
 use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\TextPostProcessor;
 use Cyndaron\Module\UrlProvider;
@@ -25,6 +26,9 @@ final class ModuleRegistry
 
     /** @var array<string, class-string> */
     public array $editorSavePages = [];
+
+    /** @var class-string<Linkable>[] */
+    public array $internalLinkTypes = [];
 
     /** @var PageManagerTab[] */
     public array $pageManagerTabs = [];
@@ -75,6 +79,15 @@ final class ModuleRegistry
     public function addEditorSavePage(string $module, string $className): void
     {
         $this->editorSavePages[$module] = $className;
+    }
+
+    /**
+     * @param class-string<Linkable> $moduleClass
+     * @return void
+     */
+    public function addInternalLinkType(string $moduleClass): void
+    {
+        $this->internalLinkTypes[] = $moduleClass;
     }
 
     public function addPageManagerTab(PageManagerTab $tab): void
