@@ -126,22 +126,6 @@ Uw nieuwe wachtwoord is: %s';
         return $newPassword;
     }
 
-    public function resetPassword(): void
-    {
-        if ($this->id === null)
-        {
-            throw new IncompleteData('ID is leeg!');
-        }
-
-        $newPassword = $this->generatePassword();
-
-        $pdo = DBConnection::getPDO();
-        $prep = $pdo->prepare('UPDATE users SET password=? WHERE id =?');
-        $prep->execute([$this->password, $this->id]);
-
-        $this->mailNewPassword($newPassword);
-    }
-
     public function uploadNewAvatar(Request $request): void
     {
         Util::ensureDirectoryExists(self::AVATAR_DIR);

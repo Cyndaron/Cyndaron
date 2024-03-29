@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Routing;
 
 use Cyndaron\Base\ModuleRegistry;
-use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
@@ -15,7 +15,6 @@ use Cyndaron\User\UserLevel;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\TemplateRenderer;
-use ReflectionNamedType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,12 +32,17 @@ use const PHP_URL_PATH;
 
 final class Router
 {
+    private Connection $connection;
+    private ModuleRegistry $moduleRegistry;
+    private TemplateRenderer $templateRenderer;
+
     public function __construct(
         private readonly DependencyInjectionContainer $dic,
-        private readonly ModuleRegistry $moduleRegistry,
-        private readonly TemplateRenderer $templateRenderer,
         private readonly PageRenderer $pageRenderer,
     ) {
+        $this->connection = $dic->get(Connection::class);
+        $this->moduleRegistry = $dic->get(ModuleRegistry::class);
+        $this->templateRenderer = $dic->get(TemplateRenderer::class);
     }
 
     public function findRoute(string|null $action, Controller $controller, bool $isApiCall): Route|null
@@ -115,7 +119,7 @@ final class Router
             return new RedirectResponse('/', Response::HTTP_MOVED_PERMANENTLY);
         }
         // Redirect if a friendly url exists for the requested unfriendly url
-        if ($_SERVER['REQUEST_URI'] !== '/' && $url = DBConnection::getPDO()->doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target = ?', [$request]))
+        if ($request !== '/' && $url = $this->connection->doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target = ?', [$request]))
         {
             return new RedirectResponse("/$url", Response::HTTP_MOVED_PERMANENTLY);
         }
@@ -160,7 +164,7 @@ final class Router
             return new RedirectResponse('/error/403');
         }
 
-        $redirect = $this->getRedirect($_SERVER['REQUEST_URI']);
+        $redirect = $this->getRedirect($request->getRequestUri());
         if ($redirect)
         {
             return $redirect;
@@ -277,7 +281,7 @@ final class Router
             return QueryBits::fromString((string)$frontpage);
         }
         // Known friendly URL
-        if ($url = DBConnection::getPDO()->doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$request]))
+        if ($url = $this->connection->doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [$request]))
         {
             return QueryBits::fromString($this->rewriteFriendlyUrl(new Url($url)));
         }

@@ -60,8 +60,8 @@ final class Order extends Model
         $concert = Concert::fetchById($this->concertId);
         assert($concert !== null);
 
-        DBConnection::getPDO()->executeQuery('UPDATE ticketsale_orders SET `isPaid`=1 WHERE id=?', [$this->id]);
         $this->isPaid = true;
+        $this->save();
 
         $organisation = Setting::get(BuiltinSetting::ORGANISATION);
 

@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
+use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
@@ -54,10 +55,10 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
         return $album !== null ? $album->name : null;
     }
 
-    public function getList(): array
+    public function getList(Connection $connection): array
     {
         /** @var list<array{name: string, link: string}> $list */
-        $list = DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/photoalbum/\', id) AS link, CONCAT(\'Fotoalbum: \', name) AS name FROM photoalbums');
+        $list = $connection->doQueryAndFetchAll('SELECT CONCAT(\'/photoalbum/\', id) AS link, CONCAT(\'Fotoalbum: \', name) AS name FROM photoalbums');
         return array_map(static function(array $item)
         {
             return Link::fromArray($item);

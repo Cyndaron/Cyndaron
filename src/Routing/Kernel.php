@@ -33,6 +33,7 @@ use Cyndaron\View\Renderer\TextRenderer;
 use Cyndaron\View\Template\TemplateFinder;
 use Cyndaron\View\Template\TemplateRenderer;
 use Cyndaron\View\Template\TemplateRendererFactory;
+use PDO;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,6 +106,7 @@ final class Kernel
 
     private function route(DependencyInjectionContainer $dic): Response
     {
+        $pdo = $dic->get(PDO::class);
         $request = $dic->get(Request::class);
         $registry = $dic->get(ModuleRegistry::class);
         $templateRenderer = $dic->get(TemplateRenderer::class);
@@ -112,7 +114,7 @@ final class Kernel
 
         try
         {
-            $router = new Router($dic, $registry, $templateRenderer, $pageRenderer);
+            $router = new Router($dic, $pageRenderer);
             return $router->route($request);
         }
         catch (Throwable $t)

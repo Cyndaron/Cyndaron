@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Category;
 
-use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
@@ -52,10 +52,10 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         return $category !== null ? $category->name : null;
     }
 
-    public function getList(): array
+    public function getList(Connection $connection): array
     {
         /** @var list<array{name: string, link: string}> $list */
-        $list = DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/category/\', id) AS link, CONCAT(\'Categorie: \', name) AS name FROM categories');
+        $list = $connection->doQueryAndFetchAll('SELECT CONCAT(\'/category/\', id) AS link, CONCAT(\'Categorie: \', name) AS name FROM categories');
         return array_map(static function(array $item)
         {
             return Link::fromArray($item);

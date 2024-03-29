@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\StaticPage;
 
+use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
@@ -45,10 +46,10 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         return $model !== null ? $model->name : null;
     }
 
-    public function getList(): array
+    public function getList(Connection $connection): array
     {
         /** @var list<array{name: string, link: string}> $list */
-        $list = DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/sub/\', id) AS link, CONCAT(\'Statische pag.: \', name) AS name FROM subs');
+        $list = $connection->doQueryAndFetchAll('SELECT CONCAT(\'/sub/\', id) AS link, CONCAT(\'Statische pag.: \', name) AS name FROM subs');
         return array_map(static function(array $item)
         {
             return Link::fromArray($item);

@@ -15,6 +15,7 @@ use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
+use PDO;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -245,10 +246,10 @@ class Controller extends \Cyndaron\Routing\Controller
         return new RedirectResponse('/newsletter/viewSubscribers#unsubscribe');
     }
 
-    protected function delete(RequestParameters $post): Response
+    protected function delete(RequestParameters $post, PDO $pdo): Response
     {
         $email = $post->getEmail('email');
-        $changes = AddressHelper::delete($email);
+        $changes = AddressHelper::delete($pdo, $email);
 
         if ($changes->total() === 0)
         {

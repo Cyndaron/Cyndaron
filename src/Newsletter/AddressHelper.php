@@ -6,6 +6,7 @@ namespace Cyndaron\Newsletter;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
+use PDO;
 use RuntimeException;
 use Symfony\Component\Mime\Address;
 use function base64_encode;
@@ -52,9 +53,8 @@ final class AddressHelper
         return new EmailPresenceStatistics($numChangedUsers, $numChangedMembers, $numChangedSubscribers);
     }
 
-    public static function delete(string $email): EmailPresenceStatistics
+    public static function delete(PDO $pdo, string $email): EmailPresenceStatistics
     {
-        $pdo = DBConnection::getPDO();
         $prep = $pdo->prepare('UPDATE users SET email = NULL WHERE email = ?');
         $prep->execute([$email]);
         $numChangedUsers = $prep->rowCount();

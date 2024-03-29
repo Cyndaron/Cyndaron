@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Editor;
 
 use Cyndaron\Base\ModuleRegistry;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Module\Linkable;
@@ -34,7 +35,7 @@ final class EditorController extends Controller
         '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routePost'],
     ];
 
-    protected function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry): Response
+    protected function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry, Connection $connection): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorPages))
@@ -50,7 +51,7 @@ final class EditorController extends Controller
         $id = $queryBits->getNullableInt(2);
         $previous = $queryBits->getString(3) === 'previous';
         /** @var EditorPage $editorPage */
-        $editorPage = new $class($queryBits, $this->getInternalLinks($registry->internalLinkTypes), $id, $previous);
+        $editorPage = new $class($queryBits, $this->getInternalLinks($registry->internalLinkTypes, $connection), $id, $previous);
         $hash = $queryBits->getString(3);
         $hash = strlen($hash) > 20 ? $hash : '';
         $editorPage->addTemplateVar('hash', $hash);
@@ -96,14 +97,15 @@ final class EditorController extends Controller
      * @param class-string<Linkable>[] $internalLinkTypes
      * @return Link[]
      */
-    protected function getInternalLinks(array $internalLinkTypes): array
+    protected function getInternalLinks(array $internalLinkTypes, Connection $connection): array
     {
         /** @var Link[] $internalLinks */
         $internalLinks = [];
         foreach ($internalLinkTypes as $internalLinkType)
         {
+            /** @var Linkable $class */
             $class = new $internalLinkType();
-            $internalLinks = array_merge($internalLinks, $class->getList());
+            $internalLinks = array_merge($internalLinks, $class->getList($connection));
         }
         usort($internalLinks, static function(Link $link1, Link $link2)
         {

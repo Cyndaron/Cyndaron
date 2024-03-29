@@ -185,7 +185,9 @@ final class UserController extends Controller
             return new JsonResponse(['error' => 'User not found!', Response::HTTP_NOT_FOUND]);
         }
 
-        $user->resetPassword();
+        $newPassword = $user->generatePassword();
+        $user->save();
+        $user->mailNewPassword($newPassword);
 
         return new JsonResponse();
     }

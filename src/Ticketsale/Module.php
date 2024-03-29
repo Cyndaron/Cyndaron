@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
+use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
@@ -37,10 +38,10 @@ final class Module implements Routes, Datatypes, Templated, Linkable
         ];
     }
 
-    public function getList(): array
+    public function getList(Connection $connection): array
     {
         /** @var list<array{name: string, link: string}> $list */
-        $list = DBConnection::getPDO()->doQueryAndFetchAll('SELECT CONCAT(\'/concert/order/\', id) AS link, CONCAT(\'Concert: \', name) AS name FROM ticketsale_concerts');
+        $list = $connection->doQueryAndFetchAll('SELECT CONCAT(\'/concert/order/\', id) AS link, CONCAT(\'Concert: \', name) AS name FROM ticketsale_concerts');
         return array_map(static function(array $item)
         {
             return Link::fromArray($item);
