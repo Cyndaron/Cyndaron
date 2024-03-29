@@ -35,8 +35,7 @@ class ErrorPage implements Pageable
         string $body,
         int $status = Response::HTTP_INTERNAL_SERVER_ERROR,
         array $headers = []
-    )
-    {
+    ) {
         $this->page = new SimplePage($title, $body);
         $this->status = $status;
         $this->headers = $headers;
