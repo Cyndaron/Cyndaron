@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\View\Template;
 
 use Cyndaron\Util\Util;
-use Cyndaron\View\Renderer\TextRenderer;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\View\Compilers\BladeCompiler;
@@ -18,7 +17,7 @@ use Pine\BladeFilters\BladeFiltersCompiler;
 
 class TemplateRendererFactory
 {
-    private const COMPILED_DIR = 'cache/template';
+    private const COMPILED_DIR = 'cache/template/blade';
 
     private const FILTERS = [
         'euro' => ViewHelpers::class . '::formatEuro',
@@ -36,7 +35,7 @@ class TemplateRendererFactory
     public static function createTemplateRenderer(array $templateRoots): TemplateRenderer
     {
         $viewPaths = [];
-        $cachePath = self::createCacheDir('blade');
+        self::createCacheDir();
 
         $events = new Dispatcher();
         $filesystem = new Filesystem();
@@ -47,7 +46,7 @@ class TemplateRendererFactory
         $phpEngine =  new PhpEngine($filesystem);
         $compiler = new BladeCompiler(
             new Filesystem(),
-            $cachePath,
+            self::COMPILED_DIR,
         );
         $compilerEngine = new CompilerEngine($compiler, $filesystem);
         $bladeFiltersCompiler = new BladeFiltersCompiler();
@@ -80,11 +79,8 @@ class TemplateRendererFactory
         return new TemplateRenderer($factory);
     }
 
-    private static function createCacheDir(string $engine): string
+    private static function createCacheDir(): void
     {
-        $cacheDir = self::COMPILED_DIR . '/' . $engine;
-        Util::createDir($cacheDir);
-
-        return $cacheDir;
+        Util::createDir(self::COMPILED_DIR);
     }
 }
