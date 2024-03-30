@@ -21,8 +21,7 @@ class UrlService
         private readonly Connection $connection,
         private readonly string $requestUri,
         private readonly array $urlProviders
-    )
-    {
+    ) {
     }
 
     public function getPageTitle(Url|string $url): string
