@@ -7,6 +7,7 @@ use Cyndaron\Category\Category;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Url\UrlService;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
@@ -20,7 +21,7 @@ final class AtomController extends Controller
         'category' => ['level' => UserLevel::ANONYMOUS, 'function' => 'category'],
     ];
 
-    protected function category(QueryBits $queryBits, Request $request): Response
+    protected function category(QueryBits $queryBits, Request $request, UrlService $urlService): Response
     {
         $categoryId = $queryBits->getInt(2);
         $category = Category::fetchById($categoryId);
@@ -51,6 +52,7 @@ final class AtomController extends Controller
             'underlyingPages' => $underlyingPages,
             'domain' => Util::getDomain(),
             'updated' => $savedDate,
+            'urlService' => $urlService,
         ];
 
         $text = $this->templateRenderer->render('Feed/CategoryFeed', $args);

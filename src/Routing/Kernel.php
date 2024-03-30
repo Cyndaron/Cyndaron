@@ -22,6 +22,7 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Url\Url;
+use Cyndaron\Url\UrlService;
 use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
 use Cyndaron\Util\DependencyInjectionContainer;
@@ -68,18 +69,11 @@ final class Kernel
     private function buildDIC(ModuleRegistry $registry, Request $request, User|null $user): DependencyInjectionContainer
     {
         $dic = new DependencyInjectionContainer();
-        $dic->add($registry);
-        $dic->add($request);
-
+        $pdo = DBConnection::getPDO();
+        $urlService = new UrlService($pdo, $request->getRequestUri(), $registry->urlProviders);
         $templateRenderer = TemplateRendererFactory::createTemplateRenderer($registry->templateRoots);
         $textRenderer = new TextRenderer($registry, $dic);
-        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $user);
-        $dic->add($templateRenderer);
-        $dic->add($textRenderer);
-        $dic->add($pageRenderer);
-        $pdo = DBConnection::getPDO();
-        $dic->add($pdo);
-        $dic->add($pdo, \PDO::class);
+        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $urlService, $user);
 
         $fileLogger = new FileLogger(ROOT_DIR . '/var/log/cyndaron.log');
         $mailRecipient = Setting::get('mail_logRecipient');
@@ -92,9 +86,17 @@ final class Kernel
         {
             $multiLogger = new MultiLogger($fileLogger);
         }
-        $dic->add($multiLogger, LoggerInterface::class);
         $this->setExceptionHandler($multiLogger, $pageRenderer);
 
+        $dic->add($registry);
+        $dic->add($request);
+        $dic->add($templateRenderer);
+        $dic->add($textRenderer);
+        $dic->add($pageRenderer);
+        $dic->add($pdo);
+        $dic->add($pdo, \PDO::class);
+        $dic->add($urlService);
+        $dic->add($multiLogger, LoggerInterface::class);
         if ($user !== null)
         {
             $dic->add($user);
@@ -261,7 +263,6 @@ final class Kernel
             }
         }
 
-        Url::setRegistry($registry);
         return $registry;
     }
 

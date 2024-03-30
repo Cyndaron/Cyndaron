@@ -5,6 +5,7 @@ use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\RichLink\RichLink;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url\Url;
+use Cyndaron\Url\UrlService;
 use function array_merge;
 use function strcasecmp;
 use function usort;
@@ -18,10 +19,10 @@ final class Category extends ModelWithCategory
     public string $description = '';
     public ViewMode $viewMode = ViewMode::Regular;
 
-    public function getFriendlyUrl(): string
+    public function getFriendlyUrl(UrlService $urlService): Url
     {
         $url = new Url('/category/' . $this->id);
-        return $url->getFriendly();
+        return $urlService->toFriendly($url);
     }
 
     public function getText(): string

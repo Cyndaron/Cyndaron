@@ -15,6 +15,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\RichLink\RichLink;
 use Cyndaron\Routing\Controller;
 use Cyndaron\StaticPage\StaticPageModel;
+use Cyndaron\Url\UrlService;
 use Cyndaron\User\UserLevel;
 use Cyndaron\View\Renderer\TextRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,13 +43,13 @@ final class CategoryController extends Controller
         'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
     ];
 
-    protected function view(QueryBits $queryBits, TextRenderer $textRenderer): Response
+    protected function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService): Response
     {
         $id = $queryBits->getString(1);
 
         if ($id === '0' || $id === 'fotoboeken')
         {
-            $page = new PhotoalbumIndexPage();
+            $page = new PhotoalbumIndexPage($urlService);
             return $this->pageRenderer->renderResponse($page);
         }
         if ($id === 'tag')
@@ -59,7 +60,7 @@ final class CategoryController extends Controller
                 $page = new SimplePage('Foute aanvraag', 'Lege tag ontvangen.');
                 return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
             }
-            $page = new TagIndexPage($tag);
+            $page = new TagIndexPage($urlService, $tag);
             return $this->pageRenderer->renderResponse($page);
         }
         if ($id === '' || $id < 0)
@@ -74,7 +75,7 @@ final class CategoryController extends Controller
             return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Categorie niet gevonden!', Response::HTTP_NOT_FOUND));
         }
 
-        $page = new CategoryIndexPage($category, $textRenderer);
+        $page = new CategoryIndexPage($urlService, $category, $textRenderer);
         return $this->pageRenderer->renderResponse($page);
     }
 

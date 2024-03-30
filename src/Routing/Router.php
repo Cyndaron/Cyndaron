@@ -10,6 +10,7 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url\Url;
+use Cyndaron\Url\UrlService;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\DependencyInjectionContainer;
@@ -35,6 +36,7 @@ final class Router
     private Connection $connection;
     private ModuleRegistry $moduleRegistry;
     private TemplateRenderer $templateRenderer;
+    private UrlService $urlService;
 
     public function __construct(
         private readonly DependencyInjectionContainer $dic,
@@ -43,6 +45,7 @@ final class Router
         $this->connection = $dic->get(Connection::class);
         $this->moduleRegistry = $dic->get(ModuleRegistry::class);
         $this->templateRenderer = $dic->get(TemplateRenderer::class);
+        $this->urlService = $dic->get(UrlService::class);
     }
 
     public function findRoute(string|null $action, Controller $controller, bool $isApiCall): Route|null
@@ -114,7 +117,7 @@ final class Router
     private function getRedirect(string $request): RedirectResponse|null
     {
         $frontPage = $this->getFrontpageUrl();
-        if ($frontPage->equals(new Url($request)))
+        if ($this->urlService->equals($frontPage, new Url($request)))
         {
             return new RedirectResponse('/', Response::HTTP_MOVED_PERMANENTLY);
         }
@@ -296,7 +299,7 @@ final class Router
      */
     private function rewriteFriendlyUrl(Url $url): string
     {
-        $ufUrl = $url->getUnfriendly();
+        $ufUrl = (string)$this->urlService->toUnfriendly($url);
         $qmPos = strpos($ufUrl, '?');
         if ($qmPos !== false)
         {

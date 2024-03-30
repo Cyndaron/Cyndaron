@@ -13,6 +13,7 @@ use Cyndaron\CyndaronInfo;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\Module\PagePreProcessor;
+use Cyndaron\Url\UrlService;
 use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\User\User;
 use Cyndaron\Util\BuiltinSetting;
@@ -109,7 +110,7 @@ class Page implements Pageable
     /**
      * @param UserMenuItem[] $userMenu
      */
-    protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, array $userMenu): void
+    protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, array $userMenu): void
     {
         $this->websiteName = Setting::get('siteName');
         $this->templateVars['isAdmin'] = User::isAdmin();
@@ -138,7 +139,7 @@ class Page implements Pageable
             $this->templateVars[$setting] = Setting::get($setting);
         }
 
-        $this->templateVars['menu'] = $this->renderMenu($templateRenderer, $userMenu);
+        $this->templateVars['menu'] = $this->renderMenu($templateRenderer, $urlService, $userMenu);
 
         $jumboContents = Setting::get('jumboContents');
         $this->templateVars['showJumbo'] = $this->isFrontPage() && Setting::get('frontPageIsJumbo') && $jumboContents;
@@ -178,7 +179,7 @@ class Page implements Pageable
     /**
      * @param UserMenuItem[] $userMenu
      */
-    protected function renderMenu(TemplateRenderer $templateRenderer, $userMenu): string
+    protected function renderMenu(TemplateRenderer $templateRenderer, UrlService $urlService, array $userMenu): string
     {
         $logo = Setting::get('logo');
         $vars = [
@@ -188,6 +189,7 @@ class Page implements Pageable
             'navbar' => $logo !== '' ? sprintf('<img alt="" src="%s"> ', $logo) : $this->websiteName,
         ];
 
+        $vars['urlService'] = $urlService;
         $vars['menuItems'] = $this->getMenu();
         $vars['configMenuItems'] = [
             new LinkWithIcon('/system', 'Systeembeheer', 'cog'),
@@ -220,11 +222,11 @@ class Page implements Pageable
      * @param array<string, mixed> $vars
      * @return string
      */
-    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, array $pageProcessors, array $userMenu = [], array $vars = []): string
+    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, array $pageProcessors, array $userMenu = [], array $vars = []): string
     {
         $this->addTemplateVars($vars);
 
-        $this->renderSkeleton($templateRenderer, $textRenderer, $userMenu);
+        $this->renderSkeleton($templateRenderer, $textRenderer, $urlService, $userMenu);
 
         foreach ($pageProcessors as $processor)
         {

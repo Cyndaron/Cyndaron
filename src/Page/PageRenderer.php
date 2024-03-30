@@ -5,6 +5,7 @@ namespace Cyndaron\Page;
 
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPage;
+use Cyndaron\Url\UrlService;
 use Cyndaron\User\User;
 use Cyndaron\User\UserMenu;
 use Cyndaron\View\Renderer\TextRenderer;
@@ -17,6 +18,7 @@ final class PageRenderer
         private readonly ModuleRegistry $registry,
         private readonly TemplateRenderer $templateRenderer,
         private readonly TextRenderer $textRenderer,
+        private readonly UrlService $urlService,
         private readonly User|null $currentUser
     ) {
     }
@@ -27,7 +29,7 @@ final class PageRenderer
     public function render(Page $page, array $vars = []): string
     {
         $userMenu = UserMenu::getForUser($this->currentUser, $this->registry->userMenuItems);
-        return $page->render($this->templateRenderer, $this->textRenderer, $this->registry->pageProcessors, $userMenu, $vars);
+        return $page->render($this->templateRenderer, $this->textRenderer, $this->urlService, $this->registry->pageProcessors, $userMenu, $vars);
     }
 
     /**

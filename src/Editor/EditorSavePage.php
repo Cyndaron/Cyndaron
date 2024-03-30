@@ -7,6 +7,7 @@ use Cyndaron\DBAL\DBConnection;
 use Cyndaron\FriendlyUrl\FriendlyUrl;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url\Url;
+use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Util;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,7 @@ abstract class EditorSavePage
     public const PAGE_HEADER_DIR = Util::UPLOAD_DIR . '/images/page-header';
     public const PAGE_PREVIEW_DIR = Util::UPLOAD_DIR . '/images/page-preview';
 
-    public function updateFriendlyUrl(int $id, string $friendlyUrl): void
+    final public function updateFriendlyUrl(UrlService $urlService, int $id, string $friendlyUrl): void
     {
         // True if content does not support friendly URLs.
         if ($id <= 0)
@@ -32,13 +33,13 @@ abstract class EditorSavePage
         if ($friendlyUrl !== '')
         {
             $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $id);
-            $oldFriendlyUrl = $unfriendlyUrl->getFriendly();
+            $oldFriendlyUrl = $urlService->toFriendly($unfriendlyUrl);
             $oldFriendlyUrlObj = FriendlyUrl::fetchByName($oldFriendlyUrl);
             if ($oldFriendlyUrlObj !== null)
             {
                 $oldFriendlyUrlObj->delete();
             }
-            $unfriendlyUrl->createFriendly($friendlyUrl);
+            $urlService->createFriendlyUrl($unfriendlyUrl, $friendlyUrl);
             // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast
             DBConnection::getPDO()->executeQuery('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oldFriendlyUrl]);
         }

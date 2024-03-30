@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Cyndaron\RichLink;
 
 use Cyndaron\Category\ModelWithCategory;
+use Cyndaron\Url\Url;
+use Cyndaron\Url\UrlService;
 
 final class RichLink extends ModelWithCategory
 {
@@ -13,9 +15,9 @@ final class RichLink extends ModelWithCategory
 
     public string $url = '';
 
-    public function getFriendlyUrl(): string
+    public function getFriendlyUrl(UrlService $urlService): Url
     {
-        return $this->url;
+        return new Url($this->url);
     }
 
     public function getText(): string

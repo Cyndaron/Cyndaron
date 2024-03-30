@@ -8,6 +8,7 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Url\Url;
+use Cyndaron\Url\UrlService;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,11 +21,11 @@ final class FriendlyUrlController extends Controller
         'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
     ];
 
-    public function add(RequestParameters $post): JsonResponse
+    public function add(RequestParameters $post, UrlService $urlService): JsonResponse
     {
         $name = $post->getUrl('name');
         $target = new Url($post->getUrl('target'));
-        $target->createFriendly($name);
+        $urlService->createFriendlyUrl($target, $name);
 
         return new JsonResponse();
     }

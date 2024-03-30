@@ -6,6 +6,7 @@ use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Url\Url;
+use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
@@ -43,7 +44,7 @@ abstract class EditorPage extends Page
      * @param bool $useBackup
      * @throws \Safe\Exceptions\DirException
      */
-    final public function __construct(QueryBits $queryBits, array $internalLinks, int|null $id, bool $useBackup)
+    final public function __construct(QueryBits $queryBits, UrlService $urlService, array $internalLinks, int|null $id, bool $useBackup)
     {
         $this->queryBits = $queryBits;
         $this->id = $id;
@@ -56,7 +57,7 @@ abstract class EditorPage extends Page
         $this->addScript('/js/editor.js');
 
         $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $this->id);
-        $friendlyUrl = $unfriendlyUrl->getFriendly();
+        $friendlyUrl = (string)$urlService->toFriendly($unfriendlyUrl);
 
         if ((string)$unfriendlyUrl === $friendlyUrl)
         {

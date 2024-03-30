@@ -4,6 +4,7 @@ namespace Cyndaron\StaticPage;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Url\Url;
+use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Error\IncompleteData;
 use function explode;
 use function implode;
@@ -81,10 +82,10 @@ final class StaticPageModel extends ModelWithCategory
         $this->tags = implode(';', $tags);
     }
 
-    public function getFriendlyUrl(): string
+    public function getFriendlyUrl(UrlService $urlService): Url
     {
         $url = new Url('/sub/' . $this->id);
-        return $url->getFriendly();
+        return $urlService->toFriendly($url);
     }
 
     public function getText(): string

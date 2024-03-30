@@ -3,6 +3,7 @@
     /** @var \Cyndaron\Category\ModelWithCategory[] $underlyingPages */
     /** @var \DateTimeInterface $updated */
     /** @var string $domain */
+    /** @var \Cyndaron\Url\UrlService $urlService */
 @endphp
 <?xml version="1.0" encoding="utf-8"?>
 
@@ -18,7 +19,7 @@
 
     @foreach ($underlyingPages as $page)
         @php
-            $url = $page->getFriendlyUrl();
+            $url = $page->getFriendlyUrl($urlService);
             $url = str_contains($url, '://') ? $url : "https://{$domain}{$url}";
         @endphp
     <entry>

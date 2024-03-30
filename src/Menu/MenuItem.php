@@ -6,6 +6,7 @@ namespace Cyndaron\Menu;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Url\Url;
+use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\Setting;
 use function is_string;
@@ -36,7 +37,7 @@ final class MenuItem extends Model
         return parent::save();
     }
 
-    public function getTitle(): string
+    public function getTitle(UrlService $urlService): string
     {
         if (is_string($this->alias) && !empty($this->alias))
         {
@@ -44,44 +45,25 @@ final class MenuItem extends Model
         }
 
         $url = new Url($this->link);
-        return $url->getPageTitle();
+        return $urlService->getPageTitle($url);
     }
 
-    public function getLink(): string
+    public function getLink(): Url
     {
         if ($this->link === Setting::get('frontPage'))
         {
-            return '/';
+            return new Url('/');
         }
 
         $link = $this->link;
-        // For dropdowns, this is not necessary and it makes detection harder down the line.
-        if (!$this->isDropdown)
-        {
-            $url = new Url($this->link);
-            $link = $url->getFriendly();
-        }
-
         // Do not put a slash in front of URLs that already include the protocol.
         if (strpos($link, ':/'))
         {
-            return $link;
+            return new Url($link);
         }
 
         // For relative URLs, ensure there is a slash in front.
-        return '/' . ltrim($link, '/');
-    }
-
-    public function isCurrentPage(): bool
-    {
-        $link = $this->getLink();
-        // The first comparison checks if the homepage has been requested.
-        if (($link === '/' && $_SERVER['REQUEST_URI'] === '/') || $link === $_SERVER['REQUEST_URI'])
-        {
-            return true;
-        }
-
-        return false;
+        return new Url('/' . ltrim($link, '/'));
     }
 
     public function isCategoryDropdown(): bool
@@ -116,9 +98,7 @@ final class MenuItem extends Model
         foreach ($pagesInCategory as $page)
         {
             $urlString = (string)$page['url'] ?: sprintf('/%s/%d', $page['type'], $page['id']);
-            $url = new Url($urlString);
-            $link = $url->getFriendly();
-            $items[] = new Link($link, (string)$page['name']);
+            $items[] = new Link($urlString, (string)$page['name']);
         }
         return $items;
     }

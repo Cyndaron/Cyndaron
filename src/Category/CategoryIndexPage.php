@@ -3,6 +3,7 @@ namespace Cyndaron\Category;
 
 use Cyndaron\Page\Page;
 use Cyndaron\StaticPage\StaticPageModel;
+use Cyndaron\Url\UrlService;
 use Cyndaron\View\Renderer\TextRenderer;
 use function count;
 
@@ -10,7 +11,7 @@ final class CategoryIndexPage extends Page
 {
     protected string $template = 'Category/CategoryPage';
 
-    public function __construct(Category $category, TextRenderer $textRenderer)
+    public function __construct(UrlService $urlService, Category $category, TextRenderer $textRenderer)
     {
         $this->model = $category;
 
@@ -27,6 +28,7 @@ final class CategoryIndexPage extends Page
             'tags' => $this->getTags($subs),
             'portfolioContent' => $this->getPortfolioContent(),
             'pageImage' => $category->getImage(),
+            'urlService' => $urlService,
         ]);
     }
 

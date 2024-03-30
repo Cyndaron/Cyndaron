@@ -5,6 +5,7 @@ namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Url\Url;
+use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Util\Util;
 use function array_filter;
@@ -66,10 +67,10 @@ final class Photoalbum extends ModelWithCategory
         return $id ?: null;
     }
 
-    public function getFriendlyUrl(): string
+    public function getFriendlyUrl(UrlService $urlService): Url
     {
         $url = new Url('/photoalbum/' . $this->id);
-        return $url->getFriendly();
+        return $urlService->toFriendly($url);
     }
 
     /**

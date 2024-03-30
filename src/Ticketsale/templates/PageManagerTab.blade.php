@@ -1,3 +1,4 @@
+@php /** @var \Cyndaron\Url\UrlService $urlService */ @endphp
 @component('View/Widget/Toolbar')
     @slot('right')
         @include('View/Widget/Button', ['kind' => 'new', 'link' => '/editor/concert', 'title' => 'Nieuw concert', 'text' => 'Nieuw concert'])
@@ -18,7 +19,7 @@
         @php /** @var \Cyndaron\Ticketsale\Concert\Concert[] $concerts */ @endphp
         @foreach ($concerts as $concert)
             @php
-                $concertUrl = (new \Cyndaron\Url\Url("/concert/order/{$concert->id}"))->getFriendly();
+                $concertUrl = $urlService->toFriendly(new \Cyndaron\Url\Url("/concert/order/{$concert->id}"));
                 $encodedUrl = 'https://' . rawurlencode($_SERVER['HTTP_HOST'] . $concertUrl);
                 $qrUrl = "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl={$encodedUrl}&choe=UTF-8";
             @endphp

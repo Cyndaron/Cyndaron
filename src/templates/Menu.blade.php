@@ -1,3 +1,4 @@
+@php /** @var \Cyndaron\Url\UrlService $urlService */ @endphp
 <nav class="menu navbar navbar-expand-md {{ $inverseClass }}">
     <a class="navbar-brand" href="/">{!! $navbar !!}</a>
 
@@ -10,13 +11,15 @@
             @php /** @var \Cyndaron\Menu\MenuItem[] $menuItems */ @endphp
             @foreach ($menuItems as $menuitem)
                 @if ($menuitem->isCategoryDropdown())
-                    @include('View/Widget/MenuDropdown', ['title' => $menuitem->getTitle(), 'icon' => '', 'items' => $menuitem->getSubmenu()])
+                    @include('View/Widget/MenuDropdown', ['title' => $menuitem->getTitle($urlService), 'icon' => '', 'items' => $menuitem->getSubmenu(), 'urlService' => $urlService])
                 @else
-                    <li class="nav-item @if ($menuitem->isCurrentPage())active @endif">
+                    <li class="nav-item @if ($urlService->isCurrentPage($menuitem->getLink()))active @endif">
                         @if ($menuitem->isImage)
-                            <a class="nav-link img-in-menuitem" href="{{ $menuitem->getLink() }}"><img src="{{ $menuitem->getTitle() }}" alt="{{ $menuitem->getLink() }}"/></a>
+                            <a class="nav-link img-in-menuitem" href="{{ $urlService->toFriendly($menuitem->getLink()) }}">
+                                <img src="{{ $menuitem->getTitle($urlService) }}" alt="{{ $urlService->toFriendly($menuitem->getLink()) }}"/>
+                            </a>
                         @else
-                            <a class="nav-link" href="{{ $menuitem->getLink() }}">{{ $menuitem->getTitle() }}</a>
+                            <a class="nav-link" href="{{ $urlService->toFriendly($menuitem->getLink()) }}">{{ $menuitem->getTitle($urlService) }}</a>
                         @endif
                     </li>
                 @endif

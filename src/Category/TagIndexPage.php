@@ -4,6 +4,7 @@ namespace Cyndaron\Category;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page\Page;
 use Cyndaron\StaticPage\StaticPageModel;
+use Cyndaron\Url\UrlService;
 use function in_array;
 use function strtolower;
 use function ucfirst;
@@ -12,7 +13,7 @@ final class TagIndexPage extends Page
 {
     protected string $template = 'Category/CategoryPage';
 
-    public function __construct(string $tag)
+    public function __construct(UrlService $urlService, string $tag)
     {
         parent::__construct(ucfirst($tag));
 
@@ -39,6 +40,7 @@ final class TagIndexPage extends Page
             'pages' => $pages,
             'tags' => $tags,
             'viewMode' => ViewMode::Blog,
+            'urlService' => $urlService,
         ]);
     }
 }

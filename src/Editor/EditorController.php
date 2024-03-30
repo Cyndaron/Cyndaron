@@ -12,6 +12,7 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Url\UrlService;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\DependencyInjectionContainer;
@@ -35,7 +36,7 @@ final class EditorController extends Controller
         '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routePost'],
     ];
 
-    protected function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry, Connection $connection): Response
+    protected function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry, Connection $connection, UrlService $urlService): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorPages))
@@ -47,18 +48,19 @@ final class EditorController extends Controller
             return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'U heeft onvoldoende rechten om deze functie te gebruiken!', Response::HTTP_UNAUTHORIZED));
         }
 
+        /** @var class-string<EditorPage> $class */
         $class = $registry->editorPages[$type];
         $id = $queryBits->getNullableInt(2);
         $previous = $queryBits->getString(3) === 'previous';
         /** @var EditorPage $editorPage */
-        $editorPage = new $class($queryBits, $this->getInternalLinks($registry->internalLinkTypes, $connection), $id, $previous);
+        $editorPage = new $class($queryBits, $urlService, $this->getInternalLinks($registry->internalLinkTypes, $connection), $id, $previous);
         $hash = $queryBits->getString(3);
         $hash = strlen($hash) > 20 ? $hash : '';
         $editorPage->addTemplateVar('hash', $hash);
         return $this->pageRenderer->renderResponse($editorPage);
     }
 
-    protected function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry): Response
+    protected function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry, UrlService $urlService): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorSavePages))
@@ -81,7 +83,7 @@ final class EditorController extends Controller
             /** @var EditorSavePage $editorSavePage */
             $editorSavePage = $dic->createClassWithDependencyInjection($class);
             $id = $editorSavePage->save($id);
-            $editorSavePage->updateFriendlyUrl($id, $post->getUrl('friendlyUrl'));
+            $editorSavePage->updateFriendlyUrl($urlService, $id, $post->getUrl('friendlyUrl'));
             $returnUrl = $editorSavePage->getReturnUrl() ?: '/';
 
             return new RedirectResponse($returnUrl);

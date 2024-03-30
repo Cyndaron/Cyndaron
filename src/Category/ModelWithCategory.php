@@ -3,6 +3,8 @@ namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Url\Url;
+use Cyndaron\Url\UrlService;
 use Cyndaron\View\Template\ViewHelpers;
 use Safe\Exceptions\PcreException;
 use function Safe\preg_match;
@@ -30,7 +32,7 @@ abstract class ModelWithCategory extends Model
 
     public const CATEGORY_TABLE = '';
 
-    abstract public function getFriendlyUrl(): string;
+    abstract public function getFriendlyUrl(UrlService $urlService): Url;
 
     public function getBlurb(): string
     {
