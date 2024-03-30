@@ -5,7 +5,7 @@ use Cyndaron\Category\Category;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
-use Cyndaron\Url;
+use Cyndaron\Url\Url;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;

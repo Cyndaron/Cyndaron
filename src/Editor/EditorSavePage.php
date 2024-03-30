@@ -2,27 +2,15 @@
 namespace Cyndaron\Editor;
 
 use Cyndaron\Category\Category;
+use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\FriendlyUrl\FriendlyUrl;
-use Cyndaron\Category\ModelWithCategory;
-use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Url;
-use Cyndaron\Util\Filetypes;
+use Cyndaron\Url\Url;
 use Cyndaron\Util\Util;
-
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
-use function Safe\base64_decode;
-use function Safe\date;
 use function Safe\error_log;
-use function Safe\file_put_contents;
-use function strtr;
-use function preg_replace_callback;
-use function is_string;
-use function explode;
-use function str_replace;
-use function md5;
 
 abstract class EditorSavePage
 {

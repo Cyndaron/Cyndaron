@@ -9,7 +9,7 @@ use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Url;
+use Cyndaron\Url\Url;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\DependencyInjectionContainer;

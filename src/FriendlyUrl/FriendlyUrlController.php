@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Cyndaron\FriendlyUrl;
 
-use Cyndaron\Request\QueryBits;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Url;
+use Cyndaron\Routing\Controller;
+use Cyndaron\Url\Url;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

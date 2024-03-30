@@ -1,16 +1,13 @@
 <?php
 namespace Cyndaron\Category;
 
-use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\RichLink\RichLink;
 use Cyndaron\StaticPage\StaticPageModel;
-use Cyndaron\Url;
-
-use function Safe\strtotime;
-use function usort;
+use Cyndaron\Url\Url;
 use function array_merge;
 use function strcasecmp;
+use function usort;
 
 final class Category extends ModelWithCategory
 {

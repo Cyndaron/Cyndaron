@@ -5,15 +5,14 @@ namespace Cyndaron\Menu;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
+use Cyndaron\Url\Url;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\Setting;
-use Cyndaron\Url;
-
-use function sprintf;
 use function is_string;
 use function ltrim;
-use function strpos;
+use function sprintf;
 use function str_replace;
+use function strpos;
 
 final class MenuItem extends Model
 {

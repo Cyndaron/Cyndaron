@@ -1,15 +1,14 @@
 <?php
-namespace Cyndaron;
+namespace Cyndaron\Url;
 
 use Cyndaron\Base\ModuleRegistry;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\DatabaseError;
-use Cyndaron\Util\Error\IncompleteData;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\UrlProvider;
-
-use function trim;
-use function explode;
+use Cyndaron\Util\Error\IncompleteData;
 use function array_key_exists;
+use function explode;
+use function trim;
 
 final class Url
 {

@@ -1,13 +1,13 @@
 <?php
 namespace Cyndaron\StaticPage;
 
-use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Category\ModelWithCategory;
-use Cyndaron\Url;
+use Cyndaron\DBAL\DBConnection;
+use Cyndaron\Url\Url;
+use Cyndaron\Util\Error\IncompleteData;
 use function explode;
-use function strtolower;
 use function implode;
+use function strtolower;
 
 final class StaticPageModel extends ModelWithCategory
 {

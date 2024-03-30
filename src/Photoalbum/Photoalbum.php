@@ -3,22 +3,20 @@ declare(strict_types=1);
 
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Category\ModelWithCategory;
-use Cyndaron\Url;
+use Cyndaron\Url\Url;
+use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Util\Util;
-
-use function Safe\error_log;
-use function Safe\scandir;
-use function substr;
-use function array_values;
 use function array_filter;
+use function array_values;
+use function count;
 use function natsort;
 use function reset;
-use const PUB_DIR;
+use function Safe\error_log;
+use function Safe\scandir;
 use function str_replace;
-use function count;
+use function substr;
+use const PUB_DIR;
 
 final class Photoalbum extends ModelWithCategory
 {
