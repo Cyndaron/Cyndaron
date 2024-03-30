@@ -126,7 +126,7 @@ final class OrderController extends Controller
 
         if ($concert->forcedDelivery)
         {
-            $qualifiesForFreeDelivery = ($addressIsAbroad) ? false : Util::postcodeQualifiesForFreeDelivery((int)$postcode);
+            $qualifiesForFreeDelivery = ($addressIsAbroad) ? false : Util::postcodeQualifiesForFreeDelivery($postcode);
 
             if ($qualifiesForFreeDelivery)
             {
@@ -218,7 +218,6 @@ final class OrderController extends Controller
 
         /** @var OrderTicketTypes[] $orderTicketTypes */
         $orderTicketTypes = [];
-        $tmpOrder = new Order();
         $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concert->id], 'ORDER BY price DESC');
         foreach ($ticketTypes as $ticketType)
         {
@@ -701,7 +700,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         {
             if ($orderTicketType->secretCode === null)
             {
-                throw new \Exception('Geheime code niet aanwezig!');
+                throw new Exception('Geheime code niet aanwezig!');
             }
             $barcode = new Code128($orderTicketType->secretCode, 60, true, 1.5);
             $output = $barcode->getOutput();
@@ -755,12 +754,12 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         $concert = Concert::fetchById($concertId);
         if ($concert === null)
         {
-            throw new \Exception('Concert niet gevonden!');
+            throw new Exception('Concert niet gevonden!');
         }
         $secretCode = $queryBits->getString(3);
         if ($secretCode !== $concert->secretCode)
         {
-            throw new \Exception('Geheime code klopt niet!');
+            throw new Exception('Geheime code klopt niet!');
         }
 
         return $this->checkInPage($concert);
@@ -815,12 +814,12 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         $concert = Concert::fetchById($concertId);
         if ($concert === null)
         {
-            throw new \Exception('Concert niet gevonden!');
+            throw new Exception('Concert niet gevonden!');
         }
         $secretCode = $queryBits->getString(3);
         if ($secretCode !== $concert->secretCode)
         {
-            throw new \Exception('Geheime code klopt niet!');
+            throw new Exception('Geheime code klopt niet!');
         }
 
         [$isCorrect, $message] = $this->checkScannedBarcode($post, $concert);
