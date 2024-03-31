@@ -1,3 +1,4 @@
+@php /** @var \Cyndaron\Url\UrlService $urlService */ @endphp
 @extends ('Index')
 
 @section ('contents')
@@ -36,7 +37,7 @@
                 {{ $menuItem->link }}
             </td>
             <td>
-                {{ $menuItem->getTitle() }}
+                {{ $menuItem->getTitle($urlService) }}
             </td>
             <td>
                 {{ $menuItem->isDropdown|boolToText }}
