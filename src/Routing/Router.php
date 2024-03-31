@@ -194,7 +194,7 @@ final class Router
             return $redirect;
         }
 
-        $isApiCall = str_starts_with($requestStr, '/api');
+        $isApiCall = str_starts_with($requestStr, 'api/');
         $queryBits = $this->rewriteFriendlyUrls($requestStr);
         $module = $queryBits->getString(0);
         $action = $queryBits->getString(1);
