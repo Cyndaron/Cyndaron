@@ -46,6 +46,7 @@ use function Safe\error_log;
 use function session_start;
 use function set_exception_handler;
 use function str_starts_with;
+use function var_dump;
 
 final class Kernel
 {

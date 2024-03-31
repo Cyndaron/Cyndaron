@@ -10,8 +10,12 @@ use Cyndaron\Module\TextPostProcessor;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Page\Module\PagePreProcessor;
 use Cyndaron\PageManager\PageManagerTab;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\Route;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\Module\UserMenuItem;
+use ReflectionClass;
 use function in_array;
 use function rtrim;
 use function Safe\class_implements;
@@ -20,6 +24,9 @@ final class ModuleRegistry
 {
     /** @var array<string, class-string<Controller>> */
     public array $controllers = [];
+
+    /** @var array<string, array<string, array<string, array<int, Route>>>> */
+    public array $routes = [];
 
     /** @var array<string, class-string> */
     public array $editorPages = [];
@@ -62,6 +69,23 @@ final class ModuleRegistry
     public function addController(string $module, string $className): void
     {
         $this->controllers[$module] = $className;
+        $rc = new ReflectionClass($className);
+        foreach ($rc->getMethods() as $method)
+        {
+            foreach ($method->getAttributes(RouteAttribute::class) as $attribute)
+            {
+                /** @var RouteAttribute $instance */
+                $instance = $attribute->newInstance();
+                $route = new Route(
+                    $method->getName(),
+                    $instance->level,
+                    $instance->right,
+                    $instance->skipCSRFCheck
+                );
+                $apiMethod = (int)$instance->isApiMethod;
+                $this->routes[$module][$instance->action][$instance->method->value][$apiMethod] = $route;
+            }
+        }
     }
 
     /**
@@ -136,5 +160,10 @@ final class ModuleRegistry
     public function addTemplateRoot(TemplateRoot $templateRoot): void
     {
         $this->templateRoots[$templateRoot->name] = rtrim($templateRoot->root, '/');
+    }
+
+    public function getRoute(string $module, string $action, RequestMethod $method, bool $isApiCall): Route|null
+    {
+        return $this->routes[$module][$action][$method->value][(int)$isApiCall] ?? null;
     }
 }

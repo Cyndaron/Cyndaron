@@ -8,6 +8,7 @@ use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
@@ -48,17 +49,25 @@ final class Router
         $this->urlService = $dic->get(UrlService::class);
     }
 
-    public function findRoute(string|null $action, Controller $controller, bool $isApiCall): Route|null
+    public function findRoute(string $module, string $action, RequestMethod $requestMethod, Controller $controller, bool $isApiCall): Route|null
     {
+        // Specific routing via attribute
+        $route = $this->moduleRegistry->getRoute($module, $action, $requestMethod, $isApiCall);
+        if ($route !== null)
+        {
+            return $route;
+        }
+
+        // Specific routing via table
         $getRoutes = ($isApiCall && !empty($controller->apiGetRoutes)) ? $controller->apiGetRoutes : $controller->getRoutes;
         $postRoutes = ($isApiCall && !empty($controller->apiPostRoutes)) ? $controller->apiPostRoutes : $controller->postRoutes;
 
-        switch ($_SERVER['REQUEST_METHOD'])
+        switch ($requestMethod)
         {
-            case 'GET':
+            case RequestMethod::GET:
                 $routesTable = $getRoutes;
                 break;
-            case 'POST':
+            case RequestMethod::POST:
                 $routesTable = $postRoutes;
                 break;
             default:
@@ -67,11 +76,23 @@ final class Router
 
         /** @var array{function: string, level?: int, right?: string, skipCSRFCheck?: bool }|null $route */
         $route = null;
-        if ($action !== null && array_key_exists($action, $routesTable))
+        if (array_key_exists($action, $routesTable))
         {
             $route = $routesTable[$action];
         }
-        if (array_key_exists('', $routesTable))
+
+        // Catch-all routing via attribute
+        if ($route === null)
+        {
+            $routeGeneric = $this->moduleRegistry->getRoute($module, '', $requestMethod, $isApiCall);
+            if ($routeGeneric !== null)
+            {
+                return $routeGeneric;
+            }
+        }
+
+        // Catch-all routing via routing table
+        if ($route === null && array_key_exists('', $routesTable))
         {
             $route = $routesTable[''];
         }
@@ -82,10 +103,10 @@ final class Router
         }
 
         return new Route(
-            $route['function'],
-            $route['level'] ?? UserLevel::ADMIN,
-            $route['right'] ?? null,
-            $route['skipCSRFCheck'] ?? false,
+            function: $route['function'],
+            level: $route['level'] ?? UserLevel::ADMIN,
+            right: $route['right'] ?? null,
+            skipCSRFCheck: $route['skipCSRFCheck'] ?? false,
         );
     }
 
@@ -205,7 +226,14 @@ final class Router
         /** @var Controller $controller */
         $controller = new $classname($module, $action, $isApiCall, $this->templateRenderer, $this->pageRenderer);
 
-        $route = $this->findRoute($action, $controller, $isApiCall);
+        $requestMethod = RequestMethod::tryFrom($request->getRealMethod());
+        if ($requestMethod === null)
+        {
+            return $this->sendNotFound($isApiCall);
+        }
+
+        $route = $this->findRoute($module, $action, $requestMethod, $controller, $isApiCall);
+
         if ($route === null)
         {
             return $this->sendNotFound($isApiCall);
