@@ -11,7 +11,7 @@ namespace Cyndaron\Routing;
 use Attribute;
 use Cyndaron\Request\RequestMethod;
 
-#[Attribute(Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 final class RouteAttribute
 {
     public function __construct(
