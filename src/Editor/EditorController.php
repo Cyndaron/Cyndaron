@@ -10,8 +10,10 @@ use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
@@ -29,13 +31,7 @@ final class EditorController extends Controller
 {
     private const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
 
-    public array $getRoutes = [
-        '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routeGet'],
-    ];
-    public array $postRoutes = [
-        '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routePost'],
-    ];
-
+    #[RouteAttribute('', RequestMethod::GET, UserLevel::LOGGED_IN)]
     protected function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry, Connection $connection, UrlService $urlService): Response
     {
         $type = $queryBits->getString(1);
@@ -60,6 +56,7 @@ final class EditorController extends Controller
         return $this->pageRenderer->renderResponse($editorPage);
     }
 
+    #[RouteAttribute('', RequestMethod::POST, UserLevel::LOGGED_IN)]
     protected function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry, UrlService $urlService): Response
     {
         $type = $queryBits->getString(1);
