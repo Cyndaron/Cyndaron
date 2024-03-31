@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Cyndaron\FileCabinet;
 
-use Cyndaron\Page\PageRenderer;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Util;
@@ -17,21 +18,14 @@ use function file_exists;
 
 final class FileCabinetController extends Controller
 {
-    public array $getRoutes = [
-        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routeGet'],
-    ];
-
-    public array $postRoutes = [
-        'addItem' => ['level' => UserLevel::ADMIN, 'function' => 'addItem'],
-        'deleteItem' => ['level' => UserLevel::ADMIN, 'function' => 'deleteItem']
-    ];
-
+    #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
     protected function routeGet(): Response
     {
         $page = new OverviewPage();
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('addItem', RequestMethod::POST, UserLevel::ADMIN)]
     protected function addItem(): Response
     {
         $filename = Util::UPLOAD_DIR . '/filecabinet/' . basename($_FILES['newFile']['name']);
@@ -47,6 +41,7 @@ final class FileCabinetController extends Controller
         return new RedirectResponse('/filecabinet');
     }
 
+    #[RouteAttribute('deleteItem', RequestMethod::POST, UserLevel::ADMIN)]
     protected function deleteItem(RequestParameters $post): Response
     {
         $filename = $post->getFilename('filename');
