@@ -3,8 +3,10 @@ declare(strict_types=1);
 namespace Cyndaron\System;
 
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Util\Setting;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -12,13 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class SystemController extends Controller
 {
-    public array $getRoutes = [
-        '' => ['level' => UserLevel::ADMIN, 'function' => 'routeGet'],
-    ];
-    public array $postRoutes = [
-        '' => ['level' => UserLevel::ADMIN, 'function' => 'routePost'],
-    ];
-
+    #[RouteAttribute('', RequestMethod::GET, UserLevel::ADMIN)]
     protected function routeGet(QueryBits $queryBits): Response
     {
         $currentPage = $queryBits->getString(1, 'config');
@@ -26,6 +22,7 @@ final class SystemController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('', RequestMethod::POST, UserLevel::ADMIN)]
     protected function routePost(RequestParameters $post): Response
     {
         Setting::set('siteName', $post->getHTML('siteName'));
