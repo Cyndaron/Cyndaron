@@ -11,9 +11,11 @@ use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\RichLink\RichLink;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\UserLevel;
@@ -27,22 +29,7 @@ use function strpos;
 
 final class CategoryController extends Controller
 {
-    public array $getRoutes = [
-        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
-    ];
-
-    public array $apiGetRoutes = [
-        'underlyingPages' => ['level' => UserLevel::ANONYMOUS, 'function' => 'underlyingPages'],
-    ];
-
-    public array $apiPostRoutes = [
-        'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
-        'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
-        'changeOrder' => ['level' => UserLevel::ADMIN, 'function' => 'changeOrder'],
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
-    ];
-
+    #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
     protected function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService): Response
     {
         $id = $queryBits->getString(1);
@@ -79,6 +66,7 @@ final class CategoryController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function add(RequestParameters $post): JsonResponse
     {
         $return = [];
@@ -93,6 +81,7 @@ final class CategoryController extends Controller
         return new JsonResponse($return);
     }
 
+    #[RouteAttribute('addtomenu', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function addToMenu(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -112,6 +101,7 @@ final class CategoryController extends Controller
         return new JsonResponse($return);
     }
 
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -125,6 +115,7 @@ final class CategoryController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function edit(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -139,6 +130,7 @@ final class CategoryController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('changeOrder', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function changeOrder(QueryBits $queryBits, RequestParameters $post, Connection $db): JsonResponse
     {
         $categoryId = $queryBits->getInt(2);
@@ -182,6 +174,7 @@ final class CategoryController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('underlyingPages', RequestMethod::GET, UserLevel::ANONYMOUS, isApiMethod: true)]
     public function underlyingPages(QueryBits $queryBits): JsonResponse
     {
         $categoryId = $queryBits->getInt(2);
