@@ -6,7 +6,9 @@ namespace Cyndaron\Feed;
 use Cyndaron\Category\Category;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\BuiltinSetting;
@@ -17,10 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class AtomController extends Controller
 {
-    public array $getRoutes = [
-        'category' => ['level' => UserLevel::ANONYMOUS, 'function' => 'category'],
-    ];
-
+    #[RouteAttribute('category', RequestMethod::GET, UserLevel::ANONYMOUS)]
     protected function category(QueryBits $queryBits, Request $request, UrlService $urlService): Response
     {
         $categoryId = $queryBits->getInt(2);
