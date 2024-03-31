@@ -5,8 +5,10 @@ namespace Cyndaron\FriendlyUrl;
 
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\UserLevel;
@@ -15,12 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class FriendlyUrlController extends Controller
 {
-    public array $apiPostRoutes = [
-        'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
-        'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-    ];
-
+    #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function add(RequestParameters $post, UrlService $urlService): JsonResponse
     {
         $name = $post->getUrl('name');
@@ -30,6 +27,7 @@ final class FriendlyUrlController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('addtomenu', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function addToMenu(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -45,6 +43,7 @@ final class FriendlyUrlController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
