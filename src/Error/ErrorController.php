@@ -3,23 +3,16 @@ declare(strict_types=1);
 
 namespace Cyndaron\Error;
 
-use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
-use Cyndaron\Util\DependencyInjectionContainer;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 
 final class ErrorController extends Controller
 {
-    public array $getRoutes = [
-        '' => ['function' => 'show', 'level' => UserLevel::ANONYMOUS],
-    ];
-    public array $postRoutes = [
-        '' => ['function' => 'show', 'level' => UserLevel::ANONYMOUS, 'skipCSRFCheck' => true],
-    ];
-
     public const KNOWN_ERRORS = [
         '403' => [
             'pageTitle' => '403: Forbidden',
@@ -31,6 +24,8 @@ final class ErrorController extends Controller
         ],
     ];
 
+    #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    #[RouteAttribute('', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
     public function show(): Response
     {
         $code = (int)$this->action;
