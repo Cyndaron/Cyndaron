@@ -4,18 +4,17 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Sport;
 
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SportController extends Controller
 {
-    public array $apiPostRoutes = [
-        'edit' => ['level' => UserLevel::ADMIN, 'function' => 'apiEdit'],
-    ];
-
+    #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     protected function apiEdit(QueryBits $queryBits, RequestParameters $requestParameters): JsonResponse
     {
         $id = $queryBits->getInt(2);

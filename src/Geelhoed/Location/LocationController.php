@@ -4,7 +4,9 @@ namespace Cyndaron\Geelhoed\Location;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Util;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,15 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class LocationController extends Controller
 {
-    public array $getRoutes = [
-        'details' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
-        'overzicht' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overview'],
-        'in-stad' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overviewByCity'],
-        'op-dag' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overviewByDay'],
-        'zoeken' => ['level' => UserLevel::ANONYMOUS, 'function' => 'search'],
-        'op-leeftijd' => ['level' => UserLevel::ANONYMOUS, 'function' => 'searchByAge'],
-    ];
-
+    #[RouteAttribute('details', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function view(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
@@ -40,12 +34,14 @@ final class LocationController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('overzicht', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function overview(): Response
     {
         $page = new LocationOverview();
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('in-stad', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function overviewByCity(QueryBits $queryBits): Response
     {
         // Run the value through the slug again to filter out any unwanted characters.
@@ -54,6 +50,7 @@ final class LocationController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('op-dag', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function overviewByDay(QueryBits $queryBits): Response
     {
         $day = $queryBits->getInt(2);
@@ -61,12 +58,14 @@ final class LocationController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('zoeken', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function search(): Response
     {
         $page = new SearchPage();
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('op-leeftijd', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function searchByAge(QueryBits $queryBits): Response
     {
         $age = $queryBits->getInt(2);

@@ -3,10 +3,12 @@ namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Util;
@@ -21,20 +23,7 @@ use function assert;
 
 final class MemberController extends Controller
 {
-    public array $apiGetRoutes = [
-        'get' => ['level' => UserLevel::ADMIN, 'function' => 'get'],
-        'getGrid' => ['level' => UserLevel::ADMIN, 'function' => 'getGrid'],
-    ];
-    public array $apiPostRoutes = [
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'removeGraduation' => ['level' => UserLevel::ADMIN, 'function' => 'removeGraduation'],
-        'save' => ['level' => UserLevel::ADMIN, 'function' => 'save'],
-    ];
-
-    public array $getRoutes = [
-        'directDebitList' => ['level' => UserLevel::ADMIN, 'function' => 'directDebitList'],
-    ];
-
+    #[RouteAttribute('get', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
     public function get(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -73,12 +62,14 @@ final class MemberController extends Controller
         return new JsonResponse($ret);
     }
 
+    #[RouteAttribute('getGrid', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
     public function getGrid(): JsonResponse
     {
         $grid = new PageManagerMemberGrid();
         return new JsonResponse($grid->get());
     }
 
+    #[RouteAttribute('removeGraduation', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function removeGraduation(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -91,6 +82,7 @@ final class MemberController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('save', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function save(RequestParameters $post): JsonResponse
     {
         $memberId = $post->getInt('id');
@@ -218,6 +210,7 @@ final class MemberController extends Controller
         return $member;
     }
 
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -235,6 +228,7 @@ final class MemberController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('directDebitList', RequestMethod::GET, UserLevel::ADMIN)]
     public function directDebitList(): Response
     {
         $directDebits = DirectDebit::load();

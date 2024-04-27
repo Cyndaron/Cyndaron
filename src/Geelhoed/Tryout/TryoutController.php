@@ -11,7 +11,9 @@ use Cyndaron\Mail\Mail;
 use Cyndaron\MDB\MDBFile;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
@@ -36,17 +38,7 @@ class TryoutController extends Controller
     private const BATCH_SIZE = 250;
     private const QUERY = 'REPLACE INTO geelhoed_tryout_points(`id`, `code`, `datetime`, `points`) VALUES ';
 
-    public array $getRoutes = [
-        'scores' => ['function' => 'scores', 'level' => UserLevel::ANONYMOUS],
-        'update' => ['function' => 'updateGet', 'level' => UserLevel::ADMIN, 'right' => self::RIGHT_UPLOAD],
-    ];
-    public array $postRoutes = [
-        'update' => ['function' => 'updatePost', 'level' => UserLevel::ADMIN, 'right' => self::RIGHT_UPLOAD],
-    ];
-    public array $apiPostRoutes = [
-        'create-photoalbums' => ['function' => 'createPhotoalbums', 'level' => UserLevel::ADMIN],
-    ];
-
+    #[RouteAttribute('scores', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function scores(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
@@ -65,12 +57,14 @@ class TryoutController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('update', RequestMethod::GET, UserLevel::ADMIN, right: self::RIGHT_UPLOAD)]
     public function updateGet(): Response
     {
         $page = new UpdateFormPage();
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('update', RequestMethod::POST, UserLevel::ADMIN, right: self::RIGHT_UPLOAD)]
     public function updatePost(Request $request, Connection $db): Response
     {
         /** @var UploadedFile $file */
@@ -116,6 +110,7 @@ class TryoutController extends Controller
         }
     }
 
+    #[RouteAttribute('create-photoalbums', RequestMethod::POST, UserLevel::ADMIN, right: 'tryout_edit', isApiMethod: true)]
     public function createPhotoalbums(QueryBits $queryBits): JsonResponse
     {
         $tryoutId = $queryBits->getInt(2);

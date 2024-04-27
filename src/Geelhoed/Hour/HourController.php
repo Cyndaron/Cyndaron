@@ -2,16 +2,15 @@
 namespace Cyndaron\Geelhoed\Hour;
 
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;
 
 final class HourController extends Controller
 {
-    public array $getRoutes = [
-        'memberList' => ['level' => UserLevel::ADMIN, 'function' => 'memberList'],
-    ];
-
+    #[RouteAttribute('memberList', RequestMethod::GET, UserLevel::ADMIN)]
     public function memberList(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);

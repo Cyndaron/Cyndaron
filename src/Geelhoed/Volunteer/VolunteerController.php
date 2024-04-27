@@ -7,8 +7,10 @@ use Cyndaron\DBAL\Connection;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,20 +21,14 @@ use const JSON_THROW_ON_ERROR;
 
 class VolunteerController extends Controller
 {
-    public array $getRoutes = [
-        'subscribe' => ['function' => 'subscribe', 'level' => UserLevel::ANONYMOUS],
-        'inschrijven-voor-tryout' => ['function' => 'subscribeToTryoutGet', 'level' => UserLevel::ANONYMOUS],
-    ];
-    public array $apiPostRoutes = [
-        'inschrijven-voor-tryout' => ['function' => 'subscribeToTryoutPost', 'level' => UserLevel::ANONYMOUS],
-    ];
-
+    #[RouteAttribute('subscribe', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function subscribe(): Response
     {
         $page = new SubscriptionPage();
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('inschrijven-voor-tryout', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function subscribeToTryoutGet(QueryBits $queryBits): Response
     {
         $event = Tryout::fetchById($queryBits->getInt(2));
@@ -44,6 +40,7 @@ class VolunteerController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('inschrijven-voor-tryout', RequestMethod::POST, UserLevel::ANONYMOUS)]
     public function subscribeToTryoutPost(QueryBits $queryBits, RequestParameters $post, Connection $db): JsonResponse
     {
         $event = Tryout::fetchById($queryBits->getInt(2));
