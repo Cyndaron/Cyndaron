@@ -5,7 +5,9 @@ namespace Cyndaron\Ticketsale\Concert;
 
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\Ticketsale\Order\Order;
 use Cyndaron\Ticketsale\Order\OrderTicketsPage;
@@ -45,15 +47,8 @@ final class ConcertController extends Controller
         'subscribeToNewsletter' => 'Inschrijven voor nieuwsbrief',
     ];
 
-    public array $getRoutes = [
-        'getInfo' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getConcertInfo'],
-        'order' => ['level' => UserLevel::ANONYMOUS, 'function' => 'order'],
-        'orderListExcel' => ['level' => UserLevel::ADMIN, 'function' => 'orderListExcel'],
-        'viewOrders' => ['level' => UserLevel::ADMIN, 'function' => 'viewOrders'],
-        'viewReservedSeats' => ['level' => UserLevel::ADMIN, 'function' => 'viewReservedSeats'],
-    ];
-
-    protected function getConcertInfo(QueryBits $queryBits): JsonResponse
+    #[RouteAttribute('getInfo', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function getConcertInfo(QueryBits $queryBits): JsonResponse
     {
         $concertId = $queryBits->getInt(2);
         if ($concertId < 1)
@@ -87,7 +82,8 @@ final class ConcertController extends Controller
         return new JsonResponse($answer);
     }
 
-    protected function order(QueryBits $queryBits): Response
+    #[RouteAttribute('order', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function order(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -106,7 +102,8 @@ final class ConcertController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
-    protected function viewOrders(QueryBits $queryBits): Response
+    #[RouteAttribute('viewOrders', RequestMethod::GET, UserLevel::ADMIN)]
+    public function viewOrders(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -120,7 +117,8 @@ final class ConcertController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
-    protected function viewReservedSeats(QueryBits $queryBits): Response
+    #[RouteAttribute('viewReservedSeats', RequestMethod::GET, UserLevel::ADMIN)]
+    public function viewReservedSeats(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -134,7 +132,8 @@ final class ConcertController extends Controller
         return new Response($page->render());
     }
 
-    protected function orderListExcel(QueryBits $queryBits): Response
+    #[RouteAttribute('orderListExcel', RequestMethod::GET, UserLevel::ADMIN)]
+    public function orderListExcel(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)

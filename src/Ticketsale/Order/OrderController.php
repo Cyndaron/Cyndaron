@@ -9,8 +9,10 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\Payment\Currency;
 use Cyndaron\Payment\Payment;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\Ticketsale\Concert\TicketDelivery;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
@@ -50,26 +52,8 @@ final class OrderController extends Controller
 {
     private const MAX_SECRET_CODE_RETRIES = 10;
 
-    public array $getRoutes = [
-        'afterPayment' => ['level' => UserLevel::ANONYMOUS, 'function' => 'afterPayment'],
-        'checkIn' => ['level' => UserLevel::ANONYMOUS, 'function' => 'checkInGet'],
-        'getTickets' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getTickets'],
-        'pay' => ['level' => UserLevel::ANONYMOUS, 'function' => 'pay'],
-    ];
-
-    public array $postRoutes = [
-        'add' => ['level' => UserLevel::ANONYMOUS, 'function' => 'add'],
-        'checkIn' => ['level' => UserLevel::ANONYMOUS, 'function' => 'checkInPost', 'skipCSRFCheck' => true],
-    ];
-
-    public array $apiPostRoutes = [
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook', 'skipCSRFCheck' => true],
-        'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
-        'setIsSent' => ['level' => UserLevel::ADMIN, 'function' => 'setIsSent'],
-    ];
-
-    protected function add(RequestParameters $post): Response
+    #[RouteAttribute('add', RequestMethod::POST, UserLevel::ANONYMOUS)]
+    public function add(RequestParameters $post): Response
     {
         try
         {
@@ -515,6 +499,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         return $mail->send();
     }
 
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -529,6 +514,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         return new JsonResponse();
     }
 
+    #[RouteAttribute('setIsPaid', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function setIsPaid(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -543,6 +529,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         return new JsonResponse();
     }
 
+    #[RouteAttribute('setIsSent', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function setIsSent(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -557,7 +544,8 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         return new JsonResponse();
     }
 
-    protected function pay(QueryBits $queryBits): Response
+    #[RouteAttribute('pay', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function pay(QueryBits $queryBits): Response
     {
         $orderId = $queryBits->getInt(2);
         $order = Order::fetchById($orderId);
@@ -616,6 +604,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         return new RedirectResponse($redirectUrl);
     }
 
+    #[RouteAttribute('mollieWebhook', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
     public function mollieWebhook(RequestParameters $post): Response
     {
         $apiKey = Setting::get('mollieApiKey');
@@ -665,7 +654,8 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         return new JsonResponse();
     }
 
-    protected function getTickets(QueryBits $queryBits): Response
+    #[RouteAttribute('getTickets', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function getTickets(QueryBits $queryBits): Response
     {
         $orderId = $queryBits->getInt(2);
         $order = Order::fetchById($orderId);
@@ -748,7 +738,8 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         );
     }
 
-    protected function checkInGet(QueryBits $queryBits): Response
+    #[RouteAttribute('checkIn', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function checkInGet(QueryBits $queryBits): Response
     {
         $concertId = $queryBits->getInt(2);
         $concert = Concert::fetchById($concertId);
@@ -808,7 +799,8 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         return [true, 'Barcode is juist!'];
     }
 
-    protected function checkInPost(QueryBits $queryBits, RequestParameters $post): Response
+    #[RouteAttribute('checkIn', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
+    public function checkInPost(QueryBits $queryBits, RequestParameters $post): Response
     {
         $concertId = $queryBits->getInt(2);
         $concert = Concert::fetchById($concertId);
@@ -840,7 +832,8 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         return new Response($output);
     }
 
-    protected function afterPayment(QueryBits $queryBits): Response
+    #[RouteAttribute('afterPayment', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function afterPayment(QueryBits $queryBits): Response
     {
         if ($queryBits->hasIndex(3))
         {
