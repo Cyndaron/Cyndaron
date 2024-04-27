@@ -6,8 +6,10 @@ namespace Cyndaron\Migration;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Mailform\MailformController;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,13 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OldUrlsController extends Controller
 {
-    public array $getRoutes = [
-        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routeGet'],
-    ];
-    public array $postRoutes = [
-        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routePost', 'skipCSRFCheck' => true],
-    ];
-
+    #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function routeGet(Request $request): Response
     {
         switch ($this->module)
@@ -39,6 +35,7 @@ class OldUrlsController extends Controller
         return $this->pageRenderer->renderErrorResponse(new ErrorPage('Routingfout', 'Niet-herkende oude URL.'));
     }
 
+    #[RouteAttribute('', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
     public function routePost(RequestParameters $requestParameters, Request $request): Response
     {
         if ($this->module !== 'verwerkmailformulier.php')
