@@ -234,6 +234,16 @@ Uw nieuwe wachtwoord is: %s';
         return true;
     }
 
+    public static function fetchByEmail(string $email): self|null
+    {
+        return self::fetch(['email = ?'], [$email]);
+    }
+
+    public static function fetchByUsername(string $username): self|null
+    {
+        return self::fetch(['username = ?'], [$username]);
+    }
+
     public static function login(string $identification, string $password): string
     {
         if (str_contains($identification, '@'))
