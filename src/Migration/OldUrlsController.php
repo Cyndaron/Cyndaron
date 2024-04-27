@@ -44,7 +44,7 @@ class OldUrlsController extends Controller
         }
 
         $id = $request->query->getInt('id');
-        $controller = new MailformController('mailform', 'process', false, $this->templateRenderer, $this->pageRenderer);
+        $controller = new MailformController('mailform', 'process', $this->templateRenderer, $this->pageRenderer);
         $queryBits = new QueryBits(['mailform', 'process', (string)$id]);
         return $controller->process($queryBits, $requestParameters);
     }
