@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Cyndaron\MailAdmin;
 
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Setting;
 use PDO;
@@ -19,18 +21,7 @@ use function str_contains;
 
 class Controller extends \Cyndaron\Routing\Controller
 {
-    public array $getRoutes = [
-        'overview' => ['function' => 'overview', 'level' => UserLevel::ADMIN],
-    ];
-    public array $postRoutes = [
-        'addAlias' => ['function' => 'addAlias', 'level' => UserLevel::ADMIN],
-        'addDomain' => ['function' => 'addDomain', 'level' => UserLevel::ADMIN],
-        'addEmail' => ['function' => 'addEmail', 'level' => UserLevel::ADMIN],
-        'deleteAlias' => ['function' => 'deleteAlias', 'level' => UserLevel::ADMIN],
-        'deleteEmail' => ['function' => 'deleteEmail', 'level' => UserLevel::ADMIN],
-    ];
-
-    public function createPDO(): PDO
+    private function createPDO(): PDO
     {
         $username = Setting::get('postfix_sql_username');
         $password = Setting::get('postfix_sql_password');
@@ -42,12 +33,14 @@ class Controller extends \Cyndaron\Routing\Controller
         return $pdo;
     }
 
+    #[RouteAttribute('overview', RequestMethod::GET, UserLevel::ADMIN)]
     public function overview(): Response
     {
         $page = new OverviewPage($this->createPDO());
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('addDomain', RequestMethod::POST, UserLevel::ADMIN)]
     public function addDomain(RequestParameters $post): RedirectResponse
     {
         $domain = $post->getSimpleString('domain');
@@ -59,6 +52,7 @@ class Controller extends \Cyndaron\Routing\Controller
         return new RedirectResponse('/mailadmin/overview');
     }
 
+    #[RouteAttribute('addAlias', RequestMethod::POST, UserLevel::ADMIN)]
     public function addAlias(RequestParameters $post): RedirectResponse
     {
         $pdo = $this->createPDO();
@@ -82,6 +76,7 @@ class Controller extends \Cyndaron\Routing\Controller
         return new RedirectResponse('/mailadmin/overview');
     }
 
+    #[RouteAttribute('addEmail', RequestMethod::POST, UserLevel::ADMIN)]
     public function addEmail(RequestParameters $post): RedirectResponse
     {
         $pdo = $this->createPDO();
@@ -108,6 +103,7 @@ class Controller extends \Cyndaron\Routing\Controller
         return crypt($input, '$6$' . $salt);
     }
 
+    #[RouteAttribute('deleteAlias', RequestMethod::POST, UserLevel::ADMIN)]
     public function deleteAlias(QueryBits $queryBits): RedirectResponse
     {
         $id = $queryBits->getInt(2);
@@ -119,6 +115,7 @@ class Controller extends \Cyndaron\Routing\Controller
         return new RedirectResponse('/mailadmin/overview');
     }
 
+    #[RouteAttribute('deleteEmail', RequestMethod::POST, UserLevel::ADMIN)]
     public function deleteEmail(QueryBits $queryBits): RedirectResponse
     {
         $id = $queryBits->getInt(2);

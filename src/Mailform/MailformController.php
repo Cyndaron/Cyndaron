@@ -6,8 +6,10 @@ namespace Cyndaron\Mailform;
 use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Mail\Mail;
@@ -22,19 +24,7 @@ use function strtr;
 
 final class MailformController extends Controller
 {
-    public array $postRoutes = [
-        'process' => ['level' => UserLevel::ANONYMOUS, 'function' => 'process', 'skipCSRFCheck' => true],
-        'process-ldbf' => ['level' => UserLevel::ANONYMOUS, 'function' => 'processLDBF', 'skipCSRFCheck' => true],
-    ];
-    public array $apiPostRoutes = [
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-    ];
-
-    /**
-     * @param RequestParameters $post
-     * @throws Exception
-     * @return Response
-     */
+    #[RouteAttribute('process', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
     public function process(QueryBits $queryBits, RequestParameters $post): Response
     {
         $id = $queryBits->getInt(2);
@@ -61,6 +51,7 @@ final class MailformController extends Controller
         }
     }
 
+    #[RouteAttribute('process-ldbf', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
     public function processLDBF(RequestParameters $post): Response
     {
         try
@@ -106,7 +97,7 @@ final class MailformController extends Controller
      * @throws Exception
      * @return bool
      */
-    public function processHelper(Mailform $form, RequestParameters $post): bool
+    private function processHelper(Mailform $form, RequestParameters $post): bool
     {
         if ($form->name === '')
         {
@@ -161,11 +152,7 @@ final class MailformController extends Controller
         throw new DatabaseError('Wegens een technisch probleem is het versturen niet gelukt.');
     }
 
-    /**
-     * @throws Exception
-     * @return JsonResponse
-     *
-     */
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
