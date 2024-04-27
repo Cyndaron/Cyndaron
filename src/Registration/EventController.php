@@ -5,7 +5,9 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\User\UserLevel;
 use Exception;
@@ -19,14 +21,8 @@ use function ord;
 
 final class EventController extends Controller
 {
-    public array $getRoutes = [
-        'getInfo' => ['level' => UserLevel::ANONYMOUS, 'function' => 'getEventInfo'],
-        'register' => ['level' => UserLevel::ANONYMOUS, 'function' => 'register'],
-        'viewRegistrations' => ['level' => UserLevel::ADMIN, 'function' => 'viewRegistrations'],
-        'registrationListExcel' => ['level' => UserLevel::ADMIN, 'function' => 'registrationListExcel'],
-    ];
-
-    protected function getEventInfo(QueryBits $queryBits, Connection $db): JsonResponse
+    #[RouteAttribute('getInfo', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function getEventInfo(QueryBits $queryBits, Connection $db): JsonResponse
     {
         $eventId = $queryBits->getInt(2);
         $event = Event::fetchById($eventId);
@@ -49,7 +45,8 @@ final class EventController extends Controller
         return new JsonResponse($answer);
     }
 
-    protected function register(QueryBits $queryBits): Response
+    #[RouteAttribute('register', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function register(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -65,7 +62,8 @@ final class EventController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
-    protected function viewRegistrations(QueryBits $queryBits): Response
+    #[RouteAttribute('viewRegistrations', RequestMethod::GET, UserLevel::ADMIN)]
+    public function viewRegistrations(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -81,7 +79,8 @@ final class EventController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
-    protected function registrationListExcel(QueryBits $queryBits): Response
+    #[RouteAttribute('registrationListExcel', RequestMethod::GET, UserLevel::ADMIN)]
+    public function registrationListExcel(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)

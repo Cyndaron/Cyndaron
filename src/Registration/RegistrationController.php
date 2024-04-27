@@ -6,8 +6,10 @@ namespace Cyndaron\Registration;
 use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Error\IncompleteData;
@@ -22,16 +24,8 @@ use function strcasecmp;
 
 final class RegistrationController extends Controller
 {
-    public array $postRoutes = [
-        'add' => ['level' => UserLevel::ANONYMOUS, 'function' => 'add'],
-    ];
-    public array $apiPostRoutes = [
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'setApprovalStatus' => ['level' => UserLevel::ADMIN, 'function' => 'setApprovalStatus'],
-        'setIsPaid' => ['level' => UserLevel::ADMIN, 'function' => 'setIsPaid'],
-    ];
-
-    protected function add(RequestParameters $post): Response
+    #[RouteAttribute('add', RequestMethod::POST, UserLevel::ANONYMOUS)]
+    public function add(RequestParameters $post): Response
     {
         try
         {
@@ -204,6 +198,7 @@ final class RegistrationController extends Controller
         return $errorFields;
     }
 
+    #[RouteAttribute('delete', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
     public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -218,6 +213,7 @@ final class RegistrationController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('setApprovalStatus', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
     public function setApprovalStatus(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -241,6 +237,7 @@ final class RegistrationController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('setIsPaid', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
     public function setIsPaid(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
