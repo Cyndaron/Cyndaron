@@ -6,8 +6,10 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\View\Renderer\TextRenderer;
@@ -20,24 +22,8 @@ use function pathinfo;
 
 final class PhotoalbumController extends Controller
 {
-    public array $getRoutes = [
-        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routeGet'],
-    ];
-
-    public array $postRoutes = [
-        'addPhoto' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_UPLOAD, 'function' => 'addPhoto'],
-        'deletePhoto' => ['level' => UserLevel::ADMIN, 'function' => 'deletePhoto'],
-    ];
-
-    public array $apiPostRoutes = [
-        'add' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_EDIT, 'function' => 'add'],
-        'addPhoto' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_UPLOAD, 'function' => 'addPhotoApi'],
-        'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'edit' => ['level' => UserLevel::ADMIN, 'right' => Photoalbum::RIGHT_EDIT, 'function' => 'edit'],
-    ];
-
-    protected function routeGet(QueryBits $queryBits, TextRenderer $textRenderer, User|null $currentUser): Response
+    #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function routeGet(QueryBits $queryBits, TextRenderer $textRenderer, User|null $currentUser): Response
     {
         $id = $queryBits->getInt(1);
         if ($id < 1)
@@ -54,6 +40,7 @@ final class PhotoalbumController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Photoalbum::RIGHT_EDIT)]
     public function add(RequestParameters $post): JsonResponse
     {
         $name = $post->getHTML('name');
@@ -77,6 +64,7 @@ final class PhotoalbumController extends Controller
         }
     }
 
+    #[RouteAttribute('addPhoto', RequestMethod::POST, UserLevel::ADMIN, right: Photoalbum::RIGHT_UPLOAD)]
     public function addPhoto(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
@@ -91,6 +79,7 @@ final class PhotoalbumController extends Controller
         return new RedirectResponse("/photoalbum/{$album->id}");
     }
 
+    #[RouteAttribute('addPhoto', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Photoalbum::RIGHT_UPLOAD)]
     public function addPhotoApi(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -105,6 +94,7 @@ final class PhotoalbumController extends Controller
         return new JsonResponse([]);
     }
 
+    #[RouteAttribute('addtomenu', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function addToMenu(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -120,6 +110,7 @@ final class PhotoalbumController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -134,6 +125,7 @@ final class PhotoalbumController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('deletePhoto', RequestMethod::POST, UserLevel::ADMIN)]
     public function deletePhoto(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
@@ -170,6 +162,7 @@ final class PhotoalbumController extends Controller
         return new RedirectResponse("/photoalbum/{$album->id}");
     }
 
+    #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Photoalbum::RIGHT_EDIT)]
     public function edit(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
         $id = $queryBits->getInt(2);

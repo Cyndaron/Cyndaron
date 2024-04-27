@@ -6,7 +6,9 @@ namespace Cyndaron\PageManager;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\DependencyInjectionContainer;
@@ -14,10 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class PageManagerController extends Controller
 {
-    public array $getRoutes = [
-        '' => ['level' => UserLevel::LOGGED_IN, 'function' => 'routeGet'],
-    ];
-
+    #[RouteAttribute('', RequestMethod::GET, UserLevel::LOGGED_IN)]
     protected function routeGet(QueryBits $queryBits, DependencyInjectionContainer $dic, User $currentUser, ModuleRegistry $registry): Response
     {
         $currentPage = $queryBits->getString(1, 'sub');
