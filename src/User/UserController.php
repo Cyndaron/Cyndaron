@@ -6,9 +6,11 @@ namespace Cyndaron\User;
 use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\Kernel;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Exception;
@@ -20,28 +22,8 @@ use function strlen;
 
 final class UserController extends Controller
 {
-    public array $getRoutes = [
-        'changePassword' => ['level' => UserLevel::LOGGED_IN, 'function' => 'changePasswordGet'],
-        'gallery' => ['level' => UserLevel::LOGGED_IN, 'function' => 'gallery'],
-        'login' => ['level' => UserLevel::ANONYMOUS, 'function' => 'loginGet'],
-        'logout' => ['level' => UserLevel::LOGGED_IN, 'function' => 'logout'],
-        'manager' => ['level' => UserLevel::ADMIN, 'function' => 'manager'],
-    ];
-
-    public array $postRoutes = [
-        'changePassword' => ['level' => UserLevel::LOGGED_IN, 'function' => 'changePasswordPost'],
-        'login' => ['level' => UserLevel::ANONYMOUS, 'function' => 'loginPost'],
-        'changeAvatar' => ['level' => UserLevel::ADMIN, 'function' => 'changeAvatar'],
-    ];
-
-    public array $apiPostRoutes = [
-        'add' => ['level' => UserLevel::ADMIN, 'function' => 'add'],
-        'edit' => ['level' => UserLevel::ADMIN, 'function' => 'edit'],
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'resetpassword' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'resetPassword'],
-    ];
-
-    protected function gallery(User|null $currentUser): Response
+    #[RouteAttribute('gallery', RequestMethod::GET, UserLevel::LOGGED_IN)]
+    public function gallery(User|null $currentUser): Response
     {
         // Has to be done here because you cannot specify the expression during member variable initialization.
         $minLevel = (int)Setting::get('userGalleryMinLevel') ?: UserLevel::ADMIN;
@@ -56,7 +38,8 @@ final class UserController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
-    protected function loginGet(Request $request): Response
+    #[RouteAttribute('login', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function loginGet(Request $request): Response
     {
         if (empty($_SESSION['redirect']))
         {
@@ -66,19 +49,22 @@ final class UserController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
-    protected function logout(): Response
+    #[RouteAttribute('logout', RequestMethod::GET, UserLevel::LOGGED_IN)]
+    public function logout(): Response
     {
         User::logout();
         return new RedirectResponse('/', Response::HTTP_FOUND, Kernel::HEADERS_DO_NOT_CACHE);
     }
 
-    protected function manager(): Response
+    #[RouteAttribute('manager', RequestMethod::GET, UserLevel::ADMIN)]
+    public function manager(): Response
     {
         $page = new UserManagerPage();
         return $this->pageRenderer->renderResponse($page);
     }
 
-    protected function loginPost(RequestParameters $post): Response
+    #[RouteAttribute('login', RequestMethod::POST, UserLevel::ANONYMOUS)]
+    public function loginPost(RequestParameters $post): Response
     {
         $identification = $post->getEmail('login_user');
         $verification = $post->getUnfilteredString('login_pass');
@@ -100,7 +86,8 @@ final class UserController extends Controller
         }
     }
 
-    protected function add(RequestParameters $post): JsonResponse
+    #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN)]
+    public function add(RequestParameters $post): JsonResponse
     {
         $user = new User();
         $user->username = $post->getAlphaNum('username');
@@ -129,7 +116,8 @@ final class UserController extends Controller
         return new JsonResponse(['userId' => $user->id]);
     }
 
-    protected function edit(QueryBits $queryBits, RequestParameters $post): JsonResponse
+    #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN)]
+    public function edit(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -162,7 +150,8 @@ final class UserController extends Controller
         return new JsonResponse();
     }
 
-    protected function delete(QueryBits $queryBits): JsonResponse
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN)]
+    public function delete(QueryBits $queryBits): JsonResponse
     {
         $userId = $queryBits->getInt(2);
         if ($userId < 1)
@@ -176,7 +165,8 @@ final class UserController extends Controller
         return new JsonResponse();
     }
 
-    protected function resetPassword(QueryBits $queryBits): JsonResponse
+    #[RouteAttribute('resetpassword', RequestMethod::POST, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
+    public function resetPassword(QueryBits $queryBits): JsonResponse
     {
         $userId = $queryBits->getInt(2);
         $user = User::fetchById($userId);
@@ -192,7 +182,8 @@ final class UserController extends Controller
         return new JsonResponse();
     }
 
-    protected function changeAvatar(QueryBits $queryBits, Request $request): Response
+    #[RouteAttribute('changeAvatar', RequestMethod::POST, UserLevel::ADMIN)]
+    public function changeAvatar(QueryBits $queryBits, Request $request): Response
     {
         $userId = $queryBits->getInt(2);
         $user = User::fetchById($userId);
@@ -207,12 +198,14 @@ final class UserController extends Controller
         return new RedirectResponse('/user/manager');
     }
 
-    protected function changePasswordGet(): Response
+    #[RouteAttribute('changePassword', RequestMethod::GET, UserLevel::LOGGED_IN)]
+    public function changePasswordGet(): Response
     {
         return $this->pageRenderer->renderResponse(new ChangePasswordPage());
     }
 
-    protected function changePasswordPost(RequestParameters $post): Response
+    #[RouteAttribute('changePassword', RequestMethod::POST, UserLevel::LOGGED_IN)]
+    public function changePasswordPost(RequestParameters $post): Response
     {
         $profile = User::fromSession();
         if ($profile === null)
