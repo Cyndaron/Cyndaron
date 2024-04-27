@@ -9,7 +9,6 @@ class Module implements Routes
     public function routes(): array
     {
         return [
-            'migrate' => MigrateController::class,
             'tooncategorie.php' => OldUrlsController::class,
             'toonphoto.php' => OldUrlsController::class,
             'toonphotoalbum.php' => OldUrlsController::class,
