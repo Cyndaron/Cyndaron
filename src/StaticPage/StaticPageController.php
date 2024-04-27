@@ -6,8 +6,10 @@ namespace Cyndaron\StaticPage;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\View\Renderer\TextRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,17 +19,8 @@ use function strtolower;
 
 final class StaticPageController extends Controller
 {
-    public array $getRoutes = [
-        '' => ['level' => UserLevel::ANONYMOUS, 'function' => 'routeGet'],
-    ];
-
-    public array $postRoutes = [
-        'addtomenu' => ['level' => UserLevel::ADMIN, 'function' => 'addToMenu'],
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'react' => ['level' => UserLevel::ANONYMOUS, 'function' => 'react'],
-    ];
-
-    protected function routeGet(QueryBits $queryBits, TextRenderer $textRenderer): Response
+    #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function routeGet(QueryBits $queryBits, TextRenderer $textRenderer): Response
     {
         $id = $queryBits->getInt(1);
         if ($id < 1)
@@ -44,7 +37,8 @@ final class StaticPageController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
-    protected function addToMenu(QueryBits $queryBits): JsonResponse
+    #[RouteAttribute('addtomenu', RequestMethod::POST, UserLevel::ADMIN)]
+    public function addToMenu(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -57,7 +51,8 @@ final class StaticPageController extends Controller
         return new JsonResponse();
     }
 
-    protected function delete(QueryBits $queryBits): JsonResponse
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN)]
+    public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -69,7 +64,8 @@ final class StaticPageController extends Controller
         return new JsonResponse();
     }
 
-    protected function react(QueryBits $queryBits, RequestParameters $post): Response
+    #[RouteAttribute('react', RequestMethod::POST, UserLevel::ANONYMOUS)]
+    public function react(QueryBits $queryBits, RequestParameters $post): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)

@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace Cyndaron\RichLink;
 
 use Cyndaron\Category\Category;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Illuminate\Support\Js;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,11 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class RichLinkController extends Controller
 {
-    public array $apiPostRoutes = [
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-        'edit' => ['level' => UserLevel::ADMIN, 'function' => 'createOrEdit'],
-    ];
-
+    #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function createOrEdit(RequestParameters $post): JsonResponse
     {
         $id = $post->getInt('id');
@@ -61,6 +59,7 @@ final class RichLinkController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function delete(RequestParameters $post): JsonResponse
     {
         $id = $post->getInt('id');
