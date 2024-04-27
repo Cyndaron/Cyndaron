@@ -49,67 +49,6 @@ final class Router
         $this->urlService = $dic->get(UrlService::class);
     }
 
-    public function findRoute(string $module, string $action, RequestMethod $requestMethod, Controller $controller, bool $isApiCall): Route|null
-    {
-        // Specific routing via attribute
-        $route = $this->moduleRegistry->getRoute($module, $action, $requestMethod, $isApiCall);
-        if ($route !== null)
-        {
-            return $route;
-        }
-
-        // Specific routing via table
-        $getRoutes = ($isApiCall && !empty($controller->apiGetRoutes)) ? $controller->apiGetRoutes : $controller->getRoutes;
-        $postRoutes = ($isApiCall && !empty($controller->apiPostRoutes)) ? $controller->apiPostRoutes : $controller->postRoutes;
-
-        switch ($requestMethod)
-        {
-            case RequestMethod::GET:
-                $routesTable = $getRoutes;
-                break;
-            case RequestMethod::POST:
-                $routesTable = $postRoutes;
-                break;
-            default:
-                return null;
-        }
-
-        /** @var array{function: string, level?: int, right?: string, skipCSRFCheck?: bool }|null $route */
-        $route = null;
-        if (array_key_exists($action, $routesTable))
-        {
-            $route = $routesTable[$action];
-        }
-
-        // Catch-all routing via attribute
-        if ($route === null)
-        {
-            $routeGeneric = $this->moduleRegistry->getRoute($module, '', $requestMethod, $isApiCall);
-            if ($routeGeneric !== null)
-            {
-                return $routeGeneric;
-            }
-        }
-
-        // Catch-all routing via routing table
-        if ($route === null && array_key_exists('', $routesTable))
-        {
-            $route = $routesTable[''];
-        }
-
-        if ($route === null)
-        {
-            return null;
-        }
-
-        return new Route(
-            function: $route['function'],
-            level: $route['level'] ?? UserLevel::ADMIN,
-            right: $route['right'] ?? null,
-            skipCSRFCheck: $route['skipCSRFCheck'] ?? false,
-        );
-    }
-
     private function sendNotFound(bool $isApiCall): Response
     {
         if (!in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST'], true))
@@ -232,8 +171,12 @@ final class Router
             return $this->sendNotFound($isApiCall);
         }
 
-        $route = $this->findRoute($module, $action, $requestMethod, $controller, $isApiCall);
-
+        // Try exact match first, if none is found, try a catch-all (if it exists).
+        $route = $this->moduleRegistry->getRoute($module, $action, $requestMethod, $isApiCall);
+        if ($route === null)
+        {
+            $route = $this->moduleRegistry->getRoute($module, '', $requestMethod, $isApiCall);
+        }
         if ($route === null)
         {
             return $this->sendNotFound($isApiCall);
