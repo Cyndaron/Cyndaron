@@ -4,22 +4,19 @@ declare(strict_types=1);
 namespace Cyndaron\Menu;
 
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 final class MenuController extends Controller
 {
-    public array $apiPostRoutes = [
-        'addItem' => ['level' => UserLevel::ADMIN, 'function' => 'addItem'],
-        'editItem' => ['level' => UserLevel::ADMIN, 'function' => 'editItem'],
-        'deleteItem' => ['level' => UserLevel::ADMIN, 'function' => 'deleteItem'],
-    ];
-
-    protected function addItem(RequestParameters $post): JsonResponse
+    #[RouteAttribute('addItem', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
+    public function addItem(RequestParameters $post): JsonResponse
     {
         $menuItem = new MenuItem();
         $menuItem->link = $post->getUrl('link');
@@ -39,7 +36,8 @@ final class MenuController extends Controller
         return new JsonResponse();
     }
 
-    protected function editItem(QueryBits $queryBits, RequestParameters $post): JsonResponse
+    #[RouteAttribute('editItem', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
+    public function editItem(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
         $index = $queryBits->getInt(2);
         $menuItem = MenuItem::fetchById($index);
@@ -62,7 +60,8 @@ final class MenuController extends Controller
         return new JsonResponse();
     }
 
-    protected function deleteItem(QueryBits $queryBits): JsonResponse
+    #[RouteAttribute('deleteItem', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
+    public function deleteItem(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
