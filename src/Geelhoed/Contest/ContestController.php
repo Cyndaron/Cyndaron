@@ -10,8 +10,10 @@ use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Payment\Currency;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
@@ -47,51 +49,14 @@ use function time;
 
 final class ContestController extends Controller
 {
-    public array $getRoutes = [
-        'contestantsEmail' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsEmail'],
-        'contestantsList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsList'],
-        'contestantsListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'contestantsListExcel'],
-        'editSubscription' => ['level' => UserLevel::LOGGED_IN, 'function' => 'editSubscriptionPage'],
-        'linkContestantsToParentAccounts' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'linkContestantsToParentAccounts'],
-        'manageOverview' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'manageOverview'],
-        'myContests' => ['level' => UserLevel::LOGGED_IN, 'function' => 'myContests'],
-        'overview' => ['level' => UserLevel::ANONYMOUS, 'function' => 'overview'],
-        'parentAccounts' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'parentAccounts'],
-        'payFullDue' => ['level' => UserLevel::LOGGED_IN, 'function' => 'payFullDue'],
-        'subscribe' => ['level' => UserLevel::LOGGED_IN, 'function' => 'subscribePage'],
-        'subscriptionList' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionList'],
-        'subscriptionListExcel' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'subscriptionListExcel'],
-        'view' => ['level' => UserLevel::ANONYMOUS, 'function' => 'view'],
-    ];
-
-    public array $postRoutes = [
-        'addAttachment' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addAttachment'],
-        'addToParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addToParentAccount'],
-        'deleteAttachment' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteAttachment'],
-        'deleteDate' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteDate'],
-        'editSubscription' => ['level' => UserLevel::LOGGED_IN, 'function' => 'editSubscription'],
-        'subscribe' => ['level' => UserLevel::LOGGED_IN, 'function' => 'subscribe'],
-    ];
-
-    public array $apiPostRoutes = [
-        'addDate' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'addDate'],
-        'cancelSubscription' => ['level' => UserLevel::LOGGED_IN, 'function' => 'cancelSubscription'],
-        'createParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'createParentAccount'],
-        'deleteParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteParentAccount'],
-        'deleteFromParentAccount' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'deleteFromParentAccount'],
-        'edit' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'createOrEdit'],
-        'delete' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'delete'],
-        'mollieWebhook' => ['level' => UserLevel::ANONYMOUS, 'function' => 'mollieWebhook', 'skipCSRFCheck' => true],
-        'updatePaymentStatus' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'updatePaymentStatus'],
-        'removeSubscription' => ['level' => UserLevel::ADMIN, 'right' => Contest::RIGHT_MANAGE, 'function' => 'removeSubscription'],
-    ];
-
+    #[RouteAttribute('overview', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function overview(): Response
     {
         $page = new OverviewPage();
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('view', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function view(QueryBits $queryBits, User|null $currentUser): Response
     {
         $id = $queryBits->getInt(2);
@@ -110,6 +75,7 @@ final class ContestController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('subscribe', RequestMethod::POST, UserLevel::LOGGED_IN)]
     public function subscribe(QueryBits $queryBits, RequestParameters $post): Response
     {
         $id = $queryBits->getInt(2);
@@ -248,6 +214,7 @@ final class ContestController extends Controller
         return true;
     }
 
+    #[RouteAttribute('mollieWebhook', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true)]
     public function mollieWebhook(RequestParameters $post): Response
     {
         $apiKey = Setting::get('mollieApiKey');
@@ -294,6 +261,7 @@ final class ContestController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('manageOverview', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
     public function manageOverview(TemplateRenderer $templateRenderer): Response
     {
         $page = new Page('Overzicht wedstrijden');
@@ -301,6 +269,7 @@ final class ContestController extends Controller
         return $this->pageRenderer->renderResponse($page, ['contents' => PageManagerTabs::contestsTab($templateRenderer)]);
     }
 
+    #[RouteAttribute('subscriptionList', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
     public function subscriptionList(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
@@ -317,6 +286,7 @@ final class ContestController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('subscriptionListExcel', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
     public function subScriptionListExcel(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
@@ -386,6 +356,7 @@ final class ContestController extends Controller
         return new Response(SpreadsheetHelper::convertToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
     }
 
+    #[RouteAttribute('removeSubscription', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
     public function removeSubscription(RequestParameters $post): JsonResponse
     {
         $id = $post->getInt('id');
@@ -400,6 +371,7 @@ final class ContestController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
     public function delete(RequestParameters $post): JsonResponse
     {
         $id = $post->getInt('id');
@@ -414,6 +386,7 @@ final class ContestController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
     public function createOrEdit(RequestParameters $post): JsonResponse
     {
         $id = $post->getInt('id');
@@ -445,6 +418,7 @@ final class ContestController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('updatePaymentStatus', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
     public function updatePaymentStatus(RequestParameters $post): JsonResponse
     {
         $id = $post->getInt('id');
@@ -460,18 +434,21 @@ final class ContestController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('contestantsList', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
     public function contestantsList(): Response
     {
         $page = new ContestantsListPage();
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('contestantsEmail', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
     public function contestantsEmail(): Response
     {
         $page = new ContestantsEmailPage();
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('contestantsListExcel', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
     public function contestantsListExcel(): Response
     {
         $spreadsheet = new Spreadsheet();
@@ -533,12 +510,14 @@ final class ContestController extends Controller
         return new Response(SpreadsheetHelper::convertToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
     }
 
+    #[RouteAttribute('myContests', RequestMethod::GET, UserLevel::LOGGED_IN)]
     public function myContests(User $currentUser): Response
     {
         $page = new MyContestsPage($currentUser);
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('payFullDue', RequestMethod::GET, UserLevel::LOGGED_IN)]
     public function payFullDue(User $currentUser): Response
     {
         [$due, $contestMembers] = Contest::getTotalDue($currentUser);
@@ -575,6 +554,7 @@ final class ContestController extends Controller
         return $response;
     }
 
+    #[RouteAttribute('addAttachment', RequestMethod::POST, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
     public function addAttachment(QueryBits $queryBits): Response
     {
         $id = $queryBits->getInt(2);
@@ -605,7 +585,8 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/view/' . $contest->id);
     }
 
-    protected function deleteAttachment(QueryBits $queryBits, RequestParameters $post): Response
+    #[RouteAttribute('deleteAttachment', RequestMethod::POST, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
+    public function deleteAttachment(QueryBits $queryBits, RequestParameters $post): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -640,6 +621,7 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/view/' . $contest->id);
     }
 
+    #[RouteAttribute('addDate', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
     public function addDate(RequestParameters $post): JsonResponse
     {
         $contestId = $post->getInt('contestId');
@@ -679,6 +661,7 @@ final class ContestController extends Controller
         return new JsonResponse(['status' => 'ok']);
     }
 
+    #[RouteAttribute('deleteDate', RequestMethod::POST, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
     public function deleteDate(QueryBits $queryBits): Response
     {
         $contestDateId = $queryBits->getInt(2);
@@ -697,6 +680,7 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/view/' . $contest->id);
     }
 
+    #[RouteAttribute('editSubscription', RequestMethod::POST, UserLevel::LOGGED_IN)]
     public function editSubscription(QueryBits $queryBits, RequestParameters $post, User|null $currentUser): Response
     {
         $id = $queryBits->getInt(2);
@@ -746,6 +730,7 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/myContests');
     }
 
+    #[RouteAttribute('editSubscription', RequestMethod::GET, UserLevel::LOGGED_IN)]
     public function editSubscriptionPage(QueryBits $queryBits, User|null $currentUser): Response
     {
         $id = $queryBits->getInt(2);
@@ -781,18 +766,21 @@ final class ContestController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
+    #[RouteAttribute('parentAccounts', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
     public function parentAccounts(): Response
     {
         $page = new ParentAccountsPage();
         return $this->pageRenderer->renderResponse($page);
     }
 
-    public function linkContestantsToParentAccounts(): Response
-    {
-        $page = new LinkContestantsToParentAccountsPage();
-        return $this->pageRenderer->renderResponse($page);
-    }
+    #[RouteAttribute('linkContestantsToParentAccounts', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
+        public function linkContestantsToParentAccounts(): Response
+        {
+            $page = new LinkContestantsToParentAccountsPage();
+            return $this->pageRenderer->renderResponse($page);
+        }
 
+    #[RouteAttribute('subscribe', RequestMethod::GET, UserLevel::LOGGED_IN)]
     public function subscribePage(QueryBits $queryBits, User $currentUser): Response
     {
         $contestId = $queryBits->getInt(2);
@@ -834,6 +822,7 @@ final class ContestController extends Controller
         return $this->pageRenderer->renderResponse(new SubscribePage($contest, $member));
     }
 
+    #[RouteAttribute('createParentAccount', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
     public function createParentAccount(RequestParameters $post): JsonResponse
     {
         $user = new User();
@@ -885,6 +874,7 @@ final class ContestController extends Controller
         return $mail->send();
     }
 
+    #[RouteAttribute('deleteParentAccount', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
     public function deleteParentAccount(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -902,6 +892,7 @@ final class ContestController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('deleteFromParentAccount', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
     public function deleteFromParentAccount(RequestParameters $post, Connection $db): JsonResponse
     {
         $userId = $post->getInt('userId');
@@ -925,6 +916,7 @@ final class ContestController extends Controller
         return new JsonResponse();
     }
 
+    #[RouteAttribute('addToParentAccount', RequestMethod::POST, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
     public function addToParentAccount(RequestParameters $post, Connection $db): Response
     {
         $userId = $post->getInt('userId');
@@ -945,6 +937,7 @@ final class ContestController extends Controller
         return new RedirectResponse('/contest/parentAccounts');
     }
 
+    #[RouteAttribute('cancelSubscription', RequestMethod::POST, UserLevel::LOGGED_IN, isApiMethod: true)]
     public function cancelSubscription(QueryBits $queryBits, User $currentUser): JsonResponse
     {
         $contestMemberId = $queryBits->getInt(2);
