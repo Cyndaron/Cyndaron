@@ -30,7 +30,7 @@ use function strpos;
 final class CategoryController extends Controller
 {
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    protected function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService): Response
+    public function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService): Response
     {
         $id = $queryBits->getString(1);
 

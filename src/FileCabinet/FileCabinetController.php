@@ -19,14 +19,14 @@ use function file_exists;
 final class FileCabinetController extends Controller
 {
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    protected function routeGet(): Response
+    public function routeGet(): Response
     {
         $page = new OverviewPage();
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('addItem', RequestMethod::POST, UserLevel::ADMIN)]
-    protected function addItem(): Response
+    public function addItem(): Response
     {
         $filename = Util::UPLOAD_DIR . '/filecabinet/' . basename($_FILES['newFile']['name']);
         if (move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
@@ -42,7 +42,7 @@ final class FileCabinetController extends Controller
     }
 
     #[RouteAttribute('deleteItem', RequestMethod::POST, UserLevel::ADMIN)]
-    protected function deleteItem(RequestParameters $post): Response
+    public function deleteItem(RequestParameters $post): Response
     {
         $filename = $post->getFilename('filename');
         $fullPath = Util::UPLOAD_DIR . "/filecabinet/$filename";

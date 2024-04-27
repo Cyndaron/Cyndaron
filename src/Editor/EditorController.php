@@ -32,7 +32,7 @@ final class EditorController extends Controller
     private const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    protected function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry, Connection $connection, UrlService $urlService): Response
+    public function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry, Connection $connection, UrlService $urlService): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorPages))
@@ -57,7 +57,7 @@ final class EditorController extends Controller
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::LOGGED_IN)]
-    protected function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry, UrlService $urlService): Response
+    public function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry, UrlService $urlService): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorSavePages))
@@ -96,7 +96,7 @@ final class EditorController extends Controller
      * @param class-string<Linkable>[] $internalLinkTypes
      * @return Link[]
      */
-    protected function getInternalLinks(array $internalLinkTypes, Connection $connection): array
+    private function getInternalLinks(array $internalLinkTypes, Connection $connection): array
     {
         /** @var Link[] $internalLinks */
         $internalLinks = [];

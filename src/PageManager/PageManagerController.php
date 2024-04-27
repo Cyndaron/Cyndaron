@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class PageManagerController extends Controller
 {
     #[RouteAttribute('', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    protected function routeGet(QueryBits $queryBits, DependencyInjectionContainer $dic, User $currentUser, ModuleRegistry $registry): Response
+    public function routeGet(QueryBits $queryBits, DependencyInjectionContainer $dic, User $currentUser, ModuleRegistry $registry): Response
     {
         $currentPage = $queryBits->getString(1, 'sub');
         try

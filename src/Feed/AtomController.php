@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class AtomController extends Controller
 {
     #[RouteAttribute('category', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    protected function category(QueryBits $queryBits, Request $request, UrlService $urlService): Response
+    public function category(QueryBits $queryBits, Request $request, UrlService $urlService): Response
     {
         $categoryId = $queryBits->getInt(2);
         $category = Category::fetchById($categoryId);

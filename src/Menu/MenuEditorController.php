@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class MenuEditorController extends Controller
 {
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ADMIN)]
-    protected function routeGet(UrlService $urlService): Response
+    public function routeGet(UrlService $urlService): Response
     {
         $page = new MenuEditorPage($urlService);
         return $this->pageRenderer->renderResponse($page);

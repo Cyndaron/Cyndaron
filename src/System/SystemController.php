@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class SystemController extends Controller
 {
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ADMIN)]
-    protected function routeGet(QueryBits $queryBits): Response
+    public function routeGet(QueryBits $queryBits): Response
     {
         $currentPage = $queryBits->getString(1, 'config');
         $page = new SystemPage($currentPage);
@@ -23,7 +23,7 @@ final class SystemController extends Controller
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::ADMIN)]
-    protected function routePost(RequestParameters $post): Response
+    public function routePost(RequestParameters $post): Response
     {
         Setting::set('siteName', $post->getHTML('siteName'));
         Setting::set('organisation', $post->getHTML('organisation'));

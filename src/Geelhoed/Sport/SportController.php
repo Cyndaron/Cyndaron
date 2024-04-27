@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class SportController extends Controller
 {
     #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    protected function apiEdit(QueryBits $queryBits, RequestParameters $requestParameters): JsonResponse
+    public function apiEdit(QueryBits $queryBits, RequestParameters $requestParameters): JsonResponse
     {
         $id = $queryBits->getInt(2);
         $sport = Sport::fetchById($id);
