@@ -10,7 +10,9 @@ namespace Cyndaron\Newsletter;
 
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\BuiltinSetting;
@@ -30,36 +32,22 @@ use function base64_decode;
 
 class Controller extends \Cyndaron\Routing\Controller
 {
-    public array $getRoutes = [
-        'viewSubscribers' => ['level' => UserLevel::ADMIN, 'function' => 'viewSubscribers'],
-        'compose' => ['level' => UserLevel::ADMIN, 'function' => 'compose'],
-        'unsubscribe' => ['level' => UserLevel::ANONYMOUS, 'function' => 'unsubscribeUser'],
-        'confirm' => ['level' => UserLevel::ANONYMOUS, 'function' => 'confirm'],
-    ];
-
-    public array $postRoutes = [
-        'subscribe' => ['level' => UserLevel::ANONYMOUS, 'function' => 'subscribe'],
-        'unsubscribe' => ['level' => UserLevel::ADMIN, 'function' => 'unsubscribeAdmin'],
-        'delete' => ['level' => UserLevel::ADMIN, 'function' => 'delete'],
-    ];
-
-    public array $apiPostRoutes = [
-        'send' => ['level' => UserLevel::ADMIN, 'function' => 'send'],
-    ];
-
-    protected function viewSubscribers(): Response
+    #[RouteAttribute('viewSubscribers', RequestMethod::GET, UserLevel::ADMIN)]
+    public function viewSubscribers(): Response
     {
         $page = new ViewSubscribersPage();
         return $this->pageRenderer->renderResponse($page);
     }
 
-    protected function compose(): Response
+    #[RouteAttribute('compose', RequestMethod::GET, UserLevel::ADMIN)]
+    public function compose(): Response
     {
         $page = new SendNewsletterPage();
         return $this->pageRenderer->renderResponse($page);
     }
 
-    protected function subscribe(RequestParameters $post): Response
+    #[RouteAttribute('subscribe', RequestMethod::POST, UserLevel::ANONYMOUS)]
+    public function subscribe(RequestParameters $post): Response
     {
         $antiSpam = $post->getUnfilteredString('antispam');
         $antiSpam2 = $post->getUnfilteredString('new_password');
@@ -122,7 +110,8 @@ class Controller extends \Cyndaron\Routing\Controller
         return new JsonResponse();
     }
 
-    protected function send(RequestParameters $post, Request $request): JsonResponse
+    #[RouteAttribute('send', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
+    public function send(RequestParameters $post, Request $request): JsonResponse
     {
         $subject = $post->getSimpleString('subject');
         $body = $post->getHTML('body');
@@ -178,7 +167,8 @@ class Controller extends \Cyndaron\Routing\Controller
         return $this->getResponse($numFailed, $total);
     }
 
-    protected function unsubscribeUser(QueryBits $queryBits): Response
+    #[RouteAttribute('unsubscribe', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function unsubscribeUser(QueryBits $queryBits): Response
     {
         $email = base64_decode($queryBits->getString(2), true);
         if ($email === false)
@@ -201,7 +191,8 @@ class Controller extends \Cyndaron\Routing\Controller
         return $this->pageRenderer->renderResponse(new SimplePage('Uitgeschreven', 'U bent uitgeschreven voor de nieuwsbrief.'));
     }
 
-    protected function confirm(QueryBits $queryBits): Response
+    #[RouteAttribute('confirm', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function confirm(QueryBits $queryBits): Response
     {
         $email = base64_decode($queryBits->getString(2), true);
         if ($email === false)
@@ -227,7 +218,8 @@ class Controller extends \Cyndaron\Routing\Controller
         return $this->pageRenderer->renderResponse(new SimplePage('Inschrijven', 'U bent ingeschreven voor de nieuwsbrief.'));
     }
 
-    protected function unsubscribeAdmin(RequestParameters $post): Response
+    #[RouteAttribute('unsubscribe', RequestMethod::POST, UserLevel::ADMIN)]
+    public function unsubscribeAdmin(RequestParameters $post): Response
     {
         $email = $post->getEmail('email');
         $changes = AddressHelper::unsubscribe($email);
@@ -246,7 +238,8 @@ class Controller extends \Cyndaron\Routing\Controller
         return new RedirectResponse('/newsletter/viewSubscribers#unsubscribe');
     }
 
-    protected function delete(RequestParameters $post, PDO $pdo): Response
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN)]
+    public function delete(RequestParameters $post, PDO $pdo): Response
     {
         $email = $post->getEmail('email');
         $changes = AddressHelper::delete($pdo, $email);
