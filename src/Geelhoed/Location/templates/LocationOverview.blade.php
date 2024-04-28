@@ -8,9 +8,9 @@
     @endif
 
     @php $lastCity = '' @endphp
-    @php /** @var \Cyndaron\Geelhoed\Location\Location[] $locations*/ @endphp
+    @php /** @var \Cyndaron\Location\Location[] $locations*/ @endphp
     @foreach ($locations as $location)
-        @php $hoursPerWeekday = $location->getHoursSortedByWeekday() @endphp
+        @php $hoursPerWeekday = (new \Cyndaron\Geelhoed\Location\Location($location))->getHoursSortedByWeekday() @endphp
         @if (count($hoursPerWeekday) === 0) @continue @endif
 
         <div class="card location-card"

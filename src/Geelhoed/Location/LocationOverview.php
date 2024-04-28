@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Location;
 
+use Cyndaron\Location\Location;
 use Cyndaron\Page\Page;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;

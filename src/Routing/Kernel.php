@@ -180,6 +180,7 @@ final class Kernel
             \Cyndaron\FriendlyUrl\Module::class,
             \Cyndaron\Mailform\Module::class,
             \Cyndaron\RichLink\Module::class,
+            \Cyndaron\Location\Module::class,
         ];
 
         if (defined('MODULES'))

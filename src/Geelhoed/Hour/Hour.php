@@ -6,7 +6,7 @@ namespace Cyndaron\Geelhoed\Hour;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Department;
-use Cyndaron\Geelhoed\Location\Location;
+use Cyndaron\Location\Location;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\View\Template\ViewHelpers;
 use function assert;
@@ -32,9 +32,9 @@ final class Hour extends Model
 
     public function getLocation(): Location
     {
-        $ret = Location::fetchById($this->locationId);
-        assert($ret !== null);
-        return $ret;
+        $loc = Location::fetchById($this->locationId);
+        assert($loc !== null);
+        return $loc;
     }
 
     public function getSport(): Sport

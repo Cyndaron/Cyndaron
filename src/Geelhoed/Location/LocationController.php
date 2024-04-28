@@ -2,6 +2,7 @@
 namespace Cyndaron\Geelhoed\Location;
 
 use Cyndaron\Geelhoed\Sport\Sport;
+use Cyndaron\Location\Location;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;

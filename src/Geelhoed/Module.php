@@ -8,7 +8,6 @@ use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Contest\ContestController;
 use Cyndaron\Geelhoed\Contest\ContestDate;
 use Cyndaron\Geelhoed\Hour\HourController;
-use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Location\LocationController;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberController;
@@ -36,11 +35,6 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
     public function dataTypes(): array
     {
         return [
-            'location' => Datatype::fromArray([
-                'singular' => 'Locatie',
-                'plural' => 'Locaties',
-                'pageManagerTab' => PageManagerTabs::class . '::locationsTab',
-            ]),
             'member' => Datatype::fromArray([
                 'singular' => 'Lid',
                 'plural' => 'Leden',
@@ -98,16 +92,6 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
         if (array_key_exists($link, $staticRoutes))
         {
             return $staticRoutes[$link];
-        }
-
-        if ($linkParts[0] === 'location' && $linkParts[1] === 'view')
-        {
-            $location = Location::fetchById((int)$linkParts[2]);
-            if ($location === null)
-            {
-                return null;
-            }
-            return $location->getName();
         }
 
         return null;

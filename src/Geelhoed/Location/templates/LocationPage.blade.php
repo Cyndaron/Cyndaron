@@ -1,6 +1,7 @@
 @extends ('Index')
 
 @section ('contents')
+    @php /** @var \Cyndaron\Location\Location $location */ @endphp
     @if (!empty($locNotification))
         <div class="alert alert-info">
             {{ $locNotification }}
@@ -16,7 +17,7 @@
 
     <h3>Lessen</h3>
 
-    @foreach ($location->getHoursSortedByWeekday() as $weekday => $hours)
+    @foreach ((new \Cyndaron\Geelhoed\Location\Location($location))->getHoursSortedByWeekday() as $weekday => $hours)
         <h4>{{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($weekday) }}</h4>
         <table class="table table-striped table-bordered">
             <thead>

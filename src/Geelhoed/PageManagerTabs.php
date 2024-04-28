@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed;
 
 use Cyndaron\Geelhoed\Contest\Contest;
-use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\User\UserSession;
@@ -12,17 +11,10 @@ use Cyndaron\View\Template\TemplateRenderer;
 
 final class PageManagerTabs
 {
-    public static function locationsTab(TemplateRenderer $templateRenderer): string
-    {
-        $locations = Location::fetchAll();
-        $ret = $templateRenderer->render('Geelhoed/Location/PageManagerTab', ['locations' => $locations]);
-        return $ret;
-    }
-
     public static function membersTab(TemplateRenderer $templateRenderer): string
     {
         return $templateRenderer->render('Geelhoed/Member/PageManagerTab', [
-            'locations' => \Cyndaron\Geelhoed\Location\Location::fetchAll(afterWhere: 'ORDER BY city, street'),
+            'locations' => \Cyndaron\Location\Location::fetchAll(afterWhere: 'ORDER BY city, street'),
         ]);
     }
 
