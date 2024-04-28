@@ -523,6 +523,44 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         return new JsonResponse();
     }
 
+    private function setOrderAsPaidAndSendMail(Order $order, UrlInfo $urlInfo): bool
+    {
+        $order->isPaid = true;
+        $order->save();
+        $concert = $order->getConcert();
+        $organisation = Setting::get(BuiltinSetting::ORGANISATION);
+
+        $text = "Hartelijk dank voor uw bestelling bij {$organisation}. Wij hebben uw betaling in goede orde ontvangen.\n";
+        $ticketDelivery = $concert->getDelivery();
+        if ($ticketDelivery === TicketDelivery::DIGITAL)
+        {
+            $url = $order->getLinkToTickets($urlInfo->schemeAndHost);
+            $text .= "U kunt uw kaarten hier downloaden: {$url}\n\n";
+            $text .= "Wij verzoeken u het ticket te downloaden vóórdat u de kerk binnengaat en het originele ticket te tonen. ";
+            $text .= "Screenshots van de tickets kunnen wij niet goed scannen.\nDit om wachttijd te voorkomen.";
+        }
+        elseif ($order->delivery || ($concert->forcedDelivery && !$order->deliveryByMember))
+        {
+            $text .= 'Uw kaarten zullen zo spoedig mogelijk worden opgestuurd.';
+        }
+        elseif ($concert->forcedDelivery && $order->deliveryByMember)
+        {
+            $text .= 'Uw kaarten zullen worden meegegeven aan ' . $order->deliveryMemberName . '.';
+        }
+        else
+        {
+            $text .= 'Uw kaarten zullen op de avond van het concert voor u klaarliggen bij de kassa.';
+        }
+
+        $mail = UtilMail::createMailWithDefaults(
+            $urlInfo->domain,
+            new Address($order->email),
+            'Betalingsbevestiging',
+            $text
+        );
+        return $mail->send();
+    }
+
     #[RouteAttribute('setIsPaid', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function setIsPaid(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
     {
@@ -533,7 +571,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         }
         /** @var Order $order */
         $order = Order::fetchById($id);
-        $order->setIsPaid($urlInfo);
+        $this->setOrderAsPaidAndSendMail($order, $urlInfo);
 
         return new JsonResponse();
     }
@@ -646,7 +684,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         {
             if ($paidStatus)
             {
-                $order->setIsPaid($urlInfo);
+                $this->setOrderAsPaidAndSendMail($order, $urlInfo);
             }
             else
             {

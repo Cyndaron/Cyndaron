@@ -5,16 +5,10 @@ namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
-use Cyndaron\Request\UrlInfo;
 use Cyndaron\Ticketsale\Concert\Concert;
-use Cyndaron\Ticketsale\Concert\TicketDelivery;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
-use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Error\IncompleteData;
-use Cyndaron\Util\Mail as UtilMail;
-use Cyndaron\Util\Setting;
 use Safe\Exceptions\JsonException;
-use Symfony\Component\Mime\Address;
 use function assert;
 use function is_array;
 use function Safe\json_decode;
@@ -48,53 +42,6 @@ final class Order extends Model
 
     /** @var OrderTicketTypes[]|null  */
     private array|null $cachedTicketTypes = null;
-
-    public function setIsPaid(UrlInfo $urlInfo): bool
-    {
-        if ($this->id === null)
-        {
-            throw new IncompleteData('ID is null!');
-        }
-
-        /** @var Concert|null $concert */
-        $concert = Concert::fetchById($this->concertId);
-        assert($concert !== null);
-
-        $this->isPaid = true;
-        $this->save();
-
-        $organisation = Setting::get(BuiltinSetting::ORGANISATION);
-
-        $text = "Hartelijk dank voor uw bestelling bij {$organisation}. Wij hebben uw betaling in goede orde ontvangen.\n";
-        $ticketDelivery = $concert->getDelivery();
-        if ($ticketDelivery === TicketDelivery::DIGITAL)
-        {
-            $url = $this->getLinkToTickets($urlInfo->schemeAndHost);
-            $text .= "U kunt uw kaarten hier downloaden: {$url}\n\n";
-            $text .= "Wij verzoeken u het ticket te downloaden vóórdat u de kerk binnengaat en het originele ticket te tonen. ";
-            $text .= "Screenshots van de tickets kunnen wij niet goed scannen.\nDit om wachttijd te voorkomen.";
-        }
-        elseif ($this->delivery || ($concert->forcedDelivery && !$this->deliveryByMember))
-        {
-            $text .= 'Uw kaarten zullen zo spoedig mogelijk worden opgestuurd.';
-        }
-        elseif ($concert->forcedDelivery && $this->deliveryByMember)
-        {
-            $text .= 'Uw kaarten zullen worden meegegeven aan ' . $this->deliveryMemberName . '.';
-        }
-        else
-        {
-            $text .= 'Uw kaarten zullen op de avond van het concert voor u klaarliggen bij de kassa.';
-        }
-
-        $mail = UtilMail::createMailWithDefaults(
-            $urlInfo->domain,
-            new Address($this->email),
-            'Betalingsbevestiging',
-            $text
-        );
-        return $mail->send();
-    }
 
     public function setIsSent(): bool
     {
