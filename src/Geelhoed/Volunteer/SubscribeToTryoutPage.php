@@ -13,7 +13,6 @@ final class SubscribeToTryoutPage extends Page
 {
     public function __construct(Tryout $event)
     {
-        $json = $event->getJsonData();
         $title = 'Inschrijven voor tryout-toernooi ' . ViewHelpers::filterDutchDate($event->start);
         $numRounds = $event->getTryoutNumRounds();
         $status = $event->getTryoutStatus();

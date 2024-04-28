@@ -179,7 +179,7 @@ final class Order extends Model
             assert(is_array($decoded));
             return $decoded;
         }
-        catch (JsonException $e)
+        catch (JsonException)
         {
             return [];
         }

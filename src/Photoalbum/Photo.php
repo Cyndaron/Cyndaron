@@ -155,7 +155,7 @@ final class Photo
                 return '';
             }
         }
-        catch (PcreException $e)
+        catch (PcreException)
         {
             return '';
         }

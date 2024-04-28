@@ -57,7 +57,7 @@ final class OverviewPage extends Page
             $introduction = preg_replace('/<font(.*?)>/', '', $introduction);
             $introduction = preg_replace('/<\/font(.*?)>/', '', $introduction);
         }
-        catch (ErrorException $e)
+        catch (ErrorException)
         {
         }
 
@@ -76,7 +76,7 @@ final class OverviewPage extends Page
         {
             $dir = @opendir(self::PATH);
         }
-        catch (DirException $e)
+        catch (DirException)
         {
             return [];
         }

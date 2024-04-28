@@ -39,7 +39,7 @@ final class Skin
             {
                 $img_png = imagecreatefrompng($this->url);
             }
-            catch (ImageException $e)
+            catch (ImageException)
             {
                 $img_png = imagecreatefrompng(self::FALLBACK_IMAGE);
             }

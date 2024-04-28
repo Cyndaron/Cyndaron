@@ -840,7 +840,7 @@ final class ContestController extends Controller
             }
             $user->addRight(Contest::RIGHT_PARENT);
         }
-        catch (\PDOException $e)
+        catch (\PDOException)
         {
             return new JsonResponse(['error' => 'Kon ouderaccount niet opslaan, databasefout. Controleer of het e-mailadres uniek is.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }

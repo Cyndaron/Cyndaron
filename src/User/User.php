@@ -99,7 +99,7 @@ Uw nieuwe wachtwoord is: %s';
         {
             $buffer = file_get_contents($tmpName);
         }
-        catch (FilesystemException $e)
+        catch (FilesystemException)
         {
             throw new Exception('Kon de inhoud van de avatar niet lezen!');
         }
@@ -123,7 +123,7 @@ Uw nieuwe wachtwoord is: %s';
                     throw new Exception('Ongeldig bestandstype');
             }
         }
-        catch (ImageException $e)
+        catch (ImageException)
         {
             throw new Exception('Kon de bestandsinhoud niet verwerken!');
         }

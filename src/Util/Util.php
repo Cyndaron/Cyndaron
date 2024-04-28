@@ -88,7 +88,7 @@ final class Util
             mkdir($dir, $mask, true);
             umask($oldUmask);
         }
-        catch (FilesystemException $e)
+        catch (FilesystemException)
         {
             return false;
         }
@@ -149,7 +149,7 @@ final class Util
         {
             @unlink($filename);
         }
-        catch (FilesystemException $e)
+        catch (FilesystemException)
         {
             return false;
         }

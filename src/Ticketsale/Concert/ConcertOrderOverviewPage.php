@@ -19,7 +19,7 @@ final class ConcertOrderOverviewPage extends Page
     public function __construct(Concert $concert)
     {
         $ticketTypes = DBConnection::getPDO()->doQueryAndFetchAll(self::TICKET_TYPES_QUERY, [$concert->id]);
-        $ticketTypesByOrder = $this->getTicketTypesPerOrder($concert);
+        $ticketTypesByOrder = $this->getTicketTypesPerOrder();
         $orders = Order::fetchByConcert($concert);
         $totals = [];
         foreach ($ticketTypesByOrder as $ticketTypesForOneOrder)
@@ -47,10 +47,9 @@ final class ConcertOrderOverviewPage extends Page
     }
 
     /**
-     * @param Concert $concert
      * @return array<int, array<int, int>>
      */
-    private function getTicketTypesPerOrder(Concert $concert): array
+    private function getTicketTypesPerOrder(): array
     {
         $boughtTicketTypes = DBConnection::getPDO()->doQueryAndFetchAll(self::BOUGHT_TICKET_TYPES_QUERY) ?: [];
         $ticketTypesByOrder = [];

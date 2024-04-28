@@ -48,11 +48,11 @@ final class Server extends Model
         {
             $socket = @stream_socket_client(sprintf('tcp://%s:%u', $this->hostname, $this->port), $errno, $errstr, 1);
         }
-        catch (StreamException $e)
+        catch (StreamException)
         {
             return false;
         }
-        catch (ErrorException $e)
+        catch (ErrorException)
         {
             return false;
         }
@@ -63,7 +63,7 @@ final class Server extends Model
             $data = fread($socket, 1024);
             fclose($socket);
         }
-        catch (FilesystemException $e)
+        catch (FilesystemException)
         {
             return false;
         }

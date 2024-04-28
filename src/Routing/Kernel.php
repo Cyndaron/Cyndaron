@@ -111,10 +111,7 @@ final class Kernel
 
     private function route(DependencyInjectionContainer $dic): Response
     {
-        $pdo = $dic->get(PDO::class);
         $request = $dic->get(Request::class);
-        $registry = $dic->get(ModuleRegistry::class);
-        $templateRenderer = $dic->get(TemplateRenderer::class);
         $pageRenderer = $dic->get(PageRenderer::class);
 
         try
