@@ -194,8 +194,9 @@ class Page implements Pageable
             new LinkWithIcon('/menu-editor', 'Menu bewerken', 'menu-hamburger'),
             new LinkWithIcon('/user/manager', 'Gebruikersbeheer', 'user'),
         ];
+        $profile = UserSession::getProfile();
         $userMenuItems = [
-            new LinkWithIcon('', $_SESSION['username'] ?? '', 'user'),
+            new LinkWithIcon('', $profile ? $profile->username : '', 'user'),
         ];
         foreach ($userMenu as $extraItem)
         {

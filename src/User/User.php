@@ -212,12 +212,7 @@ Uw nieuwe wachtwoord is: %s';
             throw new IncorrectCredentials('Verkeerd wachtwoord.');
         }
 
-        $_SESSION['userId'] = $user->id;
         $_SESSION['profile'] = $user;
-        $_SESSION['username'] = $user->username;
-        $_SESSION['email'] = $user->email;
-        $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
-        $_SESSION['level'] = $user->level;
 
         UserSession::addNotification('U bent ingelogd.');
 

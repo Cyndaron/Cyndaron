@@ -12,12 +12,12 @@ final class UserSession
 {
     public static function isAdmin(): bool
     {
-        return isset($_SESSION['username']) && $_SESSION['level'] >= 4;
+        return self::getLevel() === UserLevel::ADMIN;
     }
 
     public static function isLoggedIn(): bool
     {
-        return (isset($_SESSION['username']) && $_SESSION['level'] > 0);
+        return self::getLevel() > 0;
     }
 
     public static function addNotification(string $content): void
@@ -38,7 +38,13 @@ final class UserSession
 
     public static function getLevel(): int
     {
-        return isset($_SESSION['level']) ? (int)$_SESSION['level'] : UserLevel::ANONYMOUS;
+        $profile = self::getProfile();
+        if ($profile === null)
+        {
+            return UserLevel::ANONYMOUS;
+        }
+
+        return $profile->level;
     }
 
     public static function hasSufficientReadLevel(): bool
