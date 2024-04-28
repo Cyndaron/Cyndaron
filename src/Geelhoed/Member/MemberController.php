@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron\Geelhoed\Member;
 
-use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;

@@ -6,7 +6,6 @@ namespace Cyndaron\View\Renderer;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Module\TextPostProcessor;
 use Cyndaron\Util\DependencyInjectionContainer;
-use Cyndaron\View\Template\TemplateRenderer;
 
 final class TextRenderer
 {

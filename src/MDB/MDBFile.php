@@ -12,7 +12,6 @@ use function fopen;
 use function shell_exec;
 use function tempnam;
 use function unlink;
-use function var_dump;
 use function explode;
 use function sprintf;
 use function fclose;

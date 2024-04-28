@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron\Mailform;
 
-use Cyndaron\Mail\Mail;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\View\Template\TemplateRenderer;

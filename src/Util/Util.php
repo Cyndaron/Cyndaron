@@ -9,8 +9,6 @@ namespace Cyndaron\Util;
 use RuntimeException;
 use Safe\DateTimeImmutable;
 use Safe\Exceptions\FilesystemException;
-use Symfony\Component\Mime\Address;
-use function html_entity_decode;
 use function Safe\preg_replace;
 use function Safe\date;
 use function Safe\mkdir;

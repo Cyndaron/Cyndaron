@@ -2,7 +2,6 @@
 namespace Cyndaron\Photoalbum;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;

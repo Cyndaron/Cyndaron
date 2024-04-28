@@ -5,7 +5,6 @@ use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Util\FileCache;
 use function array_key_exists;
-use function in_array;
 use function assert;
 
 final class MemberGraduation extends Model

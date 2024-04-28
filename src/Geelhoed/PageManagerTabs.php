@@ -7,7 +7,6 @@ use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\Geelhoed\Tryout\Tryout;
-use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
 use Cyndaron\View\Template\TemplateRenderer;
 

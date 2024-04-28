@@ -21,7 +21,6 @@ use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Request\QueryBits;
-use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
@@ -30,7 +29,6 @@ use Cyndaron\Util\Mail;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Renderer\TextRenderer;
-use Cyndaron\View\Template\TemplateFinder;
 use Cyndaron\View\Template\TemplateRenderer;
 use Cyndaron\View\Template\TemplateRendererFactory;
 use PDO;
@@ -46,7 +44,6 @@ use function Safe\error_log;
 use function session_start;
 use function set_exception_handler;
 use function str_starts_with;
-use function var_dump;
 
 final class Kernel
 {

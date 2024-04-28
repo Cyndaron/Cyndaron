@@ -15,15 +15,12 @@ use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\Module\PagePreProcessor;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\Module\UserMenuItem;
-use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
-use Cyndaron\Util\Link;
 use Cyndaron\Util\LinkWithIcon;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Renderer\TextRenderer;
 use Cyndaron\View\Template\TemplateRenderer;
-use Cyndaron\View\Template\ViewHelpers;
 use function array_key_exists;
 use function array_merge;
 use function assert;
@@ -39,7 +36,6 @@ use function str_replace;
 use function strrchr;
 use function strtoupper;
 use function substr;
-use function var_dump;
 
 class Page implements Pageable
 {

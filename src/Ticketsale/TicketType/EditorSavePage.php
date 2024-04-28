@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Ticketsale\TicketType;
 
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage

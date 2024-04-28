@@ -3,11 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Category;
 
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Menu\MenuItem;
-use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request\QueryBits;
@@ -22,7 +20,6 @@ use Cyndaron\User\UserLevel;
 use Cyndaron\View\Renderer\TextRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use function assert;
 use function explode;
 use function get_class;
 use function strpos;

@@ -6,9 +6,7 @@ namespace Cyndaron\Geelhoed\Volunteer;
 use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Geelhoed\Tryout\TryoutHelpType;
 use Cyndaron\Page\Page;
-use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
-use Cyndaron\Util\Util;
 use Cyndaron\View\Template\ViewHelpers;
 
 final class SubscribeToTryoutPage extends Page

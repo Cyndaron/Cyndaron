@@ -7,7 +7,6 @@ use Cyndaron\Category\Category;
 use Cyndaron\Category\ViewMode;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\FriendlyUrl\FriendlyUrl;
-use Cyndaron\Mail\Mail;
 use Cyndaron\MDB\MDBFile;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request\QueryBits;

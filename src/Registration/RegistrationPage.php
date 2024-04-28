@@ -5,7 +5,6 @@ use Cyndaron\Page\Page;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\KnownShortCodes;
 use Cyndaron\Util\Setting;
-use Phan\Library\Set;
 use function file_exists;
 use function Safe\date;
 

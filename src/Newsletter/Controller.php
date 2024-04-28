@@ -13,7 +13,6 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
-use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;

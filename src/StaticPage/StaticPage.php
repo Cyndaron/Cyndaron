@@ -4,7 +4,6 @@ namespace Cyndaron\StaticPage;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page\Page;
 use Cyndaron\View\Renderer\TextRenderer;
-use Cyndaron\View\Template\ViewHelpers;
 
 final class StaticPage extends Page
 {

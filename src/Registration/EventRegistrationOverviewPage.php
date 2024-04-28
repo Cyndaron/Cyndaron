@@ -3,8 +3,6 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page\Page;
-use Cyndaron\Util\BuiltinSetting;
-use Cyndaron\Util\Setting;
 use function array_key_exists;
 
 final class EventRegistrationOverviewPage extends Page

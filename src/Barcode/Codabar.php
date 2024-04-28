@@ -3,10 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Barcode;
 
-use function array_flip;
-use function array_keys;
 use function count;
-use function explode;
 use function strlen;
 use function strtoupper;
 use function substr;

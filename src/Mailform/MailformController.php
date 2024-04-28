@@ -12,13 +12,11 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Error\IncompleteData;
-use Cyndaron\Mail\Mail;
 use Cyndaron\Util\Mail as UtilMail;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
-use function in_array;
 use function strcasecmp;
 use function strtr;
 

@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron\View\Template;
 
-use Cyndaron\View\Renderer\TextRenderer;
 use DateTimeInterface;
 use Safe\Exceptions\ArrayException;
 use Safe\Exceptions\DatetimeException;

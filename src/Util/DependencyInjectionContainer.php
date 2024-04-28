@@ -12,9 +12,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use RuntimeException;
-use function assert;
 use function get_class;
-use function var_dump;
 
 final class DependencyInjectionContainer
 {

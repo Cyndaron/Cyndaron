@@ -12,7 +12,6 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
-use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\DependencyInjectionContainer;

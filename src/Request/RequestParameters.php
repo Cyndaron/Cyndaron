@@ -1,14 +1,12 @@
 <?php
 namespace Cyndaron\Request;
 
-use Exception;
 use Safe\Exceptions\PcreException;
 use function Safe\mb_convert_encoding;
 use function Safe\preg_replace;
 use function array_keys;
 use function is_array;
 use function is_string;
-use function is_scalar;
 use function array_key_exists;
 use function str_replace;
 use function strtoupper;

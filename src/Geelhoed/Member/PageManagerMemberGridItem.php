@@ -5,7 +5,6 @@ namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\View\Template\ViewHelpers;
-use function array_keys;
 use function array_values;
 use function assert;
 use function str_replace;

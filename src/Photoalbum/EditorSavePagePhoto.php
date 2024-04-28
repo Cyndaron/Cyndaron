@@ -3,7 +3,6 @@ namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
 
 final class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage

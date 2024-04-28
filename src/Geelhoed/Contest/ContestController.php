@@ -6,7 +6,6 @@ use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\Page\Page;
-use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Payment\Currency;
 use Cyndaron\Request\QueryBits;

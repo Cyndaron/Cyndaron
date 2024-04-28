@@ -5,7 +5,6 @@ namespace Cyndaron\Mailform;
 
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
 use function assert;
 

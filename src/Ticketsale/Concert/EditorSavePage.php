@@ -6,7 +6,6 @@ namespace Cyndaron\Ticketsale\Concert;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Ticketsale\Util;
-use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
 use function assert;
 

@@ -7,7 +7,6 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
-use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\Util;

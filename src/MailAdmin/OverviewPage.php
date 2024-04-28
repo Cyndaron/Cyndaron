@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\MailAdmin;
 
 use Cyndaron\Page\Page;
-use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
 use PDO;
 use function assert;

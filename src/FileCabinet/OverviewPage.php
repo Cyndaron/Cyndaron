@@ -2,7 +2,6 @@
 namespace Cyndaron\FileCabinet;
 
 use Cyndaron\Page\Page;
-use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;

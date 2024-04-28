@@ -18,7 +18,6 @@ use Cyndaron\Ticketsale\Concert\TicketDelivery;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
 use Cyndaron\Ticketsale\TicketType\TicketType;
 use Cyndaron\Ticketsale\Util;
-use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
