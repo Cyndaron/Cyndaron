@@ -5,6 +5,7 @@ namespace Cyndaron\Geelhoed\Tryout;
 
 use Cyndaron\Calendar\CalendarAppointment;
 use Cyndaron\DBAL\Model;
+use Cyndaron\Location\Location;
 use DateTime;
 use function array_fill;
 use function assert;
@@ -15,9 +16,10 @@ use function Safe\json_decode;
 final class Tryout extends Model implements CalendarAppointment
 {
     public const TABLE = 'geelhoed_volunteer_tot';
-    public const TABLE_FIELDS = ['name', 'start', 'end', 'data', 'photoalbumLink'];
+    public const TABLE_FIELDS = ['name', 'locationId', 'start', 'end', 'data', 'photoalbumLink'];
 
     public string $name = '';
+    public int|null $locationId = null;
     public DateTime $start;
     public DateTime $end;
     public string $data;
@@ -139,7 +141,8 @@ final class Tryout extends Model implements CalendarAppointment
 
     public function getLocation(): string
     {
-        return '';
+        $object = $this->getLocationObject();
+        return $object ? $object->getName() : '';
     }
 
     public function getStart(): \DateTimeInterface
@@ -155,5 +158,15 @@ final class Tryout extends Model implements CalendarAppointment
     public function getUrl(): string|null
     {
         return null;
+    }
+
+    public function getLocationObject(): Location|null
+    {
+        if ($this->locationId === null)
+        {
+            return null;
+        }
+
+        return Location::fetchById($this->locationId);
     }
 }

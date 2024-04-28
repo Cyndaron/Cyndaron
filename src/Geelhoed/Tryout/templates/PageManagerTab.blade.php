@@ -6,6 +6,7 @@
         <tr>
             <th>ID</th>
             <th>Naam</th>
+            <th>Locatie</th>
             <th>Extra</th>
             <th>Acties</th>
         </tr>
@@ -16,6 +17,12 @@
             <tr>
                 <td>{{ $tryout->id }}</td>
                 <td>{{ $tryout->name }}</td>
+                <td>
+                    @php $location = $tryout->getLocationObject() @endphp
+                    @if ($location !== null)
+                        <a href="/locaties/details/{{ $location->id }}">{{ $location->getName() }}</a>
+                    @endif
+                </td>
                 <td>
                     @if ($tryout->photoalbumLink !== '')
                         <a href="{{ $tryout->photoalbumLink }}">Fotoalbums</a>
