@@ -113,7 +113,7 @@ class Page implements Pageable
         $this->templateVars['isAdmin'] = UserSession::isAdmin();
         $this->templateVars['websiteName'] = $this->websiteName;
         $this->templateVars['title'] = $this->title;
-        $this->templateVars['referrer'] = $_SESSION['referrer'] ?? '';
+        // TODO: remove or fill
         $this->templateVars['previewImage'] = '';
         if ($this->model instanceof ModelWithCategory)
         {
