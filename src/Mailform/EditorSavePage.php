@@ -6,6 +6,7 @@ namespace Cyndaron\Mailform;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use function assert;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
@@ -30,11 +31,11 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 
         if ($mailform->save())
         {
-            User::addNotification('Mailformulier bewerkt.');
+            UserSession::addNotification('Mailformulier bewerkt.');
         }
         else
         {
-            User::addNotification('Opslaan mailformulier mislukt');
+            UserSession::addNotification('Opslaan mailformulier mislukt');
         }
 
         $this->returnUrl = '/pagemanager/mailform';

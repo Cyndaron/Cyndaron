@@ -11,7 +11,7 @@
         <form method="post" action="/photoalbum/addPhoto/{{ $model->id }}" enctype="multipart/form-data" id="upload-photo">
             <label for="newFile">Foto toevoegen:</label>
             <input type="file" id="newFile" name="newFiles[]" multiple required>
-            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('photoalbum', 'addPhoto') }}">
+            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\UserSession::getCSRFToken('photoalbum', 'addPhoto') }}">
             <input id="add-photo-submit" class="btn btn-primary" type="submit" value="Uploaden">
             <span id="upload-progress"></span>
         </form>
@@ -30,7 +30,7 @@
         @endif
 
         <div class="fotoalbum">
-            @php $deleteToken = \Cyndaron\User\User::getCSRFToken('photoalbum', 'deletePhoto'); @endphp
+            @php $deleteToken = \Cyndaron\User\UserSession::getCSRFToken('photoalbum', 'deletePhoto'); @endphp
             @php /** @var \Cyndaron\Photoalbum\Photo $photo */@endphp
             @foreach ($photos as $photo)
             <figure class="fotobadge">

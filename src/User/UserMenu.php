@@ -18,7 +18,7 @@ final class UserMenu
         return array_filter($menuItems, static function(UserMenuItem $userMenuItem) use ($currentUser)
         {
             $level = $userMenuItem->level;
-            if (User::getLevel() >= $level)
+            if (UserSession::getLevel() >= $level)
             {
                 return true;
             }

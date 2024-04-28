@@ -4,6 +4,7 @@ namespace Cyndaron\Category;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use Symfony\Component\HttpFoundation\Request;
 use function assert;
 
@@ -31,7 +32,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $category->save();
         $this->saveCategories($category, $this->post);
 
-        User::addNotification('Categorie bewerkt.');
+        UserSession::addNotification('Categorie bewerkt.');
 
         assert($category->id !== null);
         $this->returnUrl = '/category/' . $category->id;

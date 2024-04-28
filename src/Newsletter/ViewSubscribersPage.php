@@ -10,6 +10,7 @@ namespace Cyndaron\Newsletter;
 
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 
 class ViewSubscribersPage extends Page
 {
@@ -19,8 +20,8 @@ class ViewSubscribersPage extends Page
 
         $this->addTemplateVars([
             'subscribers' => Subscriber::fetchAll([], [], 'ORDER BY name'),
-            'csrfTokenUnsubscribe' => User::getCSRFToken('newsletter', 'unsubscribe'),
-            'csrfTokenDelete' => User::getCSRFToken('newsletter', 'delete'),
+            'csrfTokenUnsubscribe' => UserSession::getCSRFToken('newsletter', 'unsubscribe'),
+            'csrfTokenDelete' => UserSession::getCSRFToken('newsletter', 'delete'),
         ]);
     }
 }

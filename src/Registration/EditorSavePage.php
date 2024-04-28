@@ -6,6 +6,7 @@ namespace Cyndaron\Registration;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use function assert;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
@@ -38,11 +39,11 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 
         if ($event->save())
         {
-            User::addNotification('Evenement opgeslagen.');
+            UserSession::addNotification('Evenement opgeslagen.');
         }
         else
         {
-            User::addNotification('Fout bij opslaan evenement');
+            UserSession::addNotification('Fout bij opslaan evenement');
         }
 
         assert($event->id !== null);

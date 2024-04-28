@@ -22,7 +22,7 @@
             <td>
                 <div class="btn-group">
                     <a class="btn btn-outline-cyndaron btn-sm" href="/editor/mailform/{{ $mailform->id }}"><span class="glyphicon glyphicon-pencil" title="Bewerk dit mailformulier"></span></a>
-                    <button class="btn btn-danger btn-sm pm-delete" data-type="mailform" data-id="{{ $mailform->id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('mailform', 'delete') }}"><span class="glyphicon glyphicon-trash" title="Verwijder dit mailformulier"></span></button>
+                    <button class="btn btn-danger btn-sm pm-delete" data-type="mailform" data-id="{{ $mailform->id }}" data-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('mailform', 'delete') }}"><span class="glyphicon glyphicon-trash" title="Verwijder dit mailformulier"></span></button>
                 </div>
 
             </td>

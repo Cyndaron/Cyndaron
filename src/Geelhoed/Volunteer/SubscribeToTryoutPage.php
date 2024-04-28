@@ -7,6 +7,7 @@ use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Geelhoed\Tryout\TryoutHelpType;
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Template\ViewHelpers;
 
@@ -26,7 +27,7 @@ final class SubscribeToTryoutPage extends Page
             'helpTypes' => TryoutHelpType::getFriendlyNames(),
             'fullTypes' => $status->fullTypes,
             'fullRounds' => $status->fullRounds,
-            'csrfToken' => User::getCSRFToken('vrijwilligers', 'inschrijven-voor-tryout'),
+            'csrfToken' => UserSession::getCSRFToken('vrijwilligers', 'inschrijven-voor-tryout'),
         ]);
     }
 }

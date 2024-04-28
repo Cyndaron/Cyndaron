@@ -52,7 +52,7 @@ final class UserController extends Controller
     #[RouteAttribute('logout', RequestMethod::GET, UserLevel::LOGGED_IN)]
     public function logout(): Response
     {
-        User::logout();
+        UserSession::logout();
         return new RedirectResponse('/', Response::HTTP_FOUND, Kernel::HEADERS_DO_NOT_CACHE);
     }
 
@@ -216,14 +216,14 @@ final class UserController extends Controller
         $oldPassword = $post->getUnfilteredString('oldPassword');
         if (!$profile->checkPassword($oldPassword))
         {
-            User::addNotification('Oude wachtwoord klopt niet!');
+            UserSession::addNotification('Oude wachtwoord klopt niet!');
             return new RedirectResponse('/user/changePassword');
         }
 
         $newPassword = $post->getUnfilteredString('newPassword');
         if (strlen($newPassword) < 8)
         {
-            User::addNotification('Nieuw wachtwoord moet langer zijn dan 8 tekens!');
+            UserSession::addNotification('Nieuw wachtwoord moet langer zijn dan 8 tekens!');
             return new RedirectResponse('/user/changePassword');
         }
 
@@ -231,7 +231,7 @@ final class UserController extends Controller
 
         if ($newPassword !== $newPasswordRepeat)
         {
-            User::addNotification('Wachtwoorden komen niet overeen!');
+            UserSession::addNotification('Wachtwoorden komen niet overeen!');
             return new RedirectResponse('/user/changePassword');
         }
 
@@ -241,7 +241,7 @@ final class UserController extends Controller
             return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Kon het nieuwe wachtwoord niet opslaan.'), status:  Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        User::addNotification('Wachtwoord gewijzigd.');
+        UserSession::addNotification('Wachtwoord gewijzigd.');
         return new RedirectResponse('/');
     }
 }

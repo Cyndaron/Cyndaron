@@ -10,8 +10,8 @@
     @endcomponent
 
     <table id="gcsm-table" class="table table-striped table-bordered pm-table"
-           data-csrf-token-delete="{{ \Cyndaron\User\User::getCSRFToken('contest', 'removeSubscription') }}"
-           data-csrf-token-update-payment-status="{{ Cyndaron\User\User::getCSRFToken('contest', 'updatePaymentStatus') }}"
+           data-csrf-token-delete="{{ \Cyndaron\User\UserSession::getCSRFToken('contest', 'removeSubscription') }}"
+           data-csrf-token-update-payment-status="{{ Cyndaron\User\UserSession::getCSRFToken('contest', 'updatePaymentStatus') }}"
     >
         <thead>
             <tr>

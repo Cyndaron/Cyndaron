@@ -4,6 +4,7 @@ namespace Cyndaron\Geelhoed\Contest;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use function sprintf;
 
 final class ContestViewPage extends Page
@@ -16,14 +17,14 @@ final class ContestViewPage extends Page
         parent::__construct(sprintf('Wedstrijd: %s', $contest->name));
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $this->addTemplateVars([
-            'addDateCsrfToken' => User::getCSRFToken('contest', 'addDate'),
+            'addDateCsrfToken' => UserSession::getCSRFToken('contest', 'addDate'),
             'allSubscribed' => $this->areAllSubscribed($contest, $controlledMembers),
             'canManage' => $canManage,
-            'cancelSubscriptionCsrfToken' => User::getCSRFToken('contest', 'cancelSubscription'),
+            'cancelSubscriptionCsrfToken' => UserSession::getCSRFToken('contest', 'cancelSubscription'),
             'contest' => $contest,
             'controlledMembers' => $controlledMembers,
-            'deleteCsrfToken' => User::getCSRFToken('contest', 'deleteAttachment'),
-            'deleteDateCsrfToken' => User::getCSRFToken('contest', 'deleteDate'),
+            'deleteCsrfToken' => UserSession::getCSRFToken('contest', 'deleteAttachment'),
+            'deleteDateCsrfToken' => UserSession::getCSRFToken('contest', 'deleteDate'),
             'due' => $currentUser !== null ? $this->getTotalDue($currentUser) : 0.00,
             'mayViewOtherContestants' => $mayViewOtherContestants,
             'profile' => $currentUser,

@@ -22,7 +22,7 @@
                     <label class="btn btn-outline-cyndaron" for="newFile">Bijlage toevoegen</label>
                     <input class="d-none" type="file" id="newFile" name="newFile" required>
                     <input type="hidden" name="csrfToken"
-                           value="{{ \Cyndaron\User\User::getCSRFToken('contest', 'addAttachment') }}">
+                           value="{{ \Cyndaron\User\UserSession::getCSRFToken('contest', 'addAttachment') }}">
                     <input class="btn btn-primary" type="submit" value="Uploaden">
                 </form>
             @endslot

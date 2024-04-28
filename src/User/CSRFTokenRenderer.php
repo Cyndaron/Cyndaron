@@ -12,7 +12,7 @@ final class CSRFTokenRenderer implements TextPostProcessor
     {
         return preg_replace_callback('/%csrfToken\|([A-Za-z0-9_\-]+)\|([A-Za-z0-9_\-]+)%/', static function($matches)
         {
-            return User::getCSRFToken($matches[1], $matches[2]);
+            return UserSession::getCSRFToken($matches[1], $matches[2]);
         }, $text) ?? $text;
     }
 }

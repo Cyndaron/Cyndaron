@@ -4,6 +4,7 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 
 final class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
 {
@@ -22,7 +23,7 @@ final class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
         $caption = $this->imageExtractor->process($this->post->getHTML('artikel'));
 
         PhotoalbumCaption::create($hash, $caption);
-        User::addNotification('Bijschrift bewerkt.');
+        UserSession::addNotification('Bijschrift bewerkt.');
         $this->returnUrl = '/photoalbum/' . $photoalbumId;
 
         return -1;

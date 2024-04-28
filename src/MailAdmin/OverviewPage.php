@@ -5,6 +5,7 @@ namespace Cyndaron\MailAdmin;
 
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use PDO;
 use function assert;
 use function usort;
@@ -66,11 +67,11 @@ class OverviewPage extends Page
             'users' => $users,
             'aliases' => $aliases,
             'addressesPerDomain' => $addressesPerDomain,
-            'csrfTokenAddAlias' => User::getCSRFToken('mailadmin', 'addAlias'),
-            'csrfTokenAddDomain' => User::getCSRFToken('mailadmin', 'addDomain'),
-            'csrfTokenAddEmail' => User::getCSRFToken('mailadmin', 'addEmail'),
-            'csrfTokenDeleteAlias' => User::getCSRFToken('mailadmin', 'deleteAlias'),
-            'csrfTokenDeleteEmail' => User::getCSRFToken('mailadmin', 'deleteEmail'),
+            'csrfTokenAddAlias' => UserSession::getCSRFToken('mailadmin', 'addAlias'),
+            'csrfTokenAddDomain' => UserSession::getCSRFToken('mailadmin', 'addDomain'),
+            'csrfTokenAddEmail' => UserSession::getCSRFToken('mailadmin', 'addEmail'),
+            'csrfTokenDeleteAlias' => UserSession::getCSRFToken('mailadmin', 'deleteAlias'),
+            'csrfTokenDeleteEmail' => UserSession::getCSRFToken('mailadmin', 'deleteEmail'),
         ]);
     }
 }

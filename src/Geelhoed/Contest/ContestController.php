@@ -17,6 +17,7 @@ use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\User\UserSession;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
@@ -145,12 +146,12 @@ final class ContestController extends Controller
 //        }
 //        catch (\Exception $e)
 //        {
-//            User::addNotification('Je inschrijving is opgeslagen, maar de betaling is mislukt!');
+//            UserSession::addNotification('Je inschrijving is opgeslagen, maar de betaling is mislukt!');
 //            $response = new RedirectResponse("/contest/view/{$contest->id}");
 //        }
 
 //        return $response;
-        User::addNotification('Let op: de inschrijving is pas definitief wanneer u heeft betaald.');
+        UserSession::addNotification('Let op: de inschrijving is pas definitief wanneer u heeft betaald.');
         return new RedirectResponse("/contest/view/{$contest->id}");
     }
 
@@ -190,11 +191,11 @@ final class ContestController extends Controller
         $redirectUrl = $molliePayment->getCheckoutUrl();
         if ($redirectUrl === null)
         {
-            User::addNotification('Bedankt voor je inschrijving! Helaas lukte het doorsturen naar de betaalpagina niet.');
+            UserSession::addNotification('Bedankt voor je inschrijving! Helaas lukte het doorsturen naar de betaalpagina niet.');
             return new RedirectResponse('/');
         }
 
-        User::addNotification('Bedankt voor de betaling! Het kan even duren voordat deze geregistreerd is.');
+        UserSession::addNotification('Bedankt voor de betaling! Het kan even duren voordat deze geregistreerd is.');
         return new RedirectResponse($redirectUrl);
     }
 
@@ -545,7 +546,7 @@ final class ContestController extends Controller
         }
         catch (Exception $e)
         {
-            User::addNotification('De betaling is mislukt!');
+            UserSession::addNotification('De betaling is mislukt!');
             $response = new RedirectResponse("/contest/myContests");
             /** @noinspection ForgottenDebugOutputInspection */
             error_log($e->getMessage());
@@ -575,11 +576,11 @@ final class ContestController extends Controller
         $filename = $dir . '/' . basename($filteredParams->getFilename('name'));
         if (move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
         {
-            User::addNotification('Bijlage geüpload');
+            UserSession::addNotification('Bijlage geüpload');
         }
         else
         {
-            User::addNotification('Bijlage kon niet naar de uploadmap worden verplaatst.');
+            UserSession::addNotification('Bijlage kon niet naar de uploadmap worden verplaatst.');
         }
 
         return new RedirectResponse('/contest/view/' . $contest->id);
@@ -606,16 +607,16 @@ final class ContestController extends Controller
         {
             if (Util::deleteFile($fullPath))
             {
-                User::addNotification('Bestand verwijderd.');
+                UserSession::addNotification('Bestand verwijderd.');
             }
             else
             {
-                User::addNotification('Bestand kon niet worden verwijderd.');
+                UserSession::addNotification('Bestand kon niet worden verwijderd.');
             }
         }
         else
         {
-            User::addNotification('Bestand bestaat niet.');
+            UserSession::addNotification('Bestand bestaat niet.');
         }
 
         return new RedirectResponse('/contest/view/' . $contest->id);
@@ -716,7 +717,7 @@ final class ContestController extends Controller
         $subscription->graduationId = $post->getInt('graduationId');
         if ($subscription->save())
         {
-            User::addNotification('Wijzigingen opgeslagen.');
+            UserSession::addNotification('Wijzigingen opgeslagen.');
             // Since we only start entering names and data once people have paid, no need to notify for changes if they haven't paid yet.
             if ($subscription->isPaid)
             {
@@ -854,7 +855,7 @@ final class ContestController extends Controller
             }
         }
 
-        User::addNotification('Ouderaccount aangemaakt.');
+        UserSession::addNotification('Ouderaccount aangemaakt.');
         return new JsonResponse();
     }
 

@@ -77,41 +77,9 @@ final class User extends Model
 
 Uw nieuwe wachtwoord is: %s';
 
-    public static function isAdmin(): bool
+    public function isAdmin(): bool
     {
-        return isset($_SESSION['username']) && $_SESSION['level'] >= 4;
-    }
-
-    public static function isLoggedIn(): bool
-    {
-        return (isset($_SESSION['username']) && $_SESSION['level'] > 0);
-    }
-
-    public static function addNotification(string $content): void
-    {
-        $_SESSION['notifications'][] = $content;
-    }
-
-    /**
-     * @deprecated
-     * @return string[]|null
-     */
-    public static function getNotifications(): array|null
-    {
-        $return = $_SESSION['notifications'] ?? null;
-        $_SESSION['notifications'] = null;
-        return $return;
-    }
-
-    public static function getLevel(): int
-    {
-        return isset($_SESSION['level']) ? (int)$_SESSION['level'] : UserLevel::ANONYMOUS;
-    }
-
-    public static function hasSufficientReadLevel(): bool
-    {
-        $minimumReadLevel = (int)Setting::get('minimumReadLevel');
-        return (self::getLevel() >= $minimumReadLevel);
+        return $this->level === UserLevel::ADMIN;
     }
 
     /**
@@ -193,36 +161,6 @@ Uw nieuwe wachtwoord is: %s';
         return $mail->send();
     }
 
-    public static function getCSRFToken(string $module, string $action): string
-    {
-        if (empty($_SESSION['token']))
-        {
-            $_SESSION['token'] = [];
-        }
-        if (empty($_SESSION['token'][$module]))
-        {
-            $_SESSION['token'][$module] = [];
-        }
-
-        if (empty($_SESSION['token'][$module][$action]))
-        {
-            $_SESSION['token'][$module][$action] = Util::generateToken(16);
-        }
-
-        return $_SESSION['token'][$module][$action];
-    }
-
-    public static function checkToken(string $module, string $action, string $token): bool
-    {
-        if (!empty($token) &&
-            !empty($_SESSION['token'][$module][$action]) &&
-            $token === $_SESSION['token'][$module][$action])
-        {
-            return true;
-        }
-        return false;
-    }
-
     /**
      * @param string $newPassword
      * @return bool
@@ -286,7 +224,7 @@ Uw nieuwe wachtwoord is: %s';
         $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
         $_SESSION['level'] = $user->level;
 
-        self::addNotification('U bent ingelogd.');
+        UserSession::addNotification('U bent ingelogd.');
 
         if ($_SESSION['redirect'])
         {
@@ -299,13 +237,6 @@ Uw nieuwe wachtwoord is: %s';
         }
 
         return $redirect;
-    }
-
-    public static function logout(): void
-    {
-        session_destroy();
-        session_start();
-        self::addNotification('U bent afgemeld.');
     }
 
     public function getFullName(): string
@@ -401,7 +332,7 @@ Uw nieuwe wachtwoord is: %s';
 
     public static function fromSession(): self|null
     {
-        return $_SESSION['profile'] ?? null;
+        return UserSession::getProfile();
     }
 
     public function getGenderDisplay(): string

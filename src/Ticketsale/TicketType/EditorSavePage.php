@@ -5,6 +5,7 @@ namespace Cyndaron\Ticketsale\TicketType;
 
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 {
@@ -28,11 +29,11 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 
         if ($ticketType->save())
         {
-            User::addNotification('Kaarttype opgeslagen.');
+            UserSession::addNotification('Kaarttype opgeslagen.');
         }
         else
         {
-            User::addNotification('Fout bij opslaan kaarttype');
+            UserSession::addNotification('Fout bij opslaan kaarttype');
         }
 
         $this->returnUrl = '/pagemanager/concert';

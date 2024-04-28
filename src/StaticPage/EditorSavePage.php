@@ -3,7 +3,7 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use Symfony\Component\HttpFoundation\Request;
 use function trim;
 use function assert;
@@ -40,12 +40,12 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         {
             $this->saveCategories($model, $this->post);
 
-            User::addNotification('Pagina bewerkt.');
+            UserSession::addNotification('Pagina bewerkt.');
             $this->returnUrl = '/sub/' . $id;
         }
         else
         {
-            User::addNotification('Pagina opslaan mislukt');
+            UserSession::addNotification('Pagina opslaan mislukt');
         }
 
         assert($model->id !== null);

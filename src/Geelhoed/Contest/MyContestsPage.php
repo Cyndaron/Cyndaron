@@ -6,6 +6,7 @@ namespace Cyndaron\Geelhoed\Contest;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use function array_map;
 use function count;
 use function implode;
@@ -36,7 +37,7 @@ final class MyContestsPage extends Page
             'contests' => $contests,
             'contestMembers' => $contestMembers,
             'due' => $due,
-            'cancelSubscriptionCsrfToken' => User::getCSRFToken('contest', 'cancelSubscription'),
+            'cancelSubscriptionCsrfToken' => UserSession::getCSRFToken('contest', 'cancelSubscription'),
         ]);
     }
 }

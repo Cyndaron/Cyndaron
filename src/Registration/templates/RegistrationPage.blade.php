@@ -12,7 +12,7 @@
         {!! $event->description !!}
 
         <form method="post" action="/event-registration/add" class="form-horizontal" id="kaartenbestellen">
-            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('event-registration', 'add') }}"/>
+            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\UserSession::getCSRFToken('event-registration', 'add') }}"/>
             <input type="hidden" id="eventId" name="event_id" value="{{ $event->id }}"/>
 
             <h3>Uw gegevens (verplicht):</h3>

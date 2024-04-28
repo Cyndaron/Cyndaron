@@ -2,7 +2,7 @@
     @slot('right')
         <label for="pm-category-new-name" class="mr-sm-2">Nieuwe categorie:</label>
         <input class="form-control mr-sm-2" id="pm-category-new-name" type="text"/>
-        <button type="button" id="pm-create-category" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('category', 'add') }}" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+        <button type="button" id="pm-create-category" data-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('category', 'add') }}" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
     @endslot
 @endcomponent
 
@@ -28,8 +28,8 @@
                             @include('View/Widget/Button', ['kind' => 'edit', 'link' => "/editor/category/{$category->id}", 'title' => 'Deze categorie bewerken', 'size' => 16])
                         @endif
                         @if ($currentUser->isAdmin())
-                            <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="category" data-id="{{ $category->id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('category', 'delete') }}"><span class="glyphicon glyphicon-trash" title="Verwijder deze categorie"></span></button>
-                            <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="category" data-id="{{ $category->id }}" data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('category', 'addtomenu') }}"><span class="glyphicon glyphicon-bookmark" title="Voeg deze categorie toe aan het menu"></span></button>
+                            <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="category" data-id="{{ $category->id }}" data-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('category', 'delete') }}"><span class="glyphicon glyphicon-trash" title="Verwijder deze categorie"></span></button>
+                            <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="category" data-id="{{ $category->id }}" data-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('category', 'addtomenu') }}"><span class="glyphicon glyphicon-bookmark" title="Voeg deze categorie toe aan het menu"></span></button>
                             <button class="btn btn-outline-cyndaron btn-sm pm-changeorder" data-id="{{ $category->id }}" data-toggle="modal" data-target="#pm-change-order"><span class="glyphicon glyphicon-sort-by-order" title="Verander de volgorde binnen deze categorie"></span></button>
                         @endif
                     </div>
@@ -42,7 +42,7 @@
 @component('View/Widget/Modal',  ['id' => 'pm-change-order', 'title' => 'Volgorde aanpassen', 'sizeClass' => 'modal-lg'])
     @slot('body')
         <form id="pm-change-order-form">
-            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('category', 'changeOrder') }}">
+            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\UserSession::getCSRFToken('category', 'changeOrder') }}">
             <div id="pm-change-order-form-container"></div>
         </form>
     @endslot

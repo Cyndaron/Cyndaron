@@ -4,6 +4,7 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use Symfony\Component\HttpFoundation\Request;
 use function assert;
 
@@ -34,7 +35,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $photoalbum->save();
         $this->saveCategories($photoalbum, $this->post);
 
-        User::addNotification('Fotoalbum bewerkt.');
+        UserSession::addNotification('Fotoalbum bewerkt.');
 
         assert($photoalbum->id !== null);
         $this->returnUrl = '/photoalbum/' . $photoalbum->id;

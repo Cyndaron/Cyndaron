@@ -15,6 +15,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
 use PDO;
@@ -226,13 +227,13 @@ class Controller extends \Cyndaron\Routing\Controller
 
         if ($changes->total() === 0)
         {
-            User::addNotification('Adres niet gevonden!');
+            UserSession::addNotification('Adres niet gevonden!');
         }
         else
         {
             $notification = "Adres uitgeschreven.
                 {$changes->users} gebruikersrecord(s), {$changes->members} ledenrecord(s) en {$changes->subscribers} nieuwsbriefinschrijver(s) aangepast.";
-            User::addNotification($notification);
+            UserSession::addNotification($notification);
         }
 
         return new RedirectResponse('/newsletter/viewSubscribers#unsubscribe');
@@ -246,13 +247,13 @@ class Controller extends \Cyndaron\Routing\Controller
 
         if ($changes->total() === 0)
         {
-            User::addNotification('Adres niet gevonden!');
+            UserSession::addNotification('Adres niet gevonden!');
         }
         else
         {
             $notification = "Adres verwijderd.
                 {$changes->users} gebruikersrecord(s), {$changes->members} ledenrecord(s) en {$changes->subscribers} nieuwsbriefinschrijver(s) aangepast.";
-            User::addNotification($notification);
+            UserSession::addNotification($notification);
         }
 
         return new RedirectResponse('/newsletter/viewSubscribers#delete');

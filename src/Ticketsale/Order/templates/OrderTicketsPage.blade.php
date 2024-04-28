@@ -26,7 +26,7 @@
 
         <br/>
         <form method="post" action="/concert-order/add" class="form-horizontal" id="kaartenbestellen">
-            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('concert-order', 'add') }}"/>
+            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\UserSession::getCSRFToken('concert-order', 'add') }}"/>
             <h3>Kaartsoorten:</h3>
             <input type="hidden" id="concertId" name="concert_id" value="{{ $concert->id }}"/>
             <table class="kaartverkoop table table-striped">

@@ -16,6 +16,7 @@ use Cyndaron\Page\Module\PagePreProcessor;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\LinkWithIcon;
@@ -113,7 +114,7 @@ class Page implements Pageable
     protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, array $userMenu): void
     {
         $this->websiteName = Setting::get('siteName');
-        $this->templateVars['isAdmin'] = User::isAdmin();
+        $this->templateVars['isAdmin'] = UserSession::isAdmin();
         $this->templateVars['websiteName'] = $this->websiteName;
         $this->templateVars['title'] = $this->title;
         $this->templateVars['referrer'] = $_SESSION['referrer'] ?? '';
@@ -183,8 +184,8 @@ class Page implements Pageable
     {
         $logo = Setting::get('logo');
         $vars = [
-            'isLoggedIn' => User::isLoggedIn(),
-            'isAdmin' => User::isAdmin(),
+            'isLoggedIn' => UserSession::isLoggedIn(),
+            'isAdmin' => UserSession::isAdmin(),
             'inverseClass' => (Setting::get('menuTheme') === 'dark') ? 'navbar-dark' : 'navbar-light',
             'navbar' => $logo !== '' ? sprintf('<img alt="" src="%s"> ', $logo) : $this->websiteName,
         ];
@@ -209,7 +210,7 @@ class Page implements Pageable
 
         $vars['userMenuItems'] = $userMenuItems;
 
-        $vars['notifications'] = User::getNotifications();
+        $vars['notifications'] = UserSession::getNotifications();
 
         return $templateRenderer->render('Menu', $vars);
     }
@@ -251,7 +252,7 @@ class Page implements Pageable
      */
     public function getMenu(): array
     {
-        if (!User::hasSufficientReadLevel())
+        if (!UserSession::hasSufficientReadLevel())
         {
             return [];
         }

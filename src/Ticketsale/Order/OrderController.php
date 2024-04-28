@@ -20,6 +20,7 @@ use Cyndaron\Ticketsale\TicketType\TicketType;
 use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
@@ -596,11 +597,11 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         $redirectUrl = $molliePayment->getCheckoutUrl();
         if ($redirectUrl === null)
         {
-            User::addNotification('Bedankt voor je bestelling! Helaas lukte het doorsturen naar de betaalpagina niet.');
+            UserSession::addNotification('Bedankt voor je bestelling! Helaas lukte het doorsturen naar de betaalpagina niet.');
             return new RedirectResponse('/');
         }
 
-        User::addNotification('Bedankt voor de betaling! Het kan even duren voordat deze geregistreerd is.');
+        UserSession::addNotification('Bedankt voor de betaling! Het kan even duren voordat deze geregistreerd is.');
         return new RedirectResponse($redirectUrl);
     }
 

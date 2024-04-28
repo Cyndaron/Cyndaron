@@ -10,6 +10,7 @@ namespace Cyndaron\Newsletter;
 
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 
 class SendNewsletterPage extends Page
 {
@@ -17,7 +18,7 @@ class SendNewsletterPage extends Page
     {
         parent::__construct('Nieuwsbrief versturen');
         $this->addTemplateVars([
-            'csrfToken' => User::getCSRFToken('newsletter', 'send'),
+            'csrfToken' => UserSession::getCSRFToken('newsletter', 'send'),
         ]);
         $this->addScript('/vendor/ckeditor/ckeditor/ckeditor.js');
         $this->addScript('/js/editor.js');

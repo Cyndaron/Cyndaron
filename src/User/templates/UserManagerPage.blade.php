@@ -4,7 +4,7 @@
     @component('View/Widget/Toolbar')
         @slot('right')
             <button id="um-create-user"
-                    data-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('user', 'add') }}"
+                    data-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('user', 'add') }}"
                     type="button" class="btn btn-success" data-toggle="modal" data-target="#um-edit-user-dialog">
                 <span class="glyphicon glyphicon-plus"></span> Nieuwe gebruiker toevoegen
             </button>
@@ -14,9 +14,9 @@
     <table
             id="um-usertable"
             class="table table-bordered table-striped"
-            data-edit-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('user', 'edit') }}"
-            data-resetpassword-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('user', 'resetpassword') }}"
-            data-delete-csrf-token="{{ \Cyndaron\User\User::getCSRFToken('user', 'delete') }}">
+            data-edit-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('user', 'edit') }}"
+            data-resetpassword-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('user', 'resetpassword') }}"
+            data-delete-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('user', 'delete') }}">
         <thead>
             <tr>
                 <th>ID</th>
@@ -160,7 +160,7 @@
     @component('View/Widget/Modal', ['id' => 'um-update-avatar-dialog', 'title' => 'Avatar aanpassen', 'sizeClass' => 'modal-lg'])
         @slot('body')
             <form id="um-update-avatar" method="post" action="/user/changeAvatar/" enctype="multipart/form-data">
-                <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('user', 'changeAvatar') }}"/>
+                <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\UserSession::getCSRFToken('user', 'changeAvatar') }}"/>
 
                 @include('View/Widget/Form/File', ['id' => 'avatarFile', 'label' => 'Nieuwe avatar'])
             </form>

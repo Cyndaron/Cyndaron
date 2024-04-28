@@ -7,6 +7,7 @@ use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use function assert;
 
 final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
@@ -60,11 +61,11 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
 
         if ($concert->save())
         {
-            User::addNotification('Concert opgeslagen.');
+            UserSession::addNotification('Concert opgeslagen.');
         }
         else
         {
-            User::addNotification('Fout bij opslaan concert');
+            UserSession::addNotification('Fout bij opslaan concert');
         }
 
         $this->returnUrl = '/concert/order/' . $concert->id;

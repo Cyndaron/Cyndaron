@@ -5,12 +5,13 @@ namespace Cyndaron\Geelhoed\Tryout;
 
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 
 class UpdateFormPage extends Page
 {
     public function __construct()
     {
         parent::__construct('Punten updaten');
-        $this->addTemplateVar('csrfToken', User::getCSRFToken('tryout', 'update'));
+        $this->addTemplateVar('csrfToken', UserSession::getCSRFToken('tryout', 'update'));
     }
 }

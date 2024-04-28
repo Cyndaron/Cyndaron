@@ -14,6 +14,7 @@ use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\User\UserSession;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\TemplateRenderer;
@@ -103,12 +104,12 @@ final class Router
             return LoginStatus::OK;
         }
 
-        if (User::hasSufficientReadLevel())
+        if (UserSession::hasSufficientReadLevel())
         {
             return LoginStatus::OK;
         }
 
-        $userLevel = User::getLevel();
+        $userLevel = UserSession::getLevel();
         if ($userLevel > UserLevel::ANONYMOUS)
         {
             return LoginStatus::INSUFFICIENT_RIGHTS;
@@ -213,7 +214,7 @@ final class Router
                 return new RedirectResponse('/error/403', Response::HTTP_FOUND, Kernel::HEADERS_DO_NOT_CACHE);
             case LoginStatus::NEEDS_LOGIN:
             default:
-                User::addNotification('U moet inloggen om deze site te bekijken');
+                UserSession::addNotification('U moet inloggen om deze site te bekijken');
                 $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
                 return new RedirectResponse('/user/login', Response::HTTP_FOUND, Kernel::HEADERS_DO_NOT_CACHE);
         }
@@ -221,7 +222,7 @@ final class Router
 
     public function checkCSRFToken(string $requestMethod, string $module, string $action, string $token): bool
     {
-        if ($requestMethod === 'POST' && !User::checkToken($module, $action, $token))
+        if ($requestMethod === 'POST' && !UserSession::checkToken($module, $action, $token))
         {
             return false;
         }
@@ -298,16 +299,16 @@ final class Router
      */
     public function checkUserLevel(int $requiredLevel): Response|null
     {
-        if ($requiredLevel > UserLevel::ANONYMOUS && !User::isLoggedIn())
+        if ($requiredLevel > UserLevel::ANONYMOUS && !UserSession::isLoggedIn())
         {
             session_destroy();
             session_start();
-            User::addNotification('U moet inloggen om deze pagina te bekijken');
+            UserSession::addNotification('U moet inloggen om deze pagina te bekijken');
             $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
 
             return new RedirectResponse('/user/login', );
         }
-        if (User::getLevel() < $requiredLevel)
+        if (UserSession::getLevel() < $requiredLevel)
         {
             return new Response('Insufficient user rights!', Response::HTTP_FORBIDDEN);
         }

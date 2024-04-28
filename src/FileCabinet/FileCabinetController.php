@@ -9,6 +9,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\User\UserSession;
 use Cyndaron\Util\Util;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,11 +32,11 @@ final class FileCabinetController extends Controller
         $filename = Util::UPLOAD_DIR . '/filecabinet/' . basename($_FILES['newFile']['name']);
         if (move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
         {
-            User::addNotification('Bestand geüpload');
+            UserSession::addNotification('Bestand geüpload');
         }
         else
         {
-            User::addNotification('Bestand kon niet naar de uploadmap worden verplaatst.');
+            UserSession::addNotification('Bestand kon niet naar de uploadmap worden verplaatst.');
         }
 
         return new RedirectResponse('/filecabinet');
@@ -50,16 +51,16 @@ final class FileCabinetController extends Controller
         {
             if (Util::deleteFile($fullPath))
             {
-                User::addNotification('Bestand verwijderd.');
+                UserSession::addNotification('Bestand verwijderd.');
             }
             else
             {
-                User::addNotification('Bestand kon niet worden verwijderd.');
+                UserSession::addNotification('Bestand kon niet worden verwijderd.');
             }
         }
         else
         {
-            User::addNotification('Bestand bestaat niet.');
+            UserSession::addNotification('Bestand bestaat niet.');
         }
 
         return new RedirectResponse('/filecabinet');

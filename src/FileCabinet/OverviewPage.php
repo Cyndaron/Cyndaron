@@ -3,6 +3,7 @@ namespace Cyndaron\FileCabinet;
 
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use ErrorException;
@@ -34,7 +35,7 @@ final class OverviewPage extends Page
         $this->addTemplateVars([
             'introduction' => $this->getIntroduction(),
             'files' => $this->getFileList($orderBy),
-            'deleteCsrfToken' => User::getCSRFToken('filecabinet', 'deleteItem'),
+            'deleteCsrfToken' => UserSession::getCSRFToken('filecabinet', 'deleteItem'),
         ]);
     }
 

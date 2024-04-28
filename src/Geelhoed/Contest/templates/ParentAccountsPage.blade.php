@@ -17,10 +17,10 @@
         </thead>
         <tbody>
             @php /** @var \Cyndaron\User\User[] $users */ @endphp
-            @php $deleteToken = \Cyndaron\User\User::getCSRFToken('contest', 'deleteParentAccount') @endphp
-            @php $deleteFromToken = \Cyndaron\User\User::getCSRFToken('contest', 'deleteFromParentAccount') @endphp
-            @php $addToToken = \Cyndaron\User\User::getCSRFToken('contest', 'addToParentAccount') @endphp
-            @php $resetPasswordToken = \Cyndaron\User\User::getCSRFToken('user', 'resetpassword') @endphp
+            @php $deleteToken = \Cyndaron\User\UserSession::getCSRFToken('contest', 'deleteParentAccount') @endphp
+            @php $deleteFromToken = \Cyndaron\User\UserSession::getCSRFToken('contest', 'deleteFromParentAccount') @endphp
+            @php $addToToken = \Cyndaron\User\UserSession::getCSRFToken('contest', 'addToParentAccount') @endphp
+            @php $resetPasswordToken = \Cyndaron\User\UserSession::getCSRFToken('user', 'resetpassword') @endphp
             @php $contestants = \Cyndaron\Geelhoed\Member\Member::fetchAllAndSortByName(['isContestant = 1']) @endphp
             @foreach ($users as $user)
                 @php $controlledMembers = \Cyndaron\Geelhoed\Member\Member::fetchAllByUser($user) @endphp
@@ -60,7 +60,7 @@
     @component('View/Widget/Modal', ['id' => 'gpm-edit-dialog', 'title' => 'Ouderaccount toevoegen/bewerken', 'sizeClass' => 'modal-lg'])
         @slot('body')
             <input type="hidden" id="gpm-edit-id" name="id" value="">
-            <input type="hidden" id="gpm-edit-csrfToken" name="id" value="{{ \Cyndaron\User\User::getCSRFToken('contest', 'createParentAccount') }}">
+            <input type="hidden" id="gpm-edit-csrfToken" name="id" value="{{ \Cyndaron\User\UserSession::getCSRFToken('contest', 'createParentAccount') }}">
 
             @include('View/Widget/Form/BasicInput', ['id' => 'gpm-edit-firstName', 'label' => 'Voornaam', 'required' => false])
             @include('View/Widget/Form/BasicInput', ['id' => 'gpm-edit-initials', 'label' => 'Initialen', 'required' => true])

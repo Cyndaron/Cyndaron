@@ -39,7 +39,7 @@
 @component('View/Widget/Modal',  ['id' => 'pm-edit-modal', 'title' => 'Volgorde aanpassen', 'sizeClass' => 'modal-lg'])
     @slot('body')
         <form id="pm-edit-modal-form">
-            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('sport', 'edit') }}">
+            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\UserSession::getCSRFToken('sport', 'edit') }}">
             <div class="form-group row">
                 <label for="pm-edit-modal-name" class="col-md-3 col-form-label">Naam:</label>
                 <div class="col-md-6">

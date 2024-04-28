@@ -3,7 +3,7 @@
 @section ('contents')
     @php /** @var \Cyndaron\Geelhoed\Contest\ContestMember $contestMember */ @endphp
     <form method="post" action="/contest/editSubscription/{{ $contestMember->id }}">
-        <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\User::getCSRFToken('contest', 'editSubscription') }}">
+        <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\UserSession::getCSRFToken('contest', 'editSubscription') }}">
         @component ('View/Widget/Form/FormWrapper', ['label' => 'Naam'])
             @slot('right'){{ $contestMember->getMember()->getProfile()->getFullName() }}@endslot
         @endcomponent
