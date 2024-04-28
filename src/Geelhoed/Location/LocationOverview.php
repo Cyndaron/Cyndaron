@@ -18,7 +18,7 @@ final class LocationOverview extends Page
     ) {
         $title = 'Leslocaties';
 
-        $where = [];
+        $where = ['id IN (SELECT locationId FROM geelhoed_hours)'];
         $args = [];
         if ($filter === LocationFilter::DAY)
         {

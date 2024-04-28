@@ -59,7 +59,7 @@ final class Location
     public static function getCities(): array
     {
         $ret = [];
-        $results = \Cyndaron\Location\Location::fetchAll([], [], 'ORDER BY city');
+        $results = \Cyndaron\Location\Location::fetchAll(['id IN (SELECT locationId FROM geelhoed_hours)'], [], 'ORDER BY city');
         foreach ($results as $result)
         {
             $ret[] = $result->city;
