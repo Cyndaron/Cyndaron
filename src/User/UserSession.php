@@ -94,4 +94,9 @@ final class UserSession
     {
         return $_SESSION['profile'] ?? null;
     }
+
+    public static function setProfile(User $profile): void
+    {
+        $_SESSION['profile'] = $profile;
+    }
 }

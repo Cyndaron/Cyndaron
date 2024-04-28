@@ -432,26 +432,6 @@ final class Member extends Model
     }
 
     /**
-     * @throws \Exception
-     * @return self[]
-     */
-    public static function fetchAllByLoggedInUser(): array
-    {
-        if (!UserSession::isLoggedIn())
-        {
-            return [];
-        }
-
-        $profile = $_SESSION['profile'];
-        if ($profile === null)
-        {
-            return [];
-        }
-
-        return self::fetchAllByUser($profile);
-    }
-
-    /**
      * @param User $profile
      * @throws \Exception
      * @return self[]

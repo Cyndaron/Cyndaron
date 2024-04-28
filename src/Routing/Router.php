@@ -156,9 +156,10 @@ final class Router
         $this->dic->add($request);
         $this->dic->add($post);
         $this->dic->add($queryBits);
-        if (isset($_SESSION['profile']))
+        $profile = UserSession::getProfile();
+        if ($profile !== null)
         {
-            $this->dic->add($_SESSION['profile']);
+            $this->dic->add($profile);
         }
 
         $classname = $controllers[$module];
@@ -232,7 +233,8 @@ final class Router
     private function callRoute(Controller $controller, Route $route): Response
     {
         $right = $route->right;
-        $hasRight = !empty($right) && !empty($_SESSION['profile']) && $_SESSION['profile']->hasRight($right);
+        $profile = UserSession::getProfile();
+        $hasRight = !empty($right) && $profile?->hasRight($right);
         if (!$hasRight)
         {
             $response = $this->checkUserLevel($route->level);

@@ -49,6 +49,21 @@ use function time;
 
 final class ContestController extends Controller
 {
+    /**
+     * @throws Exception
+     * @return Member[]
+     */
+    private function fetchMembersByLoggedInUser(): array
+    {
+        $profile = UserSession::getProfile();
+        if ($profile === null)
+        {
+            return [];
+        }
+
+        return Member::fetchAllByUser($profile);
+    }
+
     #[RouteAttribute('overview', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function overview(): Response
     {
@@ -100,7 +115,7 @@ final class ContestController extends Controller
         $controlledMemberIds = array_map(static function(Member $member)
         {
             return $member->id;
-        }, Member::fetchAllByLoggedInUser());
+        }, $this->fetchMembersByLoggedInUser());
         if (!in_array($memberId, $controlledMemberIds, true))
         {
             $page = new SimplePage('Fout', 'U mag dit lid niet beheren.');
@@ -700,7 +715,7 @@ final class ContestController extends Controller
             $controlledMemberIds = array_map(static function(Member $member)
             {
                 return $member->id;
-            }, Member::fetchAllByLoggedInUser());
+            }, $this->fetchMembersByLoggedInUser());
             if (!in_array($memberId, $controlledMemberIds, true))
             {
                 return new Response('U mag deze judoka niet beheren!', Response::HTTP_FORBIDDEN);
@@ -750,7 +765,7 @@ final class ContestController extends Controller
             $controlledMemberIds = array_map(static function(Member $member)
             {
                 return $member->id;
-            }, Member::fetchAllByLoggedInUser());
+            }, $this->fetchMembersByLoggedInUser());
             if (!in_array($memberId, $controlledMemberIds, true))
             {
                 return new Response('U mag deze judoka niet beheren!', Response::HTTP_FORBIDDEN);
