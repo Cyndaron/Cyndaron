@@ -71,12 +71,13 @@ final class Registration extends Model
     }
 
     /**
+     * @param string $domain
      * @param float $registrationTotal
      * @param array<int, int> $registrationTicketTypes
-     * @throws \Safe\Exceptions\FilesystemException
+     * @param TemplateRenderer $templateRenderer
      * @return bool
      */
-    public function sendIntroductionMail(float $registrationTotal, array $registrationTicketTypes, TemplateRenderer $templateRenderer): bool
+    public function sendIntroductionMail(string $domain, float $registrationTotal, array $registrationTicketTypes, TemplateRenderer $templateRenderer): bool
     {
         $event = $this->getEvent();
 
@@ -107,11 +108,11 @@ final class Registration extends Model
         // We're sending a plaintext mail, so avoid displaying html entities.
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
-        $mail = UtilMail::createMailWithDefaults(new Address($this->email), 'Inschrijving ' . $event->name, $text);
+        $mail = UtilMail::createMailWithDefaults($domain, new Address($this->email), 'Inschrijving ' . $event->name, $text);
         return $mail->send();
     }
 
-    public function setIsPaid(): bool
+    public function setIsPaid(string $domain): bool
     {
         if ($this->id === null)
         {
@@ -131,6 +132,7 @@ final class Registration extends Model
         }
 
         $mail = UtilMail::createMailWithDefaults(
+            $domain,
             new Address($this->email),
             'Betalingsbevestiging ' . $event->name,
             $text
@@ -210,7 +212,7 @@ final class Registration extends Model
      * @throws Exception
      * @return bool
      */
-    public function setApproved(): bool
+    public function setApproved(string $domain): bool
     {
         if ($this->id === null)
         {
@@ -225,6 +227,7 @@ final class Registration extends Model
         $text = '';
 
         $mail = UtilMail::createMailWithDefaults(
+            $domain,
             new Address($this->email),
             'Aanmelding ' . $event->name . ' goedgekeurd',
             $text
@@ -232,7 +235,7 @@ final class Registration extends Model
         return $mail->send();
     }
 
-    public function setDisapproved(): bool
+    public function setDisapproved(string $domain): bool
     {
         if ($this->id === null)
         {
@@ -254,6 +257,7 @@ final class Registration extends Model
         }
 
         $mail = UtilMail::createMailWithDefaults(
+            $domain,
             new Address($this->email),
             'Aanmelding ' . $event->name,
             $text

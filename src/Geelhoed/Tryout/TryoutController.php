@@ -11,6 +11,7 @@ use Cyndaron\MDB\MDBFile;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
@@ -110,7 +111,7 @@ class TryoutController extends Controller
     }
 
     #[RouteAttribute('create-photoalbums', RequestMethod::POST, UserLevel::ADMIN, right: 'tryout_edit', isApiMethod: true)]
-    public function createPhotoalbums(QueryBits $queryBits): JsonResponse
+    public function createPhotoalbums(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
     {
         $tryoutId = $queryBits->getInt(2);
         $tryout = Tryout::fetchById($tryoutId);
@@ -174,20 +175,19 @@ class TryoutController extends Controller
             }
         }
 
-        $domain = 'https://' . Util::getDomain();
         foreach ($toAddresses as $toAddress)
         {
             $plainText = "Er zijn fotopagina’s aangemaakt voor het Tryouttoernooi van $date:\n\n";
             $round = 1;
             foreach ($roundUrls as $roundUrl)
             {
-                $plainText .= "Ronde {$round}: {$domain}/{$roundUrl}\n";
+                $plainText .= "Ronde {$round}: {$urlInfo->schemeAndHost}/{$roundUrl}\n";
                 $round++;
             }
 
-            $plainText .= PHP_EOL . "De overzichtspagina is te vinden op: {$domain}{$categoryUrl}\n";
+            $plainText .= PHP_EOL . "De overzichtspagina is te vinden op: {$urlInfo->schemeAndHost}{$categoryUrl}\n";
 
-            $mail = \Cyndaron\Util\Mail::createMailWithDefaults($toAddress, 'Fotoalbums aangemaakt', $plainText);
+            $mail = \Cyndaron\Util\Mail::createMailWithDefaults($urlInfo->domain, $toAddress, 'Fotoalbums aangemaakt', $plainText);
             $mail->send();
         }
 

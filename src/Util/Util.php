@@ -9,6 +9,7 @@ namespace Cyndaron\Util;
 use RuntimeException;
 use Safe\DateTimeImmutable;
 use Safe\Exceptions\FilesystemException;
+use Symfony\Component\HttpFoundation\Request;
 use function Safe\preg_replace;
 use function Safe\date;
 use function Safe\mkdir;
@@ -57,11 +58,6 @@ final class Util
     {
         // @phpstan-ignore-next-line Bogus error.
         return bin2hex(random_bytes($length));
-    }
-
-    public static function getDomain(): string
-    {
-        return str_replace(['www.', 'http://', 'https://', '/'], '', $_SERVER['HTTP_HOST']);
     }
 
     public static function slug(string $string): string

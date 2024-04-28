@@ -141,7 +141,7 @@ Uw nieuwe wachtwoord is: %s';
         $this->save();
     }
 
-    public function mailNewPassword(string $password): bool
+    public function mailNewPassword(string $domain, string $password): bool
     {
         if ($this->email === null)
         {
@@ -149,6 +149,7 @@ Uw nieuwe wachtwoord is: %s';
         }
 
         $mail = UtilMail::createMailWithDefaults(
+            $domain,
             new Address($this->email),
             'Nieuw wachtwoord ingesteld',
             sprintf(self::RESET_PASSWORD_MAIL_TEXT, Setting::get('siteName'), $password)

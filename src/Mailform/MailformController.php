@@ -8,6 +8,7 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
@@ -23,7 +24,7 @@ use function strtr;
 final class MailformController extends Controller
 {
     #[RouteAttribute('process', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function process(QueryBits $queryBits, RequestParameters $post): Response
+    public function process(QueryBits $queryBits, RequestParameters $post, UrlInfo $urlInfo): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -38,7 +39,7 @@ final class MailformController extends Controller
             {
                 throw new IncompleteData('Formulier niet gevonden!');
             }
-            $this->processHelper($form, $post);
+            $this->processHelper($form, $urlInfo->domain, $post);
             $page = new SimplePage('Formulier verstuurd', 'Het versturen is gelukt.');
             return $this->pageRenderer->renderResponse($page);
         }
@@ -50,11 +51,11 @@ final class MailformController extends Controller
     }
 
     #[RouteAttribute('process-ldbf', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function processLDBF(RequestParameters $post): Response
+    public function processLDBF(RequestParameters $post, UrlInfo $urlInfo): Response
     {
         try
         {
-            $this->processLDBFHelper($post);
+            $this->processLDBFHelper($urlInfo->domain, $post);
 
             $page = new SimplePage('Formulier verstuurd', 'Het versturen is gelukt.');
             return $this->pageRenderer->renderResponse($page);
@@ -66,7 +67,7 @@ final class MailformController extends Controller
         }
     }
 
-    private function processLDBFHelper(RequestParameters $post): bool
+    private function processLDBFHelper(string $domain, RequestParameters $post): bool
     {
         if ($post->isEmpty())
         {
@@ -79,7 +80,7 @@ final class MailformController extends Controller
 
         $mailForm = new MailFormLDBF();
         $mailForm->fillMailTemplate($post, $this->templateRenderer);
-        $mailSent = $mailForm->sendMail($post->getEmail('E-mailadres'));
+        $mailSent = $mailForm->sendMail($domain, $post->getEmail('E-mailadres'));
 
         if (!$mailSent)
         {
@@ -95,7 +96,7 @@ final class MailformController extends Controller
      * @throws Exception
      * @return bool
      */
-    private function processHelper(Mailform $form, RequestParameters $post): bool
+    private function processHelper(Mailform $form, string $domain, RequestParameters $post): bool
     {
         if ($form->name === '')
         {
@@ -125,7 +126,7 @@ final class MailformController extends Controller
         $subject = $form->name;
         $sender = $post->getEmail('E-mailadres');
 
-        $mail = UtilMail::createMailWithDefaults(new Address($recipient), $subject, $mailBody);
+        $mail = UtilMail::createMailWithDefaults($domain, new Address($recipient), $subject, $mailBody);
         if ($sender !== '')
         {
             $mail->addReplyTo(new Address($sender));
@@ -137,6 +138,7 @@ final class MailformController extends Controller
             if ($form->sendConfirmation && $sender && $form->confirmationText !== null)
             {
                 $mail = UtilMail::createMailWithDefaults(
+                    $domain,
                     new Address($sender),
                     'Ontvangstbevestiging',
                     $form->confirmationText

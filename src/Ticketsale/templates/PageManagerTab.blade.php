@@ -20,8 +20,8 @@
         @foreach ($concerts as $concert)
             @php
                 $concertUrl = $urlService->toFriendly(new \Cyndaron\Url\Url("/concert/order/{$concert->id}"));
-                $encodedUrl = 'https://' . rawurlencode($_SERVER['HTTP_HOST'] . $concertUrl);
-                $qrUrl = "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl={$encodedUrl}&choe=UTF-8";
+                $fullUrl = $baseUrl . $concertUrl;
+                $qrUrl = "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl={$fullUrl}&choe=UTF-8";
             @endphp
         <tr>
             <td>{{ $concert->id }}</td>

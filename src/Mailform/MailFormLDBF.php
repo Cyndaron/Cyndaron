@@ -53,9 +53,10 @@ final class MailFormLDBF
         $this->mailBody = $templateRenderer->render('Mailform/LDBFMail.blade.php', $templateVars);
     }
 
-    public function sendMail(string $requesterMail): bool
+    public function sendMail(string $domain, string $requesterMail): bool
     {
         $mail1 = UtilMail::createMailWithDefaults(
+            $domain,
             new Address('voorzitter@leendebroekertfonds.nl'),
             'Nieuwe aanvraag',
             null,
@@ -64,6 +65,7 @@ final class MailFormLDBF
         $mail1->addReplyTo(new Address($requesterMail));
 
         $mail2 = UtilMail::createMailWithDefaults(
+            $domain,
             new Address($requesterMail),
             'Kopie aanvraag',
             null,

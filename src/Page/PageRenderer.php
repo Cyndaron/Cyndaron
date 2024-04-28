@@ -10,6 +10,7 @@ use Cyndaron\User\User;
 use Cyndaron\User\UserMenu;
 use Cyndaron\View\Renderer\TextRenderer;
 use Cyndaron\View\Template\TemplateRenderer;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class PageRenderer
@@ -19,6 +20,7 @@ final class PageRenderer
         private readonly TemplateRenderer $templateRenderer,
         private readonly TextRenderer $textRenderer,
         private readonly UrlService $urlService,
+        private readonly Request $request,
         private readonly User|null $currentUser
     ) {
     }
@@ -29,7 +31,8 @@ final class PageRenderer
     public function render(Page $page, array $vars = []): string
     {
         $userMenu = UserMenu::getForUser($this->currentUser, $this->registry->userMenuItems);
-        return $page->render($this->templateRenderer, $this->textRenderer, $this->urlService, $this->registry->pageProcessors, $userMenu, $vars);
+        $isFrontPage = $this->request->getRequestUri() === '/';
+        return $page->render($this->templateRenderer, $this->textRenderer, $this->urlService, $this->registry->pageProcessors, $isFrontPage, $userMenu, $vars);
     }
 
     /**

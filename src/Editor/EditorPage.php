@@ -5,11 +5,13 @@ use Cyndaron\Category\Category;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
+use Symfony\Component\HttpFoundation\Request;
 use function array_filter;
 use function is_dir;
 use function Safe\scandir;
@@ -44,7 +46,7 @@ abstract class EditorPage extends Page
      * @param bool $useBackup
      * @throws \Safe\Exceptions\DirException
      */
-    final public function __construct(QueryBits $queryBits, UrlService $urlService, array $internalLinks, int|null $id, bool $useBackup)
+    final public function __construct(QueryBits $queryBits, Request $request, UrlService $urlService, array $internalLinks, int|null $id, bool $useBackup)
     {
         $this->queryBits = $queryBits;
         $this->id = $id;
@@ -72,7 +74,8 @@ abstract class EditorPage extends Page
         $this->templateVars['hasCategory'] = static::HAS_CATEGORY;
         $this->templateVars['contentTitle'] = $this->contentTitle;
         $this->templateVars['friendlyUrl'] = trim($friendlyUrl, '/');
-        $this->templateVars['friendlyUrlPrefix'] = "https://{$_SERVER['HTTP_HOST']}/";
+        $this->templateVars['friendlyUrlPrefix'] = $request->getSchemeAndHttpHost() . '/';
+        $this->templateVars['referrer'] = $request->headers->get('referer');
         $this->templateVars['article'] = $this->content;
         $this->templateVars['model'] = $this->model;
         $this->templateVars['editorHeaderImage'] = ($this->model instanceof ModelWithCategory) ? $this->model->image : '';

@@ -21,6 +21,7 @@ use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
@@ -71,13 +72,14 @@ final class Kernel
         $urlService = new UrlService($pdo, $request->getRequestUri(), $registry->urlProviders);
         $templateRenderer = TemplateRendererFactory::createTemplateRenderer($registry->templateRoots);
         $textRenderer = new TextRenderer($registry, $dic);
-        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $urlService, $user);
+        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $urlService, $request, $user);
+        $urlInfo = UrlInfo::fromRequest($request);
 
         $fileLogger = new FileLogger(ROOT_DIR . '/var/log/cyndaron.log');
         $mailRecipient = Setting::get('mail_logRecipient');
         if (!empty($mailRecipient))
         {
-            $mailLogger = new MailLogger(Mail::getNoreplyAddress(), new Address($mailRecipient), Setting::get('siteName'));
+            $mailLogger = new MailLogger(Mail::getNoreplyAddress($urlInfo->domain), new Address($mailRecipient), Setting::get('siteName'));
             $multiLogger = new MultiLogger($fileLogger, $mailLogger);
         }
         else
@@ -88,6 +90,7 @@ final class Kernel
 
         $dic->add($registry);
         $dic->add($request);
+        $dic->add($urlInfo);
         $dic->add($templateRenderer);
         $dic->add($textRenderer);
         $dic->add($pageRenderer);
@@ -284,7 +287,7 @@ final class Kernel
         $dic = $this->buildDIC($registry, $request, $user);
         $response = $this->route($dic);
         $queryBits = $dic->tryGet(QueryBits::class);
-        $cspHeader = $this->getCSPHeader((bool)($_SERVER['HTTPS'] ?? false), $queryBits);
+        $cspHeader = $this->getCSPHeader((bool)$request->server->get('HTTPS'), $queryBits);
         $response->headers->set('Content-Security-Policy', $cspHeader);
 
         return $response;

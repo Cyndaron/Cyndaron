@@ -2,6 +2,7 @@
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\ImproperSubclassing;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
 use Cyndaron\Geelhoed\Sport\Sport;
@@ -11,6 +12,7 @@ use Cyndaron\Payment\Currency;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
@@ -154,8 +156,8 @@ final class ContestController extends Controller
 //
 //        try
 //        {
-//            $baseUrl = "https://{$_SERVER['HTTP_HOST']}";
-//            $redirectUrl = "{$baseUrl}/contest/view/{$contest->id}";
+//            $schemeAndHost = "https://{$_SERVER['HTTP_HOST']}";
+//            $redirectUrl = "{$schemeAndHost}/contest/view/{$contest->id}";
 //            $response = $this->doMollieTransaction([$contestMember], "Inschrijving {$contest->name}", $contest->price, $redirectUrl);
 //        }
 //        catch (\Exception $e)
@@ -170,18 +172,17 @@ final class ContestController extends Controller
     }
 
     /**
+     * @param string $schemeAndHost
      * @param ContestMember[] $contestMembers
      * @param string $description
      * @param float $price
      * @param string $redirectUrl
-     * @throws \Cyndaron\DBAL\ImproperSubclassing
-     * @throws \Mollie\Api\Exceptions\ApiException
+     * @throws ImproperSubclassing
      * @return Response
      */
-    private function doMollieTransaction(array $contestMembers, string $description, float $price, string $redirectUrl): Response
+    private function doMollieTransaction(string $schemeAndHost, array $contestMembers, string $description, float $price, string $redirectUrl): Response
     {
-        $baseUrl = "https://{$_SERVER['HTTP_HOST']}";
-        $webhookUrl = "{$baseUrl}/api/contest/mollieWebhook";
+        $webhookUrl = "{$schemeAndHost}/api/contest/mollieWebhook";
 
         $payment = new \Cyndaron\Payment\Payment($description, $price, Currency::EUR, $redirectUrl, $webhookUrl);
         $molliePayment = $payment->sendToMollie();
@@ -533,7 +534,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('payFullDue', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function payFullDue(User $currentUser): Response
+    public function payFullDue(UrlInfo $urlInfo, User $currentUser): Response
     {
         [$due, $contestMembers] = Contest::getTotalDue($currentUser);
         if ($due === 0.00)
@@ -554,9 +555,9 @@ final class ContestController extends Controller
 
         try
         {
-            $redirectUrl = "https://{$_SERVER['HTTP_HOST']}/contest/myContests";
+            $redirectUrl = "{$urlInfo->schemeAndHost}/contest/myContests";
             $description = implode(' + ', $contestNames) . ' - Geelhoed';
-            $response = $this->doMollieTransaction($contestMembers, $description, $due, $redirectUrl);
+            $response = $this->doMollieTransaction($urlInfo->schemeAndHost, $contestMembers, $description, $due, $redirectUrl);
         }
         catch (Exception $e)
         {
@@ -696,7 +697,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('editSubscription', RequestMethod::POST, UserLevel::LOGGED_IN)]
-    public function editSubscription(QueryBits $queryBits, RequestParameters $post, User|null $currentUser): Response
+    public function editSubscription(QueryBits $queryBits, RequestParameters $post, UrlInfo $urlInfo, User|null $currentUser): Response
     {
         $id = $queryBits->getInt(2);
         $subscription = ContestMember::fetchById($id);
@@ -737,7 +738,7 @@ final class ContestController extends Controller
             {
                 $mailText = "{$subscription->getMember()->getProfile()->getFullName()} heeft zijn/haar inschrijving voor {$subscription->getContest()->name} gewijzigd. Het gewicht is nu {$subscription->weight} kg en de graduatie is: {$subscription->getGraduation()->name}.";
                 $to = Setting::get('geelhoed_contestMaintainerMail');
-                $mail = UtilMail::createMailWithDefaults(new Address($to), 'Wijziging inschrijving', $mailText);
+                $mail = UtilMail::createMailWithDefaults($urlInfo->domain, new Address($to), 'Wijziging inschrijving', $mailText);
                 $mail->send();
             }
         }
@@ -838,7 +839,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('createParentAccount', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
-    public function createParentAccount(RequestParameters $post): JsonResponse
+    public function createParentAccount(RequestParameters $post, UrlInfo $urlInfo): JsonResponse
     {
         $user = new User();
         $user->firstName = $post->getSimpleString('firstName');
@@ -863,7 +864,7 @@ final class ContestController extends Controller
 
         if ($post->getBool('sendIntroductionMail'))
         {
-            if (!$this->sendParentAccountIntroductionMail($user))
+            if (!$this->sendParentAccountIntroductionMail($user, $urlInfo->domain))
             {
                 return new JsonResponse(['error' => 'Account is aangemaakt, maar kon welkomstmail niet versturen'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
@@ -873,7 +874,7 @@ final class ContestController extends Controller
         return new JsonResponse();
     }
 
-    public function sendParentAccountIntroductionMail(User $user): bool
+    public function sendParentAccountIntroductionMail(User $user, string $domain): bool
     {
         $password = $user->generatePassword();
         $user->save();
@@ -885,7 +886,7 @@ final class ContestController extends Controller
         ]);
 
         assert($user->email !== null);
-        $mail = UtilMail::createMailWithDefaults(new Address($user->email), 'Ouderaccount aangemaakt', $mailBody);
+        $mail = UtilMail::createMailWithDefaults($domain, new Address($user->email), 'Ouderaccount aangemaakt', $mailBody);
         return $mail->send();
     }
 

@@ -12,6 +12,7 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Url\UrlService;
@@ -21,6 +22,7 @@ use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\Util;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 use function array_merge;
@@ -32,7 +34,7 @@ final class EditorController extends Controller
     private const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry, Connection $connection, UrlService $urlService): Response
+    public function routeGet(QueryBits $queryBits, Request $request, User $currentUser, ModuleRegistry $registry, Connection $connection, UrlService $urlService): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorPages))
@@ -49,7 +51,7 @@ final class EditorController extends Controller
         $id = $queryBits->getNullableInt(2);
         $previous = $queryBits->getString(3) === 'previous';
         /** @var EditorPage $editorPage */
-        $editorPage = new $class($queryBits, $urlService, $this->getInternalLinks($registry->internalLinkTypes, $connection), $id, $previous);
+        $editorPage = new $class($queryBits, $request, $urlService, $this->getInternalLinks($registry->internalLinkTypes, $connection), $id, $previous);
         $hash = $queryBits->getString(3);
         $hash = strlen($hash) > 20 ? $hash : '';
         $editorPage->addTemplateVar('hash', $hash);

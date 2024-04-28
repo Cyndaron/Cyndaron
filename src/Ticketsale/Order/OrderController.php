@@ -5,12 +5,14 @@ namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\Barcode\Code128;
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\ImproperSubclassing;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Payment\Currency;
 use Cyndaron\Payment\Payment;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Ticketsale\Concert\Concert;
@@ -26,8 +28,10 @@ use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
 use Mpdf\Output\Destination;
+use Safe\Exceptions\JsonException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use function array_key_exists;
@@ -53,15 +57,15 @@ final class OrderController extends Controller
     private const MAX_SECRET_CODE_RETRIES = 10;
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function add(RequestParameters $post): Response
+    public function add(RequestParameters $post, UrlInfo $urlInfo): Response
     {
         try
         {
-            $order = $this->processOrder($post);
+            $order = $this->processOrder($post, $urlInfo);
             $concert = $order->getConcert();
             if ($concert->getDelivery() === TicketDelivery::DIGITAL)
             {
-                $paymentLink = $order->getPaymentLink();
+                $paymentLink = $order->getPaymentLink($urlInfo->schemeAndHost);
                 $paymentLinkText = sprintf('<br><br><a href="%s" role="button" class="btn btn-primary btn-lg">Naar de betaalomgeving</a>', $paymentLink);
                 $page = new SimplePage(
                     'Bestelling betalen',
@@ -162,11 +166,13 @@ final class OrderController extends Controller
 
     /**
      * @param RequestParameters $post
+     * @param UrlInfo $urlInfo
      * @throws InvalidOrder
-     * @throws \Safe\Exceptions\JsonException
+     * @throws ImproperSubclassing
+     * @throws JsonException
      * @return Order
      */
-    private function processOrder(RequestParameters $post): Order
+    private function processOrder(RequestParameters $post, UrlInfo $urlInfo): Order
     {
         if ($post->isEmpty())
         {
@@ -315,7 +321,7 @@ final class OrderController extends Controller
             }
         }
 
-        $this->sendMail($order, $concert, $reserveSeats, $totalAmount, $ticketTypes, $orderTicketTypes);
+        $this->sendMail($urlInfo->domain, $order, $concert, $urlInfo->schemeAndHost, $reserveSeats, $totalAmount, $ticketTypes, $orderTicketTypes);
         return $order;
     }
 
@@ -369,15 +375,17 @@ final class OrderController extends Controller
     }
 
     /**
+     * @param string $domain
      * @param Order $order
      * @param Concert $concert
+     * @param string $baseUrl
      * @param int $reserveSeats
      * @param float $total
      * @param TicketType[] $ticketTypes
      * @param OrderTicketTypes[] $orderTicketTypes
      * @return bool
      */
-    private function sendMail(Order $order, Concert $concert, int $reserveSeats, float $total, array $ticketTypes, array $orderTicketTypes): bool
+    private function sendMail(string $domain, Order $order, Concert $concert, string $baseUrl, int $reserveSeats, float $total, array $ticketTypes, array $orderTicketTypes): bool
     {
         $orderTicketTypeStats = [];
         foreach ($orderTicketTypes as $orderTicketType)
@@ -427,7 +435,7 @@ Na betaling zullen uw kaarten ' . $deliveryText . '.' . $reservedSeatsText;
 
         if ($deliveryType === TicketDelivery::DIGITAL)
         {
-            $url = $order->getPaymentLink();
+            $url = $order->getPaymentLink($baseUrl);
             $text .= "
 
 U kunt betalen via deze link: {$url}
@@ -492,6 +500,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         }
 
         $mail = UtilMail::createMailWithDefaults(
+            $domain,
             new Address($order->email),
             'Bestelling concertkaarten',
             $text
@@ -515,7 +524,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
     }
 
     #[RouteAttribute('setIsPaid', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function setIsPaid(QueryBits $queryBits): JsonResponse
+    public function setIsPaid(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -524,7 +533,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         }
         /** @var Order $order */
         $order = Order::fetchById($id);
-        $order->setIsPaid();
+        $order->setIsPaid($urlInfo);
 
         return new JsonResponse();
     }
@@ -545,7 +554,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
     }
 
     #[RouteAttribute('pay', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function pay(QueryBits $queryBits): Response
+    public function pay(QueryBits $queryBits, Request $request): Response
     {
         $orderId = $queryBits->getInt(2);
         $order = Order::fetchById($orderId);
@@ -573,9 +582,9 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         $price = $order->calculatePrice();
 
         $description = "Ticket(s) {$concert->name}";
-        $baseUrl = "https://{$_SERVER['HTTP_HOST']}";
+        $baseUrl = $request->getSchemeAndHttpHost();
         $webhookUrl = "{$baseUrl}/api/concert-order/mollieWebhook";
-        $redirectUrl = "https://{$_SERVER['HTTP_HOST']}/concert-order/afterPayment/{$order->id}/{$order->secretCode}";
+        $redirectUrl = "{$baseUrl}/concert-order/afterPayment/{$order->id}/{$order->secretCode}";
 
         $payment = new Payment($description, $price, Currency::EUR, $redirectUrl, $webhookUrl);
         $molliePayment = $payment->sendToMollie();
@@ -605,7 +614,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
     }
 
     #[RouteAttribute('mollieWebhook', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
-    public function mollieWebhook(RequestParameters $post): Response
+    public function mollieWebhook(RequestParameters $post, UrlInfo $urlInfo): Response
     {
         $apiKey = Setting::get('mollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
@@ -637,7 +646,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         {
             if ($paidStatus)
             {
-                $order->setIsPaid();
+                $order->setIsPaid($urlInfo);
             }
             else
             {
@@ -833,8 +842,9 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
     }
 
     #[RouteAttribute('afterPayment', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function afterPayment(QueryBits $queryBits): Response
+    public function afterPayment(QueryBits $queryBits, Request $request): Response
     {
+        $baseUrl = $request->getSchemeAndHttpHost();
         if ($queryBits->hasIndex(3))
         {
             $orderId = $queryBits->getInt(2);
@@ -846,7 +856,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
                 {
                     $page = new SimplePage(
                         'Bestelling verwerkt',
-                        sprintf('Hartelijk dank voor uw betaling.<br><br><a href="%s" role="button" class="btn btn-primary" target="_blank">Tickets ophalen</a>', $order->getLinkToTickets()),
+                        sprintf('Hartelijk dank voor uw betaling.<br><br><a href="%s" role="button" class="btn btn-primary" target="_blank">Tickets ophalen</a>', $order->getLinkToTickets($baseUrl)),
                     );
                     return $this->pageRenderer->renderResponse($page);
                 }

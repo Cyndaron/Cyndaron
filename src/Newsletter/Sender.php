@@ -15,6 +15,7 @@ final class Sender
     private readonly Mailer $mailer;
 
     public function __construct(
+        private readonly AddressHelper $addressHelper,
         private readonly Address $fromAddress,
         private readonly Address $replyToAddress,
         private readonly Address $unsubscribeAddress,
@@ -28,7 +29,7 @@ final class Sender
     {
         try
         {
-            $unsubscribeLink = AddressHelper::getUnsubscribeLink($toAddress->getAddress());
+            $unsubscribeLink = $this->addressHelper->getUnsubscribeLink($toAddress->getAddress());
             $unsubscribeMessage = '<hr><i>U ontvangt deze e-mail omdat u lid bent of omdat zich heeft ingeschreven voor de nieuwsbrief. <a href="' . $unsubscribeLink . '">Klik hier om u uit te schrijven.</a></i>';
 
             $email = (new Email())

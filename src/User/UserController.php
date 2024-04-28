@@ -8,6 +8,7 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\Kernel;
 use Cyndaron\Routing\RouteAttribute;
@@ -43,7 +44,7 @@ final class UserController extends Controller
     {
         if (empty($_SESSION['redirect']))
         {
-            $_SESSION['redirect'] = $request->get('referer');
+            $_SESSION['redirect'] = $request->headers->get('referer');
         }
         $page = new LoginPage();
         return $this->pageRenderer->renderResponse($page);
@@ -87,7 +88,7 @@ final class UserController extends Controller
     }
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN)]
-    public function add(RequestParameters $post): JsonResponse
+    public function add(RequestParameters $post, UrlInfo $urlInfo): JsonResponse
     {
         $user = new User();
         $user->username = $post->getAlphaNum('username');
@@ -110,7 +111,7 @@ final class UserController extends Controller
 
         if ($user->email !== null)
         {
-            $user->mailNewPassword($password);
+            $user->mailNewPassword($urlInfo->domain, $password);
         }
 
         return new JsonResponse(['userId' => $user->id]);
@@ -166,7 +167,7 @@ final class UserController extends Controller
     }
 
     #[RouteAttribute('resetpassword', RequestMethod::POST, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
-    public function resetPassword(QueryBits $queryBits): JsonResponse
+    public function resetPassword(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
     {
         $userId = $queryBits->getInt(2);
         $user = User::fetchById($userId);
@@ -177,7 +178,7 @@ final class UserController extends Controller
 
         $newPassword = $user->generatePassword();
         $user->save();
-        $user->mailNewPassword($newPassword);
+        $user->mailNewPassword($urlInfo->domain, $newPassword);
 
         return new JsonResponse();
     }

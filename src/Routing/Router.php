@@ -10,6 +10,7 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\UserLevel;
@@ -17,6 +18,7 @@ use Cyndaron\User\UserSession;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\TemplateRenderer;
+use Safe\Exceptions\SessionException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,20 +51,26 @@ final class Router
         $this->urlService = $dic->get(UrlService::class);
     }
 
-    private function sendNotFound(bool $isApiCall): Response
+    private function sendMethodNotAllowed(bool $isApiCall): Response
     {
-        if (!in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST'], true))
+        if ($isApiCall)
         {
-            if ($isApiCall)
-            {
-                return new JsonResponse(['error' => 'Unacceptable request method!'], Response::HTTP_METHOD_NOT_ALLOWED, ['allow' => 'GET, POST']);
-            }
-
-            $page = new SimplePage('Verkeerde aanvraag', 'U kunt geen aanvraag doen met deze methode.');
-            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Unacceptable request method!'], Response::HTTP_METHOD_NOT_ALLOWED, ['allow' => 'GET, POST']);
         }
 
-        return new JsonResponse(['error' => 'Route not found!'], Response::HTTP_NOT_FOUND);
+        $page = new SimplePage('Verkeerde aanvraag', 'U kunt geen aanvraag doen met deze methode.');
+        return $this->pageRenderer->renderResponse($page, status: Response::HTTP_METHOD_NOT_ALLOWED, headers: ['allow' => 'GET, POST']);
+    }
+
+    private function sendNotFound(bool $isApiCall): Response
+    {
+        if ($isApiCall)
+        {
+            return new JsonResponse(['error' => 'Route not found!'], Response::HTTP_NOT_FOUND);
+        }
+
+        $page = new SimplePage('Fout', 'Deze route is niet bekend.');
+        return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
     }
 
     private function getFrontpageUrl(): Url
@@ -119,7 +127,8 @@ final class Router
 
     public function route(Request $request): Response
     {
-        $requestStr = parse_url($request->getRequestUri(), PHP_URL_PATH) ?: '';
+        $requestUri = $request->getRequestUri();
+        $requestStr = parse_url($requestUri, PHP_URL_PATH) ?: '';
         $requestStr = ltrim($requestStr, '/') ?: '/';
 
         if ($this->containsPathTraversal($requestStr))
@@ -145,17 +154,19 @@ final class Router
             return $this->sendNotFound($isApiCall);
         }
 
-        $redirect = $this->getLoginRedirect($queryBits);
+        $redirect = $this->getLoginRedirect($queryBits, $requestUri);
         if ($redirect !== null)
         {
             return $redirect;
         }
 
         $post = new RequestParameters($request->request->all());
+        $urlInfo = UrlInfo::fromRequest($request);
 
         $this->dic->add($request);
         $this->dic->add($post);
         $this->dic->add($queryBits);
+        $this->dic->add($urlInfo);
         $profile = UserSession::getProfile();
         if ($profile !== null)
         {
@@ -169,7 +180,7 @@ final class Router
         $requestMethod = RequestMethod::tryFrom($request->getRealMethod());
         if ($requestMethod === null)
         {
-            return $this->sendNotFound($isApiCall);
+            return $this->sendMethodNotAllowed($isApiCall);
         }
 
         // Try exact match first, if none is found, try a catch-all (if it exists).
@@ -187,7 +198,7 @@ final class Router
         {
             $post = $this->dic->tryGet(RequestParameters::class);
             $token = $post !== null ? $post->getAlphaNum('csrfToken') : '';
-            $tokenCorrect = $this->checkCSRFToken($_SERVER['REQUEST_METHOD'], $module, $action, $token);
+            $tokenCorrect = $this->checkCSRFToken($requestMethod, $module, $action, $token);
             if (!$tokenCorrect)
             {
                 if ($isApiCall)
@@ -200,10 +211,10 @@ final class Router
             }
         }
 
-        return $this->callRoute($controller, $route);
+        return $this->callRoute($controller, $route, $requestUri);
     }
 
-    public function getLoginRedirect(QueryBits $queryBits): RedirectResponse|null
+    public function getLoginRedirect(QueryBits $queryBits, string $requestUri): RedirectResponse|null
     {
         $loginStatus = $this->getLoginStatus($queryBits);
         switch ($loginStatus)
@@ -215,14 +226,14 @@ final class Router
             case LoginStatus::NEEDS_LOGIN:
             default:
                 UserSession::addNotification('U moet inloggen om deze site te bekijken');
-                $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
+                $_SESSION['redirect'] = $requestUri;
                 return new RedirectResponse('/user/login', Response::HTTP_FOUND, Kernel::HEADERS_DO_NOT_CACHE);
         }
     }
 
-    public function checkCSRFToken(string $requestMethod, string $module, string $action, string $token): bool
+    public function checkCSRFToken(RequestMethod $requestMethod, string $module, string $action, string $token): bool
     {
-        if ($requestMethod === 'POST' && !UserSession::checkToken($module, $action, $token))
+        if ($requestMethod === RequestMethod::POST && !UserSession::checkToken($module, $action, $token))
         {
             return false;
         }
@@ -230,14 +241,14 @@ final class Router
         return true;
     }
 
-    private function callRoute(Controller $controller, Route $route): Response
+    private function callRoute(Controller $controller, Route $route, string $requestUri): Response
     {
         $right = $route->right;
         $profile = UserSession::getProfile();
         $hasRight = !empty($right) && $profile?->hasRight($right);
         if (!$hasRight)
         {
-            $response = $this->checkUserLevel($route->level);
+            $response = $this->checkUserLevel($route->level, $requestUri);
             if ($response !== null)
             {
                 return $response;
@@ -294,18 +305,18 @@ final class Router
 
     /**
      * @param int $requiredLevel
-     * @throws \Safe\Exceptions\SessionException
-     * @throws \Safe\Exceptions\SessionException
+     * @param string $requestUri
+     * @throws SessionException
      * @return Response|null A Response if the user level is insufficient, null otherwise.
      */
-    public function checkUserLevel(int $requiredLevel): Response|null
+    public function checkUserLevel(int $requiredLevel, string $requestUri): Response|null
     {
         if ($requiredLevel > UserLevel::ANONYMOUS && !UserSession::isLoggedIn())
         {
             session_destroy();
             session_start();
             UserSession::addNotification('U moet inloggen om deze pagina te bekijken');
-            $_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
+            $_SESSION['redirect'] = $requestUri;
 
             return new RedirectResponse('/user/login', );
         }

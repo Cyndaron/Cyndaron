@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Newsletter;
 
-use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Util\Setting;
-use Cyndaron\Util\Util;
-use PDO;
 use RuntimeException;
 use Symfony\Component\Mime\Address;
 use function base64_encode;
@@ -15,59 +14,60 @@ use function hash;
 
 final class AddressHelper
 {
-    public static function getConfirmationLink(string $email): string
+    public function __construct(private readonly Connection $connection, private readonly UrlInfo $urlInfo)
+    {
+    }
+
+    public function getConfirmationLink(string $email): string
     {
         $base64email = base64_encode($email);
         $code = self::calculateHash($email);
-        $domain = Util::getDomain();
-        return "https://{$domain}/newsletter/confirm/$base64email/$code";
+        return "{$this->urlInfo->schemeAndHost}/newsletter/confirm/$base64email/$code";
     }
 
-    public static function getUnsubscribeLink(string $email): string
+    public function getUnsubscribeLink(string $email): string
     {
         $base64email = base64_encode($email);
         $code = self::calculateHash($email);
-        $domain = Util::getDomain();
-        return "https://{$domain}/newsletter/unsubscribe/$base64email/$code";
+        return "{$this->urlInfo->schemeAndHost}/newsletter/unsubscribe/$base64email/$code";
     }
 
-    public static function unsubscribe(string $email): EmailPresenceStatistics
+    public function unsubscribe(string $email): EmailPresenceStatistics
     {
-        $pdo = DBConnection::getPDO();
-        $prep = $pdo->prepare('UPDATE users SET optOut = 1 WHERE email = ?');
+        $prep = $this->connection->prepare('UPDATE users SET optOut = 1 WHERE email = ?');
         $prep->execute([$email]);
         $numChangedUsers = $prep->rowCount();
 
         $numChangedMembers = 0;
         if (class_exists('\Cyndaron\Geelhoed\Member\Member'))
         {
-            $prep = $pdo->prepare('UPDATE users SET optOut = 1 WHERE id IN (SELECT userId FROM geelhoed_members WHERE parentEmail = ?)');
+            $prep = $this->connection->prepare('UPDATE users SET optOut = 1 WHERE id IN (SELECT userId FROM geelhoed_members WHERE parentEmail = ?)');
             $prep->execute([$email]);
             $numChangedMembers = $prep->rowCount();
         }
 
-        $prep = $pdo->prepare('DELETE FROM newsletter_subscriber WHERE email = ?');
+        $prep = $this->connection->prepare('DELETE FROM newsletter_subscriber WHERE email = ?');
         $prep->execute([$email]);
         $numChangedSubscribers = $prep->rowCount();
 
         return new EmailPresenceStatistics($numChangedUsers, $numChangedMembers, $numChangedSubscribers);
     }
 
-    public static function delete(PDO $pdo, string $email): EmailPresenceStatistics
+    public function delete(string $email): EmailPresenceStatistics
     {
-        $prep = $pdo->prepare('UPDATE users SET email = NULL WHERE email = ?');
+        $prep = $this->connection->prepare('UPDATE users SET email = NULL WHERE email = ?');
         $prep->execute([$email]);
         $numChangedUsers = $prep->rowCount();
 
         $numChangedMembers = 0;
         if (class_exists('\Cyndaron\Geelhoed\Member\Member'))
         {
-            $prep = $pdo->prepare('UPDATE geelhoed_members SET parentEmail = \'\' WHERE parentEmail = ?');
+            $prep = $this->connection->prepare('UPDATE geelhoed_members SET parentEmail = \'\' WHERE parentEmail = ?');
             $prep->execute([$email]);
             $numChangedMembers = $prep->rowCount();
         }
 
-        $prep = $pdo->prepare('DELETE FROM newsletter_subscriber WHERE email = ?');
+        $prep = $this->connection->prepare('DELETE FROM newsletter_subscriber WHERE email = ?');
         $prep->execute([$email]);
         $numChangedSubscribers = $prep->rowCount();
 
@@ -77,7 +77,7 @@ final class AddressHelper
     /**
      * @return Address[]
      */
-    public static function getMemberAddresses(): array
+    public function getMemberAddresses(): array
     {
         $parentMail = '';
         if (class_exists('\Cyndaron\Geelhoed\Member\Member'))
@@ -91,7 +91,7 @@ final class AddressHelper
                 SELECT email AS mail FROM users AS een WHERE optout <> 1
                 {$parentMail}
             ) AS drie WHERE mail IS NOT NULL;";
-        $records = DBConnection::getPDO()->doQueryAndFetchAll($sql) ?: [];
+        $records = $this->connection->doQueryAndFetchAll($sql) ?: [];
 
         $memberAddresses = [];
         foreach ($records as $record)
@@ -114,7 +114,7 @@ final class AddressHelper
     /**
      * @return Address[]
      */
-    public static function getSubscriberAddresses(): array
+    public function getSubscriberAddresses(): array
     {
         $subscriberAddresses = [];
         foreach (Subscriber::fetchAll(['confirmed = 1']) as $subscriber)
@@ -132,7 +132,7 @@ final class AddressHelper
         return $subscriberAddresses;
     }
 
-    public static function getFromAddress(): Address
+    public function getFromAddress(): Address
     {
         $address = Setting::get('newsletter_from_address');
         $name = Setting::get('newsletter_from_name');
@@ -141,11 +141,10 @@ final class AddressHelper
             return new Address($address, $name);
         }
 
-        $domain = Util::getDomain();
-        return new Address("nieuwsbrief@{$domain}", $name);
+        return new Address("nieuwsbrief@{$this->urlInfo->domain}", $name);
     }
 
-    public static function getReplyToAddress(): Address
+    public function getReplyToAddress(): Address
     {
         $address = Setting::get('newsletter_reply_to_address');
         $name = Setting::get('newsletter_reply_to_name');
@@ -154,17 +153,15 @@ final class AddressHelper
             return new Address($address, $name);
         }
 
-        $domain = Util::getDomain();
-        return new Address("info@{$domain}", $name);
+        return new Address("info@{$this->urlInfo->domain}", $name);
     }
 
-    public static function getUnsubscribeAddress(): string
+    public function getUnsubscribeAddress(): string
     {
-        $domain = Util::getDomain();
-        return "nieuwsbrief@{$domain}";
+        return "nieuwsbrief@{$this->urlInfo->domain}";
     }
 
-    public static function calculateHash(string $email): string
+    public function calculateHash(string $email): string
     {
         $salt = Setting::get('newsletter_salt');
         if ($salt === '')

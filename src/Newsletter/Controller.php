@@ -8,16 +8,17 @@ declare(strict_types=1);
 
 namespace Cyndaron\Newsletter;
 
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
-use PDO;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -47,8 +48,9 @@ class Controller extends \Cyndaron\Routing\Controller
     }
 
     #[RouteAttribute('subscribe', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function subscribe(RequestParameters $post): Response
+    public function subscribe(RequestParameters $post, Connection $connection, UrlInfo $urlInfo): Response
     {
+        $addressHelper = new AddressHelper($connection, $urlInfo);
         $antiSpam = $post->getUnfilteredString('antispam');
         $antiSpam2 = $post->getUnfilteredString('new_password');
         if ($antiSpam !== 'geelhoed' || $antiSpam2 !== '')
@@ -73,7 +75,7 @@ class Controller extends \Cyndaron\Routing\Controller
             $subscription->confirmed = false;
             $subscription->save();
 
-            $this->sendConfirmationMail(new Address($email, $name));
+            $this->sendConfirmationMail($addressHelper, new Address($email, $name));
 
             $message = 'Wij hebben een e-mail gestuurd naar uw e-mailadres. Klik op de link in de e-mail om de inschrijving te bevestigen.';
         }
@@ -82,12 +84,12 @@ class Controller extends \Cyndaron\Routing\Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
-    private function sendConfirmationMail(Address $toAddress): void
+    private function sendConfirmationMail(AddressHelper $addressHelper, Address $toAddress): void
     {
-        $replyToAddress = AddressHelper::getReplyToAddress();
-        $fromAddress = AddressHelper::getFromAddress();
+        $replyToAddress = $addressHelper->getReplyToAddress();
+        $fromAddress = $addressHelper->getFromAddress();
         $organisation = Setting::get(BuiltinSetting::ORGANISATION);
-        $confirmationLink = AddressHelper::getConfirmationLink($toAddress->getAddress());
+        $confirmationLink = $addressHelper->getConfirmationLink($toAddress->getAddress());
 
         $transport = new SendmailTransport();
         $mailer = new Mailer($transport);
@@ -111,8 +113,9 @@ class Controller extends \Cyndaron\Routing\Controller
     }
 
     #[RouteAttribute('send', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function send(RequestParameters $post, Request $request): JsonResponse
+    public function send(RequestParameters $post, Connection $connection, Request $request, UrlInfo $urlInfo): JsonResponse
     {
+        $addressHelper = new AddressHelper($connection, $urlInfo);
         $subject = $post->getSimpleString('subject');
         $body = $post->getHTML('body');
         /** @var UploadedFile[] $attachments */
@@ -120,11 +123,11 @@ class Controller extends \Cyndaron\Routing\Controller
         $newsletterContents = new NewsletterContents($subject, $body, $attachments);
 
         $recipientGroup = RecipientGroup::from($post->getAlphaNum('recipient'));
-        $replyToAddress = AddressHelper::getReplyToAddress();
-        $fromAddress = AddressHelper::getFromAddress();
-        $unsubscribeAddress = new Address(AddressHelper::getUnsubscribeAddress());
+        $replyToAddress = $addressHelper->getReplyToAddress();
+        $fromAddress = $addressHelper->getFromAddress();
+        $unsubscribeAddress = new Address($addressHelper->getUnsubscribeAddress());
 
-        $sender = new Sender($fromAddress, $replyToAddress, $unsubscribeAddress, $newsletterContents);
+        $sender = new Sender($addressHelper, $fromAddress, $replyToAddress, $unsubscribeAddress, $newsletterContents);
 
         if ($recipientGroup === RecipientGroup::SINGLE)
         {
@@ -135,7 +138,7 @@ class Controller extends \Cyndaron\Routing\Controller
 
         $numFailed = 0;
         $total = 0;
-        $subscriberAddresses = AddressHelper::getSubscriberAddresses();
+        $subscriberAddresses = $addressHelper->getSubscriberAddresses();
         foreach ($subscriberAddresses as $subscriberAddress)
         {
             $total++;
@@ -147,7 +150,7 @@ class Controller extends \Cyndaron\Routing\Controller
 
         if ($recipientGroup === RecipientGroup::EVERYONE)
         {
-            $memberAddresses = AddressHelper::getMemberAddresses();
+            $memberAddresses = $addressHelper->getMemberAddresses();
             // Do not send an e-mail to people who already got one because they're a newsletter subscriber.
             $memberAddresses = array_udiff($memberAddresses, $subscriberAddresses, static function(Address $address1, Address $address2)
             {
@@ -168,8 +171,9 @@ class Controller extends \Cyndaron\Routing\Controller
     }
 
     #[RouteAttribute('unsubscribe', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function unsubscribeUser(QueryBits $queryBits): Response
+    public function unsubscribeUser(QueryBits $queryBits, Connection $connection, UrlInfo $urlInfo): Response
     {
+        $addressHelper = new AddressHelper($connection, $urlInfo);
         $email = base64_decode($queryBits->getString(2), true);
         if ($email === false)
         {
@@ -177,12 +181,12 @@ class Controller extends \Cyndaron\Routing\Controller
         }
 
         $code = $queryBits->getString(3);
-        if ($code !== AddressHelper::calculateHash($email))
+        if ($code !== $addressHelper->calculateHash($email))
         {
             return $this->pageRenderer->renderResponse(new SimplePage('Uitschrijven', 'Controlecode klopt niet! Mogelijk heeft u een oude link gebruikt of klopt de configuratie niet.'), status:  Response::HTTP_BAD_REQUEST);
         }
 
-        $changes = AddressHelper::unsubscribe($email);
+        $changes = $addressHelper->unsubscribe($email);
         if ($changes->total() === 0)
         {
             return $this->pageRenderer->renderResponse(new SimplePage('Uitschrijven', 'Wij konden uw adres niet vinden. Mogelijk bent u al uitgeschreven.'), status:  Response::HTTP_BAD_REQUEST);
@@ -192,8 +196,9 @@ class Controller extends \Cyndaron\Routing\Controller
     }
 
     #[RouteAttribute('confirm', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function confirm(QueryBits $queryBits): Response
+    public function confirm(QueryBits $queryBits, Connection $connection, UrlInfo $urlInfo): Response
     {
+        $addressHelper = new AddressHelper($connection, $urlInfo);
         $email = base64_decode($queryBits->getString(2), true);
         if ($email === false)
         {
@@ -201,7 +206,7 @@ class Controller extends \Cyndaron\Routing\Controller
         }
 
         $code = $queryBits->getString(3);
-        if ($code !== AddressHelper::calculateHash($email))
+        if ($code !== $addressHelper->calculateHash($email))
         {
             return $this->pageRenderer->renderResponse(new SimplePage('Inschrijven', 'Controlecode klopt niet! Mogelijk heeft u een oude link gebruikt of klopt de configuratie niet.'), status:  Response::HTTP_BAD_REQUEST);
         }
@@ -219,10 +224,11 @@ class Controller extends \Cyndaron\Routing\Controller
     }
 
     #[RouteAttribute('unsubscribe', RequestMethod::POST, UserLevel::ADMIN)]
-    public function unsubscribeAdmin(RequestParameters $post): Response
+    public function unsubscribeAdmin(RequestParameters $post, Connection $connection, UrlInfo $urlInfo): Response
     {
+        $addressHelper = new AddressHelper($connection, $urlInfo);
         $email = $post->getEmail('email');
-        $changes = AddressHelper::unsubscribe($email);
+        $changes = $addressHelper->unsubscribe($email);
 
         if ($changes->total() === 0)
         {
@@ -239,10 +245,11 @@ class Controller extends \Cyndaron\Routing\Controller
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN)]
-    public function delete(RequestParameters $post, PDO $pdo): Response
+    public function delete(RequestParameters $post, Connection $connection, UrlInfo $urlInfo): Response
     {
+        $addressHelper = new AddressHelper($connection, $urlInfo);
         $email = $post->getEmail('email');
-        $changes = AddressHelper::delete($pdo, $email);
+        $changes = $addressHelper->delete($email);
 
         if ($changes->total() === 0)
         {

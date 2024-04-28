@@ -107,7 +107,7 @@ class Page implements Pageable
     /**
      * @param UserMenuItem[] $userMenu
      */
-    protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, array $userMenu): void
+    protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, array $userMenu, bool $isFrontPage): void
     {
         $this->websiteName = Setting::get('siteName');
         $this->templateVars['isAdmin'] = UserSession::isAdmin();
@@ -139,11 +139,11 @@ class Page implements Pageable
         $this->templateVars['menu'] = $this->renderMenu($templateRenderer, $urlService, $userMenu);
 
         $jumboContents = Setting::get('jumboContents');
-        $this->templateVars['showJumbo'] = $this->isFrontPage() && Setting::get('frontPageIsJumbo') && $jumboContents;
+        $this->templateVars['showJumbo'] = $isFrontPage && Setting::get('frontPageIsJumbo') && $jumboContents;
         $this->templateVars['jumboContents'] = $textRenderer->render($jumboContents);
 
         $this->templateVars['pageCaptionClasses'] = '';
-        if ($this->isFrontPage())
+        if ($isFrontPage)
         {
             $this->templateVars['pageCaptionClasses'] = 'voorpagina';
         }
@@ -166,11 +166,6 @@ class Page implements Pageable
                 $this->templateVars[$varName] = $textRenderer->render(ob_get_clean() ?: '');
             }
         }
-    }
-
-    public function isFrontPage(): bool
-    {
-        return $_SERVER['REQUEST_URI'] === '/';
     }
 
     /**
@@ -220,11 +215,11 @@ class Page implements Pageable
      * @param array<string, mixed> $vars
      * @return string
      */
-    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, array $pageProcessors, array $userMenu = [], array $vars = []): string
+    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, array $pageProcessors, bool $isFrontPage, array $userMenu = [], array $vars = []): string
     {
         $this->addTemplateVars($vars);
 
-        $this->renderSkeleton($templateRenderer, $textRenderer, $urlService, $userMenu);
+        $this->renderSkeleton($templateRenderer, $textRenderer, $urlService, $userMenu, $isFrontPage);
 
         foreach ($pageProcessors as $processor)
         {

@@ -20,7 +20,7 @@
     @foreach ($underlyingPages as $page)
         @php
             $url = $page->getFriendlyUrl($urlService);
-            $url = str_contains($url, '://') ? $url : "https://{$domain}{$url}";
+            $url = str_contains($url, '://') ? $url : "{$baseUrl}{$url}";
         @endphp
     <entry>
         <title>{{ $page->name }}</title>

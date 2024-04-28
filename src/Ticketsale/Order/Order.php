@@ -5,6 +5,7 @@ namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\Ticketsale\Concert\TicketDelivery;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
@@ -48,7 +49,7 @@ final class Order extends Model
     /** @var OrderTicketTypes[]|null  */
     private array|null $cachedTicketTypes = null;
 
-    public function setIsPaid(): bool
+    public function setIsPaid(UrlInfo $urlInfo): bool
     {
         if ($this->id === null)
         {
@@ -68,7 +69,7 @@ final class Order extends Model
         $ticketDelivery = $concert->getDelivery();
         if ($ticketDelivery === TicketDelivery::DIGITAL)
         {
-            $url = $this->getLinkToTickets();
+            $url = $this->getLinkToTickets($urlInfo->schemeAndHost);
             $text .= "U kunt uw kaarten hier downloaden: {$url}\n\n";
             $text .= "Wij verzoeken u het ticket te downloaden vóórdat u de kerk binnengaat en het originele ticket te tonen. ";
             $text .= "Screenshots van de tickets kunnen wij niet goed scannen.\nDit om wachttijd te voorkomen.";
@@ -87,6 +88,7 @@ final class Order extends Model
         }
 
         $mail = UtilMail::createMailWithDefaults(
+            $urlInfo->domain,
             new Address($this->email),
             'Betalingsbevestiging',
             $text
@@ -194,16 +196,14 @@ final class Order extends Model
         $this->additionalData = json_encode($data);
     }
 
-    public function getPaymentLink(): string
+    public function getPaymentLink(string $baseUrl): string
     {
         assert($this->id !== null);
-        $host = "https://{$_SERVER['HTTP_HOST']}";
-        return "{$host}/concert-order/pay/{$this->id}";
+        return "{$baseUrl}/concert-order/pay/{$this->id}";
     }
 
-    public function getLinkToTickets(): string
+    public function getLinkToTickets(string $baseUrl): string
     {
-        $host = "https://{$_SERVER['HTTP_HOST']}";
-        return "{$host}/concert-order/getTickets/{$this->id}/{$this->secretCode}";
+        return "{$baseUrl}/concert-order/getTickets/{$this->id}/{$this->secretCode}";
     }
 }

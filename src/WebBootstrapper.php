@@ -23,9 +23,10 @@ final class WebBootstrapper
         {
             $this->setErrorHandler();
             $this->registerAutoloaders();
-            $this->setPhpConfig((bool)($_SERVER['HTTPS'] ?? false));
+            $request = Request::createFromGlobals();
+            $this->setPhpConfig((bool)$request->server->get('HTTPS'));
             $this->processSettings();
-            $this->handleRequest();
+            $this->handleRequest($request);
         }
         catch (RuntimeException $e)
         {
@@ -87,10 +88,10 @@ final class WebBootstrapper
         Setting::load($pdo);
     }
 
-    private function handleRequest(): void
+    private function handleRequest(Request $request): void
     {
         $route = new Kernel();
-        $response = $route->handle(Request::createFromGlobals());
+        $response = $route->handle($request);
         $response->send();
     }
 

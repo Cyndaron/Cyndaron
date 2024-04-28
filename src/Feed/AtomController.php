@@ -49,7 +49,7 @@ final class AtomController extends Controller
             'selfUri' => $selfUri,
             'category' => $category,
             'underlyingPages' => $underlyingPages,
-            'domain' => Util::getDomain(),
+            'baseUrl' => $request->getSchemeAndHttpHost(),
             'updated' => $savedDate,
             'urlService' => $urlService,
         ];

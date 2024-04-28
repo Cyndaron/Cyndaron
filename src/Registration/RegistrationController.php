@@ -8,6 +8,7 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
+use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
@@ -23,7 +24,7 @@ use function strcasecmp;
 final class RegistrationController extends Controller
 {
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function add(RequestParameters $post): Response
+    public function add(RequestParameters $post, UrlInfo $urlInfo): Response
     {
         try
         {
@@ -35,7 +36,7 @@ final class RegistrationController extends Controller
                 throw new Exception('Evenement niet gevonden!');
             }
 
-            $this->processRegistration($post);
+            $this->processRegistration($post, $urlInfo);
 
             $body = 'Hartelijk dank voor uw aanmelding. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw aanmelding en betaalinformatie.';
             if ($eventObj->hideRegistrationFee)
@@ -61,7 +62,7 @@ final class RegistrationController extends Controller
      * @throws Exception
      * @return bool
      */
-    private function processRegistration(RequestParameters $post): bool
+    private function processRegistration(RequestParameters $post, UrlInfo $urlInfo): bool
     {
         if ($post->isEmpty())
         {
@@ -162,7 +163,7 @@ final class RegistrationController extends Controller
             }
         }
 
-        return $registration->sendIntroductionMail($registrationTotal, $registrationTicketTypes, $this->templateRenderer);
+        return $registration->sendIntroductionMail($urlInfo->domain, $registrationTotal, $registrationTicketTypes, $this->templateRenderer);
     }
 
     /**
@@ -212,7 +213,7 @@ final class RegistrationController extends Controller
     }
 
     #[RouteAttribute('setApprovalStatus', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
-    public function setApprovalStatus(QueryBits $queryBits, RequestParameters $post): JsonResponse
+    public function setApprovalStatus(QueryBits $queryBits, RequestParameters $post, UrlInfo $urlInfo): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -225,10 +226,10 @@ final class RegistrationController extends Controller
         switch ($status)
         {
             case Registration::APPROVAL_APPROVED:
-                $registration->setApproved();
+                $registration->setApproved($urlInfo->domain);
                 break;
             case Registration::APPROVAL_DISAPPROVED:
-                $registration->setDisapproved();
+                $registration->setDisapproved($urlInfo->domain);
                 break;
         }
 
@@ -236,7 +237,7 @@ final class RegistrationController extends Controller
     }
 
     #[RouteAttribute('setIsPaid', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
-    public function setIsPaid(QueryBits $queryBits): JsonResponse
+    public function setIsPaid(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -245,7 +246,7 @@ final class RegistrationController extends Controller
         }
         /** @var Registration $registration */
         $registration = Registration::fetchById($id);
-        $registration->setIsPaid();
+        $registration->setIsPaid($urlInfo->domain);
 
         return new JsonResponse();
     }
