@@ -13,12 +13,16 @@ use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\View\Renderer\TextRenderer;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use function base64_decode;
-use function count;
 use function pathinfo;
+use function assert;
+use function is_array;
 
 final class PhotoalbumController extends Controller
 {
@@ -49,15 +53,16 @@ final class PhotoalbumController extends Controller
         return new JsonResponse();
     }
 
-    private function addPhotoCommon(Photoalbum $album): void
+    private function addPhotoCommon(Photoalbum $album, FileBag $fileBag): void
     {
-        $numPhotos = count($_FILES['newFiles']['name']);
-        for ($i = 0; $i < $numPhotos; $i++)
+        $files = $fileBag->get('newFiles');
+        assert(is_array($files) && $files[0] instanceof UploadedFile);
+        foreach ($files as $file)
         {
-            if (!$_FILES['newFiles']['error'][$i])
+            if ($file->isValid())
             {
-                $tempName = $_FILES['newFiles']['tmp_name'][$i];
-                $originalName = $_FILES['newFiles']['name'][$i];
+                $tempName = $file->getPathname();
+                $originalName = $file->getClientOriginalName();
                 $proposedName = pathinfo($originalName, PATHINFO_FILENAME) . '.webp';
                 Photo::create($album, $tempName, $proposedName);
             }
@@ -65,7 +70,7 @@ final class PhotoalbumController extends Controller
     }
 
     #[RouteAttribute('addPhoto', RequestMethod::POST, UserLevel::ADMIN, right: Photoalbum::RIGHT_UPLOAD)]
-    public function addPhoto(QueryBits $queryBits): Response
+    public function addPhoto(QueryBits $queryBits, Request $request): Response
     {
         $id = $queryBits->getInt(2);
         $album = Photoalbum::fetchById($id);
@@ -74,13 +79,13 @@ final class PhotoalbumController extends Controller
             throw new \Exception('Photo album not found!');
         }
 
-        $this->addPhotoCommon($album);
+        $this->addPhotoCommon($album, $request->files);
 
         return new RedirectResponse("/photoalbum/{$album->id}");
     }
 
     #[RouteAttribute('addPhoto', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Photoalbum::RIGHT_UPLOAD)]
-    public function addPhotoApi(QueryBits $queryBits): JsonResponse
+    public function addPhotoApi(QueryBits $queryBits, Request $request): JsonResponse
     {
         $id = $queryBits->getInt(2);
         $album = Photoalbum::fetchById($id);
@@ -89,7 +94,7 @@ final class PhotoalbumController extends Controller
             return new JsonResponse(['error' => 'Photo album not found!'], Response::HTTP_NOT_FOUND);
         }
 
-        $this->addPhotoCommon($album);
+        $this->addPhotoCommon($album, $request->files);
 
         return new JsonResponse([]);
     }

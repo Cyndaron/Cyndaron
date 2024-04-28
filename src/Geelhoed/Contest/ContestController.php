@@ -29,8 +29,11 @@ use Mollie\Api\Resources\Payment;
 use PhpOffice\PhpSpreadsheet\Shared\Date as PHPSpreadsheetDate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Safe\DateTime;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use function array_map;
@@ -41,10 +44,10 @@ use function count;
 use function file_exists;
 use function implode;
 use function in_array;
-use function move_uploaded_file;
 use function ord;
 use function Safe\date;
 use function Safe\error_log;
+use function Safe\preg_replace;
 use function Safe\strtotime;
 use function sprintf;
 use function time;
@@ -571,7 +574,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('addAttachment', RequestMethod::POST, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
-    public function addAttachment(QueryBits $queryBits): Response
+    public function addAttachment(QueryBits $queryBits, Request $request): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -587,13 +590,17 @@ final class ContestController extends Controller
         $dir = Util::UPLOAD_DIR . '/contest/' . $contest->id . '/attachments';
         Util::ensureDirectoryExists($dir);
 
-        $filteredParams = new RequestParameters($_FILES['newFile']);
-        $filename = $dir . '/' . basename($filteredParams->getFilename('name'));
-        if (move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
+        $file = $request->files->get('newFile');
+        assert($file instanceof UploadedFile);
+        /** @var string $newFilename */
+        $newFilename = preg_replace('/[^A-Za-z0-9() \-+.]/', '', basename($file->getClientOriginalName()));
+
+        try
         {
+            $file->move($dir, $newFilename);
             UserSession::addNotification('Bijlage geüpload');
         }
-        else
+        catch (FileException)
         {
             UserSession::addNotification('Bijlage kon niet naar de uploadmap worden verplaatst.');
         }

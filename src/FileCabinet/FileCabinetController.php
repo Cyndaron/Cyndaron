@@ -10,11 +10,14 @@ use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\Util;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use function basename;
-use function move_uploaded_file;
 use function file_exists;
+use function assert;
 
 final class FileCabinetController extends Controller
 {
@@ -26,14 +29,17 @@ final class FileCabinetController extends Controller
     }
 
     #[RouteAttribute('addItem', RequestMethod::POST, UserLevel::ADMIN)]
-    public function addItem(): Response
+    public function addItem(Request $request): Response
     {
-        $filename = Util::UPLOAD_DIR . '/filecabinet/' . basename($_FILES['newFile']['name']);
-        if (move_uploaded_file($_FILES['newFile']['tmp_name'], $filename))
+        $file = $request->files->get('newFile');
+        assert($file instanceof UploadedFile);
+        $filename = basename($file->getClientOriginalName());
+        try
         {
+            $file->move(Util::UPLOAD_DIR . '/filecabinet', $filename);
             UserSession::addNotification('Bestand geüpload');
         }
-        else
+        catch (FileException)
         {
             UserSession::addNotification('Bestand kon niet naar de uploadmap worden verplaatst.');
         }
