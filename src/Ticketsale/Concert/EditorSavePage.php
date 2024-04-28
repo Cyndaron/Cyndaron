@@ -36,7 +36,7 @@ final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
         $concert->location = $this->post->getSimpleString('location');
         $concert->ticketInfo = $this->post->getHTML('ticketInfo');
 
-        $delivery = $this->post->getInt('delivery');
+        $delivery = TicketDelivery::from($this->post->getInt('delivery'));
         if ($delivery === TicketDelivery::COLLECT_OR_DELIVER)
         {
             $concert->forcedDelivery = false;

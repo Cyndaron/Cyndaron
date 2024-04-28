@@ -64,7 +64,7 @@ final class OrderConfirmationMailFactory
         return $deliveryText;
     }
 
-    public function getPaymentText(Order $order, int $deliveryType, float $total): string
+    public function getPaymentText(Order $order, TicketDelivery $deliveryType, float $total): string
     {
         if ($deliveryType === TicketDelivery::DIGITAL)
         {

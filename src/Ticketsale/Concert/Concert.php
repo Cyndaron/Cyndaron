@@ -104,7 +104,7 @@ final class Concert extends Model
         return FlatFee::class;
     }
 
-    public function getDelivery(): int
+    public function getDelivery(): TicketDelivery
     {
         if ($this->digitalDelivery)
         {
