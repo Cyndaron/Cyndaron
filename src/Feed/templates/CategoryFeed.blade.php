@@ -14,7 +14,7 @@
         <name>{{ $organisation }}</name>
     </author>
     <link href="{!! $selfUri !!}" rel="self" />
-    <id>https://{!! $domain !!}/</id>
+    <id>{!! $baseUrl !!}/</id>
     <updated>{{ $updated->format(\DateTimeInterface::ATOM) }}</updated>
 
     @foreach ($underlyingPages as $page)
