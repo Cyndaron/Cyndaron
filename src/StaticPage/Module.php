@@ -25,7 +25,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
                 'plural' => 'Statische pagina\'s',
                 'pageManagerTab' => self::class . '::pageManagerTab',
                 'editorPage' => EditorPage::class,
-                'editorSavePage' => EditorSavePage::class,
+                'editorSave' => EditorSave::class,
             ]),
         ];
     }

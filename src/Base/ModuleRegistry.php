@@ -32,7 +32,7 @@ final class ModuleRegistry
     public array $editorPages = [];
 
     /** @var array<string, class-string> */
-    public array $editorSavePages = [];
+    public array $editorSaveClasses = [];
 
     /** @var class-string<Linkable>[] */
     public array $internalLinkTypes = [];
@@ -103,9 +103,9 @@ final class ModuleRegistry
      * @param class-string $className
      * @return void
      */
-    public function addEditorSavePage(string $module, string $className): void
+    public function addEditorSaveClass(string $module, string $className): void
     {
-        $this->editorSavePages[$module] = $className;
+        $this->editorSaveClasses[$module] = $className;
     }
 
     /**

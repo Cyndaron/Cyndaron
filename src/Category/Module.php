@@ -26,7 +26,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
                 'pageManagerTab' => self::class . '::pageManagerTab',
                 'pageManagerJS' => '/src/Category/js/PageManagerTab.js',
                 'editorPage' => EditorPage::class,
-                'editorSavePage' => EditorSavePage::class,
+                'editorSave' => EditorSave::class,
             ]),
         ];
     }

@@ -19,7 +19,7 @@ final class Module implements Datatypes, Routes
                 'plural' => 'Mailformulieren',
                 'pageManagerTab' => self::class . '::pageManagerTab',
                 'editorPage' => EditorPage::class,
-                'editorSavePage' => EditorSavePage::class,
+                'editorSave' => EditorSave::class,
             ]),
         ];
     }

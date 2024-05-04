@@ -12,10 +12,10 @@ use Cyndaron\Module\Templated;
 use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Ticketsale\Concert\ConcertController;
 use Cyndaron\Ticketsale\Concert\EditorPage;
-use Cyndaron\Ticketsale\Concert\EditorSavePage;
+use Cyndaron\Ticketsale\Concert\EditorSave;
 use Cyndaron\Ticketsale\Order\OrderController;
 use Cyndaron\Ticketsale\TicketType\EditorPage as TicketTypeEditorPage;
-use Cyndaron\Ticketsale\TicketType\EditorSavePage as TicketTypeEditorSavePage;
+use Cyndaron\Ticketsale\TicketType\EditorSave as TicketTypeEditorSave;
 use Cyndaron\Util\Link;
 use function array_map;
 
@@ -36,12 +36,12 @@ final class Module implements Routes, Datatypes, Templated, Linkable
                 'singular' => 'Concert',
                 'plural' => 'Concerten',
                 'editorPage' => EditorPage::class,
-                'editorSavePage' => EditorSavePage::class,
+                'editorSave' => EditorSave::class,
                 'pageManagerTab' => Util::class . '::drawPageManagerTab',
             ]),
             'ticketType' => Datatype::fromArray([
                 'editorPage' => TicketTypeEditorPage::class,
-                'editorSavePage' => TicketTypeEditorSavePage::class,
+                'editorSave' => TicketTypeEditorSave::class,
             ]),
         ];
     }

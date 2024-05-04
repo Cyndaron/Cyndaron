@@ -6,7 +6,7 @@ namespace Cyndaron\Location;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
 
-class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
+class EditorSave extends \Cyndaron\Editor\EditorSave
 {
     public function __construct(
         private readonly RequestParameters $post,

@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use function trim;
 use function assert;
 
-final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
+final class EditorSave extends \Cyndaron\Editor\EditorSave
 {
     public const TYPE = 'sub';
 

@@ -16,7 +16,7 @@ final class Module implements Datatypes, UrlProvider
                 'singular' => 'Locatie',
                 'plural' => 'Locaties',
                 'editorPage' => EditorPage::class,
-                'editorSavePage' => EditorSavePage::class,
+                'editorSave' => EditorSave::class,
                 'pageManagerTab' => PageManagerTabs::class . '::locationsTab',
             ]),
         ];

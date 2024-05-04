@@ -5,7 +5,7 @@ use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
 
-final class EditorSavePagePhoto extends \Cyndaron\Editor\EditorSavePage
+final class EditorSavePhoto extends \Cyndaron\Editor\EditorSave
 {
     public const TYPE = 'photo';
 

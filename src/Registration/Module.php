@@ -23,7 +23,7 @@ final class Module implements Routes, Datatypes
                 'singular' => 'Evenement',
                 'plural' => 'Evenementen',
                 'editorPage' => EditorPage::class,
-                'editorSavePage' => EditorSavePage::class,
+                'editorSave' => EditorSave::class,
                 'pageManagerTab' => Util::class . '::drawPageManagerTab',
             ])
         ];

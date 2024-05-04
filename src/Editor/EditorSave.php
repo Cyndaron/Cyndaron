@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use function Safe\error_log;
 
-abstract class EditorSavePage
+abstract class EditorSave
 {
     public const TYPE = '';
 

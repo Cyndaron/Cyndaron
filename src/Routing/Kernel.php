@@ -207,9 +207,9 @@ final class Kernel
                     {
                         $registry->addEditorPage($dataTypeName, $definition->editorPage);
                     }
-                    if (isset($definition->editorSavePage))
+                    if (isset($definition->editorSave))
                     {
-                        $registry->addEditorSavePage($dataTypeName, $definition->editorSavePage);
+                        $registry->addEditorSaveClass($dataTypeName, $definition->editorSave);
                     }
                     if (isset($definition->pageManagerTab))
                     {

@@ -7,7 +7,7 @@ use Cyndaron\User\UserSession;
 use Symfony\Component\HttpFoundation\Request;
 use function assert;
 
-final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
+final class EditorSave extends \Cyndaron\Editor\EditorSave
 {
     public const TYPE = 'photoalbum';
 

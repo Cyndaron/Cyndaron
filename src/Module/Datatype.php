@@ -10,7 +10,7 @@ final class Datatype
     /** @var class-string */
     public string $editorPage;
     /** @var class-string */
-    public string $editorSavePage;
+    public string $editorSave;
     public string $pageManagerTab;
     public string $pageManagerJS;
 

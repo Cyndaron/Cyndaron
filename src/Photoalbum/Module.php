@@ -25,7 +25,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
                 'singular' => 'Foto',
                 'plural' => 'Foto\'s',
                 'editorPage' => EditorPagePhoto::class,
-                'editorSavePage' => EditorSavePagePhoto::class,
+                'editorSave' => EditorSavePhoto::class,
             ]),
             'photoalbum' => Datatype::fromArray([
                 'singular' => 'Fotoalbum',
@@ -33,7 +33,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
                 'pageManagerTab' => self::class . '::pageManagerTab',
                 'pageManagerJS' => '/src/Photoalbum/js/PageManagerTab.js',
                 'editorPage' => EditorPage::class,
-                'editorSavePage' => EditorSavePage::class,
+                'editorSave' => EditorSave::class,
             ]),
         ];
     }

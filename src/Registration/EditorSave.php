@@ -8,7 +8,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
 use function assert;
 
-final class EditorSavePage extends \Cyndaron\Editor\EditorSavePage
+final class EditorSave extends \Cyndaron\Editor\EditorSave
 {
     public function __construct(
         private readonly RequestParameters $post,
