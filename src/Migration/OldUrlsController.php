@@ -19,9 +19,9 @@ use Symfony\Component\HttpFoundation\Response;
 class OldUrlsController extends Controller
 {
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function routeGet(Request $request): Response
+    public function routeGet(Request $request, QueryBits $queryBits): Response
     {
-        switch ($this->module)
+        switch ($queryBits->getString(0))
         {
             case 'tooncategorie.php':
                 return $this->redirectOldCategoryUrl($request);
@@ -37,15 +37,15 @@ class OldUrlsController extends Controller
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function routePost(RequestParameters $requestParameters, Request $request, UrlInfo $urlInfo): Response
+    public function routePost(RequestParameters $requestParameters, Request $request, UrlInfo $urlInfo, QueryBits $queryBits): Response
     {
-        if ($this->module !== 'verwerkmailformulier.php')
+        if ($queryBits->getString(0) !== 'verwerkmailformulier.php')
         {
             return $this->pageRenderer->renderErrorResponse(new ErrorPage('Routingfout', 'Niet-herkende oude URL.'));
         }
 
         $id = $request->query->getInt('id');
-        $controller = new MailformController('mailform', 'process', $this->templateRenderer, $this->pageRenderer);
+        $controller = new MailformController($this->templateRenderer, $this->pageRenderer);
         $queryBits = new QueryBits(['mailform', 'process', (string)$id]);
         return $controller->process($queryBits, $requestParameters, $urlInfo);
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Error;
 
 use Cyndaron\Page\SimplePage;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
@@ -26,9 +27,9 @@ final class ErrorController extends Controller
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
     #[RouteAttribute('', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function show(): Response
+    public function show(QueryBits $queryBits): Response
     {
-        $code = (int)$this->action;
+        $code = $queryBits->getInt(1);
 
         if (!array_key_exists($code, self::KNOWN_ERRORS))
         {

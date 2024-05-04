@@ -175,7 +175,7 @@ final class Router
 
         $classname = $controllers[$module];
         /** @var Controller $controller */
-        $controller = new $classname($module, $action, $this->templateRenderer, $this->pageRenderer);
+        $controller = new $classname($this->templateRenderer, $this->pageRenderer);
 
         $requestMethod = RequestMethod::tryFrom($request->getRealMethod());
         if ($requestMethod === null)
