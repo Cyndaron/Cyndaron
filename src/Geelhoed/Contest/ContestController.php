@@ -233,7 +233,7 @@ final class ContestController extends Controller
         return true;
     }
 
-    #[RouteAttribute('mollieWebhook', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true)]
+    #[RouteAttribute('mollieWebhook', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
     public function mollieWebhook(RequestParameters $post): Response
     {
         $apiKey = Setting::get('mollieApiKey');
