@@ -75,7 +75,7 @@
                 <label for="gum-filter-location">Leslocatie:</label>
                 <select id="gum-filter-location" class="custom-select form-control-inline">
                     <option value="-1">(Alles)</option>
-                    @php /** @var \Cyndaron\Geelhoed\Location\Location[] $locations */ @endphp
+                    @php /** @var \Cyndaron\Location\Location[] $locations */ @endphp
                     @foreach ($locations as $location)
                         <option value="{{ $location->id }}">{{ $location->getName() }}</option>
                     @endforeach
@@ -217,8 +217,8 @@
                 </div>
                 <div class="tab-pane fade" id="lessons" role="tabpanel" aria-labelledby="lessons-tab">
                     <div id="accordion">
-                        @foreach (\Cyndaron\Geelhoed\Location\Location::fetchAll([], [], 'ORDER BY city') as $location)
-                            @php $hours = $location->getHours(\Cyndaron\Geelhoed\Department::DEPARTMENT_ID_T_MULDER) @endphp
+                        @foreach (\Cyndaron\Location\Location::fetchAll([], [], 'ORDER BY city') as $location)
+                            @php $hours = (new \Cyndaron\Geelhoed\Location\Location($location))->getHours(\Cyndaron\Geelhoed\Department::DEPARTMENT_ID_T_MULDER) @endphp
                             @if (empty($hours))
                                 @continue
                             @endif
