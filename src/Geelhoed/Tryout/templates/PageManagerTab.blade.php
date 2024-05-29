@@ -7,6 +7,7 @@
             <th>ID</th>
             <th>Naam</th>
             <th>Locatie</th>
+            <th>Datum</th>
             <th>Extra</th>
             <th>Acties</th>
         </tr>
@@ -22,6 +23,9 @@
                     @if ($location !== null)
                         <a href="/locaties/details/{{ $location->id }}">{{ $location->getName() }}</a>
                     @endif
+                </td>
+                <td>
+                    {{ $tryout->getStart()|dmy }}
                 </td>
                 <td>
                     @if ($tryout->photoalbumLink !== '')
