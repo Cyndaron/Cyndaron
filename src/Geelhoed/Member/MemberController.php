@@ -168,7 +168,8 @@ final class MemberController extends Controller
         $user->houseNumberAddition = $post->getSimpleString('houseNumberAddition');
         $user->postalCode = $post->getPostcode('postalCode');
         $user->city = $post->getSimpleString('city');
-        $user->dateOfBirth = DateTime::createFromFormat(Util::SQL_DATE_FORMAT, $post->getDate('dateOfBirth'));
+        $dateOfBirth = $post->getDate('dateOfBirth') ?: null;
+        $user->dateOfBirth = $dateOfBirth ? DateTime::createFromFormat(Util::SQL_DATE_FORMAT, $dateOfBirth) : null;
         $user->notes = $post->getHTML('notes');
         $user->optOut = $post->getBool('optOut');
 
