@@ -217,10 +217,11 @@ Uw nieuwe wachtwoord is: %s';
 
         UserSession::addNotification('U bent ingelogd.');
 
-        if ($_SESSION['redirect'])
+        $sessionRedirect = UserSession::getRedirect();
+        if ($sessionRedirect !== '')
         {
-            $redirect = $_SESSION['redirect'];
-            $_SESSION['redirect'] = null;
+            $redirect = $sessionRedirect;
+            UserSession::setRedirect(null);
         }
         else
         {

@@ -99,4 +99,19 @@ final class UserSession
     {
         $_SESSION['profile'] = $profile;
     }
+
+    public static function getRedirect(): string
+    {
+        return (string)($_SESSION['redirect'] ?? '');
+    }
+
+    public static function setRedirect(string|null $url): void
+    {
+        $_SESSION['redirect'] = $url;
+    }
+
+    public static function hasStarted(): bool
+    {
+        return empty($_SESSION);
+    }
 }

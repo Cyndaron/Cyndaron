@@ -226,7 +226,7 @@ final class Router
             case LoginStatus::NEEDS_LOGIN:
             default:
                 UserSession::addNotification('U moet inloggen om deze site te bekijken');
-                $_SESSION['redirect'] = $requestUri;
+                UserSession::setRedirect($requestUri);
                 return new RedirectResponse('/user/login', Response::HTTP_FOUND, Kernel::HEADERS_DO_NOT_CACHE);
         }
     }
@@ -316,7 +316,7 @@ final class Router
             session_destroy();
             session_start();
             UserSession::addNotification('U moet inloggen om deze pagina te bekijken');
-            $_SESSION['redirect'] = $requestUri;
+            UserSession::setRedirect($requestUri);
 
             return new RedirectResponse('/user/login', );
         }

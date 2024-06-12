@@ -25,6 +25,7 @@ use Cyndaron\Request\UrlInfo;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
+use Cyndaron\User\UserSession;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Mail;
 use Cyndaron\Util\Setting;
@@ -278,7 +279,7 @@ final class Kernel
 
     public function handle(Request $request): Response
     {
-        if (empty($_SESSION))
+        if (UserSession::hasStarted())
         {
             session_start();
         }

@@ -42,9 +42,9 @@ final class UserController extends Controller
     #[RouteAttribute('login', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function loginGet(Request $request): Response
     {
-        if (empty($_SESSION['redirect']))
+        if (empty(UserSession::getRedirect()))
         {
-            $_SESSION['redirect'] = $request->headers->get('referer');
+            UserSession::setRedirect($request->headers->get('referer'));
         }
         $page = new LoginPage();
         return $this->pageRenderer->renderResponse($page);
