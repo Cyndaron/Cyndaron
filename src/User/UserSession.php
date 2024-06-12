@@ -4,40 +4,40 @@ declare(strict_types=1);
 namespace Cyndaron\User;
 
 use Cyndaron\Util\Setting;
-use function Safe\session_destroy;
-use function session_start;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 
 final class UserSession
 {
-    public static function isAdmin(): bool
+    public function __construct(private readonly FlashBagAwareSessionInterface $session)
     {
-        return self::getLevel() === UserLevel::ADMIN;
     }
 
-    public static function isLoggedIn(): bool
+    public function isAdmin(): bool
     {
-        return self::getLevel() > 0;
+        return $this->getLevel() === UserLevel::ADMIN;
     }
 
-    public static function addNotification(string $content): void
+    public function isLoggedIn(): bool
     {
-        $_SESSION['notifications'][] = $content;
+        return $this->getLevel() > 0;
+    }
+
+    public function addNotification(string $content, string $type = ''): void
+    {
+        $this->session->getFlashBag()->add($type, $content);
     }
 
     /**
-     * @deprecated
-     * @return string[]|null
+     * @return array<string, string[]>
      */
-    public static function getNotifications(): array|null
+    public function getNotifications(): array
     {
-        $return = $_SESSION['notifications'] ?? null;
-        $_SESSION['notifications'] = null;
-        return $return;
+        return $this->session->getFlashBag()->all();
     }
 
-    public static function getLevel(): int
+    public function getLevel(): int
     {
-        $profile = self::getProfile();
+        $profile = $this->getProfile();
         if ($profile === null)
         {
             return UserLevel::ANONYMOUS;
@@ -46,41 +46,59 @@ final class UserSession
         return $profile->level;
     }
 
-    public static function hasSufficientReadLevel(): bool
+    public function hasSufficientReadLevel(): bool
     {
         $minimumReadLevel = (int)Setting::get('minimumReadLevel');
-        return (self::getLevel() >= $minimumReadLevel);
+        return ($this->getLevel() >= $minimumReadLevel);
     }
 
-    public static function logout(): void
+    public function logout(): void
     {
-        session_destroy();
-        session_start();
-        self::addNotification('U bent afgemeld.');
+        $this->session->invalidate();
+        $this->addNotification('U bent afgemeld.');
     }
 
-    public static function getProfile(): User|null
+    public function getProfile(): User|null
     {
-        return $_SESSION['profile'] ?? null;
+        /** @var User|null $result */
+        $result = $this->session->get('profile');
+        return $result;
     }
 
-    public static function setProfile(User $profile): void
+    public function setProfile(User $profile): void
     {
-        $_SESSION['profile'] = $profile;
+        $this->session->set('profile', $profile);
     }
 
-    public static function getRedirect(): string
+    public function getRedirect(): string
     {
-        return (string)($_SESSION['redirect'] ?? '');
+        /** @var string|null $result */
+        $result = $this->session->get('redirect');
+        return (string)$result;
     }
 
-    public static function setRedirect(string|null $url): void
+    public function setRedirect(string|null $url): void
     {
-        $_SESSION['redirect'] = $url;
+        $this->session->set('redirect', $url);
     }
 
-    public static function hasStarted(): bool
+    public function hasStarted(): bool
     {
-        return empty($_SESSION);
+        return $this->session->isStarted();
+    }
+
+    public function start(): bool
+    {
+        return $this->session->start();
+    }
+
+    public function invalidate(): bool
+    {
+        return $this->session->invalidate();
+    }
+
+    public function getSymfonySession(): FlashBagAwareSessionInterface
+    {
+        return $this->session;
     }
 }

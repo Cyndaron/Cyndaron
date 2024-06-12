@@ -9,6 +9,7 @@ use Cyndaron\Url\UrlService;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
 use Cyndaron\User\UserMenu;
+use Cyndaron\User\UserSession;
 use Cyndaron\View\Renderer\TextRenderer;
 use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,7 @@ final class PageRenderer
         private readonly TextRenderer $textRenderer,
         private readonly UrlService $urlService,
         private readonly CSRFTokenHandler $tokenHandler,
+        private readonly UserSession $userSession,
         private readonly Request $request,
         private readonly User|null $currentUser
     ) {
@@ -32,9 +34,9 @@ final class PageRenderer
      */
     public function render(Page $page, array $vars = []): string
     {
-        $userMenu = UserMenu::getForUser($this->currentUser, $this->registry->userMenuItems);
+        $userMenu = UserMenu::getForUser($this->currentUser, $this->userSession, $this->registry->userMenuItems);
         $isFrontPage = $this->request->getRequestUri() === '/';
-        return $page->render($this->templateRenderer, $this->textRenderer, $this->urlService, $this->tokenHandler, $this->registry->pageProcessors, $isFrontPage, $userMenu, $vars);
+        return $page->render($this->templateRenderer, $this->textRenderer, $this->urlService, $this->tokenHandler, $this->userSession, $this->registry->pageProcessors, $isFrontPage, $userMenu, $vars);
     }
 
     /**

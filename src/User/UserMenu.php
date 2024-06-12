@@ -13,12 +13,12 @@ final class UserMenu
      * @param UserMenuItem[] $menuItems
      * @return UserMenuItem[]
      */
-    public static function getForUser(User|null $currentUser, array $menuItems): array
+    public static function getForUser(User|null $currentUser, UserSession $userSession, array $menuItems): array
     {
-        return array_filter($menuItems, static function(UserMenuItem $userMenuItem) use ($currentUser)
+        return array_filter($menuItems, static function(UserMenuItem $userMenuItem) use ($currentUser, $userSession)
         {
             $level = $userMenuItem->level;
-            if (UserSession::getLevel() >= $level)
+            if ($userSession->getLevel() >= $level)
             {
                 return true;
             }

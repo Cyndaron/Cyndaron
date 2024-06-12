@@ -30,7 +30,7 @@ final class FileCabinetController extends Controller
     }
 
     #[RouteAttribute('addItem', RequestMethod::POST, UserLevel::ADMIN)]
-    public function addItem(Request $request): Response
+    public function addItem(Request $request, UserSession $userSession): Response
     {
         $file = $request->files->get('newFile');
         assert($file instanceof UploadedFile);
@@ -38,18 +38,18 @@ final class FileCabinetController extends Controller
         try
         {
             $file->move(Util::UPLOAD_DIR . '/filecabinet', $filename);
-            UserSession::addNotification('Bestand geüpload');
+            $userSession->addNotification('Bestand geüpload');
         }
         catch (FileException)
         {
-            UserSession::addNotification('Bestand kon niet naar de uploadmap worden verplaatst.');
+            $userSession->addNotification('Bestand kon niet naar de uploadmap worden verplaatst.');
         }
 
         return new RedirectResponse('/filecabinet');
     }
 
     #[RouteAttribute('deleteItem', RequestMethod::POST, UserLevel::ADMIN)]
-    public function deleteItem(RequestParameters $post): Response
+    public function deleteItem(RequestParameters $post, UserSession $userSession): Response
     {
         $filename = $post->getFilename('filename');
         $fullPath = Util::UPLOAD_DIR . "/filecabinet/$filename";
@@ -57,16 +57,16 @@ final class FileCabinetController extends Controller
         {
             if (Util::deleteFile($fullPath))
             {
-                UserSession::addNotification('Bestand verwijderd.');
+                $userSession->addNotification('Bestand verwijderd.');
             }
             else
             {
-                UserSession::addNotification('Bestand kon niet worden verwijderd.');
+                $userSession->addNotification('Bestand kon niet worden verwijderd.');
             }
         }
         else
         {
-            UserSession::addNotification('Bestand bestaat niet.');
+            $userSession->addNotification('Bestand bestaat niet.');
         }
 
         return new RedirectResponse('/filecabinet');

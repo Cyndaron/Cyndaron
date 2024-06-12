@@ -14,6 +14,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
     public function __construct(
         private readonly RequestParameters $post,
         private readonly ImageExtractor $imageExtractor,
+        private readonly UserSession $userSession,
     ) {
     }
 
@@ -60,11 +61,11 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
         if ($concert->save())
         {
-            UserSession::addNotification('Concert opgeslagen.');
+            $this->userSession->addNotification('Concert opgeslagen.');
         }
         else
         {
-            UserSession::addNotification('Fout bij opslaan concert');
+            $this->userSession->addNotification('Fout bij opslaan concert');
         }
 
         $this->returnUrl = '/concert/order/' . $concert->id;

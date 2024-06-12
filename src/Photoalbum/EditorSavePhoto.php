@@ -12,6 +12,7 @@ final class EditorSavePhoto extends \Cyndaron\Editor\EditorSave
     public function __construct(
         private readonly RequestParameters $post,
         private readonly ImageExtractor $imageExtractor,
+        private readonly UserSession $userSession,
     ) {
     }
 
@@ -22,7 +23,7 @@ final class EditorSavePhoto extends \Cyndaron\Editor\EditorSave
         $caption = $this->imageExtractor->process($this->post->getHTML('artikel'));
 
         PhotoalbumCaption::create($hash, $caption);
-        UserSession::addNotification('Bijschrift bewerkt.');
+        $this->userSession->addNotification('Bijschrift bewerkt.');
         $this->returnUrl = '/photoalbum/' . $photoalbumId;
 
         return -1;

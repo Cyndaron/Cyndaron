@@ -15,6 +15,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
     public function __construct(
         private readonly RequestParameters $post,
         private readonly ImageExtractor $imageExtractor,
+        private readonly UserSession $userSession,
     ) {
     }
 
@@ -30,11 +31,11 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
         if ($mailform->save())
         {
-            UserSession::addNotification('Mailformulier bewerkt.');
+            $this->userSession->addNotification('Mailformulier bewerkt.');
         }
         else
         {
-            UserSession::addNotification('Opslaan mailformulier mislukt');
+            $this->userSession->addNotification('Opslaan mailformulier mislukt');
         }
 
         $this->returnUrl = '/pagemanager/mailform';

@@ -10,6 +10,7 @@ class EditorSave extends \Cyndaron\Editor\EditorSave
 {
     public function __construct(
         private readonly RequestParameters $post,
+        private readonly UserSession $userSession,
     ) {
     }
 
@@ -27,13 +28,13 @@ class EditorSave extends \Cyndaron\Editor\EditorSave
         if ($location->save())
         {
             $newId = (int)$location->id;
-            UserSession::addNotification('Locatie opgeslagen.');
+            $this->userSession->addNotification('Locatie opgeslagen.');
             $this->returnUrl = '/locaties/details/' . $newId;
             return $newId;
         }
         else
         {
-            UserSession::addNotification('Fout bij opslaan locatie');
+            $this->userSession->addNotification('Fout bij opslaan locatie');
             $this->returnUrl = '/pagemanager/locations';
             return -1;
         }

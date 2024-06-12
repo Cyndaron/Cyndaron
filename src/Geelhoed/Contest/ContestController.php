@@ -59,9 +59,9 @@ final class ContestController extends Controller
      * @throws Exception
      * @return Member[]
      */
-    private function fetchMembersByLoggedInUser(): array
+    private function fetchMembersByLoggedInUser(UserSession $userSession): array
     {
-        $profile = UserSession::getProfile();
+        $profile = $userSession->getProfile();
         if ($profile === null)
         {
             return [];
@@ -97,7 +97,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('subscribe', RequestMethod::POST, UserLevel::LOGGED_IN)]
-    public function subscribe(QueryBits $queryBits, RequestParameters $post): Response
+    public function subscribe(QueryBits $queryBits, RequestParameters $post, UserSession $userSession): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -121,7 +121,7 @@ final class ContestController extends Controller
         $controlledMemberIds = array_map(static function(Member $member)
         {
             return $member->id;
-        }, $this->fetchMembersByLoggedInUser());
+        }, $this->fetchMembersByLoggedInUser($userSession));
         if (!in_array($memberId, $controlledMemberIds, true))
         {
             $page = new SimplePage('Fout', 'U mag dit lid niet beheren.');
@@ -166,12 +166,12 @@ final class ContestController extends Controller
 //        }
 //        catch (\Exception $e)
 //        {
-//            UserSession::addNotification('Je inschrijving is opgeslagen, maar de betaling is mislukt!');
+//            $userSession->addNotification('Je inschrijving is opgeslagen, maar de betaling is mislukt!');
 //            $response = new RedirectResponse("/contest/view/{$contest->id}");
 //        }
 
 //        return $response;
-        UserSession::addNotification('Let op: de inschrijving is pas definitief wanneer u heeft betaald.');
+        $userSession->addNotification('Let op: de inschrijving is pas definitief wanneer u heeft betaald.');
         return new RedirectResponse("/contest/view/{$contest->id}");
     }
 
@@ -184,7 +184,7 @@ final class ContestController extends Controller
      * @throws ImproperSubclassing
      * @return Response
      */
-    private function doMollieTransaction(string $schemeAndHost, array $contestMembers, string $description, float $price, string $redirectUrl): Response
+    private function doMollieTransaction(UserSession $userSession, string $schemeAndHost, array $contestMembers, string $description, float $price, string $redirectUrl): Response
     {
         $webhookUrl = "{$schemeAndHost}/api/contest/mollieWebhook";
 
@@ -210,11 +210,11 @@ final class ContestController extends Controller
         $redirectUrl = $molliePayment->getCheckoutUrl();
         if ($redirectUrl === null)
         {
-            UserSession::addNotification('Bedankt voor je inschrijving! Helaas lukte het doorsturen naar de betaalpagina niet.');
+            $userSession->addNotification('Bedankt voor je inschrijving! Helaas lukte het doorsturen naar de betaalpagina niet.');
             return new RedirectResponse('/');
         }
 
-        UserSession::addNotification('Bedankt voor de betaling! Het kan even duren voordat deze geregistreerd is.');
+        $userSession->addNotification('Bedankt voor de betaling! Het kan even duren voordat deze geregistreerd is.');
         return new RedirectResponse($redirectUrl);
     }
 
@@ -282,11 +282,11 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('manageOverview', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
-    public function manageOverview(TemplateRenderer $templateRenderer): Response
+    public function manageOverview(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): Response
     {
         $page = new Page('Overzicht wedstrijden');
         $page->addScript('/src/Geelhoed/Contest/js/ContestManager.js');
-        return $this->pageRenderer->renderResponse($page, ['contents' => PageManagerTabs::contestsTab($templateRenderer)]);
+        return $this->pageRenderer->renderResponse($page, ['contents' => PageManagerTabs::contestsTab($templateRenderer, $tokenHandler)]);
     }
 
     #[RouteAttribute('subscriptionList', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
@@ -538,7 +538,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('payFullDue', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function payFullDue(UrlInfo $urlInfo, User $currentUser): Response
+    public function payFullDue(UrlInfo $urlInfo, User $currentUser, UserSession $userSession): Response
     {
         [$due, $contestMembers] = Contest::getTotalDue($currentUser);
         if ($due === 0.00)
@@ -561,11 +561,11 @@ final class ContestController extends Controller
         {
             $redirectUrl = "{$urlInfo->schemeAndHost}/contest/myContests";
             $description = implode(' + ', $contestNames) . ' - Geelhoed';
-            $response = $this->doMollieTransaction($urlInfo->schemeAndHost, $contestMembers, $description, $due, $redirectUrl);
+            $response = $this->doMollieTransaction($userSession, $urlInfo->schemeAndHost, $contestMembers, $description, $due, $redirectUrl);
         }
         catch (Exception $e)
         {
-            UserSession::addNotification('De betaling is mislukt!');
+            $userSession->addNotification('De betaling is mislukt!');
             $response = new RedirectResponse("/contest/myContests");
             /** @noinspection ForgottenDebugOutputInspection */
             error_log($e->getMessage());
@@ -575,7 +575,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('addAttachment', RequestMethod::POST, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
-    public function addAttachment(QueryBits $queryBits, Request $request): Response
+    public function addAttachment(QueryBits $queryBits, Request $request, UserSession $userSession): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -599,18 +599,18 @@ final class ContestController extends Controller
         try
         {
             $file->move($dir, $newFilename);
-            UserSession::addNotification('Bijlage geüpload');
+            $userSession->addNotification('Bijlage geüpload');
         }
         catch (FileException)
         {
-            UserSession::addNotification('Bijlage kon niet naar de uploadmap worden verplaatst.');
+            $userSession->addNotification('Bijlage kon niet naar de uploadmap worden verplaatst.');
         }
 
         return new RedirectResponse('/contest/view/' . $contest->id);
     }
 
     #[RouteAttribute('deleteAttachment', RequestMethod::POST, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
-    public function deleteAttachment(QueryBits $queryBits, RequestParameters $post): Response
+    public function deleteAttachment(QueryBits $queryBits, RequestParameters $post, UserSession $userSession): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -630,16 +630,16 @@ final class ContestController extends Controller
         {
             if (Util::deleteFile($fullPath))
             {
-                UserSession::addNotification('Bestand verwijderd.');
+                $userSession->addNotification('Bestand verwijderd.');
             }
             else
             {
-                UserSession::addNotification('Bestand kon niet worden verwijderd.');
+                $userSession->addNotification('Bestand kon niet worden verwijderd.');
             }
         }
         else
         {
-            UserSession::addNotification('Bestand bestaat niet.');
+            $userSession->addNotification('Bestand bestaat niet.');
         }
 
         return new RedirectResponse('/contest/view/' . $contest->id);
@@ -705,7 +705,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('editSubscription', RequestMethod::POST, UserLevel::LOGGED_IN)]
-    public function editSubscription(QueryBits $queryBits, RequestParameters $post, UrlInfo $urlInfo, User|null $currentUser): Response
+    public function editSubscription(QueryBits $queryBits, RequestParameters $post, UrlInfo $urlInfo, User|null $currentUser, UserSession $userSession): Response
     {
         $id = $queryBits->getInt(2);
         $subscription = ContestMember::fetchById($id);
@@ -724,7 +724,7 @@ final class ContestController extends Controller
             $controlledMemberIds = array_map(static function(Member $member)
             {
                 return $member->id;
-            }, $this->fetchMembersByLoggedInUser());
+            }, $this->fetchMembersByLoggedInUser($userSession));
             if (!in_array($memberId, $controlledMemberIds, true))
             {
                 return new Response('U mag deze judoka niet beheren!', Response::HTTP_FORBIDDEN);
@@ -740,7 +740,7 @@ final class ContestController extends Controller
         $subscription->graduationId = $post->getInt('graduationId');
         if ($subscription->save())
         {
-            UserSession::addNotification('Wijzigingen opgeslagen.');
+            $userSession->addNotification('Wijzigingen opgeslagen.');
             // Since we only start entering names and data once people have paid, no need to notify for changes if they haven't paid yet.
             if ($subscription->isPaid)
             {
@@ -755,7 +755,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('editSubscription', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function editSubscriptionPage(QueryBits $queryBits, User|null $currentUser): Response
+    public function editSubscriptionPage(QueryBits $queryBits, User|null $currentUser, UserSession $userSession): Response
     {
         $id = $queryBits->getInt(2);
         $subscription = ContestMember::fetchById($id);
@@ -774,7 +774,7 @@ final class ContestController extends Controller
             $controlledMemberIds = array_map(static function(Member $member)
             {
                 return $member->id;
-            }, $this->fetchMembersByLoggedInUser());
+            }, $this->fetchMembersByLoggedInUser($userSession));
             if (!in_array($memberId, $controlledMemberIds, true))
             {
                 return new Response('U mag deze judoka niet beheren!', Response::HTTP_FORBIDDEN);
@@ -847,7 +847,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('createParentAccount', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
-    public function createParentAccount(RequestParameters $post, UrlInfo $urlInfo): JsonResponse
+    public function createParentAccount(RequestParameters $post, UrlInfo $urlInfo, UserSession $userSession): JsonResponse
     {
         $user = new User();
         $user->firstName = $post->getSimpleString('firstName');
@@ -878,7 +878,7 @@ final class ContestController extends Controller
             }
         }
 
-        UserSession::addNotification('Ouderaccount aangemaakt.');
+        $userSession->addNotification('Ouderaccount aangemaakt.');
         return new JsonResponse();
     }
 

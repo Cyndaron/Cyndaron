@@ -15,6 +15,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         private readonly RequestParameters $post,
         private readonly Request $request,
         private readonly ImageExtractor $imageExtractor,
+        private readonly UserSession $userSession,
     ) {
     }
 
@@ -31,7 +32,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $category->save();
         $this->saveCategories($category, $this->post);
 
-        UserSession::addNotification('Categorie bewerkt.');
+        $this->userSession->addNotification('Categorie bewerkt.');
 
         assert($category->id !== null);
         $this->returnUrl = '/category/' . $category->id;

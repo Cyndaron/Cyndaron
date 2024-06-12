@@ -4,33 +4,44 @@ declare(strict_types=1);
 namespace Cyndaron\User;
 
 use Cyndaron\Util\Util;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class CSRFTokenHandler
 {
+    public function __construct(private readonly SessionInterface $userSession)
+    {
+    }
+
     public function get(string $module, string $action): string
     {
-        if (empty($_SESSION['token']))
+        /** @var array<string, array<string, string>>|null $holder */
+        $holder = $this->userSession->get('token');
+        if (empty($holder))
         {
-            $_SESSION['token'] = [];
+            $holder = [];
         }
-        if (empty($_SESSION['token'][$module]))
+        if (empty($holder[$module]))
         {
-            $_SESSION['token'][$module] = [];
-        }
-
-        if (empty($_SESSION['token'][$module][$action]))
-        {
-            $_SESSION['token'][$module][$action] = Util::generateToken(16);
+            $holder[$module] = [];
         }
 
-        return $_SESSION['token'][$module][$action];
+        if (empty($holder[$module][$action]))
+        {
+            $holder[$module][$action] = Util::generateToken(16);
+        }
+
+        $this->userSession->set('token', $holder);
+
+        return $holder[$module][$action];
     }
 
     public function check(string $module, string $action, string $token): bool
     {
+        /** @var array<string, array<string, string>>|null $holder */
+        $holder = $this->userSession->get('token');
         if (!empty($token) &&
-            !empty($_SESSION['token'][$module][$action]) &&
-            $token === $_SESSION['token'][$module][$action])
+            !empty($holder[$module][$action]) &&
+            $token === $holder[$module][$action])
         {
             return true;
         }

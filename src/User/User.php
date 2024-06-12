@@ -178,7 +178,7 @@ Uw nieuwe wachtwoord is: %s';
         return self::fetch(['username = ?'], [$username]);
     }
 
-    public static function login(string $identification, string $password): string
+    public static function login(string $identification, string $password, UserSession $userSession): string
     {
         if (str_contains($identification, '@'))
         {
@@ -213,15 +213,15 @@ Uw nieuwe wachtwoord is: %s';
             throw new IncorrectCredentials('Verkeerd wachtwoord.');
         }
 
-        UserSession::setProfile($user);
+        $userSession->setProfile($user);
 
-        UserSession::addNotification('U bent ingelogd.');
+        $userSession->addNotification('U bent ingelogd.');
 
-        $sessionRedirect = UserSession::getRedirect();
+        $sessionRedirect = $userSession->getRedirect();
         if ($sessionRedirect !== '')
         {
             $redirect = $sessionRedirect;
-            UserSession::setRedirect(null);
+            $userSession->setRedirect(null);
         }
         else
         {
@@ -322,9 +322,9 @@ Uw nieuwe wachtwoord is: %s';
         return Util::filenameToUrl($filename);
     }
 
-    public static function fromSession(): self|null
+    public static function fromSession(UserSession $userSession): self|null
     {
-        return UserSession::getProfile();
+        return $userSession->getProfile();
     }
 
     public function getGenderDisplay(): string

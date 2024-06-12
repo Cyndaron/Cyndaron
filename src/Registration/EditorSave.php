@@ -13,6 +13,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
     public function __construct(
         private readonly RequestParameters $post,
         private readonly ImageExtractor $imageExtractor,
+        private readonly UserSession $userSession,
     ) {
     }
 
@@ -38,11 +39,11 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
         if ($event->save())
         {
-            UserSession::addNotification('Evenement opgeslagen.');
+            $this->userSession->addNotification('Evenement opgeslagen.');
         }
         else
         {
-            UserSession::addNotification('Fout bij opslaan evenement');
+            $this->userSession->addNotification('Fout bij opslaan evenement');
         }
 
         assert($event->id !== null);

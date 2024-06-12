@@ -48,8 +48,10 @@
 <div class="meldingencontainer">
     <div class="meldingen alert alert-info">
         <ul>
-            @foreach ($notifications as $notification)
-                <li>{{ $notification }}</li>
+            @foreach ($notifications as $type => $notificationsPerType)
+                @foreach ($notificationsPerType as $notification)
+                    <li>{{ $notification }}</li>
+                @endforeach
             @endforeach
         </ul>
     </div>

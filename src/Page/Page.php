@@ -108,10 +108,10 @@ class Page implements Pageable
     /**
      * @param UserMenuItem[] $userMenu
      */
-    protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, CSRFTokenHandler $tokenHandler, array $userMenu, bool $isFrontPage): void
+    protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, CSRFTokenHandler $tokenHandler, UserSession $userSession, array $userMenu, bool $isFrontPage): void
     {
         $this->websiteName = Setting::get('siteName');
-        $this->templateVars['isAdmin'] = UserSession::isAdmin();
+        $this->templateVars['isAdmin'] = $userSession->isAdmin();
         $this->templateVars['websiteName'] = $this->websiteName;
         $this->templateVars['title'] = $this->title;
         // TODO: remove or fill
@@ -137,7 +137,7 @@ class Page implements Pageable
             $this->templateVars[$setting] = Setting::get($setting);
         }
 
-        $this->templateVars['menu'] = $this->renderMenu($templateRenderer, $urlService, $userMenu);
+        $this->templateVars['menu'] = $this->renderMenu($templateRenderer, $urlService, $userSession, $userMenu);
 
         $jumboContents = Setting::get('jumboContents');
         $this->templateVars['showJumbo'] = $isFrontPage && Setting::get('frontPageIsJumbo') && $jumboContents;
@@ -173,25 +173,25 @@ class Page implements Pageable
     /**
      * @param UserMenuItem[] $userMenu
      */
-    protected function renderMenu(TemplateRenderer $templateRenderer, UrlService $urlService, array $userMenu): string
+    protected function renderMenu(TemplateRenderer $templateRenderer, UrlService $urlService, UserSession $userSession, array $userMenu): string
     {
         $logo = Setting::get('logo');
         $vars = [
-            'isLoggedIn' => UserSession::isLoggedIn(),
-            'isAdmin' => UserSession::isAdmin(),
+            'isLoggedIn' => $userSession->isLoggedIn(),
+            'isAdmin' => $userSession->isAdmin(),
             'inverseClass' => (Setting::get('menuTheme') === 'dark') ? 'navbar-dark' : 'navbar-light',
             'navbar' => $logo !== '' ? sprintf('<img alt="" src="%s"> ', $logo) : $this->websiteName,
         ];
 
         $vars['urlService'] = $urlService;
-        $vars['menuItems'] = $this->getMenu();
+        $vars['menuItems'] = $this->getMenu($userSession);
         $vars['configMenuItems'] = [
             new LinkWithIcon('/system', 'Systeembeheer', 'cog'),
             new LinkWithIcon('/pagemanager', 'Pagina-overzicht', 'th-list'),
             new LinkWithIcon('/menu-editor', 'Menu bewerken', 'menu-hamburger'),
             new LinkWithIcon('/user/manager', 'Gebruikersbeheer', 'user'),
         ];
-        $profile = UserSession::getProfile();
+        $profile = $userSession->getProfile();
         $userMenuItems = [
             new LinkWithIcon('', $profile ? $profile->username : '', 'user'),
         ];
@@ -204,7 +204,7 @@ class Page implements Pageable
 
         $vars['userMenuItems'] = $userMenuItems;
 
-        $vars['notifications'] = UserSession::getNotifications();
+        $vars['notifications'] = $userSession->getNotifications();
 
         return $templateRenderer->render('Menu', $vars);
     }
@@ -217,11 +217,11 @@ class Page implements Pageable
      * @param array<string, mixed> $vars
      * @return string
      */
-    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, CSRFTokenHandler $tokenHandler, array $pageProcessors, bool $isFrontPage, array $userMenu = [], array $vars = []): string
+    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, CSRFTokenHandler $tokenHandler, UserSession $userSession, array $pageProcessors, bool $isFrontPage, array $userMenu = [], array $vars = []): string
     {
         $this->addTemplateVars($vars);
 
-        $this->renderSkeleton($templateRenderer, $textRenderer, $urlService, $tokenHandler, $userMenu, $isFrontPage);
+        $this->renderSkeleton($templateRenderer, $textRenderer, $urlService, $tokenHandler, $userSession, $userMenu, $isFrontPage);
 
         foreach ($pageProcessors as $processor)
         {
@@ -244,9 +244,9 @@ class Page implements Pageable
     /**
      * @return MenuItem[]
      */
-    public function getMenu(): array
+    public function getMenu(UserSession $userSession): array
     {
-        if (!UserSession::hasSufficientReadLevel())
+        if (!$userSession->hasSufficientReadLevel())
         {
             return [];
         }

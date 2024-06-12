@@ -457,7 +457,7 @@ final class OrderController extends Controller
     }
 
     #[RouteAttribute('pay', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function pay(QueryBits $queryBits, Request $request): Response
+    public function pay(QueryBits $queryBits, Request $request, UserSession $userSession): Response
     {
         $orderId = $queryBits->getInt(2);
         $order = Order::fetchById($orderId);
@@ -508,11 +508,11 @@ final class OrderController extends Controller
         $redirectUrl = $molliePayment->getCheckoutUrl();
         if ($redirectUrl === null)
         {
-            UserSession::addNotification('Bedankt voor je bestelling! Helaas lukte het doorsturen naar de betaalpagina niet.');
+            $userSession->addNotification('Bedankt voor je bestelling! Helaas lukte het doorsturen naar de betaalpagina niet.');
             return new RedirectResponse('/');
         }
 
-        UserSession::addNotification('Bedankt voor de betaling! Het kan even duren voordat deze geregistreerd is.');
+        $userSession->addNotification('Bedankt voor de betaling! Het kan even duren voordat deze geregistreerd is.');
         return new RedirectResponse($redirectUrl);
     }
 

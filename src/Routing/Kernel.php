@@ -36,17 +36,21 @@ use Cyndaron\View\Template\TemplateRenderer;
 use Cyndaron\View\Template\TemplateRendererFactory;
 use PDO;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\Mime\Address;
 use Throwable;
 use function array_merge;
 use function defined;
 use function Safe\error_log;
-use function session_start;
 use function set_exception_handler;
 use function str_starts_with;
+use function assert;
 
 final class Kernel
 {
@@ -67,15 +71,15 @@ final class Kernel
         });
     }
 
-    private function buildDIC(ModuleRegistry $registry, Request $request, User|null $user): DependencyInjectionContainer
+    private function buildDIC(ModuleRegistry $registry, Request $request, UserSession $userSession, User|null $user): DependencyInjectionContainer
     {
         $dic = new DependencyInjectionContainer();
         $pdo = DBConnection::getPDO();
         $urlService = new UrlService($pdo, $request->getRequestUri(), $registry->urlProviders);
         $templateRenderer = TemplateRendererFactory::createTemplateRenderer($registry->templateRoots);
-        $tokenHandler = new CSRFTokenHandler();
+        $tokenHandler = new CSRFTokenHandler($userSession->getSymfonySession());
         $textRenderer = new TextRenderer($registry, $dic);
-        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $urlService, $tokenHandler, $request, $user);
+        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $urlService, $tokenHandler, $userSession, $request, $user);
         $urlInfo = UrlInfo::fromRequest($request);
 
         $fileLogger = new FileLogger(ROOT_DIR . '/var/log/cyndaron.log');
@@ -101,6 +105,7 @@ final class Kernel
         $dic->add($pdo, \PDO::class);
         $dic->add($urlService);
         $dic->add($tokenHandler);
+        $dic->add($userSession);
         $dic->add($multiLogger, LoggerInterface::class);
         if ($user !== null)
         {
@@ -282,14 +287,29 @@ final class Kernel
 
     public function handle(Request $request): Response
     {
-        if (UserSession::hasStarted())
+        if ($request->hasPreviousSession())
         {
-            session_start();
+            $symSession = $request->getSession();
+            assert($symSession instanceof FlashBagAwareSessionInterface);
+        }
+        else
+        {
+            $storage = new NativeSessionStorage([
+                'cookie_secure' => 'auto',
+                'cookie_samesite' => Cookie::SAMESITE_LAX,
+            ]);
+            $symSession = new Session($storage);
         }
 
-        $user = User::fromSession();
+        $userSession = new UserSession($symSession);
+        if ($userSession->hasStarted())
+        {
+            $userSession->start();
+        }
+
+        $user = User::fromSession($userSession);
         $registry = $this->loadModules($user);
-        $dic = $this->buildDIC($registry, $request, $user);
+        $dic = $this->buildDIC($registry, $request, $userSession, $user);
         $response = $this->route($dic);
         $queryBits = $dic->tryGet(QueryBits::class);
         $cspHeader = $this->getCSPHeader((bool)$request->server->get('HTTPS'), $queryBits);

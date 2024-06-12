@@ -225,7 +225,7 @@ class Controller extends \Cyndaron\Routing\Controller
     }
 
     #[RouteAttribute('unsubscribe', RequestMethod::POST, UserLevel::ADMIN)]
-    public function unsubscribeAdmin(RequestParameters $post, Connection $connection, UrlInfo $urlInfo): Response
+    public function unsubscribeAdmin(RequestParameters $post, Connection $connection, UrlInfo $urlInfo, UserSession $userSession): Response
     {
         $addressHelper = new AddressHelper($connection, $urlInfo);
         $email = $post->getEmail('email');
@@ -233,20 +233,20 @@ class Controller extends \Cyndaron\Routing\Controller
 
         if ($changes->total() === 0)
         {
-            UserSession::addNotification('Adres niet gevonden!');
+            $userSession->addNotification('Adres niet gevonden!');
         }
         else
         {
             $notification = "Adres uitgeschreven.
                 {$changes->users} gebruikersrecord(s), {$changes->members} ledenrecord(s) en {$changes->subscribers} nieuwsbriefinschrijver(s) aangepast.";
-            UserSession::addNotification($notification);
+            $userSession->addNotification($notification);
         }
 
         return new RedirectResponse('/newsletter/viewSubscribers#unsubscribe');
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN)]
-    public function delete(RequestParameters $post, Connection $connection, UrlInfo $urlInfo): Response
+    public function delete(RequestParameters $post, Connection $connection, UrlInfo $urlInfo, UserSession $userSession): Response
     {
         $addressHelper = new AddressHelper($connection, $urlInfo);
         $email = $post->getEmail('email');
@@ -254,13 +254,13 @@ class Controller extends \Cyndaron\Routing\Controller
 
         if ($changes->total() === 0)
         {
-            UserSession::addNotification('Adres niet gevonden!');
+            $userSession->addNotification('Adres niet gevonden!');
         }
         else
         {
             $notification = "Adres verwijderd.
                 {$changes->users} gebruikersrecord(s), {$changes->members} ledenrecord(s) en {$changes->subscribers} nieuwsbriefinschrijver(s) aangepast.";
-            UserSession::addNotification($notification);
+            $userSession->addNotification($notification);
         }
 
         return new RedirectResponse('/newsletter/viewSubscribers#delete');

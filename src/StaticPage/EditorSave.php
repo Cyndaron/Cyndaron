@@ -16,6 +16,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         private readonly RequestParameters $post,
         private readonly Request $request,
         private readonly ImageExtractor $imageExtractor,
+        private readonly UserSession $userSession,
     ) {
     }
 
@@ -40,12 +41,12 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         {
             $this->saveCategories($model, $this->post);
 
-            UserSession::addNotification('Pagina bewerkt.');
+            $this->userSession->addNotification('Pagina bewerkt.');
             $this->returnUrl = '/sub/' . $id;
         }
         else
         {
-            UserSession::addNotification('Pagina opslaan mislukt');
+            $this->userSession->addNotification('Pagina opslaan mislukt');
         }
 
         assert($model->id !== null);

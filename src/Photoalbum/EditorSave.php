@@ -15,6 +15,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         private readonly RequestParameters $post,
         private readonly Request $request,
         private readonly ImageExtractor $imageExtractor,
+        private readonly UserSession $userSession,
     ) {
     }
 
@@ -34,7 +35,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $photoalbum->save();
         $this->saveCategories($photoalbum, $this->post);
 
-        UserSession::addNotification('Fotoalbum bewerkt.');
+        $this->userSession->addNotification('Fotoalbum bewerkt.');
 
         assert($photoalbum->id !== null);
         $this->returnUrl = '/photoalbum/' . $photoalbum->id;

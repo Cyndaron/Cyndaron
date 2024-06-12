@@ -40,20 +40,20 @@ final class UserController extends Controller
     }
 
     #[RouteAttribute('login', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function loginGet(Request $request, CSRFTokenHandler $tokenHandler): Response
+    public function loginGet(Request $request, CSRFTokenHandler $tokenHandler, UserSession $userSession): Response
     {
-        if (empty(UserSession::getRedirect()))
+        if (empty($userSession->getRedirect()))
         {
-            UserSession::setRedirect($request->headers->get('referer'));
+            $userSession->setRedirect($request->headers->get('referer'));
         }
         $page = new LoginPage($tokenHandler);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('logout', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function logout(): Response
+    public function logout(UserSession $userSession): Response
     {
-        UserSession::logout();
+        $userSession->logout();
         return new RedirectResponse('/', Response::HTTP_FOUND, Kernel::HEADERS_DO_NOT_CACHE);
     }
 
@@ -65,14 +65,14 @@ final class UserController extends Controller
     }
 
     #[RouteAttribute('login', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function loginPost(RequestParameters $post): Response
+    public function loginPost(RequestParameters $post, UserSession $userSession): Response
     {
         $identification = $post->getEmail('login_user');
         $verification = $post->getUnfilteredString('login_pass');
 
         try
         {
-            $redirectUrl = User::login($identification, $verification);
+            $redirectUrl = User::login($identification, $verification, $userSession);
             return new RedirectResponse($redirectUrl);
         }
         catch (IncorrectCredentials $e)
@@ -206,9 +206,9 @@ final class UserController extends Controller
     }
 
     #[RouteAttribute('changePassword', RequestMethod::POST, UserLevel::LOGGED_IN)]
-    public function changePasswordPost(RequestParameters $post): Response
+    public function changePasswordPost(RequestParameters $post, UserSession $userSession): Response
     {
-        $profile = User::fromSession();
+        $profile = User::fromSession($userSession);
         if ($profile === null)
         {
             return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Geen profiel gevonden!'), status:  Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -217,14 +217,14 @@ final class UserController extends Controller
         $oldPassword = $post->getUnfilteredString('oldPassword');
         if (!$profile->checkPassword($oldPassword))
         {
-            UserSession::addNotification('Oude wachtwoord klopt niet!');
+            $userSession->addNotification('Oude wachtwoord klopt niet!');
             return new RedirectResponse('/user/changePassword');
         }
 
         $newPassword = $post->getUnfilteredString('newPassword');
         if (strlen($newPassword) < 8)
         {
-            UserSession::addNotification('Nieuw wachtwoord moet langer zijn dan 8 tekens!');
+            $userSession->addNotification('Nieuw wachtwoord moet langer zijn dan 8 tekens!');
             return new RedirectResponse('/user/changePassword');
         }
 
@@ -232,7 +232,7 @@ final class UserController extends Controller
 
         if ($newPassword !== $newPasswordRepeat)
         {
-            UserSession::addNotification('Wachtwoorden komen niet overeen!');
+            $userSession->addNotification('Wachtwoorden komen niet overeen!');
             return new RedirectResponse('/user/changePassword');
         }
 
@@ -242,7 +242,7 @@ final class UserController extends Controller
             return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Kon het nieuwe wachtwoord niet opslaan.'), status:  Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        UserSession::addNotification('Wachtwoord gewijzigd.');
+        $userSession->addNotification('Wachtwoord gewijzigd.');
         return new RedirectResponse('/');
     }
 }

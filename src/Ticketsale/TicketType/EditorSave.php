@@ -10,6 +10,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 {
     public function __construct(
         private readonly RequestParameters $post,
+        private readonly UserSession $userSession
     ) {
     }
 
@@ -28,11 +29,11 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
         if ($ticketType->save())
         {
-            UserSession::addNotification('Kaarttype opgeslagen.');
+            $this->userSession->addNotification('Kaarttype opgeslagen.');
         }
         else
         {
-            UserSession::addNotification('Fout bij opslaan kaarttype');
+            $this->userSession->addNotification('Fout bij opslaan kaarttype');
         }
 
         $this->returnUrl = '/pagemanager/concert';

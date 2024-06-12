@@ -13,6 +13,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class MinecraftController extends Controller
@@ -48,9 +49,9 @@ final class MinecraftController extends Controller
     }
 
     #[RouteAttribute('skin', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function skin(): Response
+    public function skin(Request $request): Response
     {
-        $get = new RequestParameters($_GET);
+        $get = new RequestParameters($request->query->all());
         $format = $get->getSimpleString('format');
         $username = $get->getSimpleString('user');
         $member = Member::loadByUsername($username);

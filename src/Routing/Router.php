@@ -25,11 +25,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
-use function in_array;
 use function ltrim;
 use function parse_url;
-use function Safe\session_destroy;
-use function session_start;
 use function str_starts_with;
 use function strpos;
 use function substr;
@@ -104,7 +101,7 @@ final class Router
         return ($request !== '/' && (substr($request, 0, 1) === '.' || substr($request, 0, 1) === '/'));
     }
 
-    private function getLoginStatus(QueryBits $queryBits): LoginStatus
+    private function getLoginStatus(QueryBits $queryBits, UserSession $userSession): LoginStatus
     {
         $isLoggingIn = $queryBits->getString(0) === 'user' && $queryBits->getString(1) === 'login';
         if ($isLoggingIn)
@@ -112,12 +109,12 @@ final class Router
             return LoginStatus::OK;
         }
 
-        if (UserSession::hasSufficientReadLevel())
+        if ($userSession->hasSufficientReadLevel())
         {
             return LoginStatus::OK;
         }
 
-        $userLevel = UserSession::getLevel();
+        $userLevel = $userSession->getLevel();
         if ($userLevel > UserLevel::ANONYMOUS)
         {
             return LoginStatus::INSUFFICIENT_RIGHTS;
@@ -155,7 +152,8 @@ final class Router
             return $this->sendNotFound($isApiCall);
         }
 
-        $redirect = $this->getLoginRedirect($queryBits, $requestUri);
+        $userSession = $this->dic->get(UserSession::class);
+        $redirect = $this->getLoginRedirect($queryBits, $userSession, $requestUri);
         if ($redirect !== null)
         {
             return $redirect;
@@ -169,7 +167,7 @@ final class Router
         $this->dic->add($queryBits);
         $this->dic->add($urlInfo);
         $tokenHandler = $this->dic->get(CSRFTokenHandler::class);
-        $profile = UserSession::getProfile();
+        $profile = $userSession->getProfile();
         if ($profile !== null)
         {
             $this->dic->add($profile);
@@ -213,12 +211,12 @@ final class Router
             }
         }
 
-        return $this->callRoute($controller, $route, $requestUri);
+        return $this->callRoute($controller, $route, $userSession, $requestUri);
     }
 
-    public function getLoginRedirect(QueryBits $queryBits, string $requestUri): RedirectResponse|null
+    public function getLoginRedirect(QueryBits $queryBits, UserSession $userSession, string $requestUri): RedirectResponse|null
     {
-        $loginStatus = $this->getLoginStatus($queryBits);
+        $loginStatus = $this->getLoginStatus($queryBits, $userSession);
         switch ($loginStatus)
         {
             case LoginStatus::OK:
@@ -227,8 +225,8 @@ final class Router
                 return new RedirectResponse('/error/403', Response::HTTP_FOUND, Kernel::HEADERS_DO_NOT_CACHE);
             case LoginStatus::NEEDS_LOGIN:
             default:
-                UserSession::addNotification('U moet inloggen om deze site te bekijken');
-                UserSession::setRedirect($requestUri);
+                $userSession->addNotification('U moet inloggen om deze site te bekijken');
+                $userSession->setRedirect($requestUri);
                 return new RedirectResponse('/user/login', Response::HTTP_FOUND, Kernel::HEADERS_DO_NOT_CACHE);
         }
     }
@@ -243,14 +241,14 @@ final class Router
         return true;
     }
 
-    private function callRoute(Controller $controller, Route $route, string $requestUri): Response
+    private function callRoute(Controller $controller, Route $route, UserSession $userSession, string $requestUri): Response
     {
         $right = $route->right;
-        $profile = UserSession::getProfile();
+        $profile = $userSession->getProfile();
         $hasRight = !empty($right) && $profile?->hasRight($right);
         if (!$hasRight)
         {
-            $response = $this->checkUserLevel($route->level, $requestUri);
+            $response = $this->checkUserLevel($userSession, $route->level, $requestUri);
             if ($response !== null)
             {
                 return $response;
@@ -306,23 +304,22 @@ final class Router
     }
 
     /**
+     * @param UserSession $userSession
      * @param int $requiredLevel
      * @param string $requestUri
-     * @throws SessionException
      * @return Response|null A Response if the user level is insufficient, null otherwise.
      */
-    public function checkUserLevel(int $requiredLevel, string $requestUri): Response|null
+    public function checkUserLevel(UserSession $userSession, int $requiredLevel, string $requestUri): Response|null
     {
-        if ($requiredLevel > UserLevel::ANONYMOUS && !UserSession::isLoggedIn())
+        if ($requiredLevel > UserLevel::ANONYMOUS && !$userSession->isLoggedIn())
         {
-            session_destroy();
-            session_start();
-            UserSession::addNotification('U moet inloggen om deze pagina te bekijken');
-            UserSession::setRedirect($requestUri);
+            $userSession->invalidate();
+            $userSession->addNotification('U moet inloggen om deze pagina te bekijken');
+            $userSession->setRedirect($requestUri);
 
             return new RedirectResponse('/user/login', );
         }
-        if (UserSession::getLevel() < $requiredLevel)
+        if ($userSession->getLevel() < $requiredLevel)
         {
             return new Response('Insufficient user rights!', Response::HTTP_FORBIDDEN);
         }
