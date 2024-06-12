@@ -6,7 +6,7 @@
     @component('View/Widget/Toolbar')
         @slot('right')
             <button id="mm-create-item"
-                    data-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('menu', 'addItem') }}"
+                    data-csrf-token="{{ $tokenHandler->get('menu', 'addItem') }}"
                     type="button" class="btn btn-success" data-toggle="modal" data-target="#mm-edit-item-dialog">
                 <span class="glyphicon glyphicon-plus"></span> Nieuw menuitem
             </button>
@@ -14,8 +14,8 @@
     @endcomponent
 
     <table id="mm-menutable" class="table table-striped table-bordered"
-           data-edit-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('menu', 'editItem') }}"
-           data-delete-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('menu', 'deleteItem') }}">
+           data-edit-csrf-token="{{ $tokenHandler->get('menu', 'editItem') }}"
+           data-delete-csrf-token="{{ $tokenHandler->get('menu', 'deleteItem') }}">
         <thead>
         <tr>
             <th>ID</th>

@@ -8,6 +8,7 @@ use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
 use function array_map;
@@ -56,7 +57,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         }, $list);
     }
 
-    public static function pageManagerTab(TemplateRenderer $templateRenderer): string
+    public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
     {
         $templateVars = [];
 
@@ -75,6 +76,8 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         }
 
         $templateVars['subsPerCategory'] = $subsPerCategory;
+        $templateVars['tokenDelete'] = $tokenHandler->get('sub', 'delete');
+        $templateVars['tokenAddToMenu'] = $tokenHandler->get('sub', 'addtomenu');
         return $templateRenderer->render('StaticPage/PageManagerTab', $templateVars);
     }
 }

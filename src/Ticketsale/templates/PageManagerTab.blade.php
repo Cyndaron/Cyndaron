@@ -55,7 +55,7 @@
             <td>
                 <div class="btn-group">
                     <a class="btn btn-outline-cyndaron btn-sm" href="/editor/concert/{{ $concert->id }}"><span class="glyphicon glyphicon-pencil" title="Bewerk dit concert"></span></a>
-                    <button class="btn btn-danger btn-sm pm-delete" data-type="concert" data-id="{{ $concert->id }}" data-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('concert', 'delete') }}"><span class="glyphicon glyphicon-trash" title="Verwijder dit concert"></span></button>
+                    <button class="btn btn-danger btn-sm pm-delete" data-type="concert" data-id="{{ $concert->id }}" data-csrf-token="{{ $tokenDelete }}"><span class="glyphicon glyphicon-trash" title="Verwijder dit concert"></span></button>
                 </div>
 
             </td>

@@ -14,6 +14,7 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
@@ -58,9 +59,9 @@ class TryoutController extends Controller
     }
 
     #[RouteAttribute('update', RequestMethod::GET, UserLevel::ADMIN, right: self::RIGHT_UPLOAD)]
-    public function updateGet(): Response
+    public function updateGet(CSRFTokenHandler $tokenHandler): Response
     {
-        $page = new UpdateFormPage();
+        $page = new UpdateFormPage($tokenHandler);
         return $this->pageRenderer->renderResponse($page);
     }
 

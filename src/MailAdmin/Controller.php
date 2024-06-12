@@ -7,6 +7,7 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Setting;
 use PDO;
@@ -34,9 +35,9 @@ class Controller extends \Cyndaron\Routing\Controller
     }
 
     #[RouteAttribute('overview', RequestMethod::GET, UserLevel::ADMIN)]
-    public function overview(): Response
+    public function overview(CSRFTokenHandler $tokenHandler): Response
     {
-        $page = new OverviewPage($this->createPDO());
+        $page = new OverviewPage($this->createPDO(), $tokenHandler);
         return $this->pageRenderer->renderResponse($page);
     }
 

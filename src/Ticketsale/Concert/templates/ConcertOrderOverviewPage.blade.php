@@ -130,14 +130,14 @@
                     <td>
                         <div class="btn-group btn-group-sm">
                             @if (!$order->isPaid)
-                                <button data-order-id="{{ $orderId }}" data-csrf-token-set-is-paid="{{ \Cyndaron\User\UserSession::getCSRFToken('concert-order', 'setIsPaid') }}" title="Markeren als betaald" class="com-order-set-paid btn btn-sm btn-success"><span class="glyphicon glyphicon-eur"></span></button>
+                                <button data-order-id="{{ $orderId }}" data-csrf-token-set-is-paid="{{ $tokenHandler->get('concert-order', 'setIsPaid') }}" title="Markeren als betaald" class="com-order-set-paid btn btn-sm btn-success"><span class="glyphicon glyphicon-eur"></span></button>
                             @endif
 
                             @if (($concert->forcedDelivery || $order->delivery) && !$order->isDelivered)
-                                <button data-order-id="{{ $orderId }}" data-csrf-token-set-is-sent="{{ \Cyndaron\User\UserSession::getCSRFToken('concert-order', 'setIsSent') }}" title="Markeren als verstuurd" class="com-order-set-sent btn btn-sm btn-success"><span class="glyphicon glyphicon-envelope"></span></button>
+                                <button data-order-id="{{ $orderId }}" data-csrf-token-set-is-sent="{{ $tokenHandler->get('concert-order', 'setIsSent') }}" title="Markeren als verstuurd" class="com-order-set-sent btn btn-sm btn-success"><span class="glyphicon glyphicon-envelope"></span></button>
                             @endif
 
-                            <button data-order-id="{{ $orderId }}" data-csrf-token-delete="{{ \Cyndaron\User\UserSession::getCSRFToken('concert-order', 'delete') }}" title="Bestelling verwijderen" class="com-order-delete btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                            <button data-order-id="{{ $orderId }}" data-csrf-token-delete="{{ $tokenHandler->get('concert-order', 'delete') }}" title="Bestelling verwijderen" class="com-order-delete btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
                             <a class="btn btn-sm btn-outline-cyndaron" href="/concert-order/getTickets/{{ $order->id }}/{{ $order->secretCode }}" title="Tickets opvragen" target="_blank">
                                 <span class="glyphicon glyphicon-tag"></span>
                             </a>

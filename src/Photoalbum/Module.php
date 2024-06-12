@@ -8,6 +8,7 @@ use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\WithTextPostProcessors;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
 use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
@@ -64,11 +65,14 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
         }, $list);
     }
 
-    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer): string
+    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
     {
         $templateVars = [
             'photoalbums' => Photoalbum::fetchAll([], [], 'ORDER BY name'),
             'currentUser' => $currentUser,
+            'tokenAdd' => $tokenHandler->get('photoalbum', 'add'),
+            'tokenDelete' => $tokenHandler->get('photoalbum', 'delete'),
+            'tokenAddToMenu' => $tokenHandler->get('photoalbum', 'addtomenu'),
         ];
         return $templateRenderer->render('Photoalbum/PageManagerTab', $templateVars);
     }

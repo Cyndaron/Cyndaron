@@ -5,7 +5,7 @@
         <form method="post" action="/filecabinet/addItem" enctype="multipart/form-data">
             <label for="newFile">Bestand toevoegen:</label>
             <input type="file" id="newFile" name="newFile" required>
-            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\UserSession::getCSRFToken('filecabinet', 'addItem') }}">
+            <input type="hidden" name="csrfToken" value="{{ $addItemToken }}">
             <input class="btn btn-primary" type="submit" value="Uploaden">
         </form>
         <hr>

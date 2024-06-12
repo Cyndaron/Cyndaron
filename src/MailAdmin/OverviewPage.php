@@ -4,14 +4,14 @@ declare(strict_types=1);
 namespace Cyndaron\MailAdmin;
 
 use Cyndaron\Page\Page;
-use Cyndaron\User\UserSession;
+use Cyndaron\User\CSRFTokenHandler;
 use PDO;
 use function assert;
 use function usort;
 
 class OverviewPage extends Page
 {
-    public function __construct(PDO $pdo)
+    public function __construct(PDO $pdo, CSRFTokenHandler $tokenHandler)
     {
         parent::__construct('Mailadmin');
 
@@ -66,11 +66,11 @@ class OverviewPage extends Page
             'users' => $users,
             'aliases' => $aliases,
             'addressesPerDomain' => $addressesPerDomain,
-            'csrfTokenAddAlias' => UserSession::getCSRFToken('mailadmin', 'addAlias'),
-            'csrfTokenAddDomain' => UserSession::getCSRFToken('mailadmin', 'addDomain'),
-            'csrfTokenAddEmail' => UserSession::getCSRFToken('mailadmin', 'addEmail'),
-            'csrfTokenDeleteAlias' => UserSession::getCSRFToken('mailadmin', 'deleteAlias'),
-            'csrfTokenDeleteEmail' => UserSession::getCSRFToken('mailadmin', 'deleteEmail'),
+            'csrfTokenAddAlias' => $tokenHandler->get('mailadmin', 'addAlias'),
+            'csrfTokenAddDomain' => $tokenHandler->get('mailadmin', 'addDomain'),
+            'csrfTokenAddEmail' => $tokenHandler->get('mailadmin', 'addEmail'),
+            'csrfTokenDeleteAlias' => $tokenHandler->get('mailadmin', 'deleteAlias'),
+            'csrfTokenDeleteEmail' => $tokenHandler->get('mailadmin', 'deleteEmail'),
         ]);
     }
 }

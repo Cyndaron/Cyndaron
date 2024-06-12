@@ -7,6 +7,7 @@ use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
 use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
@@ -62,11 +63,15 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         }, $list);
     }
 
-    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer): string
+    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
     {
         $templateVars = [
             'categories' => Category::fetchAll([], [], 'ORDER BY name'),
             'currentUser' => $currentUser,
+            'tokenAdd' => $tokenHandler->get('category', 'add'),
+            'tokenDelete' => $tokenHandler->get('category', 'delete'),
+            'tokenAddToMenu' => $tokenHandler->get('category', 'addtomenu'),
+            'tokenChangeOrder' => $tokenHandler->get('category', 'changeOrder'),
         ];
         return $templateRenderer->render('Category/PageManagerTab', $templateVars);
     }

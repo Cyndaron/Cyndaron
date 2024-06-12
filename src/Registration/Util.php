@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Registration;
 
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
 use function constant;
 use function defined;
@@ -16,9 +17,12 @@ final class Util
         [0, 40], [41, 50], [51, 60], [61, 70], [71, 80], [81, INF]
     ];
 
-    public static function drawPageManagerTab(TemplateRenderer $templateRenderer): string
+    public static function drawPageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
     {
-        $templateVars = ['events' => Event::fetchAll()];
+        $templateVars = [
+            'events' => Event::fetchAll(),
+            'tokenDelete' => $tokenHandler->get('event', 'delete'),
+        ];
         return $templateRenderer->render('Registration/PageManagerTab', $templateVars);
     }
 

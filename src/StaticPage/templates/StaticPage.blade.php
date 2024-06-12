@@ -51,7 +51,7 @@
                     <input type="submit" class="btn btn-primary" value="Versturen"/>
                 </div>
             </div>
-            <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\UserSession::getCSRFToken('sub', 'react') }}"/>
+            <input type="hidden" name="csrfToken" value="{{ $tokenHandler->get('sub', 'react') }}"/>
         </form>
     @endif
 

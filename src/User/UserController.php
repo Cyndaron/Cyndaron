@@ -40,13 +40,13 @@ final class UserController extends Controller
     }
 
     #[RouteAttribute('login', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function loginGet(Request $request): Response
+    public function loginGet(Request $request, CSRFTokenHandler $tokenHandler): Response
     {
         if (empty(UserSession::getRedirect()))
         {
             UserSession::setRedirect($request->headers->get('referer'));
         }
-        $page = new LoginPage();
+        $page = new LoginPage($tokenHandler);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -200,9 +200,9 @@ final class UserController extends Controller
     }
 
     #[RouteAttribute('changePassword', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function changePasswordGet(): Response
+    public function changePasswordGet(CSRFTokenHandler $tokenHandler): Response
     {
-        return $this->pageRenderer->renderResponse(new ChangePasswordPage());
+        return $this->pageRenderer->renderResponse(new ChangePasswordPage($tokenHandler));
     }
 
     #[RouteAttribute('changePassword', RequestMethod::POST, UserLevel::LOGGED_IN)]

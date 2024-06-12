@@ -9,18 +9,18 @@ declare(strict_types=1);
 namespace Cyndaron\Newsletter;
 
 use Cyndaron\Page\Page;
-use Cyndaron\User\UserSession;
+use Cyndaron\User\CSRFTokenHandler;
 
 class ViewSubscribersPage extends Page
 {
-    public function __construct()
+    public function __construct(CSRFTokenHandler $tokenHandler)
     {
         parent::__construct('Abonnees nieuwsbrief');
 
         $this->addTemplateVars([
             'subscribers' => Subscriber::fetchAll([], [], 'ORDER BY name'),
-            'csrfTokenUnsubscribe' => UserSession::getCSRFToken('newsletter', 'unsubscribe'),
-            'csrfTokenDelete' => UserSession::getCSRFToken('newsletter', 'delete'),
+            'csrfTokenUnsubscribe' => $tokenHandler->get('newsletter', 'unsubscribe'),
+            'csrfTokenDelete' => $tokenHandler->get('newsletter', 'delete'),
         ]);
     }
 }

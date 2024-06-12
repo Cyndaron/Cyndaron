@@ -6,6 +6,7 @@ use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
 
 final class Module implements Datatypes, UrlProvider, Routes
@@ -31,11 +32,13 @@ final class Module implements Datatypes, UrlProvider, Routes
         return $richLink->name ?? null;
     }
 
-    public static function pageManagerTab(TemplateRenderer $templateRenderer): string
+    public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
     {
         $templateVars = [
             'richlinks' => RichLink::fetchAll([], [], 'ORDER BY name'),
             'categories' => Category::fetchAll([], [], 'ORDER BY name'),
+            'tokenEdit' => $tokenHandler->get('richlink', 'edit'),
+            'tokenDelete' => $tokenHandler->get('richlink', 'delete'),
         ];
         return $templateRenderer->render('RichLink/PageManagerTab', $templateVars);
     }

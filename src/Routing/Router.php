@@ -13,6 +13,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Request\UrlInfo;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\DependencyInjectionContainer;
@@ -167,6 +168,7 @@ final class Router
         $this->dic->add($post);
         $this->dic->add($queryBits);
         $this->dic->add($urlInfo);
+        $tokenHandler = $this->dic->get(CSRFTokenHandler::class);
         $profile = UserSession::getProfile();
         if ($profile !== null)
         {
@@ -198,7 +200,7 @@ final class Router
         {
             $post = $this->dic->tryGet(RequestParameters::class);
             $token = $post !== null ? $post->getAlphaNum('csrfToken') : '';
-            $tokenCorrect = $this->checkCSRFToken($requestMethod, $module, $action, $token);
+            $tokenCorrect = $this->checkCSRFToken($requestMethod, $tokenHandler, $module, $action, $token);
             if (!$tokenCorrect)
             {
                 if ($isApiCall)
@@ -231,9 +233,9 @@ final class Router
         }
     }
 
-    public function checkCSRFToken(RequestMethod $requestMethod, string $module, string $action, string $token): bool
+    public function checkCSRFToken(RequestMethod $requestMethod, CSRFTokenHandler $tokenHandler, string $module, string $action, string $token): bool
     {
-        if ($requestMethod === RequestMethod::POST && !UserSession::checkToken($module, $action, $token))
+        if ($requestMethod === RequestMethod::POST && !$tokenHandler->check($module, $action, $token))
         {
             return false;
         }

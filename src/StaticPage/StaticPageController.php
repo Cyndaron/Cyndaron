@@ -51,7 +51,7 @@ final class StaticPageController extends Controller
         return new JsonResponse();
     }
 
-    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN)]
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);

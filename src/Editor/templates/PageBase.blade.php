@@ -35,7 +35,7 @@
         @yield ('contentSpecificButtons')
 
 
-        <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\UserSession::getCSRFToken('editor', $articleType) }}"/>
+        <input type="hidden" name="csrfToken" value="{{ $tokenHandler->get('editor', $articleType) }}"/>
         <input type="submit" value="Opslaan" class="btn btn-primary"/>
         <a role="button" class="btn btn-outline-cyndaron" href="{{ $referrer }}">Annuleren</a>
     </form>

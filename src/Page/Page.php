@@ -14,6 +14,7 @@ use Cyndaron\DBAL\Model;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\Module\PagePreProcessor;
 use Cyndaron\Url\UrlService;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
@@ -107,7 +108,7 @@ class Page implements Pageable
     /**
      * @param UserMenuItem[] $userMenu
      */
-    protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, array $userMenu, bool $isFrontPage): void
+    protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, CSRFTokenHandler $tokenHandler, array $userMenu, bool $isFrontPage): void
     {
         $this->websiteName = Setting::get('siteName');
         $this->templateVars['isAdmin'] = UserSession::isAdmin();
@@ -153,6 +154,7 @@ class Page implements Pageable
         $this->templateVars['scripts'] = array_merge(self::DEFAULT_SCRIPTS, $this->extraScripts);
         $this->templateVars['extraCss'] = $this->extraCss;
         $this->templateVars['extraBodyClasses'] = $this->extraBodyClasses;
+        $this->templateVars['tokenHandler'] = $tokenHandler;
 
         foreach (self::INCLUDES_MAPPING as $varName => $filename)
         {
@@ -215,11 +217,11 @@ class Page implements Pageable
      * @param array<string, mixed> $vars
      * @return string
      */
-    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, array $pageProcessors, bool $isFrontPage, array $userMenu = [], array $vars = []): string
+    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, CSRFTokenHandler $tokenHandler, array $pageProcessors, bool $isFrontPage, array $userMenu = [], array $vars = []): string
     {
         $this->addTemplateVars($vars);
 
-        $this->renderSkeleton($templateRenderer, $textRenderer, $urlService, $userMenu, $isFrontPage);
+        $this->renderSkeleton($templateRenderer, $textRenderer, $urlService, $tokenHandler, $userMenu, $isFrontPage);
 
         foreach ($pageProcessors as $processor)
         {

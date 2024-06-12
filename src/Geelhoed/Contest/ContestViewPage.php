@@ -3,13 +3,13 @@ namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Page\Page;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
-use Cyndaron\User\UserSession;
 use function sprintf;
 
 final class ContestViewPage extends Page
 {
-    public function __construct(Contest $contest, User|null $currentUser)
+    public function __construct(Contest $contest, User|null $currentUser, CSRFTokenHandler $tokenHandler)
     {
         $controlledMembers = $currentUser !== null ? Member::fetchAllContestantsByUser($currentUser) : [];
         $canManage = $currentUser !== null && $currentUser->hasRight(Contest::RIGHT_MANAGE);
@@ -17,14 +17,14 @@ final class ContestViewPage extends Page
         parent::__construct(sprintf('Wedstrijd: %s', $contest->name));
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $this->addTemplateVars([
-            'addDateCsrfToken' => UserSession::getCSRFToken('contest', 'addDate'),
+            'addDateCsrfToken' => $tokenHandler->get('contest', 'addDate'),
             'allSubscribed' => $this->areAllSubscribed($contest, $controlledMembers),
             'canManage' => $canManage,
-            'cancelSubscriptionCsrfToken' => UserSession::getCSRFToken('contest', 'cancelSubscription'),
+            'cancelSubscriptionCsrfToken' => $tokenHandler->get('contest', 'cancelSubscription'),
             'contest' => $contest,
             'controlledMembers' => $controlledMembers,
-            'deleteCsrfToken' => UserSession::getCSRFToken('contest', 'deleteAttachment'),
-            'deleteDateCsrfToken' => UserSession::getCSRFToken('contest', 'deleteDate'),
+            'deleteCsrfToken' => $tokenHandler->get('contest', 'deleteAttachment'),
+            'deleteDateCsrfToken' => $tokenHandler->get('contest', 'deleteDate'),
             'due' => $currentUser !== null ? $this->getTotalDue($currentUser) : 0.00,
             'mayViewOtherContestants' => $mayViewOtherContestants,
             'profile' => $currentUser,

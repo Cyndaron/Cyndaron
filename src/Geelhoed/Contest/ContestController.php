@@ -16,6 +16,7 @@ use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
@@ -77,7 +78,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('view', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function view(QueryBits $queryBits, User|null $currentUser): Response
+    public function view(QueryBits $queryBits, User|null $currentUser, CSRFTokenHandler $tokenHandler): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -91,7 +92,7 @@ final class ContestController extends Controller
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
-        $page = new ContestViewPage($contest, $currentUser);
+        $page = new ContestViewPage($contest, $currentUser, $tokenHandler);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -530,9 +531,9 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('myContests', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function myContests(User $currentUser): Response
+    public function myContests(User $currentUser, CSRFTokenHandler $tokenHandler): Response
     {
-        $page = new MyContestsPage($currentUser);
+        $page = new MyContestsPage($currentUser, $tokenHandler);
         return $this->pageRenderer->renderResponse($page);
     }
 

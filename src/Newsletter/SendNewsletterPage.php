@@ -9,15 +9,15 @@ declare(strict_types=1);
 namespace Cyndaron\Newsletter;
 
 use Cyndaron\Page\Page;
-use Cyndaron\User\UserSession;
+use Cyndaron\User\CSRFTokenHandler;
 
 class SendNewsletterPage extends Page
 {
-    public function __construct()
+    public function __construct(CSRFTokenHandler $tokenHandler)
     {
         parent::__construct('Nieuwsbrief versturen');
         $this->addTemplateVars([
-            'csrfToken' => UserSession::getCSRFToken('newsletter', 'send'),
+            'csrfToken' => $tokenHandler->get('newsletter', 'send'),
         ]);
         $this->addScript('/vendor/ckeditor/ckeditor/ckeditor.js');
         $this->addScript('/js/editor.js');

@@ -117,7 +117,7 @@
         <tbody
             id="gum-table-body"
             data-next-quarter-start="{{ \Cyndaron\Util\Util::getStartOfNextQuarter()->format('d-m-Y') }}"
-            data-csrf-token-member-delete="{{ \Cyndaron\User\UserSession::getCSRFToken('member', 'delete') }}"
+            data-csrf-token-member-delete="{{ $tokenDelete }}"
         >
         </tbody>
     </table>
@@ -157,9 +157,9 @@
                         van de ouders in (onder “Persoonsgegevens”).</p>
                     <input type="hidden" name="id" value="0">
                     <input type="hidden" name="csrfToken"
-                           value="{{ \Cyndaron\User\UserSession::getCSRFToken('member', 'save') }}">
+                           value="{{ $tokenSave }}">
                     <input type="hidden" name="csrfTokenRemoveGraduation"
-                           value="{{ \Cyndaron\User\UserSession::getCSRFToken('member', 'removeGraduation') }}">
+                           value="{{ $tokenRemoveGraduation }}">
                     @include('View/Widget/Form/BasicInput', ['id' => 'username', 'label' => 'Gebruikersnaam', 'placeholder' => 'Bijv.: ammulder', 'value' => ''])
                     @include('View/Widget/Form/BasicInput', ['id' => 'email', 'type' => 'email', 'label' => 'Eigen e-mailadres', 'value' => ''])
                 </div>

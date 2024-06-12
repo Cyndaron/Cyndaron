@@ -35,7 +35,7 @@
             <td>
                 <div class="btn-group">
                     <a class="btn btn-outline-cyndaron btn-sm" href="/editor/location/{{ $location->id }}"><span class="glyphicon glyphicon-pencil" title="Bewerk dit concert"></span></a>
-                    <button class="btn btn-danger btn-sm pm-delete" data-type="location" data-id="{{ $location->id }}" data-csrf-token="{{ \Cyndaron\User\UserSession::getCSRFToken('location', 'delete') }}"><span class="glyphicon glyphicon-trash" title="Verwijder deze locatie"></span></button>
+                    <button class="btn btn-danger btn-sm pm-delete" data-type="location" data-id="{{ $location->id }}" data-csrf-token="{{ $tokenDelete }}"><span class="glyphicon glyphicon-trash" title="Verwijder deze locatie"></span></button>
                 </div>
             </td>
         </tr>

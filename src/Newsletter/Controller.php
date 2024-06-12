@@ -15,6 +15,7 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\RouteAttribute;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
@@ -34,16 +35,16 @@ use function base64_decode;
 class Controller extends \Cyndaron\Routing\Controller
 {
     #[RouteAttribute('viewSubscribers', RequestMethod::GET, UserLevel::ADMIN)]
-    public function viewSubscribers(): Response
+    public function viewSubscribers(CSRFTokenHandler $tokenHandler): Response
     {
-        $page = new ViewSubscribersPage();
+        $page = new ViewSubscribersPage($tokenHandler);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('compose', RequestMethod::GET, UserLevel::ADMIN)]
-    public function compose(): Response
+    public function compose(CSRFTokenHandler $tokenHandler): Response
     {
-        $page = new SendNewsletterPage();
+        $page = new SendNewsletterPage($tokenHandler);
         return $this->pageRenderer->renderResponse($page);
     }
 

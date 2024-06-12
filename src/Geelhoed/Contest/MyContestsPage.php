@@ -5,15 +5,15 @@ namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Page\Page;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
-use Cyndaron\User\UserSession;
 use function array_map;
 use function count;
 use function implode;
 
 final class MyContestsPage extends Page
 {
-    public function __construct(User $currentUser)
+    public function __construct(User $currentUser, CSRFTokenHandler $tokenHandler)
     {
         parent::__construct('Mijn wedstrijden');
         $this->addCss('/src/Geelhoed/geelhoed.css');
@@ -37,7 +37,7 @@ final class MyContestsPage extends Page
             'contests' => $contests,
             'contestMembers' => $contestMembers,
             'due' => $due,
-            'cancelSubscriptionCsrfToken' => UserSession::getCSRFToken('contest', 'cancelSubscription'),
+            'cancelSubscriptionCsrfToken' => $tokenHandler->get('contest', 'cancelSubscription'),
         ]);
     }
 }

@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Tryout;
 
 use Cyndaron\Page\Page;
-use Cyndaron\User\UserSession;
+use Cyndaron\User\CSRFTokenHandler;
 
 class UpdateFormPage extends Page
 {
-    public function __construct()
+    public function __construct(CSRFTokenHandler $tokenHandler)
     {
         parent::__construct('Punten updaten');
-        $this->addTemplateVar('csrfToken', UserSession::getCSRFToken('tryout', 'update'));
+        $this->addTemplateVar('csrfToken', $tokenHandler->get('tryout', 'update'));
     }
 }

@@ -44,7 +44,7 @@
             <div class="form-group row">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
-                    <input type="hidden" name="csrfToken" value="{{ \Cyndaron\User\UserSession::getCSRFToken('system', 'config') }}"/>
+                    <input type="hidden" name="csrfToken" value="{{ $tokenHandler->get('system', 'config') }}"/>
                     <input class="btn btn-primary" type="submit" id="cm-save" value="Opslaan"/>
                     <input class="btn btn-outline-cyndaron" type="button" id="testColors" value="Kleuren testen"/>
                 </div>

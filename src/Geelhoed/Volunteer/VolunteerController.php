@@ -11,6 +11,7 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,14 +30,14 @@ class VolunteerController extends Controller
     }
 
     #[RouteAttribute('inschrijven-voor-tryout', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function subscribeToTryoutGet(QueryBits $queryBits): Response
+    public function subscribeToTryoutGet(QueryBits $queryBits, CSRFTokenHandler $tokenHandler): Response
     {
         $event = Tryout::fetchById($queryBits->getInt(2));
         if ($event === null)
         {
             return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Evenement niet gevonden!'));
         }
-        $page = new SubscribeToTryoutPage($event);
+        $page = new SubscribeToTryoutPage($event, $tokenHandler);
         return $this->pageRenderer->renderResponse($page);
     }
 

@@ -23,6 +23,7 @@ use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\UrlInfo;
 use Cyndaron\Url\UrlService;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
@@ -72,8 +73,9 @@ final class Kernel
         $pdo = DBConnection::getPDO();
         $urlService = new UrlService($pdo, $request->getRequestUri(), $registry->urlProviders);
         $templateRenderer = TemplateRendererFactory::createTemplateRenderer($registry->templateRoots);
+        $tokenHandler = new CSRFTokenHandler();
         $textRenderer = new TextRenderer($registry, $dic);
-        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $urlService, $request, $user);
+        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $urlService, $tokenHandler, $request, $user);
         $urlInfo = UrlInfo::fromRequest($request);
 
         $fileLogger = new FileLogger(ROOT_DIR . '/var/log/cyndaron.log');
@@ -98,6 +100,7 @@ final class Kernel
         $dic->add($pdo);
         $dic->add($pdo, \PDO::class);
         $dic->add($urlService);
+        $dic->add($tokenHandler);
         $dic->add($multiLogger, LoggerInterface::class);
         if ($user !== null)
         {

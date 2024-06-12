@@ -7,6 +7,7 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\Util;
@@ -22,9 +23,9 @@ use function assert;
 final class FileCabinetController extends Controller
 {
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function routeGet(): Response
+    public function routeGet(CSRFTokenHandler $tokenHandler): Response
     {
-        $page = new OverviewPage();
+        $page = new OverviewPage($tokenHandler);
         return $this->pageRenderer->renderResponse($page);
     }
 

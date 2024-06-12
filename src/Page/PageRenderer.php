@@ -6,6 +6,7 @@ namespace Cyndaron\Page;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Url\UrlService;
+use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
 use Cyndaron\User\UserMenu;
 use Cyndaron\View\Renderer\TextRenderer;
@@ -20,6 +21,7 @@ final class PageRenderer
         private readonly TemplateRenderer $templateRenderer,
         private readonly TextRenderer $textRenderer,
         private readonly UrlService $urlService,
+        private readonly CSRFTokenHandler $tokenHandler,
         private readonly Request $request,
         private readonly User|null $currentUser
     ) {
@@ -32,7 +34,7 @@ final class PageRenderer
     {
         $userMenu = UserMenu::getForUser($this->currentUser, $this->registry->userMenuItems);
         $isFrontPage = $this->request->getRequestUri() === '/';
-        return $page->render($this->templateRenderer, $this->textRenderer, $this->urlService, $this->registry->pageProcessors, $isFrontPage, $userMenu, $vars);
+        return $page->render($this->templateRenderer, $this->textRenderer, $this->urlService, $this->tokenHandler, $this->registry->pageProcessors, $isFrontPage, $userMenu, $vars);
     }
 
     /**

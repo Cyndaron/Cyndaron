@@ -7,8 +7,8 @@
 @endcomponent
 
 <table id="gcm-table" class="table table-striped table-bordered pm-table"
-       data-csrf-token-edit="{{ Cyndaron\User\UserSession::getCSRFToken('contest', 'edit') }}"
-       data-csrf-token-delete="{{ Cyndaron\User\UserSession::getCSRFToken('contest', 'delete') }}">
+       data-csrf-token-edit="{{ $tokenEdit }}"
+       data-csrf-token-delete="{{ $tokenDelete }}">
     <thead>
         <tr>
             <th>ID</th>

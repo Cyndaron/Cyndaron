@@ -11,7 +11,6 @@ use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\User\User;
-use Cyndaron\User\UserSession;
 use Cyndaron\Util\FileCache;
 use Cyndaron\Util\Util;
 use function array_filter;
