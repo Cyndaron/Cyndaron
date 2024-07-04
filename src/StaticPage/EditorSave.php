@@ -42,7 +42,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
             $this->saveCategories($model, $this->post);
 
             $this->userSession->addNotification('Pagina bewerkt.');
-            $this->returnUrl = '/sub/' . $id;
+            $this->returnUrl = '/sub/' . $model->id;
         }
         else
         {
