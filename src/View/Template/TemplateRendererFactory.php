@@ -11,7 +11,6 @@ use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\FileEngine;
 use Illuminate\View\Engines\PhpEngine;
-use Illuminate\View\Factory;
 use Pine\BladeFilters\BladeFilters;
 use Pine\BladeFilters\BladeFiltersCompiler;
 
@@ -41,7 +40,7 @@ class TemplateRendererFactory
         $filesystem = new Filesystem();
         $viewFinder = new ViewFinder($templateRoots, $filesystem, $viewPaths);
         $resolver = new EngineResolver();
-        $factory = new Factory($resolver, $viewFinder, $events);
+        $factory = new ViewFactory($resolver, $viewFinder, $events);
         $fileEngine = new FileEngine($filesystem);
         $phpEngine =  new PhpEngine($filesystem);
         $compiler = new BladeCompiler(

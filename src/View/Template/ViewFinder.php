@@ -42,10 +42,6 @@ final class ViewFinder extends FileViewFinder
      */
     protected function findInPaths($name, $paths): string
     {
-        $name = strtr($name, [
-            '.' => '/',
-            '.blade.php' => '.blade.php',
-        ]);
         $path = $this->path($name);
 
         if ($path !== null)
