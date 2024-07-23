@@ -37,7 +37,7 @@ final class StaticPageController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
-    #[RouteAttribute('addtomenu', RequestMethod::POST, UserLevel::ADMIN)]
+    #[RouteAttribute('addtomenu', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function addToMenu(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
