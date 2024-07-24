@@ -87,7 +87,7 @@ final class UserController extends Controller
         }
     }
 
-    #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN)]
+    #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function add(RequestParameters $post, UrlInfo $urlInfo): JsonResponse
     {
         $user = new User();
