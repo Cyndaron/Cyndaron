@@ -117,7 +117,7 @@ final class UserController extends Controller
         return new JsonResponse(['userId' => $user->id]);
     }
 
-    #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN)]
+    #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function edit(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -151,7 +151,7 @@ final class UserController extends Controller
         return new JsonResponse();
     }
 
-    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN)]
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function delete(QueryBits $queryBits): JsonResponse
     {
         $userId = $queryBits->getInt(2);
@@ -166,7 +166,7 @@ final class UserController extends Controller
         return new JsonResponse();
     }
 
-    #[RouteAttribute('resetpassword', RequestMethod::POST, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
+    #[RouteAttribute('resetpassword', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
     public function resetPassword(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
     {
         $userId = $queryBits->getInt(2);
