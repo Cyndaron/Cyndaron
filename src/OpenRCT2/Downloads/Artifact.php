@@ -87,6 +87,10 @@ final class Artifact
             {
                 $architecture = Architecture::UNIVERSAL;
             }
+            elseif (str_contains($assetName, '-x86-64'))
+            {
+                $architecture = Architecture::X86_64;
+            }
             $inDefaultSelection = true;
         }
         elseif (str_contains($assetName, 'windows'))
