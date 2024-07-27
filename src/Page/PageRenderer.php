@@ -23,7 +23,6 @@ final class PageRenderer
         private readonly TemplateRenderer $templateRenderer,
         private readonly TextRenderer $textRenderer,
         private readonly MenuRenderer $menuRenderer,
-        private readonly UrlService $urlService,
         private readonly CSRFTokenHandler $tokenHandler,
         private readonly Translator $translator,
         private readonly UserSession $userSession,
@@ -41,7 +40,7 @@ final class PageRenderer
         $isFrontPage = $this->request->getRequestUri() === '/';
         $page->addTemplateVar('menu', $this->menuRenderer->render($this->userSession, $userMenu));
         $page->addTemplateVar('t', $this->translator);
-        return $page->render($this->templateRenderer, $this->textRenderer, $this->urlService, $this->translator, $this->tokenHandler, $this->userSession, $this->registry->pageProcessors, $isFrontPage, $userMenu, $vars);
+        return $page->render($this->templateRenderer, $this->textRenderer, $this->tokenHandler, $this->userSession, $this->registry->pageProcessors, $isFrontPage, $vars);
     }
 
     /**

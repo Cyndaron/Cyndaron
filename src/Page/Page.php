@@ -104,10 +104,7 @@ class Page implements Pageable
         }
     }
 
-    /**
-     * @param UserMenuItem[] $userMenu
-     */
-    protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, CSRFTokenHandler $tokenHandler, Translator $t, UserSession $userSession, array $userMenu, bool $isFrontPage): void
+    protected function renderSkeleton(TextRenderer $textRenderer, CSRFTokenHandler $tokenHandler, UserSession $userSession, bool $isFrontPage): void
     {
         $this->websiteName = Setting::get('siteName');
         $this->templateVars['isAdmin'] = $userSession->isAdmin();
@@ -170,18 +167,14 @@ class Page implements Pageable
     }
 
     /**
-     * @param TemplateRenderer $templateRenderer
-     * @param TextRenderer $textRenderer
      * @param PagePreProcessor[] $pageProcessors
-     * @param UserMenuItem[] $userMenu
      * @param array<string, mixed> $vars
-     * @return string
      */
-    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, Translator $t, CSRFTokenHandler $tokenHandler, UserSession $userSession, array $pageProcessors, bool $isFrontPage, array $userMenu = [], array $vars = []): string
+    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, CSRFTokenHandler $tokenHandler, UserSession $userSession, array $pageProcessors, bool $isFrontPage, array $vars = []): string
     {
         $this->addTemplateVars($vars);
 
-        $this->renderSkeleton($templateRenderer, $textRenderer, $urlService, $tokenHandler, $t, $userSession, $userMenu, $isFrontPage);
+        $this->renderSkeleton($textRenderer, $tokenHandler, $userSession, $isFrontPage);
 
         foreach ($pageProcessors as $processor)
         {

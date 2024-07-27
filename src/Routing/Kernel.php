@@ -85,7 +85,7 @@ final class Kernel
         $language = Setting::get(BuiltinSetting::LANGUAGE);
         $translator = new Translator($language);
         $menuRenderer = new MenuRenderer($urlService, $translator, $templateRenderer);
-        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $menuRenderer, $urlService, $tokenHandler, $translator, $userSession, $request, $user);
+        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $menuRenderer, $tokenHandler, $translator, $userSession, $request, $user);
         $urlInfo = UrlInfo::fromRequest($request);
 
         $fileLogger = new FileLogger(ROOT_DIR . '/var/log/cyndaron.log');
