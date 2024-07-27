@@ -1,5 +1,5 @@
 @php /** @var \Cyndaron\OpenRCT2\Downloads\Build $build */ @endphp
-<div class="row">
+<div class="row featured-downloads">
     @foreach ($build->artifacts as $artifact)
         @if ($artifact->inDefaultSelection)
             <div class="col-sm-6">
