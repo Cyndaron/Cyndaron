@@ -9,7 +9,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     public const SAVE_URL = '/editor/sub/%s';
     public const HAS_CATEGORY = true;
 
-    protected string $template = '';
+    public string $template = '';
 
     protected function prepare(): void
     {

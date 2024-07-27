@@ -5,13 +5,9 @@ namespace Cyndaron\Page;
 
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPage;
-use Cyndaron\Translation\Translator;
-use Cyndaron\Url\UrlService;
-use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
 use Cyndaron\User\UserMenu;
 use Cyndaron\User\UserSession;
-use Cyndaron\View\Renderer\TextRenderer;
 use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,10 +17,8 @@ final class PageRenderer
     public function __construct(
         private readonly ModuleRegistry $registry,
         private readonly TemplateRenderer $templateRenderer,
-        private readonly TextRenderer $textRenderer,
+        private readonly PageBuilder $pageBuilder,
         private readonly MenuRenderer $menuRenderer,
-        private readonly CSRFTokenHandler $tokenHandler,
-        private readonly Translator $translator,
         private readonly UserSession $userSession,
         private readonly Request $request,
         private readonly User|null $currentUser
@@ -36,11 +30,19 @@ final class PageRenderer
      */
     public function render(Page $page, array $vars = []): string
     {
+        $this->pageBuilder->updateTemplate($page);
         $userMenu = UserMenu::getForUser($this->currentUser, $this->userSession, $this->registry->userMenuItems);
         $isFrontPage = $this->request->getRequestUri() === '/';
         $page->addTemplateVar('menu', $this->menuRenderer->render($this->userSession, $userMenu));
-        $page->addTemplateVar('t', $this->translator);
-        return $page->render($this->templateRenderer, $this->textRenderer, $this->tokenHandler, $this->userSession, $this->registry->pageProcessors, $isFrontPage, $vars);
+        $page->addTemplateVars($vars);
+        $this->pageBuilder->addDefaultTemplateVars($page, $this->userSession, $isFrontPage);
+
+        foreach ($this->registry->pageProcessors as $processor)
+        {
+            $processor->process($page);
+        }
+
+        return $this->templateRenderer->render($page->template, $page->templateVars);
     }
 
     /**

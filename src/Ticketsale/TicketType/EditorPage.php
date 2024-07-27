@@ -9,7 +9,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     public const HAS_TITLE = false;
     public const SAVE_URL = '/editor/ticketType/%s';
 
-    protected string $template = '';
+    public string $template = '';
 
     protected function prepare(): void
     {

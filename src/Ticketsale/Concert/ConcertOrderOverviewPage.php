@@ -8,7 +8,7 @@ use function array_key_exists;
 
 final class ConcertOrderOverviewPage extends Page
 {
-    protected string $extraBodyClasses = 'ticketsale-concert-order-overview';
+    public string $extraBodyClasses = 'ticketsale-concert-order-overview';
 
     private const TICKET_TYPES_QUERY = 'SELECT * FROM `ticketsale_tickettypes` WHERE concertId=? ORDER BY price DESC';
 

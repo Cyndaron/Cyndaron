@@ -11,7 +11,7 @@ use function ucfirst;
 
 final class TagIndexPage extends Page
 {
-    protected string $template = 'Category/CategoryPage';
+    public string $template = 'Category/CategoryPage';
 
     public function __construct(UrlService $urlService, string $tag)
     {

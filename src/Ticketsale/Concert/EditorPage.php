@@ -15,10 +15,10 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     public const TABLE = 'ticketsale_concerts';
     public const SAVE_URL = '/editor/concert/%s';
 
-    protected string $template = '';
+    public string $template = '';
 
     /** @var Concert|null  */
-    protected Model|null $model = null;
+    public Model|null $model = null;
 
     protected function prepare(): void
     {

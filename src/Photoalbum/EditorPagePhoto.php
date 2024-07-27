@@ -9,7 +9,7 @@ final class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
     public const TYPE = 'photo';
     public const SAVE_URL = '/editor/photo/%s';
 
-    protected string $template = '';
+    public string $template = '';
 
     protected function prepare(): void
     {

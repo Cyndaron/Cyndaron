@@ -8,7 +8,7 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
     public const TYPE = 'location';
     public const HAS_TITLE = true;
 
-    protected string $template = '';
+    public string $template = '';
 
     protected function prepare(): void
     {

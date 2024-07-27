@@ -9,7 +9,7 @@ use function count;
 
 final class CategoryIndexPage extends Page
 {
-    protected string $template = 'Category/CategoryPage';
+    public string $template = 'Category/CategoryPage';
 
     public function __construct(UrlService $urlService, Category $category, TextRenderer $textRenderer)
     {

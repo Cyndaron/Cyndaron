@@ -10,7 +10,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     public const TYPE = 'mailform';
     public const SAVE_URL = '/editor/mailform/%s';
 
-    protected string $template = '';
+    public string $template = '';
 
     protected function prepare(): void
     {

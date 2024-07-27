@@ -5,7 +5,7 @@ use Cyndaron\Page\Page;
 
 final class SubscriptionListPage extends Page
 {
-    protected string $extraBodyClasses = 'geelhoed-subscription-list-page';
+    public string $extraBodyClasses = 'geelhoed-subscription-list-page';
 
     public function __construct(Contest $contest)
     {

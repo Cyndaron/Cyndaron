@@ -7,7 +7,7 @@ use Cyndaron\Url\UrlService;
 
 final class PhotoalbumIndexPage extends Page
 {
-    protected string $template = 'Category/CategoryPage';
+    public string $template = 'Category/CategoryPage';
 
     public function __construct(UrlService $urlService)
     {

@@ -18,6 +18,7 @@ use Cyndaron\Module\WithClassesToAutowire;
 use Cyndaron\Module\WithTextPostProcessors;
 use Cyndaron\Page\MenuRenderer;
 use Cyndaron\Page\Module\WithPageProcessors;
+use Cyndaron\Page\PageBuilder;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\PageManager\PageManagerTab;
@@ -85,7 +86,8 @@ final class Kernel
         $language = Setting::get(BuiltinSetting::LANGUAGE);
         $translator = new Translator($language);
         $menuRenderer = new MenuRenderer($urlService, $translator, $templateRenderer);
-        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $menuRenderer, $tokenHandler, $translator, $userSession, $request, $user);
+        $pageBuilder = new PageBuilder($textRenderer, $tokenHandler, $translator);
+        $pageRenderer = new PageRenderer($registry, $templateRenderer, $pageBuilder, $menuRenderer, $userSession, $request, $user);
         $urlInfo = UrlInfo::fromRequest($request);
 
         $fileLogger = new FileLogger(ROOT_DIR . '/var/log/cyndaron.log');

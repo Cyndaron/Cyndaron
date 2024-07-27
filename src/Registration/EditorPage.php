@@ -11,7 +11,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     public const TYPE = 'event';
     public const SAVE_URL = '/editor/event/%s';
 
-    protected string $template = '';
+    public string $template = '';
 
     protected function prepare(): void
     {

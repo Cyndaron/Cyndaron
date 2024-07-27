@@ -37,7 +37,7 @@ abstract class EditorPage extends Page
     protected bool $useBackup = false;
     protected string $content = '';
     protected string $contentTitle = '';
-    protected string $template = 'Editor/PageBase';
+    public string $template = 'Editor/PageBase';
     protected QueryBits $queryBits;
 
     /**
