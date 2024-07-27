@@ -9,12 +9,15 @@ declare(strict_types=1);
 namespace Cyndaron\OpenRCT2\Downloads;
 
 use Cyndaron\Error\ErrorPage;
+use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\Util;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use function nl2br;
 
 final class DownloadController extends Controller
 {
@@ -44,5 +47,13 @@ final class DownloadController extends Controller
     public function listReleaseBuilds(LoggerInterface $logger): Response
     {
         return $this->fetchAndProcessBuilds($logger, 'Release builds', BuildLister::RELEASE_BUILDS_URL);
+    }
+
+    #[RouteAttribute('changelog', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function showChangelog(): Response
+    {
+        $contents = Util::fetch('https://raw.githubusercontent.com/OpenRCT2/OpenRCT2/develop/distribution/changelog.txt');
+        $page = new SimplePage('Changelog', nl2br($contents));
+        return $this->pageRenderer->renderResponse($page);
     }
 }

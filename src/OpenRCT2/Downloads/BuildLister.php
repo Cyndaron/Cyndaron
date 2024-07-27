@@ -8,12 +8,10 @@ declare(strict_types=1);
 
 namespace Cyndaron\OpenRCT2\Downloads;
 
-use Cyndaron\CyndaronInfo;
+use Cyndaron\Util\Util;
 use DateTimeInterface;
 use Safe\DateTimeImmutable;
 use function usort;
-use function stream_context_create;
-use function file_get_contents;
 
 final class BuildLister
 {
@@ -21,13 +19,6 @@ final class BuildLister
     public const LATEST_DEVELOPMENT_BUILD_URL = 'https://api.github.com/repos/Limetric/OpenRCT2-binaries/releases/latest';
     public const RELEASE_BUILDS_URL = 'https://api.github.com/repos/OpenRCT2/OpenRCT2/releases';
     public const LATEST_RELEASE_BUILD_URL = 'https://api.github.com/repos/OpenRCT2/OpenRCT2/releases/latest';
-
-    private static function fetch(string $url): string
-    {
-        $options  = ['http' => ['user_agent' => CyndaronInfo::PRODUCT_NAME . ' ' . CyndaronInfo::ENGINE_VERSION]];
-        $context  = stream_context_create($options);
-        return (string)file_get_contents($url, context: $context);
-    }
 
     /**
      * @param array{ published_at: string, tag_name: string, assets: list<array{ name: string, size: int, browser_download_url: string }> } $json
@@ -54,7 +45,7 @@ final class BuildLister
      */
     public static function fetchAndProcessBuilds(string $url): array
     {
-        $raw = self::fetch($url);
+        $raw = Util::fetch($url);
 
         /** @var list<array{ published_at: string, tag_name: string, assets: list<array{ name: string, size: int, browser_download_url: string }> }> $buildList */
         $buildList = \Safe\json_decode($raw, true);
@@ -74,7 +65,7 @@ final class BuildLister
 
     public static function fetchAndProcessSingleBuild(string $url): Build
     {
-        $raw = self::fetch($url);
+        $raw = Util::fetch($url);
         /** @var array{ published_at: string, tag_name: string, assets: list<array{ name: string, size: int, browser_download_url: string }> } $build */
         $build = \Safe\json_decode($raw, true);
         return self::buildJSONToObject($build);

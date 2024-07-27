@@ -6,6 +6,7 @@
  */
 namespace Cyndaron\Util;
 
+use Cyndaron\CyndaronInfo;
 use RuntimeException;
 use Safe\DateTimeImmutable;
 use Safe\Exceptions\FilesystemException;
@@ -30,6 +31,8 @@ use function strlen;
 use function is_dir;
 use function str_replace;
 use function number_format;
+use function stream_context_create;
+use function file_get_contents;
 
 final class Util
 {
@@ -189,5 +192,12 @@ final class Util
 
         $postfix = self::BYTE_POSTFIXES[$power];
         return number_format($size, 1) . $postfix;
+    }
+
+    public static function fetch(string $url): string
+    {
+        $options  = ['http' => ['user_agent' => CyndaronInfo::PRODUCT_NAME . ' ' . CyndaronInfo::ENGINE_VERSION]];
+        $context  = stream_context_create($options);
+        return (string)file_get_contents($url, context: $context);
     }
 }
