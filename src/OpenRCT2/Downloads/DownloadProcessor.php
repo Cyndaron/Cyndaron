@@ -11,6 +11,7 @@ namespace Cyndaron\OpenRCT2\Downloads;
 use Cyndaron\OpenRCT2\Downloads\Classification\Architecture;
 use Cyndaron\OpenRCT2\Downloads\Classification\OperatingSystem;
 use Cyndaron\OpenRCT2\Downloads\Classification\Type;
+use Cyndaron\Util\Util;
 use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use function preg_replace_callback;
@@ -18,10 +19,11 @@ use function strtolower;
 use function str_contains;
 use function assert;
 use function array_key_exists;
+use function implode;
 
 final class DownloadProcessor implements \Cyndaron\Module\TextPostProcessor
 {
-    public function __construct(private readonly Request $request, private readonly TemplateRenderer $templateRenderer)
+    public function __construct(private readonly Request $request)
     {
     }
 
@@ -29,27 +31,34 @@ final class DownloadProcessor implements \Cyndaron\Module\TextPostProcessor
     {
         $text = preg_replace_callback('/%newestRelease%/', function()
         {
-            return $this->renderCard(
+            return $this->renderBlock(
                 BuildLister::LATEST_RELEASE_BUILD_URL,
                 'Download Latest Release',
             );
         }, $text) ?? $text;
         return preg_replace_callback('/%newestDevelop%/', function()
         {
-            return $this->renderCard(
+            return $this->renderBlock(
                 BuildLister::LATEST_DEVELOPMENT_BUILD_URL,
                 'Download Development Build',
             );
         }, $text) ?? $text;
     }
 
-    private function renderCard(string $url, string $title): string
+    private function renderBlock(string $url, string $title): string
     {
         $build = BuildLister::fetchAndProcessSingleBuild($url);
         $artifact = $this->findBestMatchingArtifact($build);
-        $card = $this->templateRenderer->render('OpenRCT2/Downloads/FeaturedArtifact', ['artifact' => $artifact]);
-        $information = '<div class="information">' . $build->version . '</div>';
-        return '<a href="' . $artifact->downloadLink . '">' . $title . '</a>' . $card . $information;
+        $informationParts = [
+            $artifact->version,
+            $artifact->operatingSystem->getFriendlyName(),
+            Util::formatSize($artifact->size),
+        ];
+
+        $firstLine = '<a href="' . $artifact->downloadLink . '">' . $title . '</a>';
+        $secondLine = '<div class="information">' . implode(' — ', $informationParts) . '</div>';
+
+        return $firstLine . $secondLine;
     }
 
     private static function matchByOSArchAndType(Build $build, OperatingSystem $operatingSystem, Architecture $architecture, Type $type): Artifact|null
