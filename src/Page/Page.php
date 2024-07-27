@@ -115,9 +115,11 @@ class Page implements Pageable
         $this->templateVars['websiteName'] = $this->websiteName;
         $this->templateVars['title'] = $this->title;
         // TODO: remove or fill
+        $this->templateVars['twitterDescription'] = '';
         $this->templateVars['previewImage'] = '';
         if ($this->model instanceof ModelWithCategory)
         {
+            $this->templateVars['twitterDescription'] = $this->model->getBlurb();
             $this->templateVars['previewImage'] = $this->model->getPreviewImage();
         }
 

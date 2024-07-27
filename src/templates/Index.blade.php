@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="twitter:card" content="summary"/>
     <meta name="twitter:title" content="{{ $title }}"/>
-    <meta name="twitter:description" content="Klik hier om verder te lezen..."/>
+    @if ($twitterDescription)
+        <meta name="twitter:description" content="{{ $twitterDescription }}"/>
+    @endif
     @if ($previewImage)
         <meta name="twitter:image" content="{{ $previewImage }}"/>
     @endif
