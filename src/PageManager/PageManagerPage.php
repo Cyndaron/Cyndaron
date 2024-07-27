@@ -5,6 +5,7 @@ namespace Cyndaron\PageManager;
 
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Page\Page;
+use Cyndaron\Translation\Translator;
 use Cyndaron\User\User;
 use Cyndaron\Util\DependencyInjectionContainer;
 use function assert;
@@ -14,8 +15,9 @@ final class PageManagerPage extends Page
 {
     public function __construct(DependencyInjectionContainer $dic, User $currentUser, string $currentPage, ModuleRegistry $registry)
     {
+        $t = $dic->get(Translator::class);
         $this->addScript('/src/PageManager/js/PageManagerPage.js');
-        parent::__construct('Paginaoverzicht');
+        parent::__construct($t->get('Pagina-overzicht'));
 
         $pageTabs = [];
         $firstVisibleType = null;

@@ -29,7 +29,7 @@
             @if ($isLoggedIn)
                 @if ($isAdmin)
                     <li class="nav-item">
-                        <a class="nav-link" title="Nieuwe statische pagina aanmaken" href="/editor/sub"><span
+                        <a class="nav-link" title="{{ $t->get('Nieuwe statische pagina aanmaken') }}" href="/editor/sub"><span
                                     class="glyphicon glyphicon-plus"></span></a>
                     </li>
                     @include('View/Widget/MenuDropdown', ['title' => '', 'icon' => 'wrench', 'items' => $configMenuItems])
@@ -37,7 +37,7 @@
                 @include('View/Widget/MenuDropdown', ['title' => '', 'icon' => 'user', 'items' => $userMenuItems])
             @else
                 <li class="nav-item">
-                    <a class="nav-link" title="Inloggen" href="/user/login"><span class="glyphicon glyphicon-lock"></span></a>
+                    <a class="nav-link" title="{{ $t->get('Inloggen') }}" href="/user/login"><span class="glyphicon glyphicon-lock"></span></a>
                 </li>
             @endif
         </ul>

@@ -1,6 +1,6 @@
 @component('View/Widget/Toolbar')
     @slot('right')
-        @include('View/Widget/Button', ['kind' => 'new', 'link' => '/editor/sub', 'title' => 'Nieuwe statische pagina', 'text' => 'Nieuwe statische pagina'])
+        @include('View/Widget/Button', ['kind' => 'new', 'link' => '/editor/sub', 'title' => $t->get('Nieuwe statische pagina'), 'text' => $t->get('Nieuwe statische pagina')])
     @endslot
 @endcomponent
 
@@ -10,8 +10,8 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Naam</th>
-                <th>Acties</th>
+                <th>{{ $t->get('Naam') }}</th>
+                <th>{{ $t->get('Acties') }}</th>
             </tr>
         </thead>
         <tbody>

@@ -12,6 +12,7 @@ use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\Kernel;
 use Cyndaron\Routing\RouteAttribute;
+use Cyndaron\Translation\Translator;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Exception;
@@ -24,14 +25,14 @@ use function strlen;
 final class UserController extends Controller
 {
     #[RouteAttribute('gallery', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function gallery(User|null $currentUser): Response
+    public function gallery(User|null $currentUser, Translator $t): Response
     {
         // Has to be done here because you cannot specify the expression during member variable initialization.
         $minLevel = (int)Setting::get('userGalleryMinLevel') ?: UserLevel::ADMIN;
         $userLevel = $currentUser !== null ? $currentUser->level : UserLevel::ANONYMOUS;
         if ($userLevel < $minLevel)
         {
-            $page = new SimplePage('Fout', 'U heeft onvoldoende rechten om deze pagina te bekijken.');
+            $page = new SimplePage($t->get('Fout'), $t->get('U heeft onvoldoende rechten om deze pagina te bekijken.'));
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_UNAUTHORIZED);
         }
 
@@ -40,13 +41,13 @@ final class UserController extends Controller
     }
 
     #[RouteAttribute('login', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function loginGet(Request $request, CSRFTokenHandler $tokenHandler, UserSession $userSession): Response
+    public function loginGet(Request $request, CSRFTokenHandler $tokenHandler, UserSession $userSession, Translator $translator): Response
     {
         if (empty($userSession->getRedirect()))
         {
             $userSession->setRedirect($request->headers->get('referer'));
         }
-        $page = new LoginPage($tokenHandler);
+        $page = new LoginPage($tokenHandler, $translator);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -65,24 +66,24 @@ final class UserController extends Controller
     }
 
     #[RouteAttribute('login', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function loginPost(RequestParameters $post, UserSession $userSession): Response
+    public function loginPost(RequestParameters $post, UserSession $userSession, Translator $t): Response
     {
         $identification = $post->getEmail('login_user');
         $verification = $post->getUnfilteredString('login_pass');
 
         try
         {
-            $redirectUrl = User::login($identification, $verification, $userSession);
+            $redirectUrl = User::login($identification, $verification, $userSession, $t);
             return new RedirectResponse($redirectUrl);
         }
         catch (IncorrectCredentials $e)
         {
-            $page = new SimplePage('Inloggen mislukt', $e->getMessage());
+            $page = new SimplePage($t->get('Inloggen mislukt'), $e->getMessage());
             return $this->pageRenderer->renderResponse($page);
         }
         catch (Exception $e)
         {
-            $page = new SimplePage('Inloggen mislukt', 'Onbekende fout: ' . $e->getMessage());
+            $page = new SimplePage($t->get('Inloggen mislukt'), $t->get('Onbekende fout: ') . $e->getMessage());
             return $this->pageRenderer->renderResponse($page);
         }
     }

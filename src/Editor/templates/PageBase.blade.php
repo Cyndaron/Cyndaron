@@ -36,8 +36,8 @@
 
 
         <input type="hidden" name="csrfToken" value="{{ $tokenHandler->get('editor', $articleType) }}"/>
-        <input type="submit" value="Opslaan" class="btn btn-primary"/>
-        <a role="button" class="btn btn-outline-cyndaron" href="{{ $referrer }}">Annuleren</a>
+        <input type="submit" value="{{ $t->get('Opslaan') }}" class="btn btn-primary"/>
+        <a role="button" class="btn btn-outline-cyndaron" href="{{ $referrer }}">{{ $t->get('Annuleren') }}</a>
     </form>
 
 @endsection

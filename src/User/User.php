@@ -6,6 +6,7 @@ namespace Cyndaron\User;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
+use Cyndaron\Translation\Translator;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
@@ -178,7 +179,7 @@ Uw nieuwe wachtwoord is: %s';
         return self::fetch(['username = ?'], [$username]);
     }
 
-    public static function login(string $identification, string $password, UserSession $userSession): string
+    public static function login(string $identification, string $password, UserSession $userSession, Translator $t): string
     {
         if (str_contains($identification, '@'))
         {
@@ -215,7 +216,7 @@ Uw nieuwe wachtwoord is: %s';
 
         $userSession->setProfile($user);
 
-        $userSession->addNotification('U bent ingelogd.');
+        $userSession->addNotification($t->get('U bent ingelogd.'));
 
         $sessionRedirect = $userSession->getRedirect();
         if ($sessionRedirect !== '')

@@ -17,7 +17,7 @@
         @foreach ($pages as $page)
             <div>
                 <h3><a href="{{ $page->getFriendlyUrl($urlService) }}">{{ $page->name }}</a></h3>
-                {{ $page->getBlurb() }} <a href="{{ $page->getFriendlyUrl($urlService) }}" @if ($page->openInNewTab) target="_blank" @endif><br /><i>Meer lezen…</i></a>
+                {{ $page->getBlurb() }} <a href="{{ $page->getFriendlyUrl($urlService) }}" @if ($page->openInNewTab) target="_blank" @endif><br /><i>{{ $t->get('Meer lezen…') }}</i></a>
             </div>
         @endforeach
         </div>

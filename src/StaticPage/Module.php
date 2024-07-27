@@ -8,6 +8,7 @@ use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\Translation\Translator;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
@@ -57,7 +58,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         }, $list);
     }
 
-    public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
+    public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, Translator $t): string
     {
         $templateVars = [];
 
@@ -66,7 +67,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
 
         foreach ($subs as $sub)
         {
-            $category = $sub['category'] ?? 'Zonder categorie';
+            $category = $sub['category'] ?? $t->get('Zonder categorie');
             if (empty($subsPerCategory[$category]))
             {
                 $subsPerCategory[$category] = [];
@@ -78,6 +79,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         $templateVars['subsPerCategory'] = $subsPerCategory;
         $templateVars['tokenDelete'] = $tokenHandler->get('sub', 'delete');
         $templateVars['tokenAddToMenu'] = $tokenHandler->get('sub', 'addtomenu');
+        $templateVars['t'] = $t;
         return $templateRenderer->render('StaticPage/PageManagerTab', $templateVars);
     }
 }

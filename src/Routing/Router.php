@@ -11,6 +11,7 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Request\UrlInfo;
+use Cyndaron\Translation\Translator;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\CSRFTokenHandler;
@@ -313,8 +314,9 @@ final class Router
     {
         if ($requiredLevel > UserLevel::ANONYMOUS && !$userSession->isLoggedIn())
         {
+            $t = $this->dic->get(Translator::class);
             $userSession->invalidate();
-            $userSession->addNotification('U moet inloggen om deze pagina te bekijken');
+            $userSession->addNotification($t->get('U moet inloggen om deze pagina te bekijken.'));
             $userSession->setRedirect($requestUri);
 
             return new RedirectResponse('/user/login', );

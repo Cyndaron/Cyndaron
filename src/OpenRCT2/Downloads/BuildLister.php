@@ -12,6 +12,8 @@ use Cyndaron\CyndaronInfo;
 use DateTimeInterface;
 use Safe\DateTimeImmutable;
 use function usort;
+use function stream_context_create;
+use function file_get_contents;
 
 final class BuildLister
 {

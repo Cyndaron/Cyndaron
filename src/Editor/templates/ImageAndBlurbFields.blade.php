@@ -1,11 +1,11 @@
-@include('View/Widget/Form/BasicInput', ['id' => 'editorHeaderImage', 'label' => 'Afbeelding', 'type' => 'text', 'value' => $editorHeaderImage, 'datalist' => 'page-header-images'])
-@include('View/Widget/Form/BasicInput', ['id' => 'editorPreviewImage', 'label' => 'Preview-afbeelding', 'type' => 'text', 'value' => $editorPreviewImage, 'datalist' => 'page-preview-images'])
-@include('View/Widget/Form/BasicInput', ['id' => 'blurb', 'label' => 'Korte samenvatting', 'type' => 'text', 'value' => $blurb])
+@include('View/Widget/Form/BasicInput', ['id' => 'editorHeaderImage', 'label' => $t->get('Afbeelding'), 'type' => 'text', 'value' => $editorHeaderImage, 'datalist' => 'page-header-images'])
+@include('View/Widget/Form/BasicInput', ['id' => 'editorPreviewImage', 'label' => $t->get('Preview-afbeelding'), 'type' => 'text', 'value' => $editorPreviewImage, 'datalist' => 'page-preview-images'])
+@include('View/Widget/Form/BasicInput', ['id' => 'blurb', 'label' => $t->get('Korte samenvatting'), 'type' => 'text', 'value' => $blurb])
 
-<label class="btn btn-primary" for="header-image-upload">Headerafbeelding uploaden...
+<label class="btn btn-primary" for="header-image-upload">{{ $t->get('Headerafbeelding uploaden…') }}
     <input type="file" id="header-image-upload" name="header-image-upload">
 </label>
-<label class="btn btn-primary" for="preview-image-upload">Previewafbeelding uploaden...
+<label class="btn btn-primary" for="preview-image-upload">{{ $t->get('Previewafbeelding uploaden…') }}
     <input type="file" id="preview-image-upload" name="preview-image-upload">
 </label>
 

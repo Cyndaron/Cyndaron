@@ -1,0 +1,48 @@
+<?php
+return [
+    'Meer lezen…' => 'Read more…',
+    'Fout' => 'Error',
+    'Er ging iets mis bij het laden van deze pagina!' => 'Something went wrong while loading this page!',
+
+    'Inloggen' => 'Log in',
+    'Als u inloggegevens hebt gekregen voor deze website, dan kunt u hieronder inloggen.' => 'If you recieved account data for this website, you can log in below.',
+    'Gebruikersnaam of e-mailadres' => 'Username or email address',
+    'Wachtwoord' => 'Password',
+    'U bent ingelogd.' => 'You are logged in.',
+    'Uitloggen' => 'Log out',
+    'Wachtwoord wijzigen' => 'Change password',
+    'Inloggen mislukt' => 'Login failed',
+    'Onbekende fout: ' => 'Unknown error: ',
+    'U heeft onvoldoende rechten om deze pagina te bekijken.' => 'You have insufficient rights to view this page.',
+    'U moet inloggen om deze pagina te bekijken.' => 'To view this page, you need to log in.',
+
+    'Nieuwe statische pagina aanmaken' => 'Create new static page',
+    'Systeembeheer' => 'System management',
+    'Pagina-overzicht' => 'Page manager',
+    'Menu bewerken' => 'Menu editor',
+    'Gebruikersbeheer' => 'User management',
+
+    'Zonder categorie' => 'Not categorised',
+    'Naam' => 'Name',
+    'Acties' => 'Actions',
+    'Nieuwe statische pagina' => 'New static page',
+
+    'Titel' => 'Title',
+    'Titel tonen als breadcrumbs' => 'Show title as breadcrumbs',
+    'Friendly URL' => 'Friendly URL',
+    'Afbeelding' => 'Image',
+    'Preview-afbeelding' => 'Preview image',
+    'Korte samenvatting' => 'Short summary',
+    'Headerafbeelding uploaden…' => 'Upload header image…',
+    'Previewafbeelding uploaden…' => 'Upload preview image…',
+    'Interne link maken' => 'Create internal link',
+    'Invoegen' => 'Insert',
+    'Categorieën (klik om open te klappen)' => 'Categories (click to expand)',
+    'Reacties toestaan' => 'Allow replies',
+    'Opslaan' => 'Save',
+    'Annuleren' => 'Cancel',
+
+    'Dit album is leeg.' => 'This album is empty',
+    'Dit album bevat 1 foto. Klik op de verkleinde foto om een vergroting te zien.' => 'This album contains 1 photo. Click the thumbnail to enlarge.',
+    'Dit album bevat %d foto’s. Klik op de verkleinde foto’s om een vergroting te zien.' => 'This album contains %d photos. Click a thumbnail to enlarge.',
+];

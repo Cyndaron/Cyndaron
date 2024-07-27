@@ -13,6 +13,7 @@ use Cyndaron\CyndaronInfo;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\Module\PagePreProcessor;
+use Cyndaron\Translation\Translator;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\Module\UserMenuItem;
@@ -108,13 +109,13 @@ class Page implements Pageable
     /**
      * @param UserMenuItem[] $userMenu
      */
-    protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, CSRFTokenHandler $tokenHandler, UserSession $userSession, array $userMenu, bool $isFrontPage): void
+    protected function renderSkeleton(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, CSRFTokenHandler $tokenHandler, Translator $t, UserSession $userSession, array $userMenu, bool $isFrontPage): void
     {
         $this->websiteName = Setting::get('siteName');
         $this->templateVars['isAdmin'] = $userSession->isAdmin();
         $this->templateVars['websiteName'] = $this->websiteName;
         $this->templateVars['title'] = $this->title;
-        // TODO: remove or fill
+        $this->templateVars['systemLanguage'] = Setting::get(BuiltinSetting::LANGUAGE);
         $this->templateVars['twitterDescription'] = '';
         $this->templateVars['previewImage'] = '';
         if ($this->model instanceof ModelWithCategory)
@@ -139,7 +140,7 @@ class Page implements Pageable
             $this->templateVars[$setting] = Setting::get($setting);
         }
 
-        $this->templateVars['menu'] = $this->renderMenu($templateRenderer, $urlService, $userSession, $userMenu);
+        $this->templateVars['menu'] = $this->renderMenu($templateRenderer, $urlService, $t, $userSession, $userMenu);
 
         $jumboContents = Setting::get('jumboContents');
         $this->templateVars['showJumbo'] = $isFrontPage && Setting::get('frontPageIsJumbo') && $jumboContents;
@@ -175,7 +176,7 @@ class Page implements Pageable
     /**
      * @param UserMenuItem[] $userMenu
      */
-    protected function renderMenu(TemplateRenderer $templateRenderer, UrlService $urlService, UserSession $userSession, array $userMenu): string
+    protected function renderMenu(TemplateRenderer $templateRenderer, UrlService $urlService, Translator $t, UserSession $userSession, array $userMenu): string
     {
         $logo = Setting::get('logo');
         $vars = [
@@ -188,10 +189,10 @@ class Page implements Pageable
         $vars['urlService'] = $urlService;
         $vars['menuItems'] = $this->getMenu($userSession);
         $vars['configMenuItems'] = [
-            new LinkWithIcon('/system', 'Systeembeheer', 'cog'),
-            new LinkWithIcon('/pagemanager', 'Pagina-overzicht', 'th-list'),
-            new LinkWithIcon('/menu-editor', 'Menu bewerken', 'menu-hamburger'),
-            new LinkWithIcon('/user/manager', 'Gebruikersbeheer', 'user'),
+            new LinkWithIcon('/system', $t->get('Systeembeheer'), 'cog'),
+            new LinkWithIcon('/pagemanager', $t->get('Pagina-overzicht'), 'th-list'),
+            new LinkWithIcon('/menu-editor', $t->get('Menu bewerken'), 'menu-hamburger'),
+            new LinkWithIcon('/user/manager', $t->get('Gebruikersbeheer'), 'user'),
         ];
         $profile = $userSession->getProfile();
         $userMenuItems = [
@@ -201,12 +202,13 @@ class Page implements Pageable
         {
             $userMenuItems[] = $extraItem->link;
         }
-        $userMenuItems[] = new LinkWithIcon('/user/changePassword', 'Wachtwoord wijzigen', 'lock');
-        $userMenuItems[] = new LinkWithIcon('/user/logout', 'Uitloggen', 'log-out');
+        $userMenuItems[] = new LinkWithIcon('/user/changePassword', $t->get('Wachtwoord wijzigen'), 'lock');
+        $userMenuItems[] = new LinkWithIcon('/user/logout', $t->get('Uitloggen'), 'log-out');
 
         $vars['userMenuItems'] = $userMenuItems;
 
         $vars['notifications'] = $userSession->getNotifications();
+        $vars['t'] = $t;
 
         return $templateRenderer->render('Menu', $vars);
     }
@@ -219,11 +221,11 @@ class Page implements Pageable
      * @param array<string, mixed> $vars
      * @return string
      */
-    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, CSRFTokenHandler $tokenHandler, UserSession $userSession, array $pageProcessors, bool $isFrontPage, array $userMenu = [], array $vars = []): string
+    public function render(TemplateRenderer $templateRenderer, TextRenderer $textRenderer, UrlService $urlService, Translator $t, CSRFTokenHandler $tokenHandler, UserSession $userSession, array $pageProcessors, bool $isFrontPage, array $userMenu = [], array $vars = []): string
     {
         $this->addTemplateVars($vars);
 
-        $this->renderSkeleton($templateRenderer, $textRenderer, $urlService, $tokenHandler, $userSession, $userMenu, $isFrontPage);
+        $this->renderSkeleton($templateRenderer, $textRenderer, $urlService, $tokenHandler, $t, $userSession, $userMenu, $isFrontPage);
 
         foreach ($pageProcessors as $processor)
         {

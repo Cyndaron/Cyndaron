@@ -4,6 +4,7 @@ namespace Cyndaron\System;
 use Cyndaron\Category\Category;
 use Cyndaron\CyndaronInfo;
 use Cyndaron\Page\Page;
+use Cyndaron\Translation\Translator;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
 use function is_writable;
@@ -55,10 +56,10 @@ final class SystemPage extends Page
         'session.use_trans_sid' => '0',
         'memory_limit' => '96M of meer',
     ];
-    public function __construct(string $currentPage)
+    public function __construct(string $currentPage, Translator $t)
     {
         $this->template = 'System/' . ucfirst($currentPage);
-        parent::__construct('Systeembeheer');
+        parent::__construct($t->get('Systeembeheer'));
 
         $this->templateVars['currentPage'] = $currentPage;
         $this->templateVars['pageTabs'] = [

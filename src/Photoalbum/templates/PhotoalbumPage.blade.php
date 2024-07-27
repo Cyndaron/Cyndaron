@@ -19,14 +19,14 @@
 
     @php $numEntries = count($photos) @endphp
     @if ($numEntries === 0)
-        <div class="alert alert-info">Dit album is leeg.</div>
+        <div class="alert alert-info">{{ $t->get('Dit album is leeg.') }}</div>
     @else
         {!! $parsedNotes ?? '' !!}
 
         @if ($numEntries === 1)
-            <p>Dit album bevat 1 foto. Klik op de verkleinde foto om een vergroting te zien.</p>
+            <p>{{ $t->get('Dit album bevat 1 foto. Klik op de verkleinde foto om een vergroting te zien.') }}</p>
         @else
-            <p>Dit album bevat {{ $numEntries }} foto's. Klik op de verkleinde foto's om een vergroting te zien.</p>
+            {{ sprintf($t->get('Dit album bevat %d foto’s. Klik op de verkleinde foto’s om een vergroting te zien.'), $numEntries) }}
         @endif
 
         <div class="fotoalbum">

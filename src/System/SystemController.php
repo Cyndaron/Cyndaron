@@ -7,6 +7,7 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
+use Cyndaron\Translation\Translator;
 use Cyndaron\Util\Setting;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -15,10 +16,10 @@ use Symfony\Component\HttpFoundation\Response;
 final class SystemController extends Controller
 {
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ADMIN)]
-    public function routeGet(QueryBits $queryBits): Response
+    public function routeGet(QueryBits $queryBits, Translator $t): Response
     {
         $currentPage = $queryBits->getString(1, 'config');
-        $page = new SystemPage($currentPage);
+        $page = new SystemPage($currentPage, $t);
         return $this->pageRenderer->renderResponse($page);
     }
 

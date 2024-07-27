@@ -22,11 +22,13 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\UrlInfo;
+use Cyndaron\Translation\Translator;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
+use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Mail;
 use Cyndaron\Util\Setting;
@@ -60,12 +62,12 @@ final class Kernel
         'expires' => 0,
     ];
 
-    private function setExceptionHandler(LoggerInterface $logger, PageRenderer $pageRenderer): void
+    private function setExceptionHandler(LoggerInterface $logger, PageRenderer $pageRenderer, Translator $translator): void
     {
-        set_exception_handler(static function(Throwable $t) use ($logger, $pageRenderer)
+        set_exception_handler(static function(Throwable $t) use ($logger, $pageRenderer, $translator)
         {
             $logger->error((string)$t);
-            $page = new SimplePage('Fout', 'Er ging iets mis bij het laden van deze pagina!');
+            $page = new SimplePage($translator->get('Fout'), $translator->get('Er ging iets mis bij het laden van deze pagina!'));
             $response = $pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
             $response->send();
         });
@@ -79,7 +81,9 @@ final class Kernel
         $templateRenderer = TemplateRendererFactory::createTemplateRenderer($registry->templateRoots);
         $tokenHandler = new CSRFTokenHandler($userSession->getSymfonySession());
         $textRenderer = new TextRenderer($registry, $dic);
-        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $urlService, $tokenHandler, $userSession, $request, $user);
+        $language = Setting::get(BuiltinSetting::LANGUAGE);
+        $translator = new Translator($language);
+        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $urlService, $tokenHandler, $translator, $userSession, $request, $user);
         $urlInfo = UrlInfo::fromRequest($request);
 
         $fileLogger = new FileLogger(ROOT_DIR . '/var/log/cyndaron.log');
@@ -93,7 +97,7 @@ final class Kernel
         {
             $multiLogger = new MultiLogger($fileLogger);
         }
-        $this->setExceptionHandler($multiLogger, $pageRenderer);
+        $this->setExceptionHandler($multiLogger, $pageRenderer, $translator);
 
         $dic->add($registry);
         $dic->add($request);
@@ -101,6 +105,7 @@ final class Kernel
         $dic->add($templateRenderer);
         $dic->add($textRenderer);
         $dic->add($pageRenderer);
+        $dic->add($translator);
         $dic->add($pdo);
         $dic->add($pdo, \PDO::class);
         $dic->add($urlService);
@@ -111,6 +116,8 @@ final class Kernel
         {
             $dic->add($user);
         }
+
+
 
         foreach ($registry->classesToAutowire as $class)
         {
@@ -125,6 +132,7 @@ final class Kernel
     {
         $request = $dic->get(Request::class);
         $pageRenderer = $dic->get(PageRenderer::class);
+        $translator = $dic->get(Translator::class);
 
         try
         {
@@ -150,7 +158,7 @@ final class Kernel
                 return new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
-            $page = new SimplePage('Fout', 'Er ging iets mis bij het laden van deze pagina!');
+            $page = new SimplePage($translator->get('Fout'), $translator->get('Er ging iets mis bij het laden van deze pagina!'));
             return $pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

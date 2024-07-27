@@ -7,4 +7,5 @@ enum BuiltinSetting : string
 {
     case ORGANISATION = 'organisation';
     case SHORT_CODE = 'shortCode';
+    case LANGUAGE = 'language';
 }

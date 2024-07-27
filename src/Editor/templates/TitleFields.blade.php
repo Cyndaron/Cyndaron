@@ -1,10 +1,10 @@
-@include('View/Widget/Form/BasicInput', ['id' => 'titel', 'required' => true, 'value' => $contentTitle, 'label' => 'Titel'])
+@include('View/Widget/Form/BasicInput', ['id' => 'titel', 'required' => true, 'value' => $contentTitle, 'label' => $t->get('Titel')])
 
 @if ($hasCategory)
-    @include ('View/Widget/Form/Checkbox', ['id' => 'showBreadcrumbs', 'description' => 'Titel tonen als breadcrumbs', 'checked' => $showBreadcrumbs])
+    @include ('View/Widget/Form/Checkbox', ['id' => 'showBreadcrumbs', 'description' => $t->get('Titel tonen als breadcrumbs'), 'checked' => $showBreadcrumbs])
 @endif
 
-@component('View/Widget/Form/FormWrapper', ['id' => 'friendlyUrl', 'label' => 'Friendly URL'])
+@component('View/Widget/Form/FormWrapper', ['id' => 'friendlyUrl', 'label' => $t->get('Friendly URL')])
     @slot('right')
         <div class="input-group">
             <div class="input-group-prepend">
