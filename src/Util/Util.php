@@ -9,7 +9,6 @@ namespace Cyndaron\Util;
 use RuntimeException;
 use Safe\DateTimeImmutable;
 use Safe\Exceptions\FilesystemException;
-use Symfony\Component\HttpFoundation\Request;
 use function Safe\preg_replace;
 use function Safe\date;
 use function Safe\mkdir;
@@ -30,6 +29,7 @@ use function dirname;
 use function strlen;
 use function is_dir;
 use function str_replace;
+use function number_format;
 
 final class Util
 {
@@ -41,6 +41,18 @@ final class Util
 
     public const SQL_DATE_FORMAT = 'Y-m-d';
     public const SQL_DATE_TIME_FORMAT = 'Y-m-d H:i:s';
+
+    public const BYTE_POSTFIXES = [
+        ' B',
+        ' KiB',
+        ' MiB',
+        ' GiB',
+        ' TiB',
+        ' PiB',
+        ' EiB',
+        ' ZiB',
+        ' YiB'
+    ];
 
     public static function generatePassword(int $length = 10): string
     {
@@ -159,5 +171,23 @@ final class Util
         /** @var string $dedoubled */
         $dedoubled = str_replace('--', '-', $firstPass);
         return $dedoubled;
+    }
+
+    public static function formatSize(int $size): string
+    {
+        $power = 0;
+        $maxPower = count(self::BYTE_POSTFIXES) - 1;
+        for (; $power < $maxPower; $power++)
+        {
+            if ($size < 1024)
+            {
+                break;
+            }
+
+            $size /= 1024;
+        }
+
+        $postfix = self::BYTE_POSTFIXES[$power];
+        return number_format($size, 1) . $postfix;
     }
 }
