@@ -120,7 +120,7 @@ class Page implements Pageable
         $this->templateVars['previewImage'] = '';
         if ($this->model instanceof ModelWithCategory)
         {
-            $this->templateVars['twitterDescription'] = $this->model->getBlurb();
+            $this->templateVars['twitterDescription'] = $this->model->blurb;
             $this->templateVars['previewImage'] = $this->model->getPreviewImage();
         }
 
