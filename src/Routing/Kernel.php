@@ -16,6 +16,7 @@ use Cyndaron\Module\Templated;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\WithClassesToAutowire;
 use Cyndaron\Module\WithTextPostProcessors;
+use Cyndaron\Page\MenuRenderer;
 use Cyndaron\Page\Module\WithPageProcessors;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
@@ -83,7 +84,8 @@ final class Kernel
         $textRenderer = new TextRenderer($registry, $dic);
         $language = Setting::get(BuiltinSetting::LANGUAGE);
         $translator = new Translator($language);
-        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $urlService, $tokenHandler, $translator, $userSession, $request, $user);
+        $menuRenderer = new MenuRenderer($urlService, $translator, $templateRenderer);
+        $pageRenderer = new PageRenderer($registry, $templateRenderer, $textRenderer, $menuRenderer, $urlService, $tokenHandler, $translator, $userSession, $request, $user);
         $urlInfo = UrlInfo::fromRequest($request);
 
         $fileLogger = new FileLogger(ROOT_DIR . '/var/log/cyndaron.log');

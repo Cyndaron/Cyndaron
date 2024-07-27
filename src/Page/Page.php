@@ -11,7 +11,6 @@ namespace Cyndaron\Page;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\CyndaronInfo;
 use Cyndaron\DBAL\Model;
-use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\Module\PagePreProcessor;
 use Cyndaron\Translation\Translator;
 use Cyndaron\Url\UrlService;
@@ -19,7 +18,6 @@ use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
-use Cyndaron\Util\LinkWithIcon;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Renderer\TextRenderer;
 use Cyndaron\View\Template\TemplateRenderer;
@@ -140,8 +138,6 @@ class Page implements Pageable
             $this->templateVars[$setting] = Setting::get($setting);
         }
 
-        $this->templateVars['menu'] = $this->renderMenu($templateRenderer, $urlService, $t, $userSession, $userMenu);
-
         $jumboContents = Setting::get('jumboContents');
         $this->templateVars['showJumbo'] = $isFrontPage && Setting::get('frontPageIsJumbo') && $jumboContents;
         $this->templateVars['jumboContents'] = $textRenderer->render($jumboContents);
@@ -174,46 +170,6 @@ class Page implements Pageable
     }
 
     /**
-     * @param UserMenuItem[] $userMenu
-     */
-    protected function renderMenu(TemplateRenderer $templateRenderer, UrlService $urlService, Translator $t, UserSession $userSession, array $userMenu): string
-    {
-        $logo = Setting::get('logo');
-        $vars = [
-            'isLoggedIn' => $userSession->isLoggedIn(),
-            'isAdmin' => $userSession->isAdmin(),
-            'inverseClass' => (Setting::get('menuTheme') === 'dark') ? 'navbar-dark' : 'navbar-light',
-            'navbar' => $logo !== '' ? sprintf('<img alt="" src="%s"> ', $logo) : $this->websiteName,
-        ];
-
-        $vars['urlService'] = $urlService;
-        $vars['menuItems'] = $this->getMenu($userSession);
-        $vars['configMenuItems'] = [
-            new LinkWithIcon('/system', $t->get('Systeembeheer'), 'cog'),
-            new LinkWithIcon('/pagemanager', $t->get('Pagina-overzicht'), 'th-list'),
-            new LinkWithIcon('/menu-editor', $t->get('Menu bewerken'), 'menu-hamburger'),
-            new LinkWithIcon('/user/manager', $t->get('Gebruikersbeheer'), 'user'),
-        ];
-        $profile = $userSession->getProfile();
-        $userMenuItems = [
-            new LinkWithIcon('', $profile ? $profile->username : '', 'user'),
-        ];
-        foreach ($userMenu as $extraItem)
-        {
-            $userMenuItems[] = $extraItem->link;
-        }
-        $userMenuItems[] = new LinkWithIcon('/user/changePassword', $t->get('Wachtwoord wijzigen'), 'lock');
-        $userMenuItems[] = new LinkWithIcon('/user/logout', $t->get('Uitloggen'), 'log-out');
-
-        $vars['userMenuItems'] = $userMenuItems;
-
-        $vars['notifications'] = $userSession->getNotifications();
-        $vars['t'] = $t;
-
-        return $templateRenderer->render('Menu', $vars);
-    }
-
-    /**
      * @param TemplateRenderer $templateRenderer
      * @param TextRenderer $textRenderer
      * @param PagePreProcessor[] $pageProcessors
@@ -243,18 +199,6 @@ class Page implements Pageable
     public function addCss(string $filename): void
     {
         $this->extraCss[] = $filename;
-    }
-
-    /**
-     * @return MenuItem[]
-     */
-    public function getMenu(UserSession $userSession): array
-    {
-        if (!$userSession->hasSufficientReadLevel())
-        {
-            return [];
-        }
-        return MenuItem::fetchAll([], [], 'ORDER BY priority, id');
     }
 
     protected function generateBreadcrumbs(): string
