@@ -1,16 +1,17 @@
 # Cyndaron
-Simpel en lichtgewicht CMS, beschikbaar onder de MIT-licentie. Deze is te raadplegen in het bestand LICENSE.
+CMS that aims for simplicity and security. Available onder the MIT license, see the LICENSE file for details.
 
-Code van derden en alle daaraan aangebrachte wijzigingen vallen onder de volgende licenties:
+Licences for third-party code (and all changes made to it):
 - Lightbox: MIT (LICENSE.Lightbox)
 - MCServerStats: MIT (LICENSE.MCServerStats)
 - MinecraftSkinRenderer: BSD-3 (LICENSE.MinecraftSkinRenderer)
 
-N.B.: In de map "vendor" zijn de licenties te vinden van alle andere gebruikte componenten (die niet direct in de codebasis zijn opgenomen).
+N.B.: Licences of third-party code not directly included in the code base can be found in their respective directories under the “vendor” folder.
 
-## Codestijl
-De aan te houden codestijl is [PSR-12](http://www.php-fig.org/psr/psr-12/) met de volgende wijziging:
-- Alle accolades staan op een eigen regel, met uitzondering van die van lege blokken.
+## Code style
+De code style used is [PSR-12](http://www.php-fig.org/psr/psr-12/), with the following changes:
+- All braces are on their own line.
+- Braces on if blocks are not required, provided both `if` and `else` instructions (if present) only have a single instruction.
 
-Plus de volgende verplichting:
-- Array's gebruiken enkel de korte syntax.
+And the following requirement:
+- Arrays should always use short syntax.
