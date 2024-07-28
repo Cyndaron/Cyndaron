@@ -18,6 +18,11 @@ use Cyndaron\Util\Util;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use function nl2br;
+use function explode;
+use function str_starts_with;
+use function substr;
+use function preg_replace;
+use function implode;
 
 final class DownloadController extends Controller
 {
@@ -53,7 +58,38 @@ final class DownloadController extends Controller
     public function showChangelog(): Response
     {
         $contents = Util::fetch('https://raw.githubusercontent.com/OpenRCT2/OpenRCT2/develop/distribution/changelog.txt');
-        $page = new SimplePage('Changelog', nl2br($contents));
+        // Titles
+        /** @var string $contents */
+        $contents = preg_replace('/([0-9].*?)\n(----+\n)/', '<h2>$1</h2>' . "\n", $contents);
+
+        $lines = explode(PHP_EOL, $contents);
+        $inUl = false;
+        foreach ($lines as &$line)
+        {
+            if (str_starts_with($line, '- '))
+            {
+                $line = '<li>' . substr($line, 2) . '</li>';
+                /** @var string $line */
+                $line = preg_replace('/([^A-Za-z])#([0-9]+)/', '$1<a href="https://github.com/OpenRCT2/OpenRCT2/issues/$2">#$2</a>', $line);
+                $line = preg_replace('/([A-Za-z]+)#([0-9]+)/', '<a href="https://github.com/OpenRCT2/$1/issues/$2">$1#$2</a>', $line);
+                if (!$inUl)
+                {
+                    $line = '<ul>' . $line;
+                    $inUl = true;
+                }
+            }
+            elseif ($line === '')
+            {
+                if ($inUl)
+                {
+                    $line = '</ul>';
+                    $inUl = false;
+                }
+            }
+        }
+
+        $contents = implode(PHP_EOL, $lines);
+        $page = new SimplePage('Changelog', $contents);
         return $this->pageRenderer->renderResponse($page);
     }
 }
