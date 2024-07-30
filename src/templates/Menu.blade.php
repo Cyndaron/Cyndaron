@@ -13,9 +13,9 @@
                 @if ($menuitem->isCategoryDropdown())
                     @include('View/Widget/MenuDropdown', ['title' => $menuitem->getTitle($urlService), 'icon' => '', 'items' => $menuitem->getSubmenu(), 'urlService' => $urlService])
                 @else
-                    <li class="nav-item @if ($urlService->isCurrentPage($menuitem->getLink()))active @endif">
+                    <li class="nav-item @if ($urlService->isCurrentPage($menuitem->getLink()))active @endif @if ($menuitem->isImage) nav-item-image @endif">
                         @if ($menuitem->isImage)
-                            <a class="nav-link img-in-menuitem" href="{{ $urlService->toFriendly($menuitem->getLink()) }}">
+                            <a class="nav-link img-in-menuitem" href="{{ $urlService->toFriendly($menuitem->getLink()) }}" target="_blank">
                                 <img src="{{ $menuitem->getTitle($urlService) }}" alt="{{ $urlService->toFriendly($menuitem->getLink()) }}"/>
                             </a>
                         @else
