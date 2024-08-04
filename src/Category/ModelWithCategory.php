@@ -13,6 +13,7 @@ use function html_entity_decode;
 use function trim;
 use function reset;
 use function assert;
+use function usort;
 
 /**
  * Class ModelWithCategory
@@ -172,7 +173,8 @@ abstract class ModelWithCategory extends Model
     public static function fetchAllAndSortByName(): array
     {
         $entries = self::fetchAll();
-        usort($entries, static function(ModelWithCategory $entry1, ModelWithCategory $entry2) {
+        usort($entries, static function(ModelWithCategory $entry1, ModelWithCategory $entry2)
+        {
             return $entry1->name <=> $entry2->name;
         });
         return $entries;

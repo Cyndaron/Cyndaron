@@ -152,25 +152,25 @@ final class ContestController extends Controller
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-//        // No need to pay, so just redirect.
-//        if ($contest->price <= 0.00)
-//        {
-//            return new RedirectResponse("/contest/view/{$contest->id}");
-//        }
-//
-//        try
-//        {
-//            $schemeAndHost = "https://{$_SERVER['HTTP_HOST']}";
-//            $redirectUrl = "{$schemeAndHost}/contest/view/{$contest->id}";
-//            $response = $this->doMollieTransaction([$contestMember], "Inschrijving {$contest->name}", $contest->price, $redirectUrl);
-//        }
-//        catch (\Exception $e)
-//        {
-//            $userSession->addNotification('Je inschrijving is opgeslagen, maar de betaling is mislukt!');
-//            $response = new RedirectResponse("/contest/view/{$contest->id}");
-//        }
+        //        // No need to pay, so just redirect.
+        //        if ($contest->price <= 0.00)
+        //        {
+        //            return new RedirectResponse("/contest/view/{$contest->id}");
+        //        }
+        //
+        //        try
+        //        {
+        //            $schemeAndHost = "https://{$_SERVER['HTTP_HOST']}";
+        //            $redirectUrl = "{$schemeAndHost}/contest/view/{$contest->id}";
+        //            $response = $this->doMollieTransaction([$contestMember], "Inschrijving {$contest->name}", $contest->price, $redirectUrl);
+        //        }
+        //        catch (\Exception $e)
+        //        {
+        //            $userSession->addNotification('Je inschrijving is opgeslagen, maar de betaling is mislukt!');
+        //            $response = new RedirectResponse("/contest/view/{$contest->id}");
+        //        }
 
-//        return $response;
+        //        return $response;
         $userSession->addNotification('Let op: de inschrijving is pas definitief wanneer u heeft betaald.');
         return new RedirectResponse("/contest/view/{$contest->id}");
     }
@@ -798,11 +798,11 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('linkContestantsToParentAccounts', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
-        public function linkContestantsToParentAccounts(): Response
-        {
-            $page = new LinkContestantsToParentAccountsPage();
-            return $this->pageRenderer->renderResponse($page);
-        }
+    public function linkContestantsToParentAccounts(): Response
+    {
+        $page = new LinkContestantsToParentAccountsPage();
+        return $this->pageRenderer->renderResponse($page);
+    }
 
     #[RouteAttribute('subscribe', RequestMethod::GET, UserLevel::LOGGED_IN)]
     public function subscribePage(QueryBits $queryBits, User $currentUser): Response

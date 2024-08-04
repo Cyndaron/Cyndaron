@@ -28,8 +28,8 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
             $this->model = new Event();
         }
 
-//        $maxRegistrations = $this->model->maxRegistrations ?? 300;
-//        $numSeats = $this->model->numSeats ?? 300;
+        //        $maxRegistrations = $this->model->maxRegistrations ?? 300;
+        //        $numSeats = $this->model->numSeats ?? 300;
         $this->templateVars['registrationCost0'] = ViewHelpers::formatCurrency($this->model->registrationCost0 ?? 15.0);
         $this->templateVars['registrationCost1'] = ViewHelpers::formatCurrency($this->model->registrationCost1 ?? 15.0);
         $this->templateVars['registrationCost2'] = ViewHelpers::formatCurrency($this->model->registrationCost2 ?? 0.0);

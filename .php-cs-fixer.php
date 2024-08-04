@@ -17,13 +17,17 @@ return (new PhpCsFixer\Config())
         '@PSR2' => true,
         'align_multiline_comment' => ['comment_type' => 'phpdocs_like'],
         'array_syntax' => ['syntax' => 'short'],
-        'braces' => [
-            'allow_single_line_closure' => true,
-            'position_after_control_structures' => 'next',
-            'position_after_functions_and_oop_constructs' => 'next',
-            'position_after_anonymous_constructs' => 'next',
+        'braces_position' => [
+            'allow_single_line_anonymous_functions' => true,
+            'anonymous_classes_opening_brace' => 'next_line_unless_newline_at_signature_end',
+            'anonymous_functions_opening_brace' => 'next_line_unless_newline_at_signature_end',
+            'control_structures_opening_brace' => 'next_line_unless_newline_at_signature_end',
+            'functions_opening_brace' => 'next_line_unless_newline_at_signature_end',
         ],
         'constant_case' => ['case' => 'lower'],
+        'control_structure_continuation_position' => [
+            'position' => 'next_line',
+        ],
         'function_declaration' => ['closure_function_spacing' => 'none'],
         'linebreak_after_opening_tag' => true,
         'phpdoc_order' => true,
