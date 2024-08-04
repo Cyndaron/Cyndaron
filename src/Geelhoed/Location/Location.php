@@ -7,8 +7,8 @@ use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Hour\Hour;
 use function array_unique;
-use function urlencode;
-use function implode;
+use function array_filter;
+use function usort;
 
 final class Location
 {
@@ -22,12 +22,32 @@ final class Location
      */
     public function getHours(int|null $departmentId = null): array
     {
-        if ($departmentId !== null)
+        $hours = Hour::fetchAll();
+        $filtered = array_filter($hours, function(Hour $hour) use ($departmentId)
         {
-            return Hour::fetchAll(['locationId = ?', 'departmentId = ?'], [$this->base->id, $departmentId], 'ORDER BY `day`, `from`');
-        }
+            if ($hour->locationId !== $this->base->id)
+            {
+                return false;
+            }
 
-        return Hour::fetchAll(['locationId = ?'], [$this->base->id], 'ORDER BY `day`, `from`');
+            if ($departmentId !== null && $hour->departmentId !== $departmentId)
+            {
+                return false;
+            }
+
+            return true;
+        });
+        usort($filtered, static function(Hour $hour1, Hour $hour2)
+        {
+            $daySort = $hour1->day <=> $hour2->day;
+            if ($daySort !== 0)
+            {
+                return $daySort;
+            }
+
+            return $hour1->from <=> $hour2->from;
+        });
+        return $filtered;
     }
 
     /**
