@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Category;
 
+use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Url\Url;
@@ -20,6 +21,8 @@ use function assert;
  */
 abstract class ModelWithCategory extends Model
 {
+    use FileCachedModel;
+
     public string $name = '';
     public string $image = '';
     public string $previewImage = '';
@@ -161,5 +164,17 @@ abstract class ModelWithCategory extends Model
         }
 
         return $ret;
+    }
+
+    /**
+     * @return static[]
+     */
+    public static function fetchAllAndSortByName(): array
+    {
+        $entries = self::fetchAll();
+        usort($entries, static function(ModelWithCategory $entry1, ModelWithCategory $entry2) {
+            return $entry1->name <=> $entry2->name;
+        });
+        return $entries;
     }
 }

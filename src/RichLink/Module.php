@@ -35,8 +35,8 @@ final class Module implements Datatypes, UrlProvider, Routes
     public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
     {
         $templateVars = [
-            'richlinks' => RichLink::fetchAll([], [], 'ORDER BY name'),
-            'categories' => Category::fetchAll([], [], 'ORDER BY name'),
+            'richlinks' => RichLink::fetchAllAndSortByName(),
+            'categories' => Category::fetchAllAndSortByName(),
             'tokenEdit' => $tokenHandler->get('richlink', 'edit'),
             'tokenDelete' => $tokenHandler->get('richlink', 'delete'),
         ];

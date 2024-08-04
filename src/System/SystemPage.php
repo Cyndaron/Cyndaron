@@ -112,7 +112,7 @@ final class SystemPage extends Page
         ];
         $this->templateVars['formItems'] = $formItems;
 
-        $this->templateVars['categories'] = Category::fetchAll([], [], 'ORDER BY name');
+        $this->templateVars['categories'] = Category::fetchAllAndSortByName();
 
         $menuTheme = Setting::get('menuTheme');
         $this->templateVars['lightMenu'] = ($menuTheme !== 'dark') ? 'selected' : '';

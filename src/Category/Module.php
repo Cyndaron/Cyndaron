@@ -66,7 +66,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
     public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
     {
         $templateVars = [
-            'categories' => Category::fetchAll([], [], 'ORDER BY name'),
+            'categories' => Category::fetchAllAndSortByName(),
             'currentUser' => $currentUser,
             'tokenAdd' => $tokenHandler->get('category', 'add'),
             'tokenDelete' => $tokenHandler->get('category', 'delete'),
