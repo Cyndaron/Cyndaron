@@ -25,7 +25,7 @@ trait FileCachedModel
 
     protected static function createCache(): void
     {
-        $objects = static::fetchAll();
+        $objects = parent::fetchAll();
         foreach ($objects as $object)
         {
             assert($object->id !== null);
@@ -68,5 +68,22 @@ trait FileCachedModel
         }
 
         return $result;
+    }
+
+    /**
+     * @param string[] $where
+     * @param list<string|int|float|null> $args
+     * @param string $afterWhere
+     * @return static[]
+     */
+    public static function fetchAll(array $where = [], array $args = [], string $afterWhere = ''): array
+    {
+        if ($where !== [] || $args !== [] || $afterWhere !== '')
+        {
+            return parent::fetchAll($where, $args, $afterWhere);
+        }
+
+        self::loadCache();
+        return self::$cache[static::TABLE];
     }
 }
