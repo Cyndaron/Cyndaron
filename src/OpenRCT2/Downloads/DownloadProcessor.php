@@ -12,7 +12,6 @@ use Cyndaron\OpenRCT2\Downloads\Classification\Architecture;
 use Cyndaron\OpenRCT2\Downloads\Classification\OperatingSystem;
 use Cyndaron\OpenRCT2\Downloads\Classification\Type;
 use Cyndaron\Util\Util;
-use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use function preg_replace_callback;
 use function strtolower;
@@ -32,22 +31,22 @@ final class DownloadProcessor implements \Cyndaron\Module\TextPostProcessor
         $text = preg_replace_callback('/%newestRelease%/', function()
         {
             return $this->renderBlock(
-                BuildLister::LATEST_RELEASE_BUILD_URL,
+                APICall::LATEST_RELEASE_BUILD,
                 'Download Latest Release',
             );
         }, $text) ?? $text;
         return preg_replace_callback('/%newestDevelop%/', function()
         {
             return $this->renderBlock(
-                BuildLister::LATEST_DEVELOPMENT_BUILD_URL,
+                APICall::LATEST_DEVELOP_BUILD,
                 'Download Development Build',
             );
         }, $text) ?? $text;
     }
 
-    private function renderBlock(string $url, string $title): string
+    private function renderBlock(APICall $call, string $title): string
     {
-        $build = BuildLister::fetchAndProcessSingleBuild($url);
+        $build = BuildLister::fetchAndProcessSingleBuild($call);
         $artifact = $this->findBestMatchingArtifact($build);
         $informationParts = [
             $artifact->version,

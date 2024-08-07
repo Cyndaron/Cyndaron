@@ -14,10 +14,8 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
-use Cyndaron\Util\Util;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
-use function nl2br;
 use function explode;
 use function str_starts_with;
 use function substr;
@@ -26,11 +24,11 @@ use function implode;
 
 final class DownloadController extends Controller
 {
-    private function fetchAndProcessBuilds(LoggerInterface $logger, string $name, string $url): Response
+    private function fetchAndProcessBuilds(LoggerInterface $logger, string $name, APICall $call): Response
     {
         try
         {
-            $builds = BuildLister::fetchAndProcessBuilds($url);
+            $builds = BuildLister::fetchAndProcessBuilds($call);
 
             $page = new DownloadPage($name, $builds);
             return $this->pageRenderer->renderResponse($page);
@@ -45,19 +43,21 @@ final class DownloadController extends Controller
     #[RouteAttribute('develop', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function listDevelopmentBuilds(LoggerInterface $logger): Response
     {
-        return $this->fetchAndProcessBuilds($logger, 'Development builds', BuildLister::DEVELOPMENT_BUILDS_URL);
+        return $this->fetchAndProcessBuilds($logger, 'Development builds', APICall::DEVELOP_BUILDS);
     }
 
     #[RouteAttribute('release', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function listReleaseBuilds(LoggerInterface $logger): Response
     {
-        return $this->fetchAndProcessBuilds($logger, 'Release builds', BuildLister::RELEASE_BUILDS_URL);
+        return $this->fetchAndProcessBuilds($logger, 'Release builds', APICall::RELEASE_BUILDS);
     }
 
     #[RouteAttribute('changelog', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function showChangelog(): Response
     {
-        $contents = Util::fetch('https://raw.githubusercontent.com/OpenRCT2/OpenRCT2/develop/distribution/changelog.txt');
+        $fetcher = new APIFetcher();
+        $contents = $fetcher->fetch(APICall::CHANGELOG);
+
         // Titles
         /** @var string $contents */
         $contents = preg_replace('/([0-9].*?)\n(----+\n)/', '<h2>$1</h2>' . "\n", $contents);
