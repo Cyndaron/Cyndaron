@@ -55,41 +55,7 @@ final class DownloadController extends Controller
     #[RouteAttribute('changelog', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function showChangelog(): Response
     {
-        $fetcher = new APIFetcher();
-        $contents = $fetcher->fetch(APICall::CHANGELOG);
-
-        // Titles
-        /** @var string $contents */
-        $contents = preg_replace('/([0-9].*?)\n(----+\n)/', '<h2>$1</h2>' . "\n", $contents);
-
-        $lines = explode(PHP_EOL, $contents);
-        $inUl = false;
-        foreach ($lines as &$line)
-        {
-            if (str_starts_with($line, '- '))
-            {
-                $line = '<li>' . substr($line, 2) . '</li>';
-                /** @var string $line */
-                $line = preg_replace('/([^A-Za-z])#([0-9]+)/', '$1<a href="https://github.com/OpenRCT2/OpenRCT2/issues/$2">#$2</a>', $line);
-                $line = preg_replace('/([A-Za-z]+)#([0-9]+)/', '<a href="https://github.com/OpenRCT2/$1/issues/$2">$1#$2</a>', $line);
-                if (!$inUl)
-                {
-                    $line = '<ul>' . $line;
-                    $inUl = true;
-                }
-            }
-            elseif ($line === '')
-            {
-                if ($inUl)
-                {
-                    $line = '</ul>';
-                    $inUl = false;
-                }
-            }
-        }
-
-        $contents = implode(PHP_EOL, $lines);
-        $page = new SimplePage('Changelog', $contents);
-        return $this->pageRenderer->renderResponse($page);
+        $factory = new ChangelogPageFactory(new APIFetcher());
+        return $this->pageRenderer->renderResponse($factory->getPage());
     }
 }
