@@ -10,10 +10,11 @@ use function file_get_contents;
 use function file_put_contents;
 use function serialize;
 use function unserialize;
+use const CACHE_DIR;
 
 final class FileCache
 {
-    public const CACHE_DIR = ROOT_DIR . '/cache/cyndaron';
+    public const CACHE_DIR = CACHE_DIR . 'cyndaron';
 
     public readonly string $filename;
     /** @var class-string[] */

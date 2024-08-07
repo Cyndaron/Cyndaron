@@ -16,7 +16,7 @@ use Pine\BladeFilters\BladeFiltersCompiler;
 
 class TemplateRendererFactory
 {
-    private const COMPILED_DIR = 'cache/template/blade';
+    private const COMPILED_DIR = CACHE_DIR . 'template/blade';
 
     private const FILTERS = [
         'euro' => ViewHelpers::class . '::formatEuro',

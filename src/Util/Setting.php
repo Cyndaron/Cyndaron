@@ -7,13 +7,13 @@ use function file_exists;
 use function file_put_contents;
 use function is_array;
 use function var_export;
-use const ROOT_DIR;
+use const CACHE_DIR;
 use function dirname;
 use function assert;
 
 final class Setting
 {
-    public const CACHE_FILE = ROOT_DIR . '/cache/cyndaron/settings.php';
+    public const CACHE_FILE = CACHE_DIR . 'settings.php';
 
     /** @var string[] */
     public static array $cache = [];

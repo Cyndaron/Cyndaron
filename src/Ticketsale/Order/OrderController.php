@@ -47,7 +47,7 @@ use function strlen;
 use function strtotime;
 use function strtoupper;
 use const PUB_DIR;
-use const ROOT_DIR;
+use const CACHE_DIR;
 
 final class OrderController extends Controller
 {
@@ -592,7 +592,7 @@ final class OrderController extends Controller
 
         $concert = $order->getConcert();
 
-        $pdf = new \Mpdf\Mpdf(['tempDir' => ROOT_DIR . '/cache']);
+        $pdf = new \Mpdf\Mpdf(['tempDir' => CACHE_DIR]);
 
         $logoFilename = PUB_DIR . Setting::get('logo');
         $logoSrc = is_file($logoFilename) ? file_get_contents($logoFilename) : '';
