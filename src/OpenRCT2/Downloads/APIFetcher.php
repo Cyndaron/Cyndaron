@@ -35,6 +35,9 @@ final class APIFetcher
 
     private function saveToCache(APICall $call, string $contents): void
     {
-        \Safe\file_put_contents($call->getCachePath(), $contents);
+        $path = $call->getCachePath();
+        $dir = dirname($path);
+        Util::ensureDirectoryExists($dir);
+        \Safe\file_put_contents($path, $contents);
     }
 }
