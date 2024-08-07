@@ -20,7 +20,7 @@ enum APICall : string
 
     public function getCachePath(): string
     {
-        return CACHE_DIR . sha1($this->value);
+        return CACHE_DIR . 'openrct2/' . sha1($this->value);
     }
 
     public function getAPITimeout(): int
