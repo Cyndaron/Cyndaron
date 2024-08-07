@@ -6,6 +6,7 @@ namespace Cyndaron\OpenRCT2\Downloads;
 use Cyndaron\Util\Util;
 use function file_exists;
 use function time;
+use function dirname;
 
 final class APIFetcher
 {
