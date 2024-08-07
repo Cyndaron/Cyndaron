@@ -6,6 +6,7 @@ namespace Cyndaron\View\Renderer;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Module\TextPostProcessor;
 use Cyndaron\Util\DependencyInjectionContainer;
+use Psr\Log\LoggerInterface;
 
 final class TextRenderer
 {
@@ -41,7 +42,15 @@ final class TextRenderer
         $rendered = $text;
         foreach ($this->textPostProcessors as $postProcessor)
         {
-            $rendered = $postProcessor->process($rendered);
+            try
+            {
+                $rendered = $postProcessor->process($rendered);
+            }
+            catch (\Throwable $e)
+            {
+                $logger = $this->dic->createClassWithDependencyInjection(LoggerInterface::class);
+                $logger->error('Error during text postprocessing: ' . $e);
+            }
         }
 
         return $rendered;
