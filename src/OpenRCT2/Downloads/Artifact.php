@@ -46,7 +46,21 @@ final class Artifact
         $size = $asset['size'] ?? 0;
         $inDefaultSelection = false;
 
-        if (str_contains($assetName, 'android'))
+        if ($assetName === 'openlauncher')
+        {
+            $operatingSystem = OperatingSystem::LINUX;
+            $architecture = Architecture::X86_64;
+            $type = Type::PORTABLE;
+            $inDefaultSelection = true;
+        }
+        elseif ($assetName === 'openlauncher.exe' || $assetName === 'openlauncher-win-x64.exe')
+        {
+            $operatingSystem = OperatingSystem::WINDOWS;
+            $architecture = Architecture::X86_64;
+            $type = Type::PORTABLE;
+            $inDefaultSelection = true;
+        }
+        elseif (str_contains($assetName, 'android'))
         {
             $operatingSystem = OperatingSystem::ANDROID;
             if (str_contains($assetName, '-arm'))

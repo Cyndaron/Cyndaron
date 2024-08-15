@@ -9,18 +9,12 @@ declare(strict_types=1);
 namespace Cyndaron\OpenRCT2\Downloads;
 
 use Cyndaron\Error\ErrorPage;
-use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
-use function explode;
-use function str_starts_with;
-use function substr;
-use function preg_replace;
-use function implode;
 
 final class DownloadController extends Controller
 {
@@ -50,6 +44,12 @@ final class DownloadController extends Controller
     public function listReleaseBuilds(LoggerInterface $logger): Response
     {
         return $this->fetchAndProcessBuilds($logger, 'Release builds', APICall::RELEASE_BUILDS);
+    }
+
+    #[RouteAttribute('launcher', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function listLauncherBuilds(LoggerInterface $logger): Response
+    {
+        return $this->fetchAndProcessBuilds($logger, 'Launcher', APICall::LAUCNHER_BUILDS);
     }
 
     #[RouteAttribute('changelog', RequestMethod::GET, UserLevel::ANONYMOUS)]
