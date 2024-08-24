@@ -20,7 +20,7 @@ final class MenuController extends Controller
     {
         $menuItem = new MenuItem();
         $menuItem->link = $post->getUrl('link');
-        $menuItem->alias = $post->getUrl('alias');
+        $menuItem->alias = $post->getSimpleString('alias');
         $menuItem->isDropdown = $post->getBool('isDropdown');
         $menuItem->isImage = $post->getBool('isImage');
         if ($post->hasVar('priority'))
@@ -47,7 +47,7 @@ final class MenuController extends Controller
         }
 
         $menuItem->link = $post->getUrl('link');
-        $menuItem->alias = $post->getUrl('alias');
+        $menuItem->alias = $post->getSimpleString('alias');
         $menuItem->isDropdown = $post->getBool('isDropdown');
         $menuItem->isImage = $post->getBool('isImage');
         $menuItem->priority = $post->getInt('priority');
