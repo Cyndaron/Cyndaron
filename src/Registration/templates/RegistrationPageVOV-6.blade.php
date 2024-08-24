@@ -26,17 +26,18 @@
             @include('View/Widget/Form/Select', ['id' => 'vocalRange', 'label' => 'Stemsoort', 'required' => true, 'options' => ['Sopraan' => 'Sopraan', 'Alt' => 'Alt', 'Tenor' => 'Tenor', 'Bas' => 'Bas']])
 
             <div class="form-group row">
-                <label for="currentChoir" class="col-md-3 col-form-label">Ik ben lid van:</label>
+                <label for="currentChoir" class="col-md-3 col-form-label">Ik ben...:</label>
                 <div class="col-md-6">
                     <select id="currentChoir" name="currentChoir" class="form-control custom-select" required>
                         <option data-registration-group="0" selected value="" disabled>Maak een keuze</option>
-                        <option data-registration-group="1" value="Vlissingse Oratorium Vereniging">Vlissingse Oratorium Vereniging</option>
-                        <option data-registration-group="0" value="KOV Middelburg">KOV Middelburg</option>
-                        <option data-registration-group="0" value="COV Goes">COV Goes</option>
-                        <option data-registration-group="0" value="Vocaal Ensembe Cantare">Vocaal Ensembe Cantare</option>
-                        <option data-registration-group="0" value="COV Te Deum Laudamus Kapelle">COV Te Deum Laudamus Kapelle</option>
-                        <option data-registration-group="0" value="Hét Concertkoor Bergen op Zoom">Hét Concertkoor Bergen op Zoom</option>
-                        <option data-registration-group="0" value="">Geen koor / een ander koor</option>
+                        <option data-registration-group="1" value="Vlissingse Oratorium Vereniging">Lid van de Vlissingse Oratorium Vereniging</option>
+                        <option data-registration-group="2" value="Student">Student</option>
+                        <option data-registration-group="0" value="KOV Middelburg">Lid van KOV Middelburg</option>
+                        <option data-registration-group="0" value="COV Goes">Lid van COV Goes</option>
+                        <option data-registration-group="0" value="Vocaal Ensembe Cantare">Lid van Vocaal Ensembe Cantare</option>
+                        <option data-registration-group="0" value="COV Te Deum Laudamus Kapelle">Lid van COV Te Deum Laudamus Kapelle</option>
+                        <option data-registration-group="0" value="Hét Concertkoor Bergen op Zoom">Lid van Hét Concertkoor Bergen op Zoom</option>
+                        <option data-registration-group="0" value="">Geen van bovenstaande</option>
                     </select>
                 </div>
             </div>

@@ -13,7 +13,7 @@ Achternaam: {{ $registration->lastName }}
 Voornaam: {{ $registration->initials }}
 Woonplaats: {{ $registration->city }}
 Stemsoort: {{ $registration->vocalRange }}
-Lid van: {{ $registration->currentChoir ?: 'Geen koor / ander koor' }}
+Koorlidmaatschap: {{ $registration->currentChoir ?: 'Geen koor / ander koor' }}
 Opmerkingen: {{ $registration->comments }}
 
 @if (!$event->hideRegistrationFee)Totaalbedrag: {{ \Cyndaron\View\Template\ViewHelpers::formatEuro($registrationTotal) }}@endif
