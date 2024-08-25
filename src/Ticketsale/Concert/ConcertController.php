@@ -47,7 +47,7 @@ final class ConcertController extends Controller
         'subscribeToNewsletter' => 'Inschrijven voor nieuwsbrief',
     ];
 
-    #[RouteAttribute('getInfo', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    #[RouteAttribute('getInfo', RequestMethod::GET, UserLevel::ANONYMOUS, isApiMethod: true)]
     public function getConcertInfo(QueryBits $queryBits): JsonResponse
     {
         $concertId = $queryBits->getInt(2);
