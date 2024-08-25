@@ -11,7 +11,7 @@
 
     <table id="gcsm-table" class="table table-striped table-bordered pm-table"
            data-csrf-token-delete="{{ $tokenHandler->get('contest', 'removeSubscription') }}"
-           data-csrf-token-update-payment-status="{{ Cyndaron\User\$tokenHandler->get('contest', 'updatePaymentStatus') }}"
+           data-csrf-token-update-payment-status="{{ $tokenHandler->get('contest', 'updatePaymentStatus') }}"
     >
         <thead>
             <tr>
