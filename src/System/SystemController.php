@@ -41,6 +41,7 @@ final class SystemController extends Controller
         Setting::set('menuTheme', $post->getSimpleString('menuTheme'));
         Setting::set('frontPage', $post->getUrl('frontPage'));
         Setting::set('frontPageIsJumbo', (string)(int)$post->getBool('frontPageIsJumbo'));
+        Setting::set('mail_logRecipient', $post->getEmail('mail_logRecipient'));
         Setting::buildCache();
 
         // Redirect to GET

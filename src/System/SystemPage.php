@@ -108,6 +108,7 @@ final class SystemPage extends Page
             ['name' => 'menuBackground', 'description' => 'Achtergrondafbeelding menu', 'type' => 'text', 'value' => Setting::get('menuBackground')],
             ['name' => 'frontPage', 'description' => 'Voorpagina', 'type' => 'text', 'value' => Setting::get('frontPage')],
             ['name' => 'frontPageIsJumbo', 'description' => 'Jumbotron op voorpagina', 'type' => 'checkbox', 'value' => 1, 'extraAttr' => $frontPageIsJumbo ? 'checked' : ''],
+            ['name' => 'mail_logRecipient', 'description' => 'Mailadres bij fouten', 'type' => 'email', 'value' => Setting::get('mail_logRecipient')],
 
         ];
         $this->templateVars['formItems'] = $formItems;
