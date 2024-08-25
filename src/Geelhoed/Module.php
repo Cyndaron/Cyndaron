@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed;
 
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
+use Cyndaron\Geelhoed\Clubactie\ClubactieController;
 use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Contest\ContestController;
 use Cyndaron\Geelhoed\Contest\ContestDate;
@@ -72,6 +73,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
             'vrijwilligers' => VolunteerController::class,
             'tryout' => TryoutController::class,
             'sport' => SportController::class,
+            'clubactie' => ClubactieController::class,
         ];
     }
 
