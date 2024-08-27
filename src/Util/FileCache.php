@@ -5,6 +5,7 @@ namespace Cyndaron\Util;
 
 use DateTime;
 use DateTimeImmutable;
+use Throwable;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
@@ -37,21 +38,28 @@ final class FileCache
 
     public function load(mixed &$target): bool
     {
-        if (file_exists($this->filename))
+        try
         {
-            $serialized = file_get_contents($this->filename);
-            if ($serialized)
+            if (file_exists($this->filename))
             {
-                $unserialized = unserialize($serialized, ['allowed_classes' => $this->allowedClasses]);
-                if ($unserialized)
+                $serialized = file_get_contents($this->filename);
+                if ($serialized)
                 {
-                    $target = $unserialized;
-                    return true;
+                    $unserialized = unserialize($serialized, ['allowed_classes' => $this->allowedClasses]);
+                    if ($unserialized)
+                    {
+                        $target = $unserialized;
+                        return true;
+                    }
                 }
             }
-        }
 
-        return false;
+            return false;
+        }
+        catch (Throwable)
+        {
+            return false;
+        }
     }
 
     public function save(mixed &$target): void
