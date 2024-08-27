@@ -17,6 +17,7 @@ final class ContestViewPage extends Page
         parent::__construct(sprintf('Wedstrijd: %s', $contest->name));
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $this->addTemplateVars([
+            'addAttachmentToken' => $tokenHandler->get('contest', 'addAttachment'),
             'addDateCsrfToken' => $tokenHandler->get('contest', 'addDate'),
             'allSubscribed' => $this->areAllSubscribed($contest, $controlledMembers),
             'canManage' => $canManage,
