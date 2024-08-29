@@ -35,7 +35,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
             FlatFee::class => 'Vast bedrag per kaart',
             Staffel::class => 'Staffel',
         ];
-        $this->templateVars['delivery'] = $this->model ? $this->model->getDelivery() : null;
+        $this->templateVars['delivery'] = $this->model ? $this->model->getDelivery()->value: null;
         $this->templateVars['deliveryCost'] = ViewHelpers::formatCurrency($this->model->deliveryCost ?? 1.5);
         $this->templateVars['reservedSeatCharge'] = ViewHelpers::formatCurrency($this->model->reservedSeatCharge ?? 5.0);
         $this->templateVars['numFreeSeats'] = $this->model->numFreeSeats ?? 250;
