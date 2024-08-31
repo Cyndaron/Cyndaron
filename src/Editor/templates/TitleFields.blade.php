@@ -12,7 +12,7 @@
                                   id="basic-addon3">{{ $friendlyUrlPrefix }}</span>
             </div>
             <input type="text" class="form-control" id="friendlyUrl" name="friendlyUrl"
-                   aria-describedby="basic-addon3" value="{{ $friendlyUrl }}" pattern="[a-z0-9\-\.]*"/>
+                   aria-describedby="basic-addon3" value="{{ $friendlyUrl }}" pattern="[a-z0-9\-\.\/]*"/>
         </div>
     @endslot
 @endcomponent
