@@ -87,9 +87,9 @@
                             <td>{{ $ticketType->name }}</td>
                             <td>{{ $ticketType->price|euro }}@if ($ticketType->discountPer5) (5 halen, 4 betalen)@endif</td>
                             <td>
+                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ $ticketType->id }}"><span class="glyphicon glyphicon-minus"></span></button>
                                 <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ $ticketType->id }}" id="tickettype-{{ $ticketType->id }}" value="0"/>
                                 <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ $ticketType->id }}"><span class="glyphicon glyphicon-plus"></span></button>
-                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ $ticketType->id }}"><span class="glyphicon glyphicon-minus"></span></button>
                             </td>
                         </tr>
                     @endforeach
