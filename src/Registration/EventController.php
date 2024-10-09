@@ -21,7 +21,7 @@ use function ord;
 
 final class EventController extends Controller
 {
-    #[RouteAttribute('getInfo', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    #[RouteAttribute('getInfo', RequestMethod::GET, UserLevel::ANONYMOUS, isApiMethod: true)]
     public function getEventInfo(QueryBits $queryBits, Connection $db): JsonResponse
     {
         $eventId = $queryBits->getInt(2);
