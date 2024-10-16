@@ -12,6 +12,7 @@ use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\DependencyInjectionContainer;
+use Cyndaron\Util\RuntimeUserSafeError;
 use Symfony\Component\HttpFoundation\Response;
 
 final class PageManagerController extends Controller
@@ -25,9 +26,9 @@ final class PageManagerController extends Controller
             $page = new PageManagerPage($dic, $currentUser, $currentPage, $registry);
             return $this->pageRenderer->renderResponse($page);
         }
-        catch (\RuntimeException)
+        catch (RuntimeUserSafeError $e)
         {
-            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Paginabeheer', 'Er zijn geen datatypes die u kunt beheren!', Response::HTTP_NOT_FOUND));
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Paginabeheer', $e->getMessage(), Response::HTTP_NOT_FOUND));
         }
     }
 }
