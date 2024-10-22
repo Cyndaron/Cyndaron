@@ -45,7 +45,13 @@ class MenuEntryFactory
 
     public function createHtmlFileEntry(string $link, string|null $description = null): MenuEntry
     {
-        return new MenuEntry(EntryType::HTMLFile, $description ?? $link, $link, $this->host, $this->port);
+        return new MenuEntry(
+            EntryType::HTMLFile,
+                $description ?? $link,
+            $this->getSubdomain() . $link,
+            $this->host,
+            $this->port
+        );
     }
 
     public function createHtmlLinkEntry(string $link, string|null $description = null): MenuEntry
