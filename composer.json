@@ -20,6 +20,7 @@
         "ext-json": "*",
         "ext-fileinfo": "*",
         "ext-gd": "*",
+        "ext-sockets": "*",
         "components/jquery": "^3.5",
         "ckeditor/ckeditor": "dev-full/4.7.x",
         "twbs/bootstrap": "^4.5",
