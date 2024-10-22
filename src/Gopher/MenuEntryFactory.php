@@ -19,7 +19,7 @@ class MenuEntryFactory
 
     public function createEntry(EntryType $type, string $title, string $location): MenuEntry
     {
-        return new MenuEntry($type, $title, $location, $this->host, $this->port);
+        return new MenuEntry($type, $title, $this->getSubdomain() . $location, $this->host, $this->port);
     }
 
     public function createDirectoryEntry(string $link, string|null $description = null): MenuEntry

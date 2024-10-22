@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Gopher\MenuEntryFactory;
@@ -11,8 +12,10 @@ const ROOT_DIR = __DIR__ . '/../';
 const PUB_DIR = __DIR__ . '/../public_html';
 const CACHE_DIR = ROOT_DIR . 'var/cache/gopher/';
 
-assert($client instanceof Socket);
-assert(is_string($query));
+$gopherDomain = $argv[1];
+$gopherSubdomain = $argv[2];
+$gopherPort = $argv[3];
+$query = $argv[4];
 
 $pdo = \Cyndaron\DBAL\Connection::connect('mysql', $dbplek ?? 'localhost', $dbnaam, $dbuser, $dbpass);
 DBConnection::connect($pdo);
@@ -21,7 +24,5 @@ $menuEntryFactory = new MenuEntryFactory($gopherDomain, $gopherSubdomain, $gophe
 $urlService = new \Cyndaron\Url\UrlService($pdo, '', []);
 $controller = new \Cyndaron\Gopher\Controller($menuEntryFactory, $urlService);
 
-echo "Query: {$query}\n";
-
 $response = $controller->processQuery($query);
-$response->send($client);
+echo $response->encode();
