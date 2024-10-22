@@ -30,7 +30,7 @@
         "illuminate/view": "^10.0",
         "conedevelopment/blade-filters": "*",
         "mollie/mollie-api-php": "^2.32",
-        "phpoffice/phpspreadsheet": "^1.18",
+        "phpoffice/phpspreadsheet": "^1.29.2",
         "mpdf/mpdf": "*",
         "psr/log": "^2.0"
     },
