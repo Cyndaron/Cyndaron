@@ -17,7 +17,7 @@ assert(is_string($query));
 $pdo = \Cyndaron\DBAL\Connection::connect('mysql', $dbplek ?? 'localhost', $dbnaam, $dbuser, $dbpass);
 DBConnection::connect($pdo);
 Setting::load($pdo);
-$menuEntryFactory = new MenuEntryFactory(GOPHER_DOMAIN, GOPHER_SUBDOMAIN, PORT);
+$menuEntryFactory = new MenuEntryFactory($gopherDomain, $gopherSubdomain, $gopherPort);
 $urlService = new \Cyndaron\Url\UrlService($pdo, '', []);
 $controller = new \Cyndaron\Gopher\Controller($menuEntryFactory, $urlService);
 
