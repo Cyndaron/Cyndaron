@@ -47,7 +47,7 @@ class MenuEntryFactory
     {
         return new MenuEntry(
             EntryType::HTMLFile,
-                $description ?? $link,
+            $description ?? $link,
             $this->getSubdomain() . $link,
             $this->host,
             $this->port
