@@ -197,7 +197,7 @@ final class RegistrationController extends Controller
         return $errorFields;
     }
 
-    #[RouteAttribute('delete', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
+    #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -212,7 +212,7 @@ final class RegistrationController extends Controller
         return new JsonResponse();
     }
 
-    #[RouteAttribute('setApprovalStatus', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
+    #[RouteAttribute('setApprovalStatus', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function setApprovalStatus(QueryBits $queryBits, RequestParameters $post, UrlInfo $urlInfo): JsonResponse
     {
         $id = $queryBits->getInt(2);
@@ -236,7 +236,7 @@ final class RegistrationController extends Controller
         return new JsonResponse();
     }
 
-    #[RouteAttribute('setIsPaid', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
+    #[RouteAttribute('setIsPaid', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function setIsPaid(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
     {
         $id = $queryBits->getInt(2);
