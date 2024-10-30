@@ -19,7 +19,7 @@
             @if (!$artifact->inDefaultSelection)
                 <li>
                     <a href="{{ $artifact->downloadLink }}">
-                        {{ $artifact->version }} {{ $artifact->operatingSystem->getFriendlyName() }} {{ $artifact->architecture->getFriendlyName() }} {{ $artifact->type->getFriendlyName()  }} {{ $artifact->size }}
+                        {{ $artifact->version }} {{ $artifact->operatingSystem->getFriendlyName() }} {{ $artifact->architecture->getFriendlyName() }} {{ $artifact->type->getFriendlyName() }} ({{ \Cyndaron\Util\Util::formatSize($artifact->size) }})
                     </a>
                 </li>
             @endif
