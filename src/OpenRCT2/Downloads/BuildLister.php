@@ -11,6 +11,7 @@ namespace Cyndaron\OpenRCT2\Downloads;
 use DateTimeInterface;
 use Safe\DateTimeImmutable;
 use function usort;
+use function str_ends_with;
 
 final class BuildLister
 {
@@ -24,6 +25,11 @@ final class BuildLister
         $artifacts = [];
         foreach ($json['assets'] as $asset)
         {
+            if (str_ends_with($asset['name'], '.txt'))
+            {
+                continue;
+            }
+
             $artifacts[] = Artifact::fromArray($tagName, $publishedAt, $asset);
         }
         usort($artifacts, function(Artifact $artifact1, Artifact $artifact2)
