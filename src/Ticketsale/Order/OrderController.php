@@ -6,6 +6,7 @@ namespace Cyndaron\Ticketsale\Order;
 use Cyndaron\Barcode\Code128;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\ImproperSubclassing;
+use Cyndaron\Location\Location;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Payment\Currency;
 use Cyndaron\Payment\Payment;
@@ -614,9 +615,11 @@ final class OrderController extends Controller
                 $ticketTypeDescription .= ($order->hasReservedSeats) ? ', rang 1' : ', rang 2';
             }
 
+            $location = Location::fetchById($concert->locationId);
             $templateVars = [
                 'organisation' => $organisation,
                 'concert' => $concert,
+                'location' => $location,
                 'order' => $order,
                 'ticketType' => $ticketType,
                 'ticketTypeDescription' => $ticketTypeDescription,

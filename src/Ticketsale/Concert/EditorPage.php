@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace Cyndaron\Ticketsale\Concert;
 
 use Cyndaron\DBAL\Model;
+use Cyndaron\Location\Location;
 use Cyndaron\Ticketsale\DeliveryCost\FlatFee;
 use Cyndaron\Ticketsale\DeliveryCost\Staffel;
 use Cyndaron\View\Template\ViewHelpers;
 use function assert;
+use function asort;
 
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
@@ -30,6 +32,13 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
             $this->contentTitle = $this->model->name;
         }
 
+        $locations = [];
+        foreach (Location::fetchAll() as $location)
+        {
+            $locations[$location->id] = $location->getName();
+        }
+        asort($locations);
+
         $this->templateVars['deliveryCostInterface'] = $this->model ? $this->model->getDeliveryCostInterface() : '';
         $this->templateVars['deliveryCostOptions'] = [
             FlatFee::class => 'Vast bedrag per kaart',
@@ -41,5 +50,6 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
         $this->templateVars['numFreeSeats'] = $this->model->numFreeSeats ?? 250;
         $this->templateVars['numReservedSeats'] = $this->model->numReservedSeats ?? 270;
         $this->templateVars['descriptionWhenClosed'] = $this->model->descriptionWhenClosed ?? '';
+        $this->templateVars['locations'] = $locations;
     }
 }

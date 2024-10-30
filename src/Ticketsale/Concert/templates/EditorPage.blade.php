@@ -27,6 +27,8 @@
 
     @include('View/Widget/Form/BasicInput', ['id' => 'location', 'type' => 'text', 'label' => 'Locatie', 'value' => $model->location ?? ''])
 
+    @include('View/Widget/Form/Select', ['id' => 'locationId', 'label' => 'Locatie', 'selected' => $model->locationId, 'options' => $locations])
+
     @component('View/Widget/Form/FormWrapper', ['id' => 'ticketInfo', 'label' => 'Informatie op de tickets'])
         @slot('right')
             @include('View/Widget/Form/Editor', ['id' => 'ticketInfo', 'value' => $model->ticketInfo ?? ''])

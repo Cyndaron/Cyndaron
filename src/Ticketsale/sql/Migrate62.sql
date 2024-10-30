@@ -12,3 +12,13 @@ ALTER TABLE `ticketsale_concerts` ADD `ticketInfo` TEXT NOT NULL AFTER `date`;
 ALTER TABLE `ticketsale_concerts` ADD `location` VARCHAR(255) NOT NULL AFTER `date`;
 
 ALTER TABLE `ticketsale_orders_tickettypes` ADD `hasBeenScanned` BOOLEAN NOT NULL DEFAULT FALSE AFTER `secretCode`;
+
+alter table ticketsale_concerts
+    add locationId int not null after location;
+
+# alter table ticketsale_concerts
+#     add constraint ticketsale_concerts_locations_id_fk
+#         foreign key (locationId) references locations (id);
+#
+# alter table ticketsale_concerts
+#     drop column location;

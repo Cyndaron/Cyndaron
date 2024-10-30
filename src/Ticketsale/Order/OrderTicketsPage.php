@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Ticketsale\Order;
 
+use Cyndaron\Location\Location;
 use Cyndaron\Page\Page;
 use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\Ticketsale\TicketType\TicketType;
@@ -38,6 +39,7 @@ final class OrderTicketsPage extends Page
             'organisation' => Setting::get(BuiltinSetting::ORGANISATION),
             'concert' => $concert,
             'ticketTypes' => $ticketTypes,
+            'location' => Location::fetchById($concert->locationId),
         ]);
     }
 }

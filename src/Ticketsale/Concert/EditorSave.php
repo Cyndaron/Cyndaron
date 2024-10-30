@@ -34,7 +34,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $concert->numReservedSeats = $this->post->getInt('numReservedSeats');
         $concert->deliveryCostInterface = $this->post->getSimpleString('deliveryCostInterface');
         $concert->date = $this->post->getSimpleString('date');
-        $concert->location = $this->post->getSimpleString('location');
+        $concert->locationId = $this->post->getInt('locationId');
         $concert->ticketInfo = $this->post->getHTML('ticketInfo');
 
         $delivery = TicketDelivery::from($this->post->getInt('delivery'));

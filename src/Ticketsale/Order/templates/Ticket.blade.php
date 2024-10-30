@@ -2,6 +2,7 @@
 @php /** @var \Cyndaron\Ticketsale\Order\Order $order */ @endphp
 @php /** @var \Cyndaron\Ticketsale\TicketType\TicketType $ticketType */ @endphp
 @php /** @var \Cyndaron\Ticketsale\Order\OrderTicketTypes $orderTicketType */ @endphp
+@php /** @var \Cyndaron\Location\Location $location */ @endphp
 
 <div style="width: 100%; position: relative;">
 
@@ -12,7 +13,7 @@
     <h1>{{ $concert->name }}</h1>
     <h2>{{ $organisation }}</h2>
     <h4>{{ $concert->date|dmyHm }}</h4>
-    <h4>{{ $concert->location }}</h4>
+    <h4>{{ $location->getName() }}</h4>
 
     <h1>Kaartsoort: {{ $ticketTypeDescription }}</h1>
     Prijs: {{ $orderTicketType->getPrice()|euro }}<br>
