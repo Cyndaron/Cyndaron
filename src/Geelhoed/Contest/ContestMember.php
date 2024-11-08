@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Contest;
 
+use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\DBAL\Model;
@@ -13,6 +14,8 @@ use function implode;
 
 final class ContestMember extends Model
 {
+    use FileCachedModel;
+
     public const TABLE = 'geelhoed_contests_members';
     public const TABLE_FIELDS = ['contestId', 'memberId', 'graduationId', 'weight', 'molliePaymentId', 'isPaid', 'comments'];
 

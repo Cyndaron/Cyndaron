@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Contest;
 
+use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Sport\Sport;
@@ -21,6 +22,8 @@ use function time;
 
 final class Contest extends Model
 {
+    use FileCachedModel;
+
     public const TABLE = 'geelhoed_contests';
     public const TABLE_FIELDS = ['name', 'description', 'location', 'sportId', 'registrationDeadline', 'registrationChangeDeadline', 'price'];
 
