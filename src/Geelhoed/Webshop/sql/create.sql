@@ -45,3 +45,20 @@ alter table geelhoed_webshop_order
 
 alter table geelhoed_webshop_order
     add paymentId varchar(64) not null default '' after status;
+
+create table geelhoed_webshop_order_item
+(
+    id        int auto_increment
+        primary key,
+    orderId   int                 not null,
+    productId int                 not null,
+    quantity  int                 not null,
+    options   json                not null,
+    price     double              not null,
+    currency  enum ('EUR', 'LOT') not null,
+    constraint geelhoed_webshop_order_item_geelhoed_webshop_order_id_fk
+        foreign key (orderId) references geelhoed_webshop_order (id),
+    constraint geelhoed_webshop_order_item_geelhoed_webshop_product_id_fk
+        foreign key (productId) references geelhoed_webshop_product (id)
+);
+
