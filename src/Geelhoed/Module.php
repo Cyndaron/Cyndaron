@@ -16,6 +16,7 @@ use Cyndaron\Geelhoed\Sport\SportController;
 use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Geelhoed\Tryout\TryoutController;
 use Cyndaron\Geelhoed\Volunteer\VolunteerController;
+use Cyndaron\Geelhoed\Webshop\WebshopController;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
@@ -74,6 +75,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
             'tryout' => TryoutController::class,
             'sport' => SportController::class,
             'clubactie' => ClubactieController::class,
+            'webwinkel' => WebshopController::class,
         ];
     }
 

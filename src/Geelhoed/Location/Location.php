@@ -6,13 +6,14 @@ namespace Cyndaron\Geelhoed\Location;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Hour\Hour;
+use Cyndaron\Location\Location as BaseLocation;
 use function array_unique;
 use function array_filter;
 use function usort;
 
 final class Location
 {
-    public function __construct(public readonly \Cyndaron\Location\Location $base)
+    public function __construct(public readonly BaseLocation $base)
     {
     }
 
@@ -79,11 +80,19 @@ final class Location
     public static function getCities(): array
     {
         $ret = [];
-        $results = \Cyndaron\Location\Location::fetchAll(['id IN (SELECT locationId FROM geelhoed_hours)'], [], 'ORDER BY city');
-        foreach ($results as $result)
+        foreach (self::getWithLessions() as $result)
         {
             $ret[] = $result->city;
         }
         return array_unique($ret);
+    }
+
+    /**
+     * @return BaseLocation[]
+     */
+    public static function getWithLessions(): array
+    {
+        return BaseLocation::fetchAll(['id IN (SELECT locationId FROM geelhoed_hours)'], [], 'ORDER BY city, street');
+
     }
 }

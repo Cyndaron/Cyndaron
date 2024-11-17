@@ -1,0 +1,9 @@
+.product-list div + div {
+  margin-top: 15px; }
+
+.cart-item {
+  display: flex; }
+  .cart-item > div {
+    flex-grow: 1; }
+
+/*# sourceMappingURL=webshop.css.map */

@@ -1,0 +1,14 @@
+.product-list div + div
+{
+    margin-top: 15px;
+}
+
+.cart-item
+{
+    > div
+    {
+        flex-grow: 1;
+    }
+
+    display: flex;
+}
