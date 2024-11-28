@@ -99,8 +99,9 @@ final class WebshopController extends Controller
             );
         }
 
-        $order->locationId = $post->getInt('locationId');
-        $order->day = $post->getInt('day');
+        $order->hourId = $post->getInt('hourId');
+        $subscriber->phone = $post->getPhone('phone');
+        $subscriber->save();
         $newStatus = $order->confirmByUser();
         $order->save();
 

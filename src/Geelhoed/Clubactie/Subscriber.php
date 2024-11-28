@@ -12,12 +12,13 @@ final class Subscriber extends Model
     use FileCachedModel;
 
     public const TABLE = 'geelhoed_clubactie_subscriber';
-    public const TABLE_FIELDS = ['firstName', 'tussenvoegsel', 'lastName', 'email', 'numSoldTickets', 'soldTicketsAreVerified', 'hash'];
+    public const TABLE_FIELDS = ['firstName', 'tussenvoegsel', 'lastName', 'email', 'phone', 'numSoldTickets', 'soldTicketsAreVerified', 'hash'];
 
     public string $firstName = '';
     public string $tussenvoegsel = '';
     public string $lastName = '';
     public string $email = '';
+    public string $phone = '';
 
     public int $numSoldTickets = 0;
     public bool $soldTicketsAreVerified = false;

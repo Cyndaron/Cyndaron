@@ -7,6 +7,7 @@
         <th>Eurobedrag</th>
         <th>Lotenaantal</th>
         <th>Status</th>
+        <th>Les</th>
     </tr>
     </thead>
     <tbody>
@@ -19,6 +20,10 @@
                 <td>{{ $order->getEuroSubtotal()|euro }}</td>
                 <td>{{ $order->getTicketTotal() }}</td>
                 <td>{{ $order->status->getDescription() }}</td>
+                <td>
+                    {{ $order->getHour()->getLocation()->getName() }}<br>
+                    {{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($order->getHour()->day) }} {{ $order->getHour()->getRange() }}
+                </td>
             </tr>
         @endforeach
     </tbody>

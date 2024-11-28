@@ -8,7 +8,6 @@ use Cyndaron\Geelhoed\Location\Location;
 use Cyndaron\Geelhoed\Webshop\Model\Currency;
 use Cyndaron\Geelhoed\Webshop\Model\Order;
 use Cyndaron\Geelhoed\Webshop\Model\OrderItem;
-use Cyndaron\Geelhoed\Webshop\Model\Product;
 use Cyndaron\Page\Page;
 
 final class FinishOrderPage extends Page
@@ -16,6 +15,7 @@ final class FinishOrderPage extends Page
     public function __construct(Subscriber $subscriber, Order $order)
     {
         parent::__construct('Bestelling bevestigen');
+        $this->addScript('/src/Geelhoed/Webshop/js/FinishOrderPage.js');
 
         $orderItems = OrderItem::fetchAll(['orderId = ?'], [$order->id]);
 
@@ -34,15 +34,7 @@ final class FinishOrderPage extends Page
             }
         }
 
-        $days = [
-            1 => 'Maandag',
-            2 => 'Dinsdag',
-            3 => 'Woensdag',
-            4 => 'Donderdag',
-            5 => 'Vrijdag',
-            6 => 'Zaterdag'
-        ];
-        $locations = [];
+        $locations = ['' => '(selecteer een locatie)'];
         foreach (Location::getWithLessions() as $location)
         {
             $locations[$location->id] = $location->getName();
@@ -58,7 +50,6 @@ final class FinishOrderPage extends Page
             'ticketSubtotal' => $ticketSubtotal,
             'euroSubtotal' => $euroSubtotal,
             'locations' => $locations,
-            'days' => $days,
         ]);
     }
 }

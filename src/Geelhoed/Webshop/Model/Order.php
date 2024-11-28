@@ -6,6 +6,7 @@ namespace Cyndaron\Geelhoed\Webshop\Model;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
+use Cyndaron\Geelhoed\Hour\Hour;
 use function assert;
 
 final class Order extends Model
@@ -13,11 +14,10 @@ final class Order extends Model
     use FileCachedModel;
 
     public const TABLE = 'geelhoed_webshop_order';
-    public const TABLE_FIELDS = ['subscriberId', 'locationId', 'day', 'status', 'paymentId'];
+    public const TABLE_FIELDS = ['subscriberId', 'hourId', 'status', 'paymentId'];
 
     public int $subscriberId;
-    public int $locationId = 1;
-    public int $day = 7;
+    public int $hourId = 1;
     public OrderStatus $status = OrderStatus::QUOTE;
     public string $paymentId = '';
 
@@ -89,5 +89,12 @@ final class Order extends Model
         }
 
         return $this->status;
+    }
+
+    public function getHour(): Hour
+    {
+        $hour = Hour::fetchById($this->hourId);
+        assert($hour !== null);
+        return $hour;
     }
 }

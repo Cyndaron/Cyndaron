@@ -11,7 +11,7 @@
     Subtotaal loten: {{ $ticketSubtotal }}
     <br>Subtotaal euro: {{ $euroSubtotal|euro }}
 
-    @if (!$subscriber->soldTicketsAreVerified)
+    @if ($ticketSubtotal > 0 && !$subscriber->soldTicketsAreVerified)
         @if ($euroSubtotal === 0.00)
             <div class="alert alert-info">
                 Je puntenaantal moet worden gecheckt voordat je bestelling in behandeling genomen wordt.
@@ -34,9 +34,9 @@
     <form method="post" action="/webwinkel/bestelling-plaatsen">
         <input type="hidden" name="hash" value="{{ $hash }}"/>
         @include('View/Widget/Form/BasicInput', ['id' => 'name', 'label' => 'Naam', 'required' => true, 'value' => $subscriber->getFullName(), 'readonly' => true])
+        @include('View/Widget/Form/BasicInput', ['id' => 'phone', 'label' => 'Telefoon', 'required' => true, 'type' => 'tel', 'value' => $subscriber->phone])
         @include('View/Widget/Form/Select', ['id' => 'locationId', 'label' => 'Leslocatie', 'required' => true, 'options' => $locations])
-        @include('View/Widget/Form/Select', ['id' => 'day', 'label' => 'Lesdag', 'required' => true, 'options' => $days])
-
+        @include('View/Widget/Form/Select', ['id' => 'hourId', 'label' => 'Lesuur', 'required' => true, 'options' => []])
         <button type="submit" class="btn btn-primary">Bevestigen</button>
     </form>
 @endsection

@@ -4,6 +4,7 @@
         <th>ID</th>
         <th>Naam</th>
         <th>E-mail</th>
+        <th>Tel.nummer</th>
         <th>Aantal loten</th>
         <th>Geverifieerd</th>
     </tr>
@@ -15,6 +16,7 @@
                 <td>{{ $subscriber->id }}</td>
                 <td>{{ $subscriber->getFullName() }}</td>
                 <td>{{ $subscriber->email }}</td>
+                <td>{{ $subscriber->phone }}</td>
                 <td>{{ $subscriber->numSoldTickets }}</td>
                 <td>{{ $subscriber->soldTicketsAreVerified|boolToDingbat }}</td>
             </tr>

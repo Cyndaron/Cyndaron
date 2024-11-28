@@ -6,3 +6,6 @@ alter table geelhoed_clubactie_subscriber
 
 alter table geelhoed_clubactie_subscriber
     add hash varchar(64) default '' not null after soldTicketsAreVerified;
+
+alter table geelhoed_clubactie_subscriber
+    add phone varchar(64) default '' not null after email;
