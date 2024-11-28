@@ -21,14 +21,14 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
     public function dataTypes(): array
     {
         return [
-            'category' => Datatype::fromArray([
-                'singular' => 'Categorie',
-                'plural' => 'Categorieën',
-                'pageManagerTab' => self::class . '::pageManagerTab',
-                'pageManagerJS' => '/src/Category/js/PageManagerTab.js',
-                'editorPage' => EditorPage::class,
-                'editorSave' => EditorSave::class,
-            ]),
+            'category' => new Datatype(
+                singular: 'Categorie',
+                plural: 'Categorieën',
+                editorPage: EditorPage::class,
+                editorSave: EditorSave::class,
+                pageManagerTab: self::pageManagerTab(...),
+                pageManagerJS: '/src/Category/js/PageManagerTab.js',
+            ),
         ];
     }
 

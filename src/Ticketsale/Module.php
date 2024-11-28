@@ -32,17 +32,17 @@ final class Module implements Routes, Datatypes, Templated, Linkable
     public function dataTypes(): array
     {
         return [
-            'concert' => Datatype::fromArray([
-                'singular' => 'Concert',
-                'plural' => 'Concerten',
-                'editorPage' => EditorPage::class,
-                'editorSave' => EditorSave::class,
-                'pageManagerTab' => Util::class . '::drawPageManagerTab',
-            ]),
-            'ticketType' => Datatype::fromArray([
-                'editorPage' => TicketTypeEditorPage::class,
-                'editorSave' => TicketTypeEditorSave::class,
-            ]),
+            'concert' => new Datatype(
+                singular: 'Concert',
+                plural: 'Concerten',
+                editorPage: EditorPage::class,
+                editorSave: EditorSave::class,
+                pageManagerTab: Util::drawPageManagerTab(...),
+            ),
+            'ticketType' => new Datatype(
+                editorPage: TicketTypeEditorPage::class,
+                editorSave: TicketTypeEditorSave::class,
+            ),
         ];
     }
 

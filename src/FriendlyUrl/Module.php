@@ -15,12 +15,12 @@ final class Module implements Datatypes, Routes
     public function dataTypes(): array
     {
         return [
-            'friendlyurl' => Datatype::fromArray([
-                'singular' => 'Friendly URL',
-                'plural' => 'Friendly URL\'s',
-                'pageManagerTab' => self::class . '::pageManagerTab',
-                'pageManagerJS' => '/src/FriendlyUrl/js/PageManagerTab.js',
-            ]),
+            'friendlyurl' => new Datatype(
+                singular: 'Friendly URL',
+                plural: 'Friendly URL\'s',
+                pageManagerTab: self::pageManagerTab(...),
+                pageManagerJS: '/src/FriendlyUrl/js/PageManagerTab.js',
+            ),
         ];
     }
 

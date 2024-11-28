@@ -15,13 +15,13 @@ final class Module implements Datatypes, Routes
     public function dataTypes(): array
     {
         return [
-            'mailform' => Datatype::fromArray([
-                'singular' => 'Mailformulier',
-                'plural' => 'Mailformulieren',
-                'pageManagerTab' => self::class . '::pageManagerTab',
-                'editorPage' => EditorPage::class,
-                'editorSave' => EditorSave::class,
-            ]),
+            'mailform' => new Datatype(
+                singular: 'Mailformulier',
+                plural: 'Mailformulieren',
+                editorPage: EditorPage::class,
+                editorSave: EditorSave::class,
+                pageManagerTab: self::pageManagerTab(...),
+            ),
         ];
     }
 

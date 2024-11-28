@@ -22,20 +22,20 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
     public function dataTypes(): array
     {
         return [
-            'photo' => Datatype::fromArray([
-                'singular' => 'Foto',
-                'plural' => 'Foto\'s',
-                'editorPage' => EditorPagePhoto::class,
-                'editorSave' => EditorSavePhoto::class,
-            ]),
-            'photoalbum' => Datatype::fromArray([
-                'singular' => 'Fotoalbum',
-                'plural' => 'Fotoalbums',
-                'pageManagerTab' => self::class . '::pageManagerTab',
-                'pageManagerJS' => '/src/Photoalbum/js/PageManagerTab.js',
-                'editorPage' => EditorPage::class,
-                'editorSave' => EditorSave::class,
-            ]),
+            'photo' => new Datatype(
+                singular: 'Foto',
+                plural: 'Foto\'s',
+                editorPage: EditorPagePhoto::class,
+                editorSave: EditorSavePhoto::class,
+            ),
+            'photoalbum' => new Datatype(
+                singular: 'Fotoalbum',
+                plural: 'Fotoalbums',
+                editorPage: EditorPage::class,
+                editorSave: EditorSave::class,
+                pageManagerTab: self::pageManagerTab(...),
+                pageManagerJS: '/src/Photoalbum/js/PageManagerTab.js',
+            ),
         ];
     }
 

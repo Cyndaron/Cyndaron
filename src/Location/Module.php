@@ -12,13 +12,13 @@ final class Module implements Datatypes, UrlProvider
     public function dataTypes(): array
     {
         return [
-            'location' => Datatype::fromArray([
-                'singular' => 'Locatie',
-                'plural' => 'Locaties',
-                'editorPage' => EditorPage::class,
-                'editorSave' => EditorSave::class,
-                'pageManagerTab' => PageManagerTabs::class . '::locationsTab',
-            ]),
+            'location' => new Datatype(
+                singular: 'Locatie',
+                plural: 'Locaties',
+                editorPage: EditorPage::class,
+                editorSave: EditorSave::class,
+                pageManagerTab: PageManagerTabs::locationsTab(...),
+            ),
         ];
     }
 

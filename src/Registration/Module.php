@@ -19,13 +19,13 @@ final class Module implements Routes, Datatypes
     public function dataTypes(): array
     {
         return [
-            'event' => Datatype::fromArray([
-                'singular' => 'Evenement',
-                'plural' => 'Evenementen',
-                'editorPage' => EditorPage::class,
-                'editorSave' => EditorSave::class,
-                'pageManagerTab' => Util::class . '::drawPageManagerTab',
-            ])
+            'event' => new Datatype(
+                singular: 'Evenement',
+                plural: 'Evenementen',
+                editorPage: EditorPage::class,
+                editorSave: EditorSave::class,
+                pageManagerTab: Util::drawPageManagerTab(...),
+            )
         ];
     }
 }

@@ -8,7 +8,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Util;
 
+use Closure;
 use ReflectionClass;
+use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionNamedType;
 use RuntimeException;
@@ -73,10 +75,10 @@ final class DependencyInjectionContainer
     }
 
     /**
-     * @param ReflectionMethod $reflectionMethod
+     * @param ReflectionMethod|ReflectionFunction $reflectionMethod
      * @return mixed[]
      */
-    private function getParams(ReflectionMethod $reflectionMethod): array
+    private function getParams(ReflectionMethod|ReflectionFunction $reflectionMethod): array
     {
         $params = [];
         foreach ($reflectionMethod->getParameters() as $parameter)
@@ -123,11 +125,11 @@ final class DependencyInjectionContainer
         return $ret;
     }
 
-    public function callStaticMethodWithDependencyInjection(string $callable): mixed
+    public function callClosureWithDependencyInjection(Closure $closure): mixed
     {
-        $reflectionMethod = new \ReflectionMethod($callable);
-        $params = $this->getParams($reflectionMethod);
-        $ret = $reflectionMethod->invokeArgs(null, $params);
+        $reflectionFunction = new ReflectionFunction($closure);
+        $params = $this->getParams($reflectionFunction);
+        $ret = $reflectionFunction->invokeArgs($params);
         return $ret;
     }
 }

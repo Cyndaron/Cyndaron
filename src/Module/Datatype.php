@@ -3,28 +3,19 @@ declare(strict_types=1);
 
 namespace Cyndaron\Module;
 
+use Closure;
+
 final class Datatype
 {
-    public string $singular;
-    public string $plural;
-    /** @var class-string */
-    public string $editorPage;
-    /** @var class-string */
-    public string $editorSave;
-    public string $pageManagerTab;
-    public string $pageManagerJS;
-
-    /**
-     * @param array<string, mixed> $array
-     * @return self
-     */
-    public static function fromArray(array $array): self
-    {
-        $object = new self();
-        foreach ($array as $property => $value)
-        {
-            $object->$property = $value;
-        }
-        return $object;
+    public function __construct(
+        public string $singular = '',
+        public string $plural = '',
+        /** @var class-string|null */
+        public string|null $editorPage = null,
+        /** @var class-string|null */
+        public string|null $editorSave = null,
+        public Closure|null $pageManagerTab = null,
+        public string $pageManagerJS = '',
+    ) {
     }
 }

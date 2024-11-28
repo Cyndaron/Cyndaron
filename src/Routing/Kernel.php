@@ -232,7 +232,7 @@ final class Kernel
                     {
                         $registry->addEditorSaveClass($dataTypeName, $definition->editorSave);
                     }
-                    if (isset($definition->pageManagerTab))
+                    if ($definition->pageManagerTab !== null)
                     {
                         $tab = new PageManagerTab($dataTypeName, $definition->plural, $definition->pageManagerTab, $definition->pageManagerJS ?? null);
                         $registry->addPageManagerTab($tab);

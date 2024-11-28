@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\PageManager;
 
+use Closure;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Page\Page;
 use Cyndaron\Translation\Translator;
@@ -52,9 +53,9 @@ final class PageManagerPage extends Page
 
         $tab = $registry->pageManagerTabs[$currentPage];
         $drawingFunction = $tab->tabDraw;
-        assert(is_callable($drawingFunction));
+        assert($drawingFunction instanceof Closure);
         /** @var string $tabContents */
-        $tabContents = $dic->callStaticMethodWithDependencyInjection($drawingFunction);
+        $tabContents = $dic->callClosureWithDependencyInjection($drawingFunction);
 
         $this->addTemplateVars([
             'pageTabs' => $pageTabs,

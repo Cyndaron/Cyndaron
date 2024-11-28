@@ -17,12 +17,12 @@ final class Module implements Datatypes, UrlProvider, Routes
     public function dataTypes(): array
     {
         return [
-            'richlink' => Datatype::fromArray([
-                'singular' => 'Speciale link',
-                'plural' => 'Speciale links',
-                'pageManagerTab' => self::class . '::pageManagerTab',
-                'pageManagerJS' => '/src/RichLink/js/PageManagerTab.js',
-            ]),
+            'richlink' => new Datatype(
+                singular: 'Speciale link',
+                plural: 'Speciale links',
+                pageManagerTab: self::pageManagerTab(...),
+                pageManagerJS: '/src/RichLink/js/PageManagerTab.js',
+            ),
         ];
     }
 

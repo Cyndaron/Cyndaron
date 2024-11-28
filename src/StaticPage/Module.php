@@ -22,13 +22,13 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
     public function dataTypes(): array
     {
         return [
-            'sub' => Datatype::fromArray([
-                'singular' => 'Statische pagina',
-                'plural' => 'Statische pagina\'s',
-                'pageManagerTab' => self::class . '::pageManagerTab',
-                'editorPage' => EditorPage::class,
-                'editorSave' => EditorSave::class,
-            ]),
+            'sub' => new Datatype(
+                singular: 'Statische pagina',
+                plural: 'Statische pagina\'s',
+                editorPage: EditorPage::class,
+                editorSave: EditorSave::class,
+                pageManagerTab: self::pageManagerTab(...),
+            ),
         ];
     }
 

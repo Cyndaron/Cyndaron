@@ -37,40 +37,40 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
     public function dataTypes(): array
     {
         return [
-            'member' => Datatype::fromArray([
-                'singular' => 'Lid',
-                'plural' => 'Leden',
-                'pageManagerTab' => PageManagerTabs::class . '::membersTab',
-                'pageManagerJS' => '/src/Geelhoed/Member/js/PageManagerTab.js',
-            ]),
-            'contest' => Datatype::fromArray([
-                'singular' => 'Wedstrijd',
-                'plural' => 'Wedstrijden',
-                'pageManagerTab' => PageManagerTabs::class . '::contestsTab',
-                'pageManagerJS' => '/src/Geelhoed/Contest/js/ContestManager.js',
-            ]),
-            'sport' => Datatype::fromArray([
-                'singular' => 'Sport',
-                'plural' => 'Sporten',
-                'pageManagerTab' => PageManagerTabs::class . '::sportsTab',
-                'pageManagerJS' => '/src/Geelhoed/Sport/js/PageManagerTab.js',
-            ]),
-            'tryout' => Datatype::fromArray([
-                'singular' => 'Tryout-toernooi',
-                'plural' => 'Tryout-toernooien',
-                'pageManagerTab' => PageManagerTabs::class . '::tryoutTab',
-                'pageManagerJS' => '/src/Geelhoed/Tryout/js/PageManagerTab.js',
-            ]),
-            'gcaSubscribers' => Datatype::fromArray([
-                'singular' => 'Lotenverkoper',
-                'plural' => 'Lotenverkopers',
-                'pageManagerTab' => PageManagerTabs::class . '::clubactieTab',
-            ]),
-            'orders' => Datatype::fromArray([
-                'singular' => 'Webshoporder',
-                'plural' => 'Webshoporders',
-                'pageManagerTab' => PageManagerTabs::class . '::ordersTab',
-            ]),
+            'member' => new Datatype(
+                singular: 'Lid',
+                plural: 'Leden',
+                pageManagerTab: PageManagerTabs::membersTab(...),
+                pageManagerJS: '/src/Geelhoed/Member/js/PageManagerTab.js',
+            ),
+            'contest' => new Datatype(
+                singular: 'Wedstrijd',
+                plural: 'Wedstrijden',
+                pageManagerTab: PageManagerTabs::contestsTab(...),
+                pageManagerJS: '/src/Geelhoed/Contest/js/ContestManager.js',
+            ),
+            'sport' => new Datatype(
+                singular: 'Sport',
+                plural: 'Sporten',
+                pageManagerTab: PageManagerTabs::sportsTab(...),
+                pageManagerJS: '/src/Geelhoed/Sport/js/PageManagerTab.js',
+            ),
+            'tryout' => new Datatype(
+                singular: 'Tryout-toernooi',
+                plural: 'Tryout-toernooien',
+                pageManagerTab: PageManagerTabs::tryoutTab(...),
+                pageManagerJS: '/src/Geelhoed/Tryout/js/PageManagerTab.js',
+            ),
+            'gcaSubscribers' => new Datatype(
+                singular: 'Lotenverkoper',
+                plural: 'Lotenverkopers',
+                pageManagerTab: PageManagerTabs::clubactieTab(...),
+            ),
+            'orders' => new Datatype(
+                singular: 'Webshoporder',
+                plural: 'Webshoporders',
+                pageManagerTab: PageManagerTabs::ordersTab(...),
+            ),
         ];
     }
 
