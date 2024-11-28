@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed;
 
+use Cyndaron\Geelhoed\Clubactie\Subscriber;
 use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\Geelhoed\Tryout\Tryout;
+use Cyndaron\Geelhoed\Webshop\Model\Order;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
 
@@ -47,6 +49,22 @@ final class PageManagerTabs
         return $templateRenderer->render('Geelhoed/Tryout/PageManagerTab', [
             'tryouts' => $tryouts,
             'csrfTokenCreatePhotoalbums' => $csrfTokenCreatePhotoalbums,
+        ]);
+    }
+
+    public static function clubactieTab(TemplateRenderer $templateRenderer): string
+    {
+        $subscribers = Subscriber::fetchAll();
+        return $templateRenderer->render('Geelhoed/Clubactie/PageManagerTab', [
+            'subscribers' => $subscribers,
+        ]);
+    }
+
+    public static function ordersTab(TemplateRenderer $templateRenderer): string
+    {
+        $orders = Order::fetchAll();
+        return $templateRenderer->render('Geelhoed/Webshop/PageManagerTab', [
+            'orders' => $orders,
         ]);
     }
 }

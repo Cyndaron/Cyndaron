@@ -60,7 +60,17 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
                 'plural' => 'Tryout-toernooien',
                 'pageManagerTab' => PageManagerTabs::class . '::tryoutTab',
                 'pageManagerJS' => '/src/Geelhoed/Tryout/js/PageManagerTab.js',
-            ])
+            ]),
+            'gcaSubscribers' => Datatype::fromArray([
+                'singular' => 'Lotenverkoper',
+                'plural' => 'Lotenverkopers',
+                'pageManagerTab' => PageManagerTabs::class . '::clubactieTab',
+            ]),
+            'orders' => Datatype::fromArray([
+                'singular' => 'Webshoporder',
+                'plural' => 'Webshoporders',
+                'pageManagerTab' => PageManagerTabs::class . '::ordersTab',
+            ]),
         ];
     }
 

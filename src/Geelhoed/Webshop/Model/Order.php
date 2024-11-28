@@ -48,6 +48,21 @@ final class Order extends Model
         return $subtotal;
     }
 
+    public function getTicketTotal(): int
+    {
+        $subtotal = 0;
+        $items = OrderItem::fetchAllByOrder($this);
+        foreach ($items as $item)
+        {
+            if ($item->currency === Currency::LOTTERY_TICKET)
+            {
+                $subtotal += (int)$item->price;
+            }
+        }
+
+        return $subtotal;
+    }
+
     public function confirmByUser(): OrderStatus
     {
         if ($this->status !== OrderStatus::QUOTE)
@@ -56,7 +71,8 @@ final class Order extends Model
         }
 
         $subscriber = $this->getSubscriber();
-        if (!$subscriber->soldTicketsAreVerified)
+        $needsTicketCheck = ($this->getTicketTotal() > 0) && (!$subscriber->soldTicketsAreVerified);
+        if ($needsTicketCheck)
         {
             $this->status = OrderStatus::PENDING_TICKET_CHECK;
         }
