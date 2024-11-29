@@ -176,11 +176,10 @@ final class WebshopController extends Controller
             return new RedirectResponse("/webwinkel/status/{$hash}");
         }
 
-        $webhookUrl = "{$urlInfo->schemeAndHost}/api/webwinkel/mollieWebhook";
-
         $paymentDescription = "Grote Clubactie 2024 {$subscriber->getFullName()}";
         $price = $order->getEuroSubtotal();
-        $redirectUrl = "/webwinkel/status/{$hash}";
+        $redirectUrl = "{$urlInfo->schemeAndHost}/webwinkel/status/{$hash}";
+        $webhookUrl = "{$urlInfo->schemeAndHost}/api/webwinkel/mollieWebhook";
         $payment = new \Cyndaron\Payment\Payment(
             $paymentDescription,
             $price,
