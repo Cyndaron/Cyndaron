@@ -18,10 +18,12 @@ final class BuildLister
     /**
      * @param array{ published_at: string, tag_name: string, assets: list<array{ name: string, size: int, browser_download_url: string }> } $json
      */
-    private static function buildJSONToObject(array $json): Build
+    private static function buildJSONToObject(array $json, bool $belongsToReleaseBuild): Build
     {
         $tagName = $json['tag_name'];
         $publishedAt = DateTimeImmutable::createFromFormat(DateTimeInterface::ATOM, $json['published_at']);
+        $signedBySignPath = $belongsToReleaseBuild && $publishedAt > DateTimeImmutable::createFromFormat('Y-m-d', '2024-12-01');
+
         $artifacts = [];
         foreach ($json['assets'] as $asset)
         {
@@ -30,14 +32,14 @@ final class BuildLister
                 continue;
             }
 
-            $artifacts[] = Artifact::fromArray($tagName, $publishedAt, $asset);
+            $artifacts[] = Artifact::fromArray($tagName, $publishedAt, $asset, $signedBySignPath);
         }
         usort($artifacts, function(Artifact $artifact1, Artifact $artifact2)
         {
             return $artifact1->operatingSystem->getPriority() <=> $artifact2->operatingSystem->getPriority();
         });
 
-        return new Build($tagName, $publishedAt, $artifacts);
+        return new Build($tagName, $publishedAt, $artifacts, $signedBySignPath);
     }
 
     /**
@@ -58,7 +60,7 @@ final class BuildLister
         $builds = [];
         foreach ($buildList as $build)
         {
-            $builds[] = self::buildJSONToObject($build);
+            $builds[] = self::buildJSONToObject($build, $call->belongsToReleaseBuild());
         }
 
         return $builds;
@@ -70,6 +72,6 @@ final class BuildLister
         $raw = $fetcher->fetch($call);
         /** @var array{ published_at: string, tag_name: string, assets: list<array{ name: string, size: int, browser_download_url: string }> } $build */
         $build = \Safe\json_decode($raw, true);
-        return self::buildJSONToObject($build);
+        return self::buildJSONToObject($build, $call->belongsToReleaseBuild());
     }
 }

@@ -26,6 +26,7 @@ final class Artifact
         public readonly int $size,
         public readonly string $downloadLink,
         public readonly bool $inDefaultSelection,
+        public readonly bool $signedWithSignPath,
     ) {
     }
 
@@ -35,7 +36,7 @@ final class Artifact
      * @param array{ name?: string, size?: int, browser_download_url?: string } $asset
      * @return self
      */
-    public static function fromArray(string $tagName, DateTimeInterface $publishedAt, array $asset): self
+    public static function fromArray(string $tagName, DateTimeInterface $publishedAt, array $asset, bool $signedBySignPath): self
     {
         $version = $tagName;
         $assetName = strtolower($asset['name'] ?? '');
@@ -144,6 +145,6 @@ final class Artifact
 
         $downloadLink = $asset['browser_download_url'] ?? '';
 
-        return new self($version, $publishedAt, $operatingSystem, $architecture, $type, $size, $downloadLink, $inDefaultSelection);
+        return new self($version, $publishedAt, $operatingSystem, $architecture, $type, $size, $downloadLink, $inDefaultSelection, $signedBySignPath);
     }
 }

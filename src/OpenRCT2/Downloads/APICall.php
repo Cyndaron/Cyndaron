@@ -34,4 +34,9 @@ enum APICall : string
             default => 5 * 60,
         };
     }
+
+    public function belongsToReleaseBuild(): bool
+    {
+        return $this === self::RELEASE_BUILDS || $this === self::LATEST_RELEASE_BUILD;
+    }
 }

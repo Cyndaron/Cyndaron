@@ -11,6 +11,13 @@
         @endif
     @endforeach
 </div>
+@if ($build->signedWithSignPath)
+    <div class="alert alert-info">
+        Free code signing provided by <a href="https://about.signpath.io/">SignPath.io</a>, certificate by <a href="https://signpath.org/">SignPath Foundation</a>.<br><br>
+
+        For more details, see our <a href="/code-signing-policy">Code signing policy</a>.
+    </div>
+@endif
 @if ($hasOtherArtifacts)
 <div>
     <h3>Other artifacts:</h3>

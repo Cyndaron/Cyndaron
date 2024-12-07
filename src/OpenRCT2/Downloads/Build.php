@@ -17,6 +17,7 @@ final class Build
         public readonly string $version,
         public readonly \DateTimeImmutable $publishedAt,
         public readonly array $artifacts,
+        public readonly bool $signedWithSignPath,
     ) {
     }
 }

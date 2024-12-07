@@ -35,6 +35,10 @@ final class DownloadProcessor implements \Cyndaron\Module\TextPostProcessor
                 'Download Latest Release',
             );
         }, $text) ?? $text;
+        $text = preg_replace_callback('/%specificRelease\|([v0-9\.]+?)%/', function($matches)
+        {
+            return $this->renderReleaseVersion($matches[1]);
+        }, $text) ?? $text;
         $text = preg_replace_callback('/%newestDevelop%/', function()
         {
             return $this->renderBlock(
@@ -51,20 +55,50 @@ final class DownloadProcessor implements \Cyndaron\Module\TextPostProcessor
         }, $text) ?? $text;
     }
 
-    private function renderBlock(APICall $call, string $title): string
+    private function renderArtifact(Artifact $artifact, string $title, bool $signedWithSignPath): string
     {
-        $build = BuildLister::fetchAndProcessSingleBuild($call);
-        $artifact = $this->findBestMatchingArtifact($build);
         $informationParts = [
             $artifact->version,
             $artifact->operatingSystem->getFriendlyName(),
             Util::formatSize($artifact->size),
         ];
+        if ($signedWithSignPath)
+        {
+            $informationParts[] = '<a href="/code-signing-policy">Signed</a>';
+        }
 
         $firstLine = '<a href="' . $artifact->downloadLink . '">' . $title . '</a>';
         $secondLine = '<div class="information">' . implode(' — ', $informationParts) . '</div>';
 
         return $firstLine . $secondLine;
+    }
+
+    private function renderBlock(APICall $call, string $title): string
+    {
+        $build = BuildLister::fetchAndProcessSingleBuild($call);
+        $artifact = $this->findBestMatchingArtifact($build);
+        return $this->renderArtifact($artifact, $title, $build->signedWithSignPath);
+    }
+
+    private function renderReleaseVersion(string $version): string
+    {
+        $foundBuild = null;
+        $builds = BuildLister::fetchAndProcessBuilds(APICall::RELEASE_BUILDS);
+        foreach ($builds as $build)
+        {
+            if ($build->version === $version)
+            {
+                $foundBuild = $build;
+                break;
+            }
+        }
+        if ($foundBuild === null)
+        {
+            return '';
+        }
+
+        $artifact = $this->findBestMatchingArtifact($foundBuild);
+        return $this->renderArtifact($artifact, "Download release", $foundBuild->signedWithSignPath);
     }
 
     private static function matchByOSArchAndType(Build $build, OperatingSystem $operatingSystem, Architecture $architecture, Type $type): Artifact|null
