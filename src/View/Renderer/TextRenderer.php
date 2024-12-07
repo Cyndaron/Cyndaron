@@ -48,7 +48,7 @@ final class TextRenderer
             }
             catch (\Throwable $e)
             {
-                $logger = $this->dic->createClassWithDependencyInjection(LoggerInterface::class);
+                $logger = $this->dic->get(LoggerInterface::class);
                 $logger->error('Error during text postprocessing: ' . $e);
             }
         }
