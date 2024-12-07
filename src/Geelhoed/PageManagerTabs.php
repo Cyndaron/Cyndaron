@@ -8,6 +8,7 @@ use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Geelhoed\Webshop\Model\Order;
+use Cyndaron\Geelhoed\Webshop\Model\Product;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
 
@@ -63,8 +64,16 @@ final class PageManagerTabs
     public static function ordersTab(TemplateRenderer $templateRenderer): string
     {
         $orders = Order::fetchAll();
-        return $templateRenderer->render('Geelhoed/Webshop/PageManagerTab', [
+        return $templateRenderer->render('Geelhoed/Webshop/PageManagerTabOrder', [
             'orders' => $orders,
+        ]);
+    }
+
+    public static function productsTab(TemplateRenderer $templateRenderer): string
+    {
+        $products = Product::fetchAll();
+        return $templateRenderer->render('Geelhoed/Webshop/PageManagerTabProduct', [
+            'products' => $products,
         ]);
     }
 }

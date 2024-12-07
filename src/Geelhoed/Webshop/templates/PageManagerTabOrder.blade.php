@@ -8,6 +8,7 @@
         <th>Lotenaantal</th>
         <th>Status</th>
         <th>Les</th>
+        <th>Acties</th>
     </tr>
     </thead>
     <tbody>
@@ -23,6 +24,17 @@
                 <td>
                     {{ $order->getHour()->getLocation()->getName() }}<br>
                     {{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($order->getHour()->day) }} {{ $order->getHour()->getRange() }}
+                </td>
+                <td>
+                    @if ($order->status === \Cyndaron\Geelhoed\Webshop\Model\OrderStatus::QUOTE)
+                        <a
+                            href="/webwinkel/winkelen/{{ $order->getSubscriber()->hash }}"
+                            class="btn btn-outline-cyndaron"
+                            title="Naar bestelpagina"
+                        >
+                            <span class="glyphicon glyphicon-shopping-cart"></span>
+                        </a>
+                    @endif
                 </td>
             </tr>
         @endforeach

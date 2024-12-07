@@ -71,6 +71,11 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
                 plural: 'Webshoporders',
                 pageManagerTab: PageManagerTabs::ordersTab(...),
             ),
+            'products' => new Datatype(
+                singular: 'Product',
+                plural: 'Producten',
+                pageManagerTab: PageManagerTabs::productsTab(...),
+            )
         ];
     }
 

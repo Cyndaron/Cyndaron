@@ -11,6 +11,7 @@ use Cyndaron\Geelhoed\Webshop\Model\Order;
 use Cyndaron\Geelhoed\Webshop\Model\OrderItem;
 use Cyndaron\Geelhoed\Webshop\Model\OrderStatus;
 use Cyndaron\Geelhoed\Webshop\Model\Product;
+use Cyndaron\Mail\Mail;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -20,12 +21,16 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
+use Cyndaron\Util\Mail as UtilMail;
+use Cyndaron\Util\RuntimeUserSafeError;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\Util;
+use Cyndaron\View\Template\ViewHelpers;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use function Safe\error_log;
+use Symfony\Component\Mime\Address;
 use function sprintf;
 
 final class WebshopController extends Controller
@@ -51,6 +56,11 @@ final class WebshopController extends Controller
             $order->save();
         }
 
+        if ($order->status !== OrderStatus::QUOTE)
+        {
+            return new RedirectResponse("/webwinkel/status/{$hash}");
+        }
+
         $page = new ShopPage($subscriber, $order);
         return $this->pageRenderer->renderResponse($page);
     }
@@ -59,19 +69,14 @@ final class WebshopController extends Controller
     public function finishOrder(QueryBits $queryBits): Response
     {
         $hash = $queryBits->getString(2);
-        $subscriber = Subscriber::fetchByHash($hash);
-        if ($subscriber === null)
+        try
         {
-            return $this->pageRenderer->renderErrorResponse(
-                new ErrorPage('Fout', 'Gebruiker niet gevonden')
-            );
+            [$order, $subscriber] = $this->getSubscriberAndOrderFromHash($hash);
         }
-
-        $order = Order::fetchBySubscriber($subscriber);
-        if ($order === null)
+        catch (RuntimeUserSafeError $e)
         {
             return $this->pageRenderer->renderErrorResponse(
-                new ErrorPage('Fout', 'Bestelling niet gevonden')
+                new ErrorPage('Fout', $e->getMessage())
             );
         }
 
@@ -79,23 +84,61 @@ final class WebshopController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
-    #[RouteAttribute('bestelling-plaatsen', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function placeOrder(RequestParameters $post): Response
+    private function sendOrderConfirmationMail(UrlInfo $urlInfo, Subscriber $subscriber, Order $order): void
     {
-        $hash = $post->getSimpleString('hash');
-        $subscriber = Subscriber::fetchByHash($hash);
-        if ($subscriber === null)
+        $text = "Beste {$subscriber->getFullName()},
+
+We hebben je bestelling ontvangen.
+Hieronder volgt een overzicht van de bestelde artikelen:
+";
+        $orderItems = OrderItem::fetchAllByOrder($order);
+        foreach ($orderItems as $orderItem)
         {
-            return $this->pageRenderer->renderErrorResponse(
-                new ErrorPage('Fout', 'Gebruiker niet gevonden')
-            );
+            $product = $orderItem->getProduct();
+
+            $text = $orderItem->quantity . '× ';
+            $text .= $product->name . ', ';
+            foreach ($orderItem->getOptions() as $option)
+            {
+                $text .= $option . ', ';
+            }
+            if ($orderItem->currency === Currency::LOTTERY_TICKET)
+            {
+                $text .= "{$orderItem->getLineAmount()} loten";
+            }
+            else
+            {
+                $text .= ViewHelpers::formatEuro($orderItem->getLineAmount());
+            }
+            $text .= "\n";
         }
 
-        $order = Order::fetchBySubscriber($subscriber);
-        if ($order === null)
+        $text .= "
+Met vriendelijke groet,
+Sportschool Geelhoed";
+
+
+        $mail = UtilMail::createMailWithDefaults(
+            $urlInfo->domain,
+            new Address($subscriber->email),
+            'Bestelling webshop',
+            $text
+        );
+        $mail->send();
+    }
+
+    #[RouteAttribute('bestelling-plaatsen', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
+    public function placeOrder(RequestParameters $post, UrlInfo $urlInfo): Response
+    {
+        $hash = $post->getSimpleString('hash');
+        try
+        {
+            [$order, $subscriber] = $this->getSubscriberAndOrderFromHash($hash);
+        }
+        catch (RuntimeUserSafeError $e)
         {
             return $this->pageRenderer->renderErrorResponse(
-                new ErrorPage('Fout', 'Bestelling niet gevonden')
+                new ErrorPage('Fout', $e->getMessage())
             );
         }
 
@@ -104,6 +147,8 @@ final class WebshopController extends Controller
         $subscriber->save();
         $newStatus = $order->confirmByUser();
         $order->save();
+
+        $this->sendOrderConfirmationMail($urlInfo, $subscriber, $order);
 
         if ($newStatus === OrderStatus::PENDING_PAYMENT)
         {
@@ -117,19 +162,14 @@ final class WebshopController extends Controller
     public function status(QueryBits $queryBits): Response
     {
         $hash = $queryBits->getString(2);
-        $subscriber = Subscriber::fetchByHash($hash);
-        if ($subscriber === null)
+        try
         {
-            return $this->pageRenderer->renderErrorResponse(
-                new ErrorPage('Fout', 'Gebruiker niet gevonden')
-            );
+            [$order] = $this->getSubscriberAndOrderFromHash($hash);
         }
-
-        $order = Order::fetchBySubscriber($subscriber);
-        if ($order === null)
+        catch (RuntimeUserSafeError $e)
         {
             return $this->pageRenderer->renderErrorResponse(
-                new ErrorPage('Fout', 'Bestelling niet gevonden')
+                new ErrorPage('Fout', $e->getMessage())
             );
         }
 
@@ -140,11 +180,13 @@ final class WebshopController extends Controller
             OrderStatus::PENDING_TICKET_CHECK =>
                 'De bestelling is geplaatst en wacht op controle van het lotenaantal.',
             OrderStatus::PENDING_PAYMENT =>
-                'De bestelling is geplaatst en wacht op betaling',
+                'De bestelling is geplaatst en wacht op betaling.<br><a class="btn btn-primary" href="/webwinkel/bestelling-betalen/' . $hash . '">Betalen</a>',
             OrderStatus::IN_PROGRESS =>
                 'De bestelling is in behandeling.',
-            OrderStatus::DELIVERED =>
-                'De bestelling is bezorgd.',
+            OrderStatus::SHIPPED_PARTIALLY =>
+                'De bestelling is gedeeltelijk meegegeven aan de docent.',
+            OrderStatus::SHIPPED_FULLY =>
+                'De volledige bestelling is meegegeven aan de docent.',
         };
 
         $page = new SimplePage('Status bestelling', $status);
@@ -155,19 +197,14 @@ final class WebshopController extends Controller
     public function pay(QueryBits $queryBits, UrlInfo $urlInfo, UserSession $userSession): Response
     {
         $hash = $queryBits->getString(2);
-        $subscriber = Subscriber::fetchByHash($hash);
-        if ($subscriber === null)
+        try
         {
-            return $this->pageRenderer->renderErrorResponse(
-                new ErrorPage('Fout', 'Gebruiker niet gevonden')
-            );
+            [$order, $subscriber] = $this->getSubscriberAndOrderFromHash($hash);
         }
-
-        $order = Order::fetchBySubscriber($subscriber);
-        if ($order === null)
+        catch (RuntimeUserSafeError $e)
         {
             return $this->pageRenderer->renderErrorResponse(
-                new ErrorPage('Fout', 'Bestelling niet gevonden')
+                new ErrorPage('Fout', $e->getMessage())
             );
         }
 
@@ -259,16 +296,13 @@ final class WebshopController extends Controller
     public function addToCart(RequestParameters $post): JsonResponse
     {
         $hash = $post->getSimpleString('hash');
-        $subscriber = Subscriber::fetchByHash($hash);
-        if ($subscriber === null)
+        try
         {
-            return new JsonResponse(['error' => 'Gebruiker niet gevonden'], Response::HTTP_BAD_REQUEST);
+            [$order] = $this->getSubscriberAndOrderFromHash($hash);
         }
-
-        $order = Order::fetchBySubscriber($subscriber);
-        if ($order === null)
+        catch (RuntimeUserSafeError $e)
         {
-            return new JsonResponse(['error' => 'Bestelling niet gevonden'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
         $productId = $post->getInt('productId');
@@ -282,14 +316,25 @@ final class WebshopController extends Controller
         $currency = Currency::from($post->getSimpleString('currency'));
         $price = $currency === Currency::LOTTERY_TICKET ? $product->getGcaTicketPrice() : $product->getEuroPrice();
 
-        $orderItem = new OrderItem();
-        $orderItem->orderId = (int)$order->id;
-        $orderItem->productId = $productId;
-        $orderItem->options = $options;
-        $orderItem->quantity = 1;
-        $orderItem->currency = $currency;
-        $orderItem->price = $price;
-        $orderItem->save();
+        $newOrderItem = new OrderItem();
+        $newOrderItem->orderId = (int)$order->id;
+        $newOrderItem->productId = $productId;
+        $newOrderItem->options = $options;
+        $newOrderItem->quantity = 1;
+        $newOrderItem->currency = $currency;
+        $newOrderItem->price = $price;
+
+        foreach (OrderItem::fetchAllByOrder($order) as $currentOrderItem)
+        {
+            if ($currentOrderItem->equals($newOrderItem))
+            {
+                $currentOrderItem->quantity += 1;
+                $newOrderItem = $currentOrderItem;
+                break;
+            }
+        }
+
+        $newOrderItem->save();
 
         return new JsonResponse([]);
     }
@@ -298,16 +343,18 @@ final class WebshopController extends Controller
     public function removeFromCart(RequestParameters $post): JsonResponse
     {
         $hash = $post->getSimpleString('hash');
-        $subscriber = Subscriber::fetchByHash($hash);
-        if ($subscriber === null)
+        try
         {
-            return new JsonResponse(['error' => 'Gebruiker niet gevonden'], Response::HTTP_BAD_REQUEST);
+            [$order] = $this->getSubscriberAndOrderFromHash($hash);
+        }
+        catch (RuntimeUserSafeError $e)
+        {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $order = Order::fetchBySubscriber($subscriber);
-        if ($order === null)
+        if ($order->status !== OrderStatus::QUOTE)
         {
-            return new JsonResponse(['error' => 'Bestelling niet gevonden'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'De order is al definitief!'], Response::HTTP_BAD_REQUEST);
         }
 
         $orderItemId = $post->getInt('orderItemId');
@@ -325,5 +372,93 @@ final class WebshopController extends Controller
         $orderItem->delete();
 
         return new JsonResponse([]);
+    }
+
+    #[RouteAttribute('doneer-loten', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
+    public function donateRemainingTickets(QueryBits $queryBits): Response
+    {
+        $hash = $queryBits->getString(2);
+        try
+        {
+            [$order, $subscriber] = $this->getSubscriberAndOrderFromHash($hash);
+        }
+        catch (RuntimeUserSafeError $e)
+        {
+            return $this->pageRenderer->renderErrorResponse(
+                new ErrorPage('Fout', $e->getMessage())
+            );
+        }
+
+        $donateProduct = Product::fetchById(Product::DONATE_TICKETS_ID);
+        if ($donateProduct === null)
+        {
+            return new RedirectResponse("/webwinkel/winkelen/{$hash}");
+        }
+
+        $numRemainingTickets = $subscriber->numSoldTickets - $order->getTicketTotal();
+        if ($numRemainingTickets === 0)
+        {
+            return new RedirectResponse("/webwinkel/winkelen/{$hash}");
+        }
+
+        $orderItem = new OrderItem();
+        $orderItem->orderId = (int)$order->id;
+        $orderItem->quantity = 1;
+        $orderItem->productId = (int)$donateProduct->id;
+        $orderItem->price = $numRemainingTickets;
+        $orderItem->currency = Currency::LOTTERY_TICKET;
+        $orderItem->save();
+
+        return new RedirectResponse("/webwinkel/winkelen/{$hash}");
+    }
+
+    /**
+     * @param string $hash
+     * @return array{0: Order, 1: Subscriber}
+     */
+    private function getSubscriberAndOrderFromHash(string $hash): array
+    {
+        $subscriber = Subscriber::fetchByHash($hash);
+        if ($subscriber === null)
+        {
+            throw new RuntimeUserSafeError('Gebruiker niet gevonden!');
+        }
+
+        $order = Order::fetchBySubscriber($subscriber);
+        if ($order === null)
+        {
+            throw new RuntimeUserSafeError('Bestelling niet gevonden!');
+        }
+
+        return [$order, $subscriber];
+    }
+
+    #[RouteAttribute('account-aanmaken', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function createAccountWithoutTicketsGet(): Response
+    {
+        $page = new CreateAccountPage();
+        return $this->pageRenderer->renderResponse($page);
+    }
+
+    #[RouteAttribute('account-aanmaken', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
+    public function createAccountWithoutTicketsPost(RequestParameters $post): RedirectResponse
+    {
+        $firstName = $post->getSimpleString('firstName');
+        $tussenvoegsel = $post->getSimpleString('tussenvoegsel');
+        $lastName = $post->getSimpleString('lastName');
+        $email = $post->getEmail('email');
+        $hash = Util::generateToken(16);
+
+        $subscriber = new Subscriber();
+        $subscriber->firstName = $firstName;
+        $subscriber->tussenvoegsel = $tussenvoegsel;
+        $subscriber->lastName = $lastName;
+        $subscriber->email = $email;
+        $subscriber->numSoldTickets = 0;
+        $subscriber->soldTicketsAreVerified = true;
+        $subscriber->hash = $hash;
+        $subscriber->save();
+
+        return new RedirectResponse("/webwinkel/winkelen/{$hash}");
     }
 }

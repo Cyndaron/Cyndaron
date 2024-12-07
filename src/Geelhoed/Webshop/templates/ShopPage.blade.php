@@ -4,14 +4,13 @@
     @php /** @var \Cyndaron\Geelhoed\Webshop\Model\Product[] $products */ @endphp
     @php /** @var \Cyndaron\Geelhoed\Webshop\Model\OrderItem[] $orderItems */ @endphp
     @php $numOrderItems = count($orderItems) @endphp
-    <p>Je hebt {{ $numSoldTickets }} loten verkocht.</p>
 
-    @if ($numOrderItems === 1)
-        <p>Er zit momenteel 1 artikel in je winkelmand.</p>
-    @else
-        <p>Er zitten momenteel {{ $numOrderItems }} artikelen in je winkelmand.</p>
-    @endif
-    @if ($numOrderItems > 0)
+    @if ($numOrderItems > 0 && !$needsAddingGymtas)
+        @if ($numOrderItems === 1)
+            <p>Er zit momenteel 1 artikel in je winkelmand.</p>
+        @else
+            <p>Er zitten momenteel {{ $numOrderItems }} artikelen in je winkelmand.</p>
+        @endif
         <div class="card" style="width: 18rem;">
             <ul class="list-group list-group-flush">
 
@@ -20,10 +19,14 @@
                         <div>
                             {{ $orderItem->getLineDescription() }}
                             <br>
+                            @if ($orderItem->quantity !== 1)
+                                Aantal: {{ $orderItem->quantity }}
+                                <br>
+                            @endif
                             @if ($orderItem->currency === \Cyndaron\Geelhoed\Webshop\Model\Currency::LOTTERY_TICKET)
-                                ({{ $orderItem->price }} loten)
+                                ({{ $orderItem->getLineAmount() }} loten)
                             @elseif($orderItem->currency === \Cyndaron\Geelhoed\Webshop\Model\Currency::EURO)
-                                ({{ $orderItem->price|euro }})
+                                ({{ $orderItem->getLineAmount()|euro }})
                             @endif
                         </div>
                         <button
@@ -38,14 +41,28 @@
             </ul>
         </div>
 
-        Subtotaal loten: {{ $ticketSubtotal }}
+        @if ($numSoldTickets > 0)
+            <p>
+                Je hebt <b>{{ $numSoldTickets }}</b> loten verkocht.
+                Je hebt er <b>{{ $ticketSubtotal }}</b> gebruikt voor de artikelen in je winkelmandje.
+            </p>
+            @if (($numSoldTickets - $ticketSubtotal) > 0)
+                <p>
+                    Als je meer wilt bestellen, kun je daar je resterende <b>{{ $numSoldTickets - $ticketSubtotal }}</b> loten voor gebruiken,
+                    of ze gewoon afrekenen in euro’s. Je kunt je resterende loten ook doneren aan Sportschool Geelhoed.
+                </p>
+                <form action="/webwinkel/doneer-loten/{{ $hash }}" method="post">
+                    <input type="submit" class="btn btn-sm btn-outline-cyndaron" value="Resterende loten doneren">
+                </form>
+            @endif
+        @endif
         <br>Subtotaal euro: {{ $euroSubtotal|euro }}
 
         <br>
         <a class="btn btn-primary" href="/webwinkel/overzicht/{{ $hash }}">Bestellen</a>
     @endif
 
-    @if ($numSoldTickets >= 10 && !$hasGymtasInCart)
+    @if ($needsAddingGymtas)
         <p>
             Omdat je 10 loten of meer hebt verkocht, heb je recht op een gratis gymtasje:
 

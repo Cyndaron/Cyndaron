@@ -10,6 +10,8 @@ final class Product extends Model
 {
     use FileCachedModel;
 
+    public const DONATE_TICKETS_ID = 18;
+
     public const TABLE = 'geelhoed_webshop_product';
     public const TABLE_FIELDS = ['parentId', 'name', 'description', 'options', 'gcaTicketPrice', 'euroPrice'];
 

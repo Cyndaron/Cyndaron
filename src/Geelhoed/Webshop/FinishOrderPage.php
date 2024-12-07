@@ -19,21 +19,6 @@ final class FinishOrderPage extends Page
 
         $orderItems = OrderItem::fetchAll(['orderId = ?'], [$order->id]);
 
-        $ticketSubtotal = 0;
-        $euroSubtotal = 0.00;
-
-        foreach ($orderItems as $orderItem)
-        {
-            if ($orderItem->currency === Currency::LOTTERY_TICKET)
-            {
-                $ticketSubtotal += $orderItem->price;
-            }
-            else
-            {
-                $euroSubtotal += $orderItem->price;
-            }
-        }
-
         $locations = ['' => '(selecteer een locatie)'];
         foreach (Location::getWithLessions() as $location)
         {
@@ -47,8 +32,8 @@ final class FinishOrderPage extends Page
             'numSpentTickets' => 0,
             'order' => $order,
             'orderItems' => $orderItems,
-            'ticketSubtotal' => $ticketSubtotal,
-            'euroSubtotal' => $euroSubtotal,
+            'ticketSubtotal' => $order->getTicketTotal(),
+            'euroSubtotal' => $order->getEuroSubtotal(),
             'locations' => $locations,
         ]);
     }

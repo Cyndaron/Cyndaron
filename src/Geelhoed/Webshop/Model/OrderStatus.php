@@ -9,7 +9,8 @@ enum OrderStatus : string
     case PENDING_TICKET_CHECK = 'pending_ticket_check';
     case PENDING_PAYMENT = 'pending_payment';
     case IN_PROGRESS = 'in_progress';
-    case DELIVERED = 'delivered';
+    case SHIPPED_PARTIALLY = 'shipped_partially';
+    case SHIPPED_FULLY = 'shipped_fully';
 
     public function getDescription(): string
     {
@@ -19,7 +20,8 @@ enum OrderStatus : string
             self::PENDING_TICKET_CHECK => 'Wacht op lotencheck',
             self::PENDING_PAYMENT => 'Wacht op betaling',
             self::IN_PROGRESS => 'Wordt door ons verwerkt',
-            self::DELIVERED => 'Meegegeven aan docent',
+            self::SHIPPED_PARTIALLY => 'Eerste delen meegegeven aan docent',
+            self::SHIPPED_FULLY => 'Alle delen meegegeven aan docent',
         };
     }
 }

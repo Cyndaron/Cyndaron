@@ -17,7 +17,7 @@ final class OrderItem extends Model
     public int $orderId;
     public int $productId;
     public int $quantity;
-    public string $options;
+    public string $options = '{}';
     public float $price;
     public Currency $currency;
 
@@ -54,5 +54,20 @@ final class OrderItem extends Model
     public static function fetchAllByOrder(Order $order): array
     {
         return self::fetchAll(['orderId = ?'], [$order->id]);
+    }
+
+    public function equals(OrderItem $otherItem): bool
+    {
+        return
+            $this->currency === $otherItem->currency &&
+            $this->price === $otherItem->price &&
+            $this->productId === $otherItem->productId &&
+            $this->orderId === $otherItem->orderId &&
+            $this->getOptions() === $otherItem->getOptions();
+    }
+
+    public function getLineAmount(): float
+    {
+        return $this->price * $this->quantity;
     }
 }

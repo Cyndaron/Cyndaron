@@ -41,7 +41,7 @@ final class Order extends Model
         {
             if ($item->currency === Currency::EURO)
             {
-                $subtotal += $item->price;
+                $subtotal += $item->getLineAmount();
             }
         }
 
@@ -56,7 +56,7 @@ final class Order extends Model
         {
             if ($item->currency === Currency::LOTTERY_TICKET)
             {
-                $subtotal += (int)$item->price;
+                $subtotal += (int)$item->getLineAmount();
             }
         }
 
