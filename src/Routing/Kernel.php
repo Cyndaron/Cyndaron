@@ -34,9 +34,9 @@ use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Mail;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\UserSafeError;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Renderer\TextRenderer;
-use Cyndaron\View\Template\TemplateRenderer;
 use Cyndaron\View\Template\TemplateRendererFactory;
 use PDO;
 use Psr\Log\LoggerInterface;
@@ -142,6 +142,17 @@ final class Kernel
         {
             $router = new Router($dic, $pageRenderer);
             return $router->route($request);
+        }
+        catch (UserSafeError $error)
+        {
+            $isApiCall = str_starts_with($request->getRequestUri(), '/api');
+            if ($isApiCall)
+            {
+                return new JsonResponse(['error' => $error->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            $page = new SimplePage($translator->get('Fout'), $error->getMessage());
+            return $pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         catch (Throwable $t)
         {
