@@ -16,6 +16,7 @@
                 <th>Geboortedatum</th>
                 <th>Banden</th>
                 <th>JBN-nummer</th>
+                <th>Acties</th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +38,15 @@
                         @endforeach
                     </td>
                     <td>{{ $contestant->jbnNumber }}</td>
+                    <td>
+                        <form method="post" action="/contest/removeAsContestant">
+                            <input type="hidden" name="csrfToken" value="{{ $tokenHandler->get('contest', 'removeAsContestant') }}"/>
+                            <input type="hidden" name="memberId" value="{{ $contestant->id }}"/>
+                            <button type="submit" class="btn btn-outline-cyndaron" title="Status wedstrijdjudoka verwijderen">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
         </tbody>

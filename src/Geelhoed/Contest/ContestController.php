@@ -27,6 +27,7 @@ use Cyndaron\View\Template\TemplateRenderer;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
 use Mollie\Api\Resources\Payment;
+use MongoDB\Driver\Query;
 use PhpOffice\PhpSpreadsheet\Shared\Date as PHPSpreadsheetDate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Safe\DateTime;
@@ -996,5 +997,21 @@ final class ContestController extends Controller
         $contestMember->delete();
 
         return new JsonResponse(['message' => 'De inschrijving is geannuleerd!']);
+    }
+
+    #[RouteAttribute('removeAsContestant', RequestMethod::POST, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
+    public function removeAsContestant(RequestParameters $post): Response
+    {
+        $memberId = $post->getInt('memberId');
+        $member = Member::fetchById($memberId);
+        if ($member === null)
+        {
+            return new JsonResponse(['error' => 'Lid bestaat niet!'], Response::HTTP_NOT_FOUND);
+        }
+
+        $member->isContestant = false;
+        $member->save();
+
+        return new RedirectResponse('/contest/contestantsList');
     }
 }
