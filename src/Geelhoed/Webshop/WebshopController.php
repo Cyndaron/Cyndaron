@@ -97,7 +97,7 @@ Hieronder volgt een overzicht van de bestelde artikelen:
         {
             $product = $orderItem->getProduct();
 
-            $text = $orderItem->quantity . '× ';
+            $text .= $orderItem->quantity . '× ';
             $text .= $product->name . ', ';
             foreach ($orderItem->getOptions() as $option)
             {
