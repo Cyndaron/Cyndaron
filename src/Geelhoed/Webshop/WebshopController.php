@@ -130,6 +130,7 @@ Sportschool Geelhoed";
 
     private function sendAccountConfirmationMail(UrlInfo $urlInfo, Subscriber $subscriber): void
     {
+        $link = "{$urlInfo->schemeAndHost}/webwinkel/winkelen/{$subscriber->hash}";
         $text = "Beste {$subscriber->getFullName()},
 
 Je kunt vanaf nu bestellen.
@@ -140,6 +141,8 @@ Je kunt vanaf nu bestellen.
         }
 
         $text .= "
+Je kunt bestellen met de volgende link: {$link}
+
 Met vriendelijke groet,
 Sportschool Geelhoed";
 
