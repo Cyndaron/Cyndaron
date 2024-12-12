@@ -276,7 +276,7 @@ Sportschool Geelhoed";
     }
 
     #[RouteAttribute('mollieWebhook', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
-    public function mollieWebhook(RequestParameters $post, LoggerInterface $logger): Response
+    public function mollieWebhook(RequestParameters $post): Response
     {
         $apiKey = Setting::get('mollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
@@ -288,11 +288,7 @@ Sportschool Geelhoed";
 
         if ($order === null)
         {
-            $message = sprintf('Poging tot updaten van transactie met id %s mislukt.', $id);
-            $message .= ' Order niet gevonden.';
-
-            $logger->error($message);
-            return new JsonResponse(['error' => 'Could not find payment!'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse([]);
         }
 
         $paidStatus = false;
