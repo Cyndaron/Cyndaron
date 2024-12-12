@@ -5,7 +5,6 @@ namespace Cyndaron\Geelhoed\Webshop;
 
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
 use Cyndaron\Geelhoed\Location\Location;
-use Cyndaron\Geelhoed\Webshop\Model\Currency;
 use Cyndaron\Geelhoed\Webshop\Model\Order;
 use Cyndaron\Geelhoed\Webshop\Model\OrderItem;
 use Cyndaron\Page\Page;

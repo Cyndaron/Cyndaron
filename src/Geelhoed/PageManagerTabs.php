@@ -11,6 +11,7 @@ use Cyndaron\Geelhoed\Webshop\Model\Order;
 use Cyndaron\Geelhoed\Webshop\Model\Product;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
+use function usort;
 
 final class PageManagerTabs
 {
@@ -56,6 +57,11 @@ final class PageManagerTabs
     public static function clubactieTab(TemplateRenderer $templateRenderer): string
     {
         $subscribers = Subscriber::fetchAll();
+        usort($subscribers, function(Subscriber $s1, Subscriber $s2)
+        {
+            $sort1 = $s1->soldTicketsAreVerified <=> $s2->soldTicketsAreVerified;
+            return ($sort1 !== 0) ? $sort1 : ($s1->lastName <=> $s2->lastName);
+        });
         return $templateRenderer->render('Geelhoed/Clubactie/PageManagerTab', [
             'subscribers' => $subscribers,
         ]);

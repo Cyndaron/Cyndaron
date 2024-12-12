@@ -138,6 +138,11 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
                 $ret[] = new UserMenuItem(new Link('/contest/myContests', 'Mijn wedstrijden'), UserLevel::LOGGED_IN);
                 $ret[] = new UserMenuItem(new Link('/contest/overview', 'Wedstrijdagenda'), UserLevel::LOGGED_IN);
             }
+            if (!$profile->isAdmin())
+            {
+                $ret[] = new UserMenuItem(new Link('/pagemanager/gcaSubscribers', 'Lotenverkopers'), UserLevel::ADMIN, WebshopController::RIGHT_MANAGE);
+                $ret[] = new UserMenuItem(new Link('/pagemanager/orders', 'Webshoporders'), UserLevel::ADMIN, WebshopController::RIGHT_MANAGE);
+            }
         }
 
         return $ret;

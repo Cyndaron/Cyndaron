@@ -22,6 +22,7 @@
                 <input id="email" name="email" class="form-control" type="email" required>
             @endslot
         @endcomponent
+        <input type="hidden" name="skipTicketCheck" value="{{ (int)$skipTicketCheck }}">
         <input type="submit" class="btn btn-primary" value="Verzenden"/>
     </form>
 @endsection

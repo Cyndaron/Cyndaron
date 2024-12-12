@@ -5,13 +5,11 @@ namespace Cyndaron\Geelhoed\Webshop;
 
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
-use Cyndaron\Geelhoed\Contest\ContestMember;
 use Cyndaron\Geelhoed\Webshop\Model\Currency;
 use Cyndaron\Geelhoed\Webshop\Model\Order;
 use Cyndaron\Geelhoed\Webshop\Model\OrderItem;
 use Cyndaron\Geelhoed\Webshop\Model\OrderStatus;
 use Cyndaron\Geelhoed\Webshop\Model\Product;
-use Cyndaron\Mail\Mail;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -29,12 +27,15 @@ use Cyndaron\View\Template\ViewHelpers;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use function sprintf;
 
 final class WebshopController extends Controller
 {
+    public const RIGHT_MANAGE = 'orders_edit';
+
     #[RouteAttribute('winkelen', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function shopPage(QueryBits $queryBits): Response
     {
@@ -122,6 +123,31 @@ Sportschool Geelhoed";
             $urlInfo->domain,
             new Address($subscriber->email),
             'Bestelling webshop',
+            $text
+        );
+        $mail->send();
+    }
+
+    private function sendAccountConfirmationMail(UrlInfo $urlInfo, Subscriber $subscriber): void
+    {
+        $text = "Beste {$subscriber->getFullName()},
+
+Je kunt vanaf nu bestellen.
+";
+        if ($subscriber->numSoldTickets > 0)
+        {
+            $text .= "\nAantal verkochte loten: {$subscriber->numSoldTickets}\n";
+        }
+
+        $text .= "
+Met vriendelijke groet,
+Sportschool Geelhoed";
+
+
+        $mail = UtilMail::createMailWithDefaults(
+            $urlInfo->domain,
+            new Address($subscriber->email),
+            'Bestellen voor Grote Clubactie',
             $text
         );
         $mail->send();
@@ -434,19 +460,21 @@ Sportschool Geelhoed";
     }
 
     #[RouteAttribute('account-aanmaken', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function createAccountWithoutTicketsGet(): Response
+    public function createAccountGet(Request $request): Response
     {
-        $page = new CreateAccountPage();
+        $skipTicketCheck = ($request->query->getAlpha('reden') === 'geenloten');
+        $page = new CreateAccountPage($skipTicketCheck);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('account-aanmaken', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function createAccountWithoutTicketsPost(RequestParameters $post): RedirectResponse
+    public function createAccountPost(RequestParameters $post): Response
     {
         $firstName = $post->getSimpleString('firstName');
         $tussenvoegsel = $post->getSimpleString('tussenvoegsel');
         $lastName = $post->getSimpleString('lastName');
         $email = $post->getEmail('email');
+        $skipTicketCheck = $post->getBool('skipTicketCheck');
         $hash = Util::generateToken(16);
 
         $subscriber = new Subscriber();
@@ -455,10 +483,42 @@ Sportschool Geelhoed";
         $subscriber->lastName = $lastName;
         $subscriber->email = $email;
         $subscriber->numSoldTickets = 0;
-        $subscriber->soldTicketsAreVerified = true;
+        $subscriber->soldTicketsAreVerified = $skipTicketCheck;
         $subscriber->hash = $hash;
         $subscriber->save();
 
-        return new RedirectResponse("/webwinkel/winkelen/{$hash}");
+        if ($skipTicketCheck)
+        {
+            return new RedirectResponse("/webwinkel/winkelen/{$hash}");
+        }
+
+        $page = new SimplePage(
+            'Aanvraag gelukt',
+            'Je aanvraag is gelukt. Je krijgt automatisch bericht zodra we je lotenaantal hebben gecheckt.'
+        );
+        return $this->pageRenderer->renderResponse($page);
+    }
+
+    #[RouteAttribute('send-mail', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: false, right: self::RIGHT_MANAGE, skipCSRFCheck: true)]
+    public function sendMail(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
+    {
+        $hash = $queryBits->getString(2);
+        $subscriber = Subscriber::fetchByHash($hash);
+        if ($subscriber === null)
+        {
+            throw new RuntimeUserSafeError('Gebruiker niet gevonden!');
+        }
+
+        $this->sendAccountConfirmationMail($urlInfo, $subscriber);
+        $subscriber->emailSent = true;
+        $subscriber->save();
+        return new JsonResponse(['status' => 'ok']);
+    }
+
+    #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function overview(): Response
+    {
+        $page = new OverviewPage();
+        return $this->pageRenderer->renderResponse($page);
     }
 }

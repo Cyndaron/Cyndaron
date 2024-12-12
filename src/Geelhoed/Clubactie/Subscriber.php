@@ -12,7 +12,7 @@ final class Subscriber extends Model
     use FileCachedModel;
 
     public const TABLE = 'geelhoed_clubactie_subscriber';
-    public const TABLE_FIELDS = ['firstName', 'tussenvoegsel', 'lastName', 'email', 'phone', 'numSoldTickets', 'soldTicketsAreVerified', 'hash'];
+    public const TABLE_FIELDS = ['firstName', 'tussenvoegsel', 'lastName', 'email', 'phone', 'numSoldTickets', 'soldTicketsAreVerified', 'emailSent', 'hash'];
 
     public string $firstName = '';
     public string $tussenvoegsel = '';
@@ -22,6 +22,7 @@ final class Subscriber extends Model
 
     public int $numSoldTickets = 0;
     public bool $soldTicketsAreVerified = false;
+    public bool $emailSent = false;
     public string $hash = '';
 
     public static function fetchByHash(string $hash): self|null
