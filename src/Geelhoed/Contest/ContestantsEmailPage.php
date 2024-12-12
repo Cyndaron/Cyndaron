@@ -6,14 +6,21 @@ namespace Cyndaron\Geelhoed\Contest;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
+use function array_map;
+use function implode;
 
 final class ContestantsEmailPage extends Page
 {
     public function __construct()
     {
         parent::__construct('E-mailadressen wedstrijdjudoka\'s');
-        $parents = User::fetchAll(['id IN (SELECT `userId` FROM `user_rights` WHERE `right` = ?)'], [Contest::RIGHT_PARENT]);
         $independentContestants = Member::fetchAll(['isContestant = 1', 'id NOT IN (SELECT memberId FROM geelhoed_users_members)']);
+        $dependentContestants = Member::fetchAll(['isContestant = 1', 'id IN (SELECT memberId FROM geelhoed_users_members)']);
+        $dependentMemberList = array_map(function(Member $member)
+        {
+            return (int)$member->id;
+        }, $dependentContestants);
+        $parents = User::fetchAll(['id IN (SELECT `userId` FROM `geelhoed_users_members` WHERE `memberId` IN (' . implode(',', $dependentMemberList) . '))']);
         $pairs = [];
 
         foreach ($parents as $parent)
