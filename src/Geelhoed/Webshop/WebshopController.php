@@ -90,6 +90,9 @@ final class WebshopController extends Controller
         $text = "Beste {$subscriber->getFullName()},
 
 We hebben je bestelling ontvangen.
+
+Betalen kan met deze link: " . $urlInfo->schemeAndHost . '/webwinkel/bestelling-betalen/' . $subscriber->hash . "
+
 Hieronder volgt een overzicht van de bestelde artikelen:
 ";
         $orderItems = OrderItem::fetchAllByOrder($order);
@@ -125,6 +128,7 @@ Sportschool Geelhoed";
             'Bestelling webshop',
             $text
         );
+        $mail->addReplyTo(new Address('gcageelhoed@gmail.com'));
         $mail->send();
     }
 
@@ -153,6 +157,7 @@ Sportschool Geelhoed";
             'Bestellen voor Grote Clubactie',
             $text
         );
+        $mail->addReplyTo(new Address('gcageelhoed@gmail.com'));
         $mail->send();
     }
 
@@ -276,7 +281,7 @@ Sportschool Geelhoed";
     }
 
     #[RouteAttribute('mollieWebhook', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
-    public function mollieWebhook(RequestParameters $post): Response
+    public function mollieWebhook(RequestParameters $post, UrlInfo $urlInfo): Response
     {
         $apiKey = Setting::get('mollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
@@ -302,17 +307,29 @@ Sportschool Geelhoed";
             if ($order->status === OrderStatus::PENDING_PAYMENT)
             {
                 $order->status = OrderStatus::IN_PROGRESS;
+                $order->save();
+
+                $subscriber = $order->getSubscriber();
+                $text = "Beste {$subscriber->getFullName()},\n\nWe hebben de betaling voor je bestelling in onze webwinkel ontvangen.\n\n";
+                $text .= "Met vriendelijke groet,\nSportschool Geelhoed";
+                $mail = UtilMail::createMailWithDefaults(
+                    $urlInfo->domain,
+                    new Address($subscriber->email),
+                    'Betaling gelukt',
+                    $text
+                );
+                $mail->addReplyTo(new Address('gcageelhoed@gmail.com'));
+                $mail->send();
             }
         }
         else
         {
             $order->status = OrderStatus::PENDING_PAYMENT;
+            $order->save();
         }
 
-        if (!$order->save())
-        {
-            return new JsonResponse(['error' => 'Could not update payment information for all subscriptions!'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+
+
 
         return new JsonResponse();
     }
