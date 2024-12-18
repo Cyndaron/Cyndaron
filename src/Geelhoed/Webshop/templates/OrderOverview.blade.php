@@ -1,11 +1,12 @@
+@php /** @var \Cyndaron\Geelhoed\Webshop\Model\OrderItem[] $orderItems */ @endphp
 @foreach ($orderItems as $orderItem)
     <li class="list-group-item">
-        {{ $orderItem->getLineDescription() }}
+        {{ $orderItem->quantity }}× {{ $orderItem->getLineDescription() }}
         <br>
         @if ($orderItem->currency === \Cyndaron\Geelhoed\Webshop\Model\Currency::LOTTERY_TICKET)
-            ({{ $orderItem->price }} loten)
+            ({{ $orderItem->getLineAmount() }} loten)
         @elseif($orderItem->currency === \Cyndaron\Geelhoed\Webshop\Model\Currency::EURO)
-            ({{ $orderItem->price|euro }})
+            ({{ $orderItem->getLineAmount()|euro }})
         @endif
     </li>
 @endforeach
