@@ -11,6 +11,9 @@
         @endif
     @endforeach
 </div>
+<p>
+    This build was published at {{ $build->publishedAt->format('Y-m-d, H:i') }} UTC.
+</p>
 @if ($build->signedWithSignPath)
     <div class="alert alert-info">
         Free code signing provided by <a href="https://about.signpath.io/">SignPath.io</a>, certificate by <a href="https://signpath.org/">SignPath Foundation</a>.<br><br>
