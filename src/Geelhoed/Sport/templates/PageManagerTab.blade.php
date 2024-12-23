@@ -36,7 +36,7 @@
     </tbody>
 </table>
 
-@component('View/Widget/Modal',  ['id' => 'pm-edit-modal', 'title' => 'Volgorde aanpassen', 'sizeClass' => 'modal-lg'])
+@component('View/Widget/Modal',  ['id' => 'pm-edit-modal', 'title' => 'Prijzen aanpassen', 'sizeClass' => 'modal-lg'])
     @slot('body')
         <form id="pm-edit-modal-form">
             <input type="hidden" name="csrfToken" value="{{ $tokenEdit }}">
