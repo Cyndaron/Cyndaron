@@ -575,4 +575,18 @@ Sportschool Geelhoed";
         $page = new OverviewPage();
         return $this->pageRenderer->renderResponse($page);
     }
+
+    #[RouteAttribute('mail-everyone', RequestMethod::POST, UserLevel::ADMIN, right: self::RIGHT_MANAGE, isApiMethod: true)]
+    public function mailEveryone(UrlInfo $urlInfo): JsonResponse
+    {
+        $subscribers = Subscriber::fetchAll(['soldTicketsAreVerified = 1', 'emailSent = 0']);
+        foreach ($subscribers as $subscriber)
+        {
+            $this->sendAccountConfirmationMail($urlInfo, $subscriber);
+            $subscriber->emailSent = true;
+            $subscriber->save();
+        }
+
+        return new JsonResponse(['status' => 'ok']);
+    }
 }

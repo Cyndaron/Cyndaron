@@ -16,4 +16,15 @@ window.addEventListener("DOMContentLoaded", () =>
                 });
         });
     });
+
+    document.getElementById('pm-mail-everyone').addEventListener('click', function(event) {
+        const payload = new FormData();
+        payload.append('csrfToken', event.target.getAttribute('data-csrf-token'));
+        fetch('/api/webwinkel/mail-everyone', { method: 'POST', body: payload })
+            .then((response) => {
+                if (response.ok) {
+                    location.reload();
+                }
+            });
+    });
 });

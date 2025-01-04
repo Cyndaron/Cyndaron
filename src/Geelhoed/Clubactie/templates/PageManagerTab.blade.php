@@ -1,3 +1,16 @@
+@component('View/Widget/Toolbar')
+    @slot('right')
+        <button
+            type="button"
+            id="pm-mail-everyone"
+            data-csrf-token="{{ $tokenHandler->get('webwinkel', 'mail-everyone') }}"
+            class="btn btn-outline-cyndaron"
+        >
+            <span class="glyphicon glyphicon-envelope"></span> Iedereen mailen
+        </button>
+    @endslot
+@endcomponent
+
 <table id="gcam-table" class="table table-striped table-bordered pm-table">
     <thead>
     <tr>
