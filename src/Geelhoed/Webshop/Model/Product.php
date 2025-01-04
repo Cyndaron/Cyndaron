@@ -10,10 +10,11 @@ final class Product extends Model
 {
     use FileCachedModel;
 
+    public const GYMTAS_ID = 1;
     public const DONATE_TICKETS_ID = 18;
 
     public const TABLE = 'geelhoed_webshop_product';
-    public const TABLE_FIELDS = ['parentId', 'name', 'description', 'options', 'gcaTicketPrice', 'euroPrice'];
+    public const TABLE_FIELDS = ['parentId', 'name', 'description', 'options', 'gcaTicketPrice', 'euroPrice', 'visible'];
 
     public int|null $parentId = null;
     public string $name;
@@ -21,6 +22,7 @@ final class Product extends Model
     public string $options;
     public int|null $gcaTicketPrice = null;
     public float|null $euroPrice = null;
+    public bool $visible = true;
 
     public const OPTION_MAPPING = [
         'color' => 'Kleur',

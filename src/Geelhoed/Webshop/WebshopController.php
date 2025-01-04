@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use function sprintf;
+use function json_encode;
 
 final class WebshopController extends Controller
 {
@@ -449,6 +450,45 @@ Sportschool Geelhoed";
         $orderItem->productId = (int)$donateProduct->id;
         $orderItem->price = $numRemainingTickets;
         $orderItem->currency = Currency::LOTTERY_TICKET;
+        $orderItem->save();
+
+        return new RedirectResponse("/webwinkel/winkelen/{$hash}");
+    }
+
+    #[RouteAttribute('geen-gymtas', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
+    public function forfeitGymtas(QueryBits $queryBits): Response
+    {
+        $hash = $queryBits->getString(2);
+        try
+        {
+            [$order, $subscriber] = $this->getSubscriberAndOrderFromHash($hash);
+        }
+        catch (RuntimeUserSafeError $e)
+        {
+            return $this->pageRenderer->renderErrorResponse(
+                new ErrorPage('Fout', $e->getMessage())
+            );
+        }
+
+        $gymtasProduct = Product::fetchById(Product::GYMTAS_ID);
+        if ($gymtasProduct === null)
+        {
+            return new RedirectResponse("/webwinkel/winkelen/{$hash}");
+        }
+
+        $numRemainingTickets = $subscriber->numSoldTickets - $order->getTicketTotal();
+        if ($numRemainingTickets === 0)
+        {
+            return new RedirectResponse("/webwinkel/winkelen/{$hash}");
+        }
+
+        $orderItem = new OrderItem();
+        $orderItem->orderId = (int)$order->id;
+        $orderItem->quantity = 1;
+        $orderItem->productId = (int)$gymtasProduct->id;
+        $orderItem->price = (float)$gymtasProduct->gcaTicketPrice;
+        $orderItem->currency = Currency::LOTTERY_TICKET;
+        $orderItem->options = json_encode(['color' => 'Achterwege laten'], flags: JSON_THROW_ON_ERROR);
         $orderItem->save();
 
         return new RedirectResponse("/webwinkel/winkelen/{$hash}");

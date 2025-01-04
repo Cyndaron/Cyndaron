@@ -1,6 +1,59 @@
-.product-list div + div
+$card-margin: 10px;
+
+.product-list
 {
-    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -$card-margin;
+
+    .card
+    {
+        margin: $card-margin;
+        width: 322px;
+
+        .card-img-top
+        {
+            overflow: hidden;
+
+            img
+            {
+                width: 320px;
+                height: 300px;
+                padding: 0;
+                margin: 0;
+            }
+        }
+
+        .card-body
+        {
+            display: flex;
+            flex-direction: column;
+
+            .card-text
+            {
+                flex-grow: 1;
+            }
+
+            .addtocart-block
+            {
+                flex-grow: 0;
+                width: 100%;
+            }
+
+            .product-currencies
+            {
+                display: flex;
+                justify-content: space-between;
+            }
+        }
+    }
+
+    div + div
+    {
+        margin-top: 15px;
+    }
+
+
 }
 
 .cart-item

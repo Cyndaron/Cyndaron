@@ -64,14 +64,28 @@
 
     @if ($needsAddingGymtas)
         <p>
-            Omdat je 10 loten of meer hebt verkocht, heb je recht op een gratis gymtasje:
-
-            @include('Geelhoed/Webshop/Product', ['product' => $gymtas, 'validCurrencies' => [\Cyndaron\Geelhoed\Webshop\Model\Currency::LOTTERY_TICKET], 'hash' => $hash])
+            Je hebt {{ $numSoldTickets }} loten verkocht. Bij 10 of meer verkochte loten krijg je een gratis gymtasje.
+            De resterende {{ ($numSoldTickets - $gymtas->gcaTicketPrice ) }} loten kun je aan andere
+            artikelen besteden.
         </p>
 
-        Nadat je dit gymtasje in je winkelwagen hebt gestopt, kun je andere artikelen bestellen.
+        <div class="product-list">
+            @include('Geelhoed/Webshop/Product', ['product' => $gymtas, 'validCurrencies' => [\Cyndaron\Geelhoed\Webshop\Model\Currency::LOTTERY_TICKET], 'hash' => $hash])
+        </div>
+        <p>
+            Nadat je dit gymtasje in je winkelwagen hebt gestopt, kun je andere artikelen bestellen.
+            Heb je al genoeg gymtassen? Dan kun je ervoor kiezen om deze achterwege te laten. Je kunt de resterende
+            {{ ($numSoldTickets - $gymtas->gcaTicketPrice ) }} loten dan nog besteden aan de andere artikelen, of ze afrekenen
+            in euro’s.
+        </p>
+        <form action="/webwinkel/geen-gymtas/{{ $hash }}" method="post">
+            <input type="submit" class="btn btn-sm btn-outline-cyndaron" value="Afzien van gratis gymtas">
+        </form>
     @else
         <h2>Producten</h2>
+        <div class="alert alert-info">
+            Tip: klik of druk op de foto’s voor een vergroting en meer informatie.
+        </div>
         <div class="product-list">
             @foreach ($products as $product)
                 @php
