@@ -54,7 +54,7 @@ final class PageManagerTabs
         ]);
     }
 
-    public static function clubactieTab(TemplateRenderer $templateRenderer): string
+    public static function clubactieTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
     {
         $subscribers = Subscriber::fetchAll();
         usort($subscribers, function(Subscriber $s1, Subscriber $s2)
@@ -64,6 +64,7 @@ final class PageManagerTabs
         });
         return $templateRenderer->render('Geelhoed/Clubactie/PageManagerTab', [
             'subscribers' => $subscribers,
+            'tokenHandler' => $tokenHandler,
         ]);
     }
 

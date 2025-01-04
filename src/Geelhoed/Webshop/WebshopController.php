@@ -24,13 +24,11 @@ use Cyndaron\Util\RuntimeUserSafeError;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Template\ViewHelpers;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
-use function sprintf;
 use function json_encode;
 
 final class WebshopController extends Controller
@@ -133,7 +131,7 @@ Sportschool Geelhoed";
         $mail->send();
     }
 
-    private function sendAccountConfirmationMail(UrlInfo $urlInfo, Subscriber $subscriber): void
+    public function sendAccountConfirmationMail(UrlInfo $urlInfo, Subscriber $subscriber): void
     {
         $link = "{$urlInfo->schemeAndHost}/webwinkel/winkelen/{$subscriber->hash}";
         $text = "Beste {$subscriber->getFullName()},

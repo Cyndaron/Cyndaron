@@ -65,6 +65,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
                 singular: 'Lotenverkoper',
                 plural: 'Lotenverkopers',
                 pageManagerTab: PageManagerTabs::clubactieTab(...),
+                pageManagerJS: '/src/Geelhoed/Clubactie/js/PageManagerTab.js',
             ),
             'orders' => new Datatype(
                 singular: 'Webshoporder',
