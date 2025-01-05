@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\OpenRCT2\Downloads;
 
 use function sha1;
+use function file_exists;
 
 enum APICall : string
 {
@@ -38,5 +39,10 @@ enum APICall : string
     public function belongsToReleaseBuild(): bool
     {
         return $this === self::RELEASE_BUILDS || $this === self::LATEST_RELEASE_BUILD;
+    }
+
+    public function presentInCache(): bool
+    {
+        return file_exists($this->getCachePath());
     }
 }

@@ -9,11 +9,14 @@ declare(strict_types=1);
 namespace Cyndaron\OpenRCT2\Downloads;
 
 use Cyndaron\Error\ErrorPage;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Psr\Log\LoggerInterface;
+use ReflectionEnum;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 final class DownloadController extends Controller
@@ -57,5 +60,17 @@ final class DownloadController extends Controller
     {
         $factory = new ChangelogPageFactory(new APIFetcher());
         return $this->pageRenderer->renderResponse($factory->getPage());
+    }
+
+    #[RouteAttribute('clearCache', RequestMethod::POST, UserLevel::ADMIN)]
+    public function clearCache(QueryBits $queryBits): Response
+    {
+        $apiCallName = $queryBits->getString(2);
+        $reflection = new ReflectionEnum(APICall::class);
+        /** @var APICall $apiCall */
+        $apiCall = $reflection->getCase($apiCallName)->getValue();
+        $filename = $apiCall->getCachePath();
+        \Safe\unlink($filename);
+        return new RedirectResponse('/pagemanager/apicall');
     }
 }
