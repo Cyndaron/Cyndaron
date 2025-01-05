@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Webshop\Model;
 
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
 use Cyndaron\Geelhoed\Hour\Hour;
@@ -11,8 +10,6 @@ use function assert;
 
 final class Order extends Model
 {
-    use FileCachedModel;
-
     public const TABLE = 'geelhoed_webshop_order';
     public const TABLE_FIELDS = ['subscriberId', 'hourId', 'status', 'paymentId'];
 
