@@ -49,7 +49,7 @@ final class DownloadProcessor implements \Cyndaron\Module\TextPostProcessor
         return preg_replace_callback('/%newestLauncher%/', function()
         {
             return $this->renderBlock(
-                APICall::LATEST_LAUCNHER_BUILD,
+                APICall::LATEST_LAUNCHER_BUILD,
                 'Download OpenLauncher',
             );
         }, $text) ?? $text;

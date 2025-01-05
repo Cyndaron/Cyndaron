@@ -52,7 +52,7 @@ final class DownloadController extends Controller
     #[RouteAttribute('launcher', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function listLauncherBuilds(LoggerInterface $logger): Response
     {
-        return $this->fetchAndProcessBuilds($logger, 'Launcher', APICall::LAUCNHER_BUILDS);
+        return $this->fetchAndProcessBuilds($logger, 'Launcher', APICall::LAUNCHER_BUILDS);
     }
 
     #[RouteAttribute('changelog', RequestMethod::GET, UserLevel::ANONYMOUS)]

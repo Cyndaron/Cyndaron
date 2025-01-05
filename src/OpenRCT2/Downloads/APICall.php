@@ -12,8 +12,8 @@ enum APICall : string
     case LATEST_DEVELOP_BUILD = 'https://api.github.com/repos/OpenRCT2/OpenRCT2-binaries/releases/latest';
     case RELEASE_BUILDS = 'https://api.github.com/repos/OpenRCT2/OpenRCT2/releases';
     case LATEST_RELEASE_BUILD = 'https://api.github.com/repos/OpenRCT2/OpenRCT2/releases/latest';
-    case LAUCNHER_BUILDS = 'https://api.github.com/repos/OpenRCT2/OpenLauncher/releases';
-    case LATEST_LAUCNHER_BUILD = 'https://api.github.com/repos/OpenRCT2/OpenLauncher/releases/latest';
+    case LAUNCHER_BUILDS = 'https://api.github.com/repos/OpenRCT2/OpenLauncher/releases';
+    case LATEST_LAUNCHER_BUILD = 'https://api.github.com/repos/OpenRCT2/OpenLauncher/releases/latest';
     case CHANGELOG = 'https://raw.githubusercontent.com/OpenRCT2/OpenRCT2/develop/distribution/changelog.txt';
 
     public function getUrl(): string
@@ -31,7 +31,7 @@ enum APICall : string
         return match ($this)
         {
             self::LATEST_RELEASE_BUILD, self::RELEASE_BUILDS => 30 * 60,
-            self::LATEST_LAUCNHER_BUILD, self::LAUCNHER_BUILDS => 4 * 7 * 24 * 60 * 60,
+            self::LATEST_LAUNCHER_BUILD, self::LAUNCHER_BUILDS => 4 * 7 * 24 * 60 * 60,
             default => 5 * 60,
         };
     }
