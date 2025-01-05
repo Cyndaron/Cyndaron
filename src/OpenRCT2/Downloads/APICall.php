@@ -7,12 +7,12 @@ use function sha1;
 
 enum APICall : string
 {
-    case DEVELOP_BUILDS = 'https://api.github.com/repos/Limetric/OpenRCT2-binaries/releases?per_page=120';
-    case LATEST_DEVELOP_BUILD = 'https://api.github.com/repos/Limetric/OpenRCT2-binaries/releases/latest';
+    case DEVELOP_BUILDS = 'https://api.github.com/repos/OpenRCT2/OpenRCT2-binaries/releases?per_page=120';
+    case LATEST_DEVELOP_BUILD = 'https://api.github.com/repos/OpenRCT2/OpenRCT2-binaries/releases/latest';
     case RELEASE_BUILDS = 'https://api.github.com/repos/OpenRCT2/OpenRCT2/releases';
     case LATEST_RELEASE_BUILD = 'https://api.github.com/repos/OpenRCT2/OpenRCT2/releases/latest';
-    case LAUCNHER_BUILDS = 'https://api.github.com/repos/IntelOrca/OpenLauncher/releases';
-    case LATEST_LAUCNHER_BUILD = 'https://api.github.com/repos/IntelOrca/OpenLauncher/releases/latest';
+    case LAUCNHER_BUILDS = 'https://api.github.com/repos/OpenRCT2/OpenLauncher/releases';
+    case LATEST_LAUCNHER_BUILD = 'https://api.github.com/repos/OpenRCT2/OpenLauncher/releases/latest';
     case CHANGELOG = 'https://raw.githubusercontent.com/OpenRCT2/OpenRCT2/develop/distribution/changelog.txt';
 
     public function getUrl(): string
