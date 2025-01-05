@@ -1,6 +1,7 @@
 <table class="table table-striped table-bordered pm-table">
     <thead>
     <tr>
+        <th>ID</th>
         <th>Naam</th>
         <th>URI</th>
         <th>Cache-timeout</th>
@@ -9,9 +10,13 @@
     </tr>
     </thead>
     <tbody>
-    @php /** @var \Cyndaron\Geelhoed\Tryout\Tryout[] $tryouts */ @endphp
+    @php
+        /** @var \Cyndaron\Geelhoed\Tryout\Tryout[] $tryouts */
+        $i = 0;
+    @endphp
     @foreach (\Cyndaron\OpenRCT2\Downloads\APICall::cases() as $apiCall)
         <tr>
+            <td>{{ $i++ }}</td>
             <td>{{ $apiCall->name }}</td>
             <td>{{ $apiCall->value }}</td>
             <td>{{ $apiCall->getAPITimeout() / 60 }} minuten</td>
