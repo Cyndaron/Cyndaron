@@ -60,7 +60,7 @@ final class RequestParameters
                 $parameter[$key] = $stripped;
             }
         }
-        elseif (is_string($parameter))
+        else
         {
             // This will strip out invalid UTF-8.
             $parameter = mb_convert_encoding($parameter, 'UTF-8', 'UTF-8');

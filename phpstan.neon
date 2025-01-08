@@ -11,9 +11,6 @@ parameters:
     reportStaticMethodSignatures: true
     strictRules:
     		allRules: false
-    # Override strict defaults:
-    reportMaybesInPropertyPhpDocTypes: false
-    checkAlwaysTrueCheckTypeFunctionCall: false
 
 includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon

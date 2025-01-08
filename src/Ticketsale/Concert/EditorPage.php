@@ -19,7 +19,6 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public string $template = '';
 
-    /** @var Concert|null  */
     public Model|null $model = null;
 
     protected function prepare(): void
@@ -39,12 +38,12 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
         }
         asort($locations);
 
-        $this->templateVars['deliveryCostInterface'] = $this->model ? $this->model->getDeliveryCostInterface() : '';
+        $this->templateVars['deliveryCostInterface'] = $this->model instanceof Concert ? $this->model->getDeliveryCostInterface() : '';
         $this->templateVars['deliveryCostOptions'] = [
             FlatFee::class => 'Vast bedrag per kaart',
             Staffel::class => 'Staffel',
         ];
-        $this->templateVars['delivery'] = $this->model ? $this->model->getDelivery()->value : TicketDelivery::DIGITAL;
+        $this->templateVars['delivery'] = $this->model instanceof Concert ? $this->model->getDelivery()->value : TicketDelivery::DIGITAL;
         $this->templateVars['deliveryCost'] = ViewHelpers::formatCurrency($this->model->deliveryCost ?? 1.5);
         $this->templateVars['reservedSeatCharge'] = ViewHelpers::formatCurrency($this->model->reservedSeatCharge ?? 5.0);
         $this->templateVars['numFreeSeats'] = $this->model->numFreeSeats ?? 250;

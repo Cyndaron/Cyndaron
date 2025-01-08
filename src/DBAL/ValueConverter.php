@@ -44,7 +44,6 @@ final class ValueConverter
             return $var->format(Util::SQL_DATE_TIME_FORMAT);
         }
 
-        assert(is_scalar($var));
         // At this point, the value _has_ to be a string.
         return $var;
     }

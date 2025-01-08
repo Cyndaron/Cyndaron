@@ -114,7 +114,6 @@ final class ViewFinder extends FileViewFinder
         if (count($parts) > 1)
         {
             $name = array_pop($parts);
-            assert(is_string($name));
             $module = $parts[0];
             $parts = array_slice($parts, 1);
 
