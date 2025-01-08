@@ -36,7 +36,6 @@
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
-        "thecodingmachine/phpstan-safe-rule": "*",
         "phpstan/phpstan": "*",
         "friendsofphp/php-cs-fixer": "*",
         "phpstan/phpstan-strict-rules": "^1.4"
