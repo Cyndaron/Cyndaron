@@ -9,7 +9,15 @@ parameters:
     checkFunctionNameCase: true
     reportMaybesInMethodSignatures: true
     reportStaticMethodSignatures: true
+    strictRules:
+    		allRules: false
+    # Override strict defaults:
+    reportMaybesInPropertyPhpDocTypes: false
+    checkAlwaysTrueStrictComparison: false
+    checkAlwaysTrueCheckTypeFunctionCall: false
+
 includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
 #    - vendor/thecodingmachine/phpstan-safe-rule/phpstan-safe-rule.neon
 
 rules:
@@ -29,7 +37,3 @@ rules:
 	- PHPStan\Rules\StrictCalls\DynamicCallOnStaticMethodsRule
 	- PHPStan\Rules\StrictCalls\StrictFunctionCallsRule
 	- PHPStan\Rules\SwitchConditions\MatchingTypeInSwitchCaseConditionRule
-
-services:
-	-
-		class: PHPStan\Rules\Operators\OperatorRuleHelper

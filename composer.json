@@ -39,7 +39,7 @@
         "thecodingmachine/phpstan-safe-rule": "*",
         "phpstan/phpstan": "*",
         "friendsofphp/php-cs-fixer": "*",
-        "phpstan/phpstan-strict-rules": "*"
+        "phpstan/phpstan-strict-rules": "^1.4"
     },
     "replace": {
         "symfony/polyfill-ctype": "*",
