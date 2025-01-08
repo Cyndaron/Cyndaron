@@ -43,11 +43,7 @@ final class WebBootstrapper
         // @phpstan-ignore-next-line
         set_error_handler(static function(int $severity, string $message, string $file, int $line)
         {
-            if ($severity === E_DEPRECATED)
-            {
-                //error_log("[Deprecation] In {$file}:{$line}: $message\n");
-            }
-            else
+            if ($severity !== E_DEPRECATED)
             {
                 throw new ErrorException($message, 0, $severity, $file, $line);
             }
