@@ -22,7 +22,6 @@ final class WebBootstrapper
         try
         {
             $this->setErrorHandler();
-            $this->registerAutoloaders();
             $request = Request::createFromGlobals();
             $this->setPhpConfig((bool)$request->server->get('HTTPS'));
             $this->processSettings();
@@ -69,11 +68,6 @@ final class WebBootstrapper
             // Ensure all cookies are sent via HTTPS.
             ini_set('session.cookie_secure', '1');
         }
-    }
-
-    private function registerAutoloaders(): void
-    {
-        require_once __DIR__ . '/../vendor/autoload.php';
     }
 
     private function processSettings(): void
