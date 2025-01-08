@@ -17,6 +17,8 @@ use const E_DEPRECATED;
 
 final class WebBootstrapper
 {
+    private const SETTINGS_FILE =  __DIR__ . '/../config.php';
+
     public function boot(): void
     {
         try
@@ -72,13 +74,12 @@ final class WebBootstrapper
 
     private function processSettings(): void
     {
-        $settingsFile = $this->getSettingsFile();
-        if ($settingsFile === null)
+        if (!file_exists(self::SETTINGS_FILE))
         {
             throw new BootFailure('Geen instellingenbestand gevonden!');
         }
 
-        $pdo = $this->connectToDatabase($settingsFile);
+        $pdo = $this->connectToDatabase();
         Setting::load($pdo);
     }
 
@@ -89,7 +90,7 @@ final class WebBootstrapper
         $response->send();
     }
 
-    private function connectToDatabase(string $settingsFile): Connection
+    private function connectToDatabase(): Connection
     {
         $dbmethode = 'mysql';
         $dbuser = 'root';
@@ -98,28 +99,10 @@ final class WebBootstrapper
         $dbnaam = 'cyndaron';
 
         /** @noinspection PhpIncludeInspection */
-        include $settingsFile;
+        include self::SETTINGS_FILE;
 
         $connection = Connection::connect($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass);
         DBConnection::connect($connection);
         return $connection;
-    }
-
-    private function getSettingsFile(): string|null
-    {
-        static $settingsFiles = [
-            __DIR__ . '/../config.php',
-            __DIR__ . '/../instellingen.php',
-        ];
-
-        foreach ($settingsFiles as $settingsFile)
-        {
-            if (file_exists($settingsFile))
-            {
-                return $settingsFile;
-            }
-        }
-
-        return null;
     }
 }
