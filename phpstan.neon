@@ -13,7 +13,6 @@ parameters:
     		allRules: false
     # Override strict defaults:
     reportMaybesInPropertyPhpDocTypes: false
-    checkAlwaysTrueStrictComparison: false
     checkAlwaysTrueCheckTypeFunctionCall: false
 
 includes:

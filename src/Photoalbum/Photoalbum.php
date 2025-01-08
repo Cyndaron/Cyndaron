@@ -56,7 +56,7 @@ final class Photoalbum extends ModelWithCategory
         $album->save();
 
         $id = $album->id;
-        if ($id !== false)
+        if ($id !== null)
         {
             $baseDir = self::getPhotoalbumsDir() . "/{$id}";
             Util::createDir($baseDir);

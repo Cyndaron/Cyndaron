@@ -289,7 +289,7 @@ Uw nieuwe wachtwoord is: %s';
         }
 
         $records = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM user_rights WHERE `userId` = ? AND `right` = ?', [$this->id, $right]);
-        if ($records !== false && count($records) > 0)
+        if (count($records) > 0)
         {
             return true;
         }
