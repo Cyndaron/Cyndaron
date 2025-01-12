@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Member;
 
-use Cyndaron\DBAL\Repository;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
@@ -70,7 +70,7 @@ final class MemberController extends Controller
     }
 
     #[RouteAttribute('removeGraduation', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function removeGraduation(QueryBits $queryBits, Repository $repository): JsonResponse
+    public function removeGraduation(QueryBits $queryBits, GenericRepository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -213,7 +213,7 @@ final class MemberController extends Controller
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits, Repository $repository): JsonResponse
+    public function delete(QueryBits $queryBits, GenericRepository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)

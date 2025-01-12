@@ -5,7 +5,7 @@ namespace Cyndaron\DBAL;
 
 use PDOException;
 
-final class Repository
+final class GenericRepository
 {
     public function __construct()
     {
@@ -25,7 +25,7 @@ final class Repository
             return new $class();
         }
 
-        $ret = $this->tryFetchById($class, $id);
+        $ret = $this->fetchById($class, $id);
         if ($ret === null)
         {
             return new $class($id);
@@ -41,27 +41,9 @@ final class Repository
      * @param int $id
      * @return T|null
      */
-    public function tryFetchById(string $class, int $id): Model|null
+    public function fetchById(string $class, int $id): Model|null
     {
         return $class::fetchById($id);
-    }
-
-    /**
-     * @template T of Model
-     *
-     * @param class-string<T> $class
-     * @param int $id
-     * @return T
-     */
-    public function fetchById(string $class, int $id): Model
-    {
-        $ret = $this->tryFetchById($class, $id);
-        if ($ret === null)
-        {
-            throw new \RuntimeException('No such entity!');
-        }
-
-        return $ret;
     }
 
     /**

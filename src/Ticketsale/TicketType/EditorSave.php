@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\TicketType;
 
-use Cyndaron\DBAL\Repository;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
 
@@ -11,8 +11,8 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 {
     public function __construct(
         private readonly RequestParameters $post,
-        private readonly UserSession $userSession,
-        private readonly Repository $repository,
+        private readonly UserSession       $userSession,
+        private readonly GenericRepository $repository,
     ) {
     }
 
