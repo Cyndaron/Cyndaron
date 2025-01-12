@@ -70,7 +70,7 @@ final class UserController extends Controller
     public function loginPost(RequestParameters $post, UserSession $userSession, Translator $t, UserRepository $repository): Response
     {
         $identification = $post->getEmail('login_user');
-        $verification = $post->getUnfilteredString('login_pass');
+        $password = $post->getUnfilteredString('login_pass');
 
         try
         {
@@ -88,7 +88,31 @@ final class UserController extends Controller
                 throw new IncorrectCredentials('Onbekende gebruikersnaam of e-mailadres.');
             }
 
-            $redirectUrl = User::login($user, $verification, $userSession, $t);
+            if (!$user->passwordIsCorrect($password))
+            {
+                throw new IncorrectCredentials('Verkeerd wachtwoord.');
+            }
+
+            if ($user->passwordNeedsUpdate())
+            {
+                $user->setPassword($password);
+                $user->save();
+            }
+
+            $userSession->setProfile($user);
+            $userSession->addNotification($t->get('U bent ingelogd.'));
+
+            $sessionRedirect = $userSession->getRedirect();
+            if ($sessionRedirect !== '')
+            {
+                $redirectUrl = $sessionRedirect;
+                $userSession->setRedirect(null);
+            }
+            else
+            {
+                $redirectUrl = '/';
+            }
+
             return new RedirectResponse($redirectUrl);
         }
         catch (IncorrectCredentials $e)
@@ -231,7 +255,7 @@ final class UserController extends Controller
         }
 
         $oldPassword = $post->getUnfilteredString('oldPassword');
-        if (!$profile->checkPassword($oldPassword))
+        if (!$profile->passwordIsCorrect($oldPassword))
         {
             $userSession->addNotification('Oude wachtwoord klopt niet!');
             return new RedirectResponse('/user/changePassword');

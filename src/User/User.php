@@ -6,7 +6,6 @@ namespace Cyndaron\User;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
-use Cyndaron\Translation\Translator;
 use Cyndaron\Util\Mail as UtilMail;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
@@ -178,44 +177,6 @@ Uw nieuwe wachtwoord is: %s';
         return password_needs_rehash($this->password, PASSWORD_DEFAULT);
     }
 
-    public function updatePassword(string $password): void
-    {
-        $password = password_hash($password, PASSWORD_DEFAULT);
-        $updateQuery = 'UPDATE users SET password=? WHERE id=?';
-        DBConnection::getPDO()->executeQuery($updateQuery, [$password, $this->id]);
-        $this->password = $password;
-    }
-
-    public static function login(self $user, string $password, UserSession $userSession, Translator $t): string
-    {
-        if (!$user->passwordIsCorrect($password))
-        {
-            throw new IncorrectCredentials('Verkeerd wachtwoord.');
-        }
-
-        if ($user->passwordNeedsUpdate())
-        {
-            $user->updatePassword($password);
-        }
-
-        $userSession->setProfile($user);
-
-        $userSession->addNotification($t->get('U bent ingelogd.'));
-
-        $sessionRedirect = $userSession->getRedirect();
-        if ($sessionRedirect !== '')
-        {
-            $redirect = $sessionRedirect;
-            $userSession->setRedirect(null);
-        }
-        else
-        {
-            $redirect = '/';
-        }
-
-        return $redirect;
-    }
-
     public function getFullName(): string
     {
         $ret = $this->firstName ?: $this->initials;
@@ -335,10 +296,5 @@ Uw nieuwe wachtwoord is: %s';
 
         $result = DBConnection::getPDO()->insert('INSERT INTO user_rights(`userId`, `right`) VALUES (?, ?)', [$this->id, $right]);
         return (bool)$result;
-    }
-
-    public function checkPassword(string $password): bool
-    {
-        return password_verify($password, $this->password);
     }
 }
