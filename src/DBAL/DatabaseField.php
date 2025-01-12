@@ -8,4 +8,8 @@ use Attribute;
 #[Attribute]
 class DatabaseField
 {
+    public function __construct(
+        public string $dbName = ''
+    ) {
+    }
 }

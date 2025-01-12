@@ -2,7 +2,6 @@
 namespace Cyndaron\Geelhoed\Location;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\Location\Location;
 use Cyndaron\Page\SimplePage;

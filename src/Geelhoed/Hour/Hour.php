@@ -19,8 +19,8 @@ final class Hour extends Model
 
     public const TABLE = 'geelhoed_hours';
 
-    #[DatabaseField]
-    public int $locationId;
+    #[DatabaseField('locationId')]
+    public Location $location;
     #[DatabaseField]
     public int $day;
     #[DatabaseField]
@@ -29,8 +29,8 @@ final class Hour extends Model
     public string $from;
     #[DatabaseField]
     public string $until;
-    #[DatabaseField]
-    public int $sportId;
+    #[DatabaseField('sportId')]
+    public Sport $sport;
     #[DatabaseField]
     public string $sportOverride;
     #[DatabaseField]
@@ -40,27 +40,13 @@ final class Hour extends Model
     #[DatabaseField]
     public string $notes;
 
-    public function getLocation(): Location
-    {
-        $loc = Location::fetchById($this->locationId);
-        assert($loc !== null);
-        return $loc;
-    }
-
-    public function getSport(): Sport
-    {
-        $ret = Sport::fetchById((int)$this->sportId);
-        assert($ret !== null);
-        return $ret;
-    }
-
     public function getSportName(): string
     {
         if ($this->sportOverride !== '')
         {
             return $this->sportOverride;
         }
-        return $this->getSport()->name;
+        return $this->sport->name;
     }
 
     public function getDepartment(): Department

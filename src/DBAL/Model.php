@@ -53,7 +53,7 @@ abstract class Model
     }
 
     /**
-     * @return string[]
+     * @return DatabaseFieldMapping[]
      */
     private function getTableFields(bool $extended = false): array
     {
@@ -70,15 +70,18 @@ abstract class Model
             {
                 continue;
             }
-            if (count($property->getAttributes(DatabaseField::class)) > 0)
+            $attributes = $property->getAttributes(DatabaseField::class);
+            if (count($attributes) > 0)
             {
-                $ret[] = $name;
+                /** @var DatabaseField $firstAttribute */
+                $firstAttribute = $attributes[0]->newInstance();
+                $ret[] = new DatabaseFieldMapping($name, $firstAttribute->dbName ?: $name);
             }
         }
         return $ret;
     }
 
-    public function load(): bool
+    private function load(): bool
     {
         if ($this->id === null)
         {
@@ -92,9 +95,9 @@ abstract class Model
         {
             return false;
         }
-        foreach (array_keys($record) as $tableField)
+        foreach ($this->getTableFields() as $tableField)
         {
-            $this->$tableField = ValueConverter::sqlToPhp($record[$tableField], static::class, $tableField);
+            $this->{$tableField->propertyName} = ValueConverter::sqlToPhp($record[$tableField->dbName], static::class, $tableField->propertyName);
         }
         return true;
     }
@@ -168,7 +171,7 @@ abstract class Model
         $return = [];
         foreach ($this->getTableFields(true) as $tableField)
         {
-            $return[$tableField] = $this->$tableField;
+            $return[$tableField->dbName] = $this->{$tableField->propertyName};
         }
         return $return;
     }
@@ -193,9 +196,9 @@ abstract class Model
         $couldUpdateAll = true;
         foreach ($this->getTableFields(true) as $tableField)
         {
-            if (array_key_exists($tableField, $newArray))
+            if (array_key_exists($tableField->dbName, $newArray))
             {
-                $this->$tableField = ValueConverter::sqlToPhp($newArray[$tableField], static::class, $tableField);
+                $this->{$tableField->propertyName} = ValueConverter::sqlToPhp($newArray[$tableField->dbName], static::class, $tableField->propertyName);
             }
             else
             {
@@ -242,12 +245,13 @@ abstract class Model
         {
             $arguments = [];
             $placeholders = implode(',', array_fill(0, count($tableFields), '?'));
+            $quotedTableFields = [];
             foreach ($tableFields as $tableField)
             {
-                $arguments[] = ValueConverter::phpToSql($this->$tableField);
+                $arguments[] = ValueConverter::phpToSql($this->{$tableField->propertyName});
+                $quotedTableFields[] = "`{$tableField->dbName}`";
             }
 
-            $quotedTableFields = array_map(static fn (string $fieldName) => "`$fieldName`", $tableFields);
             $result = DBConnection::getPDO()->insert('INSERT INTO ' . static::TABLE . ' (' . implode(',', $quotedTableFields) . ') VALUES (' . $placeholders . ')', $arguments);
             if ($result !== false)
             {
@@ -264,15 +268,15 @@ abstract class Model
 
             foreach ($tableFields as $tableField)
             {
-                $mangledField = ValueConverter::phpToSql($this->$tableField);
+                $mangledField = ValueConverter::phpToSql($this->{$tableField->propertyName});
                 if ($mangledField !== null)
                 {
-                    $setStrings[] = "`{$tableField}`=?";
+                    $setStrings[] = "`{$tableField->dbName}`=?";
                     $arguments[] = $mangledField;
                 }
                 else
                 {
-                    $setStrings[] = "`$tableField`= NULL";
+                    $setStrings[] = "`{$tableField->dbName}`= NULL";
                 }
             }
 

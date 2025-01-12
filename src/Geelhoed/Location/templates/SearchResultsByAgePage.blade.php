@@ -23,7 +23,7 @@
             <tbody>
                 @php /** @var \Cyndaron\Geelhoed\Hour\Hour $hour */ @endphp
                 @foreach ($hours as $hour)
-                    @php $location = $hour->getLocation() @endphp
+                    @php $location = $hour->location @endphp
                     <tr>
                         <td>
                             <a href="/locaties/details/{{ $location->id }}">

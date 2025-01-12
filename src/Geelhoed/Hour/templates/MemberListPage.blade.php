@@ -42,7 +42,7 @@
 
     <h2>Trainingen op deze locatie</h2>
     <table class="table table-bordered table-striped">
-        @php $extendedLocation = new \Cyndaron\Geelhoed\Location\Location($hour->getLocation()); @endphp
+        @php $extendedLocation = new \Cyndaron\Geelhoed\Location\Location($hour->location); @endphp
         @foreach($extendedLocation->getHours($hour->departmentId) as $locationHour)
             <tr>
                 @php $weekday = \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($locationHour->day) @endphp

@@ -21,8 +21,12 @@ use function str_contains;
 
 final class ValueConverter
 {
-    public static function phpToSql(DateTimeInterface|string|float|int|bool|BackedEnum|null $var): string|int|float|null
+    public static function phpToSql(DateTimeInterface|string|float|int|bool|BackedEnum|null|Model $var): string|int|float|null
     {
+        if ($var instanceof Model)
+        {
+            return $var->id;
+        }
         if ($var === null)
         {
             return null;
@@ -48,7 +52,7 @@ final class ValueConverter
         return $var;
     }
 
-    public static function sqlToPhp(string|int|float|null $var, string $class, string $property):  DateTimeInterface|BackedEnum|bool|int|float|string|null
+    public static function sqlToPhp(string|int|float|null $var, string $class, string $property):  DateTimeInterface|BackedEnum|Model|bool|int|float|string|null
     {
         if ($var === null)
         {
@@ -79,6 +83,10 @@ final class ValueConverter
                 return (bool)(int)$var;
             case 'string':
                 return $var;
+        }
+        if (is_a($typeName, Model::class, true))
+        {
+            return $typeName::fetchById($var);
         }
         if (is_a($typeName, DateTimeInterface::class, true))
         {

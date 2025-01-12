@@ -26,7 +26,7 @@ final class Location
         $hours = Hour::fetchAll();
         $filtered = array_filter($hours, function(Hour $hour) use ($departmentId)
         {
-            if ($hour->locationId !== $this->base->id)
+            if ($hour->location->id !== $this->base->id)
             {
                 return false;
             }

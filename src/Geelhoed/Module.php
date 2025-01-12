@@ -25,9 +25,9 @@ use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\User\Module\UserMenuProvider;
-use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserRepository;
+use Cyndaron\User\UserSession;
 use Cyndaron\Util\Link;
 use function array_key_exists;
 use function array_merge;
@@ -120,8 +120,9 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
 
     public function getUserMenuItems(): array
     {
-        $contestVisibilityCheck1 = function(User|null $profile, UserRepository $repository): bool
+        $contestVisibilityCheck1 = function(UserSession $session, UserRepository $repository): bool
         {
+            $profile = $session->getProfile();
             if ($profile === null)
             {
                 return false;
@@ -132,8 +133,9 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
             $isContestant = $member !== null && $member->isContestant;
             return ($isContestant || $isContestantParent);
         };
-        $contestVisibilityCheck2 = function(User|null $profile): bool
+        $contestVisibilityCheck2 = function(UserSession $session): bool
         {
+            $profile = $session->getProfile();
             return ($profile !== null && !$profile->isAdmin());
         };
 

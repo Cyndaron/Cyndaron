@@ -74,7 +74,7 @@ final class PageManagerMemberGridItem
             $dayName = ViewHelpers::getDutchWeekday($hour->day);
             $from = ViewHelpers::filterHm($hour->from);
             $until = ViewHelpers::filterHm($hour->until);
-            $location = $hour->getLocation();
+            $location = $hour->location;
             assert($location->id !== null);
             $hours[] = "{$dayName} {$from}-{$until} ({$hour->getSportName()}, {$location->getName()})";
             $locations[$location->id] = $location->id;

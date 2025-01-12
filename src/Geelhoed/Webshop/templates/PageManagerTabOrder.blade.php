@@ -22,7 +22,7 @@
                 <td>{{ $order->getTicketTotal() }}</td>
                 <td>{{ $order->status->getDescription() }}</td>
                 <td>
-                    {{ $order->getHour()->getLocation()->getName() }}<br>
+                    {{ $order->getHour()->location->getName() }}<br>
                     {{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($order->getHour()->day) }} {{ $order->getHour()->getRange() }}
                 </td>
                 <td>
