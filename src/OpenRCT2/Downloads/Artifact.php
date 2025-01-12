@@ -14,6 +14,8 @@ use Cyndaron\OpenRCT2\Downloads\Classification\Type;
 use DateTimeInterface;
 use function str_contains;
 use function strtolower;
+use function explode;
+use function count;
 
 final class Artifact
 {
@@ -22,6 +24,7 @@ final class Artifact
         public readonly DateTimeInterface $publishedAt,
         public readonly OperatingSystem $operatingSystem,
         public readonly Architecture $architecture,
+        public readonly string $operatingSystemVersion,
         public readonly Type $type,
         public readonly int $size,
         public readonly string $downloadLink,
@@ -30,21 +33,15 @@ final class Artifact
     ) {
     }
 
-    /**
-     * @param string $tagName
-     * @param DateTimeInterface $publishedAt
-     * @param array{ name?: string, size?: int, browser_download_url?: string } $asset
-     * @return self
-     */
-    public static function fromArray(string $tagName, DateTimeInterface $publishedAt, array $asset, bool $signedBySignPath): self
+    public static function fromArray(string $tagName, DateTimeInterface $publishedAt, GitHubAsset $asset, bool $signedBySignPath): self
     {
         $version = $tagName;
-        $assetName = strtolower($asset['name'] ?? '');
+        $assetName = strtolower($asset->name);
 
         $operatingSystem = OperatingSystem::OTHER;
         $architecture = Architecture::OTHER;
+        $osVersion = '';
         $type = Type::PACKAGE;
-        $size = $asset['size'] ?? 0;
         $inDefaultSelection = false;
 
         if ($assetName === 'openlauncher')
@@ -72,28 +69,7 @@ final class Artifact
         }
         elseif (str_contains($assetName, 'linux'))
         {
-            $operatingSystem = OperatingSystem::LINUX;
-            if (str_contains($assetName, 'appimage'))
-            {
-                $inDefaultSelection = true;
-            }
-            else
-            {
-                $type = Type::PORTABLE;
-            }
-
-            if (str_contains($assetName, 'i686'))
-            {
-                $architecture = Architecture::X86_32;
-            }
-            elseif (str_contains($assetName, 'aarch64'))
-            {
-                $architecture = Architecture::ARM_64;
-            }
-            else
-            {
-                $architecture = Architecture::X86_64;
-            }
+            return self::processLinuxArtifact($asset, $version, $publishedAt, $signedBySignPath);
         }
         elseif (str_contains($assetName, 'macos'))
         {
@@ -110,41 +86,108 @@ final class Artifact
         }
         elseif (str_contains($assetName, 'windows'))
         {
-            $operatingSystem = OperatingSystem::WINDOWS;
+            return self::processWindowsArtifact($asset, $version, $publishedAt, $signedBySignPath);
+        }
 
-            if (str_contains($assetName, 'win32'))
-            {
-                $architecture = Architecture::X86_32;
-            }
-            elseif (str_contains($assetName, 'x64'))
-            {
-                $architecture = Architecture::X86_64;
-            }
-            elseif (str_contains($assetName, 'arm64'))
-            {
-                $architecture = Architecture::ARM_64;
-            }
+        return new self($version, $publishedAt, $operatingSystem, $architecture, $osVersion, $type, $asset->size, $asset->browserDownloadUrl, $inDefaultSelection, $signedBySignPath);
+    }
 
-            if (str_contains($assetName, '-installer'))
+    private static function processWindowsArtifact(GitHubAsset $asset, string $version, DateTimeInterface $publishedAt, bool $signedBySignPath): self
+    {
+        $architecture = Architecture::OTHER;
+        $inDefaultSelection = false;
+        $type = Type::PACKAGE;
+
+        $assetName = strtolower($asset->name);
+        if (str_contains($assetName, 'win32'))
+        {
+            $architecture = Architecture::X86_32;
+        }
+        elseif (str_contains($assetName, 'x64'))
+        {
+            $architecture = Architecture::X86_64;
+        }
+        elseif (str_contains($assetName, 'arm64'))
+        {
+            $architecture = Architecture::ARM_64;
+        }
+
+        if (str_contains($assetName, '-installer'))
+        {
+            $type = Type::INSTALLER;
+            if ($architecture === Architecture::X86_64)
             {
-                $type = Type::INSTALLER;
-                if ($architecture === Architecture::X86_64)
-                {
-                    $inDefaultSelection = true;
-                }
+                $inDefaultSelection = true;
             }
-            elseif (str_contains($assetName, '-symbols'))
+        }
+        elseif (str_contains($assetName, '-symbols'))
+        {
+            $type = Type::SYMBOLS;
+        }
+        elseif (str_contains($assetName, '-portable'))
+        {
+            $type = Type::PORTABLE;
+        }
+
+        return new self(
+            $version,
+            $publishedAt,
+            OperatingSystem::WINDOWS,
+            $architecture,
+            '',
+            $type,
+            $asset->size,
+            $asset->browserDownloadUrl,
+            $inDefaultSelection,
+            $signedBySignPath
+        );
+    }
+
+    private static function processLinuxArtifact(GitHubAsset $asset, string $version, DateTimeInterface $publishedAt, bool $signedBySignPath): self
+    {
+        $type = Type::PORTABLE;
+        $inDefaultSelection = false;
+        $osVersion = '';
+        $assetName = strtolower($asset->name);
+        if (str_contains($assetName, 'appimage'))
+        {
+            $type = Type::PACKAGE;
+            $inDefaultSelection = true;
+        }
+        else
+        {
+            $assetNameParts = explode('-', $assetName);
+            $numParts = count($assetNameParts);
+            if ($numParts >= 5)
             {
-                $type = Type::SYMBOLS;
-            }
-            elseif (str_contains($assetName, '-portable'))
-            {
-                $type = Type::PORTABLE;
+                $osVersion = $assetNameParts[$numParts - 2];
             }
         }
 
-        $downloadLink = $asset['browser_download_url'] ?? '';
+        if (str_contains($assetName, 'i686'))
+        {
+            $architecture = Architecture::X86_32;
+        }
+        elseif (str_contains($assetName, 'aarch64'))
+        {
+            $architecture = Architecture::ARM_64;
+        }
+        else
+        {
+            $architecture = Architecture::X86_64;
+        }
 
-        return new self($version, $publishedAt, $operatingSystem, $architecture, $type, $size, $downloadLink, $inDefaultSelection, $signedBySignPath);
+        return new self(
+            $version,
+            $publishedAt,
+            OperatingSystem::LINUX,
+            $architecture,
+            $osVersion,
+            $type,
+            $asset->size,
+            $asset->browserDownloadUrl,
+            $inDefaultSelection,
+            $signedBySignPath
+        );
     }
 }

@@ -32,7 +32,9 @@ final class BuildLister
                 continue;
             }
 
-            $artifacts[] = Artifact::fromArray($tagName, $publishedAt, $asset, $signedBySignPath);
+            $gitHubAsset = GitHubAsset::fromArray($asset);
+
+            $artifacts[] = Artifact::fromArray($tagName, $publishedAt, $gitHubAsset, $signedBySignPath);
         }
         usort($artifacts, function(Artifact $artifact1, Artifact $artifact2)
         {
