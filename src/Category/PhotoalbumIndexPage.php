@@ -11,7 +11,7 @@ final class PhotoalbumIndexPage extends Page
 
     public function __construct(UrlService $urlService)
     {
-        parent::__construct('Fotoalbums');
+        $this->title = 'Fotoalbums';
         $photoalbums = Photoalbum::fetchAll(['hideFromOverview = 0'], [], 'ORDER BY id DESC');
 
         $this->addTemplateVars([

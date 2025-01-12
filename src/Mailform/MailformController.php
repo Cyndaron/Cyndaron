@@ -13,7 +13,7 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Error\IncompleteData;
-use Cyndaron\Util\Mail as UtilMail;
+use Cyndaron\Util\MailFactory;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +24,7 @@ use function strtr;
 final class MailformController extends Controller
 {
     #[RouteAttribute('process', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function process(QueryBits $queryBits, RequestParameters $post, UrlInfo $urlInfo): Response
+    public function process(QueryBits $queryBits, RequestParameters $post, MailFactory $mailFactory): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -39,7 +39,7 @@ final class MailformController extends Controller
             {
                 throw new IncompleteData('Formulier niet gevonden!');
             }
-            $this->processHelper($form, $urlInfo->domain, $post);
+            $this->processHelper($form, $mailFactory, $post);
             $page = new SimplePage('Formulier verstuurd', 'Het versturen is gelukt.');
             return $this->pageRenderer->renderResponse($page);
         }
@@ -51,11 +51,11 @@ final class MailformController extends Controller
     }
 
     #[RouteAttribute('process-ldbf', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function processLDBF(RequestParameters $post, UrlInfo $urlInfo): Response
+    public function processLDBF(RequestParameters $post, MailFormLDBF $mailForm): Response
     {
         try
         {
-            $this->processLDBFHelper($urlInfo->domain, $post);
+            $this->processLDBFHelper($post, $mailForm);
 
             $page = new SimplePage('Formulier verstuurd', 'Het versturen is gelukt.');
             return $this->pageRenderer->renderResponse($page);
@@ -67,7 +67,7 @@ final class MailformController extends Controller
         }
     }
 
-    private function processLDBFHelper(string $domain, RequestParameters $post): bool
+    private function processLDBFHelper(RequestParameters $post, MailFormLDBF $mailForm): bool
     {
         if ($post->isEmpty())
         {
@@ -78,9 +78,8 @@ final class MailformController extends Controller
             throw new IncompleteData('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
         }
 
-        $mailForm = new MailFormLDBF();
         $mailForm->fillMailTemplate($post, $this->templateRenderer);
-        $mailSent = $mailForm->sendMail($domain, $post->getEmail('E-mailadres'));
+        $mailSent = $mailForm->sendMail($post->getEmail('E-mailadres'));
 
         if (!$mailSent)
         {
@@ -96,7 +95,7 @@ final class MailformController extends Controller
      * @throws Exception
      * @return bool
      */
-    private function processHelper(Mailform $form, string $domain, RequestParameters $post): bool
+    private function processHelper(Mailform $form, MailFactory $mailFactory, RequestParameters $post): bool
     {
         if ($form->name === '')
         {
@@ -126,7 +125,7 @@ final class MailformController extends Controller
         $subject = $form->name;
         $sender = $post->getEmail('E-mailadres');
 
-        $mail = UtilMail::createMailWithDefaults($domain, new Address($recipient), $subject, $mailBody);
+        $mail = $mailFactory->createMailWithDefaults(new Address($recipient), $subject, $mailBody);
         if ($sender !== '')
         {
             $mail->addReplyTo(new Address($sender));
@@ -137,8 +136,7 @@ final class MailformController extends Controller
         {
             if ($form->sendConfirmation && $sender && $form->confirmationText !== null)
             {
-                $mail = UtilMail::createMailWithDefaults(
-                    $domain,
+                $mail = $mailFactory->createMailWithDefaults(
                     new Address($sender),
                     'Ontvangstbevestiging',
                     $form->confirmationText

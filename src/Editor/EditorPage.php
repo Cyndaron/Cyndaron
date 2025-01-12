@@ -11,6 +11,7 @@ use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
+use Safe\Exceptions\DirException;
 use Symfony\Component\HttpFoundation\Request;
 use function array_filter;
 use function is_dir;
@@ -41,20 +42,21 @@ abstract class EditorPage extends Page
     protected QueryBits $queryBits;
 
     /**
-     * @param Link[] $internalLinks
-     * @param int|null $id
-     * @param bool $useBackup
-     * @throws \Safe\Exceptions\DirException
+     * @param QueryBits $queryBits
+     * @param Request $request
+     * @param UrlService $urlService
+     * @param EditorVariables $editorVariables
+     * @throws DirException
      */
-    final public function __construct(QueryBits $queryBits, Request $request, UrlService $urlService, array $internalLinks, int|null $id, bool $useBackup)
+    final public function __construct(QueryBits $queryBits, Request $request, UrlService $urlService, EditorVariables $editorVariables)
     {
         $this->queryBits = $queryBits;
-        $this->id = $id;
-        $this->useBackup = $useBackup;
+        $this->id = $editorVariables->id;
+        $this->useBackup = $editorVariables->useBackup;
 
         $this->prepare();
 
-        parent::__construct('Editor');
+        $this->title = 'Editor';
         $this->addScript('/vendor/ckeditor/ckeditor/ckeditor.js');
         $this->addScript('/js/editor.js');
 
@@ -82,7 +84,7 @@ abstract class EditorPage extends Page
         $this->templateVars['editorPreviewImage'] = ($this->model instanceof ModelWithCategory) ? $this->model->previewImage : '';
         $this->templateVars['blurb'] = ($this->model instanceof ModelWithCategory) ? $this->model->blurb : '';
 
-        $this->templateVars['internalLinks'] = $internalLinks;
+        $this->templateVars['internalLinks'] = $editorVariables->internalLinks;
 
         if (static::HAS_CATEGORY)
         {

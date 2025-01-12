@@ -13,7 +13,7 @@ final class FinishOrderPage extends Page
 {
     public function __construct(Subscriber $subscriber, Order $order)
     {
-        parent::__construct('Bestelling bevestigen');
+        $this->title = 'Bestelling bevestigen';
         $this->addScript('/src/Geelhoed/Webshop/js/FinishOrderPage.js');
 
         $orderItems = OrderItem::fetchAll(['orderId = ?'], [$order->id]);

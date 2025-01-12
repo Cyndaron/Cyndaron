@@ -11,7 +11,7 @@ class SearchResultsByAgePage extends Page
 {
     public function __construct(int $age, Sport $sport)
     {
-        parent::__construct('Lessen zoeken');
+        $this->title = 'Lessen zoeken';
 
         $this->addTemplateVars([
             'age' => $age,

@@ -19,15 +19,15 @@ use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\User\UserRepository;
 use Cyndaron\User\UserSession;
-use Cyndaron\Util\Mail as UtilMail;
+use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Template\TemplateRenderer;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
 use Mollie\Api\Resources\Payment;
-use MongoDB\Driver\Query;
 use PhpOffice\PhpSpreadsheet\Shared\Date as PHPSpreadsheetDate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Safe\DateTime;
@@ -79,7 +79,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('view', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function view(QueryBits $queryBits, User|null $currentUser, CSRFTokenHandler $tokenHandler): Response
+    public function view(QueryBits $queryBits, UserSession $session, CSRFTokenHandler $tokenHandler): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -93,7 +93,7 @@ final class ContestController extends Controller
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
-        $page = new ContestViewPage($contest, $currentUser, $tokenHandler);
+        $page = new ContestViewPage($contest, $session->getProfile(), $tokenHandler);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -285,7 +285,8 @@ final class ContestController extends Controller
     #[RouteAttribute('manageOverview', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
     public function manageOverview(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): Response
     {
-        $page = new Page('Overzicht wedstrijden');
+        $page = new Page();
+        $page->title = 'Overzicht wedstrijden';
         $page->addScript('/src/Geelhoed/Contest/js/ContestManager.js');
         return $this->pageRenderer->renderResponse($page, ['contents' => PageManagerTabs::contestsTab($templateRenderer, $tokenHandler)]);
     }
@@ -706,7 +707,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('editSubscription', RequestMethod::POST, UserLevel::LOGGED_IN)]
-    public function editSubscription(QueryBits $queryBits, RequestParameters $post, UrlInfo $urlInfo, User|null $currentUser, UserSession $userSession): Response
+    public function editSubscription(QueryBits $queryBits, RequestParameters $post, UrlInfo $urlInfo, UserSession $userSession, UserRepository $repository, MailFactory $mailFactory): Response
     {
         $id = $queryBits->getInt(2);
         $subscription = ContestMember::fetchById($id);
@@ -715,11 +716,12 @@ final class ContestController extends Controller
             return new Response('Record bestaat niet!', Response::HTTP_NOT_FOUND);
         }
 
+        $currentUser = $userSession->getProfile();
         if ($currentUser === null)
         {
             return new Response('U moet ingelogd zijn!', Response::HTTP_UNAUTHORIZED);
         }
-        if (!$currentUser->hasRight(Contest::RIGHT_MANAGE))
+        if (!$repository->userHasRight($currentUser, Contest::RIGHT_MANAGE))
         {
             $memberId = $subscription->getMember()->id;
             $controlledMemberIds = array_map(static function(Member $member)
@@ -747,7 +749,7 @@ final class ContestController extends Controller
             {
                 $mailText = "{$subscription->getMember()->getProfile()->getFullName()} heeft zijn/haar inschrijving voor {$subscription->getContest()->name} gewijzigd. Het gewicht is nu {$subscription->weight} kg en de graduatie is: {$subscription->getGraduation()->name}.";
                 $to = Setting::get('geelhoed_contestMaintainerMail');
-                $mail = UtilMail::createMailWithDefaults($urlInfo->domain, new Address($to), 'Wijziging inschrijving', $mailText);
+                $mail = $mailFactory->createMailWithDefaults(new Address($to), 'Wijziging inschrijving', $mailText);
                 $mail->send();
             }
         }
@@ -756,7 +758,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('editSubscription', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function editSubscriptionPage(QueryBits $queryBits, User|null $currentUser, UserSession $userSession): Response
+    public function editSubscriptionPage(QueryBits $queryBits, UserSession $userSession): Response
     {
         $id = $queryBits->getInt(2);
         $subscription = ContestMember::fetchById($id);
@@ -765,6 +767,7 @@ final class ContestController extends Controller
             return new Response('Record bestaat niet!', Response::HTTP_NOT_FOUND);
         }
 
+        $currentUser = $userSession->getProfile();
         if ($currentUser === null)
         {
             return new Response('U moet ingelogd zijn!', Response::HTTP_UNAUTHORIZED);
@@ -848,7 +851,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('createParentAccount', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
-    public function createParentAccount(RequestParameters $post, UrlInfo $urlInfo, UserSession $userSession): JsonResponse
+    public function createParentAccount(RequestParameters $post, MailFactory $mailFactory, UserSession $userSession, UserRepository $repository): JsonResponse
     {
         $user = new User();
         $user->firstName = $post->getSimpleString('firstName');
@@ -859,11 +862,8 @@ final class ContestController extends Controller
 
         try
         {
-            if (!$user->save())
-            {
-                return new JsonResponse(['error' => 'Kon ouderaccount niet opslaan'], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-            $user->addRight(Contest::RIGHT_PARENT);
+            $repository->save($user);
+            $repository->addRightToUser($user, Contest::RIGHT_PARENT);
         }
         catch (\PDOException)
         {
@@ -873,7 +873,7 @@ final class ContestController extends Controller
 
         if ($post->getBool('sendIntroductionMail'))
         {
-            if (!$this->sendParentAccountIntroductionMail($user, $urlInfo->domain))
+            if (!$this->sendParentAccountIntroductionMail($user, $mailFactory))
             {
                 return new JsonResponse(['error' => 'Account is aangemaakt, maar kon welkomstmail niet versturen'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
@@ -883,9 +883,10 @@ final class ContestController extends Controller
         return new JsonResponse();
     }
 
-    public function sendParentAccountIntroductionMail(User $user, string $domain): bool
+    private function sendParentAccountIntroductionMail(User $user, MailFactory $mailFactory): bool
     {
-        $password = $user->generatePassword();
+        $password = Util::generatePassword();
+        $user->setPassword($password);
         $user->save();
 
         $mailBody = $this->templateRenderer->render('Geelhoed/Contest/ParentAccountIntroductionMail', [
@@ -895,12 +896,12 @@ final class ContestController extends Controller
         ]);
 
         assert($user->email !== null);
-        $mail = UtilMail::createMailWithDefaults($domain, new Address($user->email), 'Ouderaccount aangemaakt', $mailBody);
+        $mail = $mailFactory->createMailWithDefaults(new Address($user->email), 'Ouderaccount aangemaakt', $mailBody);
         return $mail->send();
     }
 
     #[RouteAttribute('deleteParentAccount', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
-    public function deleteParentAccount(QueryBits $queryBits): JsonResponse
+    public function deleteParentAccount(QueryBits $queryBits, UserRepository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         $user = User::fetchById($id);
@@ -908,7 +909,7 @@ final class ContestController extends Controller
         {
             return new JsonResponse(['error' => 'Gebruiker bestaat niet!'], Response::HTTP_NOT_FOUND);
         }
-        if (!$user->hasRight(Contest::RIGHT_PARENT))
+        if (!$repository->userHasRight($user, Contest::RIGHT_PARENT))
         {
             return new JsonResponse(['error' => 'Gebruiker is geen ouderaccount!'], Response::HTTP_BAD_REQUEST);
         }

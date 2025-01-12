@@ -14,7 +14,7 @@ class SearchPage extends Page
 
     public function __construct()
     {
-        parent::__construct('Lessen zoeken');
+        $this->title = 'Lessen zoeken';
 
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $this->addScript('/src/Geelhoed/Location/js/SearchPage.js');

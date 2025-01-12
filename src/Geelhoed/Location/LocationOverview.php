@@ -44,7 +44,7 @@ final class LocationOverview extends Page
             });
         }
 
-        parent::__construct($title);
+        $this->title = $title;
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $locNotification = Setting::get('geelhoed_locationNotification');
         $this->addTemplateVars(['locations' => $locations, 'pageImage' => self::PAGE_IMAGE, 'locNotification' => $locNotification]);

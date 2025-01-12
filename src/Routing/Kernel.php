@@ -5,8 +5,8 @@ namespace Cyndaron\Routing;
 
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Logger\FileLogger;
 use Cyndaron\Logger\MultiLogger;
 use Cyndaron\Mail\MailLogger;
@@ -16,9 +16,7 @@ use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\WithTextPostProcessors;
-use Cyndaron\Page\MenuRenderer;
 use Cyndaron\Page\Module\WithPageProcessors;
-use Cyndaron\Page\PageBuilder;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\PageManager\PageManagerTab;
@@ -32,11 +30,11 @@ use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\DependencyInjectionContainer;
-use Cyndaron\Util\Mail;
+use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use Cyndaron\Util\UserSafeError;
 use Cyndaron\Util\Util;
-use Cyndaron\View\Renderer\TextRenderer;
 use Cyndaron\View\Template\TemplateRendererFactory;
 use PDO;
 use Psr\Log\LoggerInterface;
@@ -75,53 +73,56 @@ final class Kernel
         });
     }
 
-    private function buildDIC(ModuleRegistry $registry, Request $request, UserSession $userSession, User|null $user): DependencyInjectionContainer
+    private function buildMultilogger(SettingsRepository $settings, MailFactory $mailFactory): MultiLogger
     {
-        $dic = new DependencyInjectionContainer();
-        $pdo = DBConnection::getPDO();
-        $repository = new GenericRepository();
-        $urlService = new UrlService($pdo, $request->getRequestUri(), $registry->urlProviders);
-        $templateRenderer = TemplateRendererFactory::createTemplateRenderer($registry->templateRoots);
-        $tokenHandler = new CSRFTokenHandler($userSession->getSymfonySession());
-        $textRenderer = new TextRenderer($registry, $dic);
-        $language = Setting::get(BuiltinSetting::LANGUAGE);
-        $translator = new Translator($language);
-        $menuRenderer = new MenuRenderer($urlService, $translator, $templateRenderer);
-        $pageBuilder = new PageBuilder($textRenderer, $tokenHandler, $translator);
-        $pageRenderer = new PageRenderer($registry, $templateRenderer, $pageBuilder, $menuRenderer, $userSession, $request, $user);
-        $urlInfo = UrlInfo::fromRequest($request);
-
         $fileLogger = new FileLogger(ROOT_DIR . '/var/log/cyndaron.log');
-        $mailRecipient = Setting::get('mail_logRecipient');
+        $mailRecipient = $settings->get(BuiltinSetting::MAIL_LOG_RECIPIENT);
         if (!empty($mailRecipient))
         {
-            $mailLogger = new MailLogger(Mail::getNoreplyAddress($urlInfo->domain), new Address($mailRecipient), Setting::get('siteName'));
-            $multiLogger = new MultiLogger($fileLogger, $mailLogger);
+            $from = $mailFactory->getNoreplyAddress();
+            $to = new Address($mailRecipient);
+            $mailLogger = new MailLogger($from, $to, $settings->get(BuiltinSetting::SITE_NAME));
+            return new MultiLogger($fileLogger, $mailLogger);
         }
-        else
-        {
-            $multiLogger = new MultiLogger($fileLogger);
-        }
-        $this->setExceptionHandler($multiLogger, $pageRenderer, $translator);
+
+        return new MultiLogger($fileLogger);
+    }
+
+    private function buildDIC(Connection $connection, ModuleRegistry $registry, Request $request, UserSession $userSession): DependencyInjectionContainer
+    {
+        $dic = new DependencyInjectionContainer();
+
+        $dic->add($connection);
+        $dic->add($connection, PDO::class);
 
         $dic->add($registry);
         $dic->add($request);
-        $dic->add($urlInfo);
-        $dic->add($templateRenderer);
-        $dic->add($textRenderer);
-        $dic->add($pageRenderer);
-        $dic->add($translator);
-        $dic->add($pdo);
-        $dic->add($pdo, \PDO::class);
-        $dic->add($repository);
-        $dic->add($urlService);
-        $dic->add($tokenHandler);
         $dic->add($userSession);
+
+        $urlService = new UrlService($connection, $request->getRequestUri(), $registry->urlProviders);
+        $dic->add($urlService);
+
+        $templateRenderer = TemplateRendererFactory::createTemplateRenderer($registry->templateRoots);
+        $dic->add($templateRenderer);
+
+        $tokenHandler = new CSRFTokenHandler($userSession->getSymfonySession());
+        $dic->add($tokenHandler);
+
+        $urlInfo = UrlInfo::fromRequest($request);
+        $dic->add($urlInfo);
+
+        $language = Setting::get(BuiltinSetting::LANGUAGE);
+        $translator = new Translator($language);
+        $dic->add($translator);
+
+        $mailFactory = $dic->createClassWithDependencyInjection(MailFactory::class);
+        $settings = $dic->createClassWithDependencyInjection(SettingsRepository::class);
+        $multiLogger = $this->buildMultilogger($settings, $mailFactory);
         $dic->add($multiLogger, LoggerInterface::class);
-        if ($user !== null)
-        {
-            $dic->add($user);
-        }
+
+        $pageRenderer = $dic->createClassWithDependencyInjection(PageRenderer::class);
+
+        $this->setExceptionHandler($multiLogger, $pageRenderer, $translator);
 
         return $dic;
     }
@@ -320,9 +321,10 @@ final class Kernel
             $userSession->start();
         }
 
-        $user = User::fromSession($userSession);
+        $user = $userSession->getProfile();
         $registry = $this->loadModules($user);
-        $dic = $this->buildDIC($registry, $request, $userSession, $user);
+        $connection = DBConnection::getPDO();
+        $dic = $this->buildDIC($connection, $registry, $request, $userSession);
         $response = $this->route($dic);
         $queryBits = $dic->tryGet(QueryBits::class);
         $cspHeader = $this->getCSPHeader((bool)$request->server->get('HTTPS'), $queryBits);

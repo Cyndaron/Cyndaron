@@ -9,6 +9,6 @@ class UpdatePage extends Page
 {
     public function __construct()
     {
-        parent::__construct('Punten updaten');
+        $this->title = 'Punten updaten';
     }
 }

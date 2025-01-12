@@ -11,7 +11,7 @@ final class MenuEditorPage extends Page
 {
     public function __construct(UrlService $urlService)
     {
-        parent::__construct('Menu-editor');
+        $this->title = 'Menu-editor';
         $this->addScript('/src/Menu/js/MenuEditorPage.js');
 
         $menuItems = MenuItem::fetchAll();

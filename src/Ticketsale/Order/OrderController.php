@@ -24,7 +24,7 @@ use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
-use Cyndaron\Util\Mail as UtilMail;
+use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\Setting;
 use Exception;
 use Mpdf\Output\Destination;
@@ -55,11 +55,11 @@ final class OrderController extends Controller
     private const MAX_SECRET_CODE_RETRIES = 10;
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function add(RequestParameters $post, UrlInfo $urlInfo): Response
+    public function add(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory): Response
     {
         try
         {
-            $order = $this->processOrder($post, $urlInfo);
+            $order = $this->processOrder($post, $urlInfo, $confirmationMailFactory);
             $concert = $order->getConcert();
             if ($concert->getDelivery() === TicketDelivery::DIGITAL)
             {
@@ -170,7 +170,7 @@ final class OrderController extends Controller
      * @throws JsonException
      * @return Order
      */
-    private function processOrder(RequestParameters $post, UrlInfo $urlInfo): Order
+    private function processOrder(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory): Order
     {
         if ($post->isEmpty())
         {
@@ -319,8 +319,7 @@ final class OrderController extends Controller
             }
         }
 
-        $factory = new OrderConfirmationMailFactory($urlInfo);
-        $confirmationMail = $factory->create($order, $concert, $reserveSeats, $totalAmount, $ticketTypes, $orderTicketTypes);
+        $confirmationMail = $confirmationMailFactory->create($order, $concert, $reserveSeats, $totalAmount, $ticketTypes, $orderTicketTypes);
         $confirmationMail->send();
         return $order;
     }
@@ -389,7 +388,7 @@ final class OrderController extends Controller
         return new JsonResponse();
     }
 
-    private function setOrderAsPaidAndSendMail(Order $order, UrlInfo $urlInfo): bool
+    private function setOrderAsPaidAndSendMail(Order $order, UrlInfo $urlInfo, MailFactory $mailFactory): bool
     {
         $order->isPaid = true;
         $order->save();
@@ -418,8 +417,7 @@ final class OrderController extends Controller
             $text .= 'Uw kaarten zullen op de avond van het concert voor u klaarliggen bij de kassa.';
         }
 
-        $mail = UtilMail::createMailWithDefaults(
-            $urlInfo->domain,
+        $mail = $mailFactory->createMailWithDefaults(
             new Address($order->email),
             'Betalingsbevestiging',
             $text
@@ -428,7 +426,7 @@ final class OrderController extends Controller
     }
 
     #[RouteAttribute('setIsPaid', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function setIsPaid(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
+    public function setIsPaid(QueryBits $queryBits, UrlInfo $urlInfo, MailFactory $mailFactory): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -437,7 +435,7 @@ final class OrderController extends Controller
         }
         /** @var Order $order */
         $order = Order::fetchById($id);
-        $this->setOrderAsPaidAndSendMail($order, $urlInfo);
+        $this->setOrderAsPaidAndSendMail($order, $urlInfo, $mailFactory);
 
         return new JsonResponse();
     }
@@ -518,7 +516,7 @@ final class OrderController extends Controller
     }
 
     #[RouteAttribute('mollieWebhook', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
-    public function mollieWebhook(RequestParameters $post, UrlInfo $urlInfo): Response
+    public function mollieWebhook(RequestParameters $post, UrlInfo $urlInfo, MailFactory $mailFactory): Response
     {
         $apiKey = Setting::get('mollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
@@ -550,7 +548,7 @@ final class OrderController extends Controller
         {
             if ($paidStatus)
             {
-                $this->setOrderAsPaidAndSendMail($order, $urlInfo);
+                $this->setOrderAsPaidAndSendMail($order, $urlInfo, $mailFactory);
             }
             else
             {

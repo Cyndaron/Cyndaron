@@ -9,7 +9,7 @@ class ScoresFormPage extends Page
 {
     public function __construct()
     {
-        parent::__construct('Punten opvragen');
+        $this->title = 'Punten opvragen';
 
         $this->addScript('/src/Geelhoed/Tryout/js/ScoresFormPage.js');
     }

@@ -17,7 +17,7 @@ $gopherSubdomain = $argv[2];
 $gopherPort = $argv[3];
 $query = $argv[4];
 
-$pdo = \Cyndaron\DBAL\Connection::connect('mysql', $dbplek ?? 'localhost', $dbnaam, $dbuser, $dbpass);
+$pdo = \Cyndaron\DBAL\Connection::create('mysql', $dbplek ?? 'localhost', $dbnaam, $dbuser, $dbpass);
 DBConnection::connect($pdo);
 Setting::load($pdo);
 $menuEntryFactory = new MenuEntryFactory($gopherDomain, $gopherSubdomain, $gopherPort);

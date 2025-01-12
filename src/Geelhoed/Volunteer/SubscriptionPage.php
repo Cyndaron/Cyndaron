@@ -9,6 +9,6 @@ final class SubscriptionPage extends Page
 {
     public function __construct()
     {
-        parent::__construct('Inschrijven als vrijwilliger');
+        $this->title = 'Inschrijven als vrijwilliger';
     }
 }

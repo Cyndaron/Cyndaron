@@ -12,6 +12,7 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\User\UserSession;
 use Cyndaron\View\Renderer\TextRenderer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
@@ -27,7 +28,7 @@ use function is_array;
 final class PhotoalbumController extends Controller
 {
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function routeGet(QueryBits $queryBits, TextRenderer $textRenderer, User|null $currentUser): Response
+    public function routeGet(QueryBits $queryBits, TextRenderer $textRenderer, UserSession $session): Response
     {
         $id = $queryBits->getInt(1);
         if ($id < 1)
@@ -40,7 +41,7 @@ final class PhotoalbumController extends Controller
         {
             return new JsonResponse(['error' => 'Album does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        $page = new PhotoalbumPage($album, $textRenderer, $currentUser);
+        $page = new PhotoalbumPage($album, $textRenderer, $session->getProfile());
         return $this->pageRenderer->renderResponse($page);
     }
 

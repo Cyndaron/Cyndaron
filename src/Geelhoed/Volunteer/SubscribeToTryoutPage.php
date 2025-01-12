@@ -16,7 +16,7 @@ final class SubscribeToTryoutPage extends Page
         $title = 'Inschrijven voor tryout-toernooi ' . ViewHelpers::filterDutchDate($event->start);
         $numRounds = $event->getTryoutNumRounds();
         $status = $event->getTryoutStatus();
-        parent::__construct($title);
+        $this->title = $title;
         $this->addScript('/src/Geelhoed/Volunteer/js/SubscribeToTryoutPage.js');
         $this->addTemplateVars([
             'event' => $event,

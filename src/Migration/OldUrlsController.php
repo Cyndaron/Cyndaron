@@ -12,6 +12,7 @@ use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\MailFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,7 +38,7 @@ class OldUrlsController extends Controller
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function routePost(RequestParameters $requestParameters, Request $request, UrlInfo $urlInfo, QueryBits $queryBits): Response
+    public function routePost(RequestParameters $requestParameters, Request $request, MailFactory $mailFactory, QueryBits $queryBits): Response
     {
         if ($queryBits->getString(0) !== 'verwerkmailformulier.php')
         {
@@ -47,7 +48,7 @@ class OldUrlsController extends Controller
         $id = $request->query->getInt('id');
         $controller = new MailformController($this->templateRenderer, $this->pageRenderer);
         $queryBits = new QueryBits(['mailform', 'process', (string)$id]);
-        return $controller->process($queryBits, $requestParameters, $urlInfo);
+        return $controller->process($queryBits, $requestParameters, $mailFactory);
     }
 
     public function redirectOldStaticPageUrl(Request $request): Response

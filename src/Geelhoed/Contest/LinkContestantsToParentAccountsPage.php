@@ -13,7 +13,7 @@ final class LinkContestantsToParentAccountsPage extends Page
 {
     public function __construct()
     {
-        parent::__construct('Wedstrijdjudoka’s linken aan ouderaccounts');
+        $this->title = 'Wedstrijdjudoka’s linken aan ouderaccounts';
 
         $contestants = array_filter(
             Member::fetchAllAndSortByName(['isContestant = 1']),

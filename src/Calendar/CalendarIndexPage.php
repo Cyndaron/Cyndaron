@@ -12,7 +12,7 @@ final class CalendarIndexPage extends Page
 {
     public function __construct(ModuleRegistry $moduleRegistry)
     {
-        parent::__construct('Agenda');
+        $this->title = 'Agenda';
 
         $calendarRegistry = new Registry($moduleRegistry);
         $appointments = $calendarRegistry->getAllAppointments();

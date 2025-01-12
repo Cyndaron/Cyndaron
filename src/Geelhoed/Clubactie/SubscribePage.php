@@ -9,6 +9,6 @@ final class SubscribePage extends Page
 {
     public function __construct()
     {
-        parent::__construct('Inschrijven Grote Clubactie');
+        $this->title = 'Inschrijven Grote Clubactie';
     }
 }

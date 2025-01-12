@@ -13,7 +13,7 @@ final class ContestantsEmailPage extends Page
 {
     public function __construct()
     {
-        parent::__construct('E-mailadressen wedstrijdjudoka\'s');
+        $this->title = 'E-mailadressen wedstrijdjudoka\'s';
         $independentContestants = Member::fetchAll(['isContestant = 1', 'id NOT IN (SELECT memberId FROM geelhoed_users_members)']);
         $dependentContestants = Member::fetchAll(['isContestant = 1', 'id IN (SELECT memberId FROM geelhoed_users_members)']);
         $dependentMemberList = array_map(function(Member $member)

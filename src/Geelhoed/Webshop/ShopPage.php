@@ -16,7 +16,7 @@ final class ShopPage extends Page
 {
     public function __construct(Subscriber $subscriber, Order $order)
     {
-        parent::__construct('Webwinkel');
+        $this->title = 'Webwinkel';
 
         $this->addCss('/src/Geelhoed/Webshop/css/webshop.css');
         $this->addScript('/src/Geelhoed/Webshop/js/ShopPage.js');

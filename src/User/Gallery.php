@@ -12,7 +12,7 @@ final class Gallery extends Page
     {
         $members = User::fetchAll(['hideFromMemberList = 0'], [], 'ORDER BY lastname, tussenvoegsel, firstName');
         $title = Setting::get('userGalleryTitle') ?: 'Wie is wie';
-        parent::__construct($title);
+        $this->title = $title;
 
         $this->addTemplateVars([
             'members' => $members,

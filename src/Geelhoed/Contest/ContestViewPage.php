@@ -5,7 +5,6 @@ use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Page\Page;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
-use function sprintf;
 
 final class ContestViewPage extends Page
 {
@@ -14,7 +13,7 @@ final class ContestViewPage extends Page
         $controlledMembers = $currentUser !== null ? Member::fetchAllContestantsByUser($currentUser) : [];
         $canManage = $currentUser !== null && $currentUser->hasRight(Contest::RIGHT_MANAGE);
         $mayViewOtherContestants = $this->loggedInUserMayViewOtherContestants($canManage, $controlledMembers);
-        parent::__construct(sprintf('Wedstrijd: %s', $contest->name));
+        $this->title = "Wedstrijd: {$contest->name}";
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $this->addTemplateVars([
             'addAttachmentToken' => $tokenHandler->get('contest', 'addAttachment'),

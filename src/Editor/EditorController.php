@@ -18,6 +18,7 @@ use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\User\UserRepository;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\Util;
@@ -34,14 +35,14 @@ final class EditorController extends Controller
     private const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function routeGet(QueryBits $queryBits, Request $request, User $currentUser, ModuleRegistry $registry, Connection $connection, UrlService $urlService): Response
+    public function routeGet(QueryBits $queryBits, Request $request, User $currentUser, ModuleRegistry $registry, Connection $connection, UrlService $urlService, UserRepository $repository, DependencyInjectionContainer $dic): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorPages))
         {
             throw new \Exception('Onbekend paginatype: ' . $type);
         }
-        if (!$currentUser->hasRight("{$type}_edit"))
+        if (!$repository->userHasRight($currentUser, "{$type}_edit"))
         {
             return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'U heeft onvoldoende rechten om deze functie te gebruiken!', Response::HTTP_UNAUTHORIZED));
         }
@@ -50,8 +51,11 @@ final class EditorController extends Controller
         $class = $registry->editorPages[$type];
         $id = $queryBits->getNullableInt(2);
         $previous = $queryBits->getString(3) === 'previous';
+        $editorVariables = new EditorVariables($id, $previous, $this->getInternalLinks($registry->internalLinkTypes, $connection));
+        $dic->add($editorVariables);
+
         /** @var EditorPage $editorPage */
-        $editorPage = new $class($queryBits, $request, $urlService, $this->getInternalLinks($registry->internalLinkTypes, $connection), $id, $previous);
+        $editorPage = $dic->createClassWithDependencyInjection($class);
         $hash = $queryBits->getString(3);
         $hash = strlen($hash) > 20 ? $hash : '';
         $editorPage->addTemplateVar('hash', $hash);
@@ -59,14 +63,14 @@ final class EditorController extends Controller
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::LOGGED_IN)]
-    public function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry, UrlService $urlService): Response
+    public function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry, UrlService $urlService, UserRepository $repository): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorSaveClasses))
         {
             throw new \Exception('Onbekend paginatype: ' . $type);
         }
-        if (!$currentUser->hasRight("{$type}_edit"))
+        if (!$repository->userHasRight($currentUser, "{$type}_edit"))
         {
             return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'U heeft onvoldoende rechten om deze functie te gebruiken!', Response::HTTP_UNAUTHORIZED));
         }

@@ -29,7 +29,7 @@ final class OverviewPage extends Page
     {
         $title = Setting::get('filecabinet_title') ?: 'Bestandenkast';
         $orderBy = Setting::get('filecabinet_orderBy') ?: 'name';
-        parent::__construct($title);
+        $this->title = $title;
 
         $this->addTemplateVars([
             'introduction' => $this->getIntroduction(),

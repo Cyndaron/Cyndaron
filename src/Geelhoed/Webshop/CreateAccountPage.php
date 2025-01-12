@@ -9,7 +9,7 @@ final class CreateAccountPage extends Page
 {
     public function __construct(bool $skipTicketCheck)
     {
-        parent::__construct('Account voor webwinkel aanmaken');
+        $this->title = 'Account voor webwinkel aanmaken';
         $this->addTemplateVar('skipTicketCheck', $skipTicketCheck);
     }
 }

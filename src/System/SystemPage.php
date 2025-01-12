@@ -59,7 +59,7 @@ final class SystemPage extends Page
     public function __construct(string $currentPage, Translator $t)
     {
         $this->template = 'System/' . ucfirst($currentPage);
-        parent::__construct($t->get('Systeembeheer'));
+        $this->title = $t->get('Systeembeheer');
 
         $this->templateVars['currentPage'] = $currentPage;
         $this->templateVars['pageTabs'] = [

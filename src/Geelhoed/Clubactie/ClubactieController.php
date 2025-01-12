@@ -12,6 +12,7 @@ use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\MailFactory;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,7 +46,7 @@ final class ClubactieController extends Controller
     }
 
     #[RouteAttribute('confirm-tickets', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: WebshopController::RIGHT_MANAGE)]
-    public function confirmTickets(QueryBits $queryBits, RequestParameters $post, UrlInfo $urlInfo): JsonResponse
+    public function confirmTickets(QueryBits $queryBits, RequestParameters $post, UrlInfo $urlInfo, MailFactory $mailFactory): JsonResponse
     {
         $subscriberId = $queryBits->getInt(2);
         $subscriber = Subscriber::fetchById($subscriberId);
@@ -59,7 +60,7 @@ final class ClubactieController extends Controller
         $subscriber->soldTicketsAreVerified = true;
 
         $webshopController = new WebshopController($this->templateRenderer, $this->pageRenderer);
-        $webshopController->sendAccountConfirmationMail($urlInfo, $subscriber);
+        $webshopController->sendAccountConfirmationMail($urlInfo, $subscriber, $mailFactory);
 
         $subscriber->emailSent = true;
         $subscriber->save();

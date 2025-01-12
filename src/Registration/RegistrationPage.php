@@ -12,7 +12,7 @@ final class RegistrationPage extends Page
 {
     public function __construct(Event $event)
     {
-        parent::__construct('Aanmelding: ' . $event->name);
+        $this->title = 'Aanmelding: ' . $event->name;
 
         $this->addScript('/src/Registration/js/RegistrationPage.js');
         $this->addCss('/src/Registration/css/RegistrationPage.css');

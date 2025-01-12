@@ -16,6 +16,7 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Template\ViewHelpers;
@@ -112,7 +113,7 @@ class TryoutController extends Controller
     }
 
     #[RouteAttribute('create-photoalbums', RequestMethod::POST, UserLevel::ADMIN, right: 'tryout_edit', isApiMethod: true)]
-    public function createPhotoalbums(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
+    public function createPhotoalbums(QueryBits $queryBits, UrlInfo $urlInfo, MailFactory $mailFactory): JsonResponse
     {
         $tryoutId = $queryBits->getInt(2);
         $tryout = Tryout::fetchById($tryoutId);
@@ -188,7 +189,7 @@ class TryoutController extends Controller
 
             $plainText .= PHP_EOL . "De overzichtspagina is te vinden op: {$urlInfo->schemeAndHost}{$categoryUrl}\n";
 
-            $mail = \Cyndaron\Util\Mail::createMailWithDefaults($urlInfo->domain, $toAddress, 'Fotoalbums aangemaakt', $plainText);
+            $mail = $mailFactory->createMailWithDefaults($toAddress, 'Fotoalbums aangemaakt', $plainText);
             $mail->send();
         }
 

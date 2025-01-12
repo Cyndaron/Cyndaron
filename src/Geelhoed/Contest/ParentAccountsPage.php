@@ -11,7 +11,7 @@ final class ParentAccountsPage extends Page
 {
     public function __construct()
     {
-        parent::__construct('Lijst ouderaccounts');
+        $this->title = 'Lijst ouderaccounts';
 
         $users = User::fetchAll(['id IN (SELECT `userId` FROM `user_rights` WHERE `right` = ?)'], [Contest::RIGHT_PARENT]);
         usort($users, static function(User $user1, User $user2)

@@ -19,7 +19,7 @@ class DownloadPage extends Page
      */
     public function __construct(string $title, array $builds)
     {
-        parent::__construct($title);
+        $this->title = $title;
         $newestBuild = array_shift($builds);
         $this->addTemplateVar('newestBuild', $newestBuild);
         $this->addTemplateVar('olderBuilds', $builds);

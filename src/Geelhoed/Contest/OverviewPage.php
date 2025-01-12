@@ -8,7 +8,7 @@ final class OverviewPage extends Page
     public function __construct()
     {
         $contests = Contest::fetchAllCurrentWithDate();
-        parent::__construct('Overzicht wedstrijden');
+        $this->title = 'Overzicht wedstrijden';
         $this->addTemplateVars(['contests' => $contests]);
     }
 }

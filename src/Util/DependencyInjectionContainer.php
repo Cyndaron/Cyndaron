@@ -10,6 +10,7 @@ namespace Cyndaron\Util;
 
 use Closure;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionNamedType;
@@ -90,7 +91,6 @@ final class DependencyInjectionContainer
 
         /** @var T $ret */
         $ret = $this->createClassWithDependencyInjection($className);
-        $this->add($ret);
         return $ret;
     }
 
@@ -107,7 +107,19 @@ final class DependencyInjectionContainer
             /** @var class-string $className */
             $className = ($type instanceof ReflectionNamedType) ? $type->getName() : '';
 
-            $params[] = $this->getOrCreate($className);
+            try
+            {
+                $param = $this->getOrCreate($className);
+                $params[] = $param;
+            }
+            catch (\Throwable $ex)
+            {
+                $parentClass = $reflectionMethod instanceof ReflectionMethod ? $reflectionMethod->class : '';
+                $methodName = $reflectionMethod->getName();
+                $message = "Cannot create argument for {$parentClass}::{$methodName} " . $ex->getMessage();
+                throw new ReflectionException($message, $ex->getCode(), $ex->getPrevious());
+            }
+
         }
         return $params;
     }
@@ -134,6 +146,7 @@ final class DependencyInjectionContainer
             $ret = $reflectionClass->newInstanceArgs($params);
         }
 
+        $this->add($ret);
         return $ret;
     }
 

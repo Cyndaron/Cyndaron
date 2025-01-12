@@ -7,10 +7,9 @@ use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Util\KnownShortCodes;
-use Cyndaron\Util\Mail as UtilMail;
+use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\TemplateRenderer;
-use Exception;
 use Symfony\Component\Mime\Address;
 use function assert;
 use function file_exists;
@@ -21,10 +20,6 @@ final class Registration extends Model
 {
     public const TABLE = 'registration_orders';
     public const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'participatedBefore', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid', 'currentChoir', 'choirPreference', 'approvalStatus', 'phone', 'choirExperience', 'performedBefore'];
-
-    public const APPROVAL_UNDECIDED = 0;
-    public const APPROVAL_APPROVED = 1;
-    public const APPROVAL_DISAPPROVED = 2;
 
     public int $eventId;
     public string $lastName;
@@ -51,7 +46,7 @@ final class Registration extends Model
     public int $choirExperience = 0;
     public bool $performedBefore = false;
     public string $comments;
-    public int $approvalStatus = self::APPROVAL_UNDECIDED;
+    public RegistrationApprovalStatus $approvalStatus = RegistrationApprovalStatus::UNDECIDED;
     public bool $isPaid = false;
 
     /**
@@ -71,13 +66,13 @@ final class Registration extends Model
     }
 
     /**
-     * @param string $domain
+     * @param MailFactory $mailFactory
      * @param float $registrationTotal
      * @param array<int, int> $registrationTicketTypes
      * @param TemplateRenderer $templateRenderer
      * @return bool
      */
-    public function sendIntroductionMail(string $domain, float $registrationTotal, array $registrationTicketTypes, TemplateRenderer $templateRenderer): bool
+    public function sendIntroductionMail(MailFactory $mailFactory, float $registrationTotal, array $registrationTicketTypes, TemplateRenderer $templateRenderer): bool
     {
         $event = $this->getEvent();
 
@@ -108,11 +103,11 @@ final class Registration extends Model
         // We're sending a plaintext mail, so avoid displaying html entities.
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
-        $mail = UtilMail::createMailWithDefaults($domain, new Address($this->email), 'Inschrijving ' . $event->name, $text);
+        $mail = $mailFactory->createMailWithDefaults(new Address($this->email), 'Inschrijving ' . $event->name, $text);
         return $mail->send();
     }
 
-    public function setIsPaid(string $domain): bool
+    public function setIsPaid(MailFactory $mailFactory): bool
     {
         if ($this->id === null)
         {
@@ -131,8 +126,7 @@ final class Registration extends Model
             $text .= 'Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaarliggen bij de kassa.';
         }
 
-        $mail = UtilMail::createMailWithDefaults(
-            $domain,
+        $mail = $mailFactory->createMailWithDefaults(
             new Address($this->email),
             'Betalingsbevestiging ' . $event->name,
             $text
@@ -188,16 +182,16 @@ final class Registration extends Model
     {
         switch ($this->approvalStatus)
         {
-            case self::APPROVAL_UNDECIDED:
+            case RegistrationApprovalStatus::UNDECIDED:
                 return 'Nieuw';
-            case self::APPROVAL_APPROVED:
+            case RegistrationApprovalStatus::APPROVED:
                 if ($this->isPaid)
                 {
                     return 'Toegelaten, betaald';
                 }
                 return 'Toegelaten, niet betaald';
 
-            case self::APPROVAL_DISAPPROVED:
+            case RegistrationApprovalStatus::DISAPPROVED:
                 if ($this->isPaid)
                 {
                     return 'Afgewezen, betaald';
@@ -208,65 +202,8 @@ final class Registration extends Model
         return 'Onbekend';
     }
 
-    /**
-     * @throws Exception
-     * @return bool
-     */
-    public function setApproved(string $domain): bool
-    {
-        if ($this->id === null)
-        {
-            throw new IncompleteData('ID is null!');
-        }
-
-        $this->approvalStatus = self::APPROVAL_APPROVED;
-        $this->save();
-
-        $event = $this->getEvent();
-
-        $text = '';
-
-        $mail = UtilMail::createMailWithDefaults(
-            $domain,
-            new Address($this->email),
-            'Aanmelding ' . $event->name . ' goedgekeurd',
-            $text
-        );
-        return $mail->send();
-    }
-
-    public function setDisapproved(string $domain): bool
-    {
-        if ($this->id === null)
-        {
-            throw new IncompleteData('ID is null!');
-        }
-
-        $this->approvalStatus = self::APPROVAL_DISAPPROVED;
-        $this->save();
-
-        $event = $this->getEvent();
-
-        if ($event->requireApproval)
-        {
-            $text = '';
-        }
-        else
-        {
-            $text = 'Uw aanmelding is geannuleerd. Eventuele betalingen zullen worden teruggestort.';
-        }
-
-        $mail = UtilMail::createMailWithDefaults(
-            $domain,
-            new Address($this->email),
-            'Aanmelding ' . $event->name,
-            $text
-        );
-        return $mail->send();
-    }
-
     public function shouldPay(): bool
     {
-        return !$this->isPaid && $this->approvalStatus === self::APPROVAL_APPROVED;
+        return !$this->isPaid && $this->approvalStatus === RegistrationApprovalStatus::APPROVED;
     }
 }

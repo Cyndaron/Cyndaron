@@ -4,18 +4,20 @@ declare(strict_types=1);
 namespace Cyndaron\Registration;
 
 use Cyndaron\DBAL\DatabaseError;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Error\IncompleteData;
+use Cyndaron\Util\MailFactory;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Address;
 use function assert;
 use function implode;
 use function min;
@@ -24,7 +26,7 @@ use function strcasecmp;
 final class RegistrationController extends Controller
 {
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function add(RequestParameters $post, UrlInfo $urlInfo): Response
+    public function add(RequestParameters $post, MailFactory $mailFactory): Response
     {
         try
         {
@@ -36,7 +38,7 @@ final class RegistrationController extends Controller
                 throw new Exception('Evenement niet gevonden!');
             }
 
-            $this->processRegistration($post, $urlInfo);
+            $this->processRegistration($post, $mailFactory);
 
             $body = 'Hartelijk dank voor uw aanmelding. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw aanmelding en betaalinformatie.';
             if ($eventObj->hideRegistrationFee)
@@ -62,7 +64,7 @@ final class RegistrationController extends Controller
      * @throws Exception
      * @return bool
      */
-    private function processRegistration(RequestParameters $post, UrlInfo $urlInfo): bool
+    private function processRegistration(RequestParameters $post, MailFactory $mailFactory): bool
     {
         if ($post->isEmpty())
         {
@@ -132,7 +134,7 @@ final class RegistrationController extends Controller
         $registration->choirExperience = $post->getInt('choirExperience');
         $registration->performedBefore = $post->getBool('performedBefore');
         $registration->comments = $post->getHTML('comments');
-        $registration->approvalStatus = $eventObj->requireApproval ? Registration::APPROVAL_UNDECIDED : Registration::APPROVAL_APPROVED;
+        $registration->approvalStatus = $eventObj->requireApproval ? RegistrationApprovalStatus::UNDECIDED : RegistrationApprovalStatus::APPROVED;
 
         $registrationTotal = $registration->calculateTotal($registrationTicketTypes);
         if ($registrationTotal === 0.00)
@@ -163,7 +165,7 @@ final class RegistrationController extends Controller
             }
         }
 
-        return $registration->sendIntroductionMail($urlInfo->domain, $registrationTotal, $registrationTicketTypes, $this->templateRenderer);
+        return $registration->sendIntroductionMail($mailFactory, $registrationTotal, $registrationTicketTypes, $this->templateRenderer);
     }
 
     /**
@@ -213,7 +215,7 @@ final class RegistrationController extends Controller
     }
 
     #[RouteAttribute('setApprovalStatus', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function setApprovalStatus(QueryBits $queryBits, RequestParameters $post, UrlInfo $urlInfo): JsonResponse
+    public function setApprovalStatus(QueryBits $queryBits, RequestParameters $post, MailFactory $mailFactory, GenericRepository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -222,14 +224,45 @@ final class RegistrationController extends Controller
         }
         /** @var Registration $registration */
         $registration = Registration::fetchById($id);
-        $status = $post->getInt('status');
+        $status = RegistrationApprovalStatus::tryFrom($post->getInt('status'));
         switch ($status)
         {
-            case Registration::APPROVAL_APPROVED:
-                $registration->setApproved($urlInfo->domain);
+            case RegistrationApprovalStatus::APPROVED:
+                $registration->approvalStatus = RegistrationApprovalStatus::APPROVED;
+                $repository->save($registration);
+
+                $event = $registration->getEvent();
+
+                $text = '';
+
+                $mail = $mailFactory->createMailWithDefaults(
+                    new Address($registration->email),
+                    'Aanmelding ' . $event->name . ' goedgekeurd',
+                    $text
+                );
+                $mail->send();
                 break;
-            case Registration::APPROVAL_DISAPPROVED:
-                $registration->setDisapproved($urlInfo->domain);
+            case RegistrationApprovalStatus::DISAPPROVED:
+                $registration->approvalStatus = RegistrationApprovalStatus::DISAPPROVED;
+                $repository->save($registration);
+
+                $event = $registration->getEvent();
+
+                if ($event->requireApproval)
+                {
+                    $text = '';
+                }
+                else
+                {
+                    $text = 'Uw aanmelding is geannuleerd. Eventuele betalingen zullen worden teruggestort.';
+                }
+
+                $mail = $mailFactory->createMailWithDefaults(
+                    new Address($registration->email),
+                    'Aanmelding ' . $event->name,
+                    $text
+                );
+                $mail->send();
                 break;
         }
 
@@ -237,7 +270,7 @@ final class RegistrationController extends Controller
     }
 
     #[RouteAttribute('setIsPaid', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function setIsPaid(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
+    public function setIsPaid(QueryBits $queryBits, MailFactory $mailFactory): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -246,7 +279,7 @@ final class RegistrationController extends Controller
         }
         /** @var Registration $registration */
         $registration = Registration::fetchById($id);
-        $registration->setIsPaid($urlInfo->domain);
+        $registration->setIsPaid($mailFactory);
 
         return new JsonResponse();
     }

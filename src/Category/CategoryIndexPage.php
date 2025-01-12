@@ -15,7 +15,7 @@ final class CategoryIndexPage extends Page
     {
         $this->model = $category;
 
-        parent::__construct($this->model->name);
+        $this->title = $this->model->name;
 
         $subs = StaticPageModel::fetchAllByCategory($category, 'ORDER BY id DESC');
 

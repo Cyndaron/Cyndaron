@@ -32,7 +32,7 @@ final class OrderTicketsPage extends Page
 
         $this->templateVars['concert'] = $concert;
 
-        parent::__construct('Kaarten bestellen: ' . $concert->name);
+        $this->title = 'Kaarten bestellen: ' . $concert->name;
 
         $this->addCss('/src/Ticketsale/css/Ticketsale.min.css');
         $this->addTemplateVars([

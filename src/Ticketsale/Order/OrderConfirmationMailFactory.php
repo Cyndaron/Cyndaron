@@ -9,7 +9,7 @@ use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\Ticketsale\Concert\TicketDelivery;
 use Cyndaron\Ticketsale\TicketType\TicketType;
 use Cyndaron\Util\BuiltinSetting;
-use Cyndaron\Util\Mail as UtilMail;
+use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\ViewHelpers;
 use Symfony\Component\Mime\Address;
@@ -17,8 +17,10 @@ use function array_key_exists;
 
 final class OrderConfirmationMailFactory
 {
-    public function __construct(private readonly UrlInfo $urlInfo)
-    {
+    public function __construct(
+        private readonly MailFactory $mailFactory,
+        private readonly UrlInfo $urlInfo
+    ) {
     }
 
     /**
@@ -176,8 +178,7 @@ Kaartsoorten:
         $text .= 'Totaalbedrag: ' . ViewHelpers::formatEuro($total) . PHP_EOL . PHP_EOL;
         $text .= $this->getPersonalInformation($order);
 
-        $mail = UtilMail::createMailWithDefaults(
-            $this->urlInfo->domain,
+        $mail = $this->mailFactory->createMailWithDefaults(
             new Address($order->email),
             'Bestelling concertkaarten',
             $text

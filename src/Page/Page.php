@@ -15,6 +15,8 @@ use function is_array;
 
 class Page implements Pageable
 {
+    public string $title = '';
+
     /** @var string[] */
     public array $extraScripts = [];
     /** @var string[] */
@@ -26,10 +28,6 @@ class Page implements Pageable
     public string $template = '';
     /** @var array<string, mixed> */
     public array $templateVars = ['contents' => ''];
-
-    public function __construct(public string $title)
-    {
-    }
 
     public function addScript(string $filename): void
     {

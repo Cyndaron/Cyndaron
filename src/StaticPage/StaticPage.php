@@ -16,7 +16,7 @@ final class StaticPage extends Page
             [$model->id]
         );
 
-        parent::__construct($this->model->name);
+        $this->title = $this->model->name;
 
         $this->addTemplateVars([
             'model' => $model,

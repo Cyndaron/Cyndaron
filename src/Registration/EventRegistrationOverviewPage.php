@@ -17,7 +17,7 @@ final class EventRegistrationOverviewPage extends Page
         $this->addScript('/src/Registration/js/EventOrderOverviewPage.js');
         $this->addCss('/src/Ticketsale/css/Ticketsale.min.css');
 
-        parent::__construct('Overzicht aanmeldingen: ' . $event->name);
+        $this->title = 'Overzicht aanmeldingen: ' . $event->name;
 
         $ticketTypesByRegistration = $this->getTicketTypesByRegistration();
         $totals = $this->calculateTotals($registrations, $ticketTypesByRegistration);

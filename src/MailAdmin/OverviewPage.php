@@ -13,7 +13,7 @@ class OverviewPage extends Page
 {
     public function __construct(PDO $pdo, CSRFTokenHandler $tokenHandler)
     {
-        parent::__construct('Mailadmin');
+        $this->title = 'Mailadmin';
 
         $stmt = $pdo->query('SELECT * FROM virtual_domains');
         assert($stmt !== false);

@@ -34,7 +34,7 @@ final class ConcertOrderOverviewPage extends Page
             }
         }
 
-        parent::__construct('Overzicht bestellingen: ' . $concert->name);
+        $this->title = 'Overzicht bestellingen: ' . $concert->name;
         $this->addScript('/src/Ticketsale/js/ConcertOrderOverviewPage.js');
         $this->addCss('/src/Ticketsale/css/Ticketsale.min.css');
         $this->addTemplateVars([

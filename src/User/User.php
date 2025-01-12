@@ -5,20 +5,14 @@ namespace Cyndaron\User;
 
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\FileCachedModel;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
-use Cyndaron\Util\Mail as UtilMail;
-use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use DateTimeInterface;
-use Exception;
 use DateTime;
 
-use Symfony\Component\Mime\Address;
-use function sprintf;
 use function substr;
 use function password_needs_rehash;
-use function strtolower;
-use function random_int;
 use function count;
 use function password_verify;
 use function password_hash;
@@ -54,41 +48,9 @@ final class User extends Model
     public bool $optOut = false;
     public string $notes = '';
 
-    public const RESET_PASSWORD_MAIL_TEXT =
-        'U vroeg om een nieuw wachtwoord voor %s.
-
-Uw nieuwe wachtwoord is: %s';
-
     public function isAdmin(): bool
     {
         return $this->level === UserLevel::ADMIN;
-    }
-
-    /**
-     * @throws \Safe\Exceptions\PasswordException
-     * @return string
-     */
-    public function generatePassword(): string
-    {
-        $newPassword = Util::generatePassword();
-        $this->setPassword($newPassword);
-        return $newPassword;
-    }
-
-    public function mailNewPassword(string $domain, string $password): bool
-    {
-        if ($this->email === null)
-        {
-            throw new Exception('No email address specified!');
-        }
-
-        $mail = UtilMail::createMailWithDefaults(
-            $domain,
-            new Address($this->email),
-            'Nieuw wachtwoord ingesteld',
-            sprintf(self::RESET_PASSWORD_MAIL_TEXT, Setting::get('siteName'), $password)
-        );
-        return $mail->send();
     }
 
     /**
@@ -133,25 +95,8 @@ Uw nieuwe wachtwoord is: %s';
 
     public function save(): bool
     {
-        if (empty($this->username))
-        {
-            $initials = $this->initials ?: $this->firstName;
-            $username = strtolower("{$initials}{$this->tussenvoegsel}{$this->lastName}");
-            // Last resort!
-            if ($username === '')
-            {
-                $username = (string)random_int(10000, 99999);
-            }
-            else
-            {
-                $existing = self::fetchAll(['username = ?'], [$username]);
-                if (count($existing) > 0)
-                {
-                    $username .= random_int(10000, 99999);
-                }
-            }
-            $this->username = $username;
-        }
+        $userRepository = new UserRepository(new GenericRepository(), DBConnection::getPDO());
+        $userRepository->generateUsername($this);
 
         return parent::save();
     }
@@ -203,33 +148,13 @@ Uw nieuwe wachtwoord is: %s';
         return Util::filenameToUrl($filename);
     }
 
-    public static function fromSession(UserSession $userSession): self|null
-    {
-        return $userSession->getProfile();
-    }
-
     public function getGenderDisplay(): string
     {
-        switch ($this->gender)
+        return match ($this->gender)
         {
-            case 'male':
-                return 'm';
-            case 'female':
-                return 'v';
-            case null:
-            default:
-                return '?';
-        }
-    }
-
-    public function addRight(string $right): bool
-    {
-        if (empty($this->id))
-        {
-            throw new \Exception('ID not set!');
-        }
-
-        $result = DBConnection::getPDO()->insert('INSERT INTO user_rights(`userId`, `right`) VALUES (?, ?)', [$this->id, $right]);
-        return (bool)$result;
+            'male' => 'm',
+            'female' => 'v',
+            default => '?',
+        };
     }
 }

@@ -50,9 +50,12 @@ final class GenericRepository
      * @template T of Model
      *
      * @param class-string<T> $class
+     * @param string[] $where
+     * @param list<string|int|float|null> $args
+     * @param string $afterWhere
      * @return T[]
      */
-    public function fetchAll(string $class): array
+    public function fetchAll(string $class, array $where = [], array $args = [], string $afterWhere = ''): array
     {
         return $class::fetchAll();
     }

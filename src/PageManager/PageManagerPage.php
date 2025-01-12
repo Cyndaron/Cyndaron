@@ -25,7 +25,7 @@ final class PageManagerPage extends Page
 
         $t = $dic->get(Translator::class);
         $this->addScript('/src/PageManager/js/PageManagerPage.js');
-        parent::__construct($t->get('Pagina-overzicht'));
+        $this->title = $t->get('Pagina-overzicht');
 
         $pageTabs = [];
         $firstVisibleType = null;

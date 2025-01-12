@@ -11,7 +11,7 @@ final class ContestantsListPage extends Page
 {
     public function __construct()
     {
-        parent::__construct('Overzicht wedstrijdjudoka\'s');
+        $this->title = 'Overzicht wedstrijdjudoka\'s';
         $contestants = Member::fetchAllAndSortByName(['isContestant = 1']);
         $sports = Sport::fetchAll();
         $this->addTemplateVars(['contestants' => $contestants, 'sports' => $sports]);

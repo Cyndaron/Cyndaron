@@ -10,7 +10,7 @@ final class EditSubscriptionPage extends Page
 {
     public function __construct(ContestMember $contestMember)
     {
-        parent::__construct('Inschrijving wijzigen');
+        $this->title = 'Inschrijving wijzigen';
         $graduations = [];
         foreach (Graduation::fetchAllBySport($contestMember->getContest()->getSport()) as $graduation)
         {

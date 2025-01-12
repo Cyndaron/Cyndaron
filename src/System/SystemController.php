@@ -10,6 +10,7 @@ use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Translation\Translator;
 use Cyndaron\Util\Setting;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\SettingsRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,25 +25,25 @@ final class SystemController extends Controller
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::ADMIN)]
-    public function routePost(RequestParameters $post): Response
+    public function routePost(RequestParameters $post, SettingsRepository $settings): Response
     {
-        Setting::set('siteName', $post->getHTML('siteName'));
-        Setting::set('organisation', $post->getHTML('organisation'));
-        Setting::set('shortCode', $post->getHTML('shortCode'));
-        Setting::set('logo', $post->getFilenameWithDirectory('logo'));
-        Setting::set('subTitle', $post->getHTML('subTitle'));
-        Setting::set('favicon', $post->getFilenameWithDirectory('favicon'));
-        Setting::set('backgroundColor', $post->getColor('backgroundColor'));
-        Setting::set('menuColor', $post->getColor('menuColor'));
-        Setting::set('menuBackground', $post->getFilenameWithDirectory('menuBackground'));
-        Setting::set('articleColor', $post->getColor('articleColor'));
-        Setting::set('accentColor', $post->getColor('accentColor'));
-        Setting::set('defaultCategory', (string)$post->getInt('defaultCategory'));
-        Setting::set('menuTheme', $post->getSimpleString('menuTheme'));
-        Setting::set('frontPage', $post->getUrl('frontPage'));
-        Setting::set('frontPageIsJumbo', (string)(int)$post->getBool('frontPageIsJumbo'));
-        Setting::set('mail_logRecipient', $post->getEmail('mail_logRecipient'));
-        Setting::buildCache();
+        $settings->set('siteName', $post->getHTML('siteName'));
+        $settings->set('organisation', $post->getHTML('organisation'));
+        $settings->set('shortCode', $post->getHTML('shortCode'));
+        $settings->set('logo', $post->getFilenameWithDirectory('logo'));
+        $settings->set('subTitle', $post->getHTML('subTitle'));
+        $settings->set('favicon', $post->getFilenameWithDirectory('favicon'));
+        $settings->set('backgroundColor', $post->getColor('backgroundColor'));
+        $settings->set('menuColor', $post->getColor('menuColor'));
+        $settings->set('menuBackground', $post->getFilenameWithDirectory('menuBackground'));
+        $settings->set('articleColor', $post->getColor('articleColor'));
+        $settings->set('accentColor', $post->getColor('accentColor'));
+        $settings->set('defaultCategory', (string)$post->getInt('defaultCategory'));
+        $settings->set('menuTheme', $post->getSimpleString('menuTheme'));
+        $settings->set('frontPage', $post->getUrl('frontPage'));
+        $settings->set('frontPageIsJumbo', (string)(int)$post->getBool('frontPageIsJumbo'));
+        $settings->set('mail_logRecipient', $post->getEmail('mail_logRecipient'));
+        $settings->buildCache();
 
         // Redirect to GET
         return new RedirectResponse('/system/config');

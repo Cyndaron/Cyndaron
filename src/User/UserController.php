@@ -9,11 +9,11 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\Kernel;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Translation\Translator;
+use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Exception;
@@ -22,18 +22,26 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Address;
 use function Safe\imagepng;
 use function Safe\unlink;
 use function strlen;
 use function str_contains;
 use function file_exists;
 use function basename;
+use function sprintf;
 
 final class UserController extends Controller
 {
+    private const RESET_PASSWORD_MAIL_TEXT =
+        'U vroeg om een nieuw wachtwoord voor %s.
+
+Uw nieuwe wachtwoord is: %s';
+
     #[RouteAttribute('gallery', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function gallery(User|null $currentUser, Translator $t): Response
+    public function gallery(UserSession $session, Translator $t): Response
     {
+        $currentUser = $session->getProfile();
         // Has to be done here because you cannot specify the expression during member variable initialization.
         $minLevel = (int)Setting::get('userGalleryMinLevel') ?: UserLevel::ADMIN;
         $userLevel = $currentUser !== null ? $currentUser->level : UserLevel::ANONYMOUS;
@@ -134,7 +142,7 @@ final class UserController extends Controller
     }
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function add(RequestParameters $post, UrlInfo $urlInfo): JsonResponse
+    public function add(RequestParameters $post, MailFactory $mailFactory): JsonResponse
     {
         $user = new User();
         $user->username = $post->getAlphaNum('username');
@@ -157,7 +165,7 @@ final class UserController extends Controller
 
         if ($user->email !== null)
         {
-            $user->mailNewPassword($urlInfo->domain, $password);
+            $this->mailNewPassword($user, $password, $mailFactory);
         }
 
         return new JsonResponse(['userId' => $user->id]);
@@ -213,7 +221,7 @@ final class UserController extends Controller
     }
 
     #[RouteAttribute('resetpassword', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
-    public function resetPassword(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
+    public function resetPassword(QueryBits $queryBits, MailFactory $mailFactory): JsonResponse
     {
         $userId = $queryBits->getInt(2);
         $user = User::fetchById($userId);
@@ -222,9 +230,10 @@ final class UserController extends Controller
             return new JsonResponse(['error' => 'User not found!', Response::HTTP_NOT_FOUND]);
         }
 
-        $newPassword = $user->generatePassword();
+        $newPassword = Util::generatePassword();
+        $user->setPassword($newPassword);
         $user->save();
-        $user->mailNewPassword($urlInfo->domain, $newPassword);
+        $this->mailNewPassword($user, $newPassword, $mailFactory);
 
         return new JsonResponse();
     }
@@ -278,7 +287,7 @@ final class UserController extends Controller
     #[RouteAttribute('changePassword', RequestMethod::POST, UserLevel::LOGGED_IN)]
     public function changePasswordPost(RequestParameters $post, UserSession $userSession): Response
     {
-        $profile = User::fromSession($userSession);
+        $profile = $userSession->getProfile();
         if ($profile === null)
         {
             return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Geen profiel gevonden!'), status:  Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -314,5 +323,20 @@ final class UserController extends Controller
 
         $userSession->addNotification('Wachtwoord gewijzigd.');
         return new RedirectResponse('/');
+    }
+
+    private function mailNewPassword(User $user, string $password, MailFactory $mailFactory): bool
+    {
+        if ($user->email === null)
+        {
+            throw new Exception('No email address specified!');
+        }
+
+        $mail = $mailFactory->createMailWithDefaults(
+            new Address($user->email),
+            'Nieuw wachtwoord ingesteld',
+            sprintf(self::RESET_PASSWORD_MAIL_TEXT, Setting::get('siteName'), $password)
+        );
+        return $mail->send();
     }
 }

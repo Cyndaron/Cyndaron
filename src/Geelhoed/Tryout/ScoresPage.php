@@ -12,7 +12,7 @@ class ScoresPage extends Page
 {
     public function __construct(int $code)
     {
-        parent::__construct('Punten opvragen: ' . $code);
+        $this->title = 'Punten opvragen: ' . $code;
 
         $pointsRecords = DBConnection::getPDO()->doQueryAndFetchAll(
             'SELECT * FROM geelhoed_tryout_points WHERE code = :code ORDER BY datetime',

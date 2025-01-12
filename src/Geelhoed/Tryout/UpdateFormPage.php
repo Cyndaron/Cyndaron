@@ -10,7 +10,7 @@ class UpdateFormPage extends Page
 {
     public function __construct(CSRFTokenHandler $tokenHandler)
     {
-        parent::__construct('Punten updaten');
+        $this->title = 'Punten updaten';
         $this->addTemplateVar('csrfToken', $tokenHandler->get('tryout', 'update'));
     }
 }

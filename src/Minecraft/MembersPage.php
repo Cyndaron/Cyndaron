@@ -22,7 +22,7 @@ final class MembersPage extends Page
 
     public function __construct()
     {
-        parent::__construct('Spelers');
+        $this->title = 'Spelers';
         $this->addScript('/src/Minecraft/js/MembersPage.js');
         $this->addCss('/src/Minecraft/css/memberpage.min.css');
 

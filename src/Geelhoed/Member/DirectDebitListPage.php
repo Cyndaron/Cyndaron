@@ -12,7 +12,7 @@ class DirectDebitListPage extends Page
      */
     public function __construct(array $directDebits)
     {
-        parent::__construct('Incassolijst');
+        $this->title = 'Incassolijst';
         $this->addTemplateVars([
             'directDebits' => $directDebits,
         ]);

@@ -8,7 +8,7 @@ final class StatusPagina extends Page
 {
     public function __construct()
     {
-        parent::__construct('Status en landkaart');
+        $this->title = 'Status en landkaart';
         $this->addCss('/src/Minecraft/css/statuspage.min.css');
 
         $servers = Server::fetchAll([], [], 'ORDER BY name');

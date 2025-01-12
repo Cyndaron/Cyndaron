@@ -15,7 +15,7 @@ class SendNewsletterPage extends Page
 {
     public function __construct(CSRFTokenHandler $tokenHandler)
     {
-        parent::__construct('Nieuwsbrief versturen');
+        $this->title = 'Nieuwsbrief versturen';
         $this->addTemplateVars([
             'csrfToken' => $tokenHandler->get('newsletter', 'send'),
         ]);

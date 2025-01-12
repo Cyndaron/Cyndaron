@@ -15,7 +15,7 @@ class ViewSubscribersPage extends Page
 {
     public function __construct(CSRFTokenHandler $tokenHandler)
     {
-        parent::__construct('Abonnees nieuwsbrief');
+        $this->title = 'Abonnees nieuwsbrief';
 
         $this->addTemplateVars([
             'subscribers' => Subscriber::fetchAll([], [], 'ORDER BY name'),

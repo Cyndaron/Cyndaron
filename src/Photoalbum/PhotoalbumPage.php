@@ -13,7 +13,7 @@ final class PhotoalbumPage extends Page
     public function __construct(Photoalbum $album, TextRenderer $textRenderer, User|null $currentUser, int $viewMode = Photoalbum::VIEWMODE_REGULAR)
     {
         $this->model = $album;
-        parent::__construct($album->name);
+        $this->title = $album->name;
         $canUpload = $currentUser !== null && $currentUser->hasRight(Photoalbum::RIGHT_UPLOAD);
 
         if ($viewMode === Photoalbum::VIEWMODE_REGULAR)

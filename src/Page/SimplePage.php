@@ -12,7 +12,8 @@ final class SimplePage implements Pageable
 
     public function __construct(string $title, string $body)
     {
-        $this->page = new Page($title);
+        $this->page = new Page();
+        $this->page->title = $title;
         $this->page->addTemplateVar('contents', $body);
     }
 

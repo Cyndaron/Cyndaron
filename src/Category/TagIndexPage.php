@@ -15,7 +15,7 @@ final class TagIndexPage extends Page
 
     public function __construct(UrlService $urlService, string $tag)
     {
-        parent::__construct(ucfirst($tag));
+        $this->title = ucfirst($tag);
 
         $tags = [];
         $pages = [];

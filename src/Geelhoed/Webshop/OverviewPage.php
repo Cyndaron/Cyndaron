@@ -9,6 +9,6 @@ final class OverviewPage extends Page
 {
     public function __construct()
     {
-        parent::__construct('Webwinkel');
+        $this->title = 'Webwinkel';
     }
 }

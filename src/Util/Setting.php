@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Cyndaron\Util;
 
 use BackedEnum;
@@ -28,17 +30,6 @@ final class Setting
         }
 
         return self::$cache[$name] ?? '';
-    }
-
-    public static function set(string|BuiltinSetting|BackedEnum $name, string $value): void
-    {
-        if ($name instanceof BackedEnum)
-        {
-            $name = $name->value;
-        }
-
-        $setting = self::$pdo->prepare('REPLACE INTO settings(`name`, `value`) VALUES (?, ?)');
-        $setting->execute([$name, $value]);
     }
 
     public static function load(PDO $pdo): void

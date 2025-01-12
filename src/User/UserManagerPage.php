@@ -15,7 +15,7 @@ final class UserManagerPage extends Page
 
     public function __construct()
     {
-        parent::__construct('Gebruikersbeheer');
+        $this->title = 'Gebruikersbeheer';
         $this->addScript('/src/User/js/UserManagerPage.js');
         $this->addTemplateVars([
             'users' => User::fetchAll([], [], 'ORDER BY username'),

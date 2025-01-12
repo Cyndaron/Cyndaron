@@ -12,7 +12,7 @@ final class MemberListPage extends Page
     {
         $location = $hour->getLocation();
         $weekday = ViewHelpers::getDutchWeekday($hour->day);
-        parent::__construct(sprintf("{$location->getName()} {$weekday} {$hour->getRange()}"));
+        $this->title = "{$location->getName()} {$weekday} {$hour->getRange()}";
         $this->addTemplateVars(['hour' => $hour, 'members' => Member::fetchAllByHour($hour)]);
     }
 }

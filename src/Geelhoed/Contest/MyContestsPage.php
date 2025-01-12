@@ -15,7 +15,7 @@ final class MyContestsPage extends Page
 {
     public function __construct(User $currentUser, CSRFTokenHandler $tokenHandler)
     {
-        parent::__construct('Mijn wedstrijden');
+        $this->title = 'Mijn wedstrijden';
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $controlledMembers = Member::fetchAllContestantsByUser($currentUser);
         $contests = [];

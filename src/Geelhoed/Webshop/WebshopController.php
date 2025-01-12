@@ -19,7 +19,7 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
-use Cyndaron\Util\Mail as UtilMail;
+use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\RuntimeUserSafeError;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
@@ -84,7 +84,7 @@ final class WebshopController extends Controller
         return $this->pageRenderer->renderResponse($page);
     }
 
-    private function sendOrderConfirmationMail(UrlInfo $urlInfo, Subscriber $subscriber, Order $order): void
+    private function sendOrderConfirmationMail(UrlInfo $urlInfo, Subscriber $subscriber, Order $order, MailFactory $mailFactory): void
     {
         $text = "Beste {$subscriber->getFullName()},
 
@@ -121,8 +121,7 @@ Met vriendelijke groet,
 Sportschool Geelhoed";
 
 
-        $mail = UtilMail::createMailWithDefaults(
-            $urlInfo->domain,
+        $mail = $mailFactory->createMailWithDefaults(
             new Address($subscriber->email),
             'Bestelling webshop',
             $text
@@ -131,7 +130,7 @@ Sportschool Geelhoed";
         $mail->send();
     }
 
-    public function sendAccountConfirmationMail(UrlInfo $urlInfo, Subscriber $subscriber): void
+    public function sendAccountConfirmationMail(UrlInfo $urlInfo, Subscriber $subscriber, MailFactory $mailFactory): void
     {
         $link = "{$urlInfo->schemeAndHost}/webwinkel/winkelen/{$subscriber->hash}";
         $text = "Beste {$subscriber->getFullName()},
@@ -150,8 +149,7 @@ Met vriendelijke groet,
 Sportschool Geelhoed";
 
 
-        $mail = UtilMail::createMailWithDefaults(
-            $urlInfo->domain,
+        $mail = $mailFactory->createMailWithDefaults(
             new Address($subscriber->email),
             'Bestellen voor Grote Clubactie',
             $text
@@ -161,7 +159,7 @@ Sportschool Geelhoed";
     }
 
     #[RouteAttribute('bestelling-plaatsen', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function placeOrder(RequestParameters $post, UrlInfo $urlInfo): Response
+    public function placeOrder(RequestParameters $post, UrlInfo $urlInfo, MailFactory $mailFactory): Response
     {
         $hash = $post->getSimpleString('hash');
         try
@@ -181,7 +179,7 @@ Sportschool Geelhoed";
         $newStatus = $order->confirmByUser();
         $order->save();
 
-        $this->sendOrderConfirmationMail($urlInfo, $subscriber, $order);
+        $this->sendOrderConfirmationMail($urlInfo, $subscriber, $order, $mailFactory);
 
         if ($newStatus === OrderStatus::PENDING_PAYMENT)
         {
@@ -280,7 +278,7 @@ Sportschool Geelhoed";
     }
 
     #[RouteAttribute('mollieWebhook', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
-    public function mollieWebhook(RequestParameters $post, UrlInfo $urlInfo): Response
+    public function mollieWebhook(RequestParameters $post, MailFactory $mailFactory): Response
     {
         $apiKey = Setting::get('mollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
@@ -311,8 +309,7 @@ Sportschool Geelhoed";
                 $subscriber = $order->getSubscriber();
                 $text = "Beste {$subscriber->getFullName()},\n\nWe hebben de betaling voor je bestelling in onze webwinkel ontvangen.\n\n";
                 $text .= "Met vriendelijke groet,\nSportschool Geelhoed";
-                $mail = UtilMail::createMailWithDefaults(
-                    $urlInfo->domain,
+                $mail = $mailFactory->createMailWithDefaults(
                     new Address($subscriber->email),
                     'Betaling gelukt',
                     $text
@@ -554,7 +551,7 @@ Sportschool Geelhoed";
     }
 
     #[RouteAttribute('send-mail', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: false, right: self::RIGHT_MANAGE, skipCSRFCheck: true)]
-    public function sendMail(QueryBits $queryBits, UrlInfo $urlInfo): JsonResponse
+    public function sendMail(QueryBits $queryBits, UrlInfo $urlInfo, MailFactory $mailFactory): JsonResponse
     {
         $hash = $queryBits->getString(2);
         $subscriber = Subscriber::fetchByHash($hash);
@@ -563,7 +560,7 @@ Sportschool Geelhoed";
             throw new RuntimeUserSafeError('Gebruiker niet gevonden!');
         }
 
-        $this->sendAccountConfirmationMail($urlInfo, $subscriber);
+        $this->sendAccountConfirmationMail($urlInfo, $subscriber, $mailFactory);
         $subscriber->emailSent = true;
         $subscriber->save();
         return new JsonResponse(['status' => 'ok']);
@@ -577,12 +574,12 @@ Sportschool Geelhoed";
     }
 
     #[RouteAttribute('mail-everyone', RequestMethod::POST, UserLevel::ADMIN, right: self::RIGHT_MANAGE, isApiMethod: true)]
-    public function mailEveryone(UrlInfo $urlInfo): JsonResponse
+    public function mailEveryone(UrlInfo $urlInfo, MailFactory $mailFactory): JsonResponse
     {
         $subscribers = Subscriber::fetchAll(['soldTicketsAreVerified = 1', 'emailSent = 0']);
         foreach ($subscribers as $subscriber)
         {
-            $this->sendAccountConfirmationMail($urlInfo, $subscriber);
+            $this->sendAccountConfirmationMail($urlInfo, $subscriber, $mailFactory);
             $subscriber->emailSent = true;
             $subscriber->save();
         }
