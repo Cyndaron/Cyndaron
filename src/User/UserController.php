@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\User;
 
 use Cyndaron\Geelhoed\Contest\Contest;
+use Cyndaron\Imaging\GdHelper;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -16,12 +17,17 @@ use Cyndaron\Translation\Translator;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Exception;
+use Safe\Exceptions\ImageException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use function Safe\imagepng;
+use function Safe\unlink;
 use function strlen;
 use function str_contains;
+use function file_exists;
+use function basename;
 
 final class UserController extends Controller
 {
@@ -234,7 +240,31 @@ final class UserController extends Controller
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
-        $user->uploadNewAvatar($request);
+        Util::ensureDirectoryExists(User::AVATAR_DIR);
+        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+        $file = $request->files->get('avatarFile');
+        $tmpName = $file->getPathname();
+
+        try
+        {
+            $avatarImg = GdHelper::fromFilename($tmpName);
+        }
+        catch (ImageException)
+        {
+            throw new Exception('Kon de bestandsinhoud niet verwerken!');
+        }
+
+        $filename = User::AVATAR_DIR . "/{$user->id}.png";
+        if (file_exists($filename))
+        {
+            unlink($filename);
+        }
+
+        imagepng($avatarImg, $filename);
+        unlink($tmpName);
+
+        $user->avatar = basename($filename);
+        $user->save();
 
         return new RedirectResponse('/user/manager');
     }

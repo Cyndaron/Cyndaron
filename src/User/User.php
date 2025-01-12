@@ -11,23 +11,11 @@ use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use DateTimeInterface;
 use Exception;
-use finfo;
 use DateTime;
-use Safe\Exceptions\FilesystemException;
-use Safe\Exceptions\ImageException;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mime\Address;
-use function Safe\file_get_contents;
-use function Safe\imagecreatefromgif;
-use function Safe\imagecreatefromjpeg;
-use function Safe\imagecreatefrompng;
-use function Safe\imagepng;
 use function sprintf;
 use function substr;
-use function Safe\unlink;
-use function file_exists;
-use function basename;
 use function password_needs_rehash;
 use function strtolower;
 use function random_int;
@@ -83,61 +71,8 @@ Uw nieuwe wachtwoord is: %s';
     public function generatePassword(): string
     {
         $newPassword = Util::generatePassword();
-        $hashResult = password_hash($newPassword, PASSWORD_DEFAULT);
-        $this->password = $hashResult;
+        $this->setPassword($newPassword);
         return $newPassword;
-    }
-
-    public function uploadNewAvatar(Request $request): void
-    {
-        Util::ensureDirectoryExists(self::AVATAR_DIR);
-        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
-        $file = $request->files->get('avatarFile');
-        $tmpName = $file->getPathname();
-        try
-        {
-            $buffer = file_get_contents($tmpName);
-        }
-        catch (FilesystemException)
-        {
-            throw new Exception('Kon de inhoud van de avatar niet lezen!');
-        }
-
-        try
-        {
-            $finfo = new finfo(FILEINFO_MIME_TYPE);
-            $mimeType = $finfo->buffer($buffer);
-            switch ($mimeType)
-            {
-                case 'image/gif':
-                    $avatarImg = imagecreatefromgif($tmpName);
-                    break;
-                case 'image/jpeg':
-                    $avatarImg = imagecreatefromjpeg($tmpName);
-                    break;
-                case 'image/png':
-                    $avatarImg = imagecreatefrompng($tmpName);
-                    break;
-                default:
-                    throw new Exception('Ongeldig bestandstype');
-            }
-        }
-        catch (ImageException)
-        {
-            throw new Exception('Kon de bestandsinhoud niet verwerken!');
-        }
-
-        $filename = self::AVATAR_DIR . "/{$this->id}.png";
-        if (file_exists($filename))
-        {
-            unlink($filename);
-        }
-
-        imagepng($avatarImg, $filename);
-        unlink($tmpName);
-
-        $this->avatar = basename($filename);
-        $this->save();
     }
 
     public function mailNewPassword(string $domain, string $password): bool
