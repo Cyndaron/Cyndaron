@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\Concert;
 
+use Cyndaron\DBAL\Repository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Ticketsale\Util;
@@ -15,13 +16,13 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         private readonly RequestParameters $post,
         private readonly ImageExtractor $imageExtractor,
         private readonly UserSession $userSession,
+        private readonly Repository $repository,
     ) {
     }
 
     public function save(int|null $id): int
     {
-        $concert = new Concert($id);
-        $concert->loadIfIdIsSet();
+        $concert = $this->repository->fetchOrCreate(Concert::class, $id);
         $concert->name = $this->post->getHTML('titel');
         $concert->description = $this->imageExtractor->process($this->post->getHTML('artikel'));
         $concert->descriptionWhenClosed = $this->imageExtractor->process($this->post->getHTML('descriptionWhenClosed'));
@@ -59,11 +60,12 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
             $concert->secretCode = Util::generateSecretCode();
         }
 
-        if ($concert->save())
+        try
         {
+            $this->repository->save($concert);
             $this->userSession->addNotification('Concert opgeslagen.');
         }
-        else
+        catch (\PDOException)
         {
             $this->userSession->addNotification('Fout bij opslaan concert');
         }

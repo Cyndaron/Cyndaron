@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\FriendlyUrl;
 
+use Cyndaron\DBAL\Repository;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -44,10 +45,10 @@ final class FriendlyUrlController extends Controller
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits): JsonResponse
+    public function delete(QueryBits $queryBits, Repository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        FriendlyUrl::deleteById($id);
+        $repository->deleteById(FriendlyUrl::class, $id);
         return new JsonResponse();
     }
 }

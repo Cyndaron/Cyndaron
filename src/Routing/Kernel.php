@@ -6,6 +6,7 @@ namespace Cyndaron\Routing;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Repository;
 use Cyndaron\Logger\FileLogger;
 use Cyndaron\Logger\MultiLogger;
 use Cyndaron\Mail\MailLogger;
@@ -79,6 +80,7 @@ final class Kernel
     {
         $dic = new DependencyInjectionContainer();
         $pdo = DBConnection::getPDO();
+        $repository = new Repository();
         $urlService = new UrlService($pdo, $request->getRequestUri(), $registry->urlProviders);
         $templateRenderer = TemplateRendererFactory::createTemplateRenderer($registry->templateRoots);
         $tokenHandler = new CSRFTokenHandler($userSession->getSymfonySession());
@@ -112,6 +114,7 @@ final class Kernel
         $dic->add($translator);
         $dic->add($pdo);
         $dic->add($pdo, \PDO::class);
+        $dic->add($repository);
         $dic->add($urlService);
         $dic->add($tokenHandler);
         $dic->add($userSession);

@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
+use Cyndaron\DBAL\Repository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
@@ -16,13 +17,13 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         private readonly Request $request,
         private readonly ImageExtractor $imageExtractor,
         private readonly UserSession $userSession,
+        private readonly Repository $repository,
     ) {
     }
 
     public function save(int|null $id): int
     {
-        $photoalbum = new Photoalbum($id);
-        $photoalbum->loadIfIdIsSet();
+        $photoalbum = $this->repository->fetchOrCreate(Photoalbum::class, $id);
         $photoalbum->name = $this->post->getHTML('titel');
         $photoalbum->blurb = $this->post->getHTML('blurb');
         $photoalbum->notes = $this->imageExtractor->process($this->post->getHTML('artikel'));
@@ -32,7 +33,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $photoalbum->thumbnailWidth = $this->post->getInt('thumbnailWidth');
         $photoalbum->thumbnailHeight = $this->post->getInt('thumbnailHeight');
         $this->saveHeaderAndPreviewImage($photoalbum, $this->post, $this->request);
-        $photoalbum->save();
+        $this->repository->save($photoalbum);
         $this->saveCategories($photoalbum, $this->post);
 
         $this->userSession->addNotification('Fotoalbum bewerkt.');

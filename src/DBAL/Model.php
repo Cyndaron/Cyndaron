@@ -57,16 +57,6 @@ abstract class Model
         return array_merge(static::TABLE_FIELDS, ['created', 'modified']);
     }
 
-    public function loadIfIdIsSet(): bool
-    {
-        if ($this->id !== null)
-        {
-            return $this->load();
-        }
-
-        return false;
-    }
-
     public function load(): bool
     {
         if ($this->id === null)
@@ -195,6 +185,9 @@ abstract class Model
         return $couldUpdateAll;
     }
 
+    /**
+     * @deprecated
+     */
     public function delete(): void
     {
         if (!$this->id)
@@ -207,6 +200,9 @@ abstract class Model
         DBConnection::getPDO()->executeQuery("DELETE FROM {$table} WHERE id = ?", [$this->id]);
     }
 
+    /**
+     * @deprecated
+     */
     public function save(): bool
     {
         if (empty(static::TABLE))
@@ -266,14 +262,6 @@ abstract class Model
         }
 
         return $result !== false;
-    }
-
-    public static function deleteById(int $id): bool
-    {
-        /** @noinspection SqlResolve */
-        DBConnection::getPDO()->executeQuery(sprintf('DELETE FROM %s WHERE id = ?', static::TABLE), [$id]);
-
-        return true;
     }
 
     /**

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
+use Cyndaron\DBAL\Repository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
@@ -14,13 +15,13 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         private readonly RequestParameters $post,
         private readonly ImageExtractor $imageExtractor,
         private readonly UserSession $userSession,
+        private readonly Repository $repository,
     ) {
     }
 
     public function save(int|null $id): int
     {
-        $event = new Event($id);
-        $event->loadIfIdIsSet();
+        $event = $this->repository->fetchOrCreate(Event::class, $id);
         $event->name = $this->post->getHTML('titel');
         $event->description = $this->imageExtractor->process($this->post->getHTML('artikel'));
         $event->descriptionWhenClosed = $this->imageExtractor->process($this->post->getHTML('descriptionWhenClosed'));
@@ -37,11 +38,12 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $event->performedPiece = $this->post->getHTML('performedPiece');
         $event->termsAndConditions = $this->post->getHTML('termsAndConditions');
 
-        if ($event->save())
+        try
         {
+            $this->repository->save($event);
             $this->userSession->addNotification('Evenement opgeslagen.');
         }
-        else
+        catch (\PDOException)
         {
             $this->userSession->addNotification('Fout bij opslaan evenement');
         }

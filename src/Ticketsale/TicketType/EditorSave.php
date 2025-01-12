@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\TicketType;
 
+use Cyndaron\DBAL\Repository;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
 
@@ -10,14 +11,14 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 {
     public function __construct(
         private readonly RequestParameters $post,
-        private readonly UserSession $userSession
+        private readonly UserSession $userSession,
+        private readonly Repository $repository,
     ) {
     }
 
     public function save(int|null $id): int
     {
-        $ticketType = new TicketType($id);
-        $ticketType->loadIfIdIsSet();
+        $ticketType = $this->repository->fetchOrCreate(TicketType::class, $id);
 
         if ($id === null)
         {
@@ -27,11 +28,12 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $ticketType->name = $this->post->getHTML('name');
         $ticketType->price = $this->post->getFloat('price');
 
-        if ($ticketType->save())
+        try
         {
+            $this->repository->save($ticketType);
             $this->userSession->addNotification('Kaarttype opgeslagen.');
         }
-        else
+        catch (\PDOException)
         {
             $this->userSession->addNotification('Fout bij opslaan kaarttype');
         }

@@ -17,6 +17,9 @@ final class DBConnection
         self::$pdo = $pdo;
     }
 
+    /**
+     * @deprecated
+     */
     public static function getPDO(): Connection
     {
         return self::$pdo;

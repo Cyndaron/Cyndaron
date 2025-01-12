@@ -23,7 +23,7 @@ final class MemberGraduation extends Model
     private static array $byMemberCache = [];
     private static FileCache $byMemberCacheHandle;
 
-    private static function rebuildByMemberCache(): void
+    public static function rebuildByMemberCache(): void
     {
         if (empty(self::$byMemberCacheHandle))
         {
@@ -77,17 +77,6 @@ final class MemberGraduation extends Model
         }
 
         return self::$graduationCache[$this->graduationId];
-    }
-
-    public static function deleteById(int $id): bool
-    {
-        $result = parent::deleteById($id);
-        if ($result)
-        {
-            self::rebuildByMemberCache();
-        }
-
-        return $result;
     }
 
     public function save(): bool

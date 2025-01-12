@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Member;
 
+use Cyndaron\DBAL\Repository;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
@@ -69,14 +70,15 @@ final class MemberController extends Controller
     }
 
     #[RouteAttribute('removeGraduation', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function removeGraduation(QueryBits $queryBits): JsonResponse
+    public function removeGraduation(QueryBits $queryBits, Repository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        MemberGraduation::deleteById($id);
+        $repository->deleteById(MemberGraduation::class, $id);
+        MemberGraduation::rebuildByMemberCache();
 
         return new JsonResponse();
     }
@@ -211,7 +213,7 @@ final class MemberController extends Controller
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits): JsonResponse
+    public function delete(QueryBits $queryBits, Repository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -219,10 +221,10 @@ final class MemberController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         $member = Member::fetchById($id);
-        Member::deleteById($id);
+        $repository->deleteById(Member::class, $id);
         if ($member !== null && $member->userId > 0)
         {
-            User::deleteById($member->userId);
+            $repository->deleteById(User::class, $member->userId);
         }
 
         return new JsonResponse();

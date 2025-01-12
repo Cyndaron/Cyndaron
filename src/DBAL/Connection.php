@@ -27,7 +27,7 @@ final class Connection extends PDO
         $this->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     }
 
-    public static function connect(string $engine, string $host, string $databaseName, string $user, string $password): self
+    public static function create(string $engine, string $host, string $databaseName, string $user, string $password): self
     {
         try
         {

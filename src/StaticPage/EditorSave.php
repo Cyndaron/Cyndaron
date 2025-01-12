@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\StaticPage;
 
+use Cyndaron\DBAL\Repository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
@@ -17,6 +18,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         private readonly Request $request,
         private readonly ImageExtractor $imageExtractor,
         private readonly UserSession $userSession,
+        private readonly Repository $repository,
     ) {
     }
 
@@ -28,8 +30,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $showBreadcrumbs = $this->post->getBool('showBreadcrumbs');
         $tags = trim($this->post->getSimpleString('tags'), "; \t\n\r\0\x0B");
 
-        $model = new StaticPageModel($id);
-        $model->loadIfIdIsSet();
+        $model = $this->repository->fetchOrCreate(StaticPageModel::class, $id);
         $model->name = $titel;
         $model->blurb = $this->post->getHTML('blurb');
         $model->text = $text;
@@ -37,14 +38,15 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $model->showBreadcrumbs = $showBreadcrumbs;
         $model->tags = $tags;
         $this->saveHeaderAndPreviewImage($model, $this->post, $this->request);
-        if ($model->save())
+        try
         {
+            $this->repository->save($model);
             $this->saveCategories($model, $this->post);
 
             $this->userSession->addNotification('Pagina bewerkt.');
             $this->returnUrl = '/sub/' . $model->id;
         }
-        else
+        catch (\PDOException)
         {
             $this->userSession->addNotification('Pagina opslaan mislukt');
         }

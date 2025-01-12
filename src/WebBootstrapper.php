@@ -97,7 +97,7 @@ final class WebBootstrapper
         /** @noinspection PhpIncludeInspection */
         include self::SETTINGS_FILE;
 
-        $connection = Connection::connect($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass);
+        $connection = Connection::create($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass);
         DBConnection::connect($connection);
         return $connection;
     }
