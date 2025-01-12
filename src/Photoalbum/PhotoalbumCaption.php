@@ -1,15 +1,17 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
 
 final class PhotoalbumCaption extends Model
 {
     public const TABLE = 'photoalbum_captions';
-    public const TABLE_FIELDS = ['hash', 'caption'];
 
+    #[DatabaseField]
     public string $hash;
+    #[DatabaseField]
     public string $caption;
 
     public static function create(string $hash, string $caption): bool

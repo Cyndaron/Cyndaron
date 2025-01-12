@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\KnownShortCodes;
@@ -11,23 +12,36 @@ use Cyndaron\Util\Setting;
 final class Event extends Model
 {
     public const TABLE = 'registration_events';
-    public const TABLE_FIELDS = ['name', 'openForRegistration', 'description', 'descriptionWhenClosed', 'registrationCost0', 'registrationCost1', 'registrationCost2', 'registrationCost3', 'lunchCost', 'maxRegistrations', 'numSeats', 'requireApproval', 'hideRegistrationFee', 'performedPiece', 'termsAndConditions'];
 
+    #[DatabaseField]
     public string $name = '';
+    #[DatabaseField]
     public bool $openForRegistration = true;
+    #[DatabaseField]
     public string $description = '';
+    #[DatabaseField]
     public string $descriptionWhenClosed = '';
+    #[DatabaseField]
     public float $registrationCost0;
+    #[DatabaseField]
     public float $registrationCost1;
+    #[DatabaseField]
     public float $registrationCost2 = 0.0;
+    #[DatabaseField]
     public float $registrationCost3 = 0.0;
+    #[DatabaseField]
     public float $lunchCost;
+    #[DatabaseField]
     public int $maxRegistrations = 300;
+    #[DatabaseField]
     public int $numSeats = 300;
+    #[DatabaseField]
     public bool $requireApproval = false;
+    #[DatabaseField]
     public bool $hideRegistrationFee = false;
-
+    #[DatabaseField]
     public string $performedPiece = '';
+    #[DatabaseField]
     public string $termsAndConditions = '';
 
     /**

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\Concert;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Ticketsale\DeliveryCost\FlatFee;
@@ -15,25 +16,42 @@ use function range;
 final class Concert extends Model
 {
     public const TABLE = 'ticketsale_concerts';
-    public const TABLE_FIELDS = ['name', 'openForSales', 'description', 'descriptionWhenClosed', 'deliveryCost', 'forcedDelivery', 'digitalDelivery', 'hasReservedSeats', 'reservedSeatCharge', 'reservedSeatsAreSoldOut', 'numFreeSeats', 'numReservedSeats', 'deliveryCostInterface', 'secretCode', 'date', 'locationId', 'ticketInfo'];
 
+    #[DatabaseField]
     public string $name = '';
+    #[DatabaseField]
     public bool $openForSales = true;
+    #[DatabaseField]
     public string $description = '';
+    #[DatabaseField]
     public string $descriptionWhenClosed = '';
+    #[DatabaseField]
     public float $deliveryCost = 1.50;
+    #[DatabaseField]
     public bool $forcedDelivery = true;
+    #[DatabaseField]
     public bool $digitalDelivery = false;
+    #[DatabaseField]
     public bool $hasReservedSeats = true;
+    #[DatabaseField]
     public float $reservedSeatCharge = 5.00;
+    #[DatabaseField]
     public bool $reservedSeatsAreSoldOut = false;
+    #[DatabaseField]
     public int $numFreeSeats = 250;
+    #[DatabaseField]
     public int $numReservedSeats = 270;
+    #[DatabaseField]
     public string $deliveryCostInterface = '';
+    #[DatabaseField]
     public string $secretCode = '';
+    #[DatabaseField]
     public string $date = '';
+    #[DatabaseField]
     public int $locationId = 0;
+    #[DatabaseField]
     public string $ticketInfo = '';
+
 
     /**
      * @param int $orderId

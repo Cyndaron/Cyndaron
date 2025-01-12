@@ -14,15 +14,18 @@ use function array_key_exists;
 use function array_fill;
 use function count;
 use function implode;
+use function in_array;
+use function array_keys;
 
 abstract class Model
 {
     public const TABLE = '';
-    // Override to include the fields for that particular model
-    public const TABLE_FIELDS = [];
 
+    #[DatabaseField]
     public int|null $id;
+    #[DatabaseField]
     public DateTime $modified;
+    #[DatabaseField]
     public DateTime $created;
 
     final public function __construct(int|null $id = null)
@@ -52,9 +55,27 @@ abstract class Model
     /**
      * @return string[]
      */
-    public static function getExtendedTableFields(): array
+    private function getTableFields(bool $extended = false): array
     {
-        return array_merge(static::TABLE_FIELDS, ['created', 'modified']);
+        $ret = [];
+        $reflectionClass = new \ReflectionClass($this);
+        foreach ($reflectionClass->getProperties() as $property)
+        {
+            $name = $property->getName();
+            if ($name === 'id')
+            {
+                continue;
+            }
+            if (!$extended && in_array($name, ['created', 'modified'], true))
+            {
+                continue;
+            }
+            if (count($property->getAttributes(DatabaseField::class)) > 0)
+            {
+                $ret[] = $name;
+            }
+        }
+        return $ret;
     }
 
     public function load(): bool
@@ -71,7 +92,7 @@ abstract class Model
         {
             return false;
         }
-        foreach (self::getExtendedTableFields() as $tableField)
+        foreach (array_keys($record) as $tableField)
         {
             $this->$tableField = ValueConverter::sqlToPhp($record[$tableField], static::class, $tableField);
         }
@@ -145,7 +166,7 @@ abstract class Model
     public function asArray(): array
     {
         $return = [];
-        foreach (self::getExtendedTableFields() as $tableField)
+        foreach ($this->getTableFields(true) as $tableField)
         {
             $return[$tableField] = $this->$tableField;
         }
@@ -170,7 +191,7 @@ abstract class Model
     public function updateFromArray(array $newArray): bool
     {
         $couldUpdateAll = true;
-        foreach (self::getExtendedTableFields() as $tableField)
+        foreach ($this->getTableFields(true) as $tableField)
         {
             if (array_key_exists($tableField, $newArray))
             {
@@ -209,22 +230,24 @@ abstract class Model
         {
             throw new ImproperSubclassing('TABLE not properly set!');
         }
-        if (empty(static::TABLE_FIELDS))
+
+        $tableFields = $this->getTableFields();
+        if (empty($tableFields))
         {
-            throw new ImproperSubclassing('TABLE_FIELDS not properly set!');
+            throw new ImproperSubclassing('Table fields not properly set!');
         }
 
         // Create new
         if ($this->id === null)
         {
             $arguments = [];
-            $placeholders = implode(',', array_fill(0, count(static::TABLE_FIELDS), '?'));
-            foreach (static::TABLE_FIELDS as $tableField)
+            $placeholders = implode(',', array_fill(0, count($tableFields), '?'));
+            foreach ($tableFields as $tableField)
             {
                 $arguments[] = ValueConverter::phpToSql($this->$tableField);
             }
 
-            $quotedTableFields = array_map(static fn (string $fieldName) => "`$fieldName`", static::TABLE_FIELDS);
+            $quotedTableFields = array_map(static fn (string $fieldName) => "`$fieldName`", $tableFields);
             $result = DBConnection::getPDO()->insert('INSERT INTO ' . static::TABLE . ' (' . implode(',', $quotedTableFields) . ') VALUES (' . $placeholders . ')', $arguments);
             if ($result !== false)
             {
@@ -239,7 +262,7 @@ abstract class Model
             $setStrings = [];
             $arguments = [];
 
-            foreach (static::TABLE_FIELDS as $tableField)
+            foreach ($tableFields as $tableField)
             {
                 $mangledField = ValueConverter::phpToSql($this->$tableField);
                 if ($mangledField !== null)

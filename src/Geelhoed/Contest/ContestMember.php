@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed\Contest;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Member\Member;
@@ -17,14 +18,20 @@ final class ContestMember extends Model
     use FileCachedModel;
 
     public const TABLE = 'geelhoed_contests_members';
-    public const TABLE_FIELDS = ['contestId', 'memberId', 'graduationId', 'weight', 'molliePaymentId', 'isPaid', 'comments'];
 
+    #[DatabaseField]
     public int $contestId;
+    #[DatabaseField]
     public int $memberId;
+    #[DatabaseField]
     public int $graduationId;
+    #[DatabaseField]
     public int $weight;
+    #[DatabaseField]
     public string|null $molliePaymentId = null;
+    #[DatabaseField]
     public bool $isPaid = false;
+    #[DatabaseField]
     public string $comments = '';
 
     public function getContest(): Contest

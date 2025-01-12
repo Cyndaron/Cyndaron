@@ -2,6 +2,7 @@
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\Category\ModelWithCategory;
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
@@ -14,10 +15,12 @@ final class StaticPageModel extends ModelWithCategory
 {
     public const TABLE = 'subs';
     public const CATEGORY_TABLE = 'sub_categories';
-    public const TABLE_FIELDS = ['name', 'image', 'previewImage', 'blurb', 'text', 'enableComments', 'showBreadcrumbs', 'tags'];
 
+    #[DatabaseField]
     public string $text = '';
+    #[DatabaseField]
     public bool $enableComments = false;
+    #[DatabaseField]
     public string $tags = '';
 
     public function delete(): void

@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Category;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\RichLink\RichLink;
 use Cyndaron\StaticPage\StaticPageModel;
@@ -14,9 +15,10 @@ final class Category extends ModelWithCategory
 {
     public const TABLE = 'categories';
     public const CATEGORY_TABLE = 'category_categories';
-    public const TABLE_FIELDS = ['name', 'image', 'previewImage', 'blurb', 'description', 'viewMode', 'showBreadcrumbs'];
 
+    #[DatabaseField]
     public string $description = '';
+    #[DatabaseField]
     public ViewMode $viewMode = ViewMode::Regular;
 
     public function getFriendlyUrl(UrlService $urlService): Url

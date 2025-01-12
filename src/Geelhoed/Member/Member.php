@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Member;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
@@ -32,22 +33,36 @@ final class Member extends Model
     use FileCachedModel;
 
     public const TABLE = 'geelhoed_members';
-    public const TABLE_FIELDS = ['userId', 'parentEmail', 'phoneNumbers', 'isContestant', 'paymentMethod', 'iban', 'ibanHolder', 'paymentProblem', 'paymentProblemNote', 'freeParticipation', 'discount', 'temporaryStop', 'joinedAt', 'jbnNumber', 'jbnNumberLocation'];
 
+    #[DatabaseField]
     public int $userId;
+    #[DatabaseField]
     public string $parentEmail = '';
+    #[DatabaseField]
     public string $phoneNumbers = '';
+    #[DatabaseField]
     public bool $isContestant = false;
+    #[DatabaseField]
     public string $paymentMethod = 'incasso';
+    #[DatabaseField]
     public string $iban = '';
+    #[DatabaseField]
     public string $ibanHolder = '';
+    #[DatabaseField]
     public bool $paymentProblem = false;
+    #[DatabaseField]
     public string $paymentProblemNote = '';
+    #[DatabaseField]
     public bool $freeParticipation = false;
+    #[DatabaseField]
     public float $discount;
+    #[DatabaseField]
     public bool $temporaryStop = false;
+    #[DatabaseField]
     public string|null $joinedAt = null;
+    #[DatabaseField]
     public string $jbnNumber = '';
+    #[DatabaseField]
     public string $jbnNumberLocation = '';
 
     public const PAYMENT_METHODS = [

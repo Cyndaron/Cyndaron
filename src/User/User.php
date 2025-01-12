@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\User;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\GenericRepository;
@@ -22,30 +23,50 @@ final class User extends Model
     use FileCachedModel;
 
     public const TABLE = 'users';
-    public const TABLE_FIELDS = ['username', 'password', 'email', 'level', 'firstName', 'initials', 'tussenvoegsel', 'lastName', 'role', 'comments', 'avatar', 'hideFromMemberList', 'gender', 'street', 'houseNumber', 'houseNumberAddition', 'postalCode', 'city', 'dateOfBirth', 'optOut', 'notes'];
 
     public const AVATAR_DIR = Util::UPLOAD_DIR . '/user/avatar';
 
+    #[DatabaseField]
     public string $username = '';
+    #[DatabaseField]
     public string $password = '';
+    #[DatabaseField]
     public string|null $email = null;
+    #[DatabaseField]
     public int $level = UserLevel::LOGGED_IN;
+    #[DatabaseField]
     public string $firstName = '';
+    #[DatabaseField]
     public string $initials = '';
+    #[DatabaseField]
     public string $tussenvoegsel = '';
+    #[DatabaseField]
     public string $lastName = '';
+    #[DatabaseField]
     public string $role = '';
+    #[DatabaseField]
     public string $comments = '';
+    #[DatabaseField]
     public string $avatar = '';
+    #[DatabaseField]
     public bool $hideFromMemberList = false;
+    #[DatabaseField]
     public string|null $gender = null;
+    #[DatabaseField]
     public string|null $street = null;
+    #[DatabaseField]
     public int|null $houseNumber = null;
+    #[DatabaseField]
     public string|null $houseNumberAddition = null;
+    #[DatabaseField]
     public string|null $postalCode = null;
+    #[DatabaseField]
     public string|null $city = null;
+    #[DatabaseField]
     public DateTime|null $dateOfBirth = null;
+    #[DatabaseField]
     public bool $optOut = false;
+    #[DatabaseField]
     public string $notes = '';
 
     public function isAdmin(): bool

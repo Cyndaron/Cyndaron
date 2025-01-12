@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Category;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\DBConnection;
@@ -24,12 +25,16 @@ abstract class ModelWithCategory extends Model
 {
     use FileCachedModel;
 
+    #[DatabaseField]
     public string $name = '';
+    #[DatabaseField]
     public string $image = '';
+    #[DatabaseField]
     public string $previewImage = '';
+    #[DatabaseField]
     public string $blurb = '';
+    #[DatabaseField]
     public bool $showBreadcrumbs = false;
-    public bool $openInNewTab = false;
 
     // Saved in coupling table!
     public int $priority = 0;
@@ -178,5 +183,10 @@ abstract class ModelWithCategory extends Model
             return $entry1->name <=> $entry2->name;
         });
         return $entries;
+    }
+
+    public function shouldOpenInNewTab(): bool
+    {
+        return false;
     }
 }

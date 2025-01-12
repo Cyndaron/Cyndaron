@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Tryout;
 
 use Cyndaron\Calendar\CalendarAppointment;
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Location\Location;
@@ -19,13 +20,18 @@ final class Tryout extends Model implements CalendarAppointment
     use FileCachedModel;
 
     public const TABLE = 'geelhoed_volunteer_tot';
-    public const TABLE_FIELDS = ['name', 'locationId', 'start', 'end', 'data', 'photoalbumLink'];
 
+    #[DatabaseField]
     public string $name = '';
+    #[DatabaseField]
     public int|null $locationId = null;
+    #[DatabaseField]
     public DateTime $start;
+    #[DatabaseField]
     public DateTime $end;
+    #[DatabaseField]
     public string $data;
+    #[DatabaseField]
     public string $photoalbumLink;
 
     /**

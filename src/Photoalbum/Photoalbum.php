@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Category\ModelWithCategory;
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Error\IncompleteData;
@@ -23,7 +24,6 @@ final class Photoalbum extends ModelWithCategory
 {
     public const TABLE = 'photoalbums';
     public const CATEGORY_TABLE = 'photoalbum_categories';
-    public const TABLE_FIELDS = ['name', 'image', 'previewImage', 'blurb', 'notes', 'showBreadcrumbs', 'hideFromOverview', 'viewMode', 'thumbnailWidth', 'thumbnailHeight'];
 
     public const VIEWMODE_REGULAR = 0;
     public const VIEWMODE_PORTFOLIO = 1;
@@ -36,10 +36,15 @@ final class Photoalbum extends ModelWithCategory
     public const RIGHT_EDIT = 'photoalbum_edit';
     public const RIGHT_UPLOAD = 'photoalbum_upload';
 
+    #[DatabaseField]
     public string $notes = '';
+    #[DatabaseField]
     public bool $hideFromOverview = false;
+    #[DatabaseField]
     public int $viewMode = self::VIEWMODE_REGULAR;
+    #[DatabaseField]
     public int $thumbnailWidth = 270;
+    #[DatabaseField]
     public int $thumbnailHeight = 200;
 
     public static function create(string $name, string $notes = '', bool $showBreadcrumbs = false): int|null

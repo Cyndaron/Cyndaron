@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\Model;
 use function count;
 use function reset;
@@ -8,16 +9,24 @@ use function reset;
 final class Member extends Model
 {
     public const TABLE = 'minecraft_members';
-    public const TABLE_FIELDS = ['userName', 'uuid', 'realName', 'level', 'status', 'donor', 'skinUrl', 'renderAvatarHair', 'newRenderer'];
 
+    #[DatabaseField]
     public string $userName;
+    #[DatabaseField]
     public string|null $uuid;
+    #[DatabaseField]
     public string $realName;
+    #[DatabaseField]
     public int $level;
+    #[DatabaseField]
     public string $status;
+    #[DatabaseField]
     public bool $donor;
+    #[DatabaseField]
     public string $skinUrl;
+    #[DatabaseField]
     public bool $renderAvatarHair;
+    #[DatabaseField]
     public bool $newRenderer = false;
 
     public static function loadByUsername(string $username): self|null

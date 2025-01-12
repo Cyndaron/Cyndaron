@@ -1,15 +1,17 @@
 <?php
 namespace Cyndaron\Geelhoed;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Sport\Sport;
 
 final class Graduation extends Model
 {
     public const TABLE = 'geelhoed_graduations';
-    public const TABLE_FIELDS = ['sportId', 'name'];
 
+    #[DatabaseField]
     public int $sportId;
+    #[DatabaseField]
     public string $name;
 
     public function getSport(): Sport

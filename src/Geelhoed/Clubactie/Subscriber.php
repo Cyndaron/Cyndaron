@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Clubactie;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use function implode;
@@ -12,17 +13,25 @@ final class Subscriber extends Model
     use FileCachedModel;
 
     public const TABLE = 'geelhoed_clubactie_subscriber';
-    public const TABLE_FIELDS = ['firstName', 'tussenvoegsel', 'lastName', 'email', 'phone', 'numSoldTickets', 'soldTicketsAreVerified', 'emailSent', 'hash'];
 
+    #[DatabaseField]
     public string $firstName = '';
+    #[DatabaseField]
     public string $tussenvoegsel = '';
+    #[DatabaseField]
     public string $lastName = '';
+    #[DatabaseField]
     public string $email = '';
+    #[DatabaseField]
     public string $phone = '';
 
+    #[DatabaseField]
     public int $numSoldTickets = 0;
+    #[DatabaseField]
     public bool $soldTicketsAreVerified = false;
+    #[DatabaseField]
     public bool $emailSent = false;
+    #[DatabaseField]
     public string $hash = '';
 
     public static function fetchByHash(string $hash): self|null

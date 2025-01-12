@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Menu;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Url\Url;
@@ -18,12 +19,16 @@ use function strpos;
 final class MenuItem extends Model
 {
     public const TABLE = 'menu';
-    public const TABLE_FIELDS = ['link', 'alias', 'isDropdown', 'isImage', 'priority'];
 
+    #[DatabaseField]
     public string $link;
+    #[DatabaseField]
     public string|null $alias = null;
+    #[DatabaseField]
     public bool $isDropdown = false;
+    #[DatabaseField]
     public bool $isImage = false;
+    #[DatabaseField]
     public int|null $priority = null;
 
     public function getTitle(UrlService $urlService): string

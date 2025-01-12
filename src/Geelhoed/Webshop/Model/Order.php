@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Webshop\Model;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
 use Cyndaron\Geelhoed\Hour\Hour;
@@ -11,11 +12,14 @@ use function assert;
 final class Order extends Model
 {
     public const TABLE = 'geelhoed_webshop_order';
-    public const TABLE_FIELDS = ['subscriberId', 'hourId', 'status', 'paymentId'];
 
+    #[DatabaseField]
     public int $subscriberId;
+    #[DatabaseField]
     public int $hourId = 1;
+    #[DatabaseField]
     public OrderStatus $status = OrderStatus::QUOTE;
+    #[DatabaseField]
     public string $paymentId = '';
 
     public static function fetchBySubscriber(Subscriber $subscriber): self|null

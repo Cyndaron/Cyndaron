@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Hour;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Department;
@@ -17,17 +18,26 @@ final class Hour extends Model
     use FileCachedModel;
 
     public const TABLE = 'geelhoed_hours';
-    public const TABLE_FIELDS = ['locationId', 'day', 'description', 'from', 'until', 'sportId', 'sportOverride', 'departmentId', 'capacity', 'notes'];
 
+    #[DatabaseField]
     public int $locationId;
+    #[DatabaseField]
     public int $day;
+    #[DatabaseField]
     public string $description;
+    #[DatabaseField]
     public string $from;
+    #[DatabaseField]
     public string $until;
+    #[DatabaseField]
     public int $sportId;
+    #[DatabaseField]
     public string $sportOverride;
+    #[DatabaseField]
     public int $departmentId;
+    #[DatabaseField]
     public int $capacity;
+    #[DatabaseField]
     public string $notes;
 
     public function getLocation(): Location

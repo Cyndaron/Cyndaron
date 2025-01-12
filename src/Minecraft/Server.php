@@ -11,6 +11,7 @@
  */
 namespace Cyndaron\Minecraft;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\Model;
 
 use ErrorException;
@@ -28,11 +29,14 @@ use function explode;
 final class Server extends Model
 {
     public const TABLE = 'minecraft_servers';
-    public const TABLE_FIELDS = ['name', 'hostname', 'port', 'dynmapPort'];
 
+    #[DatabaseField]
     public string $name = '';
+    #[DatabaseField]
     public string $hostname = '127.0.0.1';
+    #[DatabaseField]
     public int $port = 25565;
+    #[DatabaseField]
     public int $dynmapPort = 8888;
 
     public bool $isOnline = false;

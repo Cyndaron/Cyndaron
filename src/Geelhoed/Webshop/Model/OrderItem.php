@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Webshop\Model;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use function assert;
@@ -12,13 +13,18 @@ final class OrderItem extends Model
     use FileCachedModel;
 
     public const TABLE = 'geelhoed_webshop_order_item';
-    public const TABLE_FIELDS = ['orderId', 'productId', 'quantity', 'options', 'price', 'currency'];
 
+    #[DatabaseField]
     public int $orderId;
+    #[DatabaseField]
     public int $productId;
+    #[DatabaseField]
     public int $quantity;
+    #[DatabaseField]
     public string $options = '{}';
+    #[DatabaseField]
     public float $price;
+    #[DatabaseField]
     public Currency $currency;
 
     public function getProduct(): Product

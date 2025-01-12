@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\Calendar\CalendarAppointment;
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
 use DateTime;
@@ -16,10 +17,12 @@ use function implode;
 final class ContestDate extends Model implements CalendarAppointment
 {
     public const TABLE = 'geelhoed_contests_dates';
-    public const TABLE_FIELDS = ['contestId', 'start', 'end'];
 
+    #[DatabaseField]
     public int $contestId;
+    #[DatabaseField]
     public DateTime $start;
+    #[DatabaseField]
     public DateTime $end;
 
     /**

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\DBAL\Model;
@@ -19,34 +20,60 @@ use function floor;
 final class Registration extends Model
 {
     public const TABLE = 'registration_orders';
-    public const TABLE_FIELDS = ['eventId', 'lastName', 'initials', 'registrationGroup', 'vocalRange', 'birthYear', 'lunch', 'lunchType', 'bhv', 'kleinkoor', 'kleinkoorExplanation', 'participatedBefore', 'numPosters', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'comments', 'isPaid', 'currentChoir', 'choirPreference', 'approvalStatus', 'phone', 'choirExperience', 'performedBefore'];
 
+    #[DatabaseField]
     public int $eventId;
+    #[DatabaseField]
     public string $lastName;
+    #[DatabaseField]
     public string $initials;
+    #[DatabaseField]
     public int $registrationGroup = 0;
+    #[DatabaseField]
     public string $vocalRange;
+    #[DatabaseField]
     public int|null $birthYear = null;
+    #[DatabaseField]
     public bool $lunch = false;
+    #[DatabaseField]
     public string $lunchType = '';
+    #[DatabaseField]
     public bool $bhv = false;
+    #[DatabaseField]
     public bool $kleinkoor = false;
+    #[DatabaseField]
     public string $kleinkoorExplanation = '';
+    #[DatabaseField]
     public int $participatedBefore = 0;
+    #[DatabaseField]
     public int $numPosters = 0;
+    #[DatabaseField]
     public string $email = '';
+    #[DatabaseField]
     public string $phone = '';
+    #[DatabaseField]
     public string $street;
+    #[DatabaseField]
     public int $houseNumber;
+    #[DatabaseField]
     public string $houseNumberAddition;
+    #[DatabaseField]
     public string $postcode;
+    #[DatabaseField]
     public string $city = '';
+    #[DatabaseField]
     public string $currentChoir = '';
+    #[DatabaseField]
     public string $choirPreference = '';
+    #[DatabaseField]
     public int $choirExperience = 0;
+    #[DatabaseField]
     public bool $performedBefore = false;
+    #[DatabaseField]
     public string $comments;
+    #[DatabaseField]
     public RegistrationApprovalStatus $approvalStatus = RegistrationApprovalStatus::UNDECIDED;
+    #[DatabaseField]
     public bool $isPaid = false;
 
     /**

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Webshop\Model;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 
@@ -14,14 +15,20 @@ final class Product extends Model
     public const DONATE_TICKETS_ID = 18;
 
     public const TABLE = 'geelhoed_webshop_product';
-    public const TABLE_FIELDS = ['parentId', 'name', 'description', 'options', 'gcaTicketPrice', 'euroPrice', 'visible'];
 
+    #[DatabaseField]
     public int|null $parentId = null;
+    #[DatabaseField]
     public string $name;
+    #[DatabaseField]
     public string $description;
+    #[DatabaseField]
     public string $options;
+    #[DatabaseField]
     public int|null $gcaTicketPrice = null;
+    #[DatabaseField]
     public float|null $euroPrice = null;
+    #[DatabaseField]
     public bool $visible = true;
 
     public const OPTION_MAPPING = [

@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Geelhoed;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Util\FileCache;
@@ -10,10 +11,12 @@ use function assert;
 final class MemberGraduation extends Model
 {
     public const TABLE = 'geelhoed_members_graduations';
-    public const TABLE_FIELDS = ['memberId', 'graduationId', 'date'];
 
+    #[DatabaseField]
     public int $memberId;
+    #[DatabaseField]
     public int $graduationId;
+    #[DatabaseField]
     public string $date;
 
     /** @var array<int, Graduation> */

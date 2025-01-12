@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\Order;
 
+use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Ticketsale\Concert\Concert;
@@ -17,27 +18,46 @@ use function Safe\json_encode;
 final class Order extends Model
 {
     public const TABLE = 'ticketsale_orders';
-    public const TABLE_FIELDS = ['concertId', 'lastName', 'initials', 'email', 'street', 'houseNumber', 'houseNumberAddition', 'postcode', 'city', 'delivery', 'isDelivered', 'hasReservedSeats', 'isPaid', 'deliveryByMember', 'deliveryMemberName', 'addressIsAbroad',  'transactionCode', 'secretCode', 'comments', 'additionalData'];
 
+    #[DatabaseField]
     public int $concertId;
+    #[DatabaseField]
     public string $lastName = '';
+    #[DatabaseField]
     public string $initials = '';
+    #[DatabaseField]
     public string $email = '';
+    #[DatabaseField]
     public string $street = '';
+    #[DatabaseField]
     public int $houseNumber;
+    #[DatabaseField]
     public string $houseNumberAddition = '';
+    #[DatabaseField]
     public string $postcode;
+    #[DatabaseField]
     public string $city;
+    #[DatabaseField]
     public bool $delivery;
+    #[DatabaseField]
     public bool $isDelivered = false;
+    #[DatabaseField]
     public bool $hasReservedSeats = false;
+    #[DatabaseField]
     public bool $isPaid = false;
+    #[DatabaseField]
     public bool $deliveryByMember;
+    #[DatabaseField]
     public string $deliveryMemberName = '';
+    #[DatabaseField]
     public bool $addressIsAbroad = false;
+    #[DatabaseField]
     public string|null $transactionCode = null;
+    #[DatabaseField]
     public string|null $secretCode = null;
+    #[DatabaseField]
     public string $comments = '';
+    #[DatabaseField]
     protected string $additionalData = '';
 
     /** @var OrderTicketTypes[]|null  */
