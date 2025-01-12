@@ -8,7 +8,7 @@ use Cyndaron\User\User;
 
 final class ContestViewPage extends Page
 {
-    public function __construct(Contest $contest, User|null $currentUser, CSRFTokenHandler $tokenHandler)
+    public function __construct(Contest $contest, User|null $currentUser, CSRFTokenHandler $tokenHandler, ContestDateRepository $contestDateRepository)
     {
         $controlledMembers = $currentUser !== null ? Member::fetchAllContestantsByUser($currentUser) : [];
         $canManage = $currentUser !== null && $currentUser->hasRight(Contest::RIGHT_MANAGE);
@@ -22,6 +22,7 @@ final class ContestViewPage extends Page
             'canManage' => $canManage,
             'cancelSubscriptionCsrfToken' => $tokenHandler->get('contest', 'cancelSubscription'),
             'contest' => $contest,
+            'contestDateRepository' => $contestDateRepository,
             'controlledMembers' => $controlledMembers,
             'deleteCsrfToken' => $tokenHandler->get('contest', 'deleteAttachment'),
             'deleteDateCsrfToken' => $tokenHandler->get('contest', 'deleteDate'),

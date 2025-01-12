@@ -23,26 +23,11 @@ final class ContestDate extends Model implements CalendarAppointment
     public DateTime $end;
 
     /**
-     * @param Contest $contest
-     * @return self[]
-     */
-    public function fetchAllByContest(Contest $contest): array
-    {
-        return self::fetchAll(['contestId = ?'], [$contest->id]);
-    }
-
-    /**
      * @return ContestClass[]
      */
     public function getClasses(): array
     {
         return ContestClass::fetchAll(['id IN (SELECT classId FROM geelhoed_contests_dates_classes WHERE contestDateId = ?)'], [$this->id]);
-    }
-
-    public function addClass(ContestClass $class): bool
-    {
-        $result = DBConnection::getPDO()->insert('REPLACE INTO geelhoed_contests_dates_classes(`contestDateId`, `classId`) VALUES (?, ?)', [$this->id, $class->id]);
-        return $result !== false;
     }
 
     public function getContest(): Contest

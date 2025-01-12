@@ -19,7 +19,7 @@
                             <ul>
                                 @foreach ($contest->getDates() as $contestDate)
                                     <li>
-                                        @php $classes = $contestDate->getClasses() @endphp
+                                        @php $classes = $contestDateRepository->getClasses($contestDate) @endphp
                                         {{ $contestDate->start|dmyHm }}@if (count($classes) > 0)
                                             :
                                         @endif

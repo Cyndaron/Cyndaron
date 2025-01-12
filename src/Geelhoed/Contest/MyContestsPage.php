@@ -13,7 +13,7 @@ use function implode;
 
 final class MyContestsPage extends Page
 {
-    public function __construct(User $currentUser, CSRFTokenHandler $tokenHandler)
+    public function __construct(User $currentUser, CSRFTokenHandler $tokenHandler, ContestDateRepository $contestDateRepository)
     {
         $this->title = 'Mijn wedstrijden';
         $this->addCss('/src/Geelhoed/geelhoed.css');
@@ -35,6 +35,7 @@ final class MyContestsPage extends Page
             'profile' => $currentUser,
             'controlledMembers' => $controlledMembers,
             'contests' => $contests,
+            'contestDateRepository' => $contestDateRepository,
             'contestMembers' => $contestMembers,
             'due' => $due,
             'cancelSubscriptionCsrfToken' => $tokenHandler->get('contest', 'cancelSubscription'),

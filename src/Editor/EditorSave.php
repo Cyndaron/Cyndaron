@@ -3,6 +3,7 @@ namespace Cyndaron\Editor;
 
 use Cyndaron\Category\Category;
 use Cyndaron\Category\ModelWithCategory;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\FriendlyUrl\FriendlyUrl;
 use Cyndaron\Request\RequestParameters;
@@ -22,7 +23,7 @@ abstract class EditorSave
     public const PAGE_HEADER_DIR = Util::UPLOAD_DIR . '/images/page-header';
     public const PAGE_PREVIEW_DIR = Util::UPLOAD_DIR . '/images/page-preview';
 
-    final public function updateFriendlyUrl(UrlService $urlService, int $id, string $friendlyUrl): void
+    final public function updateFriendlyUrl(UrlService $urlService, Connection $connection, int $id, string $friendlyUrl): void
     {
         // True if content does not support friendly URLs.
         if ($id <= 0)
@@ -41,7 +42,7 @@ abstract class EditorSave
             }
             $urlService->createFriendlyUrl($unfriendlyUrl, $friendlyUrl);
             // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast
-            DBConnection::getPDO()->executeQuery('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oldFriendlyUrl]);
+            $connection->executeQuery('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oldFriendlyUrl]);
         }
         // TODO oude URL verwijderen
     }

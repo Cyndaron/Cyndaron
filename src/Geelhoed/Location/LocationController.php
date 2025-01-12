@@ -1,6 +1,8 @@
 <?php
 namespace Cyndaron\Geelhoed\Location;
 
+use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\Location\Location;
 use Cyndaron\Page\SimplePage;
@@ -10,6 +12,7 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Util;
+use Cyndaron\View\Template\ViewHelpers;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -60,9 +63,16 @@ final class LocationController extends Controller
     }
 
     #[RouteAttribute('zoeken', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function search(): Response
+    public function search(Connection $connection): Response
     {
-        $page = new SearchPage();
+        $dayRecords = $connection->doQueryAndFetchAll('SELECT DISTINCT(day) AS number FROM geelhoed_hours ORDER by number') ?: [];
+        $days = [];
+        foreach ($dayRecords as $dayRecord)
+        {
+            $number = (int)$dayRecord['number'];
+            $days[$number] = ViewHelpers::getDutchWeekday($number);
+        }
+        $page = new SearchPage($days);
         return $this->pageRenderer->renderResponse($page);
     }
 

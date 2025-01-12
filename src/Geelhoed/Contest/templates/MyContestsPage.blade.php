@@ -25,7 +25,7 @@
                         <td>
                             <ul>
                                 @foreach ($contest->getDates() as $contestDate)
-                                    @php $classes = $contestDate->getClasses() @endphp
+                                    @php $classes = $contestDateRepository->getClasses($contestDate) @endphp
                                     <li>
                                         {{ $contestDate->start|dmyHm }}@if (count($classes) > 0)
                                             :

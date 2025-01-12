@@ -41,7 +41,7 @@ class TryoutController extends Controller
     private const QUERY = 'REPLACE INTO geelhoed_tryout_points(`id`, `code`, `datetime`, `points`) VALUES ';
 
     #[RouteAttribute('scores', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function scores(QueryBits $queryBits): Response
+    public function scores(QueryBits $queryBits, Connection $connection): Response
     {
         $id = $queryBits->getInt(2);
         if ($id === 0)
@@ -49,7 +49,7 @@ class TryoutController extends Controller
             return $this->scoresForm();
         }
 
-        $page = new ScoresPage($id);
+        $page = new ScoresPage($id, $connection);
         return $this->pageRenderer->renderResponse($page);
     }
 

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Tryout;
 
+use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page\Page;
 use Cyndaron\Util\Util;
@@ -10,11 +11,11 @@ use DateTimeImmutable;
 
 class ScoresPage extends Page
 {
-    public function __construct(int $code)
+    public function __construct(int $code, Connection $connection)
     {
         $this->title = 'Punten opvragen: ' . $code;
 
-        $pointsRecords = DBConnection::getPDO()->doQueryAndFetchAll(
+        $pointsRecords = $connection->doQueryAndFetchAll(
             'SELECT * FROM geelhoed_tryout_points WHERE code = :code ORDER BY datetime',
             [':code' => $code]
         ) ?: [];

@@ -26,17 +26,6 @@ final class MenuItem extends Model
     public bool $isImage = false;
     public int|null $priority = null;
 
-    public function save(): bool
-    {
-        if (!$this->priority)
-        {
-            $currentHighPriority = (int)(DBConnection::getPDO()->doQueryAndFetchOne('SELECT MAX(priority) FROM menu WHERE id <> ?', [$this->id]));
-            $priority = $currentHighPriority + 1;
-            $this->priority = $priority;
-        }
-        return parent::save();
-    }
-
     public function getTitle(UrlService $urlService): string
     {
         if (is_string($this->alias) && !empty($this->alias))

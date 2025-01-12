@@ -72,14 +72,14 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('overview', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function overview(): Response
+    public function overview(ContestDateRepository $contestDateRepository): Response
     {
-        $page = new OverviewPage();
+        $page = new OverviewPage($contestDateRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('view', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function view(QueryBits $queryBits, UserSession $session, CSRFTokenHandler $tokenHandler): Response
+    public function view(QueryBits $queryBits, UserSession $session, CSRFTokenHandler $tokenHandler, ContestDateRepository $contestDateRepository): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -93,7 +93,7 @@ final class ContestController extends Controller
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
-        $page = new ContestViewPage($contest, $session->getProfile(), $tokenHandler);
+        $page = new ContestViewPage($contest, $session->getProfile(), $tokenHandler, $contestDateRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -533,9 +533,9 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('myContests', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function myContests(User $currentUser, CSRFTokenHandler $tokenHandler): Response
+    public function myContests(User $currentUser, CSRFTokenHandler $tokenHandler, ContestDateRepository $contestDateRepository): Response
     {
-        $page = new MyContestsPage($currentUser, $tokenHandler);
+        $page = new MyContestsPage($currentUser, $tokenHandler, $contestDateRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -648,7 +648,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('addDate', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
-    public function addDate(RequestParameters $post): JsonResponse
+    public function addDate(RequestParameters $post, ContestDateRepository $repository): JsonResponse
     {
         $contestId = $post->getInt('contestId');
         if ($contestId < 1)
@@ -667,7 +667,7 @@ final class ContestController extends Controller
         $contestDate->contestId = $contestId;
         $contestDate->start =  DateTime::createFromFormat(Util::SQL_DATE_TIME_FORMAT, $startDateTime);
         $contestDate->end =  DateTime::createFromFormat(Util::SQL_DATE_TIME_FORMAT, $endDateTime);
-        $contestDate->save();
+        $repository->save($contestDate);
 
         $contestDateId = $contestDate->id;
         if ($contestDateId === null)
@@ -680,7 +680,7 @@ final class ContestController extends Controller
         {
             if ($post->getBool('class-' . $class->id))
             {
-                $contestDate->addClass($class);
+                $repository->addClass($contestDate, $class);
             }
         }
 

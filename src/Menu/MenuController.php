@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Menu;
 
+use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
@@ -16,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class MenuController extends Controller
 {
     #[RouteAttribute('addItem', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function addItem(RequestParameters $post): JsonResponse
+    public function addItem(RequestParameters $post, GenericRepository $repository, Connection $connection): JsonResponse
     {
         $menuItem = new MenuItem();
         $menuItem->link = $post->getUrl('link');
@@ -27,17 +30,18 @@ final class MenuController extends Controller
         {
             $menuItem->priority = $post->getInt('priority');
         }
-
-        if (!$menuItem->save())
+        else
         {
-            throw new DatabaseError('Cannot add menu item!');
+            $currentHighPriority = (int)($connection->doQueryAndFetchOne('SELECT MAX(priority) FROM menu'));
+            $menuItem->priority = $currentHighPriority + 1;
         }
 
+        $repository->save($menuItem);
         return new JsonResponse();
     }
 
     #[RouteAttribute('editItem', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function editItem(QueryBits $queryBits, RequestParameters $post): JsonResponse
+    public function editItem(QueryBits $queryBits, RequestParameters $post, GenericRepository $repository): JsonResponse
     {
         $index = $queryBits->getInt(2);
         $menuItem = MenuItem::fetchById($index);
@@ -51,11 +55,7 @@ final class MenuController extends Controller
         $menuItem->isDropdown = $post->getBool('isDropdown');
         $menuItem->isImage = $post->getBool('isImage');
         $menuItem->priority = $post->getInt('priority');
-
-        if (!$menuItem->save())
-        {
-            throw new DatabaseError('Could not edit menu item!');
-        }
+        $repository->save($menuItem);
 
         return new JsonResponse();
     }

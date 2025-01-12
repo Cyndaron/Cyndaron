@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Category;
 
+use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page\Page;
 use Cyndaron\StaticPage\StaticPageModel;
@@ -13,14 +14,14 @@ final class TagIndexPage extends Page
 {
     public string $template = 'Category/CategoryPage';
 
-    public function __construct(UrlService $urlService, string $tag)
+    public function __construct(UrlService $urlService, Connection $connection, string $tag)
     {
         $this->title = ucfirst($tag);
 
         $tags = [];
         $pages = [];
 
-        $subs = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM subs WHERE `tags` LIKE ? ORDER BY id DESC', ["%$tag%"]);
+        $subs = $connection->doQueryAndFetchAll('SELECT * FROM subs WHERE `tags` LIKE ? ORDER BY id DESC', ["%$tag%"]);
         foreach ($subs as $sub)
         {
             $sub = StaticPageModel::fromArray($sub);

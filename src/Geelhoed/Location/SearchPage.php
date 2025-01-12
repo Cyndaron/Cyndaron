@@ -12,20 +12,15 @@ class SearchPage extends Page
 {
     private const PAGE_IMAGE = '/src/Geelhoed/Location/images/location-overview.jpg';
 
-    public function __construct()
+    /**
+     * @param array<int, string> $days
+     */
+    public function __construct(array $days)
     {
         $this->title = 'Lessen zoeken';
 
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $this->addScript('/src/Geelhoed/Location/js/SearchPage.js');
-
-        $dayRecords = DBConnection::getPDO()->doQueryAndFetchAll('SELECT DISTINCT(day) AS number FROM geelhoed_hours ORDER by number') ?: [];
-        $days = [];
-        foreach ($dayRecords as $dayRecord)
-        {
-            $number = (int)$dayRecord['number'];
-            $days[$number] = ViewHelpers::getDutchWeekday($number);
-        }
 
         $this->addTemplateVars([
             'pageImage' => self::PAGE_IMAGE,
