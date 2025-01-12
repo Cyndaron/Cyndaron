@@ -58,9 +58,6 @@ final class ModuleRegistry
     /** @var array<string, string> */
     public array $templateRoots = [];
 
-    /** @var class-string[] */
-    public array $classesToAutowire = [];
-
     /**
      * @param string $module
      * @param class-string<Controller> $className

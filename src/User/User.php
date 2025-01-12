@@ -35,7 +35,6 @@ use function random_int;
 use function count;
 use function password_verify;
 use function password_hash;
-use function str_contains;
 
 final class User extends Model
 {
@@ -169,49 +168,34 @@ Uw nieuwe wachtwoord is: %s';
         return true;
     }
 
-    public static function fetchByEmail(string $email): self|null
+    public function passwordIsCorrect(string $password): bool
     {
-        return self::fetch(['email = ?'], [$email]);
+        return password_verify($password, $this->password);
     }
 
-    public static function fetchByUsername(string $username): self|null
+    public function passwordNeedsUpdate(): bool
     {
-        return self::fetch(['username = ?'], [$username]);
+        return password_needs_rehash($this->password, PASSWORD_DEFAULT);
     }
 
-    public static function login(string $identification, string $password, UserSession $userSession, Translator $t): string
+    public function updatePassword(string $password): void
     {
-        if (str_contains($identification, '@'))
-        {
-            $user = self::fetch(['email = ?'], [$identification]);
-            $updateQuery = 'UPDATE users SET password=? WHERE email=?';
-        }
-        else
-        {
-            $user = self::fetch(['username = ?'], [$identification]);
-            $updateQuery = 'UPDATE users SET password=? WHERE username=?';
-        }
+        $password = password_hash($password, PASSWORD_DEFAULT);
+        $updateQuery = 'UPDATE users SET password=? WHERE id=?';
+        DBConnection::getPDO()->executeQuery($updateQuery, [$password, $this->id]);
+        $this->password = $password;
+    }
 
-        if ($user === null)
-        {
-            throw new IncorrectCredentials('Onbekende gebruikersnaam of e-mailadres.');
-        }
-
-        $loginSucceeded = false;
-        if (password_verify($password, $user->password))
-        {
-            $loginSucceeded = true;
-
-            if (password_needs_rehash($user->password, PASSWORD_DEFAULT))
-            {
-                $password = password_hash($password, PASSWORD_DEFAULT);
-                DBConnection::getPDO()->executeQuery($updateQuery, [$password, $identification]);
-            }
-        }
-
-        if (!$loginSucceeded)
+    public static function login(self $user, string $password, UserSession $userSession, Translator $t): string
+    {
+        if (!$user->passwordIsCorrect($password))
         {
             throw new IncorrectCredentials('Verkeerd wachtwoord.');
+        }
+
+        if ($user->passwordNeedsUpdate())
+        {
+            $user->updatePassword($password);
         }
 
         $userSession->setProfile($user);

@@ -15,7 +15,6 @@ use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\UrlProvider;
-use Cyndaron\Module\WithClassesToAutowire;
 use Cyndaron\Module\WithTextPostProcessors;
 use Cyndaron\Page\MenuRenderer;
 use Cyndaron\Page\Module\WithPageProcessors;
@@ -122,14 +121,6 @@ final class Kernel
         if ($user !== null)
         {
             $dic->add($user);
-        }
-
-
-
-        foreach ($registry->classesToAutowire as $class)
-        {
-            $object = $dic->createClassWithDependencyInjection($class);
-            $dic->add($object);
         }
 
         return $dic;
@@ -290,10 +281,6 @@ final class Kernel
             if ($module instanceof CalendarAppointmentsProvider)
             {
                 $registry->addCalendarAppointmentsProvider($module);
-            }
-            if ($module instanceof WithClassesToAutowire)
-            {
-                $registry->classesToAutowire = array_merge($registry->classesToAutowire, $module->getClassesToAutowire());
             }
         }
 

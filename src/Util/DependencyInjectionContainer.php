@@ -75,6 +75,26 @@ final class DependencyInjectionContainer
     }
 
     /**
+     * @template T of object
+     *
+     * @param class-string<T> $className
+     * @return T
+     */
+    public function getOrCreate(string $className)
+    {
+        $ret = $this->tryGet($className);
+        if ($ret !== null)
+        {
+            return $ret;
+        }
+
+        /** @var T $ret */
+        $ret = $this->createClassWithDependencyInjection($className);
+        $this->add($ret);
+        return $ret;
+    }
+
+    /**
      * @param ReflectionMethod|ReflectionFunction $reflectionMethod
      * @return mixed[]
      */
@@ -87,7 +107,7 @@ final class DependencyInjectionContainer
             /** @var class-string $className */
             $className = ($type instanceof ReflectionNamedType) ? $type->getName() : '';
 
-            $params[] = $this->tryGet($className);
+            $params[] = $this->getOrCreate($className);
         }
         return $params;
     }

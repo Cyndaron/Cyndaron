@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use function strlen;
+use function str_contains;
 
 final class UserController extends Controller
 {
@@ -66,14 +67,28 @@ final class UserController extends Controller
     }
 
     #[RouteAttribute('login', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function loginPost(RequestParameters $post, UserSession $userSession, Translator $t): Response
+    public function loginPost(RequestParameters $post, UserSession $userSession, Translator $t, UserRepository $repository): Response
     {
         $identification = $post->getEmail('login_user');
         $verification = $post->getUnfilteredString('login_pass');
 
         try
         {
-            $redirectUrl = User::login($identification, $verification, $userSession, $t);
+            if (str_contains($identification, '@'))
+            {
+                $user = $repository->fetchByEmail($identification);
+            }
+            else
+            {
+                $user = $repository->fetchByUsername($identification);
+            }
+
+            if ($user === null)
+            {
+                throw new IncorrectCredentials('Onbekende gebruikersnaam of e-mailadres.');
+            }
+
+            $redirectUrl = User::login($user, $verification, $userSession, $t);
             return new RedirectResponse($redirectUrl);
         }
         catch (IncorrectCredentials $e)
