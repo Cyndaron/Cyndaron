@@ -24,7 +24,7 @@ final class Module implements Routes, UserMenuProvider
         ];
     }
 
-    public function getUserMenuItems(?User $profile): array
+    public function getUserMenuItems(): array
     {
         return [
             new UserMenuItem(new Link('/newsletter/compose', 'Nieuwsbrief versturen'), UserLevel::ADMIN),

@@ -9,6 +9,7 @@ use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
+use Cyndaron\User\UserRepository;
 use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
 use function array_map;
@@ -63,11 +64,12 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         }, $list);
     }
 
-    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
+    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, UserRepository $userRepository): string
     {
         $templateVars = [
             'categories' => Category::fetchAllAndSortByName(),
             'currentUser' => $currentUser,
+            'userRepository' => $userRepository,
             'tokenAdd' => $tokenHandler->get('category', 'add'),
             'tokenDelete' => $tokenHandler->get('category', 'delete'),
             'tokenAddToMenu' => $tokenHandler->get('category', 'addtomenu'),

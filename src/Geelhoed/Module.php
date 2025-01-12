@@ -27,6 +27,7 @@ use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\User\UserRepository;
 use Cyndaron\Util\Link;
 use function array_key_exists;
 use function array_merge;
@@ -117,36 +118,37 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
         return null;
     }
 
-    public function getUserMenuItems(?User $profile): array
+    public function getUserMenuItems(): array
     {
-        $ret = [
+        $contestVisibilityCheck1 = function(User|null $profile, UserRepository $repository): bool
+        {
+            if ($profile === null)
+            {
+                return false;
+            }
+
+            $isContestantParent = $repository->userHasRight($profile, Contest::RIGHT_PARENT);
+            $member = Member::fetch(['userId = ?'], [$profile->id]);
+            $isContestant = $member !== null && $member->isContestant;
+            return ($isContestant || $isContestantParent);
+        };
+        $contestVisibilityCheck2 = function(User|null $profile): bool
+        {
+            return ($profile !== null && !$profile->isAdmin());
+        };
+
+        return [
             new UserMenuItem(new Link('/contest/manageOverview', 'Wedstrijdbeheer'), UserLevel::ADMIN, Contest::RIGHT_MANAGE),
             new UserMenuItem(new Link('/contest/contestantsEmail', 'E-mailadressen wedstrijdjudoka\'s'), UserLevel::ADMIN, Contest::RIGHT_MANAGE),
             new UserMenuItem(new Link('/contest/contestantsList', 'Overzicht wedstrijdjudoka\'s'), UserLevel::ADMIN, Contest::RIGHT_MANAGE),
             new UserMenuItem(new Link('/contest/parentAccounts', 'Overzicht ouderaccounts'), UserLevel::ADMIN, Contest::RIGHT_MANAGE),
             new UserMenuItem(new Link('/contest/linkContestantsToParentAccounts', 'Wedstrijdjudoka’s linken'), UserLevel::ADMIN, Contest::RIGHT_MANAGE),
             new UserMenuItem(new Link('/reservation/overview', 'Overzicht reserveringen'), UserLevel::ADMIN),
+            new UserMenuItem(new Link('/contest/myContests', 'Mijn wedstrijden'), UserLevel::LOGGED_IN, checkVisibility: $contestVisibilityCheck1),
+            new UserMenuItem(new Link('/contest/overview', 'Wedstrijdagenda'), UserLevel::LOGGED_IN, checkVisibility: $contestVisibilityCheck1),
+            new UserMenuItem(new Link('/pagemanager/gcaSubscribers', 'Lotenverkopers'), UserLevel::ADMIN, WebshopController::RIGHT_MANAGE, checkVisibility: $contestVisibilityCheck2),
+            new UserMenuItem(new Link('/pagemanager/orders', 'Webshoporders'), UserLevel::ADMIN, WebshopController::RIGHT_MANAGE, checkVisibility: $contestVisibilityCheck2),
         ];
-
-        if ($profile !== null)
-        {
-            $isContestantParent = $profile->hasRight(Contest::RIGHT_PARENT);
-            $member = Member::fetch(['userId = ?'], [$profile->id]);
-            $isContestant = $member !== null && $member->isContestant;
-
-            if ($isContestant || $isContestantParent)
-            {
-                $ret[] = new UserMenuItem(new Link('/contest/myContests', 'Mijn wedstrijden'), UserLevel::LOGGED_IN);
-                $ret[] = new UserMenuItem(new Link('/contest/overview', 'Wedstrijdagenda'), UserLevel::LOGGED_IN);
-            }
-            if (!$profile->isAdmin())
-            {
-                $ret[] = new UserMenuItem(new Link('/pagemanager/gcaSubscribers', 'Lotenverkopers'), UserLevel::ADMIN, WebshopController::RIGHT_MANAGE);
-                $ret[] = new UserMenuItem(new Link('/pagemanager/orders', 'Webshoporders'), UserLevel::ADMIN, WebshopController::RIGHT_MANAGE);
-            }
-        }
-
-        return $ret;
     }
 
     public function getTemplateRoot(): TemplateRoot

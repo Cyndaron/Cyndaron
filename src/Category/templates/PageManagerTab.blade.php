@@ -24,7 +24,7 @@
                 </td>
                 <td>
                     <div class="btn-group">
-                        @if ($currentUser->hasRight('category_edit'))
+                        @if ($userRepository->userHasRight($currentUser, 'category_edit'))
                             @include('View/Widget/Button', ['kind' => 'edit', 'link' => "/editor/category/{$category->id}", 'title' => 'Deze categorie bewerken', 'size' => 16])
                         @endif
                         @if ($currentUser->isAdmin())

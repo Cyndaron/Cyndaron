@@ -5,10 +5,10 @@ namespace Cyndaron\Page;
 
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPage;
-use Cyndaron\User\User;
 use Cyndaron\User\UserMenu;
 use Cyndaron\User\UserRepository;
 use Cyndaron\User\UserSession;
+use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +23,7 @@ final class PageRenderer
         private readonly UserSession $userSession,
         private readonly UserRepository $userRepository,
         private readonly Request $request,
+        private readonly DependencyInjectionContainer $dic,
     ) {
     }
 
@@ -32,7 +33,7 @@ final class PageRenderer
     public function render(Page $page, array $vars = []): string
     {
         $this->pageBuilder->updateTemplate($page);
-        $userMenu = UserMenu::getForCurrentSession($this->userRepository, $this->userSession, $this->registry->userMenuItems);
+        $userMenu = UserMenu::getForCurrentSession($this->dic, $this->userRepository, $this->userSession, $this->registry->userMenuItems);
         $isFrontPage = $this->request->getRequestUri() === '/';
         $page->addTemplateVar('menu', $this->menuRenderer->render($this->userSession, $userMenu));
         $page->addTemplateVars($vars);

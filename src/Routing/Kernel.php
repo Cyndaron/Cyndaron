@@ -26,7 +26,6 @@ use Cyndaron\Translation\Translator;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\Module\UserMenuProvider;
-use Cyndaron\User\User;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\DependencyInjectionContainer;
@@ -91,6 +90,7 @@ final class Kernel
     private function buildDIC(Connection $connection, ModuleRegistry $registry, Request $request, UserSession $userSession): DependencyInjectionContainer
     {
         $dic = new DependencyInjectionContainer();
+        $dic->add($dic);
 
         $dic->add($connection);
         $dic->add($connection, PDO::class);
@@ -193,7 +193,7 @@ final class Kernel
         return "{$upgradeInsecureRequests} frame-ancestors 'self'; default-src 'none'; base-uri 'none'; child-src 'none'; connect-src 'self'; font-src 'self'; frame-src 'self' youtube.com *.youtube.com youtu.be docs.google.com; img-src 'self' https: data:;  manifest-src 'self'; media-src 'self' data: https:; object-src 'none'; script-src $scriptSrc; style-src 'self' 'unsafe-inline'";
     }
 
-    private function loadModules(?User $currentUser): ModuleRegistry
+    private function loadModules(): ModuleRegistry
     {
         $registry = new ModuleRegistry();
         $modules = [
@@ -256,7 +256,7 @@ final class Kernel
 
             if ($module instanceof UserMenuProvider)
             {
-                foreach ($module->getUserMenuItems($currentUser) as $userMenuItem)
+                foreach ($module->getUserMenuItems() as $userMenuItem)
                 {
                     $registry->addUserMenuItem($userMenuItem);
                 }
@@ -321,8 +321,7 @@ final class Kernel
             $userSession->start();
         }
 
-        $user = $userSession->getProfile();
-        $registry = $this->loadModules($user);
+        $registry = $this->loadModules();
         $connection = DBConnection::getPDO();
         $dic = $this->buildDIC($connection, $registry, $request, $userSession);
         $response = $this->route($dic);
