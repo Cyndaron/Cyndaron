@@ -11,6 +11,7 @@
         @endslot
     @endcomponent
 
+    @php /** @var \Cyndaron\Ticketsale\Concert\Concert $concert */ @endphp
     <table class="overzichtBestellingen table table-striped">
         <thead>
             <tr class="rotate">
@@ -40,21 +41,25 @@
                 <th class="rotate">
                     <div><span>Totaal</span></div>
                 </th>
-                @if (!$concert->forcedDelivery)
+                @if (!$concert->digitalDelivery)
+                    @if (!$concert->forcedDelivery)
+                        <th class="rotate">
+                            <div><span>Thuisbezorgen</span></div>
+                        </th>
+                    @else
+                        <th class="rotate">
+                            <div><span>Meegeven aan koorlid</span></div>
+                        </th>
+                    @endif
                     <th class="rotate">
-                        <div><span>Thuisbezorgen</span></div>
-                    </th>
-                @else
-                    <th class="rotate">
-                        <div><span>Meegeven aan koorlid</span></div>
+                        <div><span>Al verstuurd?</span></div>
                     </th>
                 @endif
-                <th class="rotate">
-                    <div><span>Al verstuurd?</span></div>
-                </th>
-                <th class="rotate">
-                    <div><span>Geres. plaats?</span></div>
-                </th>
+                @if ($concert->hasReservedSeats)
+                    <th class="rotate">
+                        <div><span>Geres. plaats?</span></div>
+                    </th>
+                @endif
                 <th class="rotate">
                     <div><span>Is betaald?</span></div>
                 </th>
@@ -99,28 +104,32 @@
 
                     <td>{{ $order->calculatePrice()|euro }}</td>
 
-                    @if (!$concert->forcedDelivery)
-                        <td>{{ $order->delivery|boolToDingbat }}</td>
-                    @else
-                        <td>
-                        @if ($order->deliveryByMember)
-                            {{ $order->deliveryMemberName }}
+                    @if (!$concert->digitalDelivery)
+                        @if (!$concert->forcedDelivery)
+                            <td>{{ $order->delivery|boolToDingbat }}</td>
                         @else
-                            ⨯
+                            <td>
+                            @if ($order->deliveryByMember)
+                                {{ $order->deliveryMemberName }}
+                            @else
+                                ⨯
+                            @endif
+                            </td>
                         @endif
+
+                        <td>
+                            @if ($order->delivery || $concert->forcedDelivery)
+                                {{ $order->isDelivered|boolToDingbat }}
+                            @else
+                                &nbsp;
+                            @endif
                         </td>
                     @endif
-
-                    <td>
-                        @if ($order->delivery || $concert->forcedDelivery)
-                            {{ $order->isDelivered|boolToDingbat }}
-                        @else
-                            &nbsp;
-                        @endif
-                    </td>
-                    <td>
-                        {{ $order->hasReservedSeats|boolToDingbat }}
-                    </td>
+                    @if ($concert->hasReservedSeats)
+                        <td>
+                            {{ $order->hasReservedSeats|boolToDingbat }}
+                        </td>
+                    @endif
                     <td>
                         {{ $order->isPaid|boolToDingbat }}
                     </td>
