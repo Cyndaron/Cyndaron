@@ -388,17 +388,7 @@ final class Member extends Model
      */
     public static function fetchAllByHour(Hour $hour): array
     {
-        $results = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM `geelhoed_members` WHERE id IN (SELECT memberId FROM geelhoed_members_hours WHERE hourId = ?)', [$hour->id]);
-        $ret = [];
-        if ($results)
-        {
-            foreach ($results as $result)
-            {
-                $obj = new static((int)$result['id']);
-                $obj->updateFromArray($result);
-                $ret[] = $obj;
-            }
-        }
+        $ret = self::fetchAll(['id IN (SELECT memberId FROM geelhoed_members_hours WHERE hourId = ?)'], [$hour->id]);
         self::sortByName($ret);
 
         return $ret;

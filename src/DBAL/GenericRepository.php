@@ -64,6 +64,24 @@ final class GenericRepository
      * @template T of Model
      *
      * @param class-string<T> $class
+     * @return T[]
+     */
+    public function fetchAllForSelect(string $class): array
+    {
+        $records = $this->fetchAll($class);
+        $ret = [];
+        foreach ($records as $record)
+        {
+            $ret[$record->id] = $record;
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @template T of Model
+     *
+     * @param class-string<T> $class
      * @param int $id
      */
     public function deleteById(string $class, int $id): void

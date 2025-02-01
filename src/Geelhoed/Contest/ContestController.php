@@ -284,12 +284,12 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('manageOverview', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
-    public function manageOverview(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): Response
+    public function manageOverview(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, GenericRepository $repository): Response
     {
         $page = new Page();
         $page->title = 'Overzicht wedstrijden';
         $page->addScript('/src/Geelhoed/Contest/js/ContestManager.js');
-        return $this->pageRenderer->renderResponse($page, ['contents' => PageManagerTabs::contestsTab($templateRenderer, $tokenHandler)]);
+        return $this->pageRenderer->renderResponse($page, ['contents' => PageManagerTabs::contestsTab($templateRenderer, $tokenHandler, $repository)]);
     }
 
     #[RouteAttribute('subscriptionList', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]

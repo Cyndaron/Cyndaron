@@ -58,7 +58,7 @@
         @include('View/Widget/Form/BasicInput', ['id' => 'gcm-edit-name', 'label' => 'Naam', 'required' => true])
         @include('View/Widget/Form/Textarea', ['id' => 'gcm-edit-description', 'label' => 'Beschrijving', 'placeholder' => '(Vul hier meer informatie over de wedstrijd in, zoals de weegtijden.)'])
         @include('View/Widget/Form/BasicInput', ['id' => 'gcm-edit-location', 'label' => 'Locatie', 'required' => true])
-        @include('View/Widget/Form/Select', ['id' => 'gcm-edit-sportId', 'label' => 'Sport', 'required' => true, 'options' => \Cyndaron\Geelhoed\Sport\Sport::fetchAllForSelect()])
+        @include('View/Widget/Form/Select', ['id' => 'gcm-edit-sportId', 'label' => 'Sport', 'required' => true, 'options' => $sports])
         @component('View/Widget/Form/FormWrapper', ['id' => 'gcm-edit-deadline-date', 'label' => 'Inschrijvings-deadline'])
             @slot('right')
                 <input id="gcm-edit-deadline-date" type="date" class="form-control form-control-inline" required>

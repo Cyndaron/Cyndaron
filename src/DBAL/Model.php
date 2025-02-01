@@ -39,6 +39,7 @@ abstract class Model
      * @param int $id
      * @throws Exception
      * @return static|null
+     * @deprecated
      */
     public static function fetchById(int $id): Model|null
     {
@@ -107,6 +108,8 @@ abstract class Model
      * @param list<string|int|float|null> $args
      * @param string $afterWhere
      * @return static[]
+     *
+     * @deprecated
      */
     public static function fetchAll(array $where = [], array $args = [], string $afterWhere = ''): array
     {
@@ -123,12 +126,12 @@ abstract class Model
      * @param list<array<string, float|int|string|null>> $results
      * @return static[]
      */
-    protected static function DBResultsToModels(array $results): array
+    private static function DBResultsToModels(array $results): array
     {
         $ret = [];
         foreach ($results as $result)
         {
-            $ret[$result['id']] = static::DBResultToModel($result);
+            $ret[$result['id']] = self::DBResultToModel($result);
         }
 
         return $ret;
@@ -138,7 +141,7 @@ abstract class Model
      * @param array<string, float|int|string|null> $result
      * @return static
      */
-    protected static function DBResultToModel(array $result): self
+    private static function DBResultToModel(array $result): static
     {
         $obj = new static((int)$result['id']);
         $obj->updateFromArray($result);
@@ -150,6 +153,8 @@ abstract class Model
      * @param list<string|int|float|null> $args
      * @param string $afterWhere
      * @return static|null
+     *
+     * @deprecated
      */
     public static function fetch(array $where = [], array $args = [], string $afterWhere = ''): self|null
     {
@@ -191,7 +196,7 @@ abstract class Model
      * @param array<string, float|int|string|null> $newArray
      * @return bool
      */
-    public function updateFromArray(array $newArray): bool
+    private function updateFromArray(array $newArray): bool
     {
         $couldUpdateAll = true;
         foreach ($this->getTableFields(true) as $tableField)
@@ -274,20 +279,5 @@ abstract class Model
         }
 
         return $result !== false;
-    }
-
-    /**
-     * @return static[]
-     */
-    public static function fetchAllForSelect(): array
-    {
-        $records = static::fetchAll();
-        $ret = [];
-        foreach ($records as $record)
-        {
-            $ret[$record->id] = $record;
-        }
-
-        return $ret;
     }
 }
