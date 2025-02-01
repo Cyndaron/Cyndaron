@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Webshop;
 
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
 use Cyndaron\Geelhoed\Webshop\Model\Currency;
@@ -378,7 +379,7 @@ Sportschool Geelhoed";
     }
 
     #[RouteAttribute('remove-from-cart', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
-    public function removeFromCart(RequestParameters $post): JsonResponse
+    public function removeFromCart(RequestParameters $post, GenericRepository $repository): JsonResponse
     {
         $hash = $post->getSimpleString('hash');
         try
@@ -407,7 +408,7 @@ Sportschool Geelhoed";
             return new JsonResponse(['error' => 'Deze order is niet van jou!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $orderItem->delete();
+        $repository->delete($orderItem);
 
         return new JsonResponse([]);
     }

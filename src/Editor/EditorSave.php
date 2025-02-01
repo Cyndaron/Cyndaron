@@ -5,7 +5,9 @@ use Cyndaron\Category\Category;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\FriendlyUrl\FriendlyUrl;
+use Cyndaron\FriendlyUrl\FriendlyUrlRepository;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
@@ -23,7 +25,7 @@ abstract class EditorSave
     public const PAGE_HEADER_DIR = Util::UPLOAD_DIR . '/images/page-header';
     public const PAGE_PREVIEW_DIR = Util::UPLOAD_DIR . '/images/page-preview';
 
-    final public function updateFriendlyUrl(UrlService $urlService, Connection $connection, int $id, string $friendlyUrl): void
+    final public function updateFriendlyUrl(UrlService $urlService, Connection $connection, FriendlyUrlRepository $repository, int $id, string $friendlyUrl): void
     {
         // True if content does not support friendly URLs.
         if ($id <= 0)
@@ -35,10 +37,10 @@ abstract class EditorSave
         {
             $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $id);
             $oldFriendlyUrl = $urlService->toFriendly($unfriendlyUrl);
-            $oldFriendlyUrlObj = FriendlyUrl::fetchByName($oldFriendlyUrl);
+            $oldFriendlyUrlObj = $repository->fetchByName($oldFriendlyUrl);
             if ($oldFriendlyUrlObj !== null)
             {
-                $oldFriendlyUrlObj->delete();
+                $repository->delete($oldFriendlyUrlObj);
             }
             $urlService->createFriendlyUrl($unfriendlyUrl, $friendlyUrl);
             // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast

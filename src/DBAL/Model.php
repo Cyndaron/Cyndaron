@@ -212,21 +212,6 @@ abstract class Model
     /**
      * @deprecated
      */
-    public function delete(): void
-    {
-        if (!$this->id)
-        {
-            throw new DatabaseError('No ID!');
-        }
-
-        $table = static::TABLE;
-        /** @noinspection SqlResolve */
-        DBConnection::getPDO()->executeQuery("DELETE FROM {$table} WHERE id = ?", [$this->id]);
-    }
-
-    /**
-     * @deprecated
-     */
     public function save(): bool
     {
         if (empty(static::TABLE))

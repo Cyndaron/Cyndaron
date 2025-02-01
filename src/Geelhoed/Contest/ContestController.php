@@ -2,6 +2,7 @@
 namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\ImproperSubclassing;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\PageManagerTabs;
@@ -379,7 +380,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('removeSubscription', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
-    public function removeSubscription(RequestParameters $post): JsonResponse
+    public function removeSubscription(RequestParameters $post, GenericRepository $repository): JsonResponse
     {
         $id = $post->getInt('id');
         $contestMember = ContestMember::fetchById($id);
@@ -388,13 +389,13 @@ final class ContestController extends Controller
             return new JsonResponse(['error' => 'Contest member does not exist!'], Response::HTTP_NOT_FOUND);
         }
 
-        $contestMember->delete();
+        $repository->delete($contestMember);
 
         return new JsonResponse();
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
-    public function delete(RequestParameters $post): JsonResponse
+    public function delete(RequestParameters $post, GenericRepository $repository): JsonResponse
     {
         $id = $post->getInt('id');
         $contest = Contest::fetchById($id);
@@ -403,7 +404,7 @@ final class ContestController extends Controller
             return new JsonResponse(['error' => 'Contest does not exist!'], Response::HTTP_NOT_FOUND);
         }
 
-        $contest->delete();
+        $repository->delete($contest);
 
         return new JsonResponse();
     }
@@ -688,21 +689,21 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('deleteDate', RequestMethod::POST, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
-    public function deleteDate(QueryBits $queryBits): Response
+    public function deleteDate(QueryBits $queryBits, ContestDateRepository $repository): Response
     {
         $contestDateId = $queryBits->getInt(2);
         if ($contestDateId < 1)
         {
             return new Response('Incorrect ID!', Response::HTTP_BAD_REQUEST);
         }
-        $contestDate = ContestDate::fetchById($contestDateId);
+        $contestDate = $repository->fetchById($contestDateId);
         if ($contestDate === null)
         {
             return new Response('Wedstrijddatum bestaat niet!', Response::HTTP_NOT_FOUND);
         }
 
         $contest = $contestDate->getContest();
-        $contestDate->delete();
+        $repository->delete($contestDate);
         return new RedirectResponse('/contest/view/' . $contest->id);
     }
 
@@ -914,7 +915,8 @@ final class ContestController extends Controller
             return new JsonResponse(['error' => 'Gebruiker is geen ouderaccount!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $user->delete();
+        $repository->delete($user);
+
         return new JsonResponse();
     }
 
@@ -964,7 +966,7 @@ final class ContestController extends Controller
     }
 
     #[RouteAttribute('cancelSubscription', RequestMethod::POST, UserLevel::LOGGED_IN, isApiMethod: true)]
-    public function cancelSubscription(QueryBits $queryBits, User $currentUser): JsonResponse
+    public function cancelSubscription(QueryBits $queryBits, User $currentUser, GenericRepository $repository): JsonResponse
     {
         $contestMemberId = $queryBits->getInt(2);
         $contestMember = ContestMember::fetchById($contestMemberId);
@@ -995,7 +997,7 @@ final class ContestController extends Controller
             return new JsonResponse(['message' => 'U kunt niet meer annuleren als er al betaald is!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $contestMember->delete();
+        $repository->delete($contestMember);
 
         return new JsonResponse(['message' => 'De inschrijving is geannuleerd!']);
     }

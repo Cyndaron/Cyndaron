@@ -86,7 +86,7 @@ final class ValueConverter
         }
         if (is_a($typeName, Model::class, true))
         {
-            return $typeName::fetchById($var);
+            return $typeName::fetchById((int)$var);
         }
         if (is_a($typeName, DateTimeInterface::class, true))
         {

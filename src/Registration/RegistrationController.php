@@ -200,16 +200,14 @@ final class RegistrationController extends Controller
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits): JsonResponse
+    public function delete(QueryBits $queryBits, GenericRepository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        /** @var Registration $registration */
-        $registration = Registration::fetchById($id);
-        $registration->delete();
+        $repository->deleteById(Registration::class, $id);
 
         return new JsonResponse();
     }

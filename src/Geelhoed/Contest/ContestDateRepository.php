@@ -5,6 +5,7 @@ namespace Cyndaron\Geelhoed\Contest;
 
 use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\RepositoryInterface;
 use Cyndaron\DBAL\RepositoryTrait;
 use PDO;
@@ -36,5 +37,11 @@ class ContestDateRepository implements RepositoryInterface
     public function getClasses(ContestDate $contestDate): array
     {
         return ContestClass::fetchAll(['id IN (SELECT classId FROM geelhoed_contests_dates_classes WHERE contestDateId = ?)'], [$contestDate->id]);
+    }
+
+    public function delete(Model $model): void
+    {
+        $this->connection->executeQuery('DELETE FROM geelhoed_contests_dates_classes WHERE contestDateId = ?', [$model->id]);
+        $this->genericRepository->delete($model);
     }
 }

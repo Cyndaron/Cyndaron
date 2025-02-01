@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Mailform;
 
 use Cyndaron\DBAL\DatabaseError;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -151,7 +152,7 @@ final class MailformController extends Controller
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits): JsonResponse
+    public function delete(QueryBits $queryBits, GenericRepository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         $mailform = Mailform::fetchById($id);
@@ -160,7 +161,7 @@ final class MailformController extends Controller
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
 
-        $mailform->delete();
+        $repository->delete($mailform);
         return new JsonResponse();
     }
 }

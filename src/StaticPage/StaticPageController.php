@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\StaticPage;
 
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
@@ -52,15 +53,14 @@ final class StaticPageController extends Controller
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits): JsonResponse
+    public function delete(QueryBits $queryBits, StaticPageRepository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $model = new StaticPageModel($id);
-        $model->delete();
+        $repository->deleteById($id);
         return new JsonResponse();
     }
 

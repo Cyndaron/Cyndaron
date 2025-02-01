@@ -23,12 +23,6 @@ final class StaticPageModel extends ModelWithCategory
     #[DatabaseField]
     public string $tags = '';
 
-    public function delete(): void
-    {
-        parent::delete();
-        DBConnection::getPDO()->executeQuery('DELETE FROM sub_backups WHERE id = ?', [$this->id]);
-    }
-
     public function save(): bool
     {
         $oldData = null;

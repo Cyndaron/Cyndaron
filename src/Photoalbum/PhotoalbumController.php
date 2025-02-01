@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Photoalbum;
 
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
@@ -101,7 +102,7 @@ final class PhotoalbumController extends Controller
     }
 
     #[RouteAttribute('addtomenu', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function addToMenu(QueryBits $queryBits): JsonResponse
+    public function addToMenu(QueryBits $queryBits, GenericRepository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -111,13 +112,13 @@ final class PhotoalbumController extends Controller
 
         $menuItem = new MenuItem();
         $menuItem->link = '/photoalbum/' . $id;
-        $menuItem->save();
+        $repository->save($menuItem);
 
         return new JsonResponse();
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits): JsonResponse
+    public function delete(QueryBits $queryBits, GenericRepository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -125,8 +126,7 @@ final class PhotoalbumController extends Controller
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $obj = new Photoalbum($id);
-        $obj->delete();
+        $repository->deleteById(Photoalbum::class, $id);
 
         return new JsonResponse();
     }

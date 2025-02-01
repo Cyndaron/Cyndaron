@@ -61,15 +61,14 @@ final class MenuController extends Controller
     }
 
     #[RouteAttribute('deleteItem', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function deleteItem(QueryBits $queryBits): JsonResponse
+    public function deleteItem(QueryBits $queryBits, GenericRepository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $menuItem = new MenuItem($id);
-        $menuItem->delete();
+        $repository->deleteById(MenuItem::class, $id);
 
         return new JsonResponse();
     }

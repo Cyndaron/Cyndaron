@@ -40,12 +40,6 @@ final class ContestDate extends Model implements CalendarAppointment
         return $contest;
     }
 
-    public function delete(): void
-    {
-        DBConnection::getPDO()->executeQuery('DELETE FROM geelhoed_contests_dates_classes WHERE contestDateId = ?', [$this->id]);
-        parent::delete();
-    }
-
     public function getName(): string
     {
         $classNames = array_map(static fn ($class) => $class->name, $this->getClasses());

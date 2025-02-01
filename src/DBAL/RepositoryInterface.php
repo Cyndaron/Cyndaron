@@ -30,4 +30,11 @@ interface RepositoryInterface
      * @return void
      */
     public function save(Model $model): void;
+
+    /**
+     * @param T $model
+     * @throws PDOException
+     * @return void
+     */
+    public function delete(Model $model): void;
 }

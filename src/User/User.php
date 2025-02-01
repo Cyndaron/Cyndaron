@@ -116,7 +116,7 @@ final class User extends Model
 
     public function save(): bool
     {
-        $userRepository = new UserRepository(new GenericRepository(), DBConnection::getPDO());
+        $userRepository = new UserRepository(new GenericRepository(DBConnection::getPDO()), DBConnection::getPDO());
         $userRepository->generateUsername($this);
 
         return parent::save();

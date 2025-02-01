@@ -4,12 +4,10 @@ declare(strict_types=1);
 namespace Cyndaron\User;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\RepositoryInterface;
 use Cyndaron\DBAL\RepositoryTrait;
 use function strtolower;
-use function preg_replace;
 use function count;
 use function random_int;
 

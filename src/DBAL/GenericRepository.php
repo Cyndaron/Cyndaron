@@ -7,7 +7,7 @@ use PDOException;
 
 final class GenericRepository
 {
-    public function __construct()
+    public function __construct(private readonly Connection $connection)
     {
     }
 
@@ -74,7 +74,14 @@ final class GenericRepository
 
     public function delete(Model $model): void
     {
-        $model->delete();
+        if (!$model->id)
+        {
+            throw new DatabaseError('No ID!');
+        }
+
+        $table = $model::TABLE;
+        /** @noinspection SqlResolve */
+        $this->connection->executeQuery("DELETE FROM {$table} WHERE id = ?", [$model->id]);
     }
 
     /**

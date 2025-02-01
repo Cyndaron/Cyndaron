@@ -220,7 +220,7 @@ final class Member extends Model
         $sports = [];
         foreach ($this->getHours() as $hour)
         {
-            $sport = $hour->getSport();
+            $sport = $hour->sport;
             $sports[$sport->id] = $sport;
         }
 

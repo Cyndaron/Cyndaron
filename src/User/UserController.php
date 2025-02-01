@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\User;
 
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Geelhoed\Contest\Contest;
 use Cyndaron\Imaging\GdHelper;
 use Cyndaron\Page\SimplePage;
@@ -206,7 +207,7 @@ Uw nieuwe wachtwoord is: %s';
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits): JsonResponse
+    public function delete(QueryBits $queryBits, GenericRepository $repository): JsonResponse
     {
         $userId = $queryBits->getInt(2);
         if ($userId < 1)
@@ -214,8 +215,7 @@ Uw nieuwe wachtwoord is: %s';
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = new User($userId);
-        $user->delete();
+        $repository->deleteById(User::class, $userId);
 
         return new JsonResponse();
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\RichLink;
 
 use Cyndaron\Category\Category;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
@@ -59,7 +60,7 @@ final class RichLinkController extends Controller
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(RequestParameters $post): JsonResponse
+    public function delete(RequestParameters $post, GenericRepository $repository): JsonResponse
     {
         $id = $post->getInt('id');
         $richlink = RichLink::fetchById($id);
@@ -68,7 +69,7 @@ final class RichLinkController extends Controller
             return new JsonResponse(['error' => 'RichLink does not exist!'], Response::HTTP_NOT_FOUND);
         }
 
-        $richlink->delete();
+        $repository->delete($richlink);
         return new JsonResponse();
     }
 }

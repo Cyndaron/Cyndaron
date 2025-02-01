@@ -6,6 +6,7 @@ namespace Cyndaron\Editor;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Error\ErrorPage;
+use Cyndaron\FriendlyUrl\FriendlyUrlRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Page\SimplePage;
@@ -35,14 +36,14 @@ final class EditorController extends Controller
     private const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function routeGet(QueryBits $queryBits, Request $request, User $currentUser, ModuleRegistry $registry, Connection $connection, UrlService $urlService, UserRepository $repository, DependencyInjectionContainer $dic): Response
+    public function routeGet(QueryBits $queryBits, Request $request, User $currentUser, ModuleRegistry $registry, Connection $connection, UrlService $urlService, UserRepository $userRepository, DependencyInjectionContainer $dic): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorPages))
         {
             throw new \Exception('Onbekend paginatype: ' . $type);
         }
-        if (!$repository->userHasRight($currentUser, "{$type}_edit"))
+        if (!$userRepository->userHasRight($currentUser, "{$type}_edit"))
         {
             return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'U heeft onvoldoende rechten om deze functie te gebruiken!', Response::HTTP_UNAUTHORIZED));
         }
@@ -63,14 +64,14 @@ final class EditorController extends Controller
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::LOGGED_IN)]
-    public function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry, UrlService $urlService, UserRepository $repository, Connection $connection): Response
+    public function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry, UrlService $urlService, UserRepository $userRepository, Connection $connection, FriendlyUrlRepository $friendlyUrlRepository): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorSaveClasses))
         {
             throw new \Exception('Onbekend paginatype: ' . $type);
         }
-        if (!$repository->userHasRight($currentUser, "{$type}_edit"))
+        if (!$userRepository->userHasRight($currentUser, "{$type}_edit"))
         {
             return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'U heeft onvoldoende rechten om deze functie te gebruiken!', Response::HTTP_UNAUTHORIZED));
         }
@@ -86,7 +87,7 @@ final class EditorController extends Controller
             /** @var EditorSave $editorSave */
             $editorSave = $dic->createClassWithDependencyInjection($class);
             $id = $editorSave->save($id);
-            $editorSave->updateFriendlyUrl($urlService, $connection, $id, $post->getUrl('friendlyUrl'));
+            $editorSave->updateFriendlyUrl($urlService, $connection, $friendlyUrlRepository, $id, $post->getUrl('friendlyUrl'));
             $returnUrl = $editorSave->getReturnUrl() ?: '/';
 
             return new RedirectResponse($returnUrl);
