@@ -12,6 +12,7 @@ use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\WithTextPostProcessors;
+use Cyndaron\OpenRCT2\Downloads\APICall;
 use Cyndaron\OpenRCT2\Downloads\DownloadController;
 use Cyndaron\OpenRCT2\Downloads\DownloadProcessor;
 use Cyndaron\User\CSRFTokenHandler;

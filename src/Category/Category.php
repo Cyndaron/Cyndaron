@@ -21,12 +21,6 @@ final class Category extends ModelWithCategory
     #[DatabaseField]
     public ViewMode $viewMode = ViewMode::Regular;
 
-    public function getFriendlyUrl(UrlService $urlService): Url
-    {
-        $url = new Url('/category/' . $this->id);
-        return $urlService->toFriendly($url);
-    }
-
     public function getText(): string
     {
         return $this->description;

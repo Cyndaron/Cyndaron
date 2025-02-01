@@ -25,6 +25,7 @@ final class Module implements Routes, Datatypes
                 editorPage: EditorPage::class,
                 editorSave: EditorSave::class,
                 pageManagerTab: Util::drawPageManagerTab(...),
+                class: Registration::class,
             )
         ];
     }

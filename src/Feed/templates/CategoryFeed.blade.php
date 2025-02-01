@@ -19,7 +19,7 @@
 
     @foreach ($underlyingPages as $page)
         @php
-            $url = $page->getFriendlyUrl($urlService);
+            $url = $urlService->getFriendlyUrlForModel($page);
             $url = str_contains($url, '://') ? $url : "{$baseUrl}{$url}";
         @endphp
     <entry>

@@ -3,12 +3,14 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Translation\Translator;
+use Cyndaron\Url\Url;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
@@ -28,6 +30,8 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
                 editorPage: EditorPage::class,
                 editorSave: EditorSave::class,
                 pageManagerTab: self::pageManagerTab(...),
+                class: StaticPageModel::class,
+                modelToUrl: function (StaticPageModel $sub) { return new Url("/sub/{$sub->id}");},
             ),
         ];
     }
@@ -42,7 +46,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         ];
     }
 
-    public function url(array $linkParts): string|null
+    public function nameFromUrl(array $linkParts): string|null
     {
         $model = StaticPageModel::fetchById((int)$linkParts[1]);
         return $model !== null ? $model->name : null;

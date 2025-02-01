@@ -1,4 +1,5 @@
 @php /** @var \Cyndaron\Url\UrlService $urlService */ @endphp
+@php /** @var \Cyndaron\Category\ModelWithCategory[] $pages */ @endphp
 @extends ('Index')
 
 @section ('titleControls')
@@ -15,27 +16,30 @@
     @if ($viewMode === \Cyndaron\Category\ViewMode::Regular)
         <div class="category-listview">
         @foreach ($pages as $page)
+            @php $friendlyUrl = $urlService->getFriendlyUrlForModel($page); @endphp
             <div>
-                <h3><a href="{{ $page->getFriendlyUrl($urlService) }}">{{ $page->name }}</a></h3>
-                {{ $page->getBlurb() }} <a href="{{ $page->getFriendlyUrl($urlService) }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif><br /><i>{{ $t->get('Meer lezen…') }}</i></a>
+                <h3><a href="{{ $friendlyUrl }}">{{ $page->name }}</a></h3>
+                {{ $page->getBlurb() }} <a href="{{ $friendlyUrl }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif><br /><i>{{ $t->get('Meer lezen…') }}</i></a>
             </div>
         @endforeach
         </div>
     @elseif ($viewMode === \Cyndaron\Category\ViewMode::Titles)
     <ul class="zonderbullets">
         @foreach ($pages as $page)
-            <li><h3><a href="{{ $page->getFriendlyUrl($urlService) }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>{{ $page->name }}</a></h3></li>
+            @php $friendlyUrl = $urlService->getFriendlyUrlForModel($page); @endphp
+            <li><h3><a href="{{ $friendlyUrl }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>{{ $page->name }}</a></h3></li>
         @endforeach
     </ul>
     @elseif ($viewMode === \Cyndaron\Category\ViewMode::Blog)
         <div class="category-blockview">
             @foreach ($pages as $page)
+                @php $friendlyUrl = $urlService->getFriendlyUrlForModel($page); @endphp
                 <div class="category-block">
-                    <a class="category-block-image" href="{{ $page->getFriendlyUrl($urlService) }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>
+                    <a class="category-block-image" href="{{ $friendlyUrl }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>
                         <img src="{{ $page->getPreviewImage() }}" alt=""/>
                     </a>
-                    <h3><a href="{{ $page->getFriendlyUrl($urlService) }}">{{ $page->name }}</a></h3>
-                    <a class="category-block-link" href="{{ $page->getFriendlyUrl($urlService) }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>{{ $page->blurb }}</a>
+                    <h3><a href="{{ $friendlyUrl }}">{{ $page->name }}</a></h3>
+                    <a class="category-block-link" href="{{ $friendlyUrl }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>{{ $page->blurb }}</a>
                 </div>
             @endforeach
         </div>
@@ -43,25 +47,27 @@
         @foreach ($portfolioContent as $albumname => $albumcontent)
             <h2>{{ $albumname }}</h2>
             @foreach ($albumcontent as $page)
+                @php $friendlyUrl = $urlService->getFriendlyUrlForModel($page); @endphp
                 <div class="category-block">
-                    <a class="category-block-image" href="{{ $page->getFriendlyUrl($urlService) }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>
+                    <a class="category-block-image" href="{{ $friendlyUrl }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>
                         <img src="{{ $page->getPreviewImage() }}" alt=""/>
                     </a>
-                    <h3><a href="{{ $page->getFriendlyUrl($urlService) }}">{{ $page->name }}</a></h3>
-                    <a class="category-block-link" href="{{ $page->getFriendlyUrl($urlService) }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>{{ $page->getBlurb() }}</a>
+                    <h3><a href="{{ $friendlyUrl }}">{{ $page->name }}</a></h3>
+                    <a class="category-block-link" href="{{ $friendlyUrl }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>{{ $page->getBlurb() }}</a>
                 </div>
             @endforeach
         @endforeach
     @elseif ($viewMode === \Cyndaron\Category\ViewMode::Horizontal)
         <div class="category-horizontalview">
             @foreach ($pages as $page)
+                @php $friendlyUrl = $urlService->getFriendlyUrlForModel($page); @endphp
                 <div class="category-block">
                     <div class="category-block-left">
-                        <h3><a href="{{ $page->getFriendlyUrl($urlService) }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>{{ $page->name }}</a></h3>
-                        <a href="{{ $page->getFriendlyUrl($urlService) }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>{{ $page->getBlurb() }}</a>
+                        <h3><a href="{{ $friendlyUrl }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>{{ $page->name }}</a></h3>
+                        <a href="{{ $friendlyUrl }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>{{ $page->getBlurb() }}</a>
                     </div>
                     <div class="category-block-right">
-                        <a class="category-block-image" href="{{ $page->getFriendlyUrl($urlService) }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>
+                        <a class="category-block-image" href="{{ $friendlyUrl }}" @if ($page->shouldOpenInNewTab()) target="_blank" @endif>
                             <img src="{{ $page->getPreviewImage() }}" alt=""/>
                         </a>
                     </div>

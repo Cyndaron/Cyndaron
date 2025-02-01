@@ -99,7 +99,7 @@ final class Kernel
         $dic->add($request);
         $dic->add($userSession);
 
-        $urlService = new UrlService($connection, $request->getRequestUri(), $registry->urlProviders);
+        $urlService = new UrlService($connection, $request->getRequestUri(), $registry->urlProviders, $registry->modelToUrlPrefixers);
         $dic->add($urlService);
 
         $templateRenderer = TemplateRendererFactory::createTemplateRenderer($registry->templateRoots);
@@ -243,9 +243,13 @@ final class Kernel
                         $tab = new PageManagerTab($dataTypeName, $definition->plural, $definition->pageManagerTab, $definition->pageManagerJS ?? null);
                         $registry->addPageManagerTab($tab);
                     }
+                    if ($definition->class !== null && $definition->modelToUrl !== null)
+                    {
+                        $registry->addModelToUrlPrefixer($definition->class, $definition->modelToUrl);
+                    }
                     if ($module instanceof UrlProvider)
                     {
-                        $registry->addUrlProvider($dataTypeName, $moduleClass);
+                        $registry->addNameFromUrlProvider($dataTypeName, $moduleClass);
                     }
                     if ($module instanceof Linkable)
                     {

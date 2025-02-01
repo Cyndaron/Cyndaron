@@ -72,12 +72,6 @@ final class Photoalbum extends ModelWithCategory
         return $id ?: null;
     }
 
-    public function getFriendlyUrl(UrlService $urlService): Url
-    {
-        $url = new Url('/photoalbum/' . $this->id);
-        return $urlService->toFriendly($url);
-    }
-
     /**
      * @throws \Safe\Exceptions\ErrorfuncException
      * @return string[]

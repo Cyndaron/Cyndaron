@@ -79,12 +79,6 @@ final class StaticPageModel extends ModelWithCategory
         $this->tags = implode(';', $tags);
     }
 
-    public function getFriendlyUrl(UrlService $urlService): Url
-    {
-        $url = new Url('/sub/' . $this->id);
-        return $urlService->toFriendly($url);
-    }
-
     public function getText(): string
     {
         return $this->text;

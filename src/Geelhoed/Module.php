@@ -96,7 +96,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
         ];
     }
 
-    public function url(array $linkParts): string|null
+    public function nameFromUrl(array $linkParts): string|null
     {
         static $staticRoutes = [
             'contest/contestantsEmail' => 'E-mailadressen wedstrijdjudoka\'s',

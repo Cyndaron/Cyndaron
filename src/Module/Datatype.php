@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Module;
 
 use Closure;
+use Cyndaron\DBAL\Model;
 
 final class Datatype
 {
@@ -16,6 +17,9 @@ final class Datatype
         public string|null $editorSave = null,
         public Closure|null $pageManagerTab = null,
         public string $pageManagerJS = '',
+        /** @var class-string<Model>|null */
+        public string|null $class = null,
+        public Closure|null $modelToUrl = null,
     ) {
     }
 }

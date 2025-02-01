@@ -2,12 +2,14 @@
 namespace Cyndaron\Photoalbum;
 
 use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\WithTextPostProcessors;
+use Cyndaron\Url\Url;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
 use Cyndaron\Util\Link;
@@ -35,6 +37,8 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
                 editorSave: EditorSave::class,
                 pageManagerTab: self::pageManagerTab(...),
                 pageManagerJS: '/src/Photoalbum/js/PageManagerTab.js',
+                class: Photoalbum::class,
+                modelToUrl: function(Photoalbum $photoalbum) { return new Url("/photoalbum/{$photoalbum->id}"); },
             ),
         ];
     }
@@ -49,7 +53,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
         ];
     }
 
-    public function url(array $linkParts): string|null
+    public function nameFromUrl(array $linkParts): string|null
     {
         $album = Photoalbum::fetchById((int)$linkParts[1]);
         return $album !== null ? $album->name : null;

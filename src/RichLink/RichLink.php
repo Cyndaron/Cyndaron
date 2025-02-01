@@ -19,11 +19,6 @@ final class RichLink extends ModelWithCategory
     #[DatabaseField]
     public string $url = '';
 
-    public function getFriendlyUrl(UrlService $urlService): Url
-    {
-        return new Url($this->url);
-    }
-
     public function getText(): string
     {
         return $this->blurb;

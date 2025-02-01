@@ -2,12 +2,15 @@
 namespace Cyndaron\RichLink;
 
 use Cyndaron\Category\Category;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\Url\Url;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
+use function assert;
 
 final class Module implements Datatypes, UrlProvider, Routes
 {
@@ -22,11 +25,13 @@ final class Module implements Datatypes, UrlProvider, Routes
                 plural: 'Speciale links',
                 pageManagerTab: self::pageManagerTab(...),
                 pageManagerJS: '/src/RichLink/js/PageManagerTab.js',
+                class: RichLink::class,
+                modelToUrl: function (RichLink $richLink) { return new Url($richLink->url); },
             ),
         ];
     }
 
-    public function url(array $linkParts): string|null
+    public function nameFromUrl(array $linkParts): string|null
     {
         $richLink = RichLink::fetchById((int)$linkParts[1]);
         return $richLink->name ?? null;

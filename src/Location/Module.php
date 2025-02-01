@@ -22,7 +22,7 @@ final class Module implements Datatypes, UrlProvider
         ];
     }
 
-    public function url(array $linkParts): string|null
+    public function nameFromUrl(array $linkParts): string|null
     {
         if ($linkParts[0] === 'location' && $linkParts[1] === 'view')
         {

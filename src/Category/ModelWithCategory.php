@@ -41,8 +41,6 @@ abstract class ModelWithCategory extends Model
 
     public const CATEGORY_TABLE = '';
 
-    abstract public function getFriendlyUrl(UrlService $urlService): Url;
-
     public function getBlurb(): string
     {
         $text = $this->blurb ?: $this->getText();

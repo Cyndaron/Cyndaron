@@ -10,12 +10,15 @@ use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\TemplateRoot;
+use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\Ticketsale\Concert\ConcertController;
 use Cyndaron\Ticketsale\Concert\EditorPage;
 use Cyndaron\Ticketsale\Concert\EditorSave;
 use Cyndaron\Ticketsale\Order\OrderController;
 use Cyndaron\Ticketsale\TicketType\EditorPage as TicketTypeEditorPage;
 use Cyndaron\Ticketsale\TicketType\EditorSave as TicketTypeEditorSave;
+use Cyndaron\Ticketsale\TicketType\TicketType;
+use Cyndaron\Url\Url;
 use Cyndaron\Util\Link;
 use function array_map;
 
@@ -38,10 +41,13 @@ final class Module implements Routes, Datatypes, Templated, Linkable
                 editorPage: EditorPage::class,
                 editorSave: EditorSave::class,
                 pageManagerTab: Util::drawPageManagerTab(...),
+                class: Concert::class,
+                modelToUrl: function(Concert $concert) { return new Url("/concert/{$concert->id}"); }
             ),
             'ticketType' => new Datatype(
                 editorPage: TicketTypeEditorPage::class,
                 editorSave: TicketTypeEditorSave::class,
+                class: TicketType::class
             ),
         ];
     }

@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Base;
 
+use Closure;
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\TextPostProcessor;
@@ -14,6 +16,7 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\Route;
 use Cyndaron\Routing\RouteAttribute;
+use Cyndaron\Url\Url;
 use Cyndaron\User\Module\UserMenuItem;
 use ReflectionClass;
 use function in_array;
@@ -57,6 +60,9 @@ final class ModuleRegistry
 
     /** @var array<string, string> */
     public array $templateRoots = [];
+
+    /** @var array<class-string<Model>, Closure> */
+    public array $modelToUrlPrefixers = [];
 
     /**
      * @param string $module
@@ -122,12 +128,20 @@ final class ModuleRegistry
     /**
      * @param class-string<UrlProvider> $class
      */
-    public function addUrlProvider(string $urlBase, string $class): void
+    public function addNameFromUrlProvider(string $urlBase, string $class): void
     {
         if (in_array(UrlProvider::class, class_implements($class), true))
         {
             $this->urlProviders[$urlBase] = $class;
         }
+    }
+
+    /**
+     * @param class-string<Model> $modelClass
+     */
+    public function addModelToUrlPrefixer(string $modelClass, Closure $closure): void
+    {
+        $this->modelToUrlPrefixers[$modelClass] = $closure;
     }
 
     public function addCalendarAppointmentsProvider(CalendarAppointmentsProvider $provider): void

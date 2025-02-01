@@ -2,11 +2,13 @@
 namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\Url\Url;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
 use Cyndaron\User\UserRepository;
@@ -29,6 +31,8 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
                 editorSave: EditorSave::class,
                 pageManagerTab: self::pageManagerTab(...),
                 pageManagerJS: '/src/Category/js/PageManagerTab.js',
+                class: Category::class,
+                modelToUrl: function (Category $category) { return new Url("/category/{$category->id}"); },
             ),
         ];
     }
@@ -43,7 +47,7 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         ];
     }
 
-    public function url(array $linkParts): string|null
+    public function nameFromUrl(array $linkParts): string|null
     {
         if ((int)$linkParts[1] === 0 || $linkParts[1] === 'fotoboeken')
         {

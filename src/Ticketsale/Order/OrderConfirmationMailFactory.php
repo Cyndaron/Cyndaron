@@ -14,6 +14,7 @@ use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\ViewHelpers;
 use Symfony\Component\Mime\Address;
 use function array_key_exists;
+use function assert;
 
 final class OrderConfirmationMailFactory
 {

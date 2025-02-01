@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace Cyndaron\Url;
 
+use Closure;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\DatabaseError;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Util\Error\IncompleteData;
 use function array_key_exists;
@@ -16,11 +18,13 @@ class UrlService
 {
     /**
      * @param class-string<UrlProvider>[] $urlProviders
+     * @param array<class-string<Model>, Closure> $modelToUrlPrefixers
      */
     public function __construct(
         private readonly Connection $connection,
         private readonly string $requestUri,
-        private readonly array $urlProviders
+        private readonly array $urlProviders,
+        private readonly array $modelToUrlPrefixers
     ) {
     }
 
@@ -34,7 +38,7 @@ class UrlService
             $classname = $this->urlProviders[$linkParts[0]];
             /** @var UrlProvider $class */
             $class = new $classname();
-            $result = $class->url($linkParts);
+            $result = $class->nameFromUrl($linkParts);
 
             if ($result !== null)
             {
@@ -99,5 +103,21 @@ class UrlService
         }
 
         return false;
+    }
+
+    public function getUrlForModel(Model $model): Url
+    {
+        if (!array_key_exists($model::class, $this->modelToUrlPrefixers))
+        {
+            throw new \Exception('No url providers for this model!');
+        }
+
+        $closureName = $this->modelToUrlPrefixers[$model::class];
+        return $closureName($model);
+    }
+
+    public function getFriendlyUrlForModel(Model $model): Url
+    {
+        return $this->toFriendly($this->getUrlForModel($model));
     }
 }
