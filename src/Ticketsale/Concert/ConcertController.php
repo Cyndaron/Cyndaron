@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\Concert;
 
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -10,6 +11,7 @@ use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\Ticketsale\Order\Order;
+use Cyndaron\Ticketsale\Order\OrderRepository;
 use Cyndaron\Ticketsale\Order\OrderTicketsPage;
 use Cyndaron\Ticketsale\Order\OrderTicketTypes;
 use Cyndaron\Ticketsale\TicketType\TicketType;
@@ -103,7 +105,7 @@ final class ConcertController extends Controller
     }
 
     #[RouteAttribute('viewOrders', RequestMethod::GET, UserLevel::ADMIN)]
-    public function viewOrders(QueryBits $queryBits): Response
+    public function viewOrders(QueryBits $queryBits, OrderRepository $orderRepository, Connection $connection): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -113,7 +115,7 @@ final class ConcertController extends Controller
         }
         $concert = Concert::fetchById($id);
         assert($concert !== null);
-        $page = new ConcertOrderOverviewPage($concert);
+        $page = new ConcertOrderOverviewPage($concert, $orderRepository, $connection);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -133,7 +135,7 @@ final class ConcertController extends Controller
     }
 
     #[RouteAttribute('orderListExcel', RequestMethod::GET, UserLevel::ADMIN)]
-    public function orderListExcel(QueryBits $queryBits): Response
+    public function orderListExcel(QueryBits $queryBits, OrderRepository $orderRepository): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -157,7 +159,7 @@ final class ConcertController extends Controller
             $fields[] = 'Aant. ' . $ticketType->name;
         }
 
-        $orders = Order::fetchByConcert($concert);
+        $orders = $orderRepository->fetchByConcert($concert);
         foreach ($orders as $order)
         {
             $additionalData = $order->getAdditionalData();
@@ -200,7 +202,7 @@ final class ConcertController extends Controller
             {
                 foreach ($ticketTypes as $ticketType)
                 {
-                    if ($ticketType->id === $orderTicketType->tickettypeId)
+                    if ($ticketType->id === $orderTicketType->ticketType->id)
                     {
                         $fieldname = 'Aant. ' . $ticketType->name;
                         if (!array_key_exists($fieldname, $additionalData))

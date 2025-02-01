@@ -1,9 +1,9 @@
 <?php
 namespace Cyndaron\Ticketsale\Concert;
 
-use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\Page;
-use Cyndaron\Ticketsale\Order\Order;
+use Cyndaron\Ticketsale\Order\OrderRepository;
 use function array_key_exists;
 
 final class ConcertOrderOverviewPage extends Page
@@ -16,11 +16,11 @@ final class ConcertOrderOverviewPage extends Page
         FROM `ticketsale_orders_tickettypes`
         GROUP BY orderId,tickettypeId;';
 
-    public function __construct(Concert $concert)
+    public function __construct(Concert $concert, OrderRepository $orderRepository, Connection $connection)
     {
-        $ticketTypes = DBConnection::getPDO()->doQueryAndFetchAll(self::TICKET_TYPES_QUERY, [$concert->id]);
-        $ticketTypesByOrder = $this->getTicketTypesPerOrder();
-        $orders = Order::fetchByConcert($concert);
+        $ticketTypes = $connection->doQueryAndFetchAll(self::TICKET_TYPES_QUERY, [$concert->id]);
+        $ticketTypesByOrder = $this->getTicketTypesPerOrder($connection);
+        $orders = $orderRepository->fetchByConcert($concert);
         $totals = [];
         foreach ($ticketTypesByOrder as $ticketTypesForOneOrder)
         {
@@ -49,9 +49,9 @@ final class ConcertOrderOverviewPage extends Page
     /**
      * @return array<int, array<int, int>>
      */
-    private function getTicketTypesPerOrder(): array
+    private function getTicketTypesPerOrder(Connection $connection): array
     {
-        $boughtTicketTypes = DBConnection::getPDO()->doQueryAndFetchAll(self::BOUGHT_TICKET_TYPES_QUERY) ?: [];
+        $boughtTicketTypes = $connection->doQueryAndFetchAll(self::BOUGHT_TICKET_TYPES_QUERY) ?: [];
         $ticketTypesByOrder = [];
         foreach ($boughtTicketTypes as $boughtTicketType)
         {

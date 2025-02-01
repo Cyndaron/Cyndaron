@@ -2,6 +2,8 @@
 namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\Geelhoed\Graduation;
+use Cyndaron\Geelhoed\MemberGraduationRepository;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Controller;
@@ -24,7 +26,7 @@ use function assert;
 final class MemberController extends Controller
 {
     #[RouteAttribute('get', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
-    public function get(QueryBits $queryBits): JsonResponse
+    public function get(QueryBits $queryBits, MemberGraduationRepository $mgr): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -49,9 +51,9 @@ final class MemberController extends Controller
             }
 
             $list = [];
-            foreach ($member->getMemberGraduations() as $memberGraduation)
+            foreach ($mgr->fetchAllByMember($member) as $memberGraduation)
             {
-                $graduation = $memberGraduation->getGraduation();
+                $graduation = $memberGraduation->graduation;
                 $description = "{$graduation->getSport()->name}: {$graduation->name} ({$memberGraduation->date})";
                 $list[] = sprintf('<li id="member-graduation-%d">%s <a class="btn btn-sm btn-danger remove-member-graduation" data-id="%d"><span class="glyphicon glyphicon-trash"></span></a></li>', $memberGraduation->id, $description, $memberGraduation->id);
             }
@@ -70,21 +72,21 @@ final class MemberController extends Controller
     }
 
     #[RouteAttribute('removeGraduation', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function removeGraduation(QueryBits $queryBits, GenericRepository $repository): JsonResponse
+    public function removeGraduation(QueryBits $queryBits, MemberGraduationRepository $mgr): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $repository->deleteById(MemberGraduation::class, $id);
-        MemberGraduation::rebuildByMemberCache();
+        $mgr->deleteById($id);
+        $mgr->rebuildByMemberCache();
 
         return new JsonResponse();
     }
 
     #[RouteAttribute('save', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function save(RequestParameters $post): JsonResponse
+    public function save(RequestParameters $post, MemberGraduationRepository $mgr): JsonResponse
     {
         $memberId = $post->getInt('id');
 
@@ -119,6 +121,8 @@ final class MemberController extends Controller
         }
 
         $newGraduationId = $post->getInt('new-graduation-id');
+        $newGraduation = Graduation::fetchById($newGraduationId);
+        assert($newGraduation !== null);
         $newGraduationDate = $post->getDate('new-graduation-date');
         if ($newGraduationId && $newGraduationDate)
         {
@@ -126,9 +130,9 @@ final class MemberController extends Controller
             assert($member->id !== null);
             /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
             $mg->memberId = $member->id;
-            $mg->graduationId = $newGraduationId;
+            $mg->graduation = $newGraduation;
             $mg->date = $newGraduationDate;
-            $mg->save();
+            $mgr->save($mg);
         }
 
         $hours = [];

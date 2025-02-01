@@ -19,8 +19,8 @@ final class Order extends Model
 {
     public const TABLE = 'ticketsale_orders';
 
-    #[DatabaseField]
-    public int $concertId;
+    #[DatabaseField(dbName: 'concertId')]
+    public Concert $concert;
     #[DatabaseField]
     public string $lastName = '';
     #[DatabaseField]
@@ -63,26 +63,6 @@ final class Order extends Model
     /** @var OrderTicketTypes[]|null  */
     private array|null $cachedTicketTypes = null;
 
-    public function setIsSent(): bool
-    {
-        if ($this->id === null)
-        {
-            throw new IncompleteData('id is null!');
-        }
-
-        $result = DBConnection::getPDO()->insert('UPDATE ticketsale_orders SET `isDelivered`=1 WHERE id=?', [$this->id]);
-        return (bool)$result;
-    }
-
-    /**
-     * @param Concert $concert
-     * @return self[]
-     */
-    public static function fetchByConcert(Concert $concert): array
-    {
-        return self::fetchAll(['concertId = ?'], [$concert->id]);
-    }
-
     /**
      * @return OrderTicketTypes[]
      */
@@ -105,19 +85,11 @@ final class Order extends Model
         $this->cachedTicketTypes = $orderTicketTypes;
     }
 
-    public function getConcert(): Concert
-    {
-        $concert = Concert::fetchById($this->concertId);
-        assert($concert !== null);
-        return $concert;
-    }
-
     public function getDeliveryCost(): DeliveryCostInterface
     {
-        $concert = $this->getConcert();
-        $interfaceName = $concert->getDeliveryCostInterface();
+        $interfaceName = $this->concert->getDeliveryCostInterface();
         /** @var DeliveryCostInterface $object */
-        $object = new $interfaceName($concert, $this, $this->getTicketTypes());
+        $object = new $interfaceName($this->concert, $this, $this->getTicketTypes());
         return $object;
     }
 
@@ -125,11 +97,11 @@ final class Order extends Model
     {
         $orderTicketTypes = $this->getTicketTypes();
         $totalCost = $this->getDeliveryCost()->getCost();
-        $reservedSeatCharge = $this->hasReservedSeats ? $this->getConcert()->reservedSeatCharge : 0.00;
+        $reservedSeatCharge = $this->hasReservedSeats ? $this->concert->reservedSeatCharge : 0.00;
 
         foreach ($orderTicketTypes as $orderTicketType)
         {
-            $ticketType = $orderTicketType->getTicketType();
+            $ticketType = $orderTicketType->ticketType;
             $totalCost += $orderTicketType->amount * $ticketType->price;
             $totalCost += $orderTicketType->amount * $reservedSeatCharge;
         }
@@ -161,16 +133,5 @@ final class Order extends Model
     public function setAdditonalData(array $data): void
     {
         $this->additionalData = json_encode($data);
-    }
-
-    public function getPaymentLink(string $baseUrl): string
-    {
-        assert($this->id !== null);
-        return "{$baseUrl}/concert-order/pay/{$this->id}";
-    }
-
-    public function getLinkToTickets(string $baseUrl): string
-    {
-        return "{$baseUrl}/concert-order/getTickets/{$this->id}/{$this->secretCode}";
     }
 }

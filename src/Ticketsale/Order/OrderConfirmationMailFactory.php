@@ -17,10 +17,8 @@ use function array_key_exists;
 
 final class OrderConfirmationMailFactory
 {
-    public function __construct(
-        private readonly MailFactory $mailFactory,
-        private readonly UrlInfo $urlInfo
-    ) {
+    public function __construct(private readonly MailFactory $mailFactory)
+    {
     }
 
     /**
@@ -32,7 +30,8 @@ final class OrderConfirmationMailFactory
         $orderTicketTypeStats = [];
         foreach ($orderTicketTypes as $orderTicketType)
         {
-            $key = $orderTicketType->tickettypeId;
+            $key = $orderTicketType->ticketType->id;
+            assert($key !== null);
             if (!array_key_exists($key, $orderTicketTypeStats))
             {
                 $orderTicketTypeStats[$key] = 0;
@@ -66,14 +65,13 @@ final class OrderConfirmationMailFactory
         return $deliveryText;
     }
 
-    public function getPaymentText(Order $order, TicketDelivery $deliveryType, float $total): string
+    public function getPaymentText(Order $order, TicketDelivery $deliveryType, float $total, string $paymentLink): string
     {
         if ($deliveryType === TicketDelivery::DIGITAL)
         {
-            $url = $order->getPaymentLink($this->urlInfo->schemeAndHost);
             return "
 
-U kunt betalen via deze link: {$url}
+U kunt betalen via deze link: {$paymentLink}
 
 ";
         }
@@ -137,7 +135,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
      * @param OrderTicketTypes[] $orderTicketTypes
      * @return Mail
      */
-    public function create(Order $order, Concert $concert, OrderReserveSeats $reserveSeats, float $total, array $ticketTypes, array $orderTicketTypes): Mail
+    public function create(Order $order, Concert $concert, OrderReserveSeats $reserveSeats, float $total, array $ticketTypes, array $orderTicketTypes, string $paymentLink): Mail
     {
         $orderTicketTypeStats = $this->getOrderTicketTypeStats($orderTicketTypes);
 
@@ -148,7 +146,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
 Na betaling zullen uw kaarten ' . $deliveryText . '.' . $reservedSeatsText;
 
         $deliveryType = $concert->getDelivery();
-        $text .= $this->getPaymentText($order, $deliveryType, $total);
+        $text .= $this->getPaymentText($order, $deliveryType, $total, $paymentLink);
 
         $text .= '
 Hieronder volgt een overzicht van uw bestelling.

@@ -61,10 +61,10 @@ final class OrderController extends Controller
         try
         {
             $order = $this->processOrder($post, $urlInfo, $confirmationMailFactory);
-            $concert = $order->getConcert();
+            $concert = $order->concert;
             if ($concert->getDelivery() === TicketDelivery::DIGITAL)
             {
-                $paymentLink = $order->getPaymentLink($urlInfo->schemeAndHost);
+                $paymentLink = $this->getPaymentLink($order, $urlInfo->schemeAndHost);
                 $paymentLinkText = sprintf('<br><br><a href="%s" role="button" class="btn btn-primary btn-lg">Naar de betaalomgeving</a>', $paymentLink);
                 $page = new SimplePage(
                     'Bestelling betalen',
@@ -140,7 +140,7 @@ final class OrderController extends Controller
         {
             // Historic, will always be 1 for new orders.
             $amount = $orderTicketType->amount;
-            $ticketType = $orderTicketType->getTicketType();
+            $ticketType = $orderTicketType->ticketType;
             $totalPrice += $amount * $ticketType->price;
             $totalPrice += $amount * $reservedSeatCharge;
             $totalNumTickets += $amount;
@@ -215,7 +215,7 @@ final class OrderController extends Controller
             for ($i = 0; $i < $amount; $i++)
             {
                 $ott = new OrderTicketTypes();
-                $ott->setTicketType($ticketType);
+                $ott->ticketType = $ticketType;
 
                 $orderTicketTypes[] = $ott;
             }
@@ -251,7 +251,7 @@ final class OrderController extends Controller
         $comments = $post->getSimpleString('comments');
 
         $order = new Order();
-        $order->concertId = $concertId;
+        $order->concert = $concert;
         $order->lastName = $lastName;
         $order->initials = $initials;
         $order->email = $email;
@@ -291,7 +291,7 @@ final class OrderController extends Controller
 
         foreach ($orderTicketTypes as $orderTicketType)
         {
-            $orderTicketType->setOrder($order);
+            $orderTicketType->order = $order;
             $saveResult = false;
             for ($i = 0; $i < self::MAX_SECRET_CODE_RETRIES; $i++)
             {
@@ -320,7 +320,8 @@ final class OrderController extends Controller
             }
         }
 
-        $confirmationMail = $confirmationMailFactory->create($order, $concert, $reserveSeats, $totalAmount, $ticketTypes, $orderTicketTypes);
+        $paymentLink = $this->getPaymentLink($order, $urlInfo->schemeAndHost);
+        $confirmationMail = $confirmationMailFactory->create($order, $concert, $reserveSeats, $totalAmount, $ticketTypes, $orderTicketTypes, $paymentLink);
         $confirmationMail->send();
         return $order;
     }
@@ -391,14 +392,14 @@ final class OrderController extends Controller
     {
         $order->isPaid = true;
         $order->save();
-        $concert = $order->getConcert();
+        $concert = $order->concert;
         $organisation = Setting::get(BuiltinSetting::ORGANISATION);
 
         $text = "Hartelijk dank voor uw bestelling bij {$organisation}. Wij hebben uw betaling in goede orde ontvangen.\n";
         $ticketDelivery = $concert->getDelivery();
         if ($ticketDelivery === TicketDelivery::DIGITAL)
         {
-            $url = $order->getLinkToTickets($urlInfo->schemeAndHost);
+            $url = $this->getLinkToTickets($order, $urlInfo->schemeAndHost);
             $text .= "U kunt uw kaarten hier downloaden: {$url}\n\n";
             $text .= "Wij verzoeken u het ticket te downloaden vóórdat u de kerk binnengaat en het originele ticket te tonen. ";
             $text .= "Screenshots van de tickets kunnen wij niet goed scannen.\nDit om wachttijd te voorkomen.";
@@ -449,7 +450,8 @@ final class OrderController extends Controller
         }
         /** @var Order $order */
         $order = Order::fetchById($id);
-        $order->setIsSent();
+        $order->isDelivered = true;
+        $order->save();
 
         return new JsonResponse();
     }
@@ -479,7 +481,7 @@ final class OrderController extends Controller
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
-        $concert = $order->getConcert();
+        $concert = $order->concert;
         $price = $order->calculatePrice();
 
         $description = "Ticket(s) {$concert->name}";
@@ -588,7 +590,7 @@ final class OrderController extends Controller
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_PAYMENT_REQUIRED);
         }
 
-        $concert = $order->getConcert();
+        $concert = $order->concert;
 
         $pdf = new \Mpdf\Mpdf(['tempDir' => CACHE_DIR]);
 
@@ -605,7 +607,7 @@ final class OrderController extends Controller
             $barcode = new Code128($orderTicketType->secretCode, 60, true, 1.5);
             $output = $barcode->getOutput();
 
-            $ticketType = $orderTicketType->getTicketType();
+            $ticketType = $orderTicketType->ticketType;
             $ticketTypeDescription = $ticketType->name;
             if ($concert->hasReservedSeats)
             {
@@ -689,13 +691,13 @@ final class OrderController extends Controller
             return [false, 'Geen kaartje gevonden met deze barcode!'];
         }
 
-        $order = $ticket->getOrder();
+        $order = $ticket->order;
         if (!$order->isPaid)
         {
             return [false, 'Bestelling is niet betaald!'];
         }
 
-        if ($order->getConcert()->id !== $concert->id)
+        if ($order->concert->id !== $concert->id)
         {
             return [false, 'Dit kaartje is voor een ander concert!'];
         }
@@ -759,7 +761,7 @@ final class OrderController extends Controller
                 {
                     $page = new SimplePage(
                         'Bestelling verwerkt',
-                        sprintf('Hartelijk dank voor uw betaling.<br><br><a href="%s" role="button" class="btn btn-primary" target="_blank">Tickets ophalen</a>', $order->getLinkToTickets($baseUrl)),
+                        sprintf('Hartelijk dank voor uw betaling.<br><br><a href="%s" role="button" class="btn btn-primary" target="_blank">Tickets ophalen</a>', $this->getLinkToTickets($order, $baseUrl)),
                     );
                     return $this->pageRenderer->renderResponse($page);
                 }
@@ -771,5 +773,16 @@ final class OrderController extends Controller
             'Hartelijk dank voor uw bestelling. Als de betaling is gelukt, ontvangt binnen enkele minuten een e-mail met een link om de kaartjes te downloaden.',
         );
         return $this->pageRenderer->renderResponse($page);
+    }
+
+    private function getLinkToTickets(Order $order, string $baseUrl): string
+    {
+        return "{$baseUrl}/concert-order/getTickets/{$order->id}/{$order->secretCode}";
+    }
+
+    private function getPaymentLink(Order $order, string $baseUrl): string
+    {
+        assert($order->id !== null);
+        return "{$baseUrl}/concert-order/pay/{$order->id}";
     }
 }

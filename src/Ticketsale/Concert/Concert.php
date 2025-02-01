@@ -111,6 +111,9 @@ final class Concert extends Model
         return null;
     }
 
+    /**
+     * @return class-string
+     */
     public function getDeliveryCostInterface(): string
     {
         $interfaceName = $this->deliveryCostInterface;

@@ -6,10 +6,12 @@ namespace Cyndaron\Geelhoed\Member;
 use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\FileCachedModel;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Graduation;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\MemberGraduation;
+use Cyndaron\Geelhoed\MemberGraduationRepository;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\User\User;
 use Cyndaron\Util\FileCache;
@@ -190,14 +192,6 @@ final class Member extends Model
         return $profile->email ?: $this->parentEmail;
     }
 
-    /**
-     * @return MemberGraduation[]
-     */
-    public function getMemberGraduations(): array
-    {
-        return MemberGraduation::fetchAllByMember($this);
-    }
-
     public function isSenior(): bool
     {
         $dateOfBirth = $this->getProfile()->dateOfBirth;
@@ -227,13 +221,14 @@ final class Member extends Model
         return $sports;
     }
 
-    public function getHighestGraduation(Sport $sport):Graduation|null
+    public function getHighestGraduation(Sport $sport): Graduation|null
     {
-        $graduations = MemberGraduation::fetchAllByMember($this);
+        $mgr = new MemberGraduationRepository(new GenericRepository(DBConnection::getPDO()));
+        $graduations = $mgr->fetchAllByMember($this);
         // Results are ordered by date, so the reverse it to start with the highest ones.
         foreach (array_reverse($graduations) as $memberGraduation)
         {
-            $graduation = $memberGraduation->getGraduation();
+            $graduation = $memberGraduation->graduation;
             if ($graduation->getSport()->id === $sport->id)
             {
                 return $graduation;
