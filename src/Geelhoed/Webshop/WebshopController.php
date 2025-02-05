@@ -6,17 +6,24 @@ namespace Cyndaron\Geelhoed\Webshop;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
+use Cyndaron\Geelhoed\Clubactie\SubscriberRepository;
+use Cyndaron\Geelhoed\Hour\Hour;
+use Cyndaron\Geelhoed\Hour\HourRepository;
+use Cyndaron\Geelhoed\Location\LocationRepository;
 use Cyndaron\Geelhoed\Webshop\Model\Currency;
 use Cyndaron\Geelhoed\Webshop\Model\Order;
 use Cyndaron\Geelhoed\Webshop\Model\OrderItem;
+use Cyndaron\Geelhoed\Webshop\Model\OrderItemRepository;
+use Cyndaron\Geelhoed\Webshop\Model\OrderRepository;
 use Cyndaron\Geelhoed\Webshop\Model\OrderStatus;
 use Cyndaron\Geelhoed\Webshop\Model\Product;
+use Cyndaron\Geelhoed\Webshop\Model\ProductRepository;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Request\UrlInfo;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
@@ -31,16 +38,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use function json_encode;
+use function assert;
 
-final class WebshopController extends Controller
+final class WebshopController
 {
     public const RIGHT_MANAGE = 'orders_edit';
 
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+        private readonly OrderRepository $orderRepository,
+        private readonly OrderItemRepository $orderItemRepository,
+        private readonly SubscriberRepository $subscriberRepository,
+    ) {
+    }
+
     #[RouteAttribute('winkelen', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function shopPage(QueryBits $queryBits): Response
+    public function shopPage(QueryBits $queryBits, ProductRepository $productRepository): Response
     {
         $hash = $queryBits->getString(2);
-        $subscriber = Subscriber::fetchByHash($hash);
+        $subscriber = $this->subscriberRepository->fetchByHash($hash);
         if ($subscriber === null)
         {
             return $this->pageRenderer->renderErrorResponse(
@@ -48,13 +64,14 @@ final class WebshopController extends Controller
             );
         }
 
-        $order = Order::fetchBySubscriber($subscriber);
+        $order = $this->orderRepository->fetchBySubscriber($subscriber);
         if ($order === null)
         {
             $order = new Order();
-            $order->subscriberId = (int)$subscriber->id;
+            $order->subscriber = $subscriber;
+            $order->hour = new Hour(1);
             $order->status = OrderStatus::QUOTE;
-            $order->save();
+            $this->orderRepository->save($order);
         }
 
         if ($order->status !== OrderStatus::QUOTE)
@@ -62,12 +79,12 @@ final class WebshopController extends Controller
             return new RedirectResponse("/webwinkel/status/{$hash}");
         }
 
-        $page = new ShopPage($subscriber, $order);
+        $page = new ShopPage($subscriber, $order, $this->orderRepository, $this->orderItemRepository, $productRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('overzicht', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function finishOrder(QueryBits $queryBits): Response
+    public function finishOrder(QueryBits $queryBits, LocationRepository $locationRepository): Response
     {
         $hash = $queryBits->getString(2);
         try
@@ -81,7 +98,7 @@ final class WebshopController extends Controller
             );
         }
 
-        $page = new FinishOrderPage($subscriber, $order);
+        $page = new FinishOrderPage($subscriber, $order, $locationRepository, $this->orderRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -95,10 +112,10 @@ Betalen kan met deze link: " . $urlInfo->schemeAndHost . '/webwinkel/bestelling-
 
 Hieronder volgt een overzicht van de bestelde artikelen:
 ";
-        $orderItems = OrderItem::fetchAllByOrder($order);
+        $orderItems = $this->orderItemRepository->fetchAllByOrder($order);
         foreach ($orderItems as $orderItem)
         {
-            $product = $orderItem->getProduct();
+            $product = $orderItem->product;
 
             $text .= $orderItem->quantity . '× ';
             $text .= $product->name . ', ';
@@ -160,7 +177,7 @@ Sportschool Geelhoed";
     }
 
     #[RouteAttribute('bestelling-plaatsen', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function placeOrder(RequestParameters $post, UrlInfo $urlInfo, MailFactory $mailFactory): Response
+    public function placeOrder(RequestParameters $post, UrlInfo $urlInfo, MailFactory $mailFactory, HourRepository $hourRepository): Response
     {
         $hash = $post->getSimpleString('hash');
         try
@@ -174,11 +191,13 @@ Sportschool Geelhoed";
             );
         }
 
-        $order->hourId = $post->getInt('hourId');
+        $hour = $hourRepository->fetchById($post->getInt('hourId'));
+        assert($hour !== null);
+        $order->hour = $hour;
         $subscriber->phone = $post->getPhone('phone');
-        $subscriber->save();
-        $newStatus = $order->confirmByUser();
-        $order->save();
+        $this->subscriberRepository->save($subscriber);
+        $newStatus = $this->orderRepository->confirmByUser($order);
+        $this->orderRepository->save($order);
 
         $this->sendOrderConfirmationMail($urlInfo, $subscriber, $order, $mailFactory);
 
@@ -246,7 +265,7 @@ Sportschool Geelhoed";
         }
 
         $paymentDescription = "Grote Clubactie 2024 {$subscriber->getFullName()}";
-        $price = $order->getEuroSubtotal();
+        $price = $this->orderRepository->getEuroSubtotal($order);
         $redirectUrl = "{$urlInfo->schemeAndHost}/webwinkel/status/{$hash}";
         $webhookUrl = "{$urlInfo->schemeAndHost}/api/webwinkel/mollieWebhook";
         $payment = new \Cyndaron\Payment\Payment(
@@ -265,7 +284,7 @@ Sportschool Geelhoed";
         }
 
         $order->paymentId = $molliePayment->id;
-        $order->save();
+        $this->orderRepository->save($order);
 
         $redirectUrl = $molliePayment->getCheckoutUrl();
         if ($redirectUrl === null)
@@ -287,7 +306,7 @@ Sportschool Geelhoed";
 
         $id = $post->getUnfilteredString('id');
         $payment = $mollie->payments->get($id);
-        $order = Order::fetch(['paymentId = ?'], [$id]);
+        $order = $this->orderRepository->fetch(['paymentId = ?'], [$id]);
 
         if ($order === null)
         {
@@ -307,7 +326,7 @@ Sportschool Geelhoed";
                 $order->status = OrderStatus::IN_PROGRESS;
                 $order->save();
 
-                $subscriber = $order->getSubscriber();
+                $subscriber = $order->subscriber;
                 $text = "Beste {$subscriber->getFullName()},\n\nWe hebben de betaling voor je bestelling in onze webwinkel ontvangen.\n\n";
                 $text .= "Met vriendelijke groet,\nSportschool Geelhoed";
                 $mail = $mailFactory->createMailWithDefaults(
@@ -356,14 +375,14 @@ Sportschool Geelhoed";
         $price = $currency === Currency::LOTTERY_TICKET ? $product->getGcaTicketPrice() : $product->getEuroPrice();
 
         $newOrderItem = new OrderItem();
-        $newOrderItem->orderId = (int)$order->id;
-        $newOrderItem->productId = $productId;
+        $newOrderItem->order = $order;
+        $newOrderItem->product = $product;
         $newOrderItem->options = $options;
         $newOrderItem->quantity = 1;
         $newOrderItem->currency = $currency;
         $newOrderItem->price = $price;
 
-        foreach (OrderItem::fetchAllByOrder($order) as $currentOrderItem)
+        foreach ($this->orderItemRepository->fetchAllByOrder($order) as $currentOrderItem)
         {
             if ($currentOrderItem->equals($newOrderItem))
             {
@@ -379,7 +398,7 @@ Sportschool Geelhoed";
     }
 
     #[RouteAttribute('remove-from-cart', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
-    public function removeFromCart(RequestParameters $post, GenericRepository $repository): JsonResponse
+    public function removeFromCart(RequestParameters $post, GenericRepository $genericRepository): JsonResponse
     {
         $hash = $post->getSimpleString('hash');
         try
@@ -403,12 +422,12 @@ Sportschool Geelhoed";
             return new JsonResponse(['error' => 'Orderregel niet gevonden'], Response::HTTP_BAD_REQUEST);
         }
 
-        if ($orderItem->orderId !== $order->id)
+        if ($orderItem->order->id !== $order->id)
         {
             return new JsonResponse(['error' => 'Deze order is niet van jou!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $repository->delete($orderItem);
+        $genericRepository->delete($orderItem);
 
         return new JsonResponse([]);
     }
@@ -434,19 +453,19 @@ Sportschool Geelhoed";
             return new RedirectResponse("/webwinkel/winkelen/{$hash}");
         }
 
-        $numRemainingTickets = $subscriber->numSoldTickets - $order->getTicketTotal();
+        $numRemainingTickets = $subscriber->numSoldTickets - $this->orderRepository->getTicketTotal($order);
         if ($numRemainingTickets === 0)
         {
             return new RedirectResponse("/webwinkel/winkelen/{$hash}");
         }
 
         $orderItem = new OrderItem();
-        $orderItem->orderId = (int)$order->id;
+        $orderItem->order = $order;
         $orderItem->quantity = 1;
-        $orderItem->productId = (int)$donateProduct->id;
+        $orderItem->product = $donateProduct;
         $orderItem->price = $numRemainingTickets;
         $orderItem->currency = Currency::LOTTERY_TICKET;
-        $orderItem->save();
+        $this->orderItemRepository->save($orderItem);
 
         return new RedirectResponse("/webwinkel/winkelen/{$hash}");
     }
@@ -472,16 +491,16 @@ Sportschool Geelhoed";
             return new RedirectResponse("/webwinkel/winkelen/{$hash}");
         }
 
-        $numRemainingTickets = $subscriber->numSoldTickets - $order->getTicketTotal();
+        $numRemainingTickets = $subscriber->numSoldTickets - $this->orderRepository->getTicketTotal($order);
         if ($numRemainingTickets === 0)
         {
             return new RedirectResponse("/webwinkel/winkelen/{$hash}");
         }
 
         $orderItem = new OrderItem();
-        $orderItem->orderId = (int)$order->id;
+        $orderItem->order = $order;
         $orderItem->quantity = 1;
-        $orderItem->productId = (int)$gymtasProduct->id;
+        $orderItem->product = $gymtasProduct;
         $orderItem->price = (float)$gymtasProduct->gcaTicketPrice;
         $orderItem->currency = Currency::LOTTERY_TICKET;
         $orderItem->options = json_encode(['color' => 'Achterwege laten'], flags: JSON_THROW_ON_ERROR);
@@ -496,13 +515,13 @@ Sportschool Geelhoed";
      */
     private function getSubscriberAndOrderFromHash(string $hash): array
     {
-        $subscriber = Subscriber::fetchByHash($hash);
+        $subscriber = $this->subscriberRepository->fetchByHash($hash);
         if ($subscriber === null)
         {
             throw new RuntimeUserSafeError('Gebruiker niet gevonden!');
         }
 
-        $order = Order::fetchBySubscriber($subscriber);
+        $order = $this->orderRepository->fetchBySubscriber($subscriber);
         if ($order === null)
         {
             throw new RuntimeUserSafeError('Bestelling niet gevonden!');
@@ -537,7 +556,7 @@ Sportschool Geelhoed";
         $subscriber->numSoldTickets = 0;
         $subscriber->soldTicketsAreVerified = $skipTicketCheck;
         $subscriber->hash = $hash;
-        $subscriber->save();
+        $this->subscriberRepository->save($subscriber);
 
         if ($skipTicketCheck)
         {
@@ -555,7 +574,7 @@ Sportschool Geelhoed";
     public function sendMail(QueryBits $queryBits, UrlInfo $urlInfo, MailFactory $mailFactory): JsonResponse
     {
         $hash = $queryBits->getString(2);
-        $subscriber = Subscriber::fetchByHash($hash);
+        $subscriber = $this->subscriberRepository->fetchByHash($hash);
         if ($subscriber === null)
         {
             throw new RuntimeUserSafeError('Gebruiker niet gevonden!');
@@ -563,7 +582,7 @@ Sportschool Geelhoed";
 
         $this->sendAccountConfirmationMail($urlInfo, $subscriber, $mailFactory);
         $subscriber->emailSent = true;
-        $subscriber->save();
+        $this->subscriberRepository->save($subscriber);
         return new JsonResponse(['status' => 'ok']);
     }
 
@@ -574,7 +593,7 @@ Sportschool Geelhoed";
         return $this->pageRenderer->renderResponse($page);
     }
 
-    #[RouteAttribute('mail-everyone', RequestMethod::POST, UserLevel::ADMIN, right: self::RIGHT_MANAGE, isApiMethod: true)]
+    #[RouteAttribute('mail-everyone', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: self::RIGHT_MANAGE)]
     public function mailEveryone(UrlInfo $urlInfo, MailFactory $mailFactory): JsonResponse
     {
         $subscribers = Subscriber::fetchAll(['soldTicketsAreVerified = 1', 'emailSent = 0']);

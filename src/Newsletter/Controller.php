@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Cyndaron\Newsletter;
 
 use Cyndaron\DBAL\Connection;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -20,6 +21,7 @@ use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
+use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -32,8 +34,13 @@ use Symfony\Component\Mime\Email;
 use function array_udiff;
 use function base64_decode;
 
-class Controller extends \Cyndaron\Routing\Controller
+class Controller
 {
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+    ) {
+    }
+
     #[RouteAttribute('viewSubscribers', RequestMethod::GET, UserLevel::ADMIN)]
     public function viewSubscribers(CSRFTokenHandler $tokenHandler): Response
     {

@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace Cyndaron\Error;
 
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 
-final class ErrorController extends Controller
+final class ErrorController
 {
     public const KNOWN_ERRORS = [
         '403' => [
@@ -24,6 +24,11 @@ final class ErrorController extends Controller
             'notification' => 'U heeft geprobeerd een pagina op te vragen die niet kon worden gevonden.',
         ],
     ];
+
+    public function __construct(private readonly PageRenderer $pageRenderer)
+    {
+
+    }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
     #[RouteAttribute('', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]

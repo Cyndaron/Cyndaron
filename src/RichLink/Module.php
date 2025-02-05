@@ -26,7 +26,8 @@ final class Module implements Datatypes, UrlProvider, Routes
                 pageManagerTab: self::pageManagerTab(...),
                 pageManagerJS: '/src/RichLink/js/PageManagerTab.js',
                 class: RichLink::class,
-                modelToUrl: function (RichLink $richLink) { return new Url($richLink->url); },
+                modelToUrl: function(RichLink $richLink)
+                { return new Url($richLink->url); },
             ),
         ];
     }

@@ -20,6 +20,14 @@ interface RepositoryInterface
      * @param string[] $where
      * @param list<string|int|float|null> $args
      * @param string $afterWhere
+     * @return T|null
+     */
+    public function fetch(array $where = [], array $args = [], string $afterWhere = ''): Model|null;
+
+    /**
+     * @param string[] $where
+     * @param list<string|int|float|null> $args
+     * @param string $afterWhere
      * @return T[]
      */
     public function fetchAll(array $where = [], array $args = [], string $afterWhere = ''): array;
@@ -37,4 +45,9 @@ interface RepositoryInterface
      * @return void
      */
     public function delete(Model $model): void;
+
+    /**
+     * @return T[]
+     */
+    public function fetchAllForSelect(): array;
 }

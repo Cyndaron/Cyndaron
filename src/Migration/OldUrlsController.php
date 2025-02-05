@@ -5,20 +5,26 @@ namespace Cyndaron\Migration;
 
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Mailform\MailformController;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Request\UrlInfo;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\MailFactory;
+use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class OldUrlsController extends Controller
+class OldUrlsController
 {
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+        private readonly TemplateRenderer $templateRenderer,
+    ) {
+    }
+
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function routeGet(Request $request, QueryBits $queryBits): Response
     {

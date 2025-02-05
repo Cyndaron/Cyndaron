@@ -6,7 +6,6 @@ namespace Cyndaron\Geelhoed\Webshop\Model;
 use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
-use function assert;
 
 final class OrderItem extends Model
 {
@@ -14,10 +13,10 @@ final class OrderItem extends Model
 
     public const TABLE = 'geelhoed_webshop_order_item';
 
-    #[DatabaseField]
-    public int $orderId;
-    #[DatabaseField]
-    public int $productId;
+    #[DatabaseField(dbName: 'orderId')]
+    public Order $order;
+    #[DatabaseField(dbName: 'productId')]
+    public Product $product;
     #[DatabaseField]
     public int $quantity;
     #[DatabaseField]
@@ -26,13 +25,6 @@ final class OrderItem extends Model
     public float $price;
     #[DatabaseField]
     public Currency $currency;
-
-    public function getProduct(): Product
-    {
-        $product = Product::fetchById($this->productId);
-        assert($product !== null);
-        return $product;
-    }
 
     /**
      * @return array<string, string>
@@ -46,7 +38,7 @@ final class OrderItem extends Model
 
     public function getLineDescription(): string
     {
-        $description = $this->getProduct()->name;
+        $description = $this->product->name;
         foreach ($this->getOptions() as $option)
         {
             $description .= ", {$option}";
@@ -54,21 +46,13 @@ final class OrderItem extends Model
         return $description;
     }
 
-    /**
-     * @return self[]
-     */
-    public static function fetchAllByOrder(Order $order): array
-    {
-        return self::fetchAll(['orderId = ?'], [$order->id]);
-    }
-
     public function equals(OrderItem $otherItem): bool
     {
         return
             $this->currency === $otherItem->currency &&
             $this->price === $otherItem->price &&
-            $this->productId === $otherItem->productId &&
-            $this->orderId === $otherItem->orderId &&
+            $this->product->id === $otherItem->product->id &&
+            $this->order->id === $otherItem->order->id &&
             $this->getOptions() === $otherItem->getOptions();
     }
 

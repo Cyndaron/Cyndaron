@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Cyndaron\Registration;
 
 use Cyndaron\DBAL\Connection;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\User\UserLevel;
@@ -19,8 +19,13 @@ use function chr;
 use function count;
 use function ord;
 
-final class EventController extends Controller
+final class EventController
 {
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+    ) {
+    }
+
     #[RouteAttribute('getInfo', RequestMethod::GET, UserLevel::ANONYMOUS, isApiMethod: true)]
     public function getEventInfo(QueryBits $queryBits, Connection $db): JsonResponse
     {
@@ -113,7 +118,7 @@ final class EventController extends Controller
             $sheet->setCellValue("C{$row}", $registration->city);
             $sheet->setCellValue("D{$row}", $registration->email);
             $sheet->setCellValue("E{$row}", $registration->phone);
-            $sheet->setCellValue("F{$row}", $registration->birthYear ? \Cyndaron\Registration\Util::birthYearToCategory($event, $registration->birthYear) : 'Onbekend');
+            $sheet->setCellValue("F{$row}", $registration->birthYear ? Util::birthYearToCategory($event, $registration->birthYear) : 'Onbekend');
             $sheet->setCellValue("G{$row}", $registration->vocalRange);
             $sheet->setCellValue("H{$row}", $registration->choirPreference);
             $sheet->setCellValue("I{$row}", $registration->currentChoir ?: 'Geen/ander koor');

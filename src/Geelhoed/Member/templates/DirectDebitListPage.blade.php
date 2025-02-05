@@ -23,7 +23,7 @@
                 <td>
                     <ul>
                         @foreach ($directDebit->members as $member)
-                            <li>{{ $member->getProfile()->getFullName() }}: {{ $member->getQuarterlyFee()|euro }}</li>
+                            <li>{{ $member->profile->getFullName() }}: {{ $member->getQuarterlyFee()|euro }}</li>
                         @endforeach
                     </ul>
                 </td>

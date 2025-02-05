@@ -4,6 +4,7 @@
     @php
         /** @var \Cyndaron\Geelhoed\Hour\Hour $hour */
         /** @var \Cyndaron\Geelhoed\Member\Member[] $members */
+        /** @var \Cyndaron\Geelhoed\Location\LocationRepository $locationRepository */
     @endphp
     <p>
         Trainingstype: {{ $hour->getSportName() }}<br>
@@ -21,7 +22,7 @@
         </thead>
         <tbody>
             @foreach ($members as $member)
-                @php $profile = $member->getProfile() @endphp
+                @php $profile = $member->profile @endphp
                 <tr>
                     <td>{{ $profile->getFullName() }}</td>
                     <td>
@@ -42,8 +43,7 @@
 
     <h2>Trainingen op deze locatie</h2>
     <table class="table table-bordered table-striped">
-        @php $extendedLocation = new \Cyndaron\Geelhoed\Location\Location($hour->location); @endphp
-        @foreach($extendedLocation->getHours($hour->departmentId) as $locationHour)
+        @foreach($locationRepository->getHours($hour->location, $hour->departmentId) as $locationHour)
             <tr>
                 @php $weekday = \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($locationHour->day) @endphp
                 <td><a href="/hour/memberList/{{ $locationHour->id }}">{{ $weekday }} {{ $locationHour->getRange() }}</a></td>

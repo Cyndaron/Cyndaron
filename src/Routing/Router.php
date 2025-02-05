@@ -19,8 +19,6 @@ use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Setting;
-use Cyndaron\View\Template\TemplateRenderer;
-use Safe\Exceptions\SessionException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +35,6 @@ final class Router
 {
     private Connection $connection;
     private ModuleRegistry $moduleRegistry;
-    private TemplateRenderer $templateRenderer;
     private UrlService $urlService;
 
     public function __construct(
@@ -46,7 +43,6 @@ final class Router
     ) {
         $this->connection = $dic->get(Connection::class);
         $this->moduleRegistry = $dic->get(ModuleRegistry::class);
-        $this->templateRenderer = $dic->get(TemplateRenderer::class);
         $this->urlService = $dic->get(UrlService::class);
     }
 
@@ -175,8 +171,7 @@ final class Router
         }
 
         $classname = $controllers[$module];
-        /** @var Controller $controller */
-        $controller = new $classname($this->templateRenderer, $this->pageRenderer);
+        $controller = $this->dic->createClassWithDependencyInjection($classname);
 
         $requestMethod = RequestMethod::tryFrom($request->getRealMethod());
         if ($requestMethod === null)
@@ -242,7 +237,7 @@ final class Router
         return true;
     }
 
-    private function callRoute(Controller $controller, Route $route, UserSession $userSession, string $requestUri): Response
+    private function callRoute(object $controller, Route $route, UserSession $userSession, string $requestUri): Response
     {
         $right = $route->right;
         $profile = $userSession->getProfile();
@@ -279,7 +274,6 @@ final class Router
 
     /**
      * @param Url $url
-     * @throws \Safe\Exceptions\StringsException
      * @return string
      */
     private function rewriteFriendlyUrl(Url $url): string
@@ -297,7 +291,7 @@ final class Router
         return $file;
     }
 
-    private function callMethodWithDependencyInjection(Controller $controller, string $method): Response
+    private function callMethodWithDependencyInjection(object $controller, string $method): Response
     {
         /** @var Response $response */
         $response = $this->dic->callMethodWithDependencyInjection($controller, $method);

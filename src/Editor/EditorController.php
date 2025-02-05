@@ -9,12 +9,11 @@ use Cyndaron\Error\ErrorPage;
 use Cyndaron\FriendlyUrl\FriendlyUrlRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Module\Linkable;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Request\UrlInfo;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\User;
@@ -24,19 +23,23 @@ use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\Util;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 use function array_merge;
 use function strlen;
 use function usort;
 
-final class EditorController extends Controller
+final class EditorController
 {
     private const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
 
+    public function __construct(private readonly PageRenderer $pageRenderer)
+    {
+
+    }
+
     #[RouteAttribute('', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function routeGet(QueryBits $queryBits, Request $request, User $currentUser, ModuleRegistry $registry, Connection $connection, UrlService $urlService, UserRepository $userRepository, DependencyInjectionContainer $dic): Response
+    public function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry, Connection $connection, UserRepository $userRepository, DependencyInjectionContainer $dic): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorPages))

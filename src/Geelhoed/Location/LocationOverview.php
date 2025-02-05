@@ -13,6 +13,7 @@ final class LocationOverview extends Page
     private const PAGE_IMAGE = '/src/Geelhoed/Location/images/location-overview.jpg';
 
     public function __construct(
+        LocationRepository $locationRepository,
         LocationFilter $filter = LocationFilter::NONE,
         string $filterValue = '',
     ) {
@@ -47,6 +48,11 @@ final class LocationOverview extends Page
         $this->title = $title;
         $this->addCss('/src/Geelhoed/geelhoed.css');
         $locNotification = Setting::get('geelhoed_locationNotification');
-        $this->addTemplateVars(['locations' => $locations, 'pageImage' => self::PAGE_IMAGE, 'locNotification' => $locNotification]);
+        $this->addTemplateVars([
+            'locations' => $locations,
+            'pageImage' => self::PAGE_IMAGE,
+            'locNotification' => $locNotification,
+            'locationRepository' => $locationRepository,
+        ]);
     }
 }

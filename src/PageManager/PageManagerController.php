@@ -5,9 +5,9 @@ namespace Cyndaron\PageManager;
 
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPage;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
@@ -15,8 +15,13 @@ use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\RuntimeUserSafeError;
 use Symfony\Component\HttpFoundation\Response;
 
-final class PageManagerController extends Controller
+final class PageManagerController
 {
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+    ) {
+    }
+
     #[RouteAttribute('', RequestMethod::GET, UserLevel::LOGGED_IN)]
     public function routeGet(QueryBits $queryBits, DependencyInjectionContainer $dic, User $currentUser, ModuleRegistry $registry): Response
     {

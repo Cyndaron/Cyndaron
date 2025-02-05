@@ -15,7 +15,7 @@ class SearchPage extends Page
     /**
      * @param array<int, string> $days
      */
-    public function __construct(array $days)
+    public function __construct(array $days, LocationRepository $locationRepository)
     {
         $this->title = 'Lessen zoeken';
 
@@ -24,7 +24,7 @@ class SearchPage extends Page
 
         $this->addTemplateVars([
             'pageImage' => self::PAGE_IMAGE,
-            'cities' => Location::getCities(),
+            'cities' => $locationRepository->getCities(),
             'days' => $days,
             'sports' => Sport::fetchAll(),
         ]);

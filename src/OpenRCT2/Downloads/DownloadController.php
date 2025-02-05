@@ -9,9 +9,9 @@ declare(strict_types=1);
 namespace Cyndaron\OpenRCT2\Downloads;
 
 use Cyndaron\Error\ErrorPage;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Psr\Log\LoggerInterface;
@@ -19,8 +19,13 @@ use ReflectionEnum;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-final class DownloadController extends Controller
+final class DownloadController
 {
+    public function __construct(
+        protected readonly PageRenderer $pageRenderer,
+    ) {
+    }
+
     private function fetchAndProcessBuilds(LoggerInterface $logger, string $name, APICall $call): Response
     {
         try

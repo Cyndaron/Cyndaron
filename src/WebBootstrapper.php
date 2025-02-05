@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron;
 
+use Cyndaron\Base\CyndaronConfig;
 use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Util\Error\BootFailure;
@@ -26,8 +27,8 @@ final class WebBootstrapper
             $this->setErrorHandler();
             $request = Request::createFromGlobals();
             $this->setPhpConfig((bool)$request->server->get('HTTPS'));
-            $this->processSettings();
-            $this->handleRequest($request);
+            $config = $this->processSettings();
+            $this->handleRequest($request, $config);
         }
         catch (RuntimeException $e)
         {
@@ -68,36 +69,30 @@ final class WebBootstrapper
         }
     }
 
-    private function processSettings(): void
+    private function processSettings(): CyndaronConfig
     {
         if (!file_exists(self::SETTINGS_FILE))
         {
             throw new BootFailure('Geen instellingenbestand gevonden!');
         }
 
-        $pdo = $this->connectToDatabase();
+        /** @var CyndaronConfig $config */
+        $config = require self::SETTINGS_FILE;
+        $pdo = $this->connectToDatabase($config);
         Setting::load($pdo);
+        return $config;
     }
 
-    private function handleRequest(Request $request): void
+    private function handleRequest(Request $request, CyndaronConfig $config): void
     {
         $route = new Kernel();
-        $response = $route->handle($request);
+        $response = $route->handle($request, $config);
         $response->send();
     }
 
-    private function connectToDatabase(): Connection
+    private function connectToDatabase(CyndaronConfig $config): Connection
     {
-        $dbmethode = 'mysql';
-        $dbuser = 'root';
-        $dbpass = '';
-        $dbplek = 'localhost';
-        $dbnaam = 'cyndaron';
-
-        /** @noinspection PhpIncludeInspection */
-        include self::SETTINGS_FILE;
-
-        $connection = Connection::create($dbmethode, $dbplek, $dbnaam, $dbuser, $dbpass);
+        $connection = Connection::create('mysql', $config->databaseHost, $config->databaseName, $config->databaseUser, $config->databasePassword);
         DBConnection::connect($connection);
         return $connection;
     }

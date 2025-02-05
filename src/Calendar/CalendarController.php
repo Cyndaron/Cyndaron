@@ -4,18 +4,23 @@ declare(strict_types=1);
 namespace Cyndaron\Calendar;
 
 use Cyndaron\Base\ModuleRegistry;
+use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\Response;
 
-class CalendarController extends Controller
+class CalendarController
 {
-    #[RouteAttribute('overzicht', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function overview(ModuleRegistry $moduleRegistry): Response
+    public function __construct(private readonly PageRenderer $pageRenderer)
     {
-        $page = new CalendarIndexPage($moduleRegistry);
+    }
+
+    #[RouteAttribute('overzicht', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function overview(ModuleRegistry $moduleRegistry, GenericRepository $genericRepository): Response
+    {
+        $page = new CalendarIndexPage($moduleRegistry, $genericRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 }

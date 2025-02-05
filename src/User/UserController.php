@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace Cyndaron\User;
 
 use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\Geelhoed\Contest\Contest;
+use Cyndaron\Geelhoed\Contest\Model\Contest;
 use Cyndaron\Imaging\GdHelper;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\Kernel;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Translation\Translator;
@@ -24,20 +24,25 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
+use function basename;
+use function file_exists;
 use function Safe\imagepng;
 use function Safe\unlink;
-use function strlen;
-use function str_contains;
-use function file_exists;
-use function basename;
 use function sprintf;
+use function str_contains;
+use function strlen;
 
-final class UserController extends Controller
+final class UserController
 {
     private const RESET_PASSWORD_MAIL_TEXT =
         'U vroeg om een nieuw wachtwoord voor %s.
 
 Uw nieuwe wachtwoord is: %s';
+
+    public function __construct(private readonly PageRenderer $pageRenderer)
+    {
+
+    }
 
     #[RouteAttribute('gallery', RequestMethod::GET, UserLevel::LOGGED_IN)]
     public function gallery(UserSession $session, Translator $t): Response

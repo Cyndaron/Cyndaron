@@ -8,7 +8,6 @@ use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
@@ -16,7 +15,7 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-final class MenuController extends Controller
+final class MenuController
 {
     #[RouteAttribute('addItem', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function addItem(RequestParameters $post, GenericRepository $repository, Connection $connection): JsonResponse

@@ -4,11 +4,14 @@ declare(strict_types=1);
 namespace Cyndaron\Calendar;
 
 use Cyndaron\Base\ModuleRegistry;
+use Cyndaron\DBAL\GenericRepository;
 
 final class Registry
 {
-    public function __construct(private readonly ModuleRegistry $moduleRegistry)
-    {
+    public function __construct(
+        private readonly ModuleRegistry $moduleRegistry,
+        private readonly GenericRepository $repository
+    ) {
     }
 
     /**
@@ -19,7 +22,7 @@ final class Registry
         $appointments = [];
         foreach ($this->moduleRegistry->calendarAppointmentsProviders as $provider)
         {
-            foreach ($provider->getAppointments() as $appointment)
+            foreach ($provider->getAppointments($this->repository) as $appointment)
             {
                 $appointments[] = $appointment;
             }

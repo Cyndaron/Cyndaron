@@ -8,11 +8,11 @@ use Cyndaron\Category\ViewMode;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\FriendlyUrl\FriendlyUrl;
 use Cyndaron\MDB\MDBFile;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\UrlInfo;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserLevel;
@@ -33,12 +33,17 @@ use function array_chunk;
 use const PHP_EOL;
 use function explode;
 
-class TryoutController extends Controller
+class TryoutController
 {
     public const RIGHT_UPLOAD = 'geelhoed_tryout_upload';
 
     private const BATCH_SIZE = 250;
     private const QUERY = 'REPLACE INTO geelhoed_tryout_points(`id`, `code`, `datetime`, `points`) VALUES ';
+
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+    ) {
+    }
 
     #[RouteAttribute('scores', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function scores(QueryBits $queryBits, Connection $connection): Response
@@ -112,7 +117,7 @@ class TryoutController extends Controller
         }
     }
 
-    #[RouteAttribute('create-photoalbums', RequestMethod::POST, UserLevel::ADMIN, right: 'tryout_edit', isApiMethod: true)]
+    #[RouteAttribute('create-photoalbums', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: 'tryout_edit')]
     public function createPhotoalbums(QueryBits $queryBits, UrlInfo $urlInfo, MailFactory $mailFactory): JsonResponse
     {
         $tryoutId = $queryBits->getInt(2);

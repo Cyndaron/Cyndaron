@@ -14,7 +14,6 @@ final class TryoutParticipation extends Model
     use FileCachedModel;
 
     public const TABLE = 'geelhoed_volunteer_tot_participation';
-    // Override to include the fields for that particular model
 
     #[DatabaseField]
     public int $eventId;

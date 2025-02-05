@@ -7,10 +7,14 @@ use Cyndaron\Util\Setting;
 
 final class LocationPage extends Page
 {
-    public function __construct(Location $location)
+    public function __construct(Location $location, LocationRepository $locationRepository)
     {
         $this->title = $location->getName();
         $locNotification = Setting::get('geelhoed_locationNotification');
-        $this->addTemplateVars(['location' => $location, 'locNotification' => $locNotification]);
+        $this->addTemplateVars([
+            'location' => $location,
+            'locNotification' => $locNotification,
+            'locationRepository' => $locationRepository,
+        ]);
     }
 }

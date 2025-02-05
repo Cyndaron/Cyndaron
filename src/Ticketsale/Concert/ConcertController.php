@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Cyndaron\Ticketsale\Concert;
 
 use Cyndaron\DBAL\Connection;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\Ticketsale\Order\Order;
@@ -32,7 +32,7 @@ use function is_bool;
 use function ord;
 use function property_exists;
 
-final class ConcertController extends Controller
+final class ConcertController
 {
     private const TRANSLATION_MAP = [
         'id' => 'Bestelnr',
@@ -48,6 +48,11 @@ final class ConcertController extends Controller
         'donor' => 'Donateur',
         'subscribeToNewsletter' => 'Inschrijven voor nieuwsbrief',
     ];
+
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+    ) {
+    }
 
     #[RouteAttribute('getInfo', RequestMethod::GET, UserLevel::ANONYMOUS, isApiMethod: true)]
     public function getConcertInfo(QueryBits $queryBits): JsonResponse

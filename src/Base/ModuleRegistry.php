@@ -13,10 +13,8 @@ use Cyndaron\Module\UrlProvider;
 use Cyndaron\Page\Module\PagePreProcessor;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\Route;
 use Cyndaron\Routing\RouteAttribute;
-use Cyndaron\Url\Url;
 use Cyndaron\User\Module\UserMenuItem;
 use ReflectionClass;
 use function in_array;
@@ -25,7 +23,7 @@ use function Safe\class_implements;
 
 final class ModuleRegistry
 {
-    /** @var array<string, class-string<Controller>> */
+    /** @var array<string, class-string> */
     public array $controllers = [];
 
     /** @var array<string, array<string, array<string, array<int, Route>>>> */
@@ -66,7 +64,7 @@ final class ModuleRegistry
 
     /**
      * @param string $module
-     * @param class-string<Controller> $className
+     * @param class-string $className
      * @return void
      */
     public function addController(string $module, string $className): void

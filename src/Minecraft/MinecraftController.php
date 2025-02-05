@@ -3,21 +3,28 @@ declare(strict_types=1);
 
 namespace Cyndaron\Minecraft;
 
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Minecraft\Dynmap\DynmapProxy;
 use Cyndaron\Minecraft\Skin\SkinRendererHandler;
 use Cyndaron\Minecraft\Skin\SkinRendererParameters;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
+use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class MinecraftController extends Controller
+final class MinecraftController
 {
+    public function __construct(
+        private readonly TemplateRenderer $templateRenderer,
+        private readonly PageRenderer $pageRenderer,
+    ) {
+    }
+
     #[RouteAttribute('dynmapproxy', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function dynmapProxy(QueryBits $queryBits): Response
     {

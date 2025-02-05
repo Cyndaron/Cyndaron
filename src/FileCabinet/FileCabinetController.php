@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\FileCabinet;
 
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\CSRFTokenHandler;
@@ -20,8 +20,12 @@ use function basename;
 use function file_exists;
 use function assert;
 
-final class FileCabinetController extends Controller
+final class FileCabinetController
 {
+    public function __construct(private readonly PageRenderer $pageRenderer)
+    {
+    }
+
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function routeGet(CSRFTokenHandler $tokenHandler): Response
     {

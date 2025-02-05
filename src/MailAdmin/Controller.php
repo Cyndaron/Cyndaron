@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\MailAdmin;
 
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -20,8 +21,13 @@ use function base64_encode;
 use function random_bytes;
 use function str_contains;
 
-class Controller extends \Cyndaron\Routing\Controller
+class Controller
 {
+    public function __construct(
+        protected readonly PageRenderer $pageRenderer,
+    ) {
+    }
+
     private function createPDO(): PDO
     {
         $username = Setting::get('postfix_sql_username');

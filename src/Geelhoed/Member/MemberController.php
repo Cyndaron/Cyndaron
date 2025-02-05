@@ -1,19 +1,22 @@
 <?php
+declare(strict_types=1);
+
 namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\Geelhoed\Graduation;
-use Cyndaron\Geelhoed\MemberGraduationRepository;
+use Cyndaron\Geelhoed\Graduation\GraduationRepository;
+use Cyndaron\Geelhoed\Graduation\MemberGraduation;
+use Cyndaron\Geelhoed\Graduation\MemberGraduationRepository;
+use Cyndaron\Geelhoed\Hour\HourRepository;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
-use Cyndaron\Geelhoed\Hour\Hour;
-use Cyndaron\Geelhoed\MemberGraduation;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Util;
+use PDOException;
 use Safe\DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,10 +26,16 @@ use function array_merge;
 use function implode;
 use function assert;
 
-final class MemberController extends Controller
+final class MemberController
 {
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+        private readonly MemberRepository $memberRepository,
+    ) {
+    }
+
     #[RouteAttribute('get', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
-    public function get(QueryBits $queryBits, MemberGraduationRepository $mgr): JsonResponse
+    public function get(QueryBits $queryBits, MemberRepository $memberRepository, MemberGraduationRepository $mgr): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -35,17 +44,17 @@ final class MemberController extends Controller
         }
         $ret = [];
 
-        $member = Member::fetchById($id);
+        $member = $this->memberRepository->fetchById($id);
         if ($member !== null)
         {
-            $ret = array_merge($member->asArray(), $member->getProfile()->asArray());
-            $dob = $member->getProfile()->dateOfBirth;
+            $ret = array_merge($member->asArray(), $member->profile->asArray());
+            $dob = $member->profile->dateOfBirth;
             if ($dob !== null)
             {
                 $ret['dateOfBirth'] = $dob->format(Util::SQL_DATE_FORMAT);
             }
 
-            foreach ($member->getHours() as $hour)
+            foreach ($memberRepository->getHours($member) as $hour)
             {
                 $ret["hour-{$hour->id}"] = true;
             }
@@ -54,7 +63,7 @@ final class MemberController extends Controller
             foreach ($mgr->fetchAllByMember($member) as $memberGraduation)
             {
                 $graduation = $memberGraduation->graduation;
-                $description = "{$graduation->getSport()->name}: {$graduation->name} ({$memberGraduation->date})";
+                $description = "{$graduation->sport->name}: {$graduation->name} ({$memberGraduation->date})";
                 $list[] = sprintf('<li id="member-graduation-%d">%s <a class="btn btn-sm btn-danger remove-member-graduation" data-id="%d"><span class="glyphicon glyphicon-trash"></span></a></li>', $memberGraduation->id, $description, $memberGraduation->id);
             }
 
@@ -65,9 +74,9 @@ final class MemberController extends Controller
     }
 
     #[RouteAttribute('getGrid', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
-    public function getGrid(): JsonResponse
+    public function getGrid(MemberRepository $memberRepository): JsonResponse
     {
-        $grid = new PageManagerMemberGrid();
+        $grid = new PageManagerMemberGrid($memberRepository);
         return new JsonResponse($grid->get());
     }
 
@@ -86,19 +95,19 @@ final class MemberController extends Controller
     }
 
     #[RouteAttribute('save', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function save(RequestParameters $post, MemberGraduationRepository $mgr): JsonResponse
+    public function save(RequestParameters $post, MemberGraduationRepository $mgr, HourRepository $hourRepository, GraduationRepository $graduationRepository): JsonResponse
     {
         $memberId = $post->getInt('id');
 
         // Edit existing
         if ($memberId > 0)
         {
-            $member = Member::fetchById($memberId);
+            $member = $this->memberRepository->fetchById($memberId);
             if ($member === null)
             {
                 throw new \Exception('Member not found!');
             }
-            $user = $member->getProfile();
+            $user = $member->profile;
         }
         else
         {
@@ -115,39 +124,42 @@ final class MemberController extends Controller
         }
 
         $member = $this->updateMemberFields($user, $member, $post);
-        if (!$member->save())
+        try
+        {
+            $this->memberRepository->save($member);
+        }
+        catch (PDOException)
         {
             return new JsonResponse(['error' => 'Error saving member record!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $newGraduationId = $post->getInt('new-graduation-id');
-        $newGraduation = Graduation::fetchById($newGraduationId);
+        $newGraduation = $graduationRepository->fetchById($newGraduationId);
         assert($newGraduation !== null);
         $newGraduationDate = $post->getDate('new-graduation-date');
         if ($newGraduationId && $newGraduationDate)
         {
             $mg = new MemberGraduation();
             assert($member->id !== null);
-            /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
-            $mg->memberId = $member->id;
+            $mg->member = $member;
             $mg->graduation = $newGraduation;
             $mg->date = $newGraduationDate;
             $mgr->save($mg);
         }
 
         $hours = [];
-        foreach (Hour::fetchAll() as $hour)
+        foreach ($hourRepository->fetchAll() as $hour)
         {
             if ($post->getBool("hour-{$hour->id}"))
             {
                 $hours[] = $hour;
             }
         }
-        $member->setHours($hours);
-        $grid = new PageManagerMemberGrid();
+        $this->memberRepository->setHours($member, $hours);
+        $grid = new PageManagerMemberGrid($this->memberRepository);
         $grid->rebuild();
 
-        $gridItem = PageManagerMemberGridItem::createFromMember($member);
+        $gridItem = PageManagerMemberGridItem::createFromMember($this->memberRepository, $member);
 
         return new JsonResponse($gridItem);
     }
@@ -155,7 +167,7 @@ final class MemberController extends Controller
     /**
      * @param User $user
      * @param RequestParameters $post
-     * @throws \Safe\Exceptions\PcreException
+     *@throws \Safe\Exceptions\PcreException|\Safe\Exceptions\DatetimeException
      * @return User
      */
     private function updateUserFields(User $user, RequestParameters $post): User
@@ -192,8 +204,7 @@ final class MemberController extends Controller
     private function updateMemberFields(User $user, Member $member, RequestParameters $post): Member
     {
         assert($user->id !== null);
-        /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
-        $member->userId = $user->id;
+        $member->profile = $user;
         $member->parentEmail = $post->getEmail('parentEmail');
         $member->phoneNumbers = $post->getSimpleString('phoneNumbers');
         $member->isContestant = $post->getBool('isContestant');
@@ -224,20 +235,20 @@ final class MemberController extends Controller
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $member = Member::fetchById($id);
+        $member = $this->memberRepository->fetchById($id);
         $repository->deleteById(Member::class, $id);
-        if ($member !== null && $member->userId > 0)
+        if ($member !== null && $member->profile->id > 0)
         {
-            $repository->deleteById(User::class, $member->userId);
+            $repository->deleteById(User::class, $member->profile->id);
         }
 
         return new JsonResponse();
     }
 
     #[RouteAttribute('directDebitList', RequestMethod::GET, UserLevel::ADMIN)]
-    public function directDebitList(): Response
+    public function directDebitList(MemberRepository $memberRepository): Response
     {
-        $directDebits = DirectDebit::load();
+        $directDebits = DirectDebit::load($memberRepository);
         $page = new DirectDebitListPage($directDebits);
         return $this->pageRenderer->renderResponse($page);
     }

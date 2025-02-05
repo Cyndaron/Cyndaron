@@ -42,17 +42,17 @@ final class PageManagerMemberGridItem
     ) {
     }
 
-    public static function createFromMember(Member $member): self
+    public static function createFromMember(MemberRepository $repository, Member $member): self
     {
-        $profile = $member->getProfile();
+        $profile = $member->profile;
         $name = str_replace('  ', ' ', "{$profile->lastName} {$profile->tussenvoegsel} {$profile->firstName}");
         $houseNumber = $profile->houseNumber ?: '';
         $streetAddress = "{$profile->street} {$houseNumber} {$profile->houseNumberAddition}";
         $dateOfBirth = $profile->dateOfBirth?->format('Y-m-d');
         $postcodeAndCity = "{$profile->postalCode} {$profile->city}";
-        $quarterlyFee = ViewHelpers::formatEuro($member->getQuarterlyFee());
+        $quarterlyFee = ViewHelpers::formatEuro($repository->getQuarterlyFee($member));
         $sports = [];
-        foreach ($member->getSports() as $sport)
+        foreach ($repository->getSports($member) as $sport)
         {
             assert($sport->id !== null);
             $sports[] = $sport->id;
@@ -60,7 +60,7 @@ final class PageManagerMemberGridItem
         $graduations = [];
         foreach (Sport::fetchAll() as $sport)
         {
-            $graduation = $member->getHighestGraduation($sport);
+            $graduation = $repository->getHighestGraduation($member, $sport);
             if ($graduation !== null)
             {
                 assert($graduation->id !== null);
@@ -69,7 +69,7 @@ final class PageManagerMemberGridItem
         }
         $hours = [];
         $locations = [];
-        foreach ($member->getHours() as $hour)
+        foreach ($repository->getHours($member) as $hour)
         {
             $dayName = ViewHelpers::getDutchWeekday($hour->day);
             $from = ViewHelpers::filterHm($hour->from);

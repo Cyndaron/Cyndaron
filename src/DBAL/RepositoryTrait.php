@@ -25,8 +25,18 @@ trait RepositoryTrait
         $this->genericRepository->deleteById(self::UNDERLYING_CLASS, $id);
     }
 
+    public function fetch(array $where = [], array $args = [], string $afterWhere = ''): Model|null
+    {
+        return $this->genericRepository->fetch(self::UNDERLYING_CLASS, $where, $args, $afterWhere);
+    }
+
     public function fetchAll(array $where = [], array $args = [], string $afterWhere = ''): array
     {
         return $this->genericRepository->fetchAll(self::UNDERLYING_CLASS, $where, $args, $afterWhere);
+    }
+
+    public function fetchAllForSelect(): array
+    {
+        return $this->genericRepository->fetchAllForSelect(self::UNDERLYING_CLASS);
     }
 }

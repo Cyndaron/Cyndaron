@@ -6,14 +6,13 @@ namespace Cyndaron\RichLink;
 use Cyndaron\Category\Category;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-final class RichLinkController extends Controller
+final class RichLinkController
 {
     #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function createOrEdit(RequestParameters $post): JsonResponse

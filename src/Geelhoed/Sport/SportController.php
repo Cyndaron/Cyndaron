@@ -6,19 +6,18 @@ namespace Cyndaron\Geelhoed\Sport;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-final class SportController extends Controller
+final class SportController
 {
     #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function apiEdit(QueryBits $queryBits, RequestParameters $requestParameters): JsonResponse
+    public function apiEdit(QueryBits $queryBits, RequestParameters $requestParameters, SportRepository $sportRepository): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        $sport = Sport::fetchById($id);
+        $sport = $sportRepository->fetchById($id);
         if ($sport === null)
         {
             return new JsonResponse(['error' => 'Sport not found!'], Response::HTTP_NOT_FOUND);
@@ -28,10 +27,7 @@ final class SportController extends Controller
         $sport->juniorFee = $requestParameters->getFloat('juniorFee');
         $sport->seniorFee = $requestParameters->getFloat('seniorFee');
 
-        if (!$sport->save())
-        {
-            return new JsonResponse(['error' => 'Could not save!'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $sportRepository->save($sport);
 
         return new JsonResponse([]);
     }

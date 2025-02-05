@@ -5,15 +5,16 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Util\MailFactory;
+use Cyndaron\View\Template\TemplateRenderer;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,8 +24,14 @@ use function implode;
 use function min;
 use function strcasecmp;
 
-final class RegistrationController extends Controller
+final class RegistrationController
 {
+    public function __construct(
+        private readonly TemplateRenderer $templateRenderer,
+        private readonly PageRenderer $pageRenderer,
+    ) {
+    }
+
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ANONYMOUS)]
     public function add(RequestParameters $post, MailFactory $mailFactory): Response
     {

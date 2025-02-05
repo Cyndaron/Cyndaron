@@ -42,7 +42,8 @@ final class Module implements Routes, Datatypes, Templated, Linkable
                 editorSave: EditorSave::class,
                 pageManagerTab: Util::drawPageManagerTab(...),
                 class: Concert::class,
-                modelToUrl: function(Concert $concert) { return new Url("/concert/{$concert->id}"); }
+                modelToUrl: function(Concert $concert)
+                { return new Url("/concert/{$concert->id}"); }
             ),
             'ticketType' => new Datatype(
                 editorPage: TicketTypeEditorPage::class,

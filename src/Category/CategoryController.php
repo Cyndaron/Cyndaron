@@ -7,13 +7,13 @@ use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\RichLink\RichLink;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url\UrlService;
@@ -25,8 +25,13 @@ use function explode;
 use function get_class;
 use function strpos;
 
-final class CategoryController extends Controller
+final class CategoryController
 {
+    public function __construct(private readonly PageRenderer $pageRenderer)
+    {
+
+    }
+
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService, Connection $connection): Response
     {

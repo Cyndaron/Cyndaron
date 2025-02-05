@@ -8,6 +8,7 @@ use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\ImproperSubclassing;
 use Cyndaron\Location\Location;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Payment\Currency;
 use Cyndaron\Payment\Payment;
@@ -15,7 +16,6 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Request\UrlInfo;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\Ticketsale\Concert\TicketDelivery;
@@ -27,6 +27,7 @@ use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\Setting;
+use Cyndaron\View\Template\TemplateRenderer;
 use Exception;
 use Mpdf\Output\Destination;
 use Safe\Exceptions\JsonException;
@@ -51,9 +52,15 @@ use function strtoupper;
 use const PUB_DIR;
 use const CACHE_DIR;
 
-final class OrderController extends Controller
+final class OrderController
 {
     private const MAX_SECRET_CODE_RETRIES = 10;
+
+    public function __construct(
+        private readonly TemplateRenderer $templateRenderer,
+        private readonly PageRenderer $pageRenderer,
+    ) {
+    }
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ANONYMOUS)]
     public function add(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory): Response

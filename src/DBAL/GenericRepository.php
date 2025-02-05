@@ -4,11 +4,34 @@ declare(strict_types=1);
 namespace Cyndaron\DBAL;
 
 use PDOException;
+use function count;
+use function reset;
 
 final class GenericRepository
 {
     public function __construct(private readonly Connection $connection)
     {
+    }
+
+    /**
+     * @template T of Model
+     *
+     * @param class-string<T> $class
+     * @param string[] $where
+     * @param list<string|int|float|null> $args
+     * @param string $afterWhere
+     * @return T|null
+     */
+    public function fetch(string $class, array $where = [], array $args = [], string $afterWhere = ''): Model|null
+    {
+        $results = $this->fetchAll($class, $where, $args, $afterWhere);
+        if (count($results) > 0)
+        {
+            $firstElem = reset($results);
+            return $firstElem;
+        }
+
+        return null;
     }
 
     /**
@@ -57,7 +80,7 @@ final class GenericRepository
      */
     public function fetchAll(string $class, array $where = [], array $args = [], string $afterWhere = ''): array
     {
-        return $class::fetchAll();
+        return $class::fetchAll($where, $args, $afterWhere);
     }
 
     /**

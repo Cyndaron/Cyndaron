@@ -5,11 +5,11 @@ namespace Cyndaron\Geelhoed\Volunteer;
 
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Error\ErrorPage;
-use Cyndaron\Geelhoed\Tryout\Tryout;
+use Cyndaron\Geelhoed\Tryout\TryoutRepository;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserLevel;
@@ -20,8 +20,13 @@ use function implode;
 use function json_encode;
 use const JSON_THROW_ON_ERROR;
 
-class VolunteerController extends Controller
+class VolunteerController
 {
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+    ) {
+    }
+
     #[RouteAttribute('subscribe', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function subscribe(): Response
     {
@@ -30,26 +35,26 @@ class VolunteerController extends Controller
     }
 
     #[RouteAttribute('inschrijven-voor-tryout', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function subscribeToTryoutGet(QueryBits $queryBits, CSRFTokenHandler $tokenHandler): Response
+    public function subscribeToTryoutGet(QueryBits $queryBits, CSRFTokenHandler $tokenHandler, TryoutRepository $tryoutRepository): Response
     {
-        $event = Tryout::fetchById($queryBits->getInt(2));
-        if ($event === null)
+        $tryout = $tryoutRepository->fetchById($queryBits->getInt(2));
+        if ($tryout === null)
         {
             return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Evenement niet gevonden!'));
         }
-        $page = new SubscribeToTryoutPage($event, $tokenHandler);
+        $page = new SubscribeToTryoutPage($tryout, $tryoutRepository, $tokenHandler);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('inschrijven-voor-tryout', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function subscribeToTryoutPost(QueryBits $queryBits, RequestParameters $post, Connection $db): JsonResponse
+    public function subscribeToTryoutPost(QueryBits $queryBits, RequestParameters $post, Connection $db, TryoutRepository $tryoutRepository): JsonResponse
     {
-        $event = Tryout::fetchById($queryBits->getInt(2));
-        if ($event === null)
+        $tryout = $tryoutRepository->fetchById($queryBits->getInt(2));
+        if ($tryout === null)
         {
             return new JsonResponse(['status' => 'error', 'message' => 'Evenement niet gevonden!'], Response::HTTP_BAD_REQUEST);
         }
-        $status = $event->getTryoutStatus();
+        $status = $tryoutRepository->getStatus($tryout);
         $name = $post->getSimpleString('name');
         if (empty($name))
         {
@@ -74,7 +79,7 @@ class VolunteerController extends Controller
 
         $rounds = [];
         $alreadyFilledRounds = [];
-        for ($i = 0; $i < $event->getTryoutNumRounds(); $i++)
+        for ($i = 0; $i < $tryout->getNumRounds(); $i++)
         {
             $on = $post->getBool('round-' . $i);
             if ($on)
@@ -103,7 +108,7 @@ class VolunteerController extends Controller
         $jsonData = json_encode(['rounds' => $rounds], JSON_THROW_ON_ERROR);
 
         $sql = 'INSERT INTO geelhoed_volunteer_tot_participation(`eventId`, `name`, `email`, `phone`, `type`, `data`, `comments`) VALUES (?, ?, ?, ?, ?, ?, ?);';
-        $db->executeQuery($sql, [$event->id, $name, $email, $phone, $type, $jsonData, $comments]);
+        $db->executeQuery($sql, [$tryout->id, $name, $email, $phone, $type, $jsonData, $comments]);
 
         return new JsonResponse([]);
     }

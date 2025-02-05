@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Routing;
 
+use Cyndaron\Base\CyndaronConfig;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
 use Cyndaron\DBAL\Connection;
@@ -193,7 +194,7 @@ final class Kernel
         return "{$upgradeInsecureRequests} frame-ancestors 'self'; default-src 'none'; base-uri 'none'; child-src 'none'; connect-src 'self'; font-src 'self'; frame-src 'self' youtube.com *.youtube.com youtu.be docs.google.com; img-src 'self' https: data:;  manifest-src 'self'; media-src 'self' data: https:; object-src 'none'; script-src $scriptSrc; style-src 'self' 'unsafe-inline'";
     }
 
-    private function loadModules(): ModuleRegistry
+    private function loadModules(CyndaronConfig $config): ModuleRegistry
     {
         $registry = new ModuleRegistry();
         $modules = [
@@ -210,10 +211,7 @@ final class Kernel
             \Cyndaron\Location\Module::class,
         ];
 
-        if (defined('MODULES'))
-        {
-            $modules = array_merge($modules, MODULES);
-        }
+        $modules = array_merge($modules, $config->enabledModules);
 
         foreach ($modules as $moduleClass)
         {
@@ -249,11 +247,11 @@ final class Kernel
                     }
                     if ($module instanceof UrlProvider)
                     {
-                        $registry->addNameFromUrlProvider($dataTypeName, $moduleClass);
+                        $registry->addNameFromUrlProvider($dataTypeName, $module::class);
                     }
                     if ($module instanceof Linkable)
                     {
-                        $registry->addInternalLinkType($moduleClass);
+                        $registry->addInternalLinkType($module::class);
                     }
                 }
             }
@@ -303,7 +301,7 @@ final class Kernel
         return $nonce;
     }
 
-    public function handle(Request $request): Response
+    public function handle(Request $request, CyndaronConfig $config): Response
     {
         if ($request->hasPreviousSession())
         {
@@ -325,7 +323,7 @@ final class Kernel
             $userSession->start();
         }
 
-        $registry = $this->loadModules();
+        $registry = $this->loadModules($config);
         $connection = DBConnection::getPDO();
         $dic = $this->buildDIC($connection, $registry, $request, $userSession);
         $response = $this->route($dic);

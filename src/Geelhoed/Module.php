@@ -4,14 +4,15 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed;
 
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Geelhoed\Clubactie\ClubactieController;
-use Cyndaron\Geelhoed\Contest\Contest;
-use Cyndaron\Geelhoed\Contest\ContestController;
-use Cyndaron\Geelhoed\Contest\ContestDate;
+use Cyndaron\Geelhoed\Contest\Controller\ContestController;
+use Cyndaron\Geelhoed\Contest\Model\Contest;
+use Cyndaron\Geelhoed\Contest\Model\ContestDate;
 use Cyndaron\Geelhoed\Hour\HourController;
 use Cyndaron\Geelhoed\Location\LocationController;
-use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberController;
+use Cyndaron\Geelhoed\Member\MemberRepository;
 use Cyndaron\Geelhoed\Sport\SportController;
 use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Geelhoed\Tryout\TryoutController;
@@ -120,7 +121,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
 
     public function getUserMenuItems(): array
     {
-        $contestVisibilityCheck1 = function(UserSession $session, UserRepository $repository): bool
+        $contestVisibilityCheck1 = function(UserSession $session, UserRepository $repository, MemberRepository $memberRepository): bool
         {
             $profile = $session->getProfile();
             if ($profile === null)
@@ -129,7 +130,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
             }
 
             $isContestantParent = $repository->userHasRight($profile, Contest::RIGHT_PARENT);
-            $member = Member::fetch(['userId = ?'], [$profile->id]);
+            $member = $memberRepository->fetch(['userId = ?'], [$profile->id]);
             $isContestant = $member !== null && $member->isContestant;
             return ($isContestant || $isContestantParent);
         };
@@ -158,8 +159,8 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
         return new TemplateRoot('Geelhoed', __DIR__);
     }
 
-    public function getAppointments(): array
+    public function getAppointments(GenericRepository $repository): array
     {
-        return array_merge(Tryout::fetchAll(), ContestDate::fetchAll());
+        return array_merge($repository->fetchAll(Tryout::class), $repository->fetchAll(ContestDate::class));
     }
 }

@@ -6,23 +6,30 @@ namespace Cyndaron\Geelhoed\Webshop;
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
 use Cyndaron\Geelhoed\Webshop\Model\Currency;
 use Cyndaron\Geelhoed\Webshop\Model\Order;
-use Cyndaron\Geelhoed\Webshop\Model\OrderItem;
+use Cyndaron\Geelhoed\Webshop\Model\OrderItemRepository;
+use Cyndaron\Geelhoed\Webshop\Model\OrderRepository;
 use Cyndaron\Geelhoed\Webshop\Model\Product;
+use Cyndaron\Geelhoed\Webshop\Model\ProductRepository;
 use Cyndaron\Page\Page;
 use function array_filter;
 use function usort;
 
 final class ShopPage extends Page
 {
-    public function __construct(Subscriber $subscriber, Order $order)
-    {
+    public function __construct(
+        Subscriber $subscriber,
+        Order $order,
+        OrderRepository $orderRepository,
+        OrderItemRepository $orderItemRepository,
+        ProductRepository $productRepository
+    ) {
         $this->title = 'Webwinkel';
 
         $this->addCss('/src/Geelhoed/Webshop/css/webshop.css');
         $this->addScript('/src/Geelhoed/Webshop/js/ShopPage.js');
 
         $products = array_filter(
-            Product::fetchAll(),
+            $productRepository->fetchAll(),
             static function(Product $product): bool
             {
                 return $product->visible && $product->euroPrice !== null;
@@ -33,14 +40,14 @@ final class ShopPage extends Page
             return (int)$product1->gcaTicketPrice <=> (int)$product2->gcaTicketPrice;
         });
 
-        $gymtasProduct = Product::fetchById(Product::GYMTAS_ID);
+        $gymtasProduct = $productRepository->fetchById(Product::GYMTAS_ID);
 
-        $orderItems = OrderItem::fetchAll(['orderId = ?'], [$order->id]);
+        $orderItems = $orderItemRepository->fetchAll(['orderId = ?'], [$order->id]);
         $hasGymtasInCart = false;
 
         foreach ($orderItems as $orderItem)
         {
-            if ($orderItem->productId === Product::GYMTAS_ID && $orderItem->currency === Currency::LOTTERY_TICKET)
+            if ($orderItem->product->id === Product::GYMTAS_ID && $orderItem->currency === Currency::LOTTERY_TICKET)
             {
                 $hasGymtasInCart = true;
                 break;
@@ -56,8 +63,8 @@ final class ShopPage extends Page
             'orderItems' => $orderItems,
             'hasGymtasInCart' => $hasGymtasInCart,
             'needsAddingGymtas' => $subscriber->numSoldTickets >= 10 && !$hasGymtasInCart,
-            'ticketSubtotal' => $order->getTicketTotal(),
-            'euroSubtotal' => $order->getEuroSubtotal(),
+            'ticketSubtotal' => $orderRepository->getTicketTotal($order),
+            'euroSubtotal' => $orderRepository->getEuroSubtotal($order),
         ]);
     }
 }

@@ -13,22 +13,23 @@
     </thead>
     <tbody>
         @php /** @var \Cyndaron\Geelhoed\Webshop\Model\Order[] $orders */ @endphp
+        @php /** @var \Cyndaron\Geelhoed\Webshop\Model\OrderRepository $orderRepository */ @endphp
         @foreach ($orders as $order)
             <tr>
                 <td>{{ $order->id }}</td>
-                <td>{{ $order->getSubscriber()->getFullName() }}</td>
-                <td>{{ $order->getSubscriber()->email }}</td>
-                <td>{{ $order->getEuroSubtotal()|euro }}</td>
-                <td>{{ $order->getTicketTotal() }}</td>
+                <td>{{ $order->subscriber->getFullName() }}</td>
+                <td>{{ $order->subscriber->email }}</td>
+                <td>{{ $orderRepository->getEuroSubtotal($order)|euro }}</td>
+                <td>{{ $orderRepository->getTicketTotal($order) }}</td>
                 <td>{{ $order->status->getDescription() }}</td>
                 <td>
-                    {{ $order->getHour()->location->getName() }}<br>
-                    {{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($order->getHour()->day) }} {{ $order->getHour()->getRange() }}
+                    {{ $order->hour->location->getName() }}<br>
+                    {{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($order->hour->day) }} {{ $order->hour->getRange() }}
                 </td>
                 <td>
                     @if ($order->status === \Cyndaron\Geelhoed\Webshop\Model\OrderStatus::QUOTE)
                         <a
-                            href="/webwinkel/winkelen/{{ $order->getSubscriber()->hash }}"
+                            href="/webwinkel/winkelen/{{ $order->subscriber->hash }}"
                             class="btn btn-outline-cyndaron"
                             title="Naar bestelpagina"
                         >

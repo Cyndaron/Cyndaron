@@ -2,20 +2,24 @@
 declare(strict_types=1);
 namespace Cyndaron\System;
 
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Translation\Translator;
-use Cyndaron\Util\Setting;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\SettingsRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-final class SystemController extends Controller
+final class SystemController
 {
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+    ) {
+    }
+
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ADMIN)]
     public function routeGet(QueryBits $queryBits, Translator $t): Response
     {

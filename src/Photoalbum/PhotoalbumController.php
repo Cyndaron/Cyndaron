@@ -5,16 +5,17 @@ namespace Cyndaron\Photoalbum;
 
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\View\Renderer\TextRenderer;
+use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,8 +27,13 @@ use function pathinfo;
 use function assert;
 use function is_array;
 
-final class PhotoalbumController extends Controller
+final class PhotoalbumController
 {
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+    ) {
+    }
+
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function routeGet(QueryBits $queryBits, TextRenderer $textRenderer, UserSession $session): Response
     {

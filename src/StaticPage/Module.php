@@ -31,7 +31,8 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
                 editorSave: EditorSave::class,
                 pageManagerTab: self::pageManagerTab(...),
                 class: StaticPageModel::class,
-                modelToUrl: function (StaticPageModel $sub) { return new Url("/sub/{$sub->id}");},
+                modelToUrl: function(StaticPageModel $sub)
+                { return new Url("/sub/{$sub->id}");},
             ),
         ];
     }

@@ -7,12 +7,14 @@ use Cyndaron\Util\FileCache;
 
 final class PageManagerMemberGrid
 {
+    private readonly MemberRepository $memberRepository;
     private FileCache $cacheHandle;
     /** @var PageManagerMemberGridItem[] */
     private array $cache = [];
 
-    public function __construct()
+    public function __construct(MemberRepository $memberRepository)
     {
+        $this->memberRepository = $memberRepository;
         $this->cacheHandle = new FileCache('geelhoed-page-manager-member-grid', [PageManagerMemberGridItem::class]);
         if (!$this->cacheHandle->load($this->cache))
         {
@@ -31,9 +33,9 @@ final class PageManagerMemberGrid
     public function rebuild(): void
     {
         $this->cache = [];
-        foreach (Member::fetchAllAndSortByName() as $member)
+        foreach ($this->memberRepository->fetchAllAndSortByName() as $member)
         {
-            $this->cache[] = PageManagerMemberGridItem::createFromMember($member);
+            $this->cache[] = PageManagerMemberGridItem::createFromMember($this->memberRepository, $member);
         }
         $this->cacheHandle->save($this->cache);
     }

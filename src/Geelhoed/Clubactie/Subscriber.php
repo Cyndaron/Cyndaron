@@ -34,15 +34,6 @@ final class Subscriber extends Model
     #[DatabaseField]
     public string $hash = '';
 
-    public static function fetchByHash(string $hash): self|null
-    {
-        if ($hash === '')
-        {
-            return null;
-        }
-        return self::fetch(['hash = ?'], [$hash]);
-    }
-
     public function getFullName(): string
     {
         $nameParts = [$this->firstName];

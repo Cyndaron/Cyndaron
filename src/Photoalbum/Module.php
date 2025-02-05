@@ -38,7 +38,8 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
                 pageManagerTab: self::pageManagerTab(...),
                 pageManagerJS: '/src/Photoalbum/js/PageManagerTab.js',
                 class: Photoalbum::class,
-                modelToUrl: function(Photoalbum $photoalbum) { return new Url("/photoalbum/{$photoalbum->id}"); },
+                modelToUrl: function(Photoalbum $photoalbum)
+                { return new Url("/photoalbum/{$photoalbum->id}"); },
             ),
         ];
     }

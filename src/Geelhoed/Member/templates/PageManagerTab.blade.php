@@ -1,3 +1,5 @@
+@php /** @var \Cyndaron\Geelhoed\Location\LocationRepository $locationRepository */ @endphp
+
 <link href="/src/Geelhoed/geelhoed.css" type="text/css" rel="stylesheet"/>
 
 <div id="geelhoed-membermanager">
@@ -23,7 +25,7 @@
                 <label for="gum-filter-sport">Sport:</label>
                 <select id="gum-filter-sport" class="custom-select form-control-inline">
                     <option value="-1">(Alles)</option>
-                    @foreach (\Cyndaron\Geelhoed\Sport\Sport::fetchAll() as $sport)
+                    @foreach ($sports as $sport)
                         <option value="{{ $sport->id }}">{{ $sport->name }}</option>
                     @endforeach
                 </select>
@@ -33,7 +35,7 @@
                 <select id="gum-filter-graduation" class="custom-select form-control-inline">
                     <option value="-1">(Alles)</option>
                     @foreach (\Cyndaron\Geelhoed\Graduation::fetchAll() as $graduation)
-                        <option value="{{ $graduation->id }}">{{ $graduation->getSport()->name }}
+                        <option value="{{ $graduation->id }}">{{ $graduation->sport->name }}
                             , {{ $graduation->name }}</option>
                     @endforeach
                 </select>
@@ -208,7 +210,7 @@
                                               class="form-control form-control-inline custom-select">
                         <option value=""></option>
                         @foreach (\Cyndaron\Geelhoed\Graduation::fetchAll() as $graduation)
-                            <option value="{{ $graduation->id }}">{{ $graduation->getSport()->name }}
+                            <option value="{{ $graduation->id }}">{{ $graduation->sport->name }}
                                 : {{ $graduation->name }}</option>
                         @endforeach
                     </select> <input id="new-graduation-date" name="new-graduation-date" type="date"
@@ -217,8 +219,8 @@
                 </div>
                 <div class="tab-pane fade" id="lessons" role="tabpanel" aria-labelledby="lessons-tab">
                     <div id="accordion">
-                        @foreach (\Cyndaron\Location\Location::fetchAll([], [], 'ORDER BY city') as $location)
-                            @php $hours = (new \Cyndaron\Geelhoed\Location\Location($location))->getHours(\Cyndaron\Geelhoed\Department::DEPARTMENT_ID_T_MULDER) @endphp
+                        @foreach ($locationRepository->fetchAll([], [], 'ORDER BY city') as $location)
+                            @php $hours = $locationRepository->getHours($location, \Cyndaron\Geelhoed\Department::DEPARTMENT_ID_T_MULDER) @endphp
                             @if (empty($hours))
                                 @continue
                             @endif

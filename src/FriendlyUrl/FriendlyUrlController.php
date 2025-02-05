@@ -8,7 +8,6 @@ use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
@@ -16,7 +15,7 @@ use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-final class FriendlyUrlController extends Controller
+final class FriendlyUrlController
 {
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function add(RequestParameters $post, UrlService $urlService): JsonResponse

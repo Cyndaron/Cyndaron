@@ -32,7 +32,8 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
                 pageManagerTab: self::pageManagerTab(...),
                 pageManagerJS: '/src/Category/js/PageManagerTab.js',
                 class: Category::class,
-                modelToUrl: function (Category $category) { return new Url("/category/{$category->id}"); },
+                modelToUrl: function(Category $category)
+                { return new Url("/category/{$category->id}"); },
             ),
         ];
     }

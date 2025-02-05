@@ -31,11 +31,11 @@ final class DirectDebit
     /**
      * @return DirectDebit[]
      */
-    public static function load(): array
+    public static function load(MemberRepository $memberRepository): array
     {
         /** @var self[] $results */
         $results = [];
-        $members = Member::fetchAll(["iban <> ''", "paymentMethod = 'incasso'"], [], 'ORDER BY iban');
+        $members = $memberRepository->fetchAll(["iban <> ''", "paymentMethod = 'incasso'"], [], 'ORDER BY iban');
         foreach ($members as $member)
         {
             // The IBAN holder might not be filled in on every member record.
@@ -57,14 +57,14 @@ final class DirectDebit
         {
             if ($result->ibanHolder === '')
             {
-                $profile = $result->members[0]->getProfile();
+                $profile = $result->members[0]->profile;
                 $result->ibanHolder = "$profile->tussenvoegsel $profile->lastName";
             }
             $result->ibanHolder = trim($result->ibanHolder);
         }
-        $results = array_filter($results, static function(DirectDebit $result)
+        $results = array_filter($results, static function(DirectDebit $result) use ($memberRepository)
         {
-            return $result->getTotalQuarterlyFee() !== 0.00;
+            return $result->getTotalQuarterlyFee($memberRepository) !== 0.00;
         });
         usort($results, static function(DirectDebit $result1, DirectDebit $result2)
         {
@@ -74,12 +74,12 @@ final class DirectDebit
         return $results;
     }
 
-    public function getTotalQuarterlyFee(): float
+    public function getTotalQuarterlyFee(MemberRepository $memberRepository): float
     {
         $total = 0.0;
         foreach ($this->members as $member)
         {
-            $total += $member->getQuarterlyFee();
+            $total += $memberRepository->getQuarterlyFee($member);
         }
 
         return $total;

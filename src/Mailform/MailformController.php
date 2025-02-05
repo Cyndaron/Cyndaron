@@ -5,16 +5,17 @@ namespace Cyndaron\Mailform;
 
 use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Request\UrlInfo;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Util\MailFactory;
+use Cyndaron\View\Template\TemplateRenderer;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,8 +23,14 @@ use Symfony\Component\Mime\Address;
 use function strcasecmp;
 use function strtr;
 
-final class MailformController extends Controller
+final class MailformController
 {
+    public function __construct(
+        private readonly TemplateRenderer $templateRenderer,
+        private readonly PageRenderer $pageRenderer,
+    ) {
+    }
+
     #[RouteAttribute('process', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
     public function process(QueryBits $queryBits, RequestParameters $post, MailFactory $mailFactory): Response
     {

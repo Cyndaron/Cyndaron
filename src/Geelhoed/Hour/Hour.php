@@ -33,8 +33,8 @@ final class Hour extends Model
     public Sport $sport;
     #[DatabaseField]
     public string $sportOverride;
-    #[DatabaseField]
-    public int $departmentId;
+    #[DatabaseField(dbName: 'departmentId')]
+    public Department $department;
     #[DatabaseField]
     public int $capacity;
     #[DatabaseField]
@@ -49,25 +49,8 @@ final class Hour extends Model
         return $this->sport->name;
     }
 
-    public function getDepartment(): Department
-    {
-        $ret = Department::fetchById((int)$this->departmentId);
-        assert($ret !== null);
-        return $ret;
-    }
-
     public function getRange(): string
     {
         return sprintf('%s – %s', ViewHelpers::filterHm($this->from), ViewHelpers::filterHm($this->until));
-    }
-
-    /**
-     * @param int $age
-     * @param Sport $sport
-     * @return self[]
-     */
-    public static function fetchByAgeAndSport(int $age, Sport $sport): array
-    {
-        return self::fetchAll(['minAge <= ?', '(maxAge IS NULL OR maxAge >= ?)', 'sportId = ?'], [$age, $age, $sport->id], 'ORDER BY locationId, day');
     }
 }

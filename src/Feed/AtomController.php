@@ -5,20 +5,26 @@ namespace Cyndaron\Feed;
 
 use Cyndaron\Category\Category;
 use Cyndaron\Error\ErrorPage;
+use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Routing\Controller;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
-use Cyndaron\Util\Util;
+use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class AtomController extends Controller
+final class AtomController
 {
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+        private readonly TemplateRenderer $templateRenderer
+    ) {
+    }
+
     #[RouteAttribute('category', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function category(QueryBits $queryBits, Request $request, UrlService $urlService): Response
     {

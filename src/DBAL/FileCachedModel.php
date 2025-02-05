@@ -50,12 +50,22 @@ trait FileCachedModel
         self::saveCache();
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @deprecated
+     */
     public static function fetchById(int $id): static|null
     {
         self::loadCache();
         return self::$cache[static::TABLE][$id] ?? null;
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @deprecated
+     */
     public function save(): bool
     {
         self::loadCache();
@@ -75,6 +85,8 @@ trait FileCachedModel
      * @param list<string|int|float|null> $args
      * @param string $afterWhere
      * @return static[]
+     *
+     * @deprecated
      */
     public static function fetchAll(array $where = [], array $args = [], string $afterWhere = ''): array
     {
