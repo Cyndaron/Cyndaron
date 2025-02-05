@@ -13,6 +13,7 @@ final class Product extends Model
 
     public const GYMTAS_ID = 1;
     public const DONATE_TICKETS_ID = 18;
+    public const EXTRA_GYMTAS_ID = 19;
 
     public const TABLE = 'geelhoed_webshop_product';
 

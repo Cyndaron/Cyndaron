@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Geelhoed\Webshop;
+namespace Cyndaron\Geelhoed\Webshop\Page;
 
 use Cyndaron\Page\Page;
 

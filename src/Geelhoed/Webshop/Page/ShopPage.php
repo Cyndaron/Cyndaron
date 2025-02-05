@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Geelhoed\Webshop;
+namespace Cyndaron\Geelhoed\Webshop\Page;
 
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
 use Cyndaron\Geelhoed\Webshop\Model\Currency;
@@ -25,8 +25,8 @@ final class ShopPage extends Page
     ) {
         $this->title = 'Webwinkel';
 
-        $this->addCss('/src/Geelhoed/Webshop/css/webshop.css');
-        $this->addScript('/src/Geelhoed/Webshop/js/ShopPage.js');
+        $this->addCss('/src/Geelhoed/Webshop/Page/css/webshop.css');
+        $this->addScript('/src/Geelhoed/Webshop/Page/js/ShopPage.js');
 
         $products = array_filter(
             $productRepository->fetchAll(),

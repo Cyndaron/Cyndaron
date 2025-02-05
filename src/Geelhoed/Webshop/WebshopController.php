@@ -18,6 +18,11 @@ use Cyndaron\Geelhoed\Webshop\Model\OrderRepository;
 use Cyndaron\Geelhoed\Webshop\Model\OrderStatus;
 use Cyndaron\Geelhoed\Webshop\Model\Product;
 use Cyndaron\Geelhoed\Webshop\Model\ProductRepository;
+use Cyndaron\Geelhoed\Webshop\Page\CreateAccountPage;
+use Cyndaron\Geelhoed\Webshop\Page\FinishOrderPage;
+use Cyndaron\Geelhoed\Webshop\Page\ItemTotalsPage;
+use Cyndaron\Geelhoed\Webshop\Page\OverviewPage;
+use Cyndaron\Geelhoed\Webshop\Page\ShopPage;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
@@ -37,8 +42,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
-use function json_encode;
 use function assert;
+use function json_encode;
 
 final class WebshopController
 {
@@ -605,5 +610,12 @@ Sportschool Geelhoed";
         }
 
         return new JsonResponse(['status' => 'ok']);
+    }
+
+    #[RouteAttribute('bestellijst', RequestMethod::GET, UserLevel::ADMIN, right: self::RIGHT_MANAGE)]
+    public function itemTotals(): Response
+    {
+        $page = new ItemTotalsPage();
+        return $this->pageRenderer->renderResponse($page);
     }
 }

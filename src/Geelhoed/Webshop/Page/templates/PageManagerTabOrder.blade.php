@@ -1,3 +1,9 @@
+@component ('View/Widget/Toolbar')
+    @slot('left')
+        <a class="btn btn-outline-cyndaron" href="/webwinkel/bestellijst">Bestellijst</a>
+    @endslot
+@endcomponent
+
 <table id="gcam-table" class="table table-striped table-bordered pm-table">
     <thead>
     <tr>

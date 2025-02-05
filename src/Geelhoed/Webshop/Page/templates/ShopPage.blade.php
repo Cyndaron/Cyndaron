@@ -70,7 +70,7 @@
         </p>
 
         <div class="product-list">
-            @include('Geelhoed/Webshop/Product', ['product' => $gymtas, 'validCurrencies' => [\Cyndaron\Geelhoed\Webshop\Model\Currency::LOTTERY_TICKET], 'hash' => $hash])
+            @include('Geelhoed/Webshop/Page/Product', ['product' => $gymtas, 'validCurrencies' => [\Cyndaron\Geelhoed\Webshop\Model\Currency::LOTTERY_TICKET], 'hash' => $hash])
         </div>
         <p>
             Nadat je dit gymtasje in je winkelwagen hebt gestopt, kun je andere artikelen bestellen.
@@ -94,7 +94,7 @@
                         $validCurrencies[] = \Cyndaron\Geelhoed\Webshop\Model\Currency::LOTTERY_TICKET;
                     endif;
                 @endphp
-                @include('Geelhoed/Webshop/Product', ['product' => $product, 'validCurrencies' => $validCurrencies, 'hash' => $hash])
+                @include('Geelhoed/Webshop/Page/Product', ['product' => $product, 'validCurrencies' => $validCurrencies, 'hash' => $hash])
 
             @endforeach
         </div>

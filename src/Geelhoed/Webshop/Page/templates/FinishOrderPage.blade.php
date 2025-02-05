@@ -6,7 +6,7 @@
 
 
     <h2>Overzicht van de bestelling</h2>
-    @include('Geelhoed/Webshop/OrderOverview', ['orderItems' => $orderItems])
+    @include('Geelhoed/Webshop/Page/OrderOverview', ['orderItems' => $orderItems])
 
     Subtotaal loten: {{ $ticketSubtotal }}
     <br>Subtotaal euro: {{ $euroSubtotal|euro }}

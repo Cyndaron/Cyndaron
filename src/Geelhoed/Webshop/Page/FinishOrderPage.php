@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\Geelhoed\Webshop;
+namespace Cyndaron\Geelhoed\Webshop\Page;
 
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
 use Cyndaron\Geelhoed\Location\LocationRepository;
@@ -19,7 +19,7 @@ final class FinishOrderPage extends Page
         OrderRepository $orderRepository,
     ) {
         $this->title = 'Bestelling bevestigen';
-        $this->addScript('/src/Geelhoed/Webshop/js/FinishOrderPage.js');
+        $this->addScript('/src/Geelhoed/Webshop/Page/js/FinishOrderPage.js');
 
         $orderItems = OrderItem::fetchAll(['orderId = ?'], [$order->id]);
 

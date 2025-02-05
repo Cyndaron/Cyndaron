@@ -76,7 +76,7 @@ final class PageManagerTabs
     public static function ordersTab(TemplateRenderer $templateRenderer, OrderRepository $orderRepository): string
     {
         $orders = $orderRepository->fetchAll();
-        return $templateRenderer->render('Geelhoed/Webshop/PageManagerTabOrder', [
+        return $templateRenderer->render('Geelhoed/Webshop/Page/PageManagerTabOrder', [
             'orders' => $orders,
             'orderRepository' => $orderRepository,
         ]);
@@ -85,7 +85,7 @@ final class PageManagerTabs
     public static function productsTab(TemplateRenderer $templateRenderer, ProductRepository $repository): string
     {
         $products = $repository->fetchAll();
-        return $templateRenderer->render('Geelhoed/Webshop/PageManagerTabProduct', [
+        return $templateRenderer->render('Geelhoed/Webshop/Page/PageManagerTabProduct', [
             'products' => $products,
         ]);
     }
