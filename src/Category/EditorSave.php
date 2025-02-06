@@ -18,6 +18,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         private readonly ImageExtractor    $imageExtractor,
         private readonly UserSession       $userSession,
         private readonly GenericRepository $repository,
+        private readonly CategoryRepository $categoryRepository,
     ) {
     }
 
@@ -31,7 +32,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $category->showBreadcrumbs = $this->post->getBool('showBreadcrumbs');
         $this->saveHeaderAndPreviewImage($category, $this->post, $this->request);
         $this->repository->save($category);
-        $this->saveCategories($category, $this->post);
+        $this->saveCategories($this->categoryRepository, $this->categoryRepository, $category, $this->post);
 
         $this->userSession->addNotification('Categorie bewerkt.');
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Gopher;
 
 use Cyndaron\Category\Category;
+use Cyndaron\Category\CategoryRepository;
 use Cyndaron\Gopher\Response\FilestreamResponse;
 use Cyndaron\Gopher\Response\PlainTextResponse;
 use Cyndaron\Gopher\Response\ListingResponse;
@@ -33,6 +34,7 @@ final class Controller
     public function __construct(
         private readonly MenuEntryFactory $menuEntryFactory,
         private readonly UrlService       $urlService,
+        private readonly CategoryRepository $categoryRepository,
     ) {
     }
 
@@ -153,7 +155,7 @@ final class Controller
         }
         $entries[] = $this->menuEntryFactory->createInformationEntry('');
 
-        foreach ($category->getUnderlyingPages() as $page)
+        foreach ($this->categoryRepository->getUnderlyingPages($category) as $page)
         {
             if ($page instanceof \Cyndaron\StaticPage\StaticPageModel)
             {

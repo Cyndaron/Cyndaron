@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\TicketType;
 
+use Cyndaron\Request\QueryBits;
+
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'ticketType';
@@ -11,7 +13,12 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public string $template = '';
 
-    protected function prepare(): void
+    public function __construct(
+        private readonly QueryBits $queryBits,
+    ) {
+    }
+
+    public function prepare(): void
     {
         if ($this->id)
         {

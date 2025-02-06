@@ -69,10 +69,10 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         }, $list);
     }
 
-    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, UserRepository $userRepository): string
+    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, UserRepository $userRepository, CategoryRepository $categoryRepository): string
     {
         $templateVars = [
-            'categories' => Category::fetchAllAndSortByName(),
+            'categories' => $categoryRepository->fetchAllAndSortByName(),
             'currentUser' => $currentUser,
             'userRepository' => $userRepository,
             'tokenAdd' => $tokenHandler->get('category', 'add'),

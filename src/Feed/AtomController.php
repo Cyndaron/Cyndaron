@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Feed;
 
-use Cyndaron\Category\Category;
+use Cyndaron\Category\CategoryRepository;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
@@ -26,10 +26,10 @@ final class AtomController
     }
 
     #[RouteAttribute('category', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function category(QueryBits $queryBits, Request $request, UrlService $urlService): Response
+    public function category(QueryBits $queryBits, Request $request, UrlService $urlService, CategoryRepository $categoryRepository): Response
     {
         $categoryId = $queryBits->getInt(2);
-        $category = Category::fetchById($categoryId);
+        $category = $categoryRepository->fetchById($categoryId);
         if ($category === null)
         {
             return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Categorie niet gevonden!', Response::HTTP_NOT_FOUND));
@@ -37,7 +37,7 @@ final class AtomController
 
         /** @var \DateTimeInterface $savedDate */
         $savedDate = $category->created;
-        $underlyingPages = $category->getUnderlyingPages();
+        $underlyingPages = $categoryRepository->getUnderlyingPages($category);
         foreach ($underlyingPages as $underlyingPage)
         {
             if ($underlyingPage->created->diff($savedDate)->invert)

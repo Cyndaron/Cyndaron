@@ -16,6 +16,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\RichLink\RichLink;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\StaticPage\StaticPageModel;
+use Cyndaron\StaticPage\StaticPageRepository;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\UserLevel;
 use Cyndaron\View\Renderer\TextRenderer;
@@ -27,13 +28,14 @@ use function strpos;
 
 final class CategoryController
 {
-    public function __construct(private readonly PageRenderer $pageRenderer)
-    {
-
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+        private readonly CategoryRepository $categoryRepository,
+    ) {
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService, Connection $connection): Response
+    public function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService, Connection $connection, StaticPageRepository $staticPageRepository): Response
     {
         $id = $queryBits->getString(1);
 
@@ -59,13 +61,13 @@ final class CategoryController
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
-        $category = Category::fetchById((int)$id);
+        $category = $this->categoryRepository->fetchById((int)$id);
         if ($category === null)
         {
             return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Categorie niet gevonden!', Response::HTTP_NOT_FOUND));
         }
 
-        $page = new CategoryIndexPage($urlService, $category, $textRenderer);
+        $page = new CategoryIndexPage($urlService, $staticPageRepository, $this->categoryRepository, $category, $textRenderer);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -75,11 +77,7 @@ final class CategoryController
         $return = [];
         $category = new Category(null);
         $category->name = $post->getHTML('name');
-        $result = $category->save();
-        if (!$result)
-        {
-            return new JsonResponse(['error' => 'Could not save category!'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $this->categoryRepository->save($category);
 
         return new JsonResponse($return);
     }
@@ -121,13 +119,13 @@ final class CategoryController
     public function edit(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        $category = Category::fetchById($id);
+        $category = $this->categoryRepository->fetchById($id);
         if ($category === null)
         {
             return new JsonResponse(['error' => 'Category does not exist!'], Response::HTTP_NOT_FOUND);
         }
         $category->name = $post->getHTML('name');
-        $category->save();
+        $this->categoryRepository->save($category);
 
         return new JsonResponse();
     }
@@ -140,7 +138,7 @@ final class CategoryController
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $category = Category::fetchById($categoryId);
+        $category = $this->categoryRepository->fetchById($categoryId);
         if ($category === null)
         {
             return new JsonResponse(['error' => 'Category does not exist!'], Response::HTTP_NOT_FOUND);
@@ -184,14 +182,14 @@ final class CategoryController
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $category = Category::fetchById($categoryId);
+        $category = $this->categoryRepository->fetchById($categoryId);
         if ($category === null)
         {
             return new JsonResponse(['error' => 'Category does not exist!'], Response::HTTP_NOT_FOUND);
         }
 
         $underlyingPages = [];
-        foreach ($category->getUnderlyingPages('name') as $underlyingPage)
+        foreach ($this->categoryRepository->getUnderlyingPages($category, 'name') as $underlyingPage)
         {
             $entry = (array)$underlyingPage;
             $class = 'unknown';

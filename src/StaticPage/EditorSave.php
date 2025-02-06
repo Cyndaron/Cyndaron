@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\StaticPage;
 
+use Cyndaron\Category\CategoryRepository;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
@@ -18,7 +19,8 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         private readonly Request           $request,
         private readonly ImageExtractor    $imageExtractor,
         private readonly UserSession       $userSession,
-        private readonly GenericRepository $repository,
+        private readonly StaticPageRepository $staticPageRepository,
+        private readonly CategoryRepository $categoryRepository,
     ) {
     }
 
@@ -30,7 +32,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $showBreadcrumbs = $this->post->getBool('showBreadcrumbs');
         $tags = trim($this->post->getSimpleString('tags'), "; \t\n\r\0\x0B");
 
-        $model = $this->repository->fetchOrCreate(StaticPageModel::class, $id);
+        $model = $this->staticPageRepository->fetchOrCreate($id);
         $model->name = $titel;
         $model->blurb = $this->post->getHTML('blurb');
         $model->text = $text;
@@ -40,8 +42,8 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $this->saveHeaderAndPreviewImage($model, $this->post, $this->request);
         try
         {
-            $this->repository->save($model);
-            $this->saveCategories($model, $this->post);
+            $this->staticPageRepository->save($model);
+            $this->saveCategories($this->staticPageRepository, $this->categoryRepository, $model, $this->post);
 
             $this->userSession->addNotification('Pagina bewerkt.');
             $this->returnUrl = '/sub/' . $model->id;

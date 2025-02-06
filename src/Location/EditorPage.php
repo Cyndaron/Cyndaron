@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Location;
 
+use Cyndaron\DBAL\GenericRepository;
+
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {
     public const TYPE = 'location';
@@ -10,11 +12,16 @@ class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public string $template = '';
 
-    protected function prepare(): void
+    public function __construct(
+        private readonly GenericRepository $genericRepository
+    ) {
+    }
+
+    public function prepare(): void
     {
         if ($this->id)
         {
-            $this->model = Location::fetchById($this->id);
+            $this->model = $this->genericRepository->fetchById(Location::class, $this->id);
         }
     }
 }

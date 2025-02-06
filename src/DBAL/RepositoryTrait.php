@@ -5,6 +5,11 @@ namespace Cyndaron\DBAL;
 
 trait RepositoryTrait
 {
+    public function fetchOrCreate(int|null $id): Model
+    {
+        return $this->genericRepository->fetchOrCreate(self::UNDERLYING_CLASS, $id);
+    }
+
     public function fetchById(int $id): Model|null
     {
         return $this->genericRepository->fetchById(self::UNDERLYING_CLASS, $id);

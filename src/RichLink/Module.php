@@ -2,6 +2,7 @@
 namespace Cyndaron\RichLink;
 
 use Cyndaron\Category\Category;
+use Cyndaron\Category\CategoryRepository;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
@@ -38,11 +39,11 @@ final class Module implements Datatypes, UrlProvider, Routes
         return $richLink->name ?? null;
     }
 
-    public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
+    public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, RichLinkRepository $richLinkRepository, CategoryRepository $categoryRepository): string
     {
         $templateVars = [
-            'richlinks' => RichLink::fetchAllAndSortByName(),
-            'categories' => Category::fetchAllAndSortByName(),
+            'richlinks' => $richLinkRepository->fetchAllAndSortByName(),
+            'categories' => $categoryRepository->fetchAllAndSortByName(),
             'tokenEdit' => $tokenHandler->get('richlink', 'edit'),
             'tokenDelete' => $tokenHandler->get('richlink', 'delete'),
         ];

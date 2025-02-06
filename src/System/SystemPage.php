@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Cyndaron\System;
 
-use Cyndaron\Category\Category;
+use Cyndaron\Category\CategoryRepository;
 use Cyndaron\CyndaronInfo;
 use Cyndaron\Page\Page;
 use Cyndaron\Translation\Translator;
@@ -56,7 +58,7 @@ final class SystemPage extends Page
         'session.use_trans_sid' => '0',
         'memory_limit' => '96M of meer',
     ];
-    public function __construct(string $currentPage, Translator $t)
+    public function __construct(string $currentPage, Translator $t, CategoryRepository $categoryRepository)
     {
         $this->template = 'System/' . ucfirst($currentPage);
         $this->title = $t->get('Systeembeheer');
@@ -82,11 +84,11 @@ final class SystemPage extends Page
                 break;
             case 'config':
             default:
-                $this->showConfigPage();
+                $this->showConfigPage($categoryRepository);
         }
     }
 
-    public function showConfigPage(): void
+    public function showConfigPage(CategoryRepository $categoryRepository): void
     {
         $this->addScript('/src/System/js/SystemPage.js');
 
@@ -113,7 +115,7 @@ final class SystemPage extends Page
         ];
         $this->templateVars['formItems'] = $formItems;
 
-        $this->templateVars['categories'] = Category::fetchAllAndSortByName();
+        $this->templateVars['categories'] = $categoryRepository->fetchAllAndSortByName();
 
         $menuTheme = Setting::get('menuTheme');
         $this->templateVars['lightMenu'] = ($menuTheme !== 'dark') ? 'selected' : '';

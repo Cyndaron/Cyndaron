@@ -11,11 +11,9 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
-use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\View\Renderer\TextRenderer;
-use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,6 +29,7 @@ final class PhotoalbumController
 {
     public function __construct(
         private readonly PageRenderer $pageRenderer,
+        private readonly PhotoalbumRepository $photoalbumRepository,
     ) {
     }
 
@@ -43,12 +42,12 @@ final class PhotoalbumController
             $page = new SimplePage('Fotoalbum', 'Ongeldige parameter.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
-        $album = Photoalbum::fetchById($id);
+        $album = $this->photoalbumRepository->fetchById($id);
         if ($album === null)
         {
             return new JsonResponse(['error' => 'Album does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        $page = new PhotoalbumPage($album, $textRenderer, $session->getProfile());
+        $page = new PhotoalbumPage($album, $this->photoalbumRepository, $textRenderer, $session->getProfile());
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -81,7 +80,7 @@ final class PhotoalbumController
     public function addPhoto(QueryBits $queryBits, Request $request): Response
     {
         $id = $queryBits->getInt(2);
-        $album = Photoalbum::fetchById($id);
+        $album = $this->photoalbumRepository->fetchById($id);
         if ($album === null)
         {
             throw new \Exception('Photo album not found!');
@@ -96,7 +95,7 @@ final class PhotoalbumController
     public function addPhotoApi(QueryBits $queryBits, Request $request): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        $album = Photoalbum::fetchById($id);
+        $album = $this->photoalbumRepository->fetchById($id);
         if ($album === null)
         {
             return new JsonResponse(['error' => 'Photo album not found!'], Response::HTTP_NOT_FOUND);
@@ -146,7 +145,7 @@ final class PhotoalbumController
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $album = Photoalbum::fetchById($id);
+        $album = $this->photoalbumRepository->fetchById($id);
         if ($album === null)
         {
             throw new \Exception('Photo album not found!');
@@ -183,13 +182,13 @@ final class PhotoalbumController
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $album = Photoalbum::fetchById($id);
+        $album = $this->photoalbumRepository->fetchById($id);
         if ($album === null)
         {
             throw new \Exception('Photoalbum not found!');
         }
         $album->name = $post->getHTML('name');
-        $album->save();
+        $this->photoalbumRepository->save($album);
 
         return new JsonResponse();
     }

@@ -7,6 +7,7 @@
 
 namespace Cyndaron\Page;
 
+use Cyndaron\Category\Category;
 use Cyndaron\DBAL\Model;
 use function array_key_exists;
 use function array_merge;
@@ -24,6 +25,8 @@ class Page implements Pageable
     public string $extraBodyClasses = '';
 
     public Model|null $model = null;
+
+    public Category|null $category = null;
 
     public string $template = '';
     /** @var array<string, mixed> */

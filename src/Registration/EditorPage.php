@@ -13,7 +13,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public string $template = '';
 
-    protected function prepare(): void
+    public function prepare(): void
     {
         if ($this->id)
         {

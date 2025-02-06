@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\StaticPage;
 
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
@@ -22,24 +22,25 @@ final class StaticPageController
 {
     public function __construct(
         private readonly PageRenderer $pageRenderer,
+        private readonly StaticPageRepository $staticPageRepository,
     ) {
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function routeGet(QueryBits $queryBits, TextRenderer $textRenderer): Response
+    public function routeGet(QueryBits $queryBits, TextRenderer $textRenderer, Connection $connection): Response
     {
         $id = $queryBits->getInt(1);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $model = StaticPageModel::fetchById($id);
+        $model = $this->staticPageRepository->fetchById($id);
         if ($model === null)
         {
             $page = new SimplePage('Fout', 'Statische pagina niet gevonden.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
-        $page = new StaticPage($model, $textRenderer);
+        $page = new StaticPage($model, $this->staticPageRepository, $connection, $textRenderer);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -77,7 +78,7 @@ final class StaticPageController
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $model = StaticPageModel::fetchById($id);
+        $model = $this->staticPageRepository->fetchById($id);
         if ($model === null)
         {
             $page = new SimplePage('Fout', 'Statische pagina niet gevonden.');

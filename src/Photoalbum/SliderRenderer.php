@@ -12,6 +12,7 @@ final class SliderRenderer implements \Cyndaron\Module\TextPostProcessor
     public function __construct(
         private readonly TemplateRenderer $templateRenderer,
         private readonly TextRenderer $textRenderer,
+        private readonly PhotoalbumRepository $photoalbumRepository,
     ) {
     }
 
@@ -19,10 +20,10 @@ final class SliderRenderer implements \Cyndaron\Module\TextPostProcessor
     {
         return preg_replace_callback('/%slider\|(\d+)%/', function($matches)
         {
-            $album = Photoalbum::fetchById((int)$matches[1]);
+            $album = $this->photoalbumRepository->fetchById((int)$matches[1]);
             if ($album !== null)
             {
-                $page = new PhotoalbumPage($album, $this->textRenderer, null, Photoalbum::VIEWMODE_PORTFOLIO);
+                $page = new PhotoalbumPage($album, $this->photoalbumRepository, $this->textRenderer, null, Photoalbum::VIEWMODE_PORTFOLIO);
                 return $page->drawSlider($album, $this->templateRenderer);
             }
             return '';

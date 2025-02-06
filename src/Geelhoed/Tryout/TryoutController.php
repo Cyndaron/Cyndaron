@@ -4,12 +4,15 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Tryout;
 
 use Cyndaron\Category\Category;
+use Cyndaron\Category\CategoryRepository;
 use Cyndaron\Category\ViewMode;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\FriendlyUrl\FriendlyUrl;
+use Cyndaron\FriendlyUrl\FriendlyUrlRepository;
 use Cyndaron\MDB\MDBFile;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Photoalbum\Photoalbum;
+use Cyndaron\Photoalbum\PhotoalbumRepository;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\UrlInfo;
@@ -42,6 +45,7 @@ class TryoutController
 
     public function __construct(
         private readonly PageRenderer $pageRenderer,
+        private readonly TryoutRepository $tryoutRepository
     ) {
     }
 
@@ -118,10 +122,10 @@ class TryoutController
     }
 
     #[RouteAttribute('create-photoalbums', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: 'tryout_edit')]
-    public function createPhotoalbums(QueryBits $queryBits, UrlInfo $urlInfo, MailFactory $mailFactory): JsonResponse
+    public function createPhotoalbums(QueryBits $queryBits, UrlInfo $urlInfo, MailFactory $mailFactory, PhotoalbumRepository $photoalbumRepository, CategoryRepository $categoryRepository, FriendlyUrlRepository $friendlyUrlRepository): JsonResponse
     {
         $tryoutId = $queryBits->getInt(2);
-        $tryout = Tryout::fetchById($tryoutId);
+        $tryout = $this->tryoutRepository->fetchById($tryoutId);
         if ($tryout === null)
         {
             return new JsonResponse(['error' => 'Tryout bestaat niet!'], Response::HTTP_NOT_FOUND);
@@ -140,17 +144,17 @@ class TryoutController
         $category->name = $albumName;
         $category->blurb = $date;
         $category->viewMode = ViewMode::Blog;
-        $category->save();
+        $categoryRepository->save($category);
         $categoryId = $category->id;
         assert($categoryId !== null);
         $categoryUrl = "/{$slug}";
         $friendlyUrl = new FriendlyUrl();
         $friendlyUrl->name = $slug;
         $friendlyUrl->target = '/category/' . $categoryId;
-        $friendlyUrl->save();
+        $friendlyUrlRepository->save($friendlyUrl);
 
         $tryout->photoalbumLink = $categoryUrl;
-        $tryout->save();
+        $this->tryoutRepository->save($tryout);
 
         $roundUrls = [];
         for ($round = 1; $round <= 3; $round++)
@@ -159,14 +163,14 @@ class TryoutController
             $album = new Photoalbum();
             $album->name = "{$albumName}, ronde {$round}";
             $album->blurb = "Ronde {$round}";
-            $album->save();
+            $photoalbumRepository->save($album);
             $albumId = $album->id;
             assert($albumId !== null);
-            $album->addCategory($category, $round);
+            $photoalbumRepository->linkToCategory($album, $category, $round);
             $friendlyUrl = new FriendlyUrl();
             $friendlyUrl->name = $roundUrl;
             $friendlyUrl->target = '/photoalbum/' . $albumId;
-            $friendlyUrl->save();
+            $friendlyUrlRepository->save($friendlyUrl);
 
             $roundUrls[] = $roundUrl;
         }

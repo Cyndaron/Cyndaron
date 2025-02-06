@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\Category\CategoryRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
@@ -17,13 +19,14 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         private readonly Request           $request,
         private readonly ImageExtractor    $imageExtractor,
         private readonly UserSession       $userSession,
-        private readonly GenericRepository $repository,
+        private readonly PhotoalbumRepository $photoalbumRepository,
+        private readonly CategoryRepository $categoryRepository,
     ) {
     }
 
     public function save(int|null $id): int
     {
-        $photoalbum = $this->repository->fetchOrCreate(Photoalbum::class, $id);
+        $photoalbum = $this->photoalbumRepository->fetchOrCreate($id);
         $photoalbum->name = $this->post->getHTML('titel');
         $photoalbum->blurb = $this->post->getHTML('blurb');
         $photoalbum->notes = $this->imageExtractor->process($this->post->getHTML('artikel'));
@@ -33,8 +36,8 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $photoalbum->thumbnailWidth = $this->post->getInt('thumbnailWidth');
         $photoalbum->thumbnailHeight = $this->post->getInt('thumbnailHeight');
         $this->saveHeaderAndPreviewImage($photoalbum, $this->post, $this->request);
-        $this->repository->save($photoalbum);
-        $this->saveCategories($photoalbum, $this->post);
+        $this->photoalbumRepository->save($photoalbum);
+        $this->saveCategories($this->photoalbumRepository, $this->categoryRepository, $photoalbum, $this->post);
 
         $this->userSession->addNotification('Fotoalbum bewerkt.');
 

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Photoalbum;
 
+use Cyndaron\Request\QueryBits;
+
 final class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
 {
     public const HAS_TITLE = false;
@@ -11,7 +13,11 @@ final class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
 
     public string $template = '';
 
-    protected function prepare(): void
+    public function __construct(private readonly QueryBits $queryBits)
+    {
+    }
+
+    public function prepare(): void
     {
         if ($this->id)
         {

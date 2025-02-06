@@ -21,7 +21,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public Model|null $model = null;
 
-    protected function prepare(): void
+    public function prepare(): void
     {
         if ($this->id)
         {

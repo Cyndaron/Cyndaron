@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Cyndaron\System;
 
+use Cyndaron\Category\CategoryRepository;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -21,10 +22,10 @@ final class SystemController
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ADMIN)]
-    public function routeGet(QueryBits $queryBits, Translator $t): Response
+    public function routeGet(QueryBits $queryBits, Translator $t, CategoryRepository $categoryRepository): Response
     {
         $currentPage = $queryBits->getString(1, 'config');
-        $page = new SystemPage($currentPage, $t);
+        $page = new SystemPage($currentPage, $t, $categoryRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 

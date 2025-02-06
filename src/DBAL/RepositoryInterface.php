@@ -11,6 +11,12 @@ use PDOException;
 interface RepositoryInterface
 {
     /**
+     * @param int|null $id
+     * @return T
+     */
+    public function fetchOrCreate(int|null $id): Model;
+
+    /**
      * @param int $id
      * @return T|null
      */

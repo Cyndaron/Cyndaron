@@ -70,10 +70,10 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
         }, $list);
     }
 
-    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
+    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, PhotoalbumRepository $photoalbumRepository): string
     {
         $templateVars = [
-            'photoalbums' => Photoalbum::fetchAllAndSortByName(),
+            'photoalbums' => $photoalbumRepository->fetchAllAndSortByName(),
             'currentUser' => $currentUser,
             'tokenAdd' => $tokenHandler->get('photoalbum', 'add'),
             'tokenDelete' => $tokenHandler->get('photoalbum', 'delete'),

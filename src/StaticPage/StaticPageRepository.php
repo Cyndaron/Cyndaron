@@ -3,23 +3,25 @@ declare(strict_types=1);
 
 namespace Cyndaron\StaticPage;
 
+use Cyndaron\Category\ModelWithCategoryRepository;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
-use Cyndaron\DBAL\RepositoryInterface;
 use Cyndaron\DBAL\RepositoryTrait;
 
 /**
- * @implements RepositoryInterface<StaticPageModel>
+ * @extends ModelWithCategoryRepository<StaticPageModel>
  */
-final class StaticPageRepository implements RepositoryInterface
+final class StaticPageRepository extends ModelWithCategoryRepository
 {
-    private const UNDERLYING_CLASS = StaticPageModel::class;
+    protected const UNDERLYING_CLASS = StaticPageModel::class;
 
     use RepositoryTrait;
 
-    public function __construct(private readonly GenericRepository $genericRepository, private readonly Connection $connection)
-    {
+    public function __construct(
+        protected readonly Connection $connection,
+        protected readonly GenericRepository $genericRepository,
+    ) {
 
     }
 

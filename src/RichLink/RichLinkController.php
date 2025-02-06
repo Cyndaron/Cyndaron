@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\RichLink;
 
-use Cyndaron\Category\Category;
+use Cyndaron\Category\CategoryRepository;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -14,13 +14,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class RichLinkController
 {
+    public function __construct(private readonly RichLinkRepository $richLinkRepository)
+    {
+
+    }
+
     #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function createOrEdit(RequestParameters $post): JsonResponse
+    public function createOrEdit(RequestParameters $post, CategoryRepository $categoryRepository): JsonResponse
     {
         $id = $post->getInt('id');
         if ($id > 0)
         {
-            $richlink = RichLink::fetchById($id);
+            $richlink = $this->richLinkRepository->fetchById($id);
             if ($richlink === null)
             {
                 return new JsonResponse(['error' => 'RichLink does not exist!'], Response::HTTP_NOT_FOUND);
@@ -37,21 +42,25 @@ final class RichLinkController
         $richlink->blurb = $post->getHTML('blurb');
         $richlink->openInNewTab = $post->getBool('openInNewTab');
 
-        if (!$richlink->save())
+        try
+        {
+            $this->richLinkRepository->save($richlink);
+        }
+        catch (\Throwable)
         {
             return new JsonResponse(['error' => 'Could not save richlink!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        foreach (Category::fetchAll() as $category)
+        foreach ($categoryRepository->fetchAll() as $category)
         {
             $selected = $post->getBool('category-' . $category->id);
             if ($selected)
             {
-                $richlink->addCategory($category);
+                $this->richLinkRepository->linkToCategory($richlink, $category);
             }
             else
             {
-                $richlink->removeCategory($category);
+                $this->richLinkRepository->unlinkFromCategory($richlink, $category);
             }
         }
 
@@ -62,7 +71,7 @@ final class RichLinkController
     public function delete(RequestParameters $post, GenericRepository $repository): JsonResponse
     {
         $id = $post->getInt('id');
-        $richlink = RichLink::fetchById($id);
+        $richlink = $this->richLinkRepository->fetchById($id);
         if ($richlink === null)
         {
             return new JsonResponse(['error' => 'RichLink does not exist!'], Response::HTTP_NOT_FOUND);

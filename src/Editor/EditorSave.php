@@ -1,12 +1,12 @@
 <?php
+declare(strict_types=1);
+
 namespace Cyndaron\Editor;
 
-use Cyndaron\Category\Category;
+use Cyndaron\Category\CategoryRepository;
 use Cyndaron\Category\ModelWithCategory;
+use Cyndaron\Category\ModelWithCategoryRepository;
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\DBConnection;
-use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\FriendlyUrl\FriendlyUrl;
 use Cyndaron\FriendlyUrl\FriendlyUrlRepository;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url\Url;
@@ -36,7 +36,7 @@ abstract class EditorSave
         if ($friendlyUrl !== '')
         {
             $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $id);
-            $oldFriendlyUrl = $urlService->toFriendly($unfriendlyUrl);
+            $oldFriendlyUrl = (string)$urlService->toFriendly($unfriendlyUrl);
             $oldFriendlyUrlObj = $repository->fetchByName($oldFriendlyUrl);
             if ($oldFriendlyUrlObj !== null)
             {
@@ -94,18 +94,19 @@ abstract class EditorSave
         $model->previewImage = $previewImage;
     }
 
-    protected function saveCategories(ModelWithCategory $model, RequestParameters $post): void
+    /** @phpstan-ignore-next-line */
+    protected function saveCategories(ModelWithCategoryRepository $repository, CategoryRepository $categoryRepository, ModelWithCategory $model, RequestParameters $post): void
     {
-        foreach (Category::fetchAll() as $category)
+        foreach ($categoryRepository->fetchAll() as $category)
         {
             $selected = $post->getBool('category-' . $category->id);
             if ($selected)
             {
-                $model->addCategory($category);
+                $repository->linkToCategory($model, $category);
             }
             else
             {
-                $model->removeCategory($category);
+                $repository->unlinkFromCategory($model, $category);
             }
         }
     }

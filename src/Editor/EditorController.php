@@ -23,6 +23,7 @@ use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Link;
 use Cyndaron\Util\Util;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 use function array_merge;
@@ -33,13 +34,15 @@ final class EditorController
 {
     private const IMAGE_DIR = Util::UPLOAD_DIR . '/images/via-editor';
 
-    public function __construct(private readonly PageRenderer $pageRenderer)
-    {
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+        private readonly EditorPageRenderer $editorPageRenderer
+    ) {
 
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function routeGet(QueryBits $queryBits, User $currentUser, ModuleRegistry $registry, Connection $connection, UserRepository $userRepository, DependencyInjectionContainer $dic): Response
+    public function routeGet(Request $request, QueryBits $queryBits, User $currentUser, ModuleRegistry $registry, Connection $connection, UserRepository $userRepository, DependencyInjectionContainer $dic): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorPages))
@@ -60,10 +63,7 @@ final class EditorController
 
         /** @var EditorPage $editorPage */
         $editorPage = $dic->createClassWithDependencyInjection($class);
-        $hash = $queryBits->getString(3);
-        $hash = strlen($hash) > 20 ? $hash : '';
-        $editorPage->addTemplateVar('hash', $hash);
-        return $this->pageRenderer->renderResponse($editorPage);
+        return $this->editorPageRenderer->render($request, $queryBits, $editorPage, $editorVariables);
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::LOGGED_IN)]

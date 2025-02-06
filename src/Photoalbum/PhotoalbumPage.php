@@ -10,9 +10,10 @@ use Cyndaron\View\Template\TemplateRenderer;
 
 final class PhotoalbumPage extends Page
 {
-    public function __construct(Photoalbum $album, TextRenderer $textRenderer, User|null $currentUser, int $viewMode = Photoalbum::VIEWMODE_REGULAR)
+    public function __construct(Photoalbum $album, PhotoalbumRepository $photoalbumRepository, TextRenderer $textRenderer, User|null $currentUser, int $viewMode = Photoalbum::VIEWMODE_REGULAR)
     {
         $this->model = $album;
+        $this->category = $photoalbumRepository->getFirstLinkedCategory($album);
         $this->title = $album->name;
         $canUpload = $currentUser !== null && $currentUser->hasRight(Photoalbum::RIGHT_UPLOAD);
 

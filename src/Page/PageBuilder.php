@@ -59,7 +59,7 @@ final class PageBuilder
             $titleParts = [];
             if ($page->model->showBreadcrumbs)
             {
-                $category = $page->model->getFirstCategory();
+                $category = $page->category;
                 if ($category !== null)
                 {
                     $titleParts[] = $category->name;

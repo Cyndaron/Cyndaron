@@ -30,7 +30,7 @@
                                 data-blurb="{{ $richlink->blurb }}"
                                 data-preview-image="{{ $richlink->previewImage }}"
                                 data-open-in-new-tab="{{ (int)$richlink->openInNewTab }}"
-                                data-categories="{{ implode(',', $richlink->getCategoryIds()) }}">
+                                data-categories="{{ implode(',', $richlink->getLinkedCategoryIds()()) }}">
                             @include('View/Widget/Icon', ['type' => 'edit'])</button>
                         <button title="Speciale link verwijderen" class="btn btn-danger pm-delete" data-id="{{ $richlink->id }}" type="button">@include('View/Widget/Icon', ['type' => 'delete'])</button>
                     </div>

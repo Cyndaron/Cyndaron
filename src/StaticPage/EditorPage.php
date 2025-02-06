@@ -11,13 +11,19 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public string $template = '';
 
-    protected function prepare(): void
+    public function __construct(
+        private readonly StaticPageRepository $staticPageRepository,
+    ) {
+
+    }
+
+    public function prepare(): void
     {
         $enableComments = false;
         $tags = '';
         if ($this->id)
         {
-            $staticPage = StaticPageModel::fetchById($this->id);
+            $staticPage = $this->staticPageRepository->fetchById($this->id);
             $this->model = $staticPage;
             $table = ($this->useBackup) ? 'sub_backups' : 'subs';
             /**
@@ -37,6 +43,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
             {
                 $enableComments = $staticPage->enableComments;
                 $tags = $staticPage->tags;
+                $this->linkedCategories = $this->staticPageRepository->getLinkedCategories($staticPage);
             }
         }
 

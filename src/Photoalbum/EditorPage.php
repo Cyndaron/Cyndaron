@@ -9,16 +9,23 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public string $template = '';
 
-    protected function prepare(): void
+    public function __construct(
+        private readonly PhotoalbumRepository $photoalbumRepository
+    ) {
+
+    }
+
+    public function prepare(): void
     {
         if ($this->id)
         {
-            $photoalbum = Photoalbum::fetchById($this->id);
+            $photoalbum = $this->photoalbumRepository->fetchById($this->id);
             if ($photoalbum !== null)
             {
                 $this->model = $photoalbum;
                 $this->content = $photoalbum->notes;
                 $this->contentTitle = $photoalbum->name;
+                $this->linkedCategories = $this->photoalbumRepository->getLinkedCategories($photoalbum);
             }
         }
         $this->templateVars['viewModeOptions'] = Photoalbum::VIEWMODE_DESCRIPTIONS;

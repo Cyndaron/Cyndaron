@@ -1,5 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Cyndaron\Category;
+
+use function assert;
 
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
@@ -9,12 +13,21 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public string $template = '';
 
-    protected function prepare(): void
+    public function __construct(
+        private readonly CategoryRepository $categoryRepository,
+    ) {
+
+    }
+
+    public function prepare(): void
     {
         $currentViewMode = ViewMode::Regular;
         if ($this->id)
         {
-            $this->model = Category::fetchById($this->id);
+            $category = $this->categoryRepository->fetchById($this->id);
+            assert($category !== null);
+            $this->model = $category;
+            $this->linkedCategories = $this->categoryRepository->getLinkedCategories($category);
             $this->content = $this->model->description ?? '';
             $this->contentTitle = $this->model->name ?? '';
             $currentViewMode = $this->model->viewMode ?? ViewMode::Regular;
