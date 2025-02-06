@@ -49,7 +49,7 @@
                                 <form method="post" action="/mailadmin/{{ $route }}/{{ $address->id }}#domain-{{ $domain->id }}">
                                     <input type="hidden" name="csrfToken" value="{{ $csrfToken }}">
                                     <button type="submit" class="btn btn-sm btn-danger" title="Verwijderen">
-                                        <span class="glyphicon glyphicon-trash"></span>
+                                        @include('View/Widget/Icon', ['type' => 'delete'])
                                     </button>
                                 </form>
                             </th>
@@ -58,7 +58,7 @@
                 </tbody>
             </table>
         @endif
-        <a class="btn btn-outline-cyndaron" data-toggle="collapse" href="#new-email-{{ $domain->id }}" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <a class="btn btn-outline-cyndaron" data-bs-toggle="collapse" href="#new-email-{{ $domain->id }}" role="button" aria-expanded="false" aria-controls="collapseExample">
             Adres toevoegen
         </a>
 
@@ -89,7 +89,7 @@
             </form>
         </div>
 
-        <a class="btn btn-outline-cyndaron" data-toggle="collapse" href="#new-alias-{{ $domain->id }}" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <a class="btn btn-outline-cyndaron" data-bs-toggle="collapse" href="#new-alias-{{ $domain->id }}" role="button" aria-expanded="false" aria-controls="collapseExample">
             Alias toevoegen
         </a>
         <div id="new-alias-{{ $domain->id }}" class="collapse">

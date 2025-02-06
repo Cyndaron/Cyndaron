@@ -15,7 +15,7 @@
             <div class="card">
                 <div class="card-header" id="heading-b{{ $loop->index }}">
                     <h5 class="mb-0">
-                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-b{{ $loop->index }}" aria-expanded="true" aria-controls="collapse-b{{ $loop->index }}">
+                        <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapse-b{{ $loop->index }}" aria-expanded="true" aria-controls="collapse-b{{ $loop->index }}">
                             {{ $build->version }}
                         </button>
                     </h5>

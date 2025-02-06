@@ -34,7 +34,7 @@ final class PageBuilder
 {
     private const DEFAULT_SCRIPTS = [
         '/vendor/components/jquery/jquery.min.js',
-        '/vendor/twbs/bootstrap/dist/js/bootstrap.min.js',
+        '/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js',
         '/js/cyndaron.js',
     ];
     private const INCLUDES_MAPPING = [

@@ -1,11 +1,9 @@
-<div id="{{ $id }}" class="modal" tabindex="-1" role="dialog">
+<div id="{{ $id }}" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog {{ $sizeClass ?? '' }}" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{{ $title }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Sluiten">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Sluiten"></button>
             </div>
             <div class="modal-body">
                 {{ $body }}

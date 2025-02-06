@@ -160,7 +160,7 @@ $('#gum-popup-save').on('click keyup', function ()
         data: $('#gum-user-popup').serialize(),
     }).done(function (record)
     {
-        $('#gum-edit-user-dialog').modal('hide');
+        new bootstrap.Modal('#gum-edit-user-dialog').hide();
 
         const gumTableBody = document.getElementById('gum-table-body');
         const startOfNextQuarter = gumTableBody.attributes['data-next-quarter-start'].value;
@@ -414,19 +414,21 @@ function addMemberToGrid(gumTableBody, startOfNextQuarter, csrfTokenMemberDelete
     const editButton = document.createElement('button');
     editButton.setAttribute('type', 'button');
     editButton.setAttribute('class', 'btn btn-outline-cyndaron btn-sm btn-gum-edit');
-    editButton.setAttribute('data-toggle', 'modal');
-    editButton.setAttribute('data-target', '#gum-edit-user-dialog');
+    editButton.setAttribute('data-bs-toggle', 'modal');
+    editButton.setAttribute('data-bs-target', '#gum-edit-user-dialog');
     editButton.setAttribute('data-id', record.id);
-    editButton.innerHTML = '<span class="glyphicon glyphicon-pencil" title="Bewerk dit lid"></span>';
+    editButton.setAttribute('title', 'Bewerk dit lid');
+    editButton.innerHTML = '<span class="glyphicon glyphicon-pencil"></span>';
     editButton.addEventListener('click', gumEditHandler);
 
     const duplicateButton = document.createElement('button');
     duplicateButton.setAttribute('type', 'button');
     duplicateButton.setAttribute('class', 'btn btn-outline-cyndaron btn-sm btn-gum-duplicate');
-    duplicateButton.setAttribute('data-toggle', 'modal');
-    duplicateButton.setAttribute('data-target', '#gum-edit-user-dialog');
+    duplicateButton.setAttribute('data-bs-toggle', 'modal');
+    duplicateButton.setAttribute('data-bs-target', '#gum-edit-user-dialog');
     duplicateButton.setAttribute('data-id', record.id);
-    duplicateButton.innerHTML = '<span class="glyphicon glyphicon-copy" title="Dupliceer dit lid"></span>';
+    duplicateButton.setAttribute('title', 'Dupliceer dit lid');
+    duplicateButton.innerHTML = '<span class="glyphicon glyphicon-copy"></span>';
     duplicateButton.addEventListener('click', gumDuplicateHandler);
 
     const deleteButton = document.createElement('button');
@@ -435,13 +437,18 @@ function addMemberToGrid(gumTableBody, startOfNextQuarter, csrfTokenMemberDelete
     deleteButton.setAttribute('data-type', 'member');
     deleteButton.setAttribute('data-id', record.id);
     deleteButton.setAttribute('data-csrf-token', csrfTokenMemberDelete);
-    deleteButton.innerHTML = '<span class="glyphicon glyphicon-trash" title="Verwijder dit lid"></span>';
+    deleteButton.setAttribute('title', 'Verwijder dit lid');
+    deleteButton.innerHTML = '<span class="glyphicon glyphicon-trash"></span>';
     deleteButton.addEventListener('click', pmDeleteFunction);
 
     const actionsColumn = document.createElement('td');
-    actionsColumn.appendChild(editButton);
-    actionsColumn.appendChild(duplicateButton);
-    actionsColumn.appendChild(deleteButton);
+    const actionsGroup = document.createElement('div');
+    actionsGroup.setAttribute('class', 'btn-group');
+    actionsGroup.setAttribute('role', 'group');
+    actionsGroup.appendChild(editButton);
+    actionsGroup.appendChild(duplicateButton);
+    actionsGroup.appendChild(deleteButton);
+    actionsColumn.appendChild(actionsGroup)
     tr.appendChild(actionsColumn);
 }
 

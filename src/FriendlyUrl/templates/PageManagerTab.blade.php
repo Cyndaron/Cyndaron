@@ -1,9 +1,9 @@
 @component('View/Widget/Toolbar')
     @slot('right')
         <label for="pm-friendlyurl-new-name" class="mr-sm-2">Nieuwe friendly URL:</label>
-        <input id="pm-friendlyurl-new-name" type="text" placeholder="URL" class="form-control mr-sm-2" required/>
-        <input id="pm-friendlyurl-new-target" type="text" placeholder="Verwijzingsdoel" class="form-control mr-sm-2" required/>
-        <button id="pm-create-friendlyurl" type="button" data-csrf-token="{{ $tokenAdd}}" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+        <input id="pm-friendlyurl-new-name" type="text" placeholder="URL" class="form-control form-control-inline mr-sm-2" required/>
+        <input id="pm-friendlyurl-new-target" type="text" placeholder="Verwijzingsdoel" class="form-control form-control-inline mr-sm-2" required/>
+        <button id="pm-create-friendlyurl" type="button" data-csrf-token="{{ $tokenAdd}}" class="btn btn-success">@include('View/Widget/Icon', ['type' => 'new']) Aanmaken</button>
     @endslot
 @endcomponent
 
@@ -29,8 +29,8 @@
             </td>
             <td>
                 <div class="btn-group">
-                    <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="friendlyurl" data-id="{{ $friendlyurl->id }}" data-csrf-token="{{ $tokenDelete }}"><span class="glyphicon glyphicon-trash" title="Verwijder deze friendly URL"></span></button>
-                    <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="friendlyurl" data-id="{{ $friendlyurl->id }}" data-csrf-token="{{ $tokenAddToMenu }}"><span class="glyphicon glyphicon-bookmark" title="Voeg deze friendly URL toe aan het menu"></span></button>
+                    <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="friendlyurl" data-id="{{ $friendlyurl->id }}" data-csrf-token="{{ $tokenDelete }}" title="Verwijder deze friendly URL">@include('View/Widget/Icon', ['type' => 'delete'])</button>
+                    <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="friendlyurl" data-id="{{ $friendlyurl->id }}" data-csrf-token="{{ $tokenAddToMenu }}" title="Voeg deze friendly URL toe aan het menu">@include('View/Widget/Icon', ['type' => 'bookmark'])</button>
                 </div>
             </td>
         </tr>

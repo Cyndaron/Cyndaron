@@ -24,9 +24,9 @@
             <td>
                 @if ($apiCall->presentInCache())
                     <form method="post" action="/download/clearCache/{{ $apiCall->name }}">
-                        <button type="submit" class="btn btn-outline-cyndaron">
+                        <button type="submit" class="btn btn-outline-cyndaron" title="Cache verwijderen">
                             <input type="hidden" name="csrfToken" value="{{ $tokenHandler->get('download', 'clearCache') }}">
-                            <span class="glyphicon glyphicon-trash" title="Cache verwijderen"></span>
+                            @include('View/Widget/Icon', ['type' => 'delete'])
                         </button>
                     </form>
                 @endif

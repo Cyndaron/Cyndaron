@@ -23,8 +23,8 @@
             </td>
             <td>
                 <div class="btn-group">
-                    <a class="btn btn-outline-cyndaron btn-sm" href="/editor/event/{{ $event->id }}"><span class="glyphicon glyphicon-pencil" title="Bewerk dit evenement"></span></a>
-                    <button class="btn btn-danger btn-sm pm-delete" data-type="event" data-id="{{ $event->id }}" data-csrf-token="{{ $tokenDelete }}"><span class="glyphicon glyphicon-trash" title="Verwijder dit evenement"></span></button>
+                    <a class="btn btn-outline-cyndaron btn-sm" href="/editor/event/{{ $event->id }}" title="Bewerk dit evenement">@include('View/Widget/Icon', ['type' => 'edit'])</a>
+                    <button class="btn btn-danger btn-sm pm-delete" data-type="event" data-id="{{ $event->id }}" data-csrf-token="{{ $tokenDelete }}" title="Verwijder dit evenement">@include('View/Widget/Icon', ['type' => 'delete'])</button>
                 </div>
             </td>
         </tr>

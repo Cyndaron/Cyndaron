@@ -6,104 +6,110 @@
     @component('View/Widget/Toolbar')
         @slot('left')
             <div>
-                <label for="gum-filter-iban">IBAN:</label>
-                <select id="gum-filter-iban" class="custom-select form-control-inline">
-                    <option value="">(Alles)</option>
-                    <option value="1">Met IBAN</option>
-                    <option value="2">Zonder IBAN</option>
-                </select>
-            </div>
-            <div>
-                <label for="gum-filter-gender">M/V:</label>
-                <select id="gum-filter-gender" class="custom-select form-control-inline">
-                    <option value="">(Alles)</option>
-                    <option value="male">M</option>
-                    <option value="female">V</option>
-                </select>
-            </div>
-            <div>
-                <label for="gum-filter-sport">Sport:</label>
-                <select id="gum-filter-sport" class="custom-select form-control-inline">
-                    <option value="-1">(Alles)</option>
-                    @foreach ($sports as $sport)
-                        <option value="{{ $sport->id }}">{{ $sport->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label for="gum-filter-graduation">Band:</label>
-                <select id="gum-filter-graduation" class="custom-select form-control-inline">
-                    <option value="-1">(Alles)</option>
-                    @foreach (\Cyndaron\Geelhoed\Graduation::fetchAll() as $graduation)
-                        <option value="{{ $graduation->id }}">{{ $graduation->sport->name }}
-                            , {{ $graduation->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label for="gum-filter-temporaryStop">Tijd. stop:</label>
-                <select id="gum-filter-temporaryStop" class="custom-select form-control-inline">
-                    <option value="-1">(Alles)</option>
-                    <option value="1">Ja</option>
-                    <option value="0">Nee</option>
-                </select>
-            </div>
-            <div>
-                <label for="gum-filter-paymentMethod">Bet.meth.:</label>
-                <select id="gum-filter-paymentMethod" class="custom-select form-control-inline">
-                    <option value="">(Alles)</option>
-                    @foreach (\Cyndaron\Geelhoed\Member\Member::PAYMENT_METHODS as $paymentKey => $paymentValue)
-                        <option value="{{ $paymentKey }}">{{ $paymentValue }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label for="gum-filter-paymentProblem">Bet.probleem:</label>
-                <select id="gum-filter-paymentProblem" class="custom-select form-control-inline">
-                    <option value="-1">(Alles)</option>
-                    <option value="1">Ja</option>
-                    <option value="0">Nee</option>
-                </select>
-            </div>
-            <div>
-                <label for="gum-filter-isContestant">Wedstrijdjudoka:</label>
-                <select id="gum-filter-isContestant" class="custom-select form-control-inline">
-                    <option value="-1">(Alles)</option>
-                    <option value="1">Ja</option>
-                    <option value="0">Nee</option>
-                </select>
-            </div>
-            <div>
-                <label for="gum-filter-location">Leslocatie:</label>
-                <select id="gum-filter-location" class="custom-select form-control-inline">
-                    <option value="-1">(Alles)</option>
-                    @php /** @var \Cyndaron\Location\Location[] $locations */ @endphp
-                    @foreach ($locations as $location)
-                        <option value="{{ $location->id }}">{{ $location->getName() }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="dob-filter">
-                <label for="gum-filter-dateOfBirth-start">Geb. datum start:</label>
-                <input id="gum-filter-dateOfBirth-start" class="gum-filter-dateOfBirth form-control form-control-inline"
-                       type="date"/>
-                <label for="gum-filter-dateOfBirth-end">eind:</label>
-                <input id="gum-filter-dateOfBirth-end" class="gum-filter-dateOfBirth form-control form-control-inline"
-                       type="date"/>
-            </div>
-            <div>
                 <label>Totaal aantal leden:</label>
                 <span id="gum-num-members">(onbekend)</span>
             </div>
         @endslot
         @slot('right')
-            <a href="/member/directDebitList" class="btn btn-outline-cyndaron">Incassolijst</a>
-            <button type="button" id="gum-new" class="btn btn-success" data-toggle="modal"
-                    data-target="#gum-edit-user-dialog">
-                <span class="glyphicon glyphicon-plus"></span>Nieuw lid
-            </button>
+                <a href="/member/directDebitList" class="btn btn-outline-cyndaron">Incassolijst</a>
+
+                <button type="button" id="gum-new" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#gum-edit-user-dialog">
+                    @include('View/Widget/Icon', ['type' => 'new'])Nieuw lid
+                </button>
         @endslot
     @endcomponent
+
+    <h2>Filters:</h2>
+    <div class="row row-cols-auto">
+        <div class="col-lg-6">
+            <label for="gum-filter-iban">IBAN:</label>
+            <select id="gum-filter-iban" class="form-select form-control-inline">
+                <option value="">(Alles)</option>
+                <option value="1">Met IBAN</option>
+                <option value="2">Zonder IBAN</option>
+            </select>
+        </div>
+        <div class="col-lg-6">
+            <label for="gum-filter-gender">M/V:</label>
+            <select id="gum-filter-gender" class="form-select form-control-inline">
+                <option value="">(Alles)</option>
+                <option value="male">M</option>
+                <option value="female">V</option>
+            </select>
+        </div>
+        <div class="col-lg-6">
+            <label for="gum-filter-sport">Sport:</label>
+            <select id="gum-filter-sport" class="form-select form-control-inline">
+                <option value="-1">(Alles)</option>
+                @foreach ($sports as $sport)
+                    <option value="{{ $sport->id }}">{{ $sport->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-lg-6">
+            <label for="gum-filter-graduation">Band:</label>
+            <select id="gum-filter-graduation" class="form-select form-control-inline">
+                <option value="-1">(Alles)</option>
+                @foreach (\Cyndaron\Geelhoed\Graduation\Graduation::fetchAll() as $graduation)
+                    <option value="{{ $graduation->id }}">{{ $graduation->sport->name }}
+                        , {{ $graduation->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-lg-6">
+            <label for="gum-filter-temporaryStop">Tijd. stop:</label>
+            <select id="gum-filter-temporaryStop" class="form-select form-control-inline">
+                <option value="-1">(Alles)</option>
+                <option value="1">Ja</option>
+                <option value="0">Nee</option>
+            </select>
+        </div>
+        <div class="col-lg-6">
+            <label for="gum-filter-paymentMethod">Bet.meth.:</label>
+            <select id="gum-filter-paymentMethod" class="form-select form-control-inline">
+                <option value="">(Alles)</option>
+                @foreach (\Cyndaron\Geelhoed\Member\Member::PAYMENT_METHODS as $paymentKey => $paymentValue)
+                    <option value="{{ $paymentKey }}">{{ $paymentValue }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-lg-6">
+            <label for="gum-filter-paymentProblem">Bet.probleem:</label>
+            <select id="gum-filter-paymentProblem" class="form-select form-control-inline">
+                <option value="-1">(Alles)</option>
+                <option value="1">Ja</option>
+                <option value="0">Nee</option>
+            </select>
+        </div>
+        <div class="col-lg-6">
+            <label for="gum-filter-isContestant">Wedstrijdjudoka:</label>
+            <select id="gum-filter-isContestant" class="form-select form-control-inline">
+                <option value="-1">(Alles)</option>
+                <option value="1">Ja</option>
+                <option value="0">Nee</option>
+            </select>
+        </div>
+        <div class="col-lg-6">
+            <label for="gum-filter-location">Leslocatie:</label>
+            <select id="gum-filter-location" class="form-select form-control-inline">
+                <option value="-1">(Alles)</option>
+                @php /** @var \Cyndaron\Location\Location[] $locations */ @endphp
+                @foreach ($locations as $location)
+                    <option value="{{ $location->id }}">{{ $location->getName() }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-lg-12 dob-filter">
+            <label for="gum-filter-dateOfBirth-start">Geb. datum start:</label>
+            <input id="gum-filter-dateOfBirth-start" class="gum-filter-dateOfBirth form-control form-control-inline"
+                   type="date"/>
+            <label for="gum-filter-dateOfBirth-end">eind:</label>
+            <input id="gum-filter-dateOfBirth-end" class="gum-filter-dateOfBirth form-control form-control-inline"
+                   type="date"/>
+        </div>
+    </div>
+
     <table id="gum-table" class="table table-striped table-bordered pm-table">
         <thead>
             <tr>
@@ -135,19 +141,19 @@
 
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="user-data-tab" data-toggle="tab" href="#user-data" role="tab"
+                    <a class="nav-link active" id="user-data-tab" data-bs-toggle="tab" href="#user-data" role="tab"
                        aria-controls="user-data" aria-selected="true">Gebruikersgegevens</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="personal-data-tab" data-toggle="tab" href="#personal-data" role="tab"
+                    <a class="nav-link" id="personal-data-tab" data-bs-toggle="tab" href="#personal-data" role="tab"
                        aria-controls="personal-data" aria-selected="false">Persoonsgegevens</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="sport-tab" data-toggle="tab" href="#sport" role="tab" aria-controls="sport"
+                    <a class="nav-link" id="sport-tab" data-bs-toggle="tab" href="#sport" role="tab" aria-controls="sport"
                        aria-selected="false">Sportgegevens</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="lessons-tab" data-toggle="tab" href="#lessons" role="tab"
+                    <a class="nav-link" id="lessons-tab" data-bs-toggle="tab" href="#lessons" role="tab"
                        aria-controls="lessons" aria-selected="false">Lessen</a>
                 </li>
             </ul>
@@ -207,9 +213,9 @@
 
                     </ul>
                     Nieuwe graduatie: <select id="new-graduation-id" name="new-graduation-id"
-                                              class="form-control form-control-inline custom-select">
+                                              class="form-control form-control-inline form-select">
                         <option value=""></option>
-                        @foreach (\Cyndaron\Geelhoed\Graduation::fetchAll() as $graduation)
+                        @foreach (\Cyndaron\Geelhoed\Graduation\Graduation::fetchAll() as $graduation)
                             <option value="{{ $graduation->id }}">{{ $graduation->sport->name }}
                                 : {{ $graduation->name }}</option>
                         @endforeach
@@ -227,8 +233,8 @@
                             <div class="card">
                                 <div class="card-header" id="heading{{ $location->id }}">
                                     <h5 class="mb-0">
-                                        <button type="button" class="btn btn-link" data-toggle="collapse"
-                                                data-target="#collapse{{ $location->id }}" aria-expanded="true"
+                                        <button type="button" class="btn btn-link" data-bs-toggle="collapse"
+                                                data-bs-target="#collapse{{ $location->id }}" aria-expanded="true"
                                                 aria-controls="collapse{{ $location->id }}">
                                             {{ $location->city }}, {{ $location->getName() }}
                                         </button>
@@ -253,7 +259,7 @@
         @endslot
         @slot ('footer')
             <button id="gum-popup-save" type="button" class="btn btn-primary">Opslaan</button>
-            <button type="button" class="btn btn-outline-cyndaron" data-dismiss="modal" aria-label="Annuleren">
+            <button type="button" class="btn btn-outline-cyndaron" data-bs-dismiss="modal" aria-label="Annuleren">
                 Annuleren
             </button>
         @endslot

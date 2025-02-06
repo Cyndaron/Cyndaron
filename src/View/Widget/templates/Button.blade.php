@@ -6,7 +6,7 @@
     if (!isset($size))
         $size = 20;
 
-    [$icon, $btnClass] = \Cyndaron\View\Template\ViewHelpers::getButtonIconAndClass($kind);
+    $btnClass = \Cyndaron\View\Template\ViewHelpers::getButtonClass($kind);
 
     if ($size === 16)
     {
@@ -17,5 +17,5 @@
 @endphp
 
 <a class="btn {{ $btnClass }}" href="{{ $link }}" @if($description)title="{{ $description }}"@endif>
-    <span class="glyphicon glyphicon-{{ $icon }}"></span>{{ $textAfterIcon }}
+    @include('View/Widget/Icon', ['type' => $kind]){{ $textAfterIcon }}
 </a>

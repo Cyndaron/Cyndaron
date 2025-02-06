@@ -9,7 +9,7 @@ $(document).ready(function() {
             $.post('/api/contest/removeSubscription', { id: id, csrfToken: csrfToken })
                 .done(function () {
                     row.remove();
-                    $('#confirm-dangerous').modal('hide');
+                    new bootstrap.Modal('#confirm-dangerous').hide();
                 });
         });
     });

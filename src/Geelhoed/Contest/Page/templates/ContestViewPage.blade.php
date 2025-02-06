@@ -3,6 +3,7 @@
 @section ('contents')
     @php
         /** @var \Cyndaron\Geelhoed\Contest\Model\Contest $contest */
+        /** @var \Cyndaron\Geelhoed\Contest\Model\ContestRepository $contestRepository */
         $sport = $contest->sport;
     @endphp
 
@@ -12,8 +13,8 @@
                 @include('View/Widget/Button', ['kind' => 'list', 'link' => '/contest/manageOverview', 'title' => 'Wedstrijdbeheer', 'text' => 'Wedstrijdbeheer'])
             @endslot
             @slot('middle')
-                <button id="gcv-add-date" class="btn btn-success" data-toggle="modal"
-                        data-target="#gcv-add-date-dialog">Datum toevoegen
+                <button id="gcv-add-date" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#gcv-add-date-dialog">Datum toevoegen
                 </button>
             @endslot
             @slot('right')
@@ -61,7 +62,7 @@
                                       class="inline-button-form">
                                     <input type="hidden" name="csrfToken" value="{{ $deleteDateCsrfToken }}">
                                     <button class="btn btn-sm btn-danger" type="submit" title="Deze datum verwijderen">
-                                        <span class="glyphicon glyphicon-trash"></span></button>
+                                        @include('View/Widget/Icon', ['type' => 'delete'])</button>
                                 </form>
                             @endif
                         </li>
@@ -100,8 +101,8 @@
                                         <input type="hidden" name="csrfToken" value="{{ $deleteCsrfToken }}">
                                         <input type="hidden" name="filename" value="{{ $attachment }}">
                                         <button class="btn btn-sm btn-danger" type="submit"
-                                                title="Dit bestand verwijderen"><span
-                                                class="glyphicon glyphicon-trash"></span></button>
+                                                title="Dit bestand verwijderen">
+                                            @include('View/Widget/Icon', ['type' => 'delete'])</button>
                                     </form>
                                 @endif
                             </li>
@@ -179,8 +180,8 @@
             @endslot
             @slot('footer')
                 <button type="button" class="btn btn-success" id="gcv-add-date-save">Opslaan</button>
-                <button type="button" class="btn btn-outline-cyndaron" data-toggle="modal"
-                        data-target="#gcv-add-date-dialog">Annuleren
+                <button type="button" class="btn btn-outline-cyndaron" data-bs-toggle="modal"
+                        data-bs-target="#gcv-add-date-dialog">Annuleren
                 </button>
             @endslot
         @endcomponent

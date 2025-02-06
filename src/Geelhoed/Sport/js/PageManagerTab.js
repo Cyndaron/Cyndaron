@@ -23,7 +23,7 @@ $(document).ready(function () {
 
             $.post('/api/sport/edit/' + sportId, payload)
                 .done(function() {
-                    $('#pm-edit-modal').modal('hide');
+                    new bootstrap.Modal('#pm-edit-modal').hide();
                     location.reload();
                 });
         });

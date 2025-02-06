@@ -21,8 +21,8 @@
             </td>
             <td>
                 <div class="btn-group">
-                    <a class="btn btn-outline-cyndaron btn-sm" href="/editor/mailform/{{ $mailform->id }}"><span class="glyphicon glyphicon-pencil" title="Bewerk dit mailformulier"></span></a>
-                    <button class="btn btn-danger btn-sm pm-delete" data-type="mailform" data-id="{{ $mailform->id }}" data-csrf-token="{{ $tokenDelete }}"><span class="glyphicon glyphicon-trash" title="Verwijder dit mailformulier"></span></button>
+                    <a class="btn btn-outline-cyndaron btn-sm" href="/editor/mailform/{{ $mailform->id }}" title="Bewerk dit mailformulier">@include('View/Widget/Icon', ['type' => 'edit'])</a>
+                    <button class="btn btn-danger btn-sm pm-delete" data-type="mailform" data-id="{{ $mailform->id }}" data-csrf-token="{{ $tokenDelete }}" title="Verwijder dit mailformulier">@include('View/Widget/Icon', ['type' => 'delete'])</button>
                 </div>
 
             </td>

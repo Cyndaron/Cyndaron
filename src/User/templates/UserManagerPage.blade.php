@@ -5,8 +5,8 @@
         @slot('right')
             <button id="um-create-user"
                     data-csrf-token="{{ $tokenHandler->get('user', 'add') }}"
-                    type="button" class="btn btn-success" data-toggle="modal" data-target="#um-edit-user-dialog">
-                <span class="glyphicon glyphicon-plus"></span> Nieuwe gebruiker toevoegen
+                    type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#um-edit-user-dialog">
+                @include('View/Widget/Icon', ['type' => 'new']) Nieuwe gebruiker toevoegen
             </button>
         @endslot
     @endcomponent
@@ -37,7 +37,7 @@
                 <td>
                     <div class="btn-group">
                         <button class="um-edit-user btn btn-sm btn-outline-cyndaron" title="Gebruiker bewerken"
-                                data-toggle="modal" data-target="#um-edit-user-dialog"
+                                data-bs-toggle="modal" data-bs-target="#um-edit-user-dialog"
                                 data-id="{{ $user->id }}"
                                 data-username="{{ $user->username }}"
                                 data-email="{{ $user->email }}"
@@ -49,16 +49,16 @@
                                 data-comments="{{ $user->comments }}"
                                 data-avatar="{{ $user->avatar }}"
                                 data-hideFromMemberList="{{ $user->hideFromMemberList }}">
-                            <span class="glyphicon glyphicon-pencil"></span>
+                            @include('View/Widget/Icon', ['type' => 'edit'])
                         </button>
                         <button class="um-resetpassword btn btn-sm btn-outline-cyndaron" data-id="{{ $user->id }}" title="Nieuw wachtwoord instellen">
-                            <span class="glyphicon glyphicon-repeat"></span>
+                            @include('View/Widget/Icon', ['type' => 'repeat'])
                         </button>
-                        <button class="um-updateAvatar btn btn-sm btn-outline-cyndaron" data-id="{{ $user->id }}" title="Avatar veranderen" data-toggle="modal" data-target="#um-update-avatar-dialog">
-                            <span class="glyphicon glyphicon-picture"></span>
+                        <button class="um-updateAvatar btn btn-sm btn-outline-cyndaron" data-id="{{ $user->id }}" title="Avatar veranderen" data-bs-toggle="modal" data-bs-target="#um-update-avatar-dialog">
+                            @include('View/Widget/Icon', ['type' => 'picture'])
                         </button>
                         <button class="um-delete btn btn-sm btn-danger" data-id="{{ $user->id }}" title="Gebruiker verwijderen">
-                            <span class="glyphicon glyphicon-trash"></span>
+                            @include('View/Widget/Icon', ['type' => 'delete'])
                         </button>
                     </div>
                 </td>
@@ -154,7 +154,7 @@
         @endslot
         @slot ('footer')
             <button id="um-edit-user-save" type="button" class="btn btn-primary">Opslaan</button>
-            <button type="button" class="btn btn-outline-cyndaron" data-dismiss="modal">Annuleren</button>
+            <button type="button" class="btn btn-outline-cyndaron" data-bs-dismiss="modal">Annuleren</button>
         @endslot
     @endcomponent
     @component('View/Widget/Modal', ['id' => 'um-update-avatar-dialog', 'title' => 'Avatar aanpassen', 'sizeClass' => 'modal-lg'])

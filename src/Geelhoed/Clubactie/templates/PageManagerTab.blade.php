@@ -6,7 +6,7 @@
             data-csrf-token="{{ $tokenHandler->get('webwinkel', 'mail-everyone') }}"
             class="btn btn-outline-cyndaron"
         >
-            <span class="glyphicon glyphicon-envelope"></span> Iedereen mailen
+            @include('View/Widget/Icon', ['type' => 'envelope']) Iedereen mailen
         </button>
     @endslot
 @endcomponent
@@ -38,12 +38,12 @@
                 <td>
                     <form method="post" action="/webwinkel/send-mail/{{ $subscriber->hash }}">
                         <button type="submit" class="btn btn-outline-cyndaron" title="Accountgegevens mailen">
-                            <span class="glyphicon glyphicon-envelope"></span>
+                            @include('View/Widget/Icon', ['type' => 'envelope'])
                         </button>
                     </form>
                     @if (!$subscriber->soldTicketsAreVerified)
-                        <button class="btn btn-outline-cyndaron pm-confirm-tickets" data-id="{{ $subscriber->id }}" data-toggle="modal" data-target="#pm-confirm-tickets">
-                            <span class="glyphicon glyphicon-check" title="Lotenaantal bevestigen"></span>
+                        <button class="btn btn-outline-cyndaron pm-confirm-tickets" data-id="{{ $subscriber->id }}" data-bs-toggle="modal" data-bs-target="#pm-confirm-tickets" title="Lotenaantal bevestigen">
+                            @include('View/Widget/Icon', ['type' => 'check'])
                         </button>
                     @endif
                 </td>
@@ -62,6 +62,6 @@
     @endslot
     @slot('footer')
         <button id="pm-confirm-tickets-save" type="button" class="btn btn-primary">Opslaan</button>
-        <button type="button" class="btn btn-outline-cyndaron" data-dismiss="modal" data-target="#pm-confirm-tickets">Annuleren</button>
+        <button type="button" class="btn btn-outline-cyndaron" data-bs-dismiss="modal" data-bs-target="#pm-confirm-tickets">Annuleren</button>
     @endslot
 @endcomponent

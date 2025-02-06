@@ -27,6 +27,7 @@ final class ContestViewPage extends Page
             'cancelSubscriptionCsrfToken' => $tokenHandler->get('contest', 'cancelSubscription'),
             'contest' => $contest,
             'contestDateRepository' => $contestDateRepository,
+            'contestRepository' => $contestRepository,
             'controlledMembers' => $controlledMembers,
             'deleteCsrfToken' => $tokenHandler->get('contest', 'deleteAttachment'),
             'deleteDateCsrfToken' => $tokenHandler->get('contest', 'deleteDate'),

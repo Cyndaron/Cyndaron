@@ -34,14 +34,14 @@
                         <li>
                             {{ $ticketType->name }}: {{ $ticketType->price|euro }}
                             <a href="/editor/ticketType/{{ $ticketType->id }}" role="button" class="btn btn-sm btn-outline-cyndaron">
-                                <span class="glyphicon glyphicon-pencil"></span>
+                                @include('View/Widget/Icon', ['type' => 'edit'])
                             </a>
-{{--                            <button type="button" class="btn btn-sm btn-outline-cyndaron"><span class="glyphicon glyphicon-trash"></span></button>--}}
+{{--                            <button type="button" class="btn btn-sm btn-outline-cyndaron">@include('View/Widget/Icon', ['type' => 'delete'])</button>--}}
                         </li>
                     @endforeach
                 </ul>
                 <a href="/editor/ticketType/0/{{ $concert->id }}" role="button" class="btn btn-sm btn-outline-cyndaron">
-                    <span class="glyphicon glyphicon-plus"></span>
+                    @include('View/Widget/Icon', ['type' => 'new'])
                     Toevoegen
                 </a>
             </td>
@@ -54,8 +54,8 @@
             </td>
             <td>
                 <div class="btn-group">
-                    <a class="btn btn-outline-cyndaron btn-sm" href="/editor/concert/{{ $concert->id }}"><span class="glyphicon glyphicon-pencil" title="Bewerk dit concert"></span></a>
-                    <button class="btn btn-danger btn-sm pm-delete" data-type="concert" data-id="{{ $concert->id }}" data-csrf-token="{{ $tokenDelete }}"><span class="glyphicon glyphicon-trash" title="Verwijder dit concert"></span></button>
+                    <a class="btn btn-outline-cyndaron btn-sm" href="/editor/concert/{{ $concert->id }}" title="Bewerk dit concert">@include('View/Widget/Icon', ['type' => 'edit'])</a>
+                    <button class="btn btn-danger btn-sm pm-delete" data-type="concert" data-id="{{ $concert->id }}" data-csrf-token="{{ $tokenDelete }}" title="Verwijder dit concert">@include('View/Widget/Icon', ['type' => 'delete'])</button>
                 </div>
 
             </td>

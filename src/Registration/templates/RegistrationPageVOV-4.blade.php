@@ -1,7 +1,7 @@
 @extends ('Index')
 
 @section ('titleControls')
-    <a href="/editor/event/{{ $event->id }}" class="btn btn-outline-cyndaron" title="Dit evenement bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
+    <a href="/editor/event/{{ $event->id }}" class="btn btn-outline-cyndaron" title="Dit evenement bewerken" role="button">@include('View/Widget/Icon', ['type' => 'edit'])</a>
 @endsection
 
 @section ('contents')

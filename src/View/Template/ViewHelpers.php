@@ -19,18 +19,20 @@ use function strip_tags;
 
 final class ViewHelpers
 {
-    protected const DUTCH_MONTHS = ['', 'januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
-    protected const DUTCH_WEEKDAYS = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
+    private const DUTCH_MONTHS = ['', 'januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
+    private const DUTCH_WEEKDAYS = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
 
-    protected const BUTTON_TYPE_TO_ICON = [
+    private const BUTTON_TYPE_TO_ICON = [
         'new' => 'plus',
         'edit' => 'pencil',
         'delete' => 'trash',
         'lastversion' => 'lastversion',
         'addtomenu' => 'bookmark',
+        'money' => 'eur',
+        'resize' => 'resize-full',
     ];
 
-    protected const BUTTON_TYPE_TO_CLASS = [
+    private const BUTTON_TYPE_TO_CLASS = [
         'new' => 'btn-success',
         'delete' => 'btn-danger',
     ];
@@ -159,25 +161,20 @@ final class ViewHelpers
         return sprintf('%s om %s', self::filterDutchDate($date), date('H:i', $timestamp));
     }
 
-    /**
-     * @param string $type
-     * @return string[]
-     */
-    public static function getButtonIconAndClass(string $type): array
+    public static function getIcon(string $type): string
     {
-        $icon = $type;
-        if (array_key_exists($type, self::BUTTON_TYPE_TO_ICON))
-        {
-            $icon = self::BUTTON_TYPE_TO_ICON[$type];
-        }
+        return self::BUTTON_TYPE_TO_ICON[$type] ?? $type;
+    }
 
+    public static function getButtonClass(string $type): string
+    {
         $btnClass = 'btn-outline-cyndaron';
         if (array_key_exists($type, self::BUTTON_TYPE_TO_CLASS))
         {
             $btnClass = self::BUTTON_TYPE_TO_CLASS[$type];
         }
 
-        return [$icon, $btnClass];
+        return $btnClass;
     }
 
     /**

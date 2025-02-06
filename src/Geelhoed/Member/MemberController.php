@@ -249,7 +249,7 @@ final class MemberController
     public function directDebitList(MemberRepository $memberRepository): Response
     {
         $directDebits = DirectDebit::load($memberRepository);
-        $page = new DirectDebitListPage($directDebits);
+        $page = new DirectDebitListPage($directDebits, $memberRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 }

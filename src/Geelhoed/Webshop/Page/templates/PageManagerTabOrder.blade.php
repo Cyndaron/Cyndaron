@@ -39,7 +39,7 @@
                             class="btn btn-outline-cyndaron"
                             title="Naar bestelpagina"
                         >
-                            <span class="glyphicon glyphicon-shopping-cart"></span>
+                            @include('View/Widget/Icon', ['type' => 'shopping-cart'])
                         </a>
                     @endif
                 </td>

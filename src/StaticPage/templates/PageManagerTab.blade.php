@@ -26,8 +26,8 @@
                 <td>
                     <div class="btn-group">
                         @include('View/Widget/Button', ['kind' => 'edit', 'link' => "/editor/sub/{$id}", 'title' => 'Bewerk deze statische pagina', 'size' => 16])
-                        <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="sub" data-id="{{ $id }}" data-csrf-token="{{ $tokenDelete }}"><span class="glyphicon glyphicon-trash"></span></button>
-                        <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="sub" data-id="{{ $id }}" data-csrf-token="{{ $tokenAddToMenu }}"><span class="glyphicon glyphicon-bookmark"></span></button>
+                        <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="sub" data-id="{{ $id }}" data-csrf-token="{{ $tokenDelete }}">@include('View/Widget/Icon', ['type' => 'delete'])</button>
+                        <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="sub" data-id="{{ $id }}" data-csrf-token="{{ $tokenAddToMenu }}">@include('View/Widget/Icon', ['type' => 'bookmark'])</button>
                         @if ($sub['hasBackup'])
                             @include('View/Widget/Button', ['kind' => 'lastversion', 'link' => "/editor/sub/{$id}/previous", 'title' => 'Vorige versie terugzetten', 'size' => 16])
                         @endif

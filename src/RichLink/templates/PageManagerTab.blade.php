@@ -1,6 +1,6 @@
 @component('View/Widget/Toolbar')
     @slot('right')
-        <button id="pm-new" class="btn btn-success" type="button"><span class="glyphicon glyphicon-plus"></span> Nieuwe speciale link</button>
+        <button id="pm-new" class="btn btn-success" type="button">@include('View/Widget/Icon', ['type' => 'new']) Nieuwe speciale link</button>
     @endslot
 @endcomponent
 
@@ -31,8 +31,8 @@
                                 data-preview-image="{{ $richlink->previewImage }}"
                                 data-open-in-new-tab="{{ (int)$richlink->openInNewTab }}"
                                 data-categories="{{ implode(',', $richlink->getCategoryIds()) }}">
-                            <span class="glyphicon glyphicon-edit"></span></button>
-                        <button title="Speciale link verwijderen" class="btn btn-danger pm-delete" data-id="{{ $richlink->id }}" type="button"><span class="glyphicon glyphicon-trash"></span></button>
+                            @include('View/Widget/Icon', ['type' => 'edit'])</button>
+                        <button title="Speciale link verwijderen" class="btn btn-danger pm-delete" data-id="{{ $richlink->id }}" type="button">@include('View/Widget/Icon', ['type' => 'delete'])</button>
                     </div>
                 </td>
             </tr>
@@ -55,7 +55,7 @@
                 <div class="card">
                     <div class="card-header" id="heading2">
                         <h5 class="mb-0">
-                            <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapse2" aria-expanded="false" aria-controls="collapse2" style="width: 100%; text-align: left;">
+                            <button type="button" class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2" style="width: 100%; text-align: left;">
                                 Categorieën (klik om open te klappen)
                             </button>
                         </h5>
@@ -76,6 +76,6 @@
     @endslot
     @slot('footer')
         <button type="button" class="btn btn-success" id="pm-edit-save">Opslaan</button>
-        <button type="button" class="btn btn-outline-cyndaron" data-toggle="modal" data-target="#pm-edit-dialog">Annuleren</button>
+        <button type="button" class="btn btn-outline-cyndaron" data-bs-toggle="modal" data-bs-target="#pm-edit-dialog">Annuleren</button>
     @endslot
 @endcomponent

@@ -1,8 +1,10 @@
 @component('View/Widget/Toolbar')
     @slot('right')
         <label for="pm-category-new-name" class="mr-sm-2">Nieuwe categorie:</label>
-        <input class="form-control mr-sm-2" id="pm-category-new-name" type="text"/>
-        <button type="button" id="pm-create-category" data-csrf-token="{{ $tokenAdd }}" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Aanmaken</button>
+        <div class="input-group">
+            <input class="form-control form-control-inline mr-sm-2" id="pm-category-new-name" type="text"/>
+            <button type="button" id="pm-create-category" data-csrf-token="{{ $tokenAdd }}" class="btn btn-success">@include('View/Widget/Icon', ['type' => 'new']) Aanmaken</button>
+        </div>
     @endslot
 @endcomponent
 
@@ -28,9 +30,9 @@
                             @include('View/Widget/Button', ['kind' => 'edit', 'link' => "/editor/category/{$category->id}", 'title' => 'Deze categorie bewerken', 'size' => 16])
                         @endif
                         @if ($currentUser->isAdmin())
-                            <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="category" data-id="{{ $category->id }}" data-csrf-token="{{ $tokenDelete }}"><span class="glyphicon glyphicon-trash" title="Verwijder deze categorie"></span></button>
-                            <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="category" data-id="{{ $category->id }}" data-csrf-token="{{ $tokenAddToMenu  }}"><span class="glyphicon glyphicon-bookmark" title="Voeg deze categorie toe aan het menu"></span></button>
-                            <button class="btn btn-outline-cyndaron btn-sm pm-changeorder" data-id="{{ $category->id }}" data-toggle="modal" data-target="#pm-change-order"><span class="glyphicon glyphicon-sort-by-order" title="Verander de volgorde binnen deze categorie"></span></button>
+                            <button class="btn btn-outline-cyndaron btn-sm pm-delete" data-type="category" data-id="{{ $category->id }}" data-csrf-token="{{ $tokenDelete }}" title="Verwijder deze categorie">@include('View/Widget/Icon', ['type' => 'delete'])</button>
+                            <button class="btn btn-outline-cyndaron btn-sm pm-addtomenu" data-type="category" data-id="{{ $category->id }}" data-csrf-token="{{ $tokenAddToMenu  }}" title="Voeg deze categorie toe aan het menu">@include('View/Widget/Icon', ['type' => 'bookmark'])</button>
+                            <button class="btn btn-outline-cyndaron btn-sm pm-changeorder" data-id="{{ $category->id }}" data-bs-toggle="modal" data-bs-target="#pm-change-order" title="Verander de volgorde binnen deze categorie">@include('View/Widget/Icon', ['type' => 'sort-by-order'])</button>
                         @endif
                     </div>
                 </td>
@@ -48,6 +50,6 @@
     @endslot
     @slot('footer')
         <button id="pm-change-order-save" type="button" class="btn btn-primary">Opslaan</button>
-        <button type="button" class="btn btn-outline-cyndaron" data-dismiss="modal" data-target="#pm-change-order">Annuleren</button>
+        <button type="button" class="btn btn-outline-cyndaron" data-bs-dismiss="modal" data-bs-target="#pm-change-order">Annuleren</button>
     @endslot
 @endcomponent

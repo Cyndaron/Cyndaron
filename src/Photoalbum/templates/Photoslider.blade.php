@@ -3,7 +3,7 @@
 <div id="{{ $htmlId }}Indicators" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
         @foreach ($photos as $photo)
-            <li data-target="#{{ $htmlId }}Indicators" data-slide-to="{{ $loop->index }}" @if ($loop->first) class="active" @endif></li>
+            <li data-bs-target="#{{ $htmlId }}Indicators" data-slide-to="{{ $loop->index }}" @if ($loop->first) class="active" @endif></li>
         @endforeach
     </ol>
     <div class="carousel-inner">

@@ -12,10 +12,10 @@ const pmDeleteFunction = function () {
     {
         $.post('/api/' + type + '/delete/' + id, { csrfToken: csrfToken }).done(function() {
             $('#pm-row-' + type + '-' + id).remove();
-            $('#confirm-dangerous').modal('hide');
+            new bootstrap.Modal('#confirm-dangerous').hide();
         });
     });
-    $('#confirm-dangerous').modal();
+    new bootstrap.Modal('#confirm-dangerous').show();
 }
 
 $(document).ready(function () {

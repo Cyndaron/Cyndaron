@@ -26,9 +26,10 @@
                         data-name="{{ $sport->name }}"
                         data-junior-fee="{{ $sport->juniorFee }}"
                         data-senior-fee="{{ $sport->seniorFee }}"
-                        data-toggle="modal"
-                        data-target="#pm-edit-modal">
-                        <span class="glyphicon glyphicon-pencil" title="Bewerken"></span>
+                        data-bs-toggle="modal"
+                        data-bs-target="#pm-edit-modal"
+                        title="Bewerken">
+                        @include('View/Widget/Icon', ['type' => 'edit'])
                     </button>
                 </td>
             </tr>
@@ -65,6 +66,6 @@
     @endslot
     @slot('footer')
         <button id="pm-edit-modal-save" type="button" class="btn btn-primary">Opslaan</button>
-        <button type="button" class="btn btn-outline-cyndaron" data-dismiss="modal" data-target="#pm-edit-modal">Annuleren</button>
+        <button type="button" class="btn btn-outline-cyndaron" data-bs-dismiss="modal" data-bs-target="#pm-edit-modal">Annuleren</button>
     @endslot
 @endcomponent

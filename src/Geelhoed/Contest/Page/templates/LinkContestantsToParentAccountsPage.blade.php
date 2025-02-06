@@ -3,7 +3,7 @@
 @section ('contents')
     @component('View/Widget/Toolbar2')
         @slot('right')
-            <button id="gpam-new" class="btn btn-success" data-toggle="modal" data-target="#gpm-edit-dialog">Toevoegen</button>
+            <button id="gpam-new" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#gpm-edit-dialog">Toevoegen</button>
         @endslot
     @endcomponent
     <table class="table table-bordered">
@@ -37,8 +37,8 @@
                             <td>{{ $parent->getFullName() }}</td>
                             <td>{{ $parent->email }}</td>
                             <td>
-                                <button data-id="{{ $parent->id }}" data-csrf-token="{{ $resetPasswordToken }}" title="Nieuw wachtwoord opsturen" class="btn btn-sm btn-outline-cyndaron gpm-reset-password"><span class="glyphicon glyphicon-repeat"></span></button>
-                                <button data-id="{{ $parent->id }}" data-csrf-token="{{ $deleteFromToken }}" title="Ontkoppelen" class="btn btn-sm btn-warning gpm-delete-from-parent-account" data-user-id="{{ $parent->id }}" data-member-id="{{ $contestant->id }}"><span class="glyphicon glyphicon-trash"></span></button>
+                                <button data-id="{{ $parent->id }}" data-csrf-token="{{ $resetPasswordToken }}" title="Nieuw wachtwoord opsturen" class="btn btn-sm btn-outline-cyndaron gpm-reset-password">@include('View/Widget/Icon', ['type' => 'repeat'])</button>
+                                <button data-id="{{ $parent->id }}" data-csrf-token="{{ $deleteFromToken }}" title="Ontkoppelen" class="btn btn-sm btn-warning gpm-delete-from-parent-account" data-user-id="{{ $parent->id }}" data-member-id="{{ $contestant->id }}">@include('View/Widget/Icon', ['type' => 'delete'])</button>
                             </td>
                         @else
                                 <td colspan="3">
@@ -76,7 +76,7 @@
         @endslot
         @slot('footer')
             <button type="button" class="btn btn-success" id="gpm-edit-save">Opslaan</button>
-            <button type="button" class="btn btn-outline-cyndaron" data-toggle="modal" data-target="#gpm-edit-dialog">Annuleren</button>
+            <button type="button" class="btn btn-outline-cyndaron" data-bs-toggle="modal" data-bs-target="#gpm-edit-dialog">Annuleren</button>
         @endslot
     @endcomponent
 @endsection

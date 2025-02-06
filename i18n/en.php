@@ -35,6 +35,7 @@ return [
     'Korte samenvatting' => 'Short summary',
     'Headerafbeelding uploaden…' => 'Upload header image…',
     'Previewafbeelding uploaden…' => 'Upload preview image…',
+    'Uploaden…' => 'Upload…',
     'Interne link maken' => 'Create internal link',
     'Invoegen' => 'Insert',
     'Categorieën (klik om open te klappen)' => 'Categories (click to expand)',

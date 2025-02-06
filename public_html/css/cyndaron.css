@@ -1,6 +1,9 @@
 body.cyndaron {
   overflow-y: scroll; }
 
+a {
+  text-decoration: none; }
+
 a:hover {
   color: #FF8C00;
   text-decoration: underline; }
@@ -116,7 +119,7 @@ th.rotate {
   vertical-align: inherit !important; }
 
 th.rotate > div {
-  transform: translate(5px, 51px) rotate(315deg);
+  transform: translate(5px) rotate(315deg);
   width: 30px; }
 
 th.rotate > div > span {
@@ -358,5 +361,18 @@ input[type=color].form-control {
   border-radius: 0;
   border-left: 0;
   border-right: 0; }
+
+.form-group {
+  margin-bottom: 1rem !important; }
+
+#navbarSupportedContent > *:first-child {
+  margin-right: auto; }
+
+ul.nav-tabs li.nav-item:hover a {
+  background-color: #ffffff; }
+
+form.form-inline {
+  display: inline-flex;
+  align-items: center; }
 
 /*# sourceMappingURL=cyndaron.css.map */

@@ -1,6 +1,6 @@
 @component('View/Widget/Toolbar')
     @slot('right')
-        <button id="gcm-new" class="btn btn-success" type="button"><span class="glyphicon glyphicon-plus"></span> Nieuwe
+        <button id="gcm-new" class="btn btn-success" type="button">@include('View/Widget/Icon', ['type' => 'new']) Nieuwe
             wedstrijd
         </button>
     @endslot
@@ -18,32 +18,35 @@
         </tr>
     </thead>
     <tbody>
+    @php /** @var \Cyndaron\Geelhoed\Contest\Model\Contest[] $contests */ @endphp
+    @php /** @var \Cyndaron\Geelhoed\Contest\Model\ContestRepository $contestRepository */ @endphp
         @foreach ($contests as $contest)
             <tr>
                 <td>{{ $contest->id }}</td>
                 <td>{{ $contest->name }}</td>
-                <td>{{ $contest->getFirstDate()|dmy }}</td>
+                <td>{{ $contestRepository->getFirstDate($contest)|dmy }}</td>
                 <td>
                     <div class="btn-group">
                         <a title="Naar de inschrijfpagina" href="/contest/view/{{ $contest->id }}"
-                           class="btn btn-outline-cyndaron"><span class="glyphicon glyphicon-plus"></span></a>
+                           class="btn btn-outline-cyndaron">@include('View/Widget/Icon', ['type' => 'new'])</a>
                         <a title="Bekijk lijst van inschrijvingen" href="/contest/subscriptionList/{{ $contest->id }}"
-                           class="btn btn-outline-cyndaron"><span class="glyphicon glyphicon-list"></span></a>
+                           class="btn btn-outline-cyndaron">@include('View/Widget/Icon', ['type' => 'list'])</span></a>
                         <button title="Wedstrijd bewerken" class="btn btn-warning gcm-edit" type="button"
                                 data-id="{{ $contest->id }}"
                                 data-name="{{ $contest->name }}"
                                 data-description="{{ $contest->description }}"
                                 data-location="{{ $contest->location }}"
-                                data-sport-id="{{ $contest->sportId }}"
+                                data-sport-id="{{ $contest->sport->id }}"
                                 data-deadline-date="{{ date('Y-m-d', strtotime($contest->registrationDeadline)) }}"
                                 data-deadline-time="{{ date('H:i', strtotime($contest->registrationDeadline)) }}"
                                 data-registration-change-deadline-date="{{ date('Y-m-d', strtotime($contest->registrationChangeDeadline)) }}"
                                 data-registration-change-deadline-time="{{ date('H:i', strtotime($contest->registrationChangeDeadline)) }}"
                                 data-price="{{ $contest->price }}">
-                            <span class="glyphicon glyphicon-edit"></span></button>
+                            @include('View/Widget/Icon', ['type' => 'edit'])</button>
                         <button title="Wedstrijd verwijderen" class="btn btn-danger gcm-delete"
-                                data-id="{{ $contest->id }}" type="button"><span
-                                    class="glyphicon glyphicon-trash"></span></button>
+                                data-id="{{ $contest->id }}" type="button">
+                            @include('View/Widget/Icon', ['type' => 'delete'])
+                        </button>
                     </div>
                 </td>
             </tr>
@@ -76,9 +79,7 @@
         @component('View/Widget/Form/FormWrapper', ['id' => 'gcm-edit-price', 'label' => 'Prijs'])
             @slot('right')
                 <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">€</span>
-                    </div>
+                    <span class="input-group-text">€</span>
                     <input id="gcm-edit-price" type="number" min="0.01" step="0.01" class="form-control" required>
                 </div>
             @endslot
@@ -86,7 +87,7 @@
     @endslot
     @slot('footer')
         <button type="button" class="btn btn-success" id="gcm-edit-save">Opslaan</button>
-        <button type="button" class="btn btn-outline-cyndaron" data-toggle="modal" data-target="#gcm-edit-dialog">
+        <button type="button" class="btn btn-outline-cyndaron" data-bs-dismiss="modal" data-bs-target="#gcm-edit-dialog">
             Annuleren
         </button>
     @endslot

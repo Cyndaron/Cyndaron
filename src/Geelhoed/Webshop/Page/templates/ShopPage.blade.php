@@ -34,7 +34,7 @@
                             data-order-item-id="{{ $orderItem->id }}"
                             data-hash="{{ $hash }}"
                         >
-                            <span class="glyphicon glyphicon-trash"></span>
+                            @include('View/Widget/Icon', ['type' => 'delete'])
                         </button>
                     </li>
                 @endforeach

@@ -10,11 +10,12 @@ class DirectDebitListPage extends Page
     /**
      * @param DirectDebit[] $directDebits
      */
-    public function __construct(array $directDebits)
+    public function __construct(array $directDebits, MemberRepository $memberRepository)
     {
         $this->title = 'Incassolijst';
         $this->addTemplateVars([
             'directDebits' => $directDebits,
+            'memberRepository' => $memberRepository,
         ]);
     }
 }

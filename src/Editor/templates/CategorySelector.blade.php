@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-header" id="heading2">
                 <h5 class="mb-0">
-                    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapse2" aria-expanded="false" aria-controls="collapse2" style="width: 100%; text-align: left;">
+                    <button type="button" class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2" style="width: 100%; text-align: left;">
                         {{ $t->get('Categorieën (klik om open te klappen)') }}
                     </button>
                 </h5>

@@ -21,7 +21,7 @@
         <div class="berichtstatusbox-bubbel">
             <span>Verstuurd: @if ($message->getDateTime()) {{ $message->getDateTime()|dmyHm }} @else onbekend @endif</span>
             @if (!$message->isRead())
-                &nbsp; <span class="glyphicon glyphicon-eye-close" title="Dit bericht is nog niet gelezen door de ontvanger"></span>
+                &nbsp; @include('View/Widget/Icon', ['type' => 'eye-close', 'title' => 'Dit bericht is nog niet gelezen door de ontvanger'])
             @endif
         </div>
 

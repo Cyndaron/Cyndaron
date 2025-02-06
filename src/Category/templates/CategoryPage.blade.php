@@ -4,7 +4,7 @@
 
 @section ('titleControls')
     @if ($model)
-        <a href="/editor/category/{{ $model->id }}" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
+        <a href="/editor/category/{{ $model->id }}" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button">@include('View/Widget/Icon', ['type' => 'edit'])</a>
     @endif
 @endsection
 

@@ -40,7 +40,7 @@ $(document).ready(function () {
         $('#pm-change-order-save').on('click', function() {
             $.post('/api/category/changeOrder/' + categoryId, $('#pm-change-order-form').serialize())
                 .done(function() {
-                    $('#pm-change-order').modal('hide');
+                    new bootstrap.Modal('#pm-change-order').hide();
                 });
         });
     });

@@ -3,7 +3,7 @@
 @section ('contents')
     @component('View/Widget/Toolbar2')
         @slot('right')
-            <button id="gpam-new" class="btn btn-success" data-toggle="modal" data-target="#gpm-edit-dialog">Toevoegen</button>
+            <button id="gpam-new" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#gpm-edit-dialog">Toevoegen</button>
         @endslot
     @endcomponent
     <table class="table table-striped table-bordered">
@@ -32,7 +32,7 @@
                     <td>
                         <ul>
                             @foreach ($controlledMembers as $member)
-                                <li>{{ $member->profile->getFullName() }} <button title="Ontkoppelen" class="btn btn-warning btn-sm gpm-delete-from-parent-account" data-user-id="{{ $user->id }}" data-member-id="{{ $member->id }}" data-csrf-token="{{ $deleteFromToken }}"><span class="glyphicon glyphicon-trash"></span></button></li>
+                                <li>{{ $member->profile->getFullName() }} <button title="Ontkoppelen" class="btn btn-warning btn-sm gpm-delete-from-parent-account" data-user-id="{{ $user->id }}" data-member-id="{{ $member->id }}" data-csrf-token="{{ $deleteFromToken }}">@include('View/Widget/Icon', ['type' => 'delete'])</button></li>
                             @endforeach
                         </ul>
                         <form method="post" action="/contest/addToParentAccount" class="form-inline">
@@ -49,8 +49,8 @@
 
                     </td>
                     <td>
-                        <button data-id="{{ $user->id }}" data-csrf-token="{{ $resetPasswordToken }}" title="Nieuw wachtwoord opsturen" class="btn btn-sm btn-outline-cyndaron gpm-reset-password"><span class="glyphicon glyphicon-repeat"></span></button>
-                        <button data-id="{{ $user->id }}" data-csrf-token="{{ $deleteToken }}" title="Account verwijderen(!)" class="btn btn-sm btn-danger gpm-delete-parent-account"><span class="glyphicon glyphicon-trash"></span></button>
+                        <button data-id="{{ $user->id }}" data-csrf-token="{{ $resetPasswordToken }}" title="Nieuw wachtwoord opsturen" class="btn btn-sm btn-outline-cyndaron gpm-reset-password">@include('View/Widget/Icon', ['type' => 'repeat'])</button>
+                        <button data-id="{{ $user->id }}" data-csrf-token="{{ $deleteToken }}" title="Account verwijderen(!)" class="btn btn-sm btn-danger gpm-delete-parent-account">@include('View/Widget/Icon', ['type' => 'delete'])</button>
                     </td>
                 </tr>
             @endforeach
@@ -72,7 +72,7 @@
         @endslot
         @slot('footer')
             <button type="button" class="btn btn-success" id="gpm-edit-save">Opslaan</button>
-            <button type="button" class="btn btn-outline-cyndaron" data-toggle="modal" data-target="#gpm-edit-dialog">Annuleren</button>
+            <button type="button" class="btn btn-outline-cyndaron" data-bs-toggle="modal" data-bs-target="#gpm-edit-dialog">Annuleren</button>
         @endslot
     @endcomponent
 @endsection

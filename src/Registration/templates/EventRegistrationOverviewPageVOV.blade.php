@@ -89,9 +89,9 @@
                 <td>
                     <div class="btn-group btn-group-sm">
                         @if (!$registration->isPaid)
-                            <button data-registration-id="{{ $registrationId }}" data-csrf-token-set-is-paid="{{ $tokenHandler->get('event-registration', 'setIsPaid') }}" title="Markeren als betaald" class="eom-registration-set-paid btn btn-sm btn-success"><span class="glyphicon glyphicon-eur"></span></button>
+                            <button data-registration-id="{{ $registrationId }}" data-csrf-token-set-is-paid="{{ $tokenHandler->get('event-registration', 'setIsPaid') }}" title="Markeren als betaald" class="eom-registration-set-paid btn btn-sm btn-success">@include('View/Widget/Icon', ['type' => 'money'])</button>
                         @endif
-                        <button data-registration-id="{{ $registrationId }}" data-csrf-token-delete="{{ $tokenHandler->get('event-registration', 'delete') }}" title="Inschrijving verwijderen" class="eom-registration-delete btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                        <button data-registration-id="{{ $registrationId }}" data-csrf-token-delete="{{ $tokenHandler->get('event-registration', 'delete') }}" title="Inschrijving verwijderen" class="eom-registration-delete btn btn-sm btn-danger">@include('View/Widget/Icon', ['type' => 'delete'])</button>
                     </div>
                 </td>
             </tr>

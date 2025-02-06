@@ -1,9 +1,9 @@
 @extends('Index')
 
 @section ('titleControls')
-    <a href="/editor/sub/{{ $model->id }}" class="btn btn-outline-cyndaron" title="Bewerk deze statische pagina"><span class="glyphicon glyphicon-pencil"></span></a>
+    <a href="/editor/sub/{{ $model->id }}" class="btn btn-outline-cyndaron" title="Bewerk deze statische pagina">@include('View/Widget/Icon', ['type' => 'edit'])</a>
     @if ($model->hasBackup())
-        <a href="/editor/sub/{{ $model->id }}/previous" class="btn btn-outline-cyndaron" title="Vorige versie"><span class="glyphicon glyphicon-lastversion"></span></a>
+        <a href="/editor/sub/{{ $model->id }}/previous" class="btn btn-outline-cyndaron" title="Vorige versie">@include('View/Widget/Icon', ['type' => 'lastversion'])</a>
     @endif
 @endsection
 

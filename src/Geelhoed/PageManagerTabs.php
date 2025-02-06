@@ -32,8 +32,9 @@ final class PageManagerTabs
     public static function contestsTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, ContestRepository $contestRepository, SportRepository $sportRepository): string
     {
         $contests = $contestRepository->fetchAll([], [], 'ORDER BY registrationDeadline DESC');
-        return $templateRenderer->render('Geelhoed/Contest/PageManagerTab', [
+        return $templateRenderer->render('Geelhoed/Contest/Page/PageManagerTab', [
             'contests' => $contests,
+            'contestRepository' => $contestRepository,
             'tokenEdit' => $tokenHandler->get('contest', 'edit'),
             'tokenDelete' => $tokenHandler->get('contest', 'delete'),
             'sports' => $sportRepository->fetchAllForSelect(),

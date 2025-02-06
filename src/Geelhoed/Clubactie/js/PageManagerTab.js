@@ -12,7 +12,7 @@ window.addEventListener("DOMContentLoaded", () =>
                     document.getElementById('num-sold-tickets-' + subscriberId).innerText = numTickets;
                     document.getElementById('verified-status-' + subscriberId).innerText = '✔';
                     document.getElementById('mail-sent-' + subscriberId).innerText = '✔';
-                    $('#pm-confirm-tickets').modal('hide');
+                    new bootstrap.Modal('#pm-confirm-tickets').hide();
                 });
         });
     });

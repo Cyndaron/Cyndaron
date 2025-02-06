@@ -122,27 +122,17 @@
     </article>
 </main>
 
-<div id="confirm-dangerous" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Weet u het zeker?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Sluiten">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
+@component('View/Widget/Modal', ['id' => 'confirm-dangerous', 'title' => 'Weet u het zeker?'])
+    @slot('body')
 
-            </div>
-            <div class="modal-footer">
-                <button id="confirm-dangerous-no" type="button" class="btn btn-outline-cyndaron" data-dismiss="modal">
-                    Annuleren
-                </button>
-                <button id="confirm-dangerous-yes" type="button" class="btn btn-danger">Verwijderen</button>
-            </div>
-        </div>
-    </div>
-</div>
+    @endslot
+    @slot('footer')
+        <button id="confirm-dangerous-no" type="button" class="btn btn-outline-cyndaron" data-bs-dismiss="modal">
+            Annuleren
+        </button>
+        <button id="confirm-dangerous-yes" type="button" class="btn btn-danger">Verwijderen</button>
+    @endslot
+@endcomponent
 
 @foreach ($scripts as $script)
     <script type="text/javascript" src="{{ $script }}?r={{ \Cyndaron\CyndaronInfo::ENGINE_VERSION }}"

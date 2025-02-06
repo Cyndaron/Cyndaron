@@ -2,7 +2,7 @@
 
 function showContestEditDialog(id, name, description, location, sportId, deadlineDate, deadlineTime, registrationChangeDeadlineDate, registrationChangeDeadlineTime, price)
 {
-    $('#gcm-edit-dialog').modal().show();
+    new bootstrap.Modal('#gcm-edit-dialog').show();
 
     $('#gcm-edit-id').val(id);
     $('#gcm-edit-name').val(name);
@@ -52,7 +52,7 @@ $(document).ready(function()
             $.post('/api/contest/delete', { id: id, csrfToken: csrfToken }).done(function()
             {
                 row.remove();
-                $('#confirm-dangerous').modal('hide');
+                new bootstrap.Modal('#confirm-dangerous').hide();
             });
         });
     });

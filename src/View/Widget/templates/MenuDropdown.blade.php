@@ -1,20 +1,22 @@
 @php /** @var \Cyndaron\Url\UrlService $urlService */ @endphp
 <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        @if (!empty($icon)) <span class="glyphicon glyphicon-{{ $icon }}"></span> @endif {{ $title }}
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        @if (!empty($icon)) @include('View/Widget/Icon', ['type' => $icon]) @endif {{ $title }}
     </a>
-    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+    <ul class="dropdown-menu">
         @php /** @var \Cyndaron\Util\Link[] $items */ @endphp
         @foreach ($items as $item)
-            @if ($item->link)
-                <a class="dropdown-item" href="{{ $urlService->toFriendly($item->link) }}">
-                    @if ($item instanceof \Cyndaron\Util\LinkWithIcon)<span class="glyphicon glyphicon-{{ $item->icon }}"></span>&nbsp; @endif{{ $item->name }}
-                </a>
-            @else
-                <span class="dropdown-item">
-                    @if ($item instanceof \Cyndaron\Util\LinkWithIcon)<span class="glyphicon glyphicon-{{ $item->icon }}"></span>&nbsp; @endif<i>{{ $item->name }}</i>
+            <li>
+                @if ($item->link)
+                    <a class="dropdown-item" href="{{ $urlService->toFriendly($item->link) }}">
+                        @if ($item instanceof \Cyndaron\Util\LinkWithIcon)@include('View/Widget/Icon', ['type' => $item->icon])&nbsp; @endif{{ $item->name }}
+                    </a>
+                @else
+                    <span class="dropdown-item">
+                    @if ($item instanceof \Cyndaron\Util\LinkWithIcon)@include('View/Widget/Icon', ['type' => $item->icon])&nbsp; @endif<i>{{ $item->name }}</i>
                 </span>
-            @endif
+                @endif
+            </li>
         @endforeach
-    </div>
+    </ul>
 </li>

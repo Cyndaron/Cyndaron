@@ -7,10 +7,7 @@
 @component('View/Widget/Form/FormWrapper', ['id' => 'friendlyUrl', 'label' => $t->get('Friendly URL')])
     @slot('right')
         <div class="input-group">
-            <div class="input-group-prepend">
-                            <span class="input-group-text"
-                                  id="basic-addon3">{{ $friendlyUrlPrefix }}</span>
-            </div>
+            <span class="input-group-text" id="basic-addon3">{{ $friendlyUrlPrefix }}</span>
             <input type="text" class="form-control" id="friendlyUrl" name="friendlyUrl"
                    aria-describedby="basic-addon3" value="{{ $friendlyUrl }}" pattern="[a-z0-9\-\.\/]*"/>
         </div>

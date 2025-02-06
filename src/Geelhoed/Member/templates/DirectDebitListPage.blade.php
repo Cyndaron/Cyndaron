@@ -15,15 +15,16 @@
             <th>Leden</th>
         </tr>
         @php /** @var \Cyndaron\Geelhoed\Member\DirectDebit[] $directDebits */ @endphp
+        @php /** @var \Cyndaron\Geelhoed\Member\MemberRepository $memberRepository */ @endphp
         @foreach ($directDebits as $directDebit)
             <tr>
                 <td>{{ $directDebit->iban }}</td>
                 <td>{{ $directDebit->ibanHolder }}</td>
-                <td>{{ $directDebit->getTotalQuarterlyFee()|euro }}</td>
+                <td>{{ $directDebit->getTotalQuarterlyFee($memberRepository)|euro }}</td>
                 <td>
                     <ul>
                         @foreach ($directDebit->members as $member)
-                            <li>{{ $member->profile->getFullName() }}: {{ $member->getQuarterlyFee()|euro }}</li>
+                            <li>{{ $member->profile->getFullName() }}: {{ $memberRepository->getQuarterlyFee($member)|euro }}</li>
                         @endforeach
                     </ul>
                 </td>

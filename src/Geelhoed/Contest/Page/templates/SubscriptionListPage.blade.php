@@ -57,18 +57,18 @@
                         @if ($contestMember->isPaid)
                             <button class="btn btn-warning gcsm-update-payment-status"
                                     data-id="{{ $contestMember->id }}" data-is-paid="0" title="Markeren als onbetaald">
-                                <span class="glyphicon glyphicon-euro"></span></button>
+                                @include('View/Widget/Icon', ['type' => 'money'])</button>
                         @else
                             <button class="btn btn-success gcsm-update-payment-status"
                                     data-id="{{ $contestMember->id }}" data-is-paid="1" title="Markeren als betaald">
-                                <span class="glyphicon glyphicon-euro"></span></button>
+                                @include('View/Widget/Icon', ['type' => 'money'])</button>
                         @endif
                         <a href="/contest/editSubscription/{{ $contestMember->id }}" class="btn btn-warning"
                            title="Gewicht of band wijzigen">
-                            <span class="glyphicon glyphicon-pencil"></span>
+                            @include('View/Widget/Icon', ['type' => 'edit'])
                         </a>
                         <button class="btn btn-danger gcsm-delete" data-id="{{ $contestMember->id }}"
-                                title="Deze inschrijving verwijderen"><span class="glyphicon glyphicon-trash"></span>
+                                title="Deze inschrijving verwijderen">@include('View/Widget/Icon', ['type' => 'delete'])
                         </button>
                     </div>
                 </td>

@@ -7,8 +7,8 @@
         @slot('right')
             <button id="mm-create-item"
                     data-csrf-token="{{ $tokenHandler->get('menu', 'addItem') }}"
-                    type="button" class="btn btn-success" data-toggle="modal" data-target="#mm-edit-item-dialog">
-                <span class="glyphicon glyphicon-plus"></span> Nieuw menuitem
+                    type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#mm-edit-item-dialog">
+                @include('View/Widget/Icon', ['type' => 'new']) Nieuw menuitem
             </button>
         @endslot
     @endcomponent
@@ -52,15 +52,15 @@
                 <div class="btn-group">
                     <button class="mm-edit-item btn btn-outline-cyndaron"
                             data-id="{{ $menuItem->id }}"
-                            data-toggle="modal"
-                            data-target="#mm-edit-item-dialog"
+                            data-bs-toggle="modal"
+                            data-bs-target="#mm-edit-item-dialog"
                             data-priority="{{ $menuItem->priority }}"
                             data-link="{{ $menuItem->link }}"
                             data-alias="{{ $menuItem->alias }}"
                             data-isDropdown="{{ $menuItem->isDropdown }}"
                             data-isImage="{{ $menuItem->isImage }}"
-                    ><span class="glyphicon glyphicon-pencil"></span></button>
-                    <button class="mm-delete-item btn btn-danger" data-id="{{ $menuItem->id }}"><span class="glyphicon glyphicon-trash"></span></button>
+                    >@include('View/Widget/Icon', ['type' => 'edit'])</button>
+                    <button class="mm-delete-item btn btn-danger" data-id="{{ $menuItem->id }}">@include('View/Widget/Icon', ['type' => 'delete'])</button>
                 </div>
             </td>
         </tr>
@@ -107,7 +107,7 @@
         @endslot
         @slot('footer')
             <button id="mm-edit-item-save" type="button" class="btn btn-primary">Opslaan</button>
-            <button type="button" class="btn btn-outline-cyndaron" data-dismiss="modal">Annuleren</button>
+            <button type="button" class="btn btn-outline-cyndaron" data-bs-dismiss="modal">Annuleren</button>
         @endslot
     @endcomponent
 

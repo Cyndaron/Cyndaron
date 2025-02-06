@@ -43,7 +43,7 @@
                             <input type="hidden" name="csrfToken" value="{{ $tokenHandler->get('contest', 'removeAsContestant') }}"/>
                             <input type="hidden" name="memberId" value="{{ $contestant->id }}"/>
                             <button type="submit" class="btn btn-outline-cyndaron" title="Status wedstrijdjudoka verwijderen">
-                                <span class="glyphicon glyphicon-trash"></span>
+                                @include('View/Widget/Icon', ['type' => 'delete'])
                             </button>
                         </form>
                     </td>

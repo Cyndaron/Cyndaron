@@ -4,7 +4,7 @@
 
 function showRichLinkEditDialog(id, name, url, previewImage, blurb, openInNewTab, categories)
 {
-    $('#pm-edit-dialog').modal().show();
+    new bootstrap.Modal('#pm-edit-dialog').show();
 
     $('#pm-edit-id').val(id);
     $('#pm-edit-name').val(name);
@@ -55,7 +55,7 @@ $(document).ready(function()
             $.post('/api/richlink/delete', { id: id, csrfToken: csrfToken }).done(function()
             {
                 row.remove();
-                $('#confirm-dangerous').modal('hide');
+                new bootstrap.Modal('#confirm-dangerous').hide();
             });
         });
     });

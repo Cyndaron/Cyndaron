@@ -7,7 +7,7 @@
         <div class="card">
             <div class="card-header" id="heading-cities">
                 <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#cities-list" aria-expanded="false" aria-controls="cities-list">
+                    <button class="btn btn-link collapsed" data-bs-toggle="collapse" data-bs-target="#cities-list" aria-expanded="false" aria-controls="cities-list">
                         Zoeken op plaats
                     </button>
                 </h5>
@@ -33,7 +33,7 @@
         <div class="card">
             <div class="card-header" id="heading-days">
                 <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#days-list" aria-expanded="false" aria-controls="days-list">
+                    <button class="btn btn-link collapsed" data-bs-toggle="collapse" data-bs-target="#days-list" aria-expanded="false" aria-controls="days-list">
                         Zoeken op dag
                     </button>
                 </h5>
@@ -59,7 +59,7 @@
         <div class="card">
             <div class="card-header" id="heading-age">
                 <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#age-list" aria-expanded="false" aria-controls="age-list">
+                    <button class="btn btn-link collapsed" data-bs-toggle="collapse" data-bs-target="#age-list" aria-expanded="false" aria-controls="age-list">
                         Zoeken op leeftijd
                     </button>
                 </h5>

@@ -19,7 +19,7 @@
                 <td>{{ $tryout->id }}</td>
                 <td>{{ $tryout->name }}</td>
                 <td>
-                    @php $location = $tryout->getLocationObject() @endphp
+                    @php $location = $tryout->location @endphp
                     @if ($location !== null)
                         <a href="/locaties/details/{{ $location->id }}">{{ $location->getName() }}</a>
                     @endif
@@ -40,7 +40,7 @@
                             data-id="{{ $tryout->id }}"
                             data-csrf-token-create-photoalbums="{{ $csrfTokenCreatePhotoalbums }}"
                         >
-                            <span class="glyphicon glyphicon-picture"></span>
+                            @include('View/Widget/Icon', ['type' => 'picture'])
                         </button>
                     @endif
                 </td>

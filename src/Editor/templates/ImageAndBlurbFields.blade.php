@@ -1,13 +1,28 @@
-@include('View/Widget/Form/BasicInput', ['id' => 'editorHeaderImage', 'label' => $t->get('Afbeelding'), 'type' => 'text', 'value' => $editorHeaderImage, 'datalist' => 'page-header-images'])
-@include('View/Widget/Form/BasicInput', ['id' => 'editorPreviewImage', 'label' => $t->get('Preview-afbeelding'), 'type' => 'text', 'value' => $editorPreviewImage, 'datalist' => 'page-preview-images'])
-@include('View/Widget/Form/BasicInput', ['id' => 'blurb', 'label' => $t->get('Korte samenvatting'), 'type' => 'text', 'value' => $blurb])
+@component('View/Widget/Form/FormWrapper', ['id' => 'editorHeaderImage', 'label' => $t->get('Afbeelding')])
+    @slot('right')
+        <div class="input-group">
+            <input id="editorHeaderImage" name="editorHeaderImage" class="form-control" value="{{ $editorHeaderImage }}"
+                   list="page-header-images"/>
+            <label class="btn btn-primary" for="header-image-upload">{{ $t->get('Uploaden…') }}
+                <input type="file" id="header-image-upload" name="header-image-upload">
+            </label>
+        </div>
+    @endslot
+@endcomponent
 
-<label class="btn btn-primary" for="header-image-upload">{{ $t->get('Headerafbeelding uploaden…') }}
-    <input type="file" id="header-image-upload" name="header-image-upload">
-</label>
-<label class="btn btn-primary" for="preview-image-upload">{{ $t->get('Previewafbeelding uploaden…') }}
-    <input type="file" id="preview-image-upload" name="preview-image-upload">
-</label>
+@component('View/Widget/Form/FormWrapper', ['id' => 'editorPreviewImage', 'label' => $t->get('Preview-afbeelding')])
+    @slot('right')
+        <div class="input-group">
+            <input id="editorPreviewImage" name="editorPreviewImage" class="form-control" value="{{ $editorPreviewImage }}"
+                   list="page-preview-images"/>
+            <label class="btn btn-primary" for="preview-image-upload">{{ $t->get('Uploaden…') }}
+                <input type="file" id="preview-image-upload" name="preview-image-upload">
+            </label>
+        </div>
+    @endslot
+@endcomponent
+
+@include('View/Widget/Form/BasicInput', ['id' => 'blurb', 'label' => $t->get('Korte samenvatting'), 'type' => 'text', 'value' => $blurb])
 
 <datalist id="page-header-images">
     @foreach ($pageHeaderImages as $pageHeaderImage)
