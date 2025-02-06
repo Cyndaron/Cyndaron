@@ -9,19 +9,24 @@ use function array_filter;
 
 final class UserMenu
 {
+    public function __construct(
+        private readonly DependencyInjectionContainer $dic,
+        private readonly UserRepository $userRepository,
+    ) {
+    }
+
     /**
-     * @param UserRepository $repository
      * @param UserSession $userSession
      * @param UserMenuItem[] $menuItems
      * @return UserMenuItem[]
      */
-    public static function getForCurrentSession(DependencyInjectionContainer $dic, UserRepository $repository, UserSession $userSession, array $menuItems): array
+    public function getForCurrentSession(UserSession $userSession, array $menuItems): array
     {
-        return array_filter($menuItems, static function(UserMenuItem $userMenuItem) use ($dic, $repository, $userSession)
+        return array_filter($menuItems, function(UserMenuItem $userMenuItem) use ($userSession)
         {
             if ($userMenuItem->checkVisibility !== null)
             {
-                $visible = $dic->callClosureWithDependencyInjection($userMenuItem->checkVisibility);
+                $visible = $this->dic->callClosureWithDependencyInjection($userMenuItem->checkVisibility);
                 if (!$visible)
                 {
                     return false;
@@ -35,7 +40,7 @@ final class UserMenu
             }
             $currentUser = $userSession->getProfile();
             $right = $userMenuItem->right ?? '';
-            if ($right !== '' && $currentUser !== null && $repository->userHasRight($currentUser, $right))
+            if ($right !== '' && $currentUser !== null && $this->userRepository->userHasRight($currentUser, $right))
             {
                 return true;
             }
