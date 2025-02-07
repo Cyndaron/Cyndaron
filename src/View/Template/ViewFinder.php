@@ -1,46 +1,32 @@
 <?php
 namespace Cyndaron\View\Template;
 
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\View\FileViewFinder;
 use InvalidArgumentException;
 use function array_key_exists;
 use function array_merge;
 use function array_pop;
 use function array_slice;
-use function assert;
 use function count;
 use function explode;
 use function file_exists;
 use function implode;
-use function is_string;
-use function strtr;
 
-final class ViewFinder extends FileViewFinder
+final class ViewFinder
 {
     /** @var array<string, string> */
     private readonly array $templateRoots;
+    /** @var array<string, string> */
+    private array $views;
 
     /**
      * @param array<string, string> $templateRoots
-     * @param Filesystem $filesystem
-     * @param string[] $viewPaths
      */
-    public function __construct(array $templateRoots, Filesystem $filesystem, array $viewPaths)
+    public function __construct(array $templateRoots)
     {
         $this->templateRoots = array_merge(['View' => __DIR__ . '/../'], $templateRoots);
-        parent::__construct($filesystem, $viewPaths);
     }
-    /**
-     * Find the given view in the list of paths.
-     *
-     * @param  string  $name
-     * @phpstan-ignore-next-line
-     * @param  array   $paths
-     * @throws InvalidArgumentException
-     * @return string
-     */
-    protected function findInPaths($name, $paths): string
+
+    private function findInPaths(string $name): string
     {
         $path = $this->path($name);
 
@@ -133,5 +119,21 @@ final class ViewFinder extends FileViewFinder
         }
 
         return $template;
+    }
+
+    /**
+     * Get the fully qualified location of the view.
+     *
+     * @param  string  $name
+     * @return string
+     */
+    public function find(string $name): string
+    {
+        if (isset($this->views[$name]))
+        {
+            return $this->views[$name];
+        }
+
+        return $this->views[$name] = $this->findInPaths($name);
     }
 }

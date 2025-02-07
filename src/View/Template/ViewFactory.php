@@ -9,7 +9,6 @@ use Illuminate\View\Concerns\ManagesLayouts;
 use Illuminate\View\Concerns\ManagesLoops;
 use Illuminate\View\Concerns\ManagesStacks;
 use Illuminate\View\Engines\CompilerEngine;
-use Illuminate\View\ViewFinderInterface;
 use function array_merge;
 
 final class ViewFactory
@@ -29,7 +28,7 @@ final class ViewFactory
 
     public function __construct(
         private readonly CompilerEngine $compilerEngine,
-        private readonly ViewFinderInterface $finder
+        private readonly ViewFinder $finder
     ) {
     }
 

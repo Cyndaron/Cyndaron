@@ -4,13 +4,9 @@ declare(strict_types=1);
 namespace Cyndaron\View\Template;
 
 use Cyndaron\Util\Util;
-use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
-use Illuminate\View\Engines\EngineResolver;
-use Illuminate\View\Engines\FileEngine;
-use Illuminate\View\Engines\PhpEngine;
 use Pine\BladeFilters\BladeFilters;
 use Pine\BladeFilters\BladeFiltersCompiler;
 
@@ -33,11 +29,10 @@ class TemplateRendererFactory
      */
     public static function createTemplateRenderer(array $templateRoots): TemplateRenderer
     {
-        $viewPaths = [];
         self::createCacheDir();
 
         $filesystem = new Filesystem();
-        $viewFinder = new ViewFinder($templateRoots, $filesystem, $viewPaths);
+        $viewFinder = new ViewFinder($templateRoots);
         $compiler = new BladeCompiler(
             $filesystem,
             self::COMPILED_DIR,
