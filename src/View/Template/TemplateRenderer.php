@@ -3,11 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\View\Template;
 
-use Illuminate\View\Factory;
-
 class TemplateRenderer
 {
-    public function __construct(private readonly Factory $factory)
+    public function __construct(private readonly ViewFactory $factory)
     {
     }
 
