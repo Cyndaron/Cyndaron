@@ -7,7 +7,6 @@ use Cyndaron\Page\Page;
 use Cyndaron\User\User;
 use Cyndaron\User\UserRepository;
 use Cyndaron\View\Renderer\TextRenderer;
-use Cyndaron\View\Template\TemplateRenderer;
 
 final class PhotoalbumPage
 {
@@ -19,12 +18,6 @@ final class PhotoalbumPage
         private readonly PhotoRepository $photoRepository,
     ) {
 
-    }
-
-    public function drawSlider(Photoalbum $album, TemplateRenderer $templateRenderer): string
-    {
-        $photos = $this->photoRepository->fetchAllByAlbum($album);
-        return $templateRenderer->render('Photoalbum/Photoslider', ['album' => $album, 'photos' => $photos]);
     }
 
     public function createPage(Photoalbum $album, int $viewMode = Photoalbum::VIEWMODE_REGULAR): Page

@@ -11,7 +11,7 @@ final class SliderRenderer implements \Cyndaron\Module\TextPostProcessor
     public function __construct(
         private readonly TemplateRenderer $templateRenderer,
         private readonly PhotoalbumRepository $photoalbumRepository,
-        private readonly PhotoalbumPage $photoalbumPage,
+        private readonly PhotoRepository $photoRepository,
     ) {
     }
 
@@ -22,7 +22,8 @@ final class SliderRenderer implements \Cyndaron\Module\TextPostProcessor
             $album = $this->photoalbumRepository->fetchById((int)$matches[1]);
             if ($album !== null)
             {
-                return $this->photoalbumPage->drawSlider($album, $this->templateRenderer);
+                $photos = $this->photoRepository->fetchAllByAlbum($album);
+                return $this->templateRenderer->render('Photoalbum/Photoslider', ['album' => $album, 'photos' => $photos]);
             }
             return '';
         }, $text) ?? $text;
