@@ -36,11 +36,10 @@ class TemplateRendererFactory
         $viewPaths = [];
         self::createCacheDir();
 
-        $events = new Dispatcher();
         $filesystem = new Filesystem();
         $viewFinder = new ViewFinder($templateRoots, $filesystem, $viewPaths);
         $resolver = new EngineResolver();
-        $factory = new ViewFactory($resolver, $viewFinder, $events);
+        $factory = new ViewFactory($resolver, $viewFinder);
         $fileEngine = new FileEngine($filesystem);
         $phpEngine =  new PhpEngine($filesystem);
         $compiler = new BladeCompiler(

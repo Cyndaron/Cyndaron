@@ -3,12 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\View\Template;
 
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\View\Factory as FactoryContract;
 use Illuminate\Support\Arr;
 use Illuminate\View\Concerns\ManagesComponents;
-use Illuminate\View\Concerns\ManagesEvents;
 use Illuminate\View\Concerns\ManagesFragments;
 use Illuminate\View\Concerns\ManagesLayouts;
 use Illuminate\View\Concerns\ManagesLoops;
@@ -17,22 +14,19 @@ use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\ViewFinderInterface;
 use InvalidArgumentException;
 use function array_merge;
-use function tap;
 use function is_array;
 use function array_keys;
 use function str_ends_with;
 
-final class ViewFactory implements FactoryContract
+final class ViewFactory
 {
     use ManagesComponents;
-    use ManagesEvents;
     use ManagesFragments;
     use ManagesLayouts;
     use ManagesStacks;
     use ManagesLoops;
 
     private ViewFinderInterface $finder;
-    private Dispatcher $events;
     private EngineResolver $engines;
 
     /**
@@ -73,10 +67,9 @@ final class ViewFactory implements FactoryContract
         return $name;
     }
 
-    public function __construct(EngineResolver $engines, ViewFinderInterface $finder, Dispatcher $events)
+    public function __construct(EngineResolver $engines, ViewFinderInterface $finder)
     {
         $this->finder = $finder;
-        $this->events = $events;
         $this->engines = $engines;
 
         $this->share('__env', $this);
@@ -96,17 +89,14 @@ final class ViewFactory implements FactoryContract
         return true;
     }
 
-    public function file($path, $data = [], $mergeData = [])
+    public function file($path, $data = [], $mergeData = []): View
     {
         $data = array_merge($mergeData, $this->parseData($data));
 
-        return tap($this->viewInstance($path, $path, $data), function($view)
-        {
-            $this->callCreator($view);
-        });
+        return $this->viewInstance($path, $path, $data);
     }
 
-    public function make($view, $data = [], $mergeData = [])
+    public function make($view, $data = [], $mergeData = []): View
     {
         $path = $this->finder->find(
             $view = $this->normalizeName($view)
@@ -117,10 +107,7 @@ final class ViewFactory implements FactoryContract
         // the caller for rendering or performing other view manipulations on this.
         $data = array_merge($mergeData, $this->parseData($data));
 
-        return tap($this->viewInstance($view, $path, $data), function($view)
-        {
-            $this->callCreator($view);
-        });
+        return $this->viewInstance($view, $path, $data);
     }
 
     public function share($key, $value = null)
