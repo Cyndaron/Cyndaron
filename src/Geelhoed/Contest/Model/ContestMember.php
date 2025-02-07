@@ -8,7 +8,6 @@ use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Graduation\Graduation;
 use Cyndaron\Geelhoed\Member\Member;
-use Cyndaron\User\User;
 
 final class ContestMember extends Model
 {
@@ -30,9 +29,4 @@ final class ContestMember extends Model
     public bool $isPaid = false;
     #[DatabaseField]
     public string $comments = '';
-
-    public function canBeChanged(User $user): bool
-    {
-        return $this->contest->registrationCanBeChanged($user);
-    }
 }

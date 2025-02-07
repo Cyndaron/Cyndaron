@@ -10,6 +10,7 @@ use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Photoalbum\Photoalbum;
+use Cyndaron\Photoalbum\PhotoalbumRepository;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -35,13 +36,13 @@ final class CategoryController
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService, Connection $connection, StaticPageRepository $staticPageRepository): Response
+    public function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService, Connection $connection, StaticPageRepository $staticPageRepository, PhotoalbumRepository $photoalbumRepository): Response
     {
         $id = $queryBits->getString(1);
 
         if ($id === '0' || $id === 'fotoboeken')
         {
-            $page = new PhotoalbumIndexPage($urlService);
+            $page = new PhotoalbumIndexPage($urlService, $photoalbumRepository);
             return $this->pageRenderer->renderResponse($page);
         }
         if ($id === 'tag')

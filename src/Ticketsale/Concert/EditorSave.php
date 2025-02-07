@@ -5,6 +5,7 @@ namespace Cyndaron\Ticketsale\Concert;
 
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Imaging\ImageExtractor;
+use Cyndaron\Location\Location;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\UserSession;
@@ -35,7 +36,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $concert->numReservedSeats = $this->post->getInt('numReservedSeats');
         $concert->deliveryCostInterface = $this->post->getSimpleString('deliveryCostInterface');
         $concert->date = $this->post->getSimpleString('date');
-        $concert->locationId = $this->post->getInt('locationId');
+        $concert->location = new Location($this->post->getInt('locationId'));
         $concert->ticketInfo = $this->post->getHTML('ticketInfo');
 
         $delivery = TicketDelivery::from($this->post->getInt('delivery'));

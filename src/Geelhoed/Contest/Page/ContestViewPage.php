@@ -1,42 +1,36 @@
 <?php
+declare(strict_types=1);
+
 namespace Cyndaron\Geelhoed\Contest\Page;
 
 use Cyndaron\Geelhoed\Contest\Model\Contest;
+use Cyndaron\Geelhoed\Contest\Model\ContestClassRepository;
 use Cyndaron\Geelhoed\Contest\Model\ContestDateRepository;
+use Cyndaron\Geelhoed\Contest\Model\ContestMemberRepository;
 use Cyndaron\Geelhoed\Contest\Model\ContestRepository;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberRepository;
 use Cyndaron\Page\Page;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
+use Cyndaron\User\UserRepository;
+use Cyndaron\User\UserSession;
 
-final class ContestViewPage extends Page
+final class ContestViewPage
 {
-    public function __construct(Contest $contest, User|null $currentUser, CSRFTokenHandler $tokenHandler, ContestRepository $contestRepository, ContestDateRepository $contestDateRepository, MemberRepository $memberRepository)
-    {
-        $controlledMembers = $currentUser !== null ? $memberRepository->fetchAllContestantsByUser($currentUser) : [];
-        $canManage = $currentUser !== null && $currentUser->hasRight(Contest::RIGHT_MANAGE);
-        $mayViewOtherContestants = $this->loggedInUserMayViewOtherContestants($canManage, $controlledMembers);
-        $this->title = "Wedstrijd: {$contest->name}";
-        $this->addCss('/src/Geelhoed/geelhoed.css');
-        $this->addTemplateVars([
-            'addAttachmentToken' => $tokenHandler->get('contest', 'addAttachment'),
-            'addDateCsrfToken' => $tokenHandler->get('contest', 'addDate'),
-            'allSubscribed' => $this->areAllSubscribed($contestRepository, $contest, $controlledMembers),
-            'canManage' => $canManage,
-            'cancelSubscriptionCsrfToken' => $tokenHandler->get('contest', 'cancelSubscription'),
-            'contest' => $contest,
-            'contestDateRepository' => $contestDateRepository,
-            'contestRepository' => $contestRepository,
-            'controlledMembers' => $controlledMembers,
-            'deleteCsrfToken' => $tokenHandler->get('contest', 'deleteAttachment'),
-            'deleteDateCsrfToken' => $tokenHandler->get('contest', 'deleteDate'),
-            'due' => $currentUser !== null ? $this->getTotalDue($contestRepository, $currentUser, $memberRepository) : 0.00,
-            'mayViewOtherContestants' => $mayViewOtherContestants,
-            'profile' => $currentUser,
-        ]);
-        $this->addScript('/src/Geelhoed/Contest/js/ContestViewPage.js');
-        $this->addScript('/src/Geelhoed/Contest/js/MemberSubscriptionStatus.js');
+    private User|null $currentUser;
+
+    public function __construct(
+        UserSession $userSession,
+        private readonly CSRFTokenHandler $tokenHandler,
+        private readonly ContestRepository $contestRepository,
+        private readonly ContestClassRepository $contestClassRepository,
+        private readonly ContestDateRepository $contestDateRepository,
+        private readonly ContestMemberRepository $contestMemberRepository,
+        private readonly MemberRepository $memberRepository,
+        private readonly UserRepository $userRepository
+    ) {
+        $this->currentUser = $userSession->getProfile();
     }
 
     /**
@@ -63,6 +57,7 @@ final class ContestViewPage extends Page
     }
 
     /**
+     * @param ContestRepository $contestRepository
      * @param Contest $contest
      * @param Member[] $controlledMembers
      * @return bool
@@ -84,5 +79,40 @@ final class ContestViewPage extends Page
     {
         [$due, $contestMembers] = $contestRepository->getTotalDue($user, $memberRepository);
         return $due;
+    }
+
+    public function createPage(Contest $contest): Page
+    {
+        $page = new Page();
+        $page->template = 'Geelhoed/Contest/Page/ContestViewPage';
+        $page->title = "Wedstrijd: {$contest->name}";
+        $page->addCss('/src/Geelhoed/geelhoed.css');
+        $page->addScript('/src/Geelhoed/Contest/js/ContestViewPage.js');
+        $page->addScript('/src/Geelhoed/Contest/js/MemberSubscriptionStatus.js');
+
+        $controlledMembers = $this->currentUser !== null ? $this->memberRepository->fetchAllContestantsByUser($this->currentUser) : [];
+        $canManage = $this->currentUser !== null && $this->userRepository->userHasRight($this->currentUser, Contest::RIGHT_MANAGE);
+        $mayViewOtherContestants = $this->loggedInUserMayViewOtherContestants($canManage, $controlledMembers);
+
+        $page->addTemplateVars([
+            'addAttachmentToken' => $this->tokenHandler->get('contest', 'addAttachment'),
+            'addDateCsrfToken' => $this->tokenHandler->get('contest', 'addDate'),
+            'allSubscribed' => $this->areAllSubscribed($this->contestRepository, $contest, $controlledMembers),
+            'canManage' => $canManage,
+            'cancelSubscriptionCsrfToken' => $this->tokenHandler->get('contest', 'cancelSubscription'),
+            'contest' => $contest,
+            'contestDateRepository' => $this->contestDateRepository,
+            'contestMemberRepository' => $this->contestMemberRepository,
+            'contestRepository' => $this->contestRepository,
+            'controlledMembers' => $controlledMembers,
+            'deleteCsrfToken' => $this->tokenHandler->get('contest', 'deleteAttachment'),
+            'deleteDateCsrfToken' => $this->tokenHandler->get('contest', 'deleteDate'),
+            'due' => $this->currentUser !== null ? $this->getTotalDue($this->contestRepository, $this->currentUser, $this->memberRepository) : 0.00,
+            'mayViewOtherContestants' => $mayViewOtherContestants,
+            'profile' => $this->currentUser,
+            'contestClasses' => $this->contestClassRepository->fetchAll(),
+        ]);
+
+        return $page;
     }
 }

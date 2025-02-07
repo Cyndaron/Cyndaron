@@ -2,6 +2,7 @@
 namespace Cyndaron\Photoalbum;
 
 use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
@@ -12,6 +13,7 @@ use Cyndaron\Module\WithTextPostProcessors;
 use Cyndaron\Url\Url;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
+use Cyndaron\User\UserRepository;
 use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
 use function array_map;
@@ -54,10 +56,10 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
         ];
     }
 
-    public function nameFromUrl(array $linkParts): string|null
+    public function nameFromUrl(GenericRepository $genericRepository, array $linkParts): string|null
     {
-        $album = Photoalbum::fetchById((int)$linkParts[1]);
-        return $album !== null ? $album->name : null;
+        $album = $genericRepository->fetchById(Photoalbum::class, (int)$linkParts[1]);
+        return $album?->name;
     }
 
     public function getList(Connection $connection): array
@@ -70,9 +72,10 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
         }, $list);
     }
 
-    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, PhotoalbumRepository $photoalbumRepository): string
+    public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, PhotoalbumRepository $photoalbumRepository, UserRepository $userRepository): string
     {
         $templateVars = [
+            'canEdit' => $userRepository->userHasRight($currentUser, Photoalbum::RIGHT_EDIT),
             'photoalbums' => $photoalbumRepository->fetchAllAndSortByName(),
             'currentUser' => $currentUser,
             'tokenAdd' => $tokenHandler->get('photoalbum', 'add'),

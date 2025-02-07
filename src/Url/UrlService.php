@@ -4,11 +4,14 @@ declare(strict_types=1);
 namespace Cyndaron\Url;
 
 use Closure;
+use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\DatabaseError;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Util\Error\IncompleteData;
+use Symfony\Component\HttpFoundation\Request;
 use function array_key_exists;
 use function explode;
 use function is_string;
@@ -17,15 +20,24 @@ use function trim;
 class UrlService
 {
     /**
-     * @param class-string<UrlProvider>[] $urlProviders
-     * @param array<class-string<Model>, Closure> $modelToUrlPrefixers
+     * @var class-string<UrlProvider>[]
      */
+    private readonly array $urlProviders;
+    /**
+     * @var array<class-string<Model>, Closure>
+     */
+    private readonly array $modelToUrlPrefixers;
+    private string $requestUri;
+
     public function __construct(
         private readonly Connection $connection,
-        private readonly string $requestUri,
-        private readonly array $urlProviders,
-        private readonly array $modelToUrlPrefixers
+        private readonly GenericRepository $genericRepository,
+        Request $request,
+        ModuleRegistry $registry,
     ) {
+        $this->requestUri = $request->getRequestUri();
+        $this->urlProviders = $registry->urlProviders;
+        $this->modelToUrlPrefixers = $registry->modelToUrlPrefixers;
     }
 
     public function getPageTitle(Url|string $url): string
@@ -38,7 +50,7 @@ class UrlService
             $classname = $this->urlProviders[$linkParts[0]];
             /** @var UrlProvider $class */
             $class = new $classname();
-            $result = $class->nameFromUrl($linkParts);
+            $result = $class->nameFromUrl($this->genericRepository, $linkParts);
 
             if ($result !== null)
             {
@@ -81,6 +93,9 @@ class UrlService
         return (string)$url1 === (string)$url2;
     }
 
+    /**
+     * @todo Move to repository?
+     */
     public function createFriendlyUrl(Url|string $unfriendlyUrl, string $name): void
     {
         if ($name === '' || (string)$unfriendlyUrl === '')

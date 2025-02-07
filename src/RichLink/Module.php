@@ -3,6 +3,7 @@ namespace Cyndaron\RichLink;
 
 use Cyndaron\Category\Category;
 use Cyndaron\Category\CategoryRepository;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
@@ -33,9 +34,9 @@ final class Module implements Datatypes, UrlProvider, Routes
         ];
     }
 
-    public function nameFromUrl(array $linkParts): string|null
+    public function nameFromUrl(GenericRepository $genericRepository, array $linkParts): string|null
     {
-        $richLink = RichLink::fetchById((int)$linkParts[1]);
+        $richLink = $genericRepository->fetchById(RichLink::class, (int)$linkParts[1]);
         return $richLink->name ?? null;
     }
 

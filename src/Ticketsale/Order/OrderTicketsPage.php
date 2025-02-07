@@ -39,7 +39,7 @@ final class OrderTicketsPage extends Page
             'organisation' => Setting::get(BuiltinSetting::ORGANISATION),
             'concert' => $concert,
             'ticketTypes' => $ticketTypes,
-            'location' => Location::fetchById($concert->locationId),
+            'location' => $concert->location,
         ]);
     }
 }

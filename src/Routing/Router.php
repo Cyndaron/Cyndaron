@@ -16,6 +16,7 @@ use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserLevel;
+use Cyndaron\User\UserRepository;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\Setting;
@@ -207,7 +208,8 @@ final class Router
             }
         }
 
-        return $this->callRoute($controller, $route, $userSession, $requestUri);
+        $userRepository = $this->dic->get(UserRepository::class);
+        return $this->callRoute($controller, $route, $userSession, $userRepository, $requestUri);
     }
 
     public function getLoginRedirect(QueryBits $queryBits, UserSession $userSession, string $requestUri): RedirectResponse|null
@@ -237,11 +239,11 @@ final class Router
         return true;
     }
 
-    private function callRoute(object $controller, Route $route, UserSession $userSession, string $requestUri): Response
+    private function callRoute(object $controller, Route $route, UserSession $userSession, UserRepository $userRepository, string $requestUri): Response
     {
         $right = $route->right;
         $profile = $userSession->getProfile();
-        $hasRight = !empty($right) && $profile?->hasRight($right);
+        $hasRight = !empty($right) && $profile !== null && $userRepository->userHasRight($profile, $right);
         if (!$hasRight)
         {
             $response = $this->checkUserLevel($userSession, $route->level, $requestUri);

@@ -34,7 +34,7 @@ final class PhotoalbumController
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function routeGet(QueryBits $queryBits, TextRenderer $textRenderer, UserSession $session): Response
+    public function routeGet(QueryBits $queryBits, PhotoalbumPage $photoalbumPage): Response
     {
         $id = $queryBits->getInt(1);
         if ($id < 1)
@@ -47,8 +47,7 @@ final class PhotoalbumController
         {
             return new JsonResponse(['error' => 'Album does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        $page = new PhotoalbumPage($album, $this->photoalbumRepository, $textRenderer, $session->getProfile());
-        return $this->pageRenderer->renderResponse($page);
+        return $this->pageRenderer->renderResponse($photoalbumPage->createPage($album));
     }
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Photoalbum::RIGHT_EDIT)]

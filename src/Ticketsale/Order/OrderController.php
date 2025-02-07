@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\Barcode\Code128;
-use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\ImproperSubclassing;
 use Cyndaron\Location\Location;
@@ -25,6 +25,7 @@ use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
+use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\TemplateRenderer;
@@ -59,15 +60,16 @@ final class OrderController
     public function __construct(
         private readonly TemplateRenderer $templateRenderer,
         private readonly PageRenderer $pageRenderer,
+        private readonly OrderRepository $orderRepository,
     ) {
     }
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function add(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory): Response
+    public function add(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory, Connection $connection): Response
     {
         try
         {
-            $order = $this->processOrder($post, $urlInfo, $confirmationMailFactory);
+            $order = $this->processOrder($post, $urlInfo, $confirmationMailFactory, $connection);
             $concert = $order->concert;
             if ($concert->getDelivery() === TicketDelivery::DIGITAL)
             {
@@ -173,12 +175,14 @@ final class OrderController
     /**
      * @param RequestParameters $post
      * @param UrlInfo $urlInfo
-     * @throws InvalidOrder
-     * @throws ImproperSubclassing
-     * @throws JsonException
+     * @param OrderConfirmationMailFactory $confirmationMailFactory
+     * @param Connection $connection
      * @return Order
+     * @throws ImproperSubclassing
+     * @throws InvalidOrder
+     * @throws JsonException
      */
-    private function processOrder(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory): Order
+    private function processOrder(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory, Connection $connection): Order
     {
         if ($post->isEmpty())
         {
@@ -281,10 +285,13 @@ final class OrderController
         for ($i = 0; $i < self::MAX_SECRET_CODE_RETRIES; $i++)
         {
             $order->secretCode = Util::generateSecretCode();
-            $saveResult = $order->save();
-            if ($saveResult)
+            try
             {
-                break;
+                $this->orderRepository->save($order);
+                $saveResult = true;
+            }
+            catch (\Throwable)
+            {
             }
         }
 
@@ -318,10 +325,10 @@ final class OrderController
 
         if ($reserveSeats === OrderReserveSeats::RESERVE)
         {
-            $reservedSeats = $concert->reserveSeats($orderId, $totalNumTickets);
+            $reservedSeats = $this->reserveSeats($connection, $concert, $orderId, $totalNumTickets);
             if ($reservedSeats === null)
             {
-                DBConnection::getPDO()->executeQuery('UPDATE ticketsale_orders SET hasReservedSeats = 0 WHERE id=?', [$orderId]);
+                $connection->executeQuery('UPDATE ticketsale_orders SET hasReservedSeats = 0 WHERE id=?', [$orderId]);
                 $totalAmount -= $totalNumTickets * $concert->reservedSeatCharge;
                 $reserveSeats = OrderReserveSeats::FAILED_RESERVE;
             }
@@ -383,22 +390,22 @@ final class OrderController
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits, GenericRepository $repository): JsonResponse
+    public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $repository->deleteById(Order::class, $id);
+        $this->orderRepository->deleteById($id);
 
         return new JsonResponse();
     }
 
-    private function setOrderAsPaidAndSendMail(Order $order, UrlInfo $urlInfo, MailFactory $mailFactory): bool
+    private function setOrderAsPaidAndSendMail(Order $order, UrlInfo $urlInfo, MailFactory $mailFactory): void
     {
         $order->isPaid = true;
-        $order->save();
+        $this->orderRepository->save($order);
         $concert = $order->concert;
         $organisation = Setting::get(BuiltinSetting::ORGANISATION);
 
@@ -429,7 +436,7 @@ final class OrderController
             'Betalingsbevestiging',
             $text
         );
-        return $mail->send();
+        $mail->send();
     }
 
     #[RouteAttribute('setIsPaid', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
@@ -441,7 +448,7 @@ final class OrderController
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         /** @var Order $order */
-        $order = Order::fetchById($id);
+        $order = $this->orderRepository->fetchById($id);
         $this->setOrderAsPaidAndSendMail($order, $urlInfo, $mailFactory);
 
         return new JsonResponse();
@@ -456,9 +463,9 @@ final class OrderController
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         /** @var Order $order */
-        $order = Order::fetchById($id);
+        $order = $this->orderRepository->fetchById($id);
         $order->isDelivered = true;
-        $order->save();
+        $this->orderRepository->save($order);
 
         return new JsonResponse();
     }
@@ -467,7 +474,7 @@ final class OrderController
     public function pay(QueryBits $queryBits, Request $request, UserSession $userSession): Response
     {
         $orderId = $queryBits->getInt(2);
-        $order = Order::fetchById($orderId);
+        $order = $this->orderRepository->fetchById($orderId);
         if ($order === null)
         {
             $page = new SimplePage('Fout', 'Order niet gevonden!');
@@ -506,7 +513,11 @@ final class OrderController
         }
 
         $order->transactionCode = $molliePayment->id;
-        if (!$order->save())
+        try
+        {
+            $this->orderRepository->save($order);
+        }
+        catch (\Throwable)
         {
             $page = new SimplePage('Fout bij betaling', 'Kon de betalings-ID niet opslaan!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -532,7 +543,7 @@ final class OrderController
 
         $id = $post->getUnfilteredString('id');
         $payment = $mollie->payments->get($id);
-        $orders = Order::fetchAll(['transactionCode = ?'], [$id]);
+        $orders = $this->orderRepository->fetchAll(['transactionCode = ?'], [$id]);
 
         if (count($orders) === 0)
         {
@@ -544,7 +555,6 @@ final class OrderController
             return new JsonResponse(['error' => 'Could not find payment!'], Response::HTTP_NOT_FOUND);
         }
 
-        $savesSucceeded = true;
         $paidStatus = false;
 
         if ($payment->isPaid() && !$payment->hasRefunds() && !$payment->hasChargebacks())
@@ -552,32 +562,34 @@ final class OrderController
             $paidStatus = true;
         }
 
-        foreach ($orders as $order)
-        {
-            if ($paidStatus)
+        try {
+            foreach ($orders as $order)
             {
-                $this->setOrderAsPaidAndSendMail($order, $urlInfo, $mailFactory);
+                if ($paidStatus)
+                {
+                    $this->setOrderAsPaidAndSendMail($order, $urlInfo, $mailFactory);
+                }
+                else
+                {
+                    $order->isPaid = false;
+                }
+                $this->orderRepository->save($order);
             }
-            else
-            {
-                $order->isPaid = false;
-            }
-            $savesSucceeded = $savesSucceeded && $order->save();
         }
-
-        if (!$savesSucceeded)
+        catch (\Throwable)
         {
             return new JsonResponse(['error' => 'Could not update payment information for all orders!'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
 
         return new JsonResponse();
     }
 
     #[RouteAttribute('getTickets', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function getTickets(QueryBits $queryBits): Response
+    public function getTickets(QueryBits $queryBits, GenericRepository $genericRepository): Response
     {
         $orderId = $queryBits->getInt(2);
-        $order = Order::fetchById($orderId);
+        $order = $this->orderRepository->fetchById($orderId);
         if ($order === null)
         {
             $page = new SimplePage('Fout', 'Bestelling niet gevonden!');
@@ -621,11 +633,10 @@ final class OrderController
                 $ticketTypeDescription .= ($order->hasReservedSeats) ? ', rang 1' : ', rang 2';
             }
 
-            $location = Location::fetchById($concert->locationId);
             $templateVars = [
                 'organisation' => $organisation,
                 'concert' => $concert,
-                'location' => $location,
+                'location' => $concert->location,
                 'order' => $order,
                 'ticketType' => $ticketType,
                 'ticketTypeDescription' => $ticketTypeDescription,
@@ -680,7 +691,7 @@ final class OrderController
     /**
      * @param RequestParameters $post
      * @param Concert $concert
-     * @throws \Cyndaron\DBAL\ImproperSubclassing
+     * @throws ImproperSubclassing
      * @return array{0: bool, 1: string}
      */
     private function checkScannedBarcode(RequestParameters $post, Concert $concert): array
@@ -760,7 +771,7 @@ final class OrderController
         if ($queryBits->hasIndex(3))
         {
             $orderId = $queryBits->getInt(2);
-            $order = Order::fetchById($orderId);
+            $order = $this->orderRepository->fetchById($orderId);
             if ($order !== null && $order->isPaid)
             {
                 $secretCode = $queryBits->getString(3);
@@ -791,5 +802,64 @@ final class OrderController
     {
         assert($order->id !== null);
         return "{$baseUrl}/concert-order/pay/{$order->id}";
+    }
+
+    /**
+     * @param Connection $connection
+     * @param Concert $concert
+     * @param int $orderId
+     * @param int $numTickets
+     * @return int[]|null Which seats were reserved, if there were enough, null otherwise
+     */
+    private function reserveSeats(Connection $connection, Concert $concert, int $orderId, int $numTickets):array|null
+    {
+        if (!$concert->id)
+        {
+            throw new IncompleteData('No ID!');
+        }
+
+        $foundEnoughSeats = false;
+        $reservedSeats = [];
+
+        $reservedSeatsPerOrder = $connection->doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$concert->id]) ?: [];
+        foreach ($reservedSeatsPerOrder as $reservedSeatsForThisOrder)
+        {
+            for ($i = $reservedSeatsForThisOrder['firstSeat']; $i <= $reservedSeatsForThisOrder['lastSeat']; $i++)
+            {
+                $reservedSeats[$i] = true;
+            }
+        }
+
+        $firstSeat = 0;
+        $lastSeat = 0;
+
+        $adjacentFreeSeats = 0;
+        for ($stoel = 1; $stoel <= $concert->numReservedSeats; $stoel++)
+        {
+            if (($reservedSeats[$stoel] ?? false) === true)
+            {
+                $adjacentFreeSeats = 0;
+            }
+            else
+            {
+                $adjacentFreeSeats++;
+            }
+
+            if ($adjacentFreeSeats === $numTickets)
+            {
+                $foundEnoughSeats = true;
+                $firstSeat = $stoel - $numTickets + 1;
+                $lastSeat = $stoel;
+                break;
+            }
+        }
+
+        if ($foundEnoughSeats)
+        {
+            $connection->executeQuery('INSERT INTO ticketsale_reservedseats(`orderId`, `row`, `firstSeat`, `lastSeat`) VALUES(?, \'A\', ?, ?)', [$orderId, $firstSeat, $lastSeat]);
+            return range($firstSeat, $lastSeat);
+        }
+
+        return null;
     }
 }

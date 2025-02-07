@@ -4,11 +4,9 @@ declare(strict_types=1);
 namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
-use Cyndaron\Util\Error\IncompleteData;
 use Safe\Exceptions\JsonException;
 use function assert;
 use function is_array;

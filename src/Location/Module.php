@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Location;
 
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\UrlProvider;
@@ -22,11 +23,11 @@ final class Module implements Datatypes, UrlProvider
         ];
     }
 
-    public function nameFromUrl(array $linkParts): string|null
+    public function nameFromUrl(GenericRepository $genericRepository, array $linkParts): string|null
     {
         if ($linkParts[0] === 'location' && $linkParts[1] === 'view')
         {
-            $location = Location::fetchById((int)$linkParts[2]);
+            $location = $genericRepository->fetchById(Location::class, (int)$linkParts[2]);
             if ($location === null)
             {
                 return null;

@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page\Page;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url\UrlService;

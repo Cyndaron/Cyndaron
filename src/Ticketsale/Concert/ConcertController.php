@@ -10,7 +10,6 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
-use Cyndaron\Ticketsale\Order\Order;
 use Cyndaron\Ticketsale\Order\OrderRepository;
 use Cyndaron\Ticketsale\Order\OrderTicketsPage;
 use Cyndaron\Ticketsale\Order\OrderTicketTypes;
@@ -122,21 +121,6 @@ final class ConcertController
         assert($concert !== null);
         $page = new ConcertOrderOverviewPage($concert, $orderRepository, $connection);
         return $this->pageRenderer->renderResponse($page);
-    }
-
-    #[RouteAttribute('viewReservedSeats', RequestMethod::GET, UserLevel::ADMIN)]
-    public function viewReservedSeats(QueryBits $queryBits): Response
-    {
-        $id = $queryBits->getInt(2);
-        if ($id < 1)
-        {
-            $page = new SimplePage('Fout', 'Incorrect ID!');
-            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
-        }
-        $concert = Concert::fetchById($id);
-        assert($concert !== null);
-        $page = new ShowReservedSeats($concert);
-        return new Response($page->render());
     }
 
     #[RouteAttribute('orderListExcel', RequestMethod::GET, UserLevel::ADMIN)]

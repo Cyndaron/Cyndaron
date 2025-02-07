@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\User;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\FileCachedModel;
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Util\Util;
 use DateTimeInterface;
@@ -14,7 +12,6 @@ use DateTime;
 
 use function substr;
 use function password_needs_rehash;
-use function count;
 use function password_verify;
 use function password_hash;
 
@@ -114,33 +111,9 @@ final class User extends Model
         return $ret;
     }
 
-    public function save(): bool
-    {
-        $userRepository = new UserRepository(new GenericRepository(DBConnection::getPDO()), DBConnection::getPDO());
-        $userRepository->generateUsername($this);
-
-        return parent::save();
-    }
-
     public function canLogin(): bool
     {
         return $this->username && $this->password && $this->email;
-    }
-
-    public function hasRight(string $right): bool
-    {
-        if ($this->level === UserLevel::ADMIN)
-        {
-            return true;
-        }
-
-        $records = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM user_rights WHERE `userId` = ? AND `right` = ?', [$this->id, $right]);
-        if (count($records) > 0)
-        {
-            return true;
-        }
-
-        return false;
     }
 
     public function getAge(?DateTimeInterface $on = null): int

@@ -68,7 +68,7 @@ final class EventController
     }
 
     #[RouteAttribute('viewRegistrations', RequestMethod::GET, UserLevel::ADMIN)]
-    public function viewRegistrations(QueryBits $queryBits): Response
+    public function viewRegistrations(QueryBits $queryBits, Connection $connection): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -80,7 +80,7 @@ final class EventController
         {
             return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        $page = new EventRegistrationOverviewPage($event);
+        $page = new EventRegistrationOverviewPage($event, $connection);
         return $this->pageRenderer->renderResponse($page);
     }
 

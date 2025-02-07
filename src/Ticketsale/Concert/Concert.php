@@ -4,14 +4,11 @@ declare(strict_types=1);
 namespace Cyndaron\Ticketsale\Concert;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
+use Cyndaron\Location\Location;
 use Cyndaron\Ticketsale\DeliveryCost\FlatFee;
-use Cyndaron\Util\Error\IncompleteData;
 use DateTimeImmutable;
-use Exception;
 use function class_exists;
-use function range;
 
 final class Concert extends Model
 {
@@ -47,69 +44,11 @@ final class Concert extends Model
     public string $secretCode = '';
     #[DatabaseField]
     public string $date = '';
-    #[DatabaseField]
-    public int $locationId = 0;
+    #[DatabaseField(dbName: 'locationId')]
+    public Location|null $location = null;
     #[DatabaseField]
     public string $ticketInfo = '';
 
-
-    /**
-     * @param int $orderId
-     * @param int $numTickets
-     * @throws Exception
-     * @return int[]|null Which seats were reserved, if there were enough, null otherwise
-     */
-    public function reserveSeats(int $orderId, int $numTickets):array|null
-    {
-        if (!$this->id)
-        {
-            throw new IncompleteData('No ID!');
-        }
-
-        $foundEnoughSeats = false;
-        $reservedSeats = [];
-
-        $reservedSeatsPerOrder = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM ticketsale_reservedseats WHERE orderId IN (SELECT id FROM ticketsale_orders WHERE concertId=?)', [$this->id]) ?: [];
-        foreach ($reservedSeatsPerOrder as $reservedSeatsForThisOrder)
-        {
-            for ($i = $reservedSeatsForThisOrder['firstSeat']; $i <= $reservedSeatsForThisOrder['lastSeat']; $i++)
-            {
-                $reservedSeats[$i] = true;
-            }
-        }
-
-        $firstSeat = 0;
-        $lastSeat = 0;
-
-        $adjacentFreeSeats = 0;
-        for ($stoel = 1; $stoel <= $this->numReservedSeats; $stoel++)
-        {
-            if (($reservedSeats[$stoel] ?? false) === true)
-            {
-                $adjacentFreeSeats = 0;
-            }
-            else
-            {
-                $adjacentFreeSeats++;
-            }
-
-            if ($adjacentFreeSeats === $numTickets)
-            {
-                $foundEnoughSeats = true;
-                $firstSeat = $stoel - $numTickets + 1;
-                $lastSeat = $stoel;
-                break;
-            }
-        }
-
-        if ($foundEnoughSeats)
-        {
-            DBConnection::getPDO()->executeQuery('INSERT INTO ticketsale_reservedseats(`orderId`, `row`, `firstSeat`, `lastSeat`) VALUES(?, \'A\', ?, ?)', [$orderId, $firstSeat, $lastSeat]);
-            return range($firstSeat, $lastSeat);
-        }
-
-        return null;
-    }
 
     /**
      * @return class-string

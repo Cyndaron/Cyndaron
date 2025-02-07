@@ -26,6 +26,7 @@ final class StaticPage extends Page
             'text' => $textRenderer->render($model->text),
             'replies' => $replies,
             'pageImage' => $model->getImage(),
+            'hasBackup' => $staticPageRepository->hasBackup($model),
         ]);
     }
 }

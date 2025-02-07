@@ -4,6 +4,7 @@
     @php
         /** @var \Cyndaron\Geelhoed\Contest\Model\Contest $contest */
         /** @var \Cyndaron\Geelhoed\Contest\Model\ContestRepository $contestRepository */
+        /** @var \Cyndaron\Geelhoed\Contest\Model\ContestMemberRepository $contestMemberRepository */
         $sport = $contest->sport;
     @endphp
 
@@ -46,7 +47,7 @@
             <th>Data:</th>
             <td>
                 <ul>
-                    @foreach ($contest->getDates() as $contestDate)
+                    @foreach ($contestRepository->getDates($contest) as $contestDate)
                         <li>
                             @php $classes = $contestDateRepository->getClasses($contestDate) @endphp
                             {{ $contestDate->start|dmyHm }}@if (count($classes) > 0)
@@ -115,7 +116,7 @@
             <tr>
                 <th>Deelnemers:</th>
                 <td>
-                    @foreach ($contest->getContestMembers() as $contestMember)
+                    @foreach ($contestMemberRepository->fetchAllByContest($contest) as $contestMember)
                         @php $member = $contestMember->member @endphp
                         {{ $member->profile->getFullName() }}@if (!$loop->last)
                             ,
@@ -136,10 +137,10 @@
     @else
         <h3>Inschrijven</h3>
         <div>
-            @php $canChange = $contest->registrationCanBeChanged($profile); @endphp
+            @php $canChange = $contestRepository->registrationCanBeChanged($contest, $profile); @endphp
             @foreach ($controlledMembers as $controlledMember)
-                @php $subscription = \Cyndaron\Geelhoed\Contest\Model\ContestMember::fetchByContestAndMember($contest, $controlledMember) @endphp
-                @include('Geelhoed/Contest/MemberSubscriptionStatus', [
+                @php $subscription = $contestMemberRepository->fetchByContestAndMember($contest, $controlledMember) @endphp
+                @include('Geelhoed/Contest/Page/MemberSubscriptionStatus', [
                     'contest' => $contest,
                     'contestMember' => $subscription,
                     'member' => $controlledMember,
@@ -171,7 +172,7 @@
                     @endcomponent
                     <h4>Leeftijdklassen</h4>
                     <div style="column-count: 2;">
-                        @foreach (\Cyndaron\Geelhoed\Contest\Model\ContestClass::fetchAll() as $class)
+                        @foreach ($contestClasses as $class)
                             @include ('View/Widget/Form/Checkbox', ['id' => 'class-' . $class->id, 'description' => $class->name, 'checked' => false])
                         @endforeach
                     </div>

@@ -26,7 +26,7 @@
             </td>
             <td>
                 <div class="btn-group">
-                    @if ($currentUser->hasRight('photoalbum_edit'))
+                    @if ($canEdit)
                         @include('View/Widget/Button', ['kind' => 'edit', 'link' => "/editor/photoalbum/{$photoalbum->id}", 'title' => 'Bewerk dit fotoalbum', 'size' => 16])
                     @endif
                     @if ($currentUser->isAdmin())

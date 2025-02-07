@@ -8,8 +8,10 @@
     @endif
 
     @php /** @var \Cyndaron\Geelhoed\Contest\Model\Contest[] $contests */ @endphp
+    @php /** @var \Cyndaron\Geelhoed\Contest\Model\ContestRepository $contestRepository */ @endphp
+    @php /** @var \Cyndaron\Geelhoed\Contest\Model\ContestMemberRepository $contestMemberRepository */ @endphp
     @foreach ($contests as $contest)
-        @php $canChange = $contest->registrationCanBeChanged($profile); @endphp
+        @php $canChange = $contestRepository->registrationCanBeChanged($contest, $profile); @endphp
         <div class="card location-card">
             <div class="card-header">
                 <h2><a href="/contest/view/{{ $contest->id }}">{{ $contest->name }}</a></h2>
@@ -24,7 +26,7 @@
                         <th>Data:</th>
                         <td>
                             <ul>
-                                @foreach ($contest->getDates() as $contestDate)
+                                @foreach ($contestRepository->getDates($contest) as $contestDate)
                                     @php $classes = $contestDateRepository->getClasses($contestDate) @endphp
                                     <li>
                                         {{ $contestDate->start|dmyHm }}@if (count($classes) > 0)
@@ -52,9 +54,9 @@
                 <h6 class="mt-3">Ingeschreven</h6>
 
                 <div>
-                    @foreach (\Cyndaron\Geelhoed\Contest\Model\ContestMember::fetchAllByContestAndMembers($contest, $controlledMembers) as $contestMember)
+                    @foreach ($contestMemberRepository->fetchAllByContestAndMembers($contest, $controlledMembers) as $contestMember)
                         @php $member = $contestMember->member; @endphp
-                        @include('Geelhoed/Contest/MemberSubscriptionStatus', [
+                        @include('Geelhoed/Contest/Page/MemberSubscriptionStatus', [
                             'contest' => $contest,
                             'contestMember' => $contestMember,
                             'member' => $member,

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Webshop;
 
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
 use Cyndaron\Geelhoed\Clubactie\SubscriberRepository;
@@ -54,11 +53,12 @@ final class WebshopController
         private readonly OrderRepository $orderRepository,
         private readonly OrderItemRepository $orderItemRepository,
         private readonly SubscriberRepository $subscriberRepository,
+        private readonly ProductRepository $productRepository,
     ) {
     }
 
     #[RouteAttribute('winkelen', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function shopPage(QueryBits $queryBits, ProductRepository $productRepository): Response
+    public function shopPage(QueryBits $queryBits): Response
     {
         $hash = $queryBits->getString(2);
         $subscriber = $this->subscriberRepository->fetchByHash($hash);
@@ -84,7 +84,7 @@ final class WebshopController
             return new RedirectResponse("/webwinkel/status/{$hash}");
         }
 
-        $page = new ShopPage($subscriber, $order, $this->orderRepository, $this->orderItemRepository, $productRepository);
+        $page = new ShopPage($subscriber, $order, $this->orderRepository, $this->orderItemRepository, $this->productRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -103,7 +103,7 @@ final class WebshopController
             );
         }
 
-        $page = new FinishOrderPage($subscriber, $order, $locationRepository, $this->orderRepository);
+        $page = new FinishOrderPage($subscriber, $order, $locationRepository, $this->orderRepository, $this->orderItemRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -329,7 +329,7 @@ Sportschool Geelhoed";
             if ($order->status === OrderStatus::PENDING_PAYMENT)
             {
                 $order->status = OrderStatus::IN_PROGRESS;
-                $order->save();
+                $this->orderRepository->save($order);
 
                 $subscriber = $order->subscriber;
                 $text = "Beste {$subscriber->getFullName()},\n\nWe hebben de betaling voor je bestelling in onze webwinkel ontvangen.\n\n";
@@ -346,11 +346,8 @@ Sportschool Geelhoed";
         else
         {
             $order->status = OrderStatus::PENDING_PAYMENT;
-            $order->save();
+            $this->orderRepository->save($order);
         }
-
-
-
 
         return new JsonResponse();
     }
@@ -369,7 +366,7 @@ Sportschool Geelhoed";
         }
 
         $productId = $post->getInt('productId');
-        $product = Product::fetchById($productId);
+        $product = $this->productRepository->fetchById($productId);
         if ($product === null)
         {
             return new JsonResponse(['error' => 'Product niet gevonden'], Response::HTTP_BAD_REQUEST);
@@ -397,13 +394,13 @@ Sportschool Geelhoed";
             }
         }
 
-        $newOrderItem->save();
+        $this->orderItemRepository->save($newOrderItem);
 
         return new JsonResponse([]);
     }
 
     #[RouteAttribute('remove-from-cart', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
-    public function removeFromCart(RequestParameters $post, GenericRepository $genericRepository): JsonResponse
+    public function removeFromCart(RequestParameters $post): JsonResponse
     {
         $hash = $post->getSimpleString('hash');
         try
@@ -421,7 +418,7 @@ Sportschool Geelhoed";
         }
 
         $orderItemId = $post->getInt('orderItemId');
-        $orderItem = OrderItem::fetchById($orderItemId);
+        $orderItem = $this->orderItemRepository->fetchById($orderItemId);
         if ($orderItem === null)
         {
             return new JsonResponse(['error' => 'Orderregel niet gevonden'], Response::HTTP_BAD_REQUEST);
@@ -432,7 +429,7 @@ Sportschool Geelhoed";
             return new JsonResponse(['error' => 'Deze order is niet van jou!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $genericRepository->delete($orderItem);
+        $this->orderItemRepository->delete($orderItem);
 
         return new JsonResponse([]);
     }
@@ -452,7 +449,7 @@ Sportschool Geelhoed";
             );
         }
 
-        $donateProduct = Product::fetchById(Product::DONATE_TICKETS_ID);
+        $donateProduct = $this->productRepository->fetchById(Product::DONATE_TICKETS_ID);
         if ($donateProduct === null)
         {
             return new RedirectResponse("/webwinkel/winkelen/{$hash}");
@@ -490,7 +487,7 @@ Sportschool Geelhoed";
             );
         }
 
-        $gymtasProduct = Product::fetchById(Product::GYMTAS_ID);
+        $gymtasProduct = $this->productRepository->fetchById(Product::GYMTAS_ID);
         if ($gymtasProduct === null)
         {
             return new RedirectResponse("/webwinkel/winkelen/{$hash}");
@@ -509,7 +506,7 @@ Sportschool Geelhoed";
         $orderItem->price = (float)$gymtasProduct->gcaTicketPrice;
         $orderItem->currency = Currency::LOTTERY_TICKET;
         $orderItem->options = json_encode(['color' => 'Achterwege laten'], flags: JSON_THROW_ON_ERROR);
-        $orderItem->save();
+        $this->orderItemRepository->save($orderItem);
 
         return new RedirectResponse("/webwinkel/winkelen/{$hash}");
     }
@@ -601,12 +598,12 @@ Sportschool Geelhoed";
     #[RouteAttribute('mail-everyone', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: self::RIGHT_MANAGE)]
     public function mailEveryone(UrlInfo $urlInfo, MailFactory $mailFactory): JsonResponse
     {
-        $subscribers = Subscriber::fetchAll(['soldTicketsAreVerified = 1', 'emailSent = 0']);
+        $subscribers = $this->subscriberRepository->fetchAll(['soldTicketsAreVerified = 1', 'emailSent = 0']);
         foreach ($subscribers as $subscriber)
         {
             $this->sendAccountConfirmationMail($urlInfo, $subscriber, $mailFactory);
             $subscriber->emailSent = true;
-            $subscriber->save();
+            $this->subscriberRepository->save($subscriber);
         }
 
         return new JsonResponse(['status' => 'ok']);

@@ -46,10 +46,6 @@ final class Contest extends Model
     #[DatabaseField]
     public float $price;
 
-
-
-
-
     /**
      * @throws \Safe\Exceptions\DirException
      * @return string[]
@@ -67,26 +63,5 @@ final class Contest extends Model
             // Exclude hidden files.
             return substr($filename, 0, 1) !== '.';
         });
-    }
-
-    public function registrationCanBeChanged(User $user): bool
-    {
-        if ($user->hasRight(self::RIGHT_MANAGE))
-        {
-            return true;
-        }
-
-        $deadline = $this->registrationChangeDeadline;
-        if ($deadline === '')
-        {
-            $deadline = $this->registrationDeadline;
-        }
-
-        if ($deadline === '')
-        {
-            return true;
-        }
-
-        return time() <= strtotime($deadline);
     }
 }

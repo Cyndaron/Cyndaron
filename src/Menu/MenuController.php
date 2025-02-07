@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Menu;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;

@@ -9,7 +9,9 @@ use Cyndaron\DBAL\RepositoryTrait;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberRepository;
 use Cyndaron\User\User;
+use Cyndaron\User\UserRepository;
 use DateTimeInterface;
+use Safe\Exceptions\DatetimeException;
 use function Safe\strtotime;
 use function array_map;
 use function implode;
@@ -30,6 +32,7 @@ class ContestRepository implements RepositoryInterface
         private readonly GenericRepository $genericRepository,
         private readonly ContestDateRepository $contestDateRepository,
         private readonly ContestMemberRepository $contestMemberRepository,
+        private readonly UserRepository $userRepository,
     ) {
     }
 
@@ -43,7 +46,8 @@ class ContestRepository implements RepositoryInterface
 
     /**
      * @param User $user
-     * @throws \Safe\Exceptions\DatetimeException
+     * @param MemberRepository $memberRepository
+     * @throws DatetimeException
      * @return array{0: float, 1: ContestMember[]}
      */
     public function getTotalDue(User $user, MemberRepository $memberRepository): array
@@ -106,5 +110,26 @@ class ContestRepository implements RepositoryInterface
         }
 
         return false;
+    }
+
+    public function registrationCanBeChanged(Contest $contest, User $user): bool
+    {
+        if ($this->userRepository->userHasRight($user, Contest::RIGHT_MANAGE))
+        {
+            return true;
+        }
+
+        $deadline = $contest->registrationChangeDeadline;
+        if ($deadline === '')
+        {
+            $deadline = $contest->registrationDeadline;
+        }
+
+        if ($deadline === '')
+        {
+            return true;
+        }
+
+        return time() <= strtotime($deadline);
     }
 }

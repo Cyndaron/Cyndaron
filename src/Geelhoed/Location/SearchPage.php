@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Location;
 
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\Page\Page;
-use Cyndaron\View\Template\ViewHelpers;
 
 class SearchPage extends Page
 {

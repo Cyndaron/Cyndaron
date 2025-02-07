@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\StaticPage;
 
-use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
 
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {
@@ -13,6 +13,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public function __construct(
         private readonly StaticPageRepository $staticPageRepository,
+        private readonly Connection $connection
     ) {
 
     }
@@ -30,13 +31,13 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
              * @noinspection SqlResolve
              * @var string $content
              */
-            $content = DBConnection::getPDO()->doQueryAndFetchOne('SELECT text FROM ' . $table . ' WHERE id=?', [$this->id]);
+            $content = $this->connection->doQueryAndFetchOne('SELECT text FROM ' . $table . ' WHERE id=?', [$this->id]);
             $this->content = $content;
             /**
              * @noinspection SqlResolve
              * @var string $contentTitle
              */
-            $contentTitle = DBConnection::getPDO()->doQueryAndFetchOne('SELECT name FROM ' . $table . ' WHERE id=?', [$this->id]);
+            $contentTitle = $this->connection->doQueryAndFetchOne('SELECT name FROM ' . $table . ' WHERE id=?', [$this->id]);
             $this->contentTitle = $contentTitle;
 
             if ($staticPage !== null)

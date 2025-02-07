@@ -111,7 +111,7 @@ final class ContestController
     }
 
     #[RouteAttribute('view', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function view(QueryBits $queryBits, UserSession $session, CSRFTokenHandler $tokenHandler, ContestDateRepository $contestDateRepository): Response
+    public function view(QueryBits $queryBits, ContestViewPage $contestViewPage): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -125,8 +125,7 @@ final class ContestController
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
-        $page = new ContestViewPage($contest, $session->getProfile(), $tokenHandler, $this->contestRepository, $contestDateRepository, $this->memberRepository);
-        return $this->pageRenderer->renderResponse($page);
+        return $this->pageRenderer->renderResponse($contestViewPage->createPage($contest));
     }
 
     #[RouteAttribute('subscribe', RequestMethod::POST, UserLevel::LOGGED_IN)]
@@ -527,10 +526,9 @@ final class ContestController
     }
 
     #[RouteAttribute('myContests', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function myContests(User $currentUser, CSRFTokenHandler $tokenHandler, ContestDateRepository $contestDateRepository): Response
+    public function myContests(MyContestsPage $myContestsPage): Response
     {
-        $page = new MyContestsPage($currentUser, $tokenHandler, $this->contestRepository, $contestDateRepository, $this->memberRepository);
-        return $this->pageRenderer->renderResponse($page);
+        return $this->pageRenderer->renderResponse($myContestsPage->createPage());
     }
 
     #[RouteAttribute('payFullDue', RequestMethod::GET, UserLevel::LOGGED_IN)]
@@ -727,7 +725,7 @@ final class ContestController
             }
         }
 
-        if (!$contestMember->canBeChanged($currentUser))
+        if (!$this->contestRepository->registrationCanBeChanged($contestMember->contest, $currentUser))
         {
             return new Response('De deadline voor aanpassingen is verlopen!', Response::HTTP_BAD_REQUEST);
         }
@@ -750,7 +748,7 @@ final class ContestController
     }
 
     #[RouteAttribute('editSubscription', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function editSubscriptionPage(QueryBits $queryBits, UserSession $userSession, GraduationRepository $graduationRepository): Response
+    public function editSubscriptionPage(QueryBits $queryBits, UserSession $userSession, GraduationRepository $graduationRepository, UserRepository $userRepository): Response
     {
         $id = $queryBits->getInt(2);
         $contestMember = $this->contestMemberRepository->fetchById($id);
@@ -764,7 +762,7 @@ final class ContestController
         {
             return new Response('U moet ingelogd zijn!', Response::HTTP_UNAUTHORIZED);
         }
-        if (!$currentUser->hasRight(Contest::RIGHT_MANAGE))
+        if (!$userRepository->userHasRight($currentUser, Contest::RIGHT_MANAGE))
         {
             $memberId = $contestMember->member->id;
             $controlledMemberIds = array_map(static function(Member $member)
@@ -777,7 +775,7 @@ final class ContestController
             }
         }
 
-        if (!$contestMember->canBeChanged($currentUser))
+        if (!$this->contestRepository->registrationCanBeChanged($contestMember->contest, $currentUser))
         {
             return new Response('De deadline voor aanpassingen is verlopen!', Response::HTTP_BAD_REQUEST);
         }
@@ -843,7 +841,7 @@ final class ContestController
     }
 
     #[RouteAttribute('createParentAccount', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
-    public function createParentAccount(RequestParameters $post, MailFactory $mailFactory, UserSession $userSession, UserRepository $repository): JsonResponse
+    public function createParentAccount(RequestParameters $post, MailFactory $mailFactory, UserSession $userSession, UserRepository $userRepository): JsonResponse
     {
         $user = new User();
         $user->firstName = $post->getSimpleString('firstName');
@@ -854,18 +852,17 @@ final class ContestController
 
         try
         {
-            $repository->save($user);
-            $repository->addRightToUser($user, Contest::RIGHT_PARENT);
+            $userRepository->save($user);
+            $userRepository->addRightToUser($user, Contest::RIGHT_PARENT);
         }
         catch (\PDOException)
         {
             return new JsonResponse(['error' => 'Kon ouderaccount niet opslaan, databasefout. Controleer of het e-mailadres uniek is.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-
         if ($post->getBool('sendIntroductionMail'))
         {
-            if (!$this->sendParentAccountIntroductionMail($user, $mailFactory))
+            if (!$this->sendParentAccountIntroductionMail($user, $userRepository, $mailFactory))
             {
                 return new JsonResponse(['error' => 'Account is aangemaakt, maar kon welkomstmail niet versturen'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
@@ -875,11 +872,11 @@ final class ContestController
         return new JsonResponse();
     }
 
-    private function sendParentAccountIntroductionMail(User $user, MailFactory $mailFactory): bool
+    private function sendParentAccountIntroductionMail(User $user, UserRepository $userRepository, MailFactory $mailFactory): bool
     {
         $password = Util::generatePassword();
         $user->setPassword($password);
-        $user->save();
+        $userRepository->save($user);
 
         $mailBody = $this->templateRenderer->render('Geelhoed/Contest/ParentAccountIntroductionMail', [
             'fullName' => $user->getFullName(),

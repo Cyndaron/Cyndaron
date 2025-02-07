@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Contest\Page;
 
-use Cyndaron\Geelhoed\Contest\Model\Contest;
 use Cyndaron\Geelhoed\Contest\Model\ContestDateRepository;
+use Cyndaron\Geelhoed\Contest\Model\ContestMemberRepository;
 use Cyndaron\Geelhoed\Contest\Model\ContestRepository;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberRepository;
@@ -15,13 +15,27 @@ use function array_map;
 use function count;
 use function implode;
 
-final class MyContestsPage extends Page
+final class MyContestsPage
 {
-    public function __construct(User $currentUser, CSRFTokenHandler $tokenHandler, ContestRepository $contestRepository, ContestDateRepository $contestDateRepository, MemberRepository $memberRepository)
+    public function __construct(
+        private readonly CSRFTokenHandler $tokenHandler,
+        private readonly ContestRepository $contestRepository,
+        private readonly ContestDateRepository $contestDateRepository,
+        private readonly ContestMemberRepository $contestMemberRepository,
+        private readonly MemberRepository $memberRepository,
+        private readonly User $currentUser,
+    ) {
+    }
+
+    public function createPage(): Page
     {
-        $this->title = 'Mijn wedstrijden';
-        $this->addCss('/src/Geelhoed/geelhoed.css');
-        $controlledMembers = $memberRepository->fetchAllContestantsByUser($currentUser);
+        $page = new Page();
+        $page->title = 'Mijn wedstrijden';
+        $page->template = 'Geelhoed/Contest/Page/MyContestsPage';
+        $page->addCss('/src/Geelhoed/geelhoed.css');
+        $page->addScript('/src/Geelhoed/Contest/js/MemberSubscriptionStatus.js');
+
+        $controlledMembers = $this->memberRepository->fetchAllContestantsByUser($this->currentUser);
         $contests = [];
         $contestMembers = [];
         $due = 0.0;
@@ -31,18 +45,21 @@ final class MyContestsPage extends Page
             {
                 return $member->id;
             }, $controlledMembers);
-            $contests = $contestRepository->fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (' . implode(',', $memberIds) . '))'], [], 'ORDER BY registrationDeadline DESC');
-            [$due, $contestMembers] = $contestRepository->getTotalDue($currentUser, $memberRepository);
+            $contests = $this->contestRepository->fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (' . implode(',', $memberIds) . '))'], [], 'ORDER BY registrationDeadline DESC');
+            [$due, $contestMembers] = $this->contestRepository->getTotalDue($this->currentUser, $this->memberRepository);
         }
-        $this->addScript('/src/Geelhoed/Contest/js/MemberSubscriptionStatus.js');
-        $this->addTemplateVars([
-            'profile' => $currentUser,
+
+        $page->addTemplateVars([
+            'profile' => $this->currentUser,
             'controlledMembers' => $controlledMembers,
             'contests' => $contests,
-            'contestDateRepository' => $contestDateRepository,
+            'contestRepository' => $this->contestRepository,
+            'contestDateRepository' => $this->contestDateRepository,
+            'contestMemberRepository' => $this->contestMemberRepository,
             'contestMembers' => $contestMembers,
             'due' => $due,
-            'cancelSubscriptionCsrfToken' => $tokenHandler->get('contest', 'cancelSubscription'),
+            'cancelSubscriptionCsrfToken' => $this->tokenHandler->get('contest', 'cancelSubscription'),
         ]);
+        return $page;
     }
 }

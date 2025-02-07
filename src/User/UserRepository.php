@@ -5,6 +5,7 @@ namespace Cyndaron\User;
 
 use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\RepositoryInterface;
 use Cyndaron\DBAL\RepositoryTrait;
 use function strtolower;
@@ -18,7 +19,7 @@ final class UserRepository implements RepositoryInterface
 {
     private const UNDERLYING_CLASS = User::class;
 
-    use RepositoryTrait;
+    use RepositoryTrait { save as public traitSave; }
 
     public function __construct(
         private readonly GenericRepository $genericRepository,
@@ -28,12 +29,12 @@ final class UserRepository implements RepositoryInterface
 
     public function fetchByEmail(string $email): User|null
     {
-        return User::fetch(['email = ?'], [$email]);
+        return $this->fetch(['email = ?'], [$email]);
     }
 
     public function fetchByUsername(string $username): User|null
     {
-        return User::fetch(['username = ?'], [$username]);
+        return $this->fetch(['username = ?'], [$username]);
     }
 
     public function generateUsername(User $user): void
@@ -88,5 +89,11 @@ final class UserRepository implements RepositoryInterface
         }
 
         return false;
+    }
+
+    public function save(Model $model): void
+    {
+        $this->generateUsername($model);
+        $this->traitSave($model);
     }
 }

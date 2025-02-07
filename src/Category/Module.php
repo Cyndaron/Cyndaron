@@ -2,6 +2,7 @@
 namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
@@ -48,15 +49,15 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         ];
     }
 
-    public function nameFromUrl(array $linkParts): string|null
+    public function nameFromUrl(GenericRepository $genericRepository, array $linkParts): string|null
     {
         if ((int)$linkParts[1] === 0 || $linkParts[1] === 'fotoboeken')
         {
             return 'Fotoalbums';
         }
 
-        $category = Category::fetchById((int)$linkParts[1]);
-        return $category !== null ? $category->name : null;
+        $category = $genericRepository->fetchById(Category::class, (int)$linkParts[1]);
+        return $category?->name;
     }
 
     public function getList(Connection $connection): array

@@ -6,7 +6,6 @@
             <a class="btn btn-outline-cyndaron" href="/pagemanager/concert">&laquo; Terug naar overzicht concerten</a>
         @endslot
         @slot('right')
-{{--            <a class="btn btn-outline-cyndaron" href="/concert/viewReservedSeats/{{ $concertId }}">Overzicht gereserveerde plaatsen</a>--}}
             @include('View/Widget/Button', ['kind' => 'th', 'link' => '/concert/orderListExcel/' . $concert->id, 'text' => 'Excel-export'])
         @endslot
     @endcomponent

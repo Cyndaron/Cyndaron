@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\DBConnection;
-use Cyndaron\DBAL\Model;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
@@ -47,10 +48,10 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         ];
     }
 
-    public function nameFromUrl(array $linkParts): string|null
+    public function nameFromUrl(GenericRepository $genericRepository, array $linkParts): string|null
     {
-        $model = StaticPageModel::fetchById((int)$linkParts[1]);
-        return $model !== null ? $model->name : null;
+        $model = $genericRepository->fetchById(StaticPageModel::class, (int)$linkParts[1]);
+        return $model?->name;
     }
 
     public function getList(Connection $connection): array
@@ -63,11 +64,11 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         }, $list);
     }
 
-    public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, Translator $t): string
+    public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, Translator $t, Connection $connection): string
     {
         $templateVars = [];
 
-        $subs = DBConnection::getPDO()->doQueryAndFetchAll('SELECT s.id,s.name,c.name AS category,IF(sb.text IS NOT NULL, 1, 0) AS hasBackup FROM subs s LEFT JOIN sub_categories sc ON s.id = sc.id LEFT JOIN categories c ON sc.categoryId = c.id LEFT JOIN sub_backups sb ON s.id = sb.id ORDER BY category, name, id ASC') ?: [];
+        $subs = $connection->doQueryAndFetchAll('SELECT s.id,s.name,c.name AS category,IF(sb.text IS NOT NULL, 1, 0) AS hasBackup FROM subs s LEFT JOIN sub_categories sc ON s.id = sc.id LEFT JOIN categories c ON sc.categoryId = c.id LEFT JOIN sub_backups sb ON s.id = sb.id ORDER BY category, name, id ASC') ?: [];
         $subsPerCategory = [];
 
         foreach ($subs as $sub)

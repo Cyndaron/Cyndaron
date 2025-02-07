@@ -8,31 +8,46 @@ use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Page\Page;
 use Cyndaron\Translation\Translator;
 use Cyndaron\User\User;
+use Cyndaron\User\UserRepository;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\RuntimeUserSafeError;
 use function array_key_exists;
 use function assert;
-use function is_callable;
 
-final class PageManagerPage extends Page
+final class PageManagerPage
 {
-    public function __construct(DependencyInjectionContainer $dic, User $currentUser, string $currentPage, ModuleRegistry $registry)
+    /**
+     * @var PageManagerTab[]
+     */
+    private array $pageManagerTabs;
+
+    public function __construct(
+        private readonly Translator $translator,
+        private readonly User $currentUser,
+        private readonly UserRepository $userRepository,
+        ModuleRegistry $registry
+    ) {
+        $this->pageManagerTabs = $registry->pageManagerTabs;
+    }
+
+    public function createPage(DependencyInjectionContainer $dic, string $currentPage): Page
     {
-        if (!array_key_exists($currentPage, $registry->pageManagerTabs))
+        if (!array_key_exists($currentPage, $this->pageManagerTabs))
         {
             throw new RuntimeUserSafeError('Type does not exist!');
         }
 
-        $t = $dic->get(Translator::class);
-        $this->addScript('/src/PageManager/js/PageManagerPage.js');
-        $this->title = $t->get('Pagina-overzicht');
+        $page = new Page();
+        $page->title = $this->translator->get('Pagina-overzicht');
+        $page->template = 'PageManager/PageManagerPage';
+        $page->addScript('/src/PageManager/js/PageManagerPage.js');
 
         $pageTabs = [];
         $firstVisibleType = null;
-        foreach ($registry->pageManagerTabs as $tab)
+        foreach ($this->pageManagerTabs as $tab)
         {
             $pageType = $tab->type;
-            if ($currentUser->hasRight("{$pageType}_edit"))
+            if ($this->userRepository->userHasRight($this->currentUser, "{$pageType}_edit"))
             {
                 $pageTabs[$pageType] = $tab->name;
                 if ($firstVisibleType === null)
@@ -46,25 +61,27 @@ final class PageManagerPage extends Page
         {
             throw new RuntimeUserSafeError('Er zijn geen datatypes die u kunt beheren!');
         }
-        if (!$currentUser->hasRight("{$currentPage}_edit"))
+        if (!$this->userRepository->userHasRight($this->currentUser, "{$currentPage}_edit"))
         {
             $currentPage = $firstVisibleType;
         }
 
-        $tab = $registry->pageManagerTabs[$currentPage];
+        $tab = $this->pageManagerTabs[$currentPage];
         $drawingFunction = $tab->tabDraw;
         assert($drawingFunction instanceof Closure);
         /** @var string $tabContents */
         $tabContents = $dic->callClosureWithDependencyInjection($drawingFunction);
 
-        $this->addTemplateVars([
+        $page->addTemplateVars([
             'pageTabs' => $pageTabs,
             'currentPage' => $currentPage,
             'tabContents' => $tabContents,
         ]);
         if (!empty($tab->js))
         {
-            $this->addScript($tab->js);
+            $page->addScript($tab->js);
         }
+
+        return $page;
     }
 }

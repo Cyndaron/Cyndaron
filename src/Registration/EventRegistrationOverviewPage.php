@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Registration;
 
-use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\Page;
 use function array_key_exists;
 
@@ -9,8 +9,11 @@ final class EventRegistrationOverviewPage extends Page
 {
     public const TOTALS_FORMAT = [0 => ['amount' => 0, 'num' => 0], 1 => ['amount' => 0, 'num' => 0]];
 
-    public function __construct(Event $event)
+    private readonly Connection $connection;
+
+    public function __construct(Event $event, Connection $connection)
     {
+        $this->connection = $connection;
         $ticketTypes = EventTicketType::loadByEvent($event);
         $registrations = Registration::loadByEvent($event);
 
@@ -30,7 +33,7 @@ final class EventRegistrationOverviewPage extends Page
      */
     private function getTicketTypesByRegistration(): array
     {
-        $boughtTicketTypes = DBConnection::getPDO()->doQueryAndFetchAll('SELECT * FROM `registration_orders_tickettypes`') ?: [];
+        $boughtTicketTypes = $this->connection->doQueryAndFetchAll('SELECT * FROM `registration_orders_tickettypes`') ?: [];
 
         $ticketTypesByRegistration = [];
         foreach ($boughtTicketTypes as $boughtTicketType)

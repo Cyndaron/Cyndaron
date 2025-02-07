@@ -1,20 +1,16 @@
 <?php
+declare(strict_types=1);
+
 namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
-use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Url\Url;
-use Cyndaron\Url\UrlService;
 use Cyndaron\View\Template\ViewHelpers;
 use Safe\Exceptions\PcreException;
 use function Safe\preg_match;
 use function html_entity_decode;
 use function trim;
-use function reset;
-use function assert;
-use function usort;
 
 /**
  * Class ModelWithCategory

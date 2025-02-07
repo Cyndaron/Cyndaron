@@ -3,13 +3,11 @@ declare(strict_types=1);
 
 namespace Cyndaron\PageManager;
 
-use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\RouteAttribute;
-use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\DependencyInjectionContainer;
 use Cyndaron\Util\RuntimeUserSafeError;
@@ -23,13 +21,12 @@ final class PageManagerController
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function routeGet(QueryBits $queryBits, DependencyInjectionContainer $dic, User $currentUser, ModuleRegistry $registry): Response
+    public function routeGet(QueryBits $queryBits, DependencyInjectionContainer $dic, PageManagerPage $page): Response
     {
         $currentPage = $queryBits->getString(1, 'sub');
         try
         {
-            $page = new PageManagerPage($dic, $currentUser, $currentPage, $registry);
-            return $this->pageRenderer->renderResponse($page);
+            return $this->pageRenderer->renderResponse($page->createPage($dic, $currentPage));
         }
         catch (RuntimeUserSafeError $e)
         {

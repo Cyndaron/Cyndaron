@@ -1,11 +1,11 @@
 <?php
+declare(strict_types=1);
+
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\DBConnection;
-use Cyndaron\Url\Url;
-use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Error\IncompleteData;
 use function explode;
 use function implode;
@@ -22,26 +22,6 @@ final class StaticPageModel extends ModelWithCategory
     public bool $enableComments = false;
     #[DatabaseField]
     public string $tags = '';
-
-    public function save(): bool
-    {
-        $oldData = null;
-        if ($this->id !== null)
-        {
-            $oldData = self::fetchById($this->id);
-        }
-        $result = parent::save();
-        if ($result && $oldData !== null)
-        {
-            DBConnection::getPDO()->executeQuery('REPLACE INTO sub_backups(`id`, `name`, `text`) VALUES (?,?,?)', [$oldData->id, $oldData->name, $oldData->text]);
-        }
-        return $result;
-    }
-
-    public function hasBackup(): bool
-    {
-        return (bool)DBConnection::getPDO()->doQueryAndFetchOne('SELECT * FROM sub_backups WHERE id= ?', [$this->id]);
-    }
 
     public function react(string $author, string $reactie, string $antispam): bool
     {

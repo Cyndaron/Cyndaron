@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Tryout;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Page\Page;
 use Cyndaron\Util\Util;
 use DateTimeImmutable;

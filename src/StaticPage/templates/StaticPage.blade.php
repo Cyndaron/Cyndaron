@@ -2,7 +2,7 @@
 
 @section ('titleControls')
     <a href="/editor/sub/{{ $model->id }}" class="btn btn-outline-cyndaron" title="Bewerk deze statische pagina">@include('View/Widget/Icon', ['type' => 'edit'])</a>
-    @if ($model->hasBackup())
+    @if ($hasBackup)
         <a href="/editor/sub/{{ $model->id }}/previous" class="btn btn-outline-cyndaron" title="Vorige versie">@include('View/Widget/Icon', ['type' => 'lastversion'])</a>
     @endif
 @endsection

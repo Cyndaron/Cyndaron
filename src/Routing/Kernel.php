@@ -100,9 +100,6 @@ final class Kernel
         $dic->add($request);
         $dic->add($userSession);
 
-        $urlService = new UrlService($connection, $request->getRequestUri(), $registry->urlProviders, $registry->modelToUrlPrefixers);
-        $dic->add($urlService);
-
         $templateRenderer = TemplateRendererFactory::createTemplateRenderer($registry->templateRoots);
         $dic->add($templateRenderer);
 

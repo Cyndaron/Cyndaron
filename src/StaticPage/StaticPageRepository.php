@@ -30,4 +30,24 @@ final class StaticPageRepository extends ModelWithCategoryRepository
         $this->connection->executeQuery('DELETE FROM sub_backups WHERE id = ?', [$model->id]);
         $this->genericRepository->delete($model);
     }
+
+    public function save(Model $model): void
+    {
+        $oldData = null;
+        if ($model->id !== null)
+        {
+            $oldData = $this->fetchById($model->id);
+        }
+        $this->genericRepository->save($model);
+
+        if ($oldData)
+        {
+            $this->connection->executeQuery('REPLACE INTO sub_backups(`id`, `name`, `text`) VALUES (?,?,?)', [$oldData->id, $oldData->name, $oldData->text]);
+        }
+    }
+
+    public function hasBackup(StaticPageModel $model): bool
+    {
+        return !!$this->connection->doQueryAndFetchOne('SELECT * FROM sub_backups WHERE id= ?', [$model->id]);
+    }
 }
