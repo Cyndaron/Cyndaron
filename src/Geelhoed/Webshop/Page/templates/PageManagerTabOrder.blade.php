@@ -33,15 +33,20 @@
                     {{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($order->hour->day) }} {{ $order->hour->getRange() }}
                 </td>
                 <td>
-                    @if ($order->status === \Cyndaron\Geelhoed\Webshop\Model\OrderStatus::QUOTE)
-                        <a
-                            href="/webwinkel/winkelen/{{ $order->subscriber->hash }}"
-                            class="btn btn-outline-cyndaron"
-                            title="Naar bestelpagina"
-                        >
-                            @include('View/Widget/Icon', ['type' => 'shopping-cart'])
-                        </a>
-                    @endif
+                    <div class="btn-group">
+                        @include('View/Widget/Button',
+                            ['link' => "/webwinkel/beheer-order/{$order->id}", 'description' => 'Beheren', 'kind' => 'arrow-right'])
+                        @if ($order->status === \Cyndaron\Geelhoed\Webshop\Model\OrderStatus::QUOTE)
+                            <a
+                                href="/webwinkel/winkelen/{{ $order->subscriber->hash }}"
+                                class="btn btn-outline-cyndaron"
+                                title="Naar bestelpagina"
+                            >
+                                @include('View/Widget/Icon', ['type' => 'shopping-cart'])
+                            </a>
+                        @endif
+                    </div>
+
                 </td>
             </tr>
         @endforeach

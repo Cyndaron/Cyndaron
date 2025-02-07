@@ -20,6 +20,7 @@ use Cyndaron\Geelhoed\Webshop\Model\ProductRepository;
 use Cyndaron\Geelhoed\Webshop\Page\CreateAccountPage;
 use Cyndaron\Geelhoed\Webshop\Page\FinishOrderPage;
 use Cyndaron\Geelhoed\Webshop\Page\ItemTotalsPage;
+use Cyndaron\Geelhoed\Webshop\Page\ManageOrderDetails;
 use Cyndaron\Geelhoed\Webshop\Page\OverviewPage;
 use Cyndaron\Geelhoed\Webshop\Page\ShopPage;
 use Cyndaron\Page\PageRenderer;
@@ -614,5 +615,18 @@ Sportschool Geelhoed";
     {
         $page = new ItemTotalsPage();
         return $this->pageRenderer->renderResponse($page);
+    }
+
+    #[RouteAttribute('beheer-order', RequestMethod::GET, UserLevel::ADMIN, right: self::RIGHT_MANAGE)]
+    public function manageOrderDetails(QueryBits $queryBits, OrderRepository $orderRepository, ManageOrderDetails $manageOrderDetails): Response
+    {
+        $orderId = $queryBits->getInt(2);
+        $order = $orderRepository->fetchById($orderId);
+        if ($order === null)
+        {
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Order niet gevonden!', Response::HTTP_NOT_FOUND));
+        }
+
+        return $this->pageRenderer->renderResponse($manageOrderDetails->createPage($order));
     }
 }
