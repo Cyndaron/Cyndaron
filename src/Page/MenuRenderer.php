@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Page;
 
+use Cyndaron\DBAL\Connection;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Translation\Translator;
 use Cyndaron\Url\UrlService;
@@ -24,6 +25,7 @@ final class MenuRenderer
         private readonly UrlService $urlService,
         private readonly Translator $translator,
         private readonly TemplateRenderer $templateRenderer,
+        private readonly Connection $connection,
     ) {
     }
 
@@ -76,6 +78,7 @@ final class MenuRenderer
 
         $vars['notifications'] = $userSession->getNotifications();
         $vars['t'] = $this->translator;
+        $vars['connection'] = $this->connection;
 
         return $this->templateRenderer->render('Menu', $vars);
     }

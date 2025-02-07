@@ -12,8 +12,6 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
-use Cyndaron\User\UserSession;
-use Cyndaron\View\Renderer\TextRenderer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -70,7 +68,7 @@ final class PhotoalbumController
                 $tempName = $file->getPathname();
                 $originalName = $file->getClientOriginalName();
                 $proposedName = pathinfo($originalName, PATHINFO_FILENAME) . '.webp';
-                Photo::create($album, $tempName, $proposedName);
+                PhotoRepository::create($album, $tempName, $proposedName);
             }
         }
     }
@@ -162,7 +160,7 @@ final class PhotoalbumController
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
-        $numDeleted = Photo::deleteByAlbumAndFilename($album, $filename);
+        $numDeleted = PhotoRepository::deleteByAlbumAndFilename($album, $filename);
         if ($numDeleted === 0)
         {
             $page = new SimplePage('Fout bij verwijderen foto', 'Kon de bestanden niet vinden!');

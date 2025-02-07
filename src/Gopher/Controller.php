@@ -10,6 +10,7 @@ use Cyndaron\Gopher\Response\PlainTextResponse;
 use Cyndaron\Gopher\Response\ListingResponse;
 use Cyndaron\Gopher\Response\ResponseInterface;
 use Cyndaron\Photoalbum\Photoalbum;
+use Cyndaron\Photoalbum\PhotoRepository;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Setting;
@@ -35,6 +36,7 @@ final class Controller
         private readonly MenuEntryFactory $menuEntryFactory,
         private readonly UrlService       $urlService,
         private readonly CategoryRepository $categoryRepository,
+        private readonly PhotoRepository $photoRepository,
     ) {
     }
 
@@ -189,7 +191,7 @@ final class Controller
         }
         $entries[] = $this->menuEntryFactory->createInformationEntry('');
 
-        $photos = \Cyndaron\Photoalbum\Photo::fetchAllByAlbum($album);
+        $photos = $this->photoRepository->fetchAllByAlbum($album);
         foreach ($photos as $photo)
         {
             $title = $photo->caption->caption ?? $photo->filename;

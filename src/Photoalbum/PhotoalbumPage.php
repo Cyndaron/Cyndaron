@@ -15,14 +15,15 @@ final class PhotoalbumPage
         private readonly PhotoalbumRepository $photoalbumRepository,
         private readonly TextRenderer $textRenderer,
         private readonly User|null $currentUser,
-        private readonly UserRepository $userRepository
+        private readonly UserRepository $userRepository,
+        private readonly PhotoRepository $photoRepository,
     ) {
 
     }
 
     public function drawSlider(Photoalbum $album, TemplateRenderer $templateRenderer): string
     {
-        $photos = Photo::fetchAllByAlbum($album);
+        $photos = $this->photoRepository->fetchAllByAlbum($album);
         return $templateRenderer->render('Photoalbum/Photoslider', ['album' => $album, 'photos' => $photos]);
     }
 
@@ -41,7 +42,7 @@ final class PhotoalbumPage
         {
             $page->addScript('/js/lightbox.min.js');
 
-            $photos = Photo::fetchAllByAlbum($album);
+            $photos = $this->photoRepository->fetchAllByAlbum($album);
             $page->templateVars['model'] = $album;
             $page->templateVars['photos'] = $photos;
             $page->templateVars['pageImage'] = $album->getImage();

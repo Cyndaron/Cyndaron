@@ -12,6 +12,7 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\View\Renderer\TextRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -71,7 +72,7 @@ final class StaticPageController
     }
 
     #[RouteAttribute('react', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function react(QueryBits $queryBits, RequestParameters $post): Response
+    public function react(QueryBits $queryBits, RequestParameters $post, Connection $connection): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -88,8 +89,23 @@ final class StaticPageController
         $author = $post->getHTML('author');
         $reactie = $post->getHTML('reactie');
         $antispam = strtolower($post->getAlphaNum('antispam'));
-        $model->react($author, $reactie, $antispam);
+        $this->saveReaction($model, $connection, $author, $reactie, $antispam);
 
         return new RedirectResponse("/sub/$id");
+    }
+
+    private function saveReaction(StaticPageModel $staticPage, Connection $connection, string $author, string $reactie, string $antispam): bool
+    {
+        if ($staticPage->id === null)
+        {
+            throw new IncompleteData('No ID!');
+        }
+        if ($staticPage->enableComments && $author && $reactie && ($antispam === 'acht' || $antispam === '8'))
+        {
+            $prep = $connection->prepare('INSERT INTO sub_replies(subId, author, text) VALUES (?, ?, ?)');
+            $prep->execute([$staticPage->id, $author, $reactie]);
+            return true;
+        }
+        return false;
     }
 }

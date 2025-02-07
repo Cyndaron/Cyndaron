@@ -52,6 +52,7 @@ use function strtotime;
 use function strtoupper;
 use const PUB_DIR;
 use const CACHE_DIR;
+use function range;
 
 final class OrderController
 {
@@ -177,10 +178,10 @@ final class OrderController
      * @param UrlInfo $urlInfo
      * @param OrderConfirmationMailFactory $confirmationMailFactory
      * @param Connection $connection
-     * @return Order
      * @throws ImproperSubclassing
      * @throws InvalidOrder
      * @throws JsonException
+     * @return Order
      */
     private function processOrder(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory, Connection $connection): Order
     {
@@ -562,7 +563,8 @@ final class OrderController
             $paidStatus = true;
         }
 
-        try {
+        try
+        {
             foreach ($orders as $order)
             {
                 if ($paidStatus)

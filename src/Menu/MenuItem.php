@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Menu;
 
+use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
@@ -15,6 +15,7 @@ use function ltrim;
 use function sprintf;
 use function str_replace;
 use function strpos;
+use function str_starts_with;
 
 final class MenuItem extends Model
 {
@@ -62,17 +63,17 @@ final class MenuItem extends Model
 
     public function isCategoryDropdown(): bool
     {
-        return strpos($this->link, '/category/') === 0 && $this->isDropdown;
+        return str_starts_with($this->link, '/category/') && $this->isDropdown;
     }
 
     /**
      * @return Link[]
      */
-    public function getSubmenu(): array
+    public function getSubmenu(Connection $connection): array
     {
         // TODO: handle this via the module system
         $id = (int)str_replace('/category/', '', $this->link);
-        $pagesInCategory = DBConnection::getPDO()->doQueryAndFetchAll(
+        $pagesInCategory = $connection->doQueryAndFetchAll(
             "
             SELECT * FROM
             (
