@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\View\Template;
 
-use ArrayAccess;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Contracts\View\Engine;
@@ -12,27 +10,19 @@ use Illuminate\Contracts\View\View as ViewContract;
 use Throwable;
 use function is_array;
 use function is_null;
-use function array_key_exists;
 use function array_merge;
 
-final class View implements ArrayAccess, Htmlable, ViewContract
+final class View implements Htmlable, ViewContract
 {
-    private string $view;
-    private string $path;
-    private Engine $engine;
-    private ViewFactory $factory;
-    private array $data;
-
-    public function __construct(ViewFactory $factory, Engine $engine, string $view, string $path, array|Arrayable $data = [])
-    {
-        $this->view = $view;
-        $this->path = $path;
-        $this->engine = $engine;
-        $this->factory = $factory;
-
-        $this->data = $data instanceof Arrayable ? $data->toArray() : (array) $data;
+    public function __construct(
+        private readonly ViewFactory $factory,
+        private readonly Engine      $engine,
+        private readonly string      $view,
+        private readonly string      $path,
+        /** @var array<string, mixed> */
+        private array                $data = []
+    ) {
     }
-
 
     public function toHtml(): string
     {
@@ -41,22 +31,13 @@ final class View implements ArrayAccess, Htmlable, ViewContract
 
     public function name(): string
     {
-        return $this->getName();
-    }
-
-    /**
-     * Get the name of the view.
-     *
-     * @return string
-     */
-    public function getName(): string
-    {
         return $this->view;
     }
 
     /**
      * Add a piece of data to the view.
      *
+     * @phpstan-ignore-next-line
      * @param  string|array  $key
      * @param  mixed  $value
      * @return $this
@@ -75,6 +56,9 @@ final class View implements ArrayAccess, Htmlable, ViewContract
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getData(): array
     {
         return $this->data;
@@ -116,7 +100,7 @@ final class View implements ArrayAccess, Htmlable, ViewContract
      *
      * @return string
      */
-    protected function renderContents(): string
+    private function renderContents(): string
     {
         // We will keep track of the number of views being rendered so we can flush
         // the section after the complete rendering operation is done. This will
@@ -134,56 +118,11 @@ final class View implements ArrayAccess, Htmlable, ViewContract
     }
 
     /**
-     * Determine if a piece of data is bound.
-     *
-     * @param  string  $offset
-     * @return bool
-     */
-    public function offsetExists($offset): bool
-    {
-        return array_key_exists($offset, $this->data);
-    }
-
-    /**
-     * Get a piece of bound data to the view.
-     *
-     * @param  string  $offset
-     * @return mixed
-     */
-    public function offsetGet($offset): mixed
-    {
-        return $this->data[$offset];
-    }
-
-    /**
-     * Set a piece of data on the view.
-     *
-     * @param  string  $offset
-     * @param  mixed  $value
-     * @return void
-     */
-    public function offsetSet($offset, mixed $value): void
-    {
-        $this->with($offset, $value);
-    }
-
-    /**
-     * Unset a piece of data from the view.
-     *
-     * @param  string  $offset
-     * @return void
-     */
-    public function offsetUnset($offset): void
-    {
-        unset($this->data[$offset]);
-    }
-
-    /**
      * Get the evaluated contents of the view.
      *
      * @return string
      */
-    protected function getContents(): string
+    private function getContents(): string
     {
         return $this->engine->get($this->path, $this->gatherData());
     }
@@ -191,11 +130,11 @@ final class View implements ArrayAccess, Htmlable, ViewContract
     /**
      * Get the data bound to the view instance.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function gatherData(): array
     {
-        $data = array_merge($this->factory->getShared(), $this->data);
+        $data = array_merge(['__env' => $this->factory], $this->data);
 
         foreach ($data as $key => $value)
         {
