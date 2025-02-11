@@ -21,10 +21,16 @@ final class Connection extends PDO
      */
     public function __construct(string $dsn, string|null $username = null, string|null $password = null, array|null $options = null)
     {
-        parent::__construct($dsn, $username, $password, $options);
-        $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        if ($options === null)
+        {
+            $options = [];
+        }
+        $options[PDO::ATTR_PERSISTENT] = true;
+        $options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
         // Setting this to false makes PDO use native prepared statements.
-        $this->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $options[PDO::ATTR_EMULATE_PREPARES] = false;
+
+        parent::__construct($dsn, $username, $password, $options);
     }
 
     public static function create(string $engine, string $host, string $databaseName, string $user, string $password): self
