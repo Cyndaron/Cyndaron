@@ -69,7 +69,7 @@ final class Artifact
         }
         elseif (str_contains($assetName, 'linux'))
         {
-            return self::processLinuxArtifact($asset, $version, $publishedAt, $signedBySignPath);
+            return self::processLinuxArtifact($asset, $version, $publishedAt, false);
         }
         elseif (str_contains($assetName, 'macos'))
         {
