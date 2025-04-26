@@ -10,7 +10,6 @@ use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Error\IncompleteData;
@@ -28,6 +27,7 @@ final class MailformController
     public function __construct(
         private readonly TemplateRenderer $templateRenderer,
         private readonly PageRenderer $pageRenderer,
+        private readonly MailformRepository $mailformRepository,
     ) {
     }
 
@@ -39,7 +39,7 @@ final class MailformController
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $form = Mailform::fetchById($id);
+        $form = $this->mailformRepository->fetchById($id);
 
         try
         {
@@ -162,7 +162,7 @@ final class MailformController
     public function delete(QueryBits $queryBits, GenericRepository $repository): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        $mailform = Mailform::fetchById($id);
+        $mailform = $this->mailformRepository->fetchById($id);
         if ($mailform === null)
         {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);

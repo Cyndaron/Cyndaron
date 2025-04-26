@@ -5,6 +5,7 @@ namespace Cyndaron\Migration;
 
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Mailform\MailformController;
+use Cyndaron\Mailform\MailformRepository;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -44,7 +45,7 @@ class OldUrlsController
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function routePost(RequestParameters $requestParameters, Request $request, MailFactory $mailFactory, QueryBits $queryBits): Response
+    public function routePost(RequestParameters $requestParameters, Request $request, MailFactory $mailFactory, QueryBits $queryBits, MailformRepository $mailformRepository): Response
     {
         if ($queryBits->getString(0) !== 'verwerkmailformulier.php')
         {
@@ -52,7 +53,7 @@ class OldUrlsController
         }
 
         $id = $request->query->getInt('id');
-        $controller = new MailformController($this->templateRenderer, $this->pageRenderer);
+        $controller = new MailformController($this->templateRenderer, $this->pageRenderer, $mailformRepository);
         $queryBits = new QueryBits(['mailform', 'process', (string)$id]);
         return $controller->process($queryBits, $requestParameters, $mailFactory);
     }

@@ -12,11 +12,15 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public string $template = '';
 
+    public function __construct(private readonly MailformRepository $mailformRepository)
+    {
+    }
+
     public function prepare(): void
     {
         if ($this->id)
         {
-            $this->model = Mailform::fetchById($this->id);
+            $this->model = $this->mailformRepository->fetchById($this->id);
             assert($this->model !== null);
             $this->content = $this->model->confirmationText ?? '';
             $this->contentTitle = $this->model->name;

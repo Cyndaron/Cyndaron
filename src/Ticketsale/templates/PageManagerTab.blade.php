@@ -1,4 +1,5 @@
 @php /** @var \Cyndaron\Url\UrlService $urlService */ @endphp
+@php /** @var \Cyndaron\Ticketsale\TicketType\TicketTypeRepository $ticketTypeRepository */ @endphp
 @component('View/Widget/Toolbar')
     @slot('right')
         @include('View/Widget/Button', ['kind' => 'new', 'link' => '/editor/concert', 'title' => 'Nieuw concert', 'text' => 'Nieuw concert'])
@@ -30,7 +31,7 @@
             </td>
             <td>
                 <ul>
-                    @foreach (\Cyndaron\Ticketsale\TicketType\TicketType::loadByConcert($concert) as $ticketType)
+                    @foreach ($ticketTypeRepository->fetchByConcert($concert) as $ticketType)
                         <li>
                             {{ $ticketType->name }}: {{ $ticketType->price|euro }}
                             <a href="/editor/ticketType/{{ $ticketType->id }}" role="button" class="btn btn-sm btn-outline-cyndaron">

@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Minecraft\Skin;
 
-use Cyndaron\Minecraft\Member;
+use Cyndaron\Minecraft\Member\Member;
 use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Response;
 

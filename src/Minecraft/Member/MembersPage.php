@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Minecraft;
+namespace Cyndaron\Minecraft\Member;
 
 use Cyndaron\Page\Page;
 
@@ -20,13 +20,13 @@ final class MembersPage extends Page
         'Politbureau'
     ];
 
-    public function __construct()
+    public function __construct(MemberRepository $memberRepository)
     {
         $this->title = 'Spelers';
         $this->addScript('/src/Minecraft/js/MembersPage.js');
         $this->addCss('/src/Minecraft/css/memberpage.min.css');
 
-        $members = Member::fetchAll([], [], 'ORDER BY level DESC, userName ASC');
+        $members = $memberRepository->fetchAll([], [], 'ORDER BY level DESC, userName ASC');
         $this->addTemplateVars([
             'members' => $members,
             'pageLevels' => self::PAGE_LEVELS,

@@ -11,6 +11,7 @@
     @endcomponent
 
     @php /** @var \Cyndaron\Ticketsale\Concert\Concert $concert */ @endphp
+    @php /** @var \Cyndaron\Ticketsale\Order\OrderHelper $orderHelper */ @endphp
     <table class="overzichtBestellingen table table-striped">
         <thead>
             <tr class="rotate">
@@ -101,7 +102,7 @@
                         </td>
                     @endforeach
 
-                    <td>{{ $order->calculatePrice()|euro }}</td>
+                    <td>{{ $orderHelper->calculateOrderTotal($order)|euro }}</td>
 
                     @if (!$concert->digitalDelivery)
                         @if (!$concert->forcedDelivery)

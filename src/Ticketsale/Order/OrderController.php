@@ -5,7 +5,6 @@ namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\Barcode\Code128;
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\ImproperSubclassing;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
@@ -21,6 +20,7 @@ use Cyndaron\Ticketsale\Concert\ConcertRepository;
 use Cyndaron\Ticketsale\Concert\TicketDelivery;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
 use Cyndaron\Ticketsale\TicketType\TicketType;
+use Cyndaron\Ticketsale\TicketType\TicketTypeRepository;
 use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
@@ -67,11 +67,11 @@ final class OrderController
     }
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function add(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory, Connection $connection): Response
+    public function add(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory, Connection $connection, TicketTypeRepository $ticketTypeRepository): Response
     {
         try
         {
-            $order = $this->processOrder($post, $urlInfo, $confirmationMailFactory, $connection);
+            $order = $this->processOrder($post, $urlInfo, $confirmationMailFactory, $connection, $ticketTypeRepository);
             $concert = $order->concert;
             if ($concert->getDelivery() === TicketDelivery::DIGITAL)
             {
@@ -184,7 +184,7 @@ final class OrderController
      * @throws JsonException
      * @return Order
      */
-    private function processOrder(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory, Connection $connection): Order
+    private function processOrder(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory, Connection $connection, TicketTypeRepository $ticketTypeRepository): Order
     {
         if ($post->isEmpty())
         {
@@ -220,7 +220,8 @@ final class OrderController
 
         /** @var OrderTicketTypes[] $orderTicketTypes */
         $orderTicketTypes = [];
-        $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concert->id], 'ORDER BY price DESC');
+        $ticketTypes = $ticketTypeRepository->fetchByConcertAndSortByPrice($concert);
+
         foreach ($ticketTypes as $ticketType)
         {
             assert($ticketType->id !== null);
@@ -473,7 +474,7 @@ final class OrderController
     }
 
     #[RouteAttribute('pay', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function pay(QueryBits $queryBits, Request $request, UserSession $userSession): Response
+    public function pay(QueryBits $queryBits, Request $request, UserSession $userSession, OrderHelper $orderHelper): Response
     {
         $orderId = $queryBits->getInt(2);
         $order = $this->orderRepository->fetchById($orderId);
@@ -498,7 +499,7 @@ final class OrderController
         }
 
         $concert = $order->concert;
-        $price = $order->calculatePrice();
+        $price = $orderHelper->calculateOrderTotal($order);
 
         $description = "Ticket(s) {$concert->name}";
         $baseUrl = $request->getSchemeAndHttpHost();
@@ -589,7 +590,7 @@ final class OrderController
     }
 
     #[RouteAttribute('getTickets', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function getTickets(QueryBits $queryBits): Response
+    public function getTickets(QueryBits $queryBits, OrderTicketTypesRepository $orderTicketTypesRepository): Response
     {
         $orderId = $queryBits->getInt(2);
         $order = $this->orderRepository->fetchById($orderId);
@@ -620,7 +621,7 @@ final class OrderController
         $logoSrc = is_file($logoFilename) ? file_get_contents($logoFilename) : '';
         $organisation = Setting::get(BuiltinSetting::ORGANISATION);
 
-        foreach ($order->getTicketTypes() as $orderTicketType)
+        foreach ($orderTicketTypesRepository->fetchAllByOrder($order) as $orderTicketType)
         {
             if ($orderTicketType->secretCode === null)
             {
@@ -697,7 +698,7 @@ final class OrderController
      * @throws ImproperSubclassing
      * @return array{0: bool, 1: string}
      */
-    private function checkScannedBarcode(RequestParameters $post, Concert $concert): array
+    private function checkScannedBarcode(RequestParameters $post, Concert $concert, OrderTicketTypesRepository $orderTicketTypesRepository): array
     {
         $barcode = $post->getSimpleString('barcode');
         $barcode = preg_replace('/[^0-9]+/', '', $barcode);
@@ -706,7 +707,7 @@ final class OrderController
             return [false, 'Lege barcode!'];
         }
 
-        $ticket = OrderTicketTypes::fetch(['secretCode = ?'], [$barcode]);
+        $ticket = $orderTicketTypesRepository->fetch(['secretCode = ?'], [$barcode]);
         if ($ticket === null)
         {
             return [false, 'Geen kaartje gevonden met deze barcode!'];
@@ -735,7 +736,7 @@ final class OrderController
     }
 
     #[RouteAttribute('checkIn', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function checkInPost(QueryBits $queryBits, RequestParameters $post): Response
+    public function checkInPost(QueryBits $queryBits, RequestParameters $post, OrderTicketTypesRepository $orderTicketTypesRepository): Response
     {
         $concertId = $queryBits->getInt(2);
         $concert = $this->concertRepository->fetchById($concertId);
@@ -749,7 +750,7 @@ final class OrderController
             throw new Exception('Geheime code klopt niet!');
         }
 
-        [$isCorrect, $message] = $this->checkScannedBarcode($post, $concert);
+        [$isCorrect, $message] = $this->checkScannedBarcode($post, $concert, $orderTicketTypesRepository);
 
         return $this->checkInPage($concert, $message, $isCorrect);
     }

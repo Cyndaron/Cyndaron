@@ -10,10 +10,12 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
+use Cyndaron\Ticketsale\Order\OrderHelper;
 use Cyndaron\Ticketsale\Order\OrderRepository;
 use Cyndaron\Ticketsale\Order\OrderTicketsPage;
 use Cyndaron\Ticketsale\Order\OrderTicketTypes;
-use Cyndaron\Ticketsale\TicketType\TicketType;
+use Cyndaron\Ticketsale\Order\OrderTicketTypesRepository;
+use Cyndaron\Ticketsale\TicketType\TicketTypeRepository;
 use Cyndaron\User\UserLevel;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
@@ -55,7 +57,7 @@ final class ConcertController
     }
 
     #[RouteAttribute('getInfo', RequestMethod::GET, UserLevel::ANONYMOUS, isApiMethod: true)]
-    public function getConcertInfo(QueryBits $queryBits): JsonResponse
+    public function getConcertInfo(QueryBits $queryBits, TicketTypeRepository $ticketTypeRepository): JsonResponse
     {
         $concertId = $queryBits->getInt(2);
         if ($concertId < 1)
@@ -68,8 +70,7 @@ final class ConcertController
             return new JsonResponse(['error' => 'Concert does not exist!'], Response::HTTP_NOT_FOUND);
         }
 
-        /** @var TicketType[] $ticketTypes */
-        $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concertId], 'ORDER BY price DESC');
+        $ticketTypes = $ticketTypeRepository->fetchByConcertAndSortByPrice($concert);
 
         $answer = [
             'tickettypes' => [],
@@ -90,7 +91,7 @@ final class ConcertController
     }
 
     #[RouteAttribute('order', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function order(QueryBits $queryBits): Response
+    public function order(QueryBits $queryBits, TicketTypeRepository $ticketTypeRepository): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -105,12 +106,12 @@ final class ConcertController
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
-        $page = new OrderTicketsPage($concert);
+        $page = new OrderTicketsPage($concert, $ticketTypeRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('viewOrders', RequestMethod::GET, UserLevel::ADMIN)]
-    public function viewOrders(QueryBits $queryBits, OrderRepository $orderRepository, Connection $connection): Response
+    public function viewOrders(QueryBits $queryBits, OrderRepository $orderRepository, Connection $connection, OrderHelper $orderHelper): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -120,12 +121,12 @@ final class ConcertController
         }
         $concert = $this->concertRepository->fetchById($id);
         assert($concert !== null);
-        $page = new ConcertOrderOverviewPage($concert, $orderRepository, $connection);
+        $page = new ConcertOrderOverviewPage($concert, $orderRepository, $connection, $orderHelper);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('orderListExcel', RequestMethod::GET, UserLevel::ADMIN)]
-    public function orderListExcel(QueryBits $queryBits, OrderRepository $orderRepository): Response
+    public function orderListExcel(QueryBits $queryBits, OrderRepository $orderRepository, TicketTypeRepository $ticketTypeRepository, OrderTicketTypesRepository $orderTicketTypesRepository): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -143,7 +144,7 @@ final class ConcertController
 
         $fields = ['id', 'lastName', 'initials', 'email', 'street', 'city', 'isPaid', 'comments'];
 
-        $ticketTypes = TicketType::loadByConcert($concert);
+        $ticketTypes = $ticketTypeRepository->fetchByConcert($concert);
         foreach ($ticketTypes as $ticketType)
         {
             $fields[] = 'Aant. ' . $ticketType->name;
@@ -187,7 +188,7 @@ final class ConcertController
         {
             $column = 'A';
             $additionalData = $order->getAdditionalData();
-            $orderTicketTypes = OrderTicketTypes::fetchAll(['orderId = ?'], [$order->id]);
+            $orderTicketTypes = $orderTicketTypesRepository->fetchAllByOrder($order);
             foreach ($orderTicketTypes as $orderTicketType)
             {
                 foreach ($ticketTypes as $ticketType)

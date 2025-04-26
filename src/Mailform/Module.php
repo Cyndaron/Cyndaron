@@ -6,6 +6,7 @@ use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
+use function usort;
 
 final class Module implements Datatypes, Routes
 {
@@ -35,10 +36,16 @@ final class Module implements Datatypes, Routes
         ];
     }
 
-    public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
+    public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, MailformRepository $mailformRepository): string
     {
+        $mailforms = $mailformRepository->fetchAll();
+        usort($mailforms, static function(Mailform $m1, Mailform $m2): int
+        {
+            return $m1->name <=> $m2->name;
+        });
+
         $templateVars = [
-            'mailforms' => Mailform::fetchAll([], [], 'ORDER BY name'),
+            'mailforms' => $mailforms,
             'tokenDelete' => $tokenHandler->get('mailform', 'delete'),
         ];
         return $templateRenderer->render('Mailform/PageManagerTab', $templateVars);

@@ -1,5 +1,5 @@
 <?php
-namespace Cyndaron\Minecraft;
+namespace Cyndaron\Minecraft\Member;
 
 use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\Model;
@@ -28,14 +28,4 @@ final class Member extends Model
     public bool $renderAvatarHair;
     #[DatabaseField]
     public bool $newRenderer = false;
-
-    public static function loadByUsername(string $username): self|null
-    {
-        $results = self::fetchAll(['userName = ?'], [$username]);
-        if (count($results) === 0)
-        {
-            return null;
-        }
-        return reset($results);
-    }
 }

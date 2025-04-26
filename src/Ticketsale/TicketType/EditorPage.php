@@ -15,6 +15,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public function __construct(
         private readonly QueryBits $queryBits,
+        private readonly TicketTypeRepository $ticketTypeRepository,
     ) {
     }
 
@@ -22,7 +23,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
     {
         if ($this->id)
         {
-            $this->model = TicketType::fetchById($this->id);
+            $this->model = $this->ticketTypeRepository->fetchById($this->id);
             $concertId = $this->model?->concertId;
         }
         else

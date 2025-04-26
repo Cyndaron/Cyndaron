@@ -3,12 +3,16 @@ declare(strict_types=1);
 
 namespace Cyndaron\Minecraft;
 
+use Cyndaron\Minecraft\Dynmap\DynmapProxy;
+use Cyndaron\Minecraft\Member\MemberRepository;
+use Cyndaron\Minecraft\Member\MembersPage;
+use Cyndaron\Minecraft\Server\ServerRepository;
+use Cyndaron\Minecraft\Server\StatusPage;
+use Cyndaron\Minecraft\Skin\SkinRendererHandler;
+use Cyndaron\Minecraft\Skin\SkinRendererParameters;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
-use Cyndaron\Minecraft\Dynmap\DynmapProxy;
-use Cyndaron\Minecraft\Skin\SkinRendererHandler;
-use Cyndaron\Minecraft\Skin\SkinRendererParameters;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
@@ -26,14 +30,14 @@ final class MinecraftController
     }
 
     #[RouteAttribute('dynmapproxy', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function dynmapProxy(QueryBits $queryBits): Response
+    public function dynmapProxy(QueryBits $queryBits, ServerRepository $serverRepository): Response
     {
         $serverId = $queryBits->getInt(2);
         if ($serverId < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $server = Server::fetchById($serverId);
+        $server = $serverRepository->fetchById($serverId);
         if ($server === null)
         {
             return new JsonResponse(['error' => 'Server does not exist!'], Response::HTTP_NOT_FOUND);
@@ -49,19 +53,19 @@ final class MinecraftController
     }
 
     #[RouteAttribute('members', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function members(): Response
+    public function members(MemberRepository $memberRepository): Response
     {
-        $page = new MembersPage();
+        $page = new MembersPage($memberRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('skin', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function skin(Request $request): Response
+    public function skin(Request $request, MemberRepository $memberRepository): Response
     {
         $get = new RequestParameters($request->query->all());
         $format = $get->getSimpleString('format');
         $username = $get->getSimpleString('user');
-        $member = Member::loadByUsername($username);
+        $member = $memberRepository->loadByUsername($username);
         if ($member === null)
         {
             return new Response('', Response::HTTP_NOT_FOUND);
@@ -73,9 +77,9 @@ final class MinecraftController
     }
 
     #[RouteAttribute('status', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function status(): Response
+    public function status(ServerRepository $serverRepository): Response
     {
-        $page = new StatusPagina();
+        $page = new StatusPage($serverRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 }

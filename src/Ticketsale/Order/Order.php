@@ -6,7 +6,6 @@ namespace Cyndaron\Ticketsale\Order;
 use Cyndaron\DBAL\DatabaseField;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Ticketsale\Concert\Concert;
-use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
 use Safe\Exceptions\JsonException;
 use function assert;
 use function is_array;
@@ -57,55 +56,6 @@ final class Order extends Model
     public string $comments = '';
     #[DatabaseField]
     protected string $additionalData = '';
-
-    /** @var OrderTicketTypes[]|null  */
-    private array|null $cachedTicketTypes = null;
-
-    /**
-     * @return OrderTicketTypes[]
-     */
-    public function getTicketTypes(): array
-    {
-        if ($this->cachedTicketTypes === null)
-        {
-            $this->cachedTicketTypes = OrderTicketTypes::fetchAll(['orderId = ?'], [$this->id]);
-        }
-
-        return $this->cachedTicketTypes;
-    }
-
-    /**
-     * @param OrderTicketTypes[] $orderTicketTypes
-     * @return void
-     */
-    public function setTicketTypes(array $orderTicketTypes): void
-    {
-        $this->cachedTicketTypes = $orderTicketTypes;
-    }
-
-    public function getDeliveryCost(): DeliveryCostInterface
-    {
-        $interfaceName = $this->concert->getDeliveryCostInterface();
-        /** @var DeliveryCostInterface $object */
-        $object = new $interfaceName($this->concert, $this, $this->getTicketTypes());
-        return $object;
-    }
-
-    public function calculatePrice(): float
-    {
-        $orderTicketTypes = $this->getTicketTypes();
-        $totalCost = $this->getDeliveryCost()->getCost();
-        $reservedSeatCharge = $this->hasReservedSeats ? $this->concert->reservedSeatCharge : 0.00;
-
-        foreach ($orderTicketTypes as $orderTicketType)
-        {
-            $ticketType = $orderTicketType->ticketType;
-            $totalCost += $orderTicketType->amount * $ticketType->price;
-            $totalCost += $orderTicketType->amount * $reservedSeatCharge;
-        }
-
-        return $totalCost;
-    }
 
     /**
      * @return array<string, mixed>

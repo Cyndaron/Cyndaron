@@ -3,6 +3,7 @@ namespace Cyndaron\Ticketsale\Concert;
 
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\Page;
+use Cyndaron\Ticketsale\Order\OrderHelper;
 use Cyndaron\Ticketsale\Order\OrderRepository;
 use function array_key_exists;
 
@@ -16,7 +17,7 @@ final class ConcertOrderOverviewPage extends Page
         FROM `ticketsale_orders_tickettypes`
         GROUP BY orderId,tickettypeId;';
 
-    public function __construct(Concert $concert, OrderRepository $orderRepository, Connection $connection)
+    public function __construct(Concert $concert, OrderRepository $orderRepository, Connection $connection, OrderHelper $orderHelper)
     {
         $ticketTypes = $connection->doQueryAndFetchAll(self::TICKET_TYPES_QUERY, [$concert->id]);
         $ticketTypesByOrder = $this->getTicketTypesPerOrder($connection);
@@ -43,6 +44,7 @@ final class ConcertOrderOverviewPage extends Page
             'orders' => $orders,
             'ticketTypesByOrder' => $ticketTypesByOrder,
             'totals' => $totals,
+            'orderHelper' => $orderHelper,
         ]);
     }
 

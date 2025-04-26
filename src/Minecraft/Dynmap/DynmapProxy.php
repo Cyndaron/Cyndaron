@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace Cyndaron\Minecraft\Dynmap;
 
-use Cyndaron\Minecraft\Server;
+use Cyndaron\Minecraft\Server\Server;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Routing\Kernel;
-
 use function Safe\file_get_contents;
 use function sprintf;
-use function strpos;
 use function str_replace;
+use function strpos;
 
 final class DynmapProxy
 {

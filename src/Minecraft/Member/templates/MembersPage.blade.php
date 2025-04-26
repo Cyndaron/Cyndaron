@@ -6,7 +6,7 @@
         $highestLevel = count($pageLevels) - 1;
     @endphp
 
-    @php /** @var \Cyndaron\Minecraft\Member[] $members */@endphp
+    @php /** @var \Cyndaron\Minecraft\Member\Member[] $members */@endphp
     @foreach ($members as $member)
         @php $normalisedPageLevel = min($member->level, $highestLevel); @endphp
 
@@ -28,21 +28,23 @@
             <table>
                 <tr>
                     <td class="avatarbox">
-                        <img class="mc-speler-avatar" alt="Avatar van {{ $member->realName }}" title="Avatar van {{ $member->realName }}" src="{!! $frontView !!}" data-vooraanzicht="{!! $frontView !!}" data-achteraanzicht="{!! $backView !!}" />
+                        <img class="mc-speler-avatar" alt="Avatar van {{ $member->realName }}"
+                             title="Avatar van {{ $member->realName }}" src="{!! $frontView !!}"
+                             data-vooraanzicht="{!! $frontView !!}" data-achteraanzicht="{!! $backView !!}"/>
                     </td>
                     <td class="spelersinfobox">
 
                         <span class="spelersnaam">{{ $member->userName }}</span>
 
                         @if ($member->donor)
-                            <br /><span class="donor">Donateur</span>
+                            <br/><span class="donor">Donateur</span>
                         @endif
 
-                        <br />Echte naam: {{ $member->realName }}
-                        <br />Status: {{ $member->status }}
+                        <br/>Echte naam: {{ $member->realName }}
+                        <br/>Status: {{ $member->status }}
 
                         @if ($member->level >= 3 && $member->level <= 5)
-                            <br />Niveau: {{ $levels[$member->level] }}
+                            <br/>Niveau: {{ $levels[$member->level] }}
                         @endif
 
                     </td>

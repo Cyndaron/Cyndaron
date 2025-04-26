@@ -5,6 +5,7 @@ use Cyndaron\Location\Location;
 use Cyndaron\Page\Page;
 use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\Ticketsale\TicketType\TicketType;
+use Cyndaron\Ticketsale\TicketType\TicketTypeRepository;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
 use function file_exists;
@@ -12,7 +13,7 @@ use function strtoupper;
 
 final class OrderTicketsPage extends Page
 {
-    public function __construct(Concert $concert)
+    public function __construct(Concert $concert, TicketTypeRepository $ticketTypeRepository)
     {
         $this->addScript('/src/Ticketsale/Order/js/OrderTicketsPage.js?r=1');
 
@@ -28,7 +29,7 @@ final class OrderTicketsPage extends Page
             $this->template = "Ticketsale/Order/$orgTemplate";
         }
 
-        $ticketTypes = TicketType::fetchAll(['concertId = ?'], [$concert->id], 'ORDER BY price DESC');
+        $ticketTypes = $ticketTypeRepository->fetchByConcertAndSortByPrice($concert);
 
         $this->templateVars['concert'] = $concert;
 
