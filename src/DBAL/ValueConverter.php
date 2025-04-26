@@ -18,6 +18,7 @@ use function is_int;
 use function is_scalar;
 use function is_string;
 use function str_contains;
+use function is_object;
 
 final class ValueConverter
 {
@@ -52,7 +53,7 @@ final class ValueConverter
         return $var;
     }
 
-    public static function sqlToPhp(string|int|float|null $var, string $class, string $property):  DateTimeInterface|BackedEnum|Model|bool|int|float|string|null
+    public static function sqlToPhp(GenericRepository $genericRepository, string|int|float|null $var, string $class, string $property):  DateTimeInterface|BackedEnum|Model|bool|int|float|string|null
     {
         if ($var === null)
         {
@@ -86,7 +87,8 @@ final class ValueConverter
         }
         if (is_a($typeName, Model::class, true))
         {
-            return $typeName::fetchById((int)$var);
+            assert(!is_object($typeName));
+            return $genericRepository->fetchById($typeName, (int)$var);
         }
         if (is_a($typeName, DateTimeInterface::class, true))
         {

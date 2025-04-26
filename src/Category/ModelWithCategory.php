@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\View\Template\ViewHelpers;
 use Safe\Exceptions\PcreException;
@@ -19,8 +18,6 @@ use function trim;
  */
 abstract class ModelWithCategory extends Model
 {
-    use FileCachedModel;
-
     #[DatabaseField]
     public string $name = '';
     #[DatabaseField]

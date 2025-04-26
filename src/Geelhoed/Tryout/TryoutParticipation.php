@@ -4,15 +4,12 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Tryout;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Safe\Exceptions\JsonException;
 use function Safe\json_decode;
 
 final class TryoutParticipation extends Model
 {
-    use FileCachedModel;
-
     public const TABLE = 'geelhoed_volunteer_tot_participation';
 
     #[DatabaseField]

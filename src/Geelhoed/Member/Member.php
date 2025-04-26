@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\User\User;
 use Cyndaron\Util\Util;
@@ -14,8 +13,6 @@ use function strtolower;
 
 final class Member extends Model
 {
-    use FileCachedModel;
-
     public const TABLE = 'geelhoed_members';
 
     #[DatabaseField(dbName: 'userId')]

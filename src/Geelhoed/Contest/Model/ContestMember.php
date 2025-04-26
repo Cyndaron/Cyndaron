@@ -4,15 +4,12 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Contest\Model;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Graduation\Graduation;
 use Cyndaron\Geelhoed\Member\Member;
 
 final class ContestMember extends Model
 {
-    use FileCachedModel;
-
     public const TABLE = 'geelhoed_contests_members';
 
     #[DatabaseField(dbName: 'contestId')]

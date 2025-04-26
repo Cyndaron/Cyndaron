@@ -4,14 +4,11 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Clubactie;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use function implode;
 
 final class Subscriber extends Model
 {
-    use FileCachedModel;
-
     public const TABLE = 'geelhoed_clubactie_subscriber';
 
     #[DatabaseField]

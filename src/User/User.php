@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\User;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Util\Util;
 use DateTimeInterface;
@@ -17,8 +16,6 @@ use function password_hash;
 
 final class User extends Model
 {
-    use FileCachedModel;
-
     public const TABLE = 'users';
 
     public const AVATAR_DIR = Util::UPLOAD_DIR . '/user/avatar';

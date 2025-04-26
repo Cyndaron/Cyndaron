@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\DBAL;
 
+use BadMethodCallException;
+use function get_class;
+
 trait RepositoryTrait
 {
     public function fetchOrCreate(int|null $id): Model
@@ -17,6 +20,10 @@ trait RepositoryTrait
 
     public function save(Model $model): void
     {
+        if (get_class($model) !== self::UNDERLYING_CLASS)
+        {
+            throw new BadMethodCallException('Tried saving a model with the wrong repository!');
+        }
         $this->genericRepository->save($model);
     }
 
@@ -43,5 +50,10 @@ trait RepositoryTrait
     public function fetchAllForSelect(): array
     {
         return $this->genericRepository->fetchAllForSelect(self::UNDERLYING_CLASS);
+    }
+
+    public function createFromArray(array $array): Model
+    {
+        return $this->genericRepository->createFromArray(self::UNDERLYING_CLASS, $array);
     }
 }

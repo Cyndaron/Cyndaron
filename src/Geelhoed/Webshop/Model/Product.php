@@ -4,13 +4,10 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Webshop\Model;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 
 final class Product extends Model
 {
-    use FileCachedModel;
-
     public const GYMTAS_ID = 1;
     public const DONATE_TICKETS_ID = 18;
     public const EXTRA_GYMTAS_ID = 19;

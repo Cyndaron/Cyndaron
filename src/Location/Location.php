@@ -4,15 +4,12 @@ declare(strict_types=1);
 namespace Cyndaron\Location;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use function urlencode;
 use function implode;
 
 final class Location extends Model
 {
-    use FileCachedModel;
-
     public const TABLE = 'locations';
 
     #[DatabaseField]

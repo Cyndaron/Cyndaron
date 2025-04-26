@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Hour;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Department;
 use Cyndaron\Location\Location;
@@ -15,8 +14,6 @@ use function sprintf;
 
 final class Hour extends Model
 {
-    use FileCachedModel;
-
     public const TABLE = 'geelhoed_hours';
 
     #[DatabaseField('locationId')]

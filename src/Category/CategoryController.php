@@ -54,7 +54,7 @@ final class CategoryController
                 $page = new SimplePage('Foute aanvraag', 'Lege tag ontvangen.');
                 return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
             }
-            $page = new TagIndexPage($urlService, $connection, $tag);
+            $page = new TagIndexPage($urlService, $connection, $staticPageRepository, $tag);
             return $this->pageRenderer->renderResponse($page);
         }
         if ($id === '' || $id < 0)

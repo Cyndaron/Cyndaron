@@ -5,7 +5,6 @@ namespace Cyndaron\Geelhoed\Tryout;
 
 use Cyndaron\Calendar\CalendarAppointment;
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Location\Location;
 use DateTime;
@@ -15,8 +14,6 @@ use function Safe\json_decode;
 
 final class Tryout extends Model implements CalendarAppointment
 {
-    use FileCachedModel;
-
     public const TABLE = 'geelhoed_volunteer_tot';
 
     #[DatabaseField]

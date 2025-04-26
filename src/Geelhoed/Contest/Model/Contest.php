@@ -2,7 +2,6 @@
 namespace Cyndaron\Geelhoed\Contest\Model;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberRepository;
@@ -24,8 +23,6 @@ use function time;
 
 final class Contest extends Model
 {
-    use FileCachedModel;
-
     public const TABLE = 'geelhoed_contests';
 
     public const RIGHT_MANAGE = 'geelhoed_manage_contests';

@@ -4,13 +4,10 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Webshop\Model;
 
 use Cyndaron\DBAL\DatabaseField;
-use Cyndaron\DBAL\FileCachedModel;
 use Cyndaron\DBAL\Model;
 
 final class OrderItem extends Model
 {
-    use FileCachedModel;
-
     public const TABLE = 'geelhoed_webshop_order_item';
 
     #[DatabaseField(dbName: 'orderId')]

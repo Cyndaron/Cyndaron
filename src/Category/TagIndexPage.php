@@ -6,6 +6,7 @@ namespace Cyndaron\Category;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\Page;
 use Cyndaron\StaticPage\StaticPageModel;
+use Cyndaron\StaticPage\StaticPageRepository;
 use Cyndaron\Url\UrlService;
 use function in_array;
 use function strtolower;
@@ -15,7 +16,7 @@ final class TagIndexPage extends Page
 {
     public string $template = 'Category/CategoryPage';
 
-    public function __construct(UrlService $urlService, Connection $connection, string $tag)
+    public function __construct(UrlService $urlService, Connection $connection, StaticPageRepository $staticPageRepository, string $tag)
     {
         $this->title = ucfirst($tag);
 
@@ -25,7 +26,7 @@ final class TagIndexPage extends Page
         $subs = $connection->doQueryAndFetchAll('SELECT * FROM subs WHERE `tags` LIKE ? ORDER BY id DESC', ["%$tag%"]);
         foreach ($subs as $sub)
         {
-            $sub = StaticPageModel::fromArray($sub);
+            $sub = $staticPageRepository->createFromArray($sub);
             $tagList = $sub->getTagList();
             if ($tagList !== [])
             {

@@ -56,4 +56,10 @@ interface RepositoryInterface
      * @return T[]
      */
     public function fetchAllForSelect(): array;
+
+    /**
+     * @param array<string, float|int|string|null> $array
+     * @return T
+     */
+    public function createFromArray(array $array): Model;
 }
