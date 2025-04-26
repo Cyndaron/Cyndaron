@@ -10,7 +10,7 @@ use function Safe\date;
 
 final class RegistrationPage extends Page
 {
-    public function __construct(Event $event)
+    public function __construct(Event $event, EventTicketTypeRepository $eventTicketTypeRepository)
     {
         $this->title = 'Aanmelding: ' . $event->name;
 
@@ -54,7 +54,7 @@ final class RegistrationPage extends Page
 
         $this->addTemplateVars([
             'event' => $event,
-            'ticketTypes' => EventTicketType::loadByEvent($event),
+            'ticketTypes' => $eventTicketTypeRepository->loadByEvent($event),
         ]);
     }
 }

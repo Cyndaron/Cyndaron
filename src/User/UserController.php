@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\User;
 
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Geelhoed\Contest\Model\Contest;
 use Cyndaron\Imaging\GdHelper;
 use Cyndaron\Page\PageRenderer;
@@ -16,6 +15,7 @@ use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Translation\Translator;
 use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use Cyndaron\Util\Util;
 use Exception;
 use Safe\Exceptions\ImageException;
@@ -39,13 +39,15 @@ final class UserController
 
 Uw nieuwe wachtwoord is: %s';
 
-    public function __construct(private readonly PageRenderer $pageRenderer)
-    {
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+        private readonly UserRepository $userRepository,
+    ) {
 
     }
 
     #[RouteAttribute('gallery', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function gallery(UserSession $session, Translator $t): Response
+    public function gallery(UserSession $session, Translator $t, UserRepository $userRepository, SettingsRepository $settingsRepository): Response
     {
         $currentUser = $session->getProfile();
         // Has to be done here because you cannot specify the expression during member variable initialization.
@@ -57,7 +59,7 @@ Uw nieuwe wachtwoord is: %s';
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_UNAUTHORIZED);
         }
 
-        $page = new Gallery();
+        $page = new Gallery($userRepository, $settingsRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -82,7 +84,7 @@ Uw nieuwe wachtwoord is: %s';
     #[RouteAttribute('manager', RequestMethod::GET, UserLevel::ADMIN)]
     public function manager(): Response
     {
-        $page = new UserManagerPage();
+        $page = new UserManagerPage($this->userRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -116,7 +118,7 @@ Uw nieuwe wachtwoord is: %s';
             if ($user->passwordNeedsUpdate())
             {
                 $user->setPassword($password);
-                $user->save();
+                $this->userRepository->save($user);
             }
 
             $userSession->setProfile($user);
@@ -164,10 +166,7 @@ Uw nieuwe wachtwoord is: %s';
 
         $password = $post->getUnfilteredString('password') ?: Util::generatePassword();
         $user->setPassword($password);
-        if (!$user->save())
-        {
-            throw new Exception('Could not add user!');
-        }
+        $this->userRepository->save($user);
 
         if ($user->email !== null)
         {
@@ -186,7 +185,7 @@ Uw nieuwe wachtwoord is: %s';
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = User::fetchById($id);
+        $user = $this->userRepository->fetchById($id);
         if ($user === null)
         {
             return new JsonResponse(['error' => 'User not found!', Response::HTTP_NOT_FOUND]);
@@ -202,17 +201,13 @@ Uw nieuwe wachtwoord is: %s';
         $user->comments = $post->getHTML('comments');
         $user->avatar = $post->getFilenameWithDirectory('avatar');
         $user->hideFromMemberList = $post->getBool('hideFromMemberList');
-        $result = $user->save();
-        if (!$result)
-        {
-            return new JsonResponse(['error' => 'Could not update user!'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $this->userRepository->save($user);
 
         return new JsonResponse();
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits, GenericRepository $repository): JsonResponse
+    public function delete(QueryBits $queryBits): JsonResponse
     {
         $userId = $queryBits->getInt(2);
         if ($userId < 1)
@@ -220,7 +215,7 @@ Uw nieuwe wachtwoord is: %s';
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
 
-        $repository->deleteById(User::class, $userId);
+        $this->userRepository->deleteById($userId);
 
         return new JsonResponse();
     }
@@ -229,7 +224,7 @@ Uw nieuwe wachtwoord is: %s';
     public function resetPassword(QueryBits $queryBits, MailFactory $mailFactory): JsonResponse
     {
         $userId = $queryBits->getInt(2);
-        $user = User::fetchById($userId);
+        $user = $this->userRepository->fetchById($userId);
         if ($user === null)
         {
             return new JsonResponse(['error' => 'User not found!', Response::HTTP_NOT_FOUND]);
@@ -237,7 +232,7 @@ Uw nieuwe wachtwoord is: %s';
 
         $newPassword = Util::generatePassword();
         $user->setPassword($newPassword);
-        $user->save();
+        $this->userRepository->save($user);
         $this->mailNewPassword($user, $newPassword, $mailFactory);
 
         return new JsonResponse();
@@ -247,7 +242,7 @@ Uw nieuwe wachtwoord is: %s';
     public function changeAvatar(QueryBits $queryBits, Request $request): Response
     {
         $userId = $queryBits->getInt(2);
-        $user = User::fetchById($userId);
+        $user = $this->userRepository->fetchById($userId);
         if ($user === null)
         {
             $page = new SimplePage('Fout bij veranderen avatar', 'Kon gebruiker niet vinden!');
@@ -278,7 +273,7 @@ Uw nieuwe wachtwoord is: %s';
         unlink($tmpName);
 
         $user->avatar = basename($filename);
-        $user->save();
+        $this->userRepository->save($user);
 
         return new RedirectResponse('/user/manager');
     }
@@ -320,17 +315,14 @@ Uw nieuwe wachtwoord is: %s';
             return new RedirectResponse('/user/changePassword');
         }
 
-        $changed = $profile->setPassword($newPassword) && $profile->save();
-        if (!$changed)
-        {
-            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Kon het nieuwe wachtwoord niet opslaan.'), status:  Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $profile->setPassword($newPassword);
+        $this->userRepository->save($profile);
 
         $userSession->addNotification('Wachtwoord gewijzigd.');
         return new RedirectResponse('/');
     }
 
-    private function mailNewPassword(User $user, string $password, MailFactory $mailFactory): bool
+    private function mailNewPassword(User $user, string $password, MailFactory $mailFactory): void
     {
         if ($user->email === null)
         {
@@ -342,6 +334,9 @@ Uw nieuwe wachtwoord is: %s';
             'Nieuw wachtwoord ingesteld',
             sprintf(self::RESET_PASSWORD_MAIL_TEXT, Setting::get('siteName'), $password)
         );
-        return $mail->send();
+        if (!$mail->send())
+        {
+            throw new Exception('Could not send email!');
+        }
     }
 }

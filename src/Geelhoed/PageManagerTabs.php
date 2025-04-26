@@ -6,6 +6,7 @@ namespace Cyndaron\Geelhoed;
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
 use Cyndaron\Geelhoed\Clubactie\SubscriberRepository;
 use Cyndaron\Geelhoed\Contest\Model\ContestRepository;
+use Cyndaron\Geelhoed\Graduation\GraduationRepository;
 use Cyndaron\Geelhoed\Location\LocationRepository;
 use Cyndaron\Geelhoed\Sport\SportRepository;
 use Cyndaron\Geelhoed\Tryout\TryoutRepository;
@@ -17,7 +18,7 @@ use function usort;
 
 final class PageManagerTabs
 {
-    public static function membersTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, LocationRepository $locationRepository, SportRepository $sportRepository): string
+    public static function membersTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, LocationRepository $locationRepository, SportRepository $sportRepository, GraduationRepository $graduationRepository): string
     {
         return $templateRenderer->render('Geelhoed/Member/PageManagerTab', [
             'locations' => $locationRepository->fetchAll(afterWhere: 'ORDER BY city, street'),
@@ -26,6 +27,7 @@ final class PageManagerTabs
             'tokenRemoveGraduation' => $tokenHandler->get('member', 'removeGraduation'),
             'sports' => $sportRepository->fetchAll(),
             'locationRepository' => $locationRepository,
+            'graduations' => $graduationRepository->fetchAll(),
         ]);
     }
 

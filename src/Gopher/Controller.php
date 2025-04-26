@@ -5,12 +5,15 @@ namespace Cyndaron\Gopher;
 
 use Cyndaron\Category\Category;
 use Cyndaron\Category\CategoryRepository;
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Gopher\Response\FilestreamResponse;
 use Cyndaron\Gopher\Response\PlainTextResponse;
 use Cyndaron\Gopher\Response\ListingResponse;
 use Cyndaron\Gopher\Response\ResponseInterface;
+use Cyndaron\Menu\MenuItem;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Photoalbum\PhotoRepository;
+use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Setting;
@@ -35,6 +38,7 @@ final class Controller
     public function __construct(
         private readonly MenuEntryFactory $menuEntryFactory,
         private readonly UrlService       $urlService,
+        private readonly GenericRepository $genericRepository,
         private readonly CategoryRepository $categoryRepository,
         private readonly PhotoRepository $photoRepository,
     ) {
@@ -45,7 +49,7 @@ final class Controller
         if (str_starts_with($query, 'sub/'))
         {
             $id = (int)substr($query, 4);
-            $page = \Cyndaron\StaticPage\StaticPageModel::fetchById($id);
+            $page = $this->genericRepository->fetchById(StaticPageModel::class, $id);
             if ($page !== null)
             {
                 return $this->serveStaticPage($page);
@@ -54,7 +58,7 @@ final class Controller
         elseif (str_starts_with($query, 'category/'))
         {
             $id = (int)substr($query, 9);
-            $page = Category::fetchById($id);
+            $page = $this->categoryRepository->fetchById($id);
             if ($page !== null)
             {
                 return $this->serveCategory($page);
@@ -63,7 +67,7 @@ final class Controller
         elseif (str_starts_with($query, 'photoalbum/'))
         {
             $id = (int)substr($query, 11);
-            $page = Photoalbum::fetchById($id);
+            $page = $this->genericRepository->fetchById(Photoalbum::class, $id);
             if ($page !== null)
             {
                 return $this->servePhotoalbum($page);
@@ -91,7 +95,7 @@ final class Controller
             $this->menuEntryFactory->createInformationEntry(''),
         ];
 
-        $menu = \Cyndaron\Menu\MenuItem::fetchAll();
+        $menu = $this->genericRepository->fetchAll(MenuItem::class);
         foreach ($menu as $menuItem)
         {
             $url = $menuItem->getLink()->__toString();
@@ -113,19 +117,19 @@ final class Controller
             {
                 case 'category':
                     $id = (int)$parts[1];
-                    $category = Category::fetchById($id);
+                    $category = $this->categoryRepository->fetchById($id);
                     assert($category !== null);
                     $entries[] = $this->menuEntryFactory->createDirectoryEntry("/category/$id", $category->name);
                     break;
                 case 'sub':
                     $id = (int)$parts[1];
-                    $sub = \Cyndaron\StaticPage\StaticPageModel::fetchById($id);
+                    $sub = $this->genericRepository->fetchById(StaticPageModel::class, $id);
                     assert($sub !== null);
                     $entries[] = $this->menuEntryFactory->createHtmlFileEntry("/sub/$id", $sub->name);
                     break;
                 case 'photoalbum':
                     $id = (int)$parts[1];
-                    $photoalbum = Photoalbum::fetchById($id);
+                    $photoalbum = $this->genericRepository->fetchById(Photoalbum::class, $id);
                     assert($photoalbum !== null);
                     $entries[] = $this->menuEntryFactory->createDirectoryEntry("/photoalbum/$id", $photoalbum->name);
                     break;
@@ -138,7 +142,7 @@ final class Controller
         return new ListingResponse(...$entries);
     }
 
-    public function serveStaticPage(\Cyndaron\StaticPage\StaticPageModel $page): PlainTextResponse
+    public function serveStaticPage(StaticPageModel $page): PlainTextResponse
     {
         return new PlainTextResponse($page->getText());
     }
@@ -159,7 +163,7 @@ final class Controller
 
         foreach ($this->categoryRepository->getUnderlyingPages($category) as $page)
         {
-            if ($page instanceof \Cyndaron\StaticPage\StaticPageModel)
+            if ($page instanceof StaticPageModel)
             {
                 $entries[] = $this->menuEntryFactory->createHtmlFileEntry("/sub/{$page->id}", $page->name);
             }

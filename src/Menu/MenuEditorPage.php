@@ -9,12 +9,12 @@ use function usort;
 
 final class MenuEditorPage extends Page
 {
-    public function __construct(UrlService $urlService)
+    public function __construct(UrlService $urlService, MenuItemRepository $menuItemRepository)
     {
         $this->title = 'Menu-editor';
         $this->addScript('/src/Menu/js/MenuEditorPage.js');
 
-        $menuItems = MenuItem::fetchAll();
+        $menuItems = $menuItemRepository->fetchAll();
         usort($menuItems, static function(MenuItem $menuItem1, MenuItem $menuItem2)
         {
             return $menuItem1->priority <=> $menuItem2->priority;

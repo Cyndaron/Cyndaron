@@ -613,7 +613,7 @@ Sportschool Geelhoed";
     #[RouteAttribute('bestellijst', RequestMethod::GET, UserLevel::ADMIN, right: self::RIGHT_MANAGE)]
     public function itemTotals(): Response
     {
-        $page = new ItemTotalsPage();
+        $page = new ItemTotalsPage($this->productRepository, $this->orderItemRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 

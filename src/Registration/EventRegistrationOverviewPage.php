@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Cyndaron\Registration;
 
 use Cyndaron\DBAL\Connection;
@@ -8,23 +10,22 @@ use function array_key_exists;
 final class EventRegistrationOverviewPage extends Page
 {
     public const TOTALS_FORMAT = [0 => ['amount' => 0, 'num' => 0], 1 => ['amount' => 0, 'num' => 0]];
-
     private readonly Connection $connection;
 
-    public function __construct(Event $event, Connection $connection)
+    public function __construct(Event $event, Connection $connection, RegistrationRepository $registrationRepository, RegistrationTicketTypeRepository $registrationTicketTypeRepository, EventTicketTypeRepository $eventTicketTypeRepository)
     {
         $this->connection = $connection;
-        $ticketTypes = EventTicketType::loadByEvent($event);
-        $registrations = Registration::loadByEvent($event);
+        $ticketTypes = $eventTicketTypeRepository->loadByEvent($event);
+        $registrations = $registrationRepository->loadByEvent($event);
 
         $this->addScript('/src/Registration/js/EventOrderOverviewPage.js');
         $this->addCss('/src/Ticketsale/css/Ticketsale.min.css');
 
         $this->title = 'Overzicht aanmeldingen: ' . $event->name;
 
-        $ticketTypesByRegistration = $this->getTicketTypesByRegistration();
-        $totals = $this->calculateTotals($registrations, $ticketTypesByRegistration);
+        $totals = $this->calculateTotals($registrations, $registrationTicketTypeRepository);
 
+        $ticketTypesByRegistration = $this->getTicketTypesByRegistration();
         $this->addTemplateVars(['event' => $event, 'ticketTypes' => $ticketTypes, 'ticketTypesByRegistration' => $ticketTypesByRegistration, 'registrations' => $registrations, 'totals' => $totals]);
     }
 
@@ -52,10 +53,10 @@ final class EventRegistrationOverviewPage extends Page
 
     /**
      * @param Registration[] $registrations
-     * @param array<int, array<int, int>> $ticketTypesByRegistration
+     * @param RegistrationTicketTypeRepository $registrationTicketTypeRepository
      * @return array<string, array<int, array{num: int, amount: float}>>
      */
-    private function calculateTotals(array $registrations, array $ticketTypesByRegistration): array
+    private function calculateTotals(array $registrations, RegistrationTicketTypeRepository $registrationTicketTypeRepository): array
     {
         $totals = [
             'Alt' => self::TOTALS_FORMAT,
@@ -69,7 +70,7 @@ final class EventRegistrationOverviewPage extends Page
             if ($registration->vocalRange !== '')
             {
                 $totals[$registration->vocalRange][$registration->isPaid]['num']++;
-                $totals[$registration->vocalRange][$registration->isPaid]['amount'] += $registration->calculateTotal($ticketTypesByRegistration[$registration->id] ?? []);
+                $totals[$registration->vocalRange][$registration->isPaid]['amount'] += $registration->calculateTotal($registrationTicketTypeRepository);
             }
         }
         foreach (['Alt', 'Bas', 'Sopraan', 'Tenor'] as $vocalRange)

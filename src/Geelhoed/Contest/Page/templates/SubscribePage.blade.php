@@ -2,6 +2,8 @@
 
 @section ('contents')
     @php /** @var \Cyndaron\Geelhoed\Member\Member $member */ @endphp
+    @php /** @var \Cyndaron\Geelhoed\Member\MemberRepository $memberRepository */ @endphp
+    @php /** @var \Cyndaron\Geelhoed\Graduation\Graduation[] $graduations */ @endphp
     <form method="post" action="/contest/subscribe/{{ $contest->id }}">
         <input type="hidden" name="csrfToken" value="{{ $tokenHandler->get('contest', 'subscribe') }}"/>
         <input type="hidden" name="memberId" value="{{ $member->id }}"/>
@@ -10,12 +12,12 @@
                 {{ $member->profile->getFullName() }}
             @endslot
         @endcomponent
-        @php $sport = $contest->$sport; $sportName = strtolower($sport->name); @endphp
+        @php $sport = $contest->sport; $sportName = strtolower($sport->name); @endphp
         @component ('View/Widget/Form/FormWrapper', ['id' => 'graduationId', 'label' => "Band {$sportName}"])
             @slot('right')
                 <select id="graduationId" name="graduationId" class="form-control custom-select" required>
-                    @foreach (\Cyndaron\Geelhoed\Graduation\Graduation::fetchAllBySport($sport) as $graduation)
-                        @php $highestGrad = $member->getHighestGraduation($sport) @endphp
+                    @foreach ($gradiations as $graduation)
+                        @php $highestGrad = $memberRepository->getHighestGraduation($member, $sport) @endphp
                         <option value="{{ $graduation->id }}" @if ($highestGrad !== null && $highestGrad->id === $graduation->id) selected @endif>{{ $graduation->name }}</option>
                     @endforeach
                 </select>

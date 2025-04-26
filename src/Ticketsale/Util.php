@@ -2,6 +2,7 @@
 namespace Cyndaron\Ticketsale;
 
 use Cyndaron\Ticketsale\Concert\Concert;
+use Cyndaron\Ticketsale\Concert\ConcertRepository;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
@@ -17,10 +18,10 @@ final class Util
         return ($postcode >= 4330 && $postcode <= 4399);
     }
 
-    public static function drawPageManagerTab(TemplateRenderer $templateRenderer, UrlService $urlService, Request $request, CSRFTokenHandler $tokenHandler): string
+    public static function drawPageManagerTab(TemplateRenderer $templateRenderer, UrlService $urlService, Request $request, CSRFTokenHandler $tokenHandler, ConcertRepository $concertRepository): string
     {
         $templateVars = [
-            'concerts' => Concert::fetchAll(),
+            'concerts' => $concertRepository->fetchAll(),
             'urlService' => $urlService,
             'baseUrl' => $request->getSchemeAndHttpHost(),
             'tokenDelete' => $tokenHandler->get('concert', 'delete'),

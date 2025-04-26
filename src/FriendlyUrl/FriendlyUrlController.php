@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\FriendlyUrl;
 
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -17,6 +16,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class FriendlyUrlController
 {
+    public function __construct(
+        private readonly FriendlyUrlRepository $friendlyUrlRepository,
+    ) {
+    }
+
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function add(RequestParameters $post, UrlService $urlService): JsonResponse
     {
@@ -31,7 +35,7 @@ final class FriendlyUrlController
     public function addToMenu(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        $entry = FriendlyUrl::fetchById($id);
+        $entry = $this->friendlyUrlRepository->fetchById($id);
         if ($entry === null)
         {
             return new JsonResponse(['error' => 'No link specified!'], Response::HTTP_BAD_REQUEST);
@@ -44,10 +48,10 @@ final class FriendlyUrlController
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits, GenericRepository $repository): JsonResponse
+    public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
-        $repository->deleteById(FriendlyUrl::class, $id);
+        $this->friendlyUrlRepository->deleteById($id);
         return new JsonResponse();
     }
 }

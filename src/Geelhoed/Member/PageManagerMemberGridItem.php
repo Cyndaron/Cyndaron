@@ -42,7 +42,10 @@ final class PageManagerMemberGridItem
     ) {
     }
 
-    public static function createFromMember(MemberRepository $repository, Member $member): self
+    /**
+     * @param Sport[] $allSports
+     */
+    public static function createFromMember(MemberRepository $repository, Member $member, array $allSports): self
     {
         $profile = $member->profile;
         $name = str_replace('  ', ' ', "{$profile->lastName} {$profile->tussenvoegsel} {$profile->firstName}");
@@ -51,14 +54,14 @@ final class PageManagerMemberGridItem
         $dateOfBirth = $profile->dateOfBirth?->format('Y-m-d');
         $postcodeAndCity = "{$profile->postalCode} {$profile->city}";
         $quarterlyFee = ViewHelpers::formatEuro($repository->getQuarterlyFee($member));
-        $sports = [];
+        $memberSports = [];
         foreach ($repository->getSports($member) as $sport)
         {
             assert($sport->id !== null);
-            $sports[] = $sport->id;
+            $memberSports[] = $sport->id;
         }
         $graduations = [];
-        foreach (Sport::fetchAll() as $sport)
+        foreach ($allSports as $sport)
         {
             $graduation = $repository->getHighestGraduation($member, $sport);
             if ($graduation !== null)
@@ -99,7 +102,7 @@ final class PageManagerMemberGridItem
             $member->paymentMethod,
             (int)$member->paymentProblem,
             $dateOfBirth ?? '',
-            $sports,
+            $memberSports,
             $graduations,
             $locations,
         );

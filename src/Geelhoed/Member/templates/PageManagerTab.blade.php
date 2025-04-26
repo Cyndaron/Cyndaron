@@ -51,7 +51,7 @@
             <label for="gum-filter-graduation">Band:</label>
             <select id="gum-filter-graduation" class="form-select form-control-inline">
                 <option value="-1">(Alles)</option>
-                @foreach (\Cyndaron\Geelhoed\Graduation\Graduation::fetchAll() as $graduation)
+                @foreach ($graduations as $graduation)
                     <option value="{{ $graduation->id }}">{{ $graduation->sport->name }}
                         , {{ $graduation->name }}</option>
                 @endforeach
@@ -215,7 +215,7 @@
                     Nieuwe graduatie: <select id="new-graduation-id" name="new-graduation-id"
                                               class="form-control form-control-inline form-select">
                         <option value=""></option>
-                        @foreach (\Cyndaron\Geelhoed\Graduation\Graduation::fetchAll() as $graduation)
+                        @foreach ($gradiations as $graduation)
                             <option value="{{ $graduation->id }}">{{ $graduation->sport->name }}
                                 : {{ $graduation->name }}</option>
                         @endforeach

@@ -34,10 +34,10 @@ final class Module implements Datatypes, Routes
         ];
     }
 
-    public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
+    public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, FriendlyUrlRepository $friendlyUrlRepository): string
     {
         $templateVars = [
-            'friendlyUrls' => FriendlyUrl::fetchAll([], [], 'ORDER BY name'),
+            'friendlyUrls' => $friendlyUrlRepository->fetchAll([], [], 'ORDER BY name'),
             'tokenAdd' => $tokenHandler->get('friendlyurl', 'add'),
             'tokenDelete' => $tokenHandler->get('friendlyurl', 'delete'),
             'tokenAddToMenu' => $tokenHandler->get('friendlyurl', 'addtomenu'),

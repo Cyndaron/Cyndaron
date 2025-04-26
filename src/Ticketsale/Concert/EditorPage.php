@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\Concert;
 
+use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Location\Location;
 use Cyndaron\Ticketsale\DeliveryCost\FlatFee;
@@ -21,18 +22,25 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public Model|null $model = null;
 
+    public function __construct(
+        private readonly ConcertRepository $concertRepository,
+        private readonly GenericRepository $genericRepository,
+    ) {
+
+    }
+
     public function prepare(): void
     {
         if ($this->id)
         {
-            $this->model = Concert::fetchById($this->id);
+            $this->model = $this->concertRepository->fetchById($this->id);
             assert($this->model !== null);
             $this->content = $this->model->description;
             $this->contentTitle = $this->model->name;
         }
 
         $locations = [];
-        foreach (Location::fetchAll() as $location)
+        foreach ($this->genericRepository->fetchAll(Location::class) as $location)
         {
             $locations[$location->id] = $location->getName();
         }

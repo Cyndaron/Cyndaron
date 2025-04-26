@@ -31,7 +31,7 @@ final class LocationOverview extends Page
             $args = [$day];
         }
 
-        $locations = Location::fetchAll($where, $args, 'ORDER BY city, street');
+        $locations = $locationRepository->fetchAll($where, $args, 'ORDER BY city, street');
         if ($filter === LocationFilter::CITY)
         {
             $locations = array_filter($locations, static function(Location $location) use ($filterValue, &$title)

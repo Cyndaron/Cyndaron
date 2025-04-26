@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Registration;
 
 use Cyndaron\DBAL\DatabaseError;
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
@@ -12,10 +11,14 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Error\IncompleteData;
+use Cyndaron\Util\KnownShortCodes;
 use Cyndaron\Util\MailFactory;
+use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\TemplateRenderer;
 use Exception;
+use Safe\Exceptions\PcreException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
@@ -23,12 +26,18 @@ use function assert;
 use function implode;
 use function min;
 use function strcasecmp;
+use function file_exists;
+use function html_entity_decode;
 
 final class RegistrationController
 {
     public function __construct(
         private readonly TemplateRenderer $templateRenderer,
         private readonly PageRenderer $pageRenderer,
+        private readonly RegistrationRepository $registrationRepository,
+        private readonly RegistrationTicketTypeRepository $registrationTicketTypeRepository,
+        private readonly EventRepository $eventRepository,
+        private readonly EventTicketTypeRepository $eventTicketTypeRepository,
     ) {
     }
 
@@ -39,7 +48,7 @@ final class RegistrationController
         {
             $eventId = $post->getInt('event_id');
             /** @var Event|null $eventObj */
-            $eventObj = Event::fetchById($eventId);
+            $eventObj = $this->eventRepository->fetchById($eventId);
             if ($eventObj === null)
             {
                 throw new Exception('Evenement niet gevonden!');
@@ -68,7 +77,8 @@ final class RegistrationController
 
     /**
      * @param RequestParameters $post
-     * @throws Exception
+     * @param MailFactory $mailFactory
+     * @throws PcreException
      * @return bool
      */
     private function processRegistration(RequestParameters $post, MailFactory $mailFactory): bool
@@ -81,7 +91,7 @@ final class RegistrationController
         $eventId = $post->getInt('event_id');
 
         /** @var Event|null $eventObj */
-        $eventObj = Event::fetchById($eventId);
+        $eventObj = $this->eventRepository->fetchById($eventId);
         if ($eventObj === null)
         {
             throw new Exception('Evenement niet gevonden!');
@@ -103,7 +113,7 @@ final class RegistrationController
 
         /** @var array<int, int> $registrationTicketTypes */
         $registrationTicketTypes = [];
-        $ticketTypes = EventTicketType::loadByEvent($eventObj);
+        $ticketTypes = $this->eventTicketTypeRepository->loadByEvent($eventObj);
         foreach ($ticketTypes as $ticketType)
         {
             assert($ticketType->id !== null);
@@ -112,7 +122,7 @@ final class RegistrationController
 
         assert($eventObj->id !== null);
         $registration = new Registration();
-        $registration->eventId = $eventObj->id;
+        $registration->event = $eventObj;
         $registration->lastName = $post->getSimpleString('lastName');
         // May double as first name!
         $registration->initials = $post->getSimpleString('initials');
@@ -143,15 +153,20 @@ final class RegistrationController
         $registration->comments = $post->getHTML('comments');
         $registration->approvalStatus = $eventObj->requireApproval ? RegistrationApprovalStatus::UNDECIDED : RegistrationApprovalStatus::APPROVED;
 
-        $registrationTotal = $registration->calculateTotal($registrationTicketTypes);
+        $registrationTotal = $registration->calculateTotal($this->registrationTicketTypeRepository);
         if ($registrationTotal === 0.00)
         {
             $registration->isPaid = true;
         }
 
-        if (!$registration->save())
+        try
+        {
+            $this->registrationRepository->save($registration);
+        }
+        catch (\Throwable)
         {
             throw new DatabaseError('Opslaan aanmelding mislukt!');
+
         }
 
         assert($registration->id !== null);
@@ -160,19 +175,55 @@ final class RegistrationController
             assert($ticketType->id !== null);
             if ($registrationTicketTypes[$ticketType->id] > 0)
             {
-                $ott = new RegistrationTicketType();
-                $ott->orderId = $registration->id;
-                $ott->tickettypeId = $ticketType->id;
-                $ott->amount = $registrationTicketTypes[$ticketType->id];
-                $result = $ott->save();
-                if (!$result)
-                {
-                    throw new DatabaseError('Opslaan kaarttypen mislukt!');
-                }
+                $rtt = new RegistrationTicketType();
+                $rtt->registration = $registration;
+                $rtt->ticketType = $ticketType;
+                $rtt->amount = $registrationTicketTypes[$ticketType->id];
+                $this->registrationTicketTypeRepository->save($rtt);
             }
         }
 
-        return $registration->sendIntroductionMail($mailFactory, $registrationTotal, $registrationTicketTypes, $this->templateRenderer);
+        return $this->sendIntroductionMail($registration, $mailFactory, $registrationTotal, $registrationTicketTypes, $this->templateRenderer);
+    }
+
+    /**
+     * @param Registration $registration
+     * @param MailFactory $mailFactory
+     * @param float $registrationTotal
+     * @param array<int, int> $registrationTicketTypes
+     * @param TemplateRenderer $templateRenderer
+     * @return bool
+     */
+    private function sendIntroductionMail(Registration $registration, MailFactory $mailFactory, float $registrationTotal, array $registrationTicketTypes, TemplateRenderer $templateRenderer): bool
+    {
+        $ticketTypes = $this->eventTicketTypeRepository->loadByEvent($registration->event);
+        $lunchText = ($registration->lunch) ? $registration->lunchType : 'Geen';
+        $extraFields = [
+            'Geboortejaar' => $registration->birthYear,
+            'Straatnaam en huisnummer' => "$registration->street $registration->houseNumber $registration->houseNumberAddition",
+            'Postcode' => $registration->postcode,
+            'Woonplaats' => $registration->city,
+            'Opmerkingen' => $registration->comments,
+        ];
+
+        $templateFile = 'Registration/ConfirmationMail';
+        $shortCode = Setting::get(BuiltinSetting::SHORT_CODE);
+        if ($shortCode === KnownShortCodes::VOV)
+        {
+            $templateFile = 'Registration/ConfirmationMailVOV';
+            if (file_exists(__DIR__ . '/templates/ConfirmationMailVOV-' . $registration->event->id . '.blade.php'))
+            {
+                $templateFile = 'Registration/ConfirmationMailVOV-' . $registration->event->id;
+            }
+        }
+
+        $args = ['registration' => $registration, 'event' => $registration->event, 'registrationTotal' => $registrationTotal, 'ticketTypes' => $ticketTypes, 'registrationTicketTypes' => $registrationTicketTypes, 'lunchText' => $lunchText, 'extraFields' => $extraFields];
+        $text = $templateRenderer->render($templateFile, $args);
+        // We're sending a plaintext mail, so avoid displaying html entities.
+        $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+
+        $mail = $mailFactory->createMailWithDefaults(new Address($registration->email), 'Inschrijving ' . $registration->event->name, $text);
+        return $mail->send();
     }
 
     /**
@@ -207,20 +258,20 @@ final class RegistrationController
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits, GenericRepository $repository): JsonResponse
+    public function delete(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $repository->deleteById(Registration::class, $id);
+        $this->registrationRepository->deleteById($id);
 
         return new JsonResponse();
     }
 
     #[RouteAttribute('setApprovalStatus', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function setApprovalStatus(QueryBits $queryBits, RequestParameters $post, MailFactory $mailFactory, GenericRepository $repository): JsonResponse
+    public function setApprovalStatus(QueryBits $queryBits, RequestParameters $post, MailFactory $mailFactory): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -228,15 +279,15 @@ final class RegistrationController
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         /** @var Registration $registration */
-        $registration = Registration::fetchById($id);
+        $registration = $this->registrationRepository->fetchById($id);
         $status = RegistrationApprovalStatus::tryFrom($post->getInt('status'));
         switch ($status)
         {
             case RegistrationApprovalStatus::APPROVED:
                 $registration->approvalStatus = RegistrationApprovalStatus::APPROVED;
-                $repository->save($registration);
+                $this->registrationRepository->save($registration);
 
-                $event = $registration->getEvent();
+                $event = $registration->event;
 
                 $text = '';
 
@@ -249,9 +300,9 @@ final class RegistrationController
                 break;
             case RegistrationApprovalStatus::DISAPPROVED:
                 $registration->approvalStatus = RegistrationApprovalStatus::DISAPPROVED;
-                $repository->save($registration);
+                $this->registrationRepository->save($registration);
 
-                $event = $registration->getEvent();
+                $event = $registration->event;
 
                 if ($event->requireApproval)
                 {
@@ -283,8 +334,23 @@ final class RegistrationController
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
         /** @var Registration $registration */
-        $registration = Registration::fetchById($id);
-        $registration->setIsPaid($mailFactory);
+        $registration = $this->registrationRepository->fetchById($id);
+        $registration->isPaid = true;
+        $this->registrationRepository->save($registration);
+
+        $organisation = Setting::get(BuiltinSetting::ORGANISATION);
+        $text = "Hartelijk dank voor uw inschrijving bij $organisation. Wij hebben uw betaling in goede orde ontvangen.\n";
+        if (Setting::get(BuiltinSetting::SHORT_CODE) !== KnownShortCodes::VOV)
+        {
+            $text .= 'Eventueel bestelde kaarten voor vrienden en familie zullen op de avond van het concert voor u klaarliggen bij de kassa.';
+        }
+
+        $mail = $mailFactory->createMailWithDefaults(
+            new Address($registration->email),
+            'Betalingsbevestiging ' . $registration->event->name,
+            $text
+        );
+        $mail->send();
 
         return new JsonResponse();
     }

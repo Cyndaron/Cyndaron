@@ -799,7 +799,7 @@ final class ContestController
     }
 
     #[RouteAttribute('subscribe', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function subscribePage(QueryBits $queryBits, User $currentUser): Response
+    public function subscribePage(QueryBits $queryBits, User $currentUser, SubscribePage $subscribePage): Response
     {
         $contestId = $queryBits->getInt(2);
         $memberId = $queryBits->getInt(3);
@@ -837,7 +837,7 @@ final class ContestController
             return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Voor deze wedstrijd kan niet meer worden ingeschreven!'), status:  Response::HTTP_BAD_REQUEST);
         }
 
-        return $this->pageRenderer->renderResponse(new SubscribePage($contest, $member));
+        return $this->pageRenderer->renderResponse($subscribePage);
     }
 
     #[RouteAttribute('createParentAccount', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]

@@ -17,10 +17,10 @@ final class Util
         [0, 40], [41, 50], [51, 60], [61, 70], [71, 80], [81, INF]
     ];
 
-    public static function drawPageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler): string
+    public static function drawPageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, EventRepository $eventRepository): string
     {
         $templateVars = [
-            'events' => Event::fetchAll(),
+            'events' => $eventRepository->fetchAll(),
             'tokenDelete' => $tokenHandler->get('event', 'delete'),
         ];
         return $templateRenderer->render('Registration/PageManagerTab', $templateVars);

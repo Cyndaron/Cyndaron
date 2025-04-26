@@ -23,6 +23,8 @@ final class EventController
 {
     public function __construct(
         private readonly PageRenderer $pageRenderer,
+        private readonly EventRepository $eventRepository,
+        private readonly EventTicketTypeRepository $eventTicketTypeRepository,
     ) {
     }
 
@@ -30,7 +32,7 @@ final class EventController
     public function getEventInfo(QueryBits $queryBits, Connection $db): JsonResponse
     {
         $eventId = $queryBits->getInt(2);
-        $event = Event::fetchById($eventId);
+        $event = $this->eventRepository->fetchById($eventId);
         if ($event === null)
         {
             return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
@@ -58,41 +60,41 @@ final class EventController
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $event = Event::fetchById($id);
+        $event = $this->eventRepository->fetchById($id);
         if ($event === null)
         {
             return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        $page = new RegistrationPage($event);
+        $page = new RegistrationPage($event, $this->eventTicketTypeRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('viewRegistrations', RequestMethod::GET, UserLevel::ADMIN)]
-    public function viewRegistrations(QueryBits $queryBits, Connection $connection): Response
+    public function viewRegistrations(QueryBits $queryBits, Connection $connection, RegistrationRepository $registrationRepository, RegistrationTicketTypeRepository $registrationTicketTypeRepository): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $event = Event::fetchById($id);
+        $event = $this->eventRepository->fetchById($id);
         if ($event === null)
         {
             return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        $page = new EventRegistrationOverviewPage($event, $connection);
+        $page = new EventRegistrationOverviewPage($event, $connection, $registrationRepository, $registrationTicketTypeRepository, $this->eventTicketTypeRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('registrationListExcel', RequestMethod::GET, UserLevel::ADMIN)]
-    public function registrationListExcel(QueryBits $queryBits): Response
+    public function registrationListExcel(QueryBits $queryBits, RegistrationRepository $registrationRepository): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $event = Event::fetchById($id);
+        $event = $this->eventRepository->fetchById($id);
         if ($event === null)
         {
             throw new Exception('Evenement niet gevonden!');
@@ -111,7 +113,7 @@ final class EventController
         $sheet->getStyle('1:1')->getFont()->setBold(true);
 
         $row = 2;
-        foreach (Registration::loadByEvent($event) as $registration)
+        foreach ($registrationRepository->loadByEvent($event) as $registration)
         {
             $sheet->setCellValue("A{$row}", $registration->lastName);
             $sheet->setCellValue("B{$row}", $registration->initials);

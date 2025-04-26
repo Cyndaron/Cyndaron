@@ -37,25 +37,9 @@ final class Product extends Model
         'size' => 'Maat',
     ];
 
-    public function getParent(): self|null
-    {
-        if ($this->parentId === null)
-        {
-            return null;
-        }
-
-        return self::fetchById($this->parentId);
-    }
-
     public function tryGetGcaTicketPrice(): int|null
     {
-        if ($this->gcaTicketPrice !== null)
-        {
-            return $this->gcaTicketPrice;
-        }
-
-        $parent = $this->getParent();
-        return $parent?->gcaTicketPrice;
+        return $this->gcaTicketPrice;
 
     }
 
@@ -72,14 +56,7 @@ final class Product extends Model
 
     public function tryGetEuroPrice(): float|null
     {
-        if ($this->euroPrice !== null)
-        {
-            return $this->euroPrice;
-        }
-
-        $parent = $this->getParent();
-        return $parent?->euroPrice;
-
+        return $this->euroPrice;
     }
 
     public function getEuroPrice(): float

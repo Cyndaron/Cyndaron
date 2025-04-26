@@ -70,7 +70,7 @@ final class LocationController
     }
 
     #[RouteAttribute('zoeken', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function search(Connection $connection): Response
+    public function search(Connection $connection, SportRepository $sportRepository): Response
     {
         $dayRecords = $connection->doQueryAndFetchAll('SELECT DISTINCT(day) AS number FROM geelhoed_hours ORDER by number') ?: [];
         $days = [];
@@ -79,7 +79,7 @@ final class LocationController
             $number = (int)$dayRecord['number'];
             $days[$number] = ViewHelpers::getDutchWeekday($number);
         }
-        $page = new SearchPage($days, $this->locationRepository);
+        $page = new SearchPage($days, $this->locationRepository, $sportRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 

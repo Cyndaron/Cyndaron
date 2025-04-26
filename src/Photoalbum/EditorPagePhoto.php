@@ -13,15 +13,17 @@ final class EditorPagePhoto extends \Cyndaron\Editor\EditorPage
 
     public string $template = '';
 
-    public function __construct(private readonly QueryBits $queryBits)
-    {
+    public function __construct(
+        private readonly QueryBits $queryBits,
+        private readonly PhotoalbumCaptionRepository $photoalbumCaptionRepository,
+    ) {
     }
 
     public function prepare(): void
     {
         if ($this->id)
         {
-            $this->model = PhotoalbumCaption::fetchById($this->id);
+            $this->model = $this->photoalbumCaptionRepository->fetchById($this->id);
             $this->content = $this->model?->caption ?? '';
         }
 

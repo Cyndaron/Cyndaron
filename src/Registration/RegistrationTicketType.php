@@ -8,19 +8,10 @@ final class RegistrationTicketType extends Model
 {
     public const TABLE = 'registration_orders_tickettypes';
 
-    #[DatabaseField]
-    public int $orderId;
-    #[DatabaseField]
-    public int $tickettypeId;
+    #[DatabaseField(dbName: 'orderId')]
+    public Registration $registration;
+    #[DatabaseField(dbName: 'tickettypeId')]
+    public EventTicketType $ticketType;
     #[DatabaseField]
     public int $amount;
-
-    /**
-     * @param Registration $registration
-     * @return RegistrationTicketType[]
-     */
-    public static function loadByRegistration(Registration $registration): array
-    {
-        return self::fetchAll(['orderId = ?'], [$registration->id]);
-    }
 }

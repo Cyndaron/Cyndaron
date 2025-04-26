@@ -38,13 +38,14 @@ class Controller
 {
     public function __construct(
         private readonly PageRenderer $pageRenderer,
+        private readonly SubscriberRepository $subscriberRepository,
     ) {
     }
 
     #[RouteAttribute('viewSubscribers', RequestMethod::GET, UserLevel::ADMIN)]
     public function viewSubscribers(CSRFTokenHandler $tokenHandler): Response
     {
-        $page = new ViewSubscribersPage($tokenHandler);
+        $page = new ViewSubscribersPage($tokenHandler, $this->subscriberRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -70,7 +71,7 @@ class Controller
         $name = $post->getSimpleString('name');
         $email = $post->getEmail('email');
 
-        $existing = Subscriber::fetch(['email = ?'], [$email]);
+        $existing = $this->subscriberRepository->fetch(['email = ?'], [$email]);
         if ($existing !== null)
         {
             $message = 'U was al ingeschreven voor de nieuwsbrief.';
@@ -81,7 +82,7 @@ class Controller
             $subscription->name = $name;
             $subscription->email = $email;
             $subscription->confirmed = false;
-            $subscription->save();
+            $this->subscriberRepository->save($subscription);
 
             $this->sendConfirmationMail($addressHelper, new Address($email, $name));
 
@@ -146,7 +147,7 @@ class Controller
 
         $numFailed = 0;
         $total = 0;
-        $subscriberAddresses = $addressHelper->getSubscriberAddresses();
+        $subscriberAddresses = $addressHelper->getSubscriberAddresses($this->subscriberRepository);
         foreach ($subscriberAddresses as $subscriberAddress)
         {
             $total++;
@@ -219,7 +220,7 @@ class Controller
             return $this->pageRenderer->renderResponse(new SimplePage('Inschrijven', 'Controlecode klopt niet! Mogelijk heeft u een oude link gebruikt of klopt de configuratie niet.'), status:  Response::HTTP_BAD_REQUEST);
         }
 
-        $subscription = Subscriber::fetch(['email = ?'], [$email]);
+        $subscription = $this->subscriberRepository->fetch(['email = ?'], [$email]);
         if ($subscription === null)
         {
             return $this->pageRenderer->renderResponse(new SimplePage('Inschrijven', 'Wij konden uw adres niet vinden. Probeer opnieuw in te schrijven.'), status:  Response::HTTP_BAD_REQUEST);

@@ -10,6 +10,7 @@ namespace Cyndaron\Page;
 
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Menu\MenuItemRepository;
 use Cyndaron\Translation\Translator;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\Module\UserMenuItem;
@@ -26,6 +27,7 @@ final class MenuRenderer
         private readonly Translator $translator,
         private readonly TemplateRenderer $templateRenderer,
         private readonly Connection $connection,
+        private readonly MenuItemRepository $menuItemRepository,
     ) {
     }
 
@@ -38,7 +40,7 @@ final class MenuRenderer
         {
             return [];
         }
-        return MenuItem::fetchAll([], [], 'ORDER BY priority, id');
+        return $this->menuItemRepository->fetchAll([], [], 'ORDER BY priority, id');
     }
 
     /**
@@ -79,6 +81,7 @@ final class MenuRenderer
         $vars['notifications'] = $userSession->getNotifications();
         $vars['t'] = $this->translator;
         $vars['connection'] = $this->connection;
+        $vars['menuItemRepository'] = $this->menuItemRepository;
 
         return $this->templateRenderer->render('Menu', $vars);
     }

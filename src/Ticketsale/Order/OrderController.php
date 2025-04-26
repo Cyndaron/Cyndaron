@@ -7,7 +7,6 @@ use Cyndaron\Barcode\Code128;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\ImproperSubclassing;
-use Cyndaron\Location\Location;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Payment\Currency;
@@ -18,6 +17,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Ticketsale\Concert\Concert;
+use Cyndaron\Ticketsale\Concert\ConcertRepository;
 use Cyndaron\Ticketsale\Concert\TicketDelivery;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
 use Cyndaron\Ticketsale\TicketType\TicketType;
@@ -62,6 +62,7 @@ final class OrderController
         private readonly TemplateRenderer $templateRenderer,
         private readonly PageRenderer $pageRenderer,
         private readonly OrderRepository $orderRepository,
+        private readonly ConcertRepository $concertRepository,
     ) {
     }
 
@@ -192,7 +193,7 @@ final class OrderController
 
         $concertId = $post->getInt('concert_id');
 
-        $concert = Concert::fetchById($concertId);
+        $concert = $this->concertRepository->fetchById($concertId);
         if ($concert === null)
         {
             throw new InvalidOrder('Concert niet gevonden!');
@@ -588,7 +589,7 @@ final class OrderController
     }
 
     #[RouteAttribute('getTickets', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function getTickets(QueryBits $queryBits, GenericRepository $genericRepository): Response
+    public function getTickets(QueryBits $queryBits): Response
     {
         $orderId = $queryBits->getInt(2);
         $order = $this->orderRepository->fetchById($orderId);
@@ -676,7 +677,7 @@ final class OrderController
     public function checkInGet(QueryBits $queryBits): Response
     {
         $concertId = $queryBits->getInt(2);
-        $concert = Concert::fetchById($concertId);
+        $concert = $this->concertRepository->fetchById($concertId);
         if ($concert === null)
         {
             throw new Exception('Concert niet gevonden!');
@@ -737,7 +738,7 @@ final class OrderController
     public function checkInPost(QueryBits $queryBits, RequestParameters $post): Response
     {
         $concertId = $queryBits->getInt(2);
-        $concert = Concert::fetchById($concertId);
+        $concert = $this->concertRepository->fetchById($concertId);
         if ($concert === null)
         {
             throw new Exception('Concert niet gevonden!');

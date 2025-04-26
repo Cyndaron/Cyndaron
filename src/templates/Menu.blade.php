@@ -10,9 +10,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 @php /** @var \Cyndaron\Menu\MenuItem[] $menuItems */ @endphp
+                @php /** @var \Cyndaron\Menu\MenuItemRepository $menuItemRepository*/ @endphp
                 @foreach ($menuItems as $menuitem)
                     @if ($menuitem->isCategoryDropdown())
-                        @include('View/Widget/MenuDropdown', ['title' => $menuitem->getTitle($urlService), 'icon' => '', 'items' => $menuitem->getSubmenu($connection), 'urlService' => $urlService])
+                        @include('View/Widget/MenuDropdown', ['title' => $menuitem->getTitle($urlService), 'icon' => '', 'items' => $menuItemRepository->getSubmenu($menuitem), 'urlService' => $urlService])
                     @else
                         <li class="nav-item @if ($urlService->isCurrentPage($menuitem->getLink()))active @endif @if ($menuitem->isImage) nav-item-image @endif">
                             @if ($menuitem->isImage)

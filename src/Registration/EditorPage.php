@@ -13,11 +13,16 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
 
     public string $template = '';
 
+    public function __construct(
+        private readonly EventRepository $eventRepository,
+    ) {
+    }
+
     public function prepare(): void
     {
         if ($this->id)
         {
-            $this->model = Event::fetchById($this->id);
+            $this->model = $this->eventRepository->fetchById($this->id);
             assert($this->model !== null);
             $this->content = $this->model->description;
             $this->contentTitle = $this->model->name;
@@ -28,8 +33,6 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
             $this->model = new Event();
         }
 
-        //        $maxRegistrations = $this->model->maxRegistrations ?? 300;
-        //        $numSeats = $this->model->numSeats ?? 300;
         $this->templateVars['registrationCost0'] = ViewHelpers::formatCurrency($this->model->registrationCost0 ?? 15.0);
         $this->templateVars['registrationCost1'] = ViewHelpers::formatCurrency($this->model->registrationCost1 ?? 15.0);
         $this->templateVars['registrationCost2'] = ViewHelpers::formatCurrency($this->model->registrationCost2 ?? 0.0);

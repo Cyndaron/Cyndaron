@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Location;
 
 use Cyndaron\Geelhoed\Sport\Sport;
+use Cyndaron\Geelhoed\Sport\SportRepository;
 use Cyndaron\Page\Page;
 
 class SearchPage extends Page
@@ -13,7 +14,7 @@ class SearchPage extends Page
     /**
      * @param array<int, string> $days
      */
-    public function __construct(array $days, LocationRepository $locationRepository)
+    public function __construct(array $days, LocationRepository $locationRepository, SportRepository $sportRepository)
     {
         $this->title = 'Lessen zoeken';
 
@@ -24,7 +25,7 @@ class SearchPage extends Page
             'pageImage' => self::PAGE_IMAGE,
             'cities' => $locationRepository->getCities(),
             'days' => $days,
-            'sports' => Sport::fetchAll(),
+            'sports' => $sportRepository->fetchAll(),
         ]);
     }
 }

@@ -13,12 +13,12 @@ final class UserManagerPage extends Page
         'Beheerder',
     ];
 
-    public function __construct()
+    public function __construct(UserRepository $userRepository)
     {
         $this->title = 'Gebruikersbeheer';
         $this->addScript('/src/User/js/UserManagerPage.js');
         $this->addTemplateVars([
-            'users' => User::fetchAll([], [], 'ORDER BY username'),
+            'users' => $userRepository->fetchAll([], [], 'ORDER BY username'),
             'userLevelDescriptions' => self::USER_LEVEL_DESCRIPTIONS,
         ]);
     }

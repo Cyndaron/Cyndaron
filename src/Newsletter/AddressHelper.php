@@ -114,10 +114,10 @@ final class AddressHelper
     /**
      * @return Address[]
      */
-    public function getSubscriberAddresses(): array
+    public function getSubscriberAddresses(SubscriberRepository $subscriberRepository): array
     {
         $subscriberAddresses = [];
-        foreach (Subscriber::fetchAll(['confirmed = 1']) as $subscriber)
+        foreach ($subscriberRepository->fetchAll(['confirmed = 1']) as $subscriber)
         {
             try
             {

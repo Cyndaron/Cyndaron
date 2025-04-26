@@ -8,6 +8,7 @@ use Cyndaron\Geelhoed\Graduation\GraduationRepository;
 use Cyndaron\Geelhoed\Graduation\MemberGraduation;
 use Cyndaron\Geelhoed\Graduation\MemberGraduationRepository;
 use Cyndaron\Geelhoed\Hour\HourRepository;
+use Cyndaron\Geelhoed\Sport\SportRepository;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -15,6 +16,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\User;
 use Cyndaron\User\UserLevel;
+use Cyndaron\User\UserRepository;
 use Cyndaron\Util\Util;
 use PDOException;
 use Safe\DateTime;
@@ -74,9 +76,9 @@ final class MemberController
     }
 
     #[RouteAttribute('getGrid', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
-    public function getGrid(MemberRepository $memberRepository): JsonResponse
+    public function getGrid(MemberRepository $memberRepository, SportRepository $sportRepository): JsonResponse
     {
-        $grid = new PageManagerMemberGrid($memberRepository);
+        $grid = new PageManagerMemberGrid($memberRepository, $sportRepository);
         return new JsonResponse($grid->get());
     }
 
@@ -95,7 +97,7 @@ final class MemberController
     }
 
     #[RouteAttribute('save', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function save(RequestParameters $post, MemberGraduationRepository $mgr, HourRepository $hourRepository, GraduationRepository $graduationRepository): JsonResponse
+    public function save(RequestParameters $post, MemberGraduationRepository $mgr, HourRepository $hourRepository, GraduationRepository $graduationRepository, SportRepository $sportRepository, UserRepository $userRepository): JsonResponse
     {
         $memberId = $post->getInt('id');
 
@@ -118,10 +120,7 @@ final class MemberController
         }
 
         $user = $this->updateUserFields($user, $post);
-        if (!$user->save())
-        {
-            return new JsonResponse(['error' => 'Error saving user record!'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $userRepository->save($user);
 
         $member = $this->updateMemberFields($user, $member, $post);
         try
@@ -156,10 +155,11 @@ final class MemberController
             }
         }
         $this->memberRepository->setHours($member, $hours);
-        $grid = new PageManagerMemberGrid($this->memberRepository);
+        $grid = new PageManagerMemberGrid($this->memberRepository, $sportRepository);
         $grid->rebuild();
 
-        $gridItem = PageManagerMemberGridItem::createFromMember($this->memberRepository, $member);
+        $allSports = $sportRepository->fetchAll();
+        $gridItem = PageManagerMemberGridItem::createFromMember($this->memberRepository, $member, $allSports);
 
         return new JsonResponse($gridItem);
     }

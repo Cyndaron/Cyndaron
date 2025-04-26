@@ -85,7 +85,7 @@ final class MemberRepository implements RepositoryInterface
         $relatedMembers = $this->connection->doQueryAndFetchAll('SELECT * FROM geelhoed_users_members WHERE userId = ?', [$user->id]) ?: [];
         foreach ($relatedMembers as $relatedMemberArray)
         {
-            $member = self::fetchById((int)$relatedMemberArray['memberId']);
+            $member = $this->fetchById((int)$relatedMemberArray['memberId']);
             if ($member !== null)
             {
                 $ret[] = $member;
@@ -102,7 +102,7 @@ final class MemberRepository implements RepositoryInterface
      */
     public function fetchAllContestantsByUser(User $profile): array
     {
-        return array_filter(self::fetchAllByUser($profile), static function(Member $member)
+        return array_filter($this->fetchAllByUser($profile), static function(Member $member)
         {
             return $member->isContestant;
         });

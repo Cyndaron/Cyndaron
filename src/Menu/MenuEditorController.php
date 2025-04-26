@@ -18,9 +18,9 @@ final class MenuEditorController
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ADMIN)]
-    public function routeGet(UrlService $urlService): Response
+    public function routeGet(UrlService $urlService, MenuItemRepository $menuItemRepository): Response
     {
-        $page = new MenuEditorPage($urlService);
+        $page = new MenuEditorPage($urlService, $menuItemRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 }

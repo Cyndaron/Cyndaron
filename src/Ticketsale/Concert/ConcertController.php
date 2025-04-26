@@ -50,6 +50,7 @@ final class ConcertController
 
     public function __construct(
         private readonly PageRenderer $pageRenderer,
+        private readonly ConcertRepository $concertRepository,
     ) {
     }
 
@@ -61,7 +62,7 @@ final class ConcertController
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $concert = Concert::fetchById($concertId);
+        $concert = $this->concertRepository->fetchById($concertId);
         if ($concert === null)
         {
             return new JsonResponse(['error' => 'Concert does not exist!'], Response::HTTP_NOT_FOUND);
@@ -72,7 +73,7 @@ final class ConcertController
 
         $answer = [
             'tickettypes' => [],
-            'forcedDelivery' => (bool)$concert->forcedDelivery,
+            'forcedDelivery' => $concert->forcedDelivery,
             'defaultDeliveryCost' => $concert->deliveryCost,
             'reservedSeatCharge' => $concert->reservedSeatCharge,
         ];
@@ -97,7 +98,7 @@ final class ConcertController
             $page = new SimplePage('Fout', 'Incorrect ID!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
-        $concert = Concert::fetchById($id);
+        $concert = $this->concertRepository->fetchById($id);
         if ($concert === null)
         {
             $page = new SimplePage('Fout', 'Concert bestaat niet!');
@@ -117,7 +118,7 @@ final class ConcertController
             $page = new SimplePage('Fout', 'Incorrect ID!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
-        $concert = Concert::fetchById($id);
+        $concert = $this->concertRepository->fetchById($id);
         assert($concert !== null);
         $page = new ConcertOrderOverviewPage($concert, $orderRepository, $connection);
         return $this->pageRenderer->renderResponse($page);
@@ -131,7 +132,7 @@ final class ConcertController
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $concert = Concert::fetchById($id);
+        $concert = $this->concertRepository->fetchById($id);
         if ($concert === null)
         {
             throw new Exception('Concert niet gevonden!');

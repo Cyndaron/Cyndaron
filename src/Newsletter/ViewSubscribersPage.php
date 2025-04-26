@@ -13,12 +13,12 @@ use Cyndaron\User\CSRFTokenHandler;
 
 class ViewSubscribersPage extends Page
 {
-    public function __construct(CSRFTokenHandler $tokenHandler)
+    public function __construct(CSRFTokenHandler $tokenHandler, SubscriberRepository $subscriberRepository)
     {
         $this->title = 'Abonnees nieuwsbrief';
 
         $this->addTemplateVars([
-            'subscribers' => Subscriber::fetchAll([], [], 'ORDER BY name'),
+            'subscribers' => $subscriberRepository->fetchAll([], [], 'ORDER BY name'),
             'csrfTokenUnsubscribe' => $tokenHandler->get('newsletter', 'unsubscribe'),
             'csrfTokenDelete' => $tokenHandler->get('newsletter', 'delete'),
         ]);

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron\Menu;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\DBAL\DatabaseError;
@@ -16,8 +15,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class MenuController
 {
+    public function __construct(
+        private readonly MenuItemRepository $menuItemRepository,
+    ) {
+
+    }
+
     #[RouteAttribute('addItem', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function addItem(RequestParameters $post, GenericRepository $repository, Connection $connection): JsonResponse
+    public function addItem(RequestParameters $post, Connection $connection): JsonResponse
     {
         $menuItem = new MenuItem();
         $menuItem->link = $post->getUrl('link');
@@ -34,15 +39,15 @@ final class MenuController
             $menuItem->priority = $currentHighPriority + 1;
         }
 
-        $repository->save($menuItem);
+        $this->menuItemRepository->save($menuItem);
         return new JsonResponse();
     }
 
     #[RouteAttribute('editItem', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function editItem(QueryBits $queryBits, RequestParameters $post, GenericRepository $repository): JsonResponse
+    public function editItem(QueryBits $queryBits, RequestParameters $post): JsonResponse
     {
         $index = $queryBits->getInt(2);
-        $menuItem = MenuItem::fetchById($index);
+        $menuItem = $this->menuItemRepository->fetchById($index);
         if ($menuItem === null)
         {
             throw new DatabaseError('Could not find menu item!');
@@ -53,20 +58,20 @@ final class MenuController
         $menuItem->isDropdown = $post->getBool('isDropdown');
         $menuItem->isImage = $post->getBool('isImage');
         $menuItem->priority = $post->getInt('priority');
-        $repository->save($menuItem);
+        $this->menuItemRepository->save($menuItem);
 
         return new JsonResponse();
     }
 
     #[RouteAttribute('deleteItem', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function deleteItem(QueryBits $queryBits, GenericRepository $repository): JsonResponse
+    public function deleteItem(QueryBits $queryBits): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
-        $repository->deleteById(MenuItem::class, $id);
+        $this->menuItemRepository->deleteById($id);
 
         return new JsonResponse();
     }

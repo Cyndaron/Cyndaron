@@ -23,6 +23,6 @@ final class FriendlyUrlRepository implements RepositoryInterface
 
     public function fetchByName(string $name): FriendlyUrl|null
     {
-        return FriendlyUrl::fetch(['name = ?'], [ltrim($name, '/')]);
+        return $this->fetch(['name = ?'], [ltrim($name, '/')]);
     }
 }
