@@ -7,6 +7,7 @@ use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Menu\MenuItemRepository;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Photoalbum\Photoalbum;
@@ -84,7 +85,7 @@ final class CategoryController
     }
 
     #[RouteAttribute('addtomenu', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function addToMenu(QueryBits $queryBits): JsonResponse
+    public function addToMenu(QueryBits $queryBits, MenuItemRepository $menuItemRepository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -94,11 +95,7 @@ final class CategoryController
         $return = [];
         $menuItem = new MenuItem();
         $menuItem->link = '/category/' . $id;
-        $result = $menuItem->save();
-        if (!$result)
-        {
-            return new JsonResponse(['error' => 'Could not save menu item!'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $menuItemRepository->save($menuItem);
 
         return new JsonResponse($return);
     }

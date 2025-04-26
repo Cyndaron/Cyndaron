@@ -227,7 +227,7 @@ class Controller
         }
 
         $subscription->confirmed = true;
-        $subscription->save();
+        $this->subscriberRepository->save($subscription);
 
         return $this->pageRenderer->renderResponse(new SimplePage('Inschrijven', 'U bent ingeschreven voor de nieuwsbrief.'));
     }

@@ -47,31 +47,6 @@ final class Photoalbum extends ModelWithCategory
     #[DatabaseField]
     public int $thumbnailHeight = 200;
 
-    public static function create(string $name, string $notes = '', bool $showBreadcrumbs = false): int|null
-    {
-        if ($name === '')
-        {
-            throw new IncompleteData('Empty photo album name!');
-        }
-
-        $album = new Photoalbum();
-        $album->name = $name;
-        $album->notes = $notes;
-        $album->showBreadcrumbs = $showBreadcrumbs;
-        $album->save();
-
-        $id = $album->id;
-        if ($id !== null)
-        {
-            $baseDir = self::getPhotoalbumsDir() . "/{$id}";
-            Util::createDir($baseDir);
-            Util::createDir("{$baseDir}/originals");
-            Util::createDir("{$baseDir}/thumbnails");
-        }
-
-        return $id ?: null;
-    }
-
     /**
      * @throws \Safe\Exceptions\ErrorfuncException
      * @return string[]

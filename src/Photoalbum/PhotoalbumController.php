@@ -12,6 +12,9 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\Error\IncompleteData;
+use Cyndaron\Util\Util;
+use Illuminate\Support\Js;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -49,10 +52,30 @@ final class PhotoalbumController
     }
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Photoalbum::RIGHT_EDIT)]
-    public function add(RequestParameters $post): JsonResponse
+    public function add(RequestParameters $post, PhotoalbumRepository $photoalbumRepository): JsonResponse
     {
         $name = $post->getHTML('name');
-        Photoalbum::create($name);
+        if ($name === '')
+        {
+            throw new IncompleteData('Empty photo album name!');
+        }
+
+        $album = new Photoalbum();
+        $album->name = $name;
+        $album->notes = '';
+        $album->showBreadcrumbs = false;
+        $photoalbumRepository->save($album);
+
+        $id = $album->id;
+        if ($id === null)
+        {
+            return new JsonResponse(['error' => 'Could not create album!'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $baseDir = Photoalbum::getPhotoalbumsDir() . "/{$id}";
+        Util::createDir($baseDir);
+        Util::createDir("{$baseDir}/originals");
+        Util::createDir("{$baseDir}/thumbnails");
 
         return new JsonResponse();
     }

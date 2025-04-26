@@ -5,7 +5,6 @@ namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\Barcode\Code128;
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\ImproperSubclassing;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Payment\Currency;
@@ -19,7 +18,6 @@ use Cyndaron\Ticketsale\Concert\Concert;
 use Cyndaron\Ticketsale\Concert\ConcertRepository;
 use Cyndaron\Ticketsale\Concert\TicketDelivery;
 use Cyndaron\Ticketsale\DeliveryCost\DeliveryCostInterface;
-use Cyndaron\Ticketsale\TicketType\TicketType;
 use Cyndaron\Ticketsale\TicketType\TicketTypeRepository;
 use Cyndaron\Ticketsale\Util;
 use Cyndaron\User\UserLevel;
@@ -63,6 +61,7 @@ final class OrderController
         private readonly PageRenderer $pageRenderer,
         private readonly OrderRepository $orderRepository,
         private readonly ConcertRepository $concertRepository,
+        private readonly OrderTicketTypesRepository $orderTicketTypesRepository,
     ) {
     }
 
@@ -179,7 +178,7 @@ final class OrderController
      * @param UrlInfo $urlInfo
      * @param OrderConfirmationMailFactory $confirmationMailFactory
      * @param Connection $connection
-     * @throws ImproperSubclassing
+     * @param TicketTypeRepository $ticketTypeRepository
      * @throws InvalidOrder
      * @throws JsonException
      * @return Order
@@ -313,10 +312,14 @@ final class OrderController
             for ($i = 0; $i < self::MAX_SECRET_CODE_RETRIES; $i++)
             {
                 $orderTicketType->secretCode = Util::generateSecretCode();
-                $saveResult = $orderTicketType->save();
-                if ($saveResult)
+                try
                 {
+                    $this->orderTicketTypesRepository->save($orderTicketType);
+                    $saveResult = true;
                     break;
+                }
+                catch (\Throwable)
+                {
                 }
             }
 
@@ -590,7 +593,7 @@ final class OrderController
     }
 
     #[RouteAttribute('getTickets', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function getTickets(QueryBits $queryBits, OrderTicketTypesRepository $orderTicketTypesRepository): Response
+    public function getTickets(QueryBits $queryBits): Response
     {
         $orderId = $queryBits->getInt(2);
         $order = $this->orderRepository->fetchById($orderId);
@@ -621,7 +624,7 @@ final class OrderController
         $logoSrc = is_file($logoFilename) ? file_get_contents($logoFilename) : '';
         $organisation = Setting::get(BuiltinSetting::ORGANISATION);
 
-        foreach ($orderTicketTypesRepository->fetchAllByOrder($order) as $orderTicketType)
+        foreach ($this->orderTicketTypesRepository->fetchAllByOrder($order) as $orderTicketType)
         {
             if ($orderTicketType->secretCode === null)
             {
@@ -695,10 +698,9 @@ final class OrderController
     /**
      * @param RequestParameters $post
      * @param Concert $concert
-     * @throws ImproperSubclassing
      * @return array{0: bool, 1: string}
      */
-    private function checkScannedBarcode(RequestParameters $post, Concert $concert, OrderTicketTypesRepository $orderTicketTypesRepository): array
+    private function checkScannedBarcode(RequestParameters $post, Concert $concert): array
     {
         $barcode = $post->getSimpleString('barcode');
         $barcode = preg_replace('/[^0-9]+/', '', $barcode);
@@ -707,7 +709,7 @@ final class OrderController
             return [false, 'Lege barcode!'];
         }
 
-        $ticket = $orderTicketTypesRepository->fetch(['secretCode = ?'], [$barcode]);
+        $ticket = $this->orderTicketTypesRepository->fetch(['secretCode = ?'], [$barcode]);
         if ($ticket === null)
         {
             return [false, 'Geen kaartje gevonden met deze barcode!'];
@@ -730,13 +732,13 @@ final class OrderController
         }
 
         $ticket->hasBeenScanned = true;
-        $ticket->save();
+        $this->orderTicketTypesRepository->save($ticket);
 
         return [true, 'Barcode is juist!'];
     }
 
     #[RouteAttribute('checkIn', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function checkInPost(QueryBits $queryBits, RequestParameters $post, OrderTicketTypesRepository $orderTicketTypesRepository): Response
+    public function checkInPost(QueryBits $queryBits, RequestParameters $post): Response
     {
         $concertId = $queryBits->getInt(2);
         $concert = $this->concertRepository->fetchById($concertId);
@@ -750,7 +752,7 @@ final class OrderController
             throw new Exception('Geheime code klopt niet!');
         }
 
-        [$isCorrect, $message] = $this->checkScannedBarcode($post, $concert, $orderTicketTypesRepository);
+        [$isCorrect, $message] = $this->checkScannedBarcode($post, $concert);
 
         return $this->checkInPage($concert, $message, $isCorrect);
     }

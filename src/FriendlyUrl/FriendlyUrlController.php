@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\FriendlyUrl;
 
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Menu\MenuItemRepository;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -32,7 +33,7 @@ final class FriendlyUrlController
     }
 
     #[RouteAttribute('addtomenu', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function addToMenu(QueryBits $queryBits): JsonResponse
+    public function addToMenu(QueryBits $queryBits, MenuItemRepository $menuItemRepository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         $entry = $this->friendlyUrlRepository->fetchById($id);
@@ -42,7 +43,7 @@ final class FriendlyUrlController
         }
         $menuItem = new MenuItem();
         $menuItem->link = '/' . $entry->name;
-        $menuItem->save();
+        $menuItemRepository->save($menuItem);
 
         return new JsonResponse();
     }

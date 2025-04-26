@@ -5,6 +5,7 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Menu\MenuItem;
+use Cyndaron\Menu\MenuItemRepository;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
@@ -46,7 +47,7 @@ final class StaticPageController
     }
 
     #[RouteAttribute('addtomenu', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function addToMenu(QueryBits $queryBits): JsonResponse
+    public function addToMenu(QueryBits $queryBits, MenuItemRepository $menuItemRepository): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -55,7 +56,7 @@ final class StaticPageController
         }
         $menuItem = new MenuItem();
         $menuItem->link = '/sub/' . $id;
-        $menuItem->save();
+        $menuItemRepository->save($menuItem);
         return new JsonResponse();
     }
 
