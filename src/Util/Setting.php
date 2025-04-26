@@ -22,6 +22,9 @@ final class Setting
 
     private static PDO $pdo;
 
+    /**
+     * @deprecated
+     */
     public static function get(string|BuiltinSetting|BackedEnum $name): string
     {
         if ($name instanceof BackedEnum)

@@ -10,6 +10,7 @@ use function reset;
 use function array_fill;
 use function implode;
 use function array_key_exists;
+use function get_class;
 
 final class GenericRepository
 {

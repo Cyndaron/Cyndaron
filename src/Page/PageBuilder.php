@@ -15,6 +15,7 @@ use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use Cyndaron\View\Renderer\TextRenderer;
 use function Safe\ob_start;
 use function count;
@@ -47,6 +48,7 @@ final class PageBuilder
         private readonly TextRenderer $textRenderer,
         private readonly CSRFTokenHandler $tokenHandler,
         private readonly Translator $translator,
+        private readonly SettingsRepository $sr,
     ) {
     }
 
@@ -92,9 +94,9 @@ final class PageBuilder
     public function addDefaultTemplateVars(Page $page, UserSession $userSession, bool $isFrontPage): void
     {
         $page->addTemplateVar('isAdmin', $userSession->isAdmin());
-        $page->addTemplateVar('websiteName', Setting::get('siteName'));
+        $page->addTemplateVar('websiteName', $this->sr->get('siteName'));
         $page->addTemplateVar('title', $page->title);
-        $page->addTemplateVar('systemLanguage', Setting::get(BuiltinSetting::LANGUAGE));
+        $page->addTemplateVar('systemLanguage', $this->sr->get(BuiltinSetting::LANGUAGE));
         $page->addTemplateVar('twitterDescription', '');
         $page->addTemplateVar('previewImage', '');
         $model = $page->model;
@@ -105,7 +107,7 @@ final class PageBuilder
         }
 
         $page->addTemplateVar('version', CyndaronInfo::ENGINE_VERSION);
-        $favicon = Setting::get('favicon');
+        $favicon = $this->sr->get('favicon');
         $page->addTemplateVar('favicon', $favicon);
         if ($favicon !== '')
         {
@@ -117,11 +119,11 @@ final class PageBuilder
 
         foreach (['backgroundColor', 'menuColor', 'menuBackground', 'articleColor', 'accentColor'] as $setting)
         {
-            $page->addTemplateVar($setting, Setting::get($setting));
+            $page->addTemplateVar($setting, $this->sr->get($setting));
         }
 
-        $jumboContents = Setting::get('jumboContents');
-        $page->addTemplateVar('showJumbo', $isFrontPage && Setting::get('frontPageIsJumbo') && $jumboContents);
+        $jumboContents = $this->sr->get('jumboContents');
+        $page->addTemplateVar('showJumbo', $isFrontPage && $this->sr->get('frontPageIsJumbo') && $jumboContents);
         $page->addTemplateVar('jumboContents', $this->textRenderer->render($jumboContents));
 
         $page->addTemplateVar('pageCaptionClasses', '');
@@ -160,7 +162,7 @@ final class PageBuilder
         $dir = dirname($filename) . '/templates';
         $baseFilename = str_replace('.php', '', basename($filename));
 
-        $shortCode = strtoupper(Setting::get(BuiltinSetting::SHORT_CODE));
+        $shortCode = strtoupper($this->sr->get(BuiltinSetting::SHORT_CODE));
         $filenameWithShortcode = $baseFilename . $shortCode . '.blade.php';
         $pathWithShortcode = "$dir/$filenameWithShortcode";
         $filenameWithoutShortcode = $baseFilename . '.blade.php';

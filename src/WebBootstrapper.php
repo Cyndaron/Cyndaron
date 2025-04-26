@@ -29,8 +29,8 @@ final class WebBootstrapper
             $this->setErrorHandler();
             $request = Request::createFromGlobals();
             $this->setPhpConfig((bool)$request->server->get('HTTPS'));
-            $config = $this->processSettings();
-            $this->handleRequest($request, $config);
+            [$config, $connection] = $this->processSettings();
+            $this->handleRequest($request, $config, $connection);
         }
         catch (RuntimeException $e)
         {
@@ -71,7 +71,10 @@ final class WebBootstrapper
         }
     }
 
-    private function processSettings(): CyndaronConfig
+    /**
+     * @return array{0: CyndaronConfig, 1: Connection}
+     */
+    private function processSettings(): array
     {
         if (!file_exists(self::SETTINGS_FILE))
         {
@@ -80,22 +83,20 @@ final class WebBootstrapper
 
         /** @var CyndaronConfig $config */
         $config = require self::SETTINGS_FILE;
-        $pdo = $this->connectToDatabase($config);
-        Setting::load($pdo);
-        return $config;
+        $connection = $this->connectToDatabase($config);
+        Setting::load($connection);
+        return [$config, $connection];
     }
 
-    private function handleRequest(Request $request, CyndaronConfig $config): void
+    private function handleRequest(Request $request, CyndaronConfig $config, Connection $connection): void
     {
         $route = new Kernel();
-        $response = $route->handle($request, $config);
+        $response = $route->handle($request, $config, $connection);
         $response->send();
     }
 
     private function connectToDatabase(CyndaronConfig $config): Connection
     {
-        $connection = Connection::create('mysql', $config->databaseHost, $config->databaseName, $config->databaseUser, $config->databasePassword);
-        DBConnection::connect($connection);
-        return $connection;
+        return Connection::create('mysql', $config->databaseHost, $config->databaseName, $config->databaseUser, $config->databasePassword);
     }
 }

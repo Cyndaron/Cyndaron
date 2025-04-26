@@ -10,6 +10,7 @@ use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
+use Cyndaron\Util\SettingsRepository;
 use Cyndaron\Util\Util;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -27,9 +28,9 @@ final class FileCabinetController
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function routeGet(CSRFTokenHandler $tokenHandler): Response
+    public function routeGet(CSRFTokenHandler $tokenHandler, SettingsRepository $sr): Response
     {
-        $page = new OverviewPage($tokenHandler);
+        $page = new OverviewPage($tokenHandler, $sr);
         return $this->pageRenderer->renderResponse($page);
     }
 

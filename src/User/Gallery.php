@@ -9,10 +9,10 @@ final class Gallery extends Page
 {
     private const FALLBACK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
-    public function __construct(UserRepository $userRepository, SettingsRepository $settingsRepository)
+    public function __construct(UserRepository $userRepository, SettingsRepository $sr)
     {
         $members = $userRepository->fetchAll(['hideFromMemberList = 0'], [], 'ORDER BY lastname, tussenvoegsel, firstName');
-        $title = $settingsRepository->get('userGalleryTitle') ?: 'Wie is wie';
+        $title = $sr->get('userGalleryTitle') ?: 'Wie is wie';
         $this->title = $title;
 
         $this->addTemplateVars([

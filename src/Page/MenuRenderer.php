@@ -17,6 +17,7 @@ use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\LinkWithIcon;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use Cyndaron\View\Template\TemplateRenderer;
 use function sprintf;
 
@@ -28,6 +29,7 @@ final class MenuRenderer
         private readonly TemplateRenderer $templateRenderer,
         private readonly Connection $connection,
         private readonly MenuItemRepository $menuItemRepository,
+        private readonly SettingsRepository $sr,
     ) {
     }
 
@@ -48,12 +50,12 @@ final class MenuRenderer
      */
     public function render(UserSession $userSession, array $userMenu): string
     {
-        $websiteName = Setting::get('siteName');
-        $logo = Setting::get('logo');
+        $websiteName = $this->sr->get('siteName');
+        $logo = $this->sr->get('logo');
         $vars = [
             'isLoggedIn' => $userSession->isLoggedIn(),
             'isAdmin' => $userSession->isAdmin(),
-            'inverseClass' => (Setting::get('menuTheme') === 'dark') ? 'navbar-dark' : 'navbar-light',
+            'inverseClass' => ($this->sr->get('menuTheme') === 'dark') ? 'navbar-dark' : 'navbar-light',
             'navbar' => $logo !== '' ? sprintf('<img alt="" src="%s"> ', $logo) : $websiteName,
         ];
 

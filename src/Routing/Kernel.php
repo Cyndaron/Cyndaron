@@ -109,13 +109,14 @@ final class Kernel
         $urlInfo = UrlInfo::fromRequest($request);
         $dic->add($urlInfo);
 
-        $language = Setting::get(BuiltinSetting::LANGUAGE);
+        $sr = $dic->createClassWithDependencyInjection(SettingsRepository::class);
+        $language = $sr->get(BuiltinSetting::LANGUAGE);
         $translator = new Translator($language);
         $dic->add($translator);
 
         $mailFactory = $dic->createClassWithDependencyInjection(MailFactory::class);
-        $settings = $dic->createClassWithDependencyInjection(SettingsRepository::class);
-        $multiLogger = $this->buildMultilogger($settings, $mailFactory);
+
+        $multiLogger = $this->buildMultilogger($sr, $mailFactory);
         $dic->add($multiLogger, LoggerInterface::class);
 
         $pageRenderer = $dic->createClassWithDependencyInjection(PageRenderer::class);
@@ -298,7 +299,7 @@ final class Kernel
         return $nonce;
     }
 
-    public function handle(Request $request, CyndaronConfig $config): Response
+    public function handle(Request $request, CyndaronConfig $config, Connection $connection): Response
     {
         if ($request->hasPreviousSession())
         {
@@ -321,7 +322,6 @@ final class Kernel
         }
 
         $registry = $this->loadModules($config);
-        $connection = DBConnection::getPDO();
         $dic = $this->buildDIC($connection, $registry, $request, $userSession);
         $response = $this->route($dic);
         $queryBits = $dic->tryGet(QueryBits::class);

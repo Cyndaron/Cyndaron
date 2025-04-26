@@ -9,6 +9,7 @@ use Cyndaron\Page\Page;
 use Cyndaron\Translation\Translator;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use function is_writable;
 use function ob_get_clean;
 use function Safe\ini_get;
@@ -58,7 +59,7 @@ final class SystemPage extends Page
         'session.use_trans_sid' => '0',
         'memory_limit' => '96M of meer',
     ];
-    public function __construct(string $currentPage, Translator $t, CategoryRepository $categoryRepository)
+    public function __construct(string $currentPage, Translator $t, CategoryRepository $categoryRepository, SettingsRepository $sr)
     {
         $this->template = 'System/' . ucfirst($currentPage);
         $this->title = $t->get('Systeembeheer');
@@ -84,40 +85,40 @@ final class SystemPage extends Page
                 break;
             case 'config':
             default:
-                $this->showConfigPage($categoryRepository);
+                $this->showConfigPage($categoryRepository, $sr);
         }
     }
 
-    public function showConfigPage(CategoryRepository $categoryRepository): void
+    public function showConfigPage(CategoryRepository $categoryRepository, SettingsRepository $sr): void
     {
         $this->addScript('/src/System/js/SystemPage.js');
 
-        $this->templateVars['defaultCategory'] = Setting::get('defaultCategory');
+        $this->templateVars['defaultCategory'] = $sr->get('defaultCategory');
 
-        $frontPageIsJumbo = (bool)(int)Setting::get('frontPageIsJumbo');
+        $frontPageIsJumbo = (bool)(int)$sr->get('frontPageIsJumbo');
 
         $formItems = [
-            ['name' => 'siteName', 'description' => 'Naam website', 'type' => 'text', 'value' => Setting::get('siteName')],
-            ['name' => 'organisation', 'description' => 'Organisatie', 'type' => 'text', 'value' => Setting::get(BuiltinSetting::ORGANISATION)],
-            ['name' => 'shortCode', 'description' => 'Code (3 letters)', 'type' => 'text', 'value' => Setting::get(BuiltinSetting::SHORT_CODE)],
-            ['name' => 'logo', 'description' => 'Websitelogo', 'type' => 'text', 'value' => Setting::get('logo')],
-            ['name' => 'subTitle', 'description' => 'Ondertitel', 'type' => 'text', 'value' => Setting::get('subTitle')],
-            ['name' => 'favicon', 'description' => 'Websitepictogram', 'type' => 'text', 'value' => Setting::get('favicon')],
-            ['name' => 'backgroundColor', 'description' => 'Achtergrondkleur hele pagina', 'type' => 'color', 'value' => Setting::get('backgroundColor')],
-            ['name' => 'menuColor', 'description' => 'Achtergrondkleur menu', 'type' => 'color', 'value' => Setting::get('menuColor')],
-            ['name' => 'articleColor', 'description' => 'Achtergrondkleur artikel', 'type' => 'color', 'value' => Setting::get('articleColor')],
-            ['name' => 'accentColor', 'description' => 'Accentkleur', 'type' => 'color', 'value' => Setting::get('accentColor')],
-            ['name' => 'menuBackground', 'description' => 'Achtergrondafbeelding menu', 'type' => 'text', 'value' => Setting::get('menuBackground')],
-            ['name' => 'frontPage', 'description' => 'Voorpagina', 'type' => 'text', 'value' => Setting::get('frontPage')],
+            ['name' => 'siteName', 'description' => 'Naam website', 'type' => 'text', 'value' => $sr->get('siteName')],
+            ['name' => 'organisation', 'description' => 'Organisatie', 'type' => 'text', 'value' => $sr->get(BuiltinSetting::ORGANISATION)],
+            ['name' => 'shortCode', 'description' => 'Code (3 letters)', 'type' => 'text', 'value' => $sr->get(BuiltinSetting::SHORT_CODE)],
+            ['name' => 'logo', 'description' => 'Websitelogo', 'type' => 'text', 'value' => $sr->get('logo')],
+            ['name' => 'subTitle', 'description' => 'Ondertitel', 'type' => 'text', 'value' => $sr->get('subTitle')],
+            ['name' => 'favicon', 'description' => 'Websitepictogram', 'type' => 'text', 'value' => $sr->get('favicon')],
+            ['name' => 'backgroundColor', 'description' => 'Achtergrondkleur hele pagina', 'type' => 'color', 'value' => $sr->get('backgroundColor')],
+            ['name' => 'menuColor', 'description' => 'Achtergrondkleur menu', 'type' => 'color', 'value' => $sr->get('menuColor')],
+            ['name' => 'articleColor', 'description' => 'Achtergrondkleur artikel', 'type' => 'color', 'value' => $sr->get('articleColor')],
+            ['name' => 'accentColor', 'description' => 'Accentkleur', 'type' => 'color', 'value' => $sr->get('accentColor')],
+            ['name' => 'menuBackground', 'description' => 'Achtergrondafbeelding menu', 'type' => 'text', 'value' => $sr->get('menuBackground')],
+            ['name' => 'frontPage', 'description' => 'Voorpagina', 'type' => 'text', 'value' => $sr->get('frontPage')],
             ['name' => 'frontPageIsJumbo', 'description' => 'Jumbotron op voorpagina', 'type' => 'checkbox', 'value' => 1, 'extraAttr' => $frontPageIsJumbo ? 'checked' : ''],
-            ['name' => 'mail_logRecipient', 'description' => 'Mailadres bij fouten', 'type' => 'email', 'value' => Setting::get('mail_logRecipient')],
+            ['name' => 'mail_logRecipient', 'description' => 'Mailadres bij fouten', 'type' => 'email', 'value' => $sr->get('mail_logRecipient')],
 
         ];
         $this->templateVars['formItems'] = $formItems;
 
         $this->templateVars['categories'] = $categoryRepository->fetchAllAndSortByName();
 
-        $menuTheme = Setting::get('menuTheme');
+        $menuTheme = $sr->get('menuTheme');
         $this->templateVars['lightMenu'] = ($menuTheme !== 'dark') ? 'selected' : '';
         $this->templateVars['darkMenu'] = ($menuTheme === 'dark') ? 'selected' : '';
     }

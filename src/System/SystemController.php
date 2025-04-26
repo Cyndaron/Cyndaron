@@ -22,33 +22,33 @@ final class SystemController
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ADMIN)]
-    public function routeGet(QueryBits $queryBits, Translator $t, CategoryRepository $categoryRepository): Response
+    public function routeGet(QueryBits $queryBits, Translator $t, CategoryRepository $categoryRepository, SettingsRepository $sr): Response
     {
         $currentPage = $queryBits->getString(1, 'config');
-        $page = new SystemPage($currentPage, $t, $categoryRepository);
+        $page = new SystemPage($currentPage, $t, $categoryRepository, $sr);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::ADMIN)]
-    public function routePost(RequestParameters $post, SettingsRepository $settings): Response
+    public function routePost(RequestParameters $post, SettingsRepository $sr): Response
     {
-        $settings->set('siteName', $post->getHTML('siteName'));
-        $settings->set('organisation', $post->getHTML('organisation'));
-        $settings->set('shortCode', $post->getHTML('shortCode'));
-        $settings->set('logo', $post->getFilenameWithDirectory('logo'));
-        $settings->set('subTitle', $post->getHTML('subTitle'));
-        $settings->set('favicon', $post->getFilenameWithDirectory('favicon'));
-        $settings->set('backgroundColor', $post->getColor('backgroundColor'));
-        $settings->set('menuColor', $post->getColor('menuColor'));
-        $settings->set('menuBackground', $post->getFilenameWithDirectory('menuBackground'));
-        $settings->set('articleColor', $post->getColor('articleColor'));
-        $settings->set('accentColor', $post->getColor('accentColor'));
-        $settings->set('defaultCategory', (string)$post->getInt('defaultCategory'));
-        $settings->set('menuTheme', $post->getSimpleString('menuTheme'));
-        $settings->set('frontPage', $post->getUrl('frontPage'));
-        $settings->set('frontPageIsJumbo', (string)(int)$post->getBool('frontPageIsJumbo'));
-        $settings->set('mail_logRecipient', $post->getEmail('mail_logRecipient'));
-        $settings->buildCache();
+        $sr->set('siteName', $post->getHTML('siteName'));
+        $sr->set('organisation', $post->getHTML('organisation'));
+        $sr->set('shortCode', $post->getHTML('shortCode'));
+        $sr->set('logo', $post->getFilenameWithDirectory('logo'));
+        $sr->set('subTitle', $post->getHTML('subTitle'));
+        $sr->set('favicon', $post->getFilenameWithDirectory('favicon'));
+        $sr->set('backgroundColor', $post->getColor('backgroundColor'));
+        $sr->set('menuColor', $post->getColor('menuColor'));
+        $sr->set('menuBackground', $post->getFilenameWithDirectory('menuBackground'));
+        $sr->set('articleColor', $post->getColor('articleColor'));
+        $sr->set('accentColor', $post->getColor('accentColor'));
+        $sr->set('defaultCategory', (string)$post->getInt('defaultCategory'));
+        $sr->set('menuTheme', $post->getSimpleString('menuTheme'));
+        $sr->set('frontPage', $post->getUrl('frontPage'));
+        $sr->set('frontPageIsJumbo', (string)(int)$post->getBool('frontPageIsJumbo'));
+        $sr->set('mail_logRecipient', $post->getEmail('mail_logRecipient'));
+        $sr->buildCache();
 
         // Redirect to GET
         return new RedirectResponse('/system/config');

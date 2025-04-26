@@ -6,6 +6,7 @@ namespace Cyndaron\Newsletter;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Request\UrlInfo;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use RuntimeException;
 use Symfony\Component\Mime\Address;
 use function base64_encode;
@@ -14,8 +15,11 @@ use function hash;
 
 final class AddressHelper
 {
-    public function __construct(private readonly Connection $connection, private readonly UrlInfo $urlInfo)
-    {
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly UrlInfo $urlInfo,
+        private readonly SettingsRepository $sr,
+    ) {
     }
 
     public function getConfirmationLink(string $email): string
@@ -134,8 +138,8 @@ final class AddressHelper
 
     public function getFromAddress(): Address
     {
-        $address = Setting::get('newsletter_from_address');
-        $name = Setting::get('newsletter_from_name');
+        $address = $this->sr->get('newsletter_from_address');
+        $name = $this->sr->get('newsletter_from_name');
         if (!empty($address))
         {
             return new Address($address, $name);
@@ -146,8 +150,8 @@ final class AddressHelper
 
     public function getReplyToAddress(): Address
     {
-        $address = Setting::get('newsletter_reply_to_address');
-        $name = Setting::get('newsletter_reply_to_name');
+        $address = $this->sr->get('newsletter_reply_to_address');
+        $name = $this->sr->get('newsletter_reply_to_name');
         if (!empty($address))
         {
             return new Address($address, $name);
@@ -163,7 +167,7 @@ final class AddressHelper
 
     public function calculateHash(string $email): string
     {
-        $salt = Setting::get('newsletter_salt');
+        $salt = $this->sr->get('newsletter_salt');
         if ($salt === '')
         {
             throw new RuntimeException('Salt is niet ingesteld!');

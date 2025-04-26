@@ -4,6 +4,7 @@ namespace Cyndaron\FileCabinet;
 use Cyndaron\Page\Page;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use Cyndaron\Util\Util;
 use ErrorException;
 use Safe\Exceptions\DirException;
@@ -25,10 +26,10 @@ final class OverviewPage extends Page
 {
     private const PATH = Util::UPLOAD_DIR . '/filecabinet/';
 
-    public function __construct(CSRFTokenHandler $tokenHandler)
+    public function __construct(CSRFTokenHandler $tokenHandler, SettingsRepository $sr)
     {
-        $title = Setting::get('filecabinet_title') ?: 'Bestandenkast';
-        $orderBy = Setting::get('filecabinet_orderBy') ?: 'name';
+        $title = $sr->get('filecabinet_title') ?: 'Bestandenkast';
+        $orderBy = $sr->get('filecabinet_orderBy') ?: 'name';
         $this->title = $title;
 
         $this->addTemplateVars([

@@ -13,6 +13,7 @@ use Cyndaron\Url\UrlService;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +27,7 @@ final class AtomController
     }
 
     #[RouteAttribute('category', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function category(QueryBits $queryBits, Request $request, UrlService $urlService, CategoryRepository $categoryRepository): Response
+    public function category(QueryBits $queryBits, Request $request, UrlService $urlService, CategoryRepository $categoryRepository, SettingsRepository $sr): Response
     {
         $categoryId = $queryBits->getInt(2);
         $category = $categoryRepository->fetchById($categoryId);
@@ -47,11 +48,11 @@ final class AtomController
         }
 
         $selfUri = $request->getSchemeAndHttpHost() . $request->getBaseUrl() . $request->getPathInfo();
-        $siteName = Setting::get('siteName');
+        $siteName = $sr->get('siteName');
 
         $args = [
             'title' => "{$category->name} - {$siteName}",
-            'organisation' => Setting::get(BuiltinSetting::ORGANISATION),
+            'organisation' => $sr->get(BuiltinSetting::ORGANISATION),
             'selfUri' => $selfUri,
             'category' => $category,
             'underlyingPages' => $underlyingPages,

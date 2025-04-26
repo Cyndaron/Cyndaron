@@ -47,7 +47,7 @@ Uw nieuwe wachtwoord is: %s';
     }
 
     #[RouteAttribute('gallery', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function gallery(UserSession $session, Translator $t, UserRepository $userRepository, SettingsRepository $settingsRepository): Response
+    public function gallery(UserSession $session, Translator $t, UserRepository $userRepository, SettingsRepository $sr): Response
     {
         $currentUser = $session->getProfile();
         // Has to be done here because you cannot specify the expression during member variable initialization.
@@ -59,7 +59,7 @@ Uw nieuwe wachtwoord is: %s';
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_UNAUTHORIZED);
         }
 
-        $page = new Gallery($userRepository, $settingsRepository);
+        $page = new Gallery($userRepository, $sr);
         return $this->pageRenderer->renderResponse($page);
     }
 

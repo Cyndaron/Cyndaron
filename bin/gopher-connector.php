@@ -1,11 +1,11 @@
 #!/usr/bin/env php
 <?php
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\Gopher\MenuEntryFactory;
 use Cyndaron\Util\Setting;
 
 require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../config.php';
+/** @var \Cyndaron\Base\CyndaronConfig $config */
+$config = require __DIR__ . '/../config.php';
 
 const ROOT_DIR = __DIR__ . '/../';
 // Referenced by some code
@@ -17,12 +17,22 @@ $gopherSubdomain = $argv[2];
 $gopherPort = $argv[3];
 $query = $argv[4];
 
-$pdo = \Cyndaron\DBAL\Connection::create('mysql', $dbplek ?? 'localhost', $dbnaam, $dbuser, $dbpass);
-DBConnection::connect($pdo);
-Setting::load($pdo);
+$dic = new \Cyndaron\Util\DependencyInjectionContainer();
+$connection = \Cyndaron\DBAL\Connection::create(
+    'mysql',
+        $config->databaseHost ?? 'localhost',
+    $config->databaseName,
+    $config->databaseUser,
+    $config->databasePassword,
+);
+$dic->add($connection);
+Setting::load($connection);
 $menuEntryFactory = new MenuEntryFactory($gopherDomain, $gopherSubdomain, $gopherPort);
-$urlService = new \Cyndaron\Url\UrlService($pdo, '', []);
-$controller = new \Cyndaron\Gopher\Controller($menuEntryFactory, $urlService);
+$dic->add($menuEntryFactory);
+$request = new Symfony\Component\HttpFoundation\Request([]);
+$dic->add($request);
+
+$controller = $dic->createClassWithDependencyInjection(\Cyndaron\Gopher\Controller::class);
 
 $response = $controller->processQuery($query);
 echo $response->encode();
