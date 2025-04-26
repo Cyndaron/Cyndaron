@@ -75,9 +75,16 @@ final class DownloadProcessor implements \Cyndaron\Module\TextPostProcessor
 
     private function renderBlock(APICall $call, string $title): string
     {
-        $build = BuildLister::fetchAndProcessSingleBuild($call);
-        $artifact = $this->findBestMatchingArtifact($build);
-        return $this->renderArtifact($artifact, $title, $build->signedWithSignPath);
+        try
+        {
+            $build = BuildLister::fetchAndProcessSingleBuild($call);
+            $artifact = $this->findBestMatchingArtifact($build);
+            return $this->renderArtifact($artifact, $title, $build->signedWithSignPath);
+        }
+        catch (\Throwable)
+        {
+            return '';
+        }
     }
 
     private function renderReleaseVersion(string $version): string
