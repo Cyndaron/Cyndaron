@@ -12,9 +12,9 @@ use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\WithTextPostProcessors;
-use Cyndaron\OpenRCT2\Downloads\APICall;
 use Cyndaron\OpenRCT2\Downloads\DownloadController;
 use Cyndaron\OpenRCT2\Downloads\DownloadProcessor;
+use Cyndaron\OpenRCT2\ServerTest\Controller as ServerTestController;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
 
@@ -24,6 +24,7 @@ final class Module implements Routes, WithTextPostProcessors, Datatypes
     {
         return [
             'download' =>  DownloadController::class,
+            'servertest' =>  ServerTestController::class,
         ];
     }
 
