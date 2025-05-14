@@ -14,6 +14,7 @@ use Cyndaron\Module\Routes;
 use Cyndaron\Module\WithTextPostProcessors;
 use Cyndaron\OpenRCT2\Downloads\DownloadController;
 use Cyndaron\OpenRCT2\Downloads\DownloadProcessor;
+use Cyndaron\OpenRCT2\OldLauncherAPI\OldLauncherController;
 use Cyndaron\OpenRCT2\ServerTest\Controller as ServerTestController;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
@@ -25,6 +26,7 @@ final class Module implements Routes, WithTextPostProcessors, Datatypes
         return [
             'download' =>  DownloadController::class,
             'servertest' =>  ServerTestController::class,
+            'altapi' =>  OldLauncherController::class,
         ];
     }
 
