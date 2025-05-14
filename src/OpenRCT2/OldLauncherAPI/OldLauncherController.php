@@ -19,21 +19,31 @@ use function str_pad;
 use function strrpos;
 use function substr;
 use function pow;
+use function parse_url;
+use function assert;
 
 final class OldLauncherController
 {
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function endpoint(Request $request): JsonResponse
     {
-        $command = $request->query->getString('command');
+        $parsedUrl = parse_url($request->getRequestUri());
+        $queryParts = explode('&', $parsedUrl['query'] ?? '');
+        $queryParams = [];
+        foreach ($queryParts as $queryPart)
+        {
+            $parts = explode('=', $queryPart);
+            $queryParams[$parts[0]] = ($parts[1] ?? '');
+        }
+        $command = $queryParams['command'] ?? '';
         if ($command !== 'get-latest-download')
         {
             return new JsonResponse();
         }
-        $flavourId = $request->query->getInt('flavourId');
+        $flavourId = (int)($queryParams['flavourId'] ?? '');
         $flavour = Flavour::from($flavourId);
 
-        $gitBranch = $request->query->getString('gitBranch');
+        $gitBranch = $queryParams['gitBranch'] ?? '';
         $releaseType = GitBranch::from($gitBranch);
 
         switch ($flavour)
