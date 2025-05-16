@@ -47,6 +47,7 @@ final class Module implements Datatypes, UrlProvider, Routes
             'categories' => $categoryRepository->fetchAllAndSortByName(),
             'tokenEdit' => $tokenHandler->get('richlink', 'edit'),
             'tokenDelete' => $tokenHandler->get('richlink', 'delete'),
+            'richLinkRepository' => $richLinkRepository,
         ];
         return $templateRenderer->render('RichLink/PageManagerTab', $templateVars);
     }

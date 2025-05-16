@@ -17,6 +17,8 @@
     </thead>
     <tbody>
         @foreach ($richlinks as $richlink)
+            @php $linkedCategories = $richLinkRepository->getLinkedCategories($richlink); @endphp
+            @php $linkedCategoryIds = array_map(function(\Cyndaron\Category\Category $c) { return $c->id; }, $linkedCategories); @endphp
             <tr>
                 <td>{{ $richlink->id }}</td>
                 <td>{{ $richlink->name }}</td>
@@ -30,7 +32,7 @@
                                 data-blurb="{{ $richlink->blurb }}"
                                 data-preview-image="{{ $richlink->previewImage }}"
                                 data-open-in-new-tab="{{ (int)$richlink->openInNewTab }}"
-                                data-categories="{{ implode(',', $richlink->getLinkedCategoryIds()()) }}">
+                                data-categories="{{ implode(',', $linkedCategoryIds) }}">
                             @include('View/Widget/Icon', ['type' => 'edit'])</button>
                         <button title="Speciale link verwijderen" class="btn btn-danger pm-delete" data-id="{{ $richlink->id }}" type="button">@include('View/Widget/Icon', ['type' => 'delete'])</button>
                     </div>
