@@ -23,6 +23,7 @@ use Cyndaron\Geelhoed\Webshop\Page\ItemTotalsPage;
 use Cyndaron\Geelhoed\Webshop\Page\ManageOrderDetails;
 use Cyndaron\Geelhoed\Webshop\Page\OverviewPage;
 use Cyndaron\Geelhoed\Webshop\Page\ShopPage;
+use Cyndaron\Page\Page;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
@@ -30,6 +31,7 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Request\UrlInfo;
 use Cyndaron\Routing\RouteAttribute;
+use Cyndaron\Spreadsheet\Helper as SpreadsheetHelper;
 use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\MailFactory;
@@ -37,6 +39,8 @@ use Cyndaron\Util\RuntimeUserSafeError;
 use Cyndaron\Util\Setting;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Template\ViewHelpers;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,6 +48,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use function assert;
 use function json_encode;
+use function str_contains;
+use function str_replace;
+use function array_key_exists;
+use function count;
+use function implode;
+use function str_increment;
+use function ceil;
+use function array_slice;
+use function usort;
+use function strtolower;
 
 final class WebshopController
 {
@@ -628,5 +642,144 @@ Sportschool Geelhoed";
         }
 
         return $this->pageRenderer->renderResponse($manageOrderDetails->createPage($order));
+    }
+
+    #[RouteAttribute('uitleveren', RequestMethod::GET, UserLevel::ADMIN, right: self::RIGHT_MANAGE)]
+    public function orderPickProductsGet(ProductRepository $productRepository): Response
+    {
+        $page = new Page();
+        $page->title = 'Uitleveren - productkeuze';
+        $page->template = 'Geelhoed/Webshop/Page/OrderPickProductSelectionPage';
+        return $this->pageRenderer->renderResponse($page, ['products' => $productRepository->fetchAll()]);
+    }
+
+    #[RouteAttribute('uitleveren', RequestMethod::POST, UserLevel::ADMIN, right: self::RIGHT_MANAGE)]
+    public function orderPickProductsPost(RequestParameters $post, OrderItemRepository $orderItemRepository): Response
+    {
+        /** @var int[] $productIds */
+        $productIds = [];
+        foreach ($post->getKeys() as $key)
+        {
+            if (str_contains($key, 'product-') && $post->getBool($key))
+            {
+                $id = (int)str_replace('product-', '', $key);
+                $productIds[] = $id;
+            }
+        }
+
+        if (empty($productIds))
+        {
+            $this->pageRenderer->renderErrorResponse(new ErrorPage('Uitleveren', 'Geen producten geselecteerd!', Response::HTTP_BAD_REQUEST));
+        }
+
+        $orderItems = $orderItemRepository->fetchAll(['productId IN (' . implode(',', $productIds) . ') AND orderId IN (SELECT id FROM geelhoed_webshop_order WHERE status=\'in_progress\')']);
+        usort($orderItems, static function(OrderItem $oi1, OrderItem $oi2)
+        {
+            return strtolower($oi1->order->subscriber->lastName) <=> strtolower($oi2->order->subscriber->lastName);
+        });
+
+        /** @var array<int, list<OrderItem>> $byOrder */
+        $byOrder = [];
+        foreach ($orderItems as $orderItem)
+        {
+            $orderId = (int)$orderItem->order->id;
+            if (!array_key_exists($orderId, $byOrder))
+            {
+                $byOrder[$orderId] = [];
+            }
+
+            $byOrder[$orderId][] = $orderItem;
+        }
+
+        $numOrders = count($byOrder);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+        $pageMargins = $sheet->getPageMargins();
+        $pageMargins->setTop(0.0);
+        $pageMargins->setBottom(0.0);
+        $pageMargins->setLeft(0.0);
+        $pageMargins->setRight(0.0);
+        $endColumn = 'B';
+
+        $style = $sheet->getStyle("A:{$endColumn}");
+        $style->getFont()->setSize(12);
+        $alignment = $style->getAlignment();
+        $alignment->setVertical(Alignment::VERTICAL_TOP);
+        $alignment->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $alignment->setWrapText(true);
+        $alignment->setIndent(1);
+
+        $column = 'A';
+        while (true)
+        {
+            // Should be 105, but PHP Spreadsheet is off by a few mm.
+            $width = 99;
+            $sheet->getColumnDimension($column)->setWidth($width, 'mm');
+
+            if ($column === $endColumn)
+            {
+                break;
+            }
+
+            $column = str_increment($column);
+        }
+
+        $row = 1;
+        $column = 'A';
+        foreach ($byOrder as $items)
+        {
+            $numItems = count($items);
+            if ($numItems === 0)
+            {
+                continue;
+            }
+
+            $order = $items[0]->order;
+            $subscriber = $order->subscriber;
+            $hour = $order->hour;
+            $les = "Les: " . ViewHelpers::getDutchWeekday($hour->day) . ", {$hour->location->street} {$hour->location->city}";
+
+            $maxItemsPerSticker = 8;
+            $numStickers = ceil($numItems / $maxItemsPerSticker);
+            for ($currentSticker = 1; $currentSticker <= $numStickers; $currentSticker++)
+            {
+                $textLines = [''];
+                $textLines[] = "Bestelling {$order->id}";
+                $textLines[] = "{$subscriber->getFullName()}";
+                $textLines[] = "{$subscriber->email} {$subscriber->phone}";
+                $textLines[] = $les;
+                $textLines[] = '';
+                if ($numStickers > 1)
+                {
+                    $textLines[] = "Sticker {$currentSticker} van {$numStickers}";
+                    $textLines[] = "";
+                }
+
+                $itemSlice = array_slice($items, ($currentSticker - 1) * $maxItemsPerSticker, $maxItemsPerSticker);
+                foreach ($itemSlice as $orderItem)
+                {
+                    $textLines[] = "{$orderItem->quantity}× {$orderItem->getLineDescription()}";
+                }
+
+                $sheet->setCellValue("{$column}{$row}", implode("\n", $textLines));
+
+                $sheet->getRowDimension($row)->setRowHeight(74, 'mm');
+                if ($column === $endColumn)
+                {
+                    $column = 'A';
+                    $row++;
+                }
+                else
+                {
+                    $column = str_increment($column);
+                }
+            }
+        }
+
+        $now = new \DateTimeImmutable();
+        $httpHeaders = SpreadsheetHelper::getResponseHeadersForFilename('Uitlevering ' . $now->format('Y-m-d H:i:s'));
+        return new Response(SpreadsheetHelper::convertToString($spreadsheet), Response::HTTP_OK, $httpHeaders);
     }
 }
