@@ -16,6 +16,7 @@ use function str_contains;
 use function strtolower;
 use function explode;
 use function count;
+use function str_ends_with;
 
 final class Artifact
 {
@@ -67,7 +68,7 @@ final class Artifact
                 $inDefaultSelection = true;
             }
         }
-        elseif (str_contains($assetName, 'linux'))
+        elseif (str_contains($assetName, 'linux') || str_ends_with($assetName, '.deb') || str_ends_with($assetName, '.rpm'))
         {
             return self::processLinuxArtifact($asset, $version, $publishedAt, false);
         }
@@ -153,6 +154,14 @@ final class Artifact
         {
             $type = Type::PACKAGE;
             $inDefaultSelection = true;
+        }
+        elseif (str_ends_with($assetName, '.deb'))
+        {
+            $type = Type::DEB_PACKAGE;
+        }
+        elseif (str_ends_with($assetName, '.rpm'))
+        {
+            $type = Type::RPM_PACKAGE;
         }
         else
         {

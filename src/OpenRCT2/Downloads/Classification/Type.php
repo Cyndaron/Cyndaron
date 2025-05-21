@@ -9,6 +9,8 @@ enum Type
     case PORTABLE;
     case INSTALLER;
     case SYMBOLS;
+    case DEB_PACKAGE;
+    case RPM_PACKAGE;
 
     public function getFriendlyName(): string
     {
@@ -18,6 +20,8 @@ enum Type
             self::PORTABLE => 'Portable',
             self::INSTALLER => 'Installer',
             self::SYMBOLS => 'Symbols',
+            self::DEB_PACKAGE => 'DEB package',
+            self::RPM_PACKAGE => 'RPM package',
         };
     }
 }
