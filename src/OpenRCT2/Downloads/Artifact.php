@@ -59,6 +59,12 @@ final class Artifact
             $type = Type::PORTABLE;
             $inDefaultSelection = true;
         }
+        elseif ($assetName === 'openlauncher.zip')
+        {
+            $operatingSystem = OperatingSystem::MACOS;
+            $architecture = Architecture::UNIVERSAL;
+            $inDefaultSelection = true;
+        }
         elseif (str_contains($assetName, 'android'))
         {
             $operatingSystem = OperatingSystem::ANDROID;
