@@ -1,4 +1,7 @@
 @component('View/Widget/Toolbar')
+    @slot('right')
+        @include('View/Widget/Button', ['kind' => 'new', 'link' => '/editor/tryout', 'title' => 'Nieuw toernooi', 'text' => 'Nieuw toernooi'])
+    @endslot
 @endcomponent
 
 <table class="table table-striped table-bordered pm-table">
@@ -33,16 +36,21 @@
                     @endif
                 </td>
                 <td>
-                    @if ($tryout->photoalbumLink === '')
-                        <button
-                            title="Fotoalbums aanmaken"
-                            class="create-photoalbums btn btn-outline-cyndaron"
-                            data-id="{{ $tryout->id }}"
-                            data-csrf-token-create-photoalbums="{{ $csrfTokenCreatePhotoalbums }}"
-                        >
-                            @include('View/Widget/Icon', ['type' => 'picture'])
-                        </button>
-                    @endif
+
+                    <div class="btn-group">
+                        <a class="btn btn-outline-cyndaron btn-sm" href="/editor/tryout/{{ $tryout->id }}" title="Bewerk dit toernooi">@include('View/Widget/Icon', ['type' => 'edit'])</a>
+{{--                        <button class="btn btn-danger btn-sm pm-delete" data-type="tryout" data-id="{{ $tryout->id }}" data-csrf-token="{{ $tokenDelete }}" title="Verwijder dit toernooi">@include('View/Widget/Icon', ['type' => 'delete'])</button>--}}
+                        @if ($tryout->photoalbumLink === '')
+                            <button
+                                title="Fotoalbums aanmaken"
+                                class="create-photoalbums btn btn-sm btn-outline-cyndaron"
+                                data-id="{{ $tryout->id }}"
+                                data-csrf-token-create-photoalbums="{{ $csrfTokenCreatePhotoalbums }}"
+                            >
+                                @include('View/Widget/Icon', ['type' => 'picture'])
+                            </button>
+                        @endif
+                    </div>
                 </td>
             </tr>
         @endforeach

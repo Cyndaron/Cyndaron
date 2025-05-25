@@ -14,6 +14,8 @@ use Cyndaron\Geelhoed\Location\LocationController;
 use Cyndaron\Geelhoed\Member\MemberController;
 use Cyndaron\Geelhoed\Member\MemberRepository;
 use Cyndaron\Geelhoed\Sport\SportController;
+use Cyndaron\Geelhoed\Tryout\EditorPage;
+use Cyndaron\Geelhoed\Tryout\EditorSave;
 use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Geelhoed\Tryout\TryoutController;
 use Cyndaron\Geelhoed\Volunteer\VolunteerController;
@@ -60,6 +62,8 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
             'tryout' => new Datatype(
                 singular: 'Tryout-toernooi',
                 plural: 'Tryout-toernooien',
+                editorPage: EditorPage::class,
+                editorSave: EditorSave::class,
                 pageManagerTab: PageManagerTabs::tryoutTab(...),
                 pageManagerJS: '/src/Geelhoed/Tryout/js/PageManagerTab.js',
             ),

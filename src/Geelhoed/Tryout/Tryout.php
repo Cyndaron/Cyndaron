@@ -25,9 +25,9 @@ final class Tryout extends Model implements CalendarAppointment
     #[DatabaseField]
     public DateTime $end;
     #[DatabaseField]
-    public string $data;
+    public string $data = '{}';
     #[DatabaseField]
-    public string $photoalbumLink;
+    public string $photoalbumLink = '';
 
     /**
      * @throws \Safe\Exceptions\JsonException
