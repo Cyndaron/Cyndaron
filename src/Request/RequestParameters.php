@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Request;
 
+use DateTime;
 use Safe\Exceptions\PcreException;
 use function Safe\mb_convert_encoding;
 use function Safe\preg_replace;
@@ -207,6 +208,18 @@ final class RequestParameters
         /** @var string $result */
         $result = preg_replace('/[^0-9:\- ]/', '', $preFilter);
         return $result;
+    }
+
+    public function getDateObject(string $name, DateTime $default = new DateTime()): DateTime
+    {
+        $date = $this->getDate($name);
+        if ($date === '')
+        {
+            return $default;
+        }
+
+        $object = DateTime::createFromFormat('Y-m-d H:i:s', $date . ':00');
+        return $object === false ? $default : $object;
     }
 
     public function getPostcode(string $name, string $default = ''): string
