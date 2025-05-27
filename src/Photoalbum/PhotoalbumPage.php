@@ -6,6 +6,7 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\Page\Page;
 use Cyndaron\User\User;
 use Cyndaron\User\UserRepository;
+use Cyndaron\User\UserSession;
 use Cyndaron\View\Renderer\TextRenderer;
 
 final class PhotoalbumPage
@@ -13,7 +14,7 @@ final class PhotoalbumPage
     public function __construct(
         private readonly PhotoalbumRepository $photoalbumRepository,
         private readonly TextRenderer $textRenderer,
-        private readonly User|null $currentUser,
+        private readonly UserSession $userSession,
         private readonly UserRepository $userRepository,
         private readonly PhotoRepository $photoRepository,
     ) {
@@ -28,8 +29,8 @@ final class PhotoalbumPage
 
         $page->model = $album;
         $page->category = $this->photoalbumRepository->getFirstLinkedCategory($album);
-        $canEdit = $this->currentUser !== null && $this->userRepository->userHasRight($this->currentUser, Photoalbum::RIGHT_EDIT);
-        $canUpload = $this->currentUser !== null && $this->userRepository->userHasRight($this->currentUser, Photoalbum::RIGHT_UPLOAD);
+        $canEdit = $this->userSession->isLoggedIn() && $this->userRepository->userHasRight($this->userSession->getProfile(), Photoalbum::RIGHT_EDIT);
+        $canUpload = $this->userSession->isLoggedIn() && $this->userRepository->userHasRight($this->userSession->getProfile(), Photoalbum::RIGHT_UPLOAD);
 
         if ($viewMode === Photoalbum::VIEWMODE_REGULAR)
         {
