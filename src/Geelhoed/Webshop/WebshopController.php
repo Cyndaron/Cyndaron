@@ -99,8 +99,14 @@ final class WebshopController
             return new RedirectResponse("/webwinkel/status/{$hash}");
         }
 
-        $page = new ShopPage($subscriber, $order, $this->orderRepository, $this->orderItemRepository, $this->productRepository);
-        return $this->pageRenderer->renderResponse($page);
+        $page = new ErrorPage(
+            'Bestellen niet meer mogelijk',
+            'De deadline voor bestellen is gesloten. We beginnen binnenkort met het verwerken van de bestellingen.',
+            Response::HTTP_GONE
+        );
+        return $this->pageRenderer->renderErrorResponse($page);
+        //$page = new ShopPage($subscriber, $order, $this->orderRepository, $this->orderItemRepository, $this->productRepository);
+        //return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('overzicht', RequestMethod::GET, UserLevel::ANONYMOUS)]
