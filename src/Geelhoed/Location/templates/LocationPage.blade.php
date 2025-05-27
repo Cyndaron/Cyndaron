@@ -3,6 +3,7 @@
 @section ('contents')
     @php /** @var \Cyndaron\Location\Location $location */ @endphp
     @php /** @var \Cyndaron\Geelhoed\Location\LocationRepository $locationRepository */ @endphp
+    @php /** @var \Cyndaron\Geelhoed\Hour\Hour[] $hours */ @endphp
     @if (!empty($locNotification))
         <div class="alert alert-info">
             {{ $locNotification }}
@@ -33,7 +34,7 @@
                         <td>{{ $hour->from|hm }}</td>
                         <td>{{ $hour->until|hm }}</td>
                         <td>{{ $hour->getSportName() }}</td>
-                        <td>{{ $hour->getDepartment()->name }}</td>
+                        <td>{{ $hour->department->name }}</td>
                     </tr>
                 @endforeach
             </tbody>
