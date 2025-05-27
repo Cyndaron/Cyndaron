@@ -29,8 +29,9 @@ final class PhotoalbumPage
 
         $page->model = $album;
         $page->category = $this->photoalbumRepository->getFirstLinkedCategory($album);
-        $canEdit = $this->userSession->isLoggedIn() && $this->userRepository->userHasRight($this->userSession->getProfile(), Photoalbum::RIGHT_EDIT);
-        $canUpload = $this->userSession->isLoggedIn() && $this->userRepository->userHasRight($this->userSession->getProfile(), Photoalbum::RIGHT_UPLOAD);
+        $profile = $this->userSession->getProfile();
+        $canEdit = $profile !== null && $this->userRepository->userHasRight($profile, Photoalbum::RIGHT_EDIT);
+        $canUpload = $profile !== null && $this->userRepository->userHasRight($profile, Photoalbum::RIGHT_UPLOAD);
 
         if ($viewMode === Photoalbum::VIEWMODE_REGULAR)
         {
