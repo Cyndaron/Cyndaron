@@ -215,7 +215,7 @@
                     Nieuwe graduatie: <select id="new-graduation-id" name="new-graduation-id"
                                               class="form-control form-control-inline form-select">
                         <option value=""></option>
-                        @foreach ($gradiations as $graduation)
+                        @foreach ($graduations as $graduation)
                             <option value="{{ $graduation->id }}">{{ $graduation->sport->name }}
                                 : {{ $graduation->name }}</option>
                         @endforeach
