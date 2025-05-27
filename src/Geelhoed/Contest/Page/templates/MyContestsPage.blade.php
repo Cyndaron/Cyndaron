@@ -9,6 +9,7 @@
 
     @php /** @var \Cyndaron\Geelhoed\Contest\Model\Contest[] $contests */ @endphp
     @php /** @var \Cyndaron\Geelhoed\Contest\Model\ContestRepository $contestRepository */ @endphp
+    @php /** @var \Cyndaron\Geelhoed\Contest\Model\ContestDateRepository $contestDateRepository */ @endphp
     @php /** @var \Cyndaron\Geelhoed\Contest\Model\ContestMemberRepository $contestMemberRepository */ @endphp
     @foreach ($contests as $contest)
         @php $canChange = $contestRepository->registrationCanBeChanged($contest, $profile); @endphp
@@ -26,7 +27,7 @@
                         <th>Data:</th>
                         <td>
                             <ul>
-                                @foreach ($contestRepository->getDates($contest) as $contestDate)
+                                @foreach ($contestDateRepository->fetchAllByContest($contest) as $contestDate)
                                     @php $classes = $contestDateRepository->getClasses($contestDate) @endphp
                                     <li>
                                         {{ $contestDate->start|dmyHm }}@if (count($classes) > 0)

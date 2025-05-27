@@ -20,11 +20,12 @@
     <tbody>
     @php /** @var \Cyndaron\Geelhoed\Contest\Model\Contest[] $contests */ @endphp
     @php /** @var \Cyndaron\Geelhoed\Contest\Model\ContestRepository $contestRepository */ @endphp
+    @php /** @var \Cyndaron\Geelhoed\Contest\Model\ContestDateRepository $contestDateRepository */ @endphp
         @foreach ($contests as $contest)
             <tr>
                 <td>{{ $contest->id }}</td>
                 <td>{{ $contest->name }}</td>
-                <td>{{ $contestRepository->getFirstDate($contest)|dmy }}</td>
+                <td>{{ $contestDateRepository->getFirstByContest($contest)|dmy }}</td>
                 <td>
                     <div class="btn-group">
                         <a title="Naar de inschrijfpagina" href="/contest/view/{{ $contest->id }}"

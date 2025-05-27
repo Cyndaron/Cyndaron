@@ -83,6 +83,7 @@ final class ContestController
         private readonly PageRenderer $pageRenderer,
         private readonly TemplateRenderer $templateRenderer,
         private readonly ContestRepository $contestRepository,
+        private readonly ContestDateRepository $contestDateRepository,
         private readonly ContestMemberRepository $contestMemberRepository,
         private readonly MemberRepository $memberRepository,
     ) {
@@ -104,9 +105,9 @@ final class ContestController
     }
 
     #[RouteAttribute('overview', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function overview(ContestDateRepository $contestDateRepository): Response
+    public function overview(): Response
     {
-        $page = new OverviewPage($this->contestRepository, $contestDateRepository);
+        $page = new OverviewPage($this->contestRepository, $this->contestDateRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -279,12 +280,17 @@ final class ContestController
     }
 
     #[RouteAttribute('manageOverview', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
-    public function manageOverview(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, ContestRepository $contestRepository, SportRepository $sportRepository): Response
+    public function manageOverview(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, SportRepository $sportRepository): Response
     {
         $page = new Page();
         $page->title = 'Overzicht wedstrijden';
         $page->addScript('/src/Geelhoed/Contest/js/ContestManager.js');
-        return $this->pageRenderer->renderResponse($page, ['contents' => PageManagerTabs::contestsTab($templateRenderer, $tokenHandler, $contestRepository, $sportRepository)]);
+        return $this->pageRenderer->renderResponse(
+            $page,
+            [
+                'contents' => PageManagerTabs::contestsTab($templateRenderer, $tokenHandler, $this->contestRepository, $this->contestDateRepository, $sportRepository)
+            ]
+        );
     }
 
     #[RouteAttribute('subscriptionList', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
@@ -300,7 +306,7 @@ final class ContestController
         {
             return new Response('Kon de wedstrijd niet vinden!', Response::HTTP_NOT_FOUND);
         }
-        $page = new SubscriptionListPage($contest);
+        $page = new SubscriptionListPage($contest, $this->contestDateRepository, $this->contestMemberRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -328,7 +334,7 @@ final class ContestController
             $sheet->setCellValue("{$column}1", $value);
         }
 
-        $firstDate = $this->contestRepository->getFirstDate($contest);
+        $firstDate = $this->contestDateRepository->getFirstByContest($contest);
         $row = 2;
         foreach ($this->contestMemberRepository->fetchAllByContest($contest) as $contestMember)
         {

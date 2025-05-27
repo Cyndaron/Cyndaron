@@ -5,6 +5,7 @@ namespace Cyndaron\Geelhoed;
 
 use Cyndaron\Geelhoed\Clubactie\Subscriber;
 use Cyndaron\Geelhoed\Clubactie\SubscriberRepository;
+use Cyndaron\Geelhoed\Contest\Model\ContestDateRepository;
 use Cyndaron\Geelhoed\Contest\Model\ContestRepository;
 use Cyndaron\Geelhoed\Graduation\GraduationRepository;
 use Cyndaron\Geelhoed\Location\LocationRepository;
@@ -31,12 +32,13 @@ final class PageManagerTabs
         ]);
     }
 
-    public static function contestsTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, ContestRepository $contestRepository, SportRepository $sportRepository): string
+    public static function contestsTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, ContestRepository $contestRepository, ContestDateRepository $contestDateRepository, SportRepository $sportRepository): string
     {
         $contests = $contestRepository->fetchAll([], [], 'ORDER BY registrationDeadline DESC');
         return $templateRenderer->render('Geelhoed/Contest/Page/PageManagerTab', [
             'contests' => $contests,
             'contestRepository' => $contestRepository,
+            'contestDateRepository' => $contestDateRepository,
             'tokenEdit' => $tokenHandler->get('contest', 'edit'),
             'tokenDelete' => $tokenHandler->get('contest', 'delete'),
             'sports' => $sportRepository->fetchAllForSelect(),

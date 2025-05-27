@@ -2,6 +2,8 @@
 
 @section ('contents')
     @php /** @var \Cyndaron\Geelhoed\Contest\Model\Contest $contest */@endphp
+    @php /** @var \Cyndaron\Geelhoed\Contest\Model\ContestDateRepository $contestDateRepository */@endphp
+    @php /** @var \Cyndaron\Geelhoed\Contest\Model\ContestMemberRepository $contestMemberRepository */@endphp
 
     @component('View/Widget/Toolbar')
         @slot('right')
@@ -30,7 +32,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach ($contest->getContestMembers() as $contestMember)
+        @foreach ($contestMemberRepository->fetchAllByContest($contest) as $contestMember)
             @php $member = $contestMember->member @endphp
             @php $profile = $member->profile @endphp
             <tr>
@@ -43,7 +45,7 @@
                 </td>
                 <td>
                     <abbr title="@if ($profile->dateOfBirth){{ $profile->dateOfBirth->format('d-m-Y') }}@endif">
-                        {{ $profile->getAge($contest->getFirstDate()) }}
+                        {{ $profile->getAge($contestDateRepository->getFirstByContest($contest)) }}
                     </abbr>
                 </td>
                 <td>{{ $contestMember->getGraduation()->name }}</td>

@@ -2,6 +2,7 @@
 
 @section ('contents')
     @php /** @var \Cyndaron\Geelhoed\Contest\Model\Contest[] $contests */ @endphp
+    @php /** @var \Cyndaron\Geelhoed\Contest\Model\ContestDateRepository $contestDateRepository */ @endphp
     @foreach ($contests as $contest)
         <div class="card location-card">
             <div class="card-header">
@@ -17,7 +18,7 @@
                         <th>Data:</th>
                         <td>
                             <ul>
-                                @foreach ($contest->getDates() as $contestDate)
+                                @foreach ($contestDateRepository->fetchAllByContest($contest) as $contestDate)
                                     <li>
                                         @php $classes = $contestDateRepository->getClasses($contestDate) @endphp
                                         {{ $contestDate->start|dmyHm }}@if (count($classes) > 0)

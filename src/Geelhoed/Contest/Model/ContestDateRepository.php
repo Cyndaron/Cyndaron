@@ -8,10 +8,12 @@ use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\RepositoryInterface;
 use Cyndaron\DBAL\RepositoryTrait;
+use DateTimeInterface;
 use function array_map;
 use function count;
 use function sprintf;
 use function implode;
+use function reset;
 
 /**
  * @implements RepositoryInterface<ContestDate>
@@ -58,5 +60,24 @@ class ContestDateRepository implements RepositoryInterface
         }
 
         return sprintf('%s (%s)', $contestDate->contest->name, implode(', ', $classNames));
+    }
+
+    public function getFirstByContest(Contest $contest): DateTimeInterface|null
+    {
+        $dates = $this->fetchAllByContest($contest);
+        if (count($dates) === 0)
+        {
+            return null;
+        }
+
+        return reset($dates)->start;
+    }
+
+    /**
+     * @return ContestDate[]
+     */
+    public function fetchAllByContest(Contest $contest): array
+    {
+        return $this->fetchAll(['contestId = ?'], [$contest->id], 'ORDER BY start');
     }
 }

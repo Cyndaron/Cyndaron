@@ -4,6 +4,7 @@
     @php
         /** @var \Cyndaron\Geelhoed\Contest\Model\Contest $contest */
         /** @var \Cyndaron\Geelhoed\Contest\Model\ContestRepository $contestRepository */
+        /** @var \Cyndaron\Geelhoed\Contest\Model\ContestDateRepository $contestDateRepository */
         /** @var \Cyndaron\Geelhoed\Contest\Model\ContestMemberRepository $contestMemberRepository */
         $sport = $contest->sport;
     @endphp
@@ -47,7 +48,7 @@
             <th>Data:</th>
             <td>
                 <ul>
-                    @foreach ($contestRepository->getDates($contest) as $contestDate)
+                    @foreach ($contestDateRepository->fetchAllByContest($contest) as $contestDate)
                         <li>
                             @php $classes = $contestDateRepository->getClasses($contestDate) @endphp
                             {{ $contestDate->start|dmyHm }}@if (count($classes) > 0)

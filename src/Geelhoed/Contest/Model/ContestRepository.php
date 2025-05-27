@@ -30,7 +30,6 @@ class ContestRepository implements RepositoryInterface
 
     public function __construct(
         private readonly GenericRepository $genericRepository,
-        private readonly ContestDateRepository $contestDateRepository,
         private readonly ContestMemberRepository $contestMemberRepository,
         private readonly UserRepository $userRepository,
     ) {
@@ -78,25 +77,6 @@ class ContestRepository implements RepositoryInterface
         }
 
         return [$due, $contestMembers];
-    }
-
-    /**
-     * @return ContestDate[]
-     */
-    public function getDates(Contest $contest): array
-    {
-        return $this->contestDateRepository->fetchAll(['contestId = ?'], [$contest->id], 'ORDER BY start');
-    }
-
-    public function getFirstDate(Contest $contest): DateTimeInterface|null
-    {
-        $dates = $this->getDates($contest);
-        if (count($dates) === 0)
-        {
-            return null;
-        }
-
-        return reset($dates)->start;
     }
 
     public function hasMember(Contest $contest, Member $member, bool $includeUnpaid = false): bool
