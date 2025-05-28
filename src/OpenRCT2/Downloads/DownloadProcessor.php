@@ -55,14 +55,14 @@ final class DownloadProcessor implements \Cyndaron\Module\TextPostProcessor
         }, $text) ?? $text;
     }
 
-    private function renderArtifact(Artifact $artifact, string $title, bool $signedWithSignPath): string
+    private function renderArtifact(Artifact $artifact, string $title): string
     {
         $informationParts = [
             $artifact->version,
             $artifact->operatingSystem->getFriendlyName(),
             Util::formatSize($artifact->size),
         ];
-        if ($signedWithSignPath)
+        if ($artifact->signedWithSignPath)
         {
             $informationParts[] = '<a href="/code-signing-policy">Signed</a>';
         }
@@ -79,7 +79,7 @@ final class DownloadProcessor implements \Cyndaron\Module\TextPostProcessor
         {
             $build = BuildLister::fetchAndProcessSingleBuild($call);
             $artifact = $this->findBestMatchingArtifact($build);
-            return $this->renderArtifact($artifact, $title, $build->signedWithSignPath);
+            return $this->renderArtifact($artifact, $title);
         }
         catch (\Throwable)
         {
@@ -105,7 +105,7 @@ final class DownloadProcessor implements \Cyndaron\Module\TextPostProcessor
         }
 
         $artifact = $this->findBestMatchingArtifact($foundBuild);
-        return $this->renderArtifact($artifact, "Download release", $foundBuild->signedWithSignPath);
+        return $this->renderArtifact($artifact, "Download release");
     }
 
     private static function matchByOSArchAndType(Build $build, OperatingSystem $operatingSystem, Architecture $architecture, Type $type): Artifact|null
