@@ -15,6 +15,8 @@ use function preg_replace_callback;
 use function str_replace;
 use function sprintf;
 use function str_ends_with;
+use function assert;
+use function is_string;
 
 final class ChangelogPageFactory
 {
