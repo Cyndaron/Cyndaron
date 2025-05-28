@@ -36,9 +36,15 @@ enum APICall : string
         };
     }
 
-    public function belongsToReleaseBuild(): bool
+    public function getBuildType(): BuildType
     {
-        return $this === self::RELEASE_BUILDS || $this === self::LATEST_RELEASE_BUILD;
+        return match ($this)
+        {
+            self::LATEST_RELEASE_BUILD, self::RELEASE_BUILDS => BuildType::RELEASE,
+            self::LATEST_DEVELOP_BUILD, self::DEVELOP_BUILDS => BuildType::DEVELOP,
+            self::LATEST_LAUNCHER_BUILD, self::LAUNCHER_BUILDS => BuildType::LAUNCHER,
+            default => throw new \Exception('Not a build type!'),
+        };
     }
 
     public function presentInCache(): bool

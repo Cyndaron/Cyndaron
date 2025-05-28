@@ -14,7 +14,9 @@ final class Build
      * @param Artifact[] $artifacts
      */
     public function __construct(
+        public readonly BuildType $buildType,
         public readonly string $version,
+        public readonly string $body,
         public readonly \DateTimeImmutable $publishedAt,
         public readonly array $artifacts,
         public readonly bool $signedWithSignPath,

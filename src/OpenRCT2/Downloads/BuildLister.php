@@ -16,13 +16,13 @@ use function str_ends_with;
 final class BuildLister
 {
     /**
-     * @param array{ published_at: string, tag_name: string, assets: list<array{ name: string, size: int, browser_download_url: string }> } $json
+     * @param array{ url: string, published_at: string, tag_name: string, body: string, assets: list<array{ name: string, size: int, browser_download_url: string }> } $json
      */
-    private static function buildJSONToObject(array $json, bool $belongsToReleaseBuild): Build
+    private static function buildJSONToObject(array $json, BuildType $buildType): Build
     {
         $tagName = $json['tag_name'];
         $publishedAt = DateTimeImmutable::createFromFormat(DateTimeInterface::ATOM, $json['published_at']);
-        $signedBySignPath = $belongsToReleaseBuild && $publishedAt > DateTimeImmutable::createFromFormat('Y-m-d', '2024-12-01');
+        $signedBySignPath = $buildType === BuildType::RELEASE && $publishedAt > DateTimeImmutable::createFromFormat('Y-m-d', '2024-12-01');
 
         $artifacts = [];
         foreach ($json['assets'] as $asset)
@@ -41,7 +41,7 @@ final class BuildLister
             return $artifact1->operatingSystem->getPriority() <=> $artifact2->operatingSystem->getPriority();
         });
 
-        return new Build($tagName, $publishedAt, $artifacts, $signedBySignPath);
+        return new Build($buildType, $tagName, $json['body'], $publishedAt, $artifacts, $signedBySignPath);
     }
 
     /**
@@ -52,7 +52,7 @@ final class BuildLister
         $fetcher = new APIFetcher();
         $raw = $fetcher->fetch($call);
 
-        /** @var list<array{ published_at: string, tag_name: string, assets: list<array{ name: string, size: int, browser_download_url: string }> }> $buildList */
+        /** @var list<array{ url: string, published_at: string, tag_name: string, body: string, assets: list<array{ name: string, size: int, browser_download_url: string }> }> $buildList */
         $buildList = \Safe\json_decode($raw, true);
         usort($buildList, function(array $build1, array $build2)
         {
@@ -62,7 +62,7 @@ final class BuildLister
         $builds = [];
         foreach ($buildList as $build)
         {
-            $builds[] = self::buildJSONToObject($build, $call->belongsToReleaseBuild());
+            $builds[] = self::buildJSONToObject($build, $call->getBuildType());
         }
 
         return $builds;
@@ -72,8 +72,8 @@ final class BuildLister
     {
         $fetcher = new APIFetcher();
         $raw = $fetcher->fetch($call);
-        /** @var array{ published_at: string, tag_name: string, assets: list<array{ name: string, size: int, browser_download_url: string }> } $build */
+        /** @var array{ url: string, published_at: string, tag_name: string, body: string, assets: list<array{ name: string, size: int, browser_download_url: string }> } $build */
         $build = \Safe\json_decode($raw, true);
-        return self::buildJSONToObject($build, $call->belongsToReleaseBuild());
+        return self::buildJSONToObject($build, $call->getBuildType());
     }
 }

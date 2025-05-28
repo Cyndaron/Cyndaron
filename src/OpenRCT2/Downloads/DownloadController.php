@@ -18,6 +18,8 @@ use Psr\Log\LoggerInterface;
 use ReflectionEnum;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use function preg_replace;
+use function assert;
 
 final class DownloadController
 {
@@ -61,10 +63,23 @@ final class DownloadController
     }
 
     #[RouteAttribute('changelog', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function showChangelog(): Response
+    public function showChangelog(QueryBits $queryBits): Response
     {
         $factory = new ChangelogPageFactory(new APIFetcher());
-        return $this->pageRenderer->renderResponse($factory->getPage());
+        if ($queryBits->hasIndex(2))
+        {
+            $buildType = BuildType::from($queryBits->getString(2));
+            $version = preg_replace('/[^0-9a-z\.\-]/', '', $queryBits->getString(3));
+            assert($version !== null);
+            $response = $factory->getPageForSpecificChangelog($buildType, $version);
+
+        }
+        else
+        {
+            $response = $factory->getPageForGeneralChangelog();
+        }
+
+        return $this->pageRenderer->renderResponse($response);
     }
 
     #[RouteAttribute('clearCache', RequestMethod::POST, UserLevel::ADMIN)]
