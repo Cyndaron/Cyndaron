@@ -53,6 +53,7 @@ use Exception;
 use Mollie\Api\Resources\Payment;
 use PhpOffice\PhpSpreadsheet\Shared\Date as PHPSpreadsheetDate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Psr\Log\LoggerInterface;
 use Safe\DateTime;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -538,7 +539,7 @@ final class ContestController
     }
 
     #[RouteAttribute('payFullDue', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function payFullDue(UrlInfo $urlInfo, User $currentUser, UserSession $userSession): Response
+    public function payFullDue(UrlInfo $urlInfo, User $currentUser, UserSession $userSession, LoggerInterface $logger): Response
     {
         [$due, $contestMembers] = $this->contestRepository->getTotalDue($currentUser, $this->memberRepository);
         if ($due === 0.00)
@@ -567,8 +568,7 @@ final class ContestController
         {
             $userSession->addNotification('De betaling is mislukt!');
             $response = new RedirectResponse("/contest/myContests");
-            /** @noinspection ForgottenDebugOutputInspection */
-            error_log($e->getMessage());
+            $logger->error($e->getMessage());
         }
 
         return $response;
