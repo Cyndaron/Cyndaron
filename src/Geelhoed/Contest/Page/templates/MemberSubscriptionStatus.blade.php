@@ -1,12 +1,14 @@
 @php
     /** @var \Cyndaron\Geelhoed\Contest\Model\Contest $contest  */
     /** @var \Cyndaron\Geelhoed\Contest\Model\ContestMember|null $contestMember */
+    /** @var \Cyndaron\Geelhoed\Member\Member $member */
+    /** @var \Cyndaron\Geelhoed\Member\MemberRepository $memberRepository */
     if ($contestMember !== null):
         $weight = "{$contestMember->weight} kg";
         $graduation = $contestMember->graduation;
     else:
         $weight = '';
-        $graduation = $member->getHighestGraduation($contest->sport);
+        $graduation = $memberRepository->getHighestGraduation($member, $contest->sport);
     endif;
     /** @var \Cyndaron\Geelhoed\Member\Member $member */
     $name = $member->profile->getFullName();

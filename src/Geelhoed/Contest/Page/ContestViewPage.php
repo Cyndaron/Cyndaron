@@ -111,6 +111,7 @@ final class ContestViewPage
             'mayViewOtherContestants' => $mayViewOtherContestants,
             'profile' => $this->currentUser,
             'contestClasses' => $this->contestClassRepository->fetchAll(),
+            'memberRepository' => $this->memberRepository,
         ]);
 
         return $page;

@@ -16,6 +16,10 @@ final class ContestantsListPage extends Page
         $this->title = 'Overzicht wedstrijdjudoka\'s';
         $contestants = $memberRepository->fetchAllAndSortByName(['isContestant = 1']);
         $sports = $sportRepository->fetchAll();
-        $this->addTemplateVars(['contestants' => $contestants, 'sports' => $sports]);
+        $this->addTemplateVars([
+            'contestants' => $contestants,
+            'memberRepository' => $memberRepository,
+            'sports' => $sports,
+        ]);
     }
 }

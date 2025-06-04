@@ -59,6 +59,7 @@ final class MyContestsPage
             'contestMembers' => $contestMembers,
             'due' => $due,
             'cancelSubscriptionCsrfToken' => $this->tokenHandler->get('contest', 'cancelSubscription'),
+            'memberRepository' => $this->memberRepository,
         ]);
         return $page;
     }

@@ -21,6 +21,7 @@
         </thead>
         <tbody>
             @php /** @var \Cyndaron\Geelhoed\Member\Member[] $contestants */ @endphp
+            @php /** @var \Cyndaron\Geelhoed\Member\MemberRepository $memberRepository */ @endphp
             @foreach ($contestants as $contestant)
                 @php $profile = $contestant->profile @endphp
                 <tr>
@@ -33,7 +34,7 @@
                     <td>@if ($profile->dateOfBirth !== null){{ $profile->dateOfBirth|dmy }}@endif</td>
                     <td>
                         @foreach ($sports as $sport)
-                            @php $highest = $contestant->getHighestGraduation($sport) @endphp
+                            @php $highest = $memberRepository->getHighestGraduation($contestant, $sport) @endphp
                             @if ($highest !== null) {{ $sport->name }}: {{ $highest->name }}@endif
                         @endforeach
                     </td>

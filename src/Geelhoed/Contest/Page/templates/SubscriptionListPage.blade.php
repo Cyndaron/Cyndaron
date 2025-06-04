@@ -48,7 +48,7 @@
                         {{ $profile->getAge($contestDateRepository->getFirstByContest($contest)) }}
                     </abbr>
                 </td>
-                <td>{{ $contestMember->getGraduation()->name }}</td>
+                <td>{{ $contestMember->graduation->name }}</td>
                 <td>{{ $contestMember->weight }}</td>
                 <td>{{ $member->jbnNumber }}</td>
                 <td>{{ \Cyndaron\View\Template\ViewHelpers::boolToText($contestMember->isPaid) }}</td>

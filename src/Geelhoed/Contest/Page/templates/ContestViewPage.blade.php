@@ -146,7 +146,9 @@
                     'contestMember' => $subscription,
                     'member' => $controlledMember,
                     'canChange' => $canChange,
-                    'csrfToken' => $cancelSubscriptionCsrfToken])
+                    'csrfToken' => $cancelSubscriptionCsrfToken,
+                    'memberRepository' => $memberRepository,
+                ])
             @endforeach
         </div>
 
