@@ -885,7 +885,7 @@ final class ContestController
         $user->setPassword($password);
         $userRepository->save($user);
 
-        $mailBody = $this->templateRenderer->render('Geelhoed/Contest/ParentAccountIntroductionMail', [
+        $mailBody = $this->templateRenderer->render('Geelhoed/Contest/Page/ParentAccountIntroductionMail', [
             'fullName' => $user->getFullName(),
             'email' => $user->email,
             'password' => $password,
