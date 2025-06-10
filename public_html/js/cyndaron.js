@@ -41,7 +41,8 @@ function del(text, yesFunc)
     $('#confirm-dangerous .modal-body').html(text);
     $('#confirm-dangerous-yes').off();
     $('#confirm-dangerous-yes').on('click', yesFunc);
-    $('#confirm-dangerous').modal();
+    const modal = new bootstrap.Modal(document.getElementById('confirm-dangerous'), {});
+    modal.show();
 }
 
 function formatEuro(amount)
