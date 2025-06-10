@@ -35,7 +35,7 @@
                 <input id="weight" name="weight" type="number" class="form-control" required>
             @endslot
         @endcomponent
-        @include('View/Widget/Form/Textarea', ['id' => 'comments', 'label' => 'Opmerkingen'])
+        @include('View/Widget/Form/Textarea', ['id' => 'comments', 'label' => 'Opmerkingen', 'maxLength' => 200])
         @component ('View/Widget/Form/FormWrapper', ['label' => 'Inschrijfgeld'])
             @slot('right')
                 {{ $contest->price|euro }}
