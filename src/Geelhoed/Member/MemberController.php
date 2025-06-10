@@ -27,12 +27,14 @@ use function sprintf;
 use function array_merge;
 use function implode;
 use function assert;
+use function array_map;
 
 final class MemberController
 {
     public function __construct(
         private readonly PageRenderer $pageRenderer,
         private readonly MemberRepository $memberRepository,
+        private readonly SportRepository $sportRepository,
     ) {
     }
 
@@ -76,9 +78,9 @@ final class MemberController
     }
 
     #[RouteAttribute('getGrid', RequestMethod::GET, UserLevel::ADMIN, isApiMethod: true)]
-    public function getGrid(MemberRepository $memberRepository, SportRepository $sportRepository): JsonResponse
+    public function getGrid(MemberRepository $memberRepository): JsonResponse
     {
-        $grid = new PageManagerMemberGrid($memberRepository, $sportRepository);
+        $grid = new PageManagerMemberGrid($memberRepository, $this->sportRepository);
         return new JsonResponse($grid->get());
     }
 
@@ -97,12 +99,12 @@ final class MemberController
     }
 
     #[RouteAttribute('save', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function save(RequestParameters $post, MemberGraduationRepository $mgr, HourRepository $hourRepository, GraduationRepository $graduationRepository, SportRepository $sportRepository, UserRepository $userRepository): JsonResponse
+    public function save(RequestParameters $post, MemberGraduationRepository $mgr, HourRepository $hourRepository, GraduationRepository $graduationRepository, UserRepository $userRepository): JsonResponse
     {
         $memberId = $post->getInt('id');
+        $isExistingMember = ($memberId > 0);
 
-        // Edit existing
-        if ($memberId > 0)
+        if ($isExistingMember)
         {
             $member = $this->memberRepository->fetchById($memberId);
             if ($member === null)
@@ -155,13 +157,28 @@ final class MemberController
             }
         }
         $this->memberRepository->setHours($member, $hours);
-        $grid = new PageManagerMemberGrid($this->memberRepository, $sportRepository);
-        $grid->rebuild();
 
-        $allSports = $sportRepository->fetchAll();
-        $gridItem = PageManagerMemberGridItem::createFromMember($this->memberRepository, $member, $allSports);
+        // Needs to be done _after_ setting hours.
 
-        return new JsonResponse($gridItem);
+        $membersToUpdateGridFor = $this->memberRepository->rebuildMonthlyFeeCacheForMember($member);
+        $grid = new PageManagerMemberGrid($this->memberRepository, $this->sportRepository);
+        $allSports = $this->sportRepository->fetchAll();
+
+        $memberIds = array_map(static function(Member $member)
+        {
+            return (int)$member->id;
+        }, $membersToUpdateGridFor);
+        $grid->deleteByMemberIds(...$memberIds);
+
+        $updatedGridItems = [];
+        foreach ($membersToUpdateGridFor as $member)
+        {
+            $gridItem = PageManagerMemberGridItem::createFromMember($this->memberRepository, $member, $allSports);
+            $grid->addItem($gridItem);
+            $updatedGridItems[] = $gridItem;
+        }
+
+        return new JsonResponse($updatedGridItems);
     }
 
     /**
@@ -228,19 +245,25 @@ final class MemberController
     }
 
     #[RouteAttribute('delete', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function delete(QueryBits $queryBits, GenericRepository $repository): JsonResponse
+    public function delete(QueryBits $queryBits, GenericRepository $repository, PageManagerMemberGrid $grid): JsonResponse
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
             return new JsonResponse(['error' => 'Incorrect ID!'], Response::HTTP_BAD_REQUEST);
         }
+
+        // This is safe to do even if the member does not exist, and may get rid of ghost entries in some cases.
+        $grid->deleteByMemberIds($id);
+
         $member = $this->memberRepository->fetchById($id);
-        $repository->deleteById(Member::class, $id);
-        if ($member !== null && $member->profile->id > 0)
+        if ($member === null)
         {
-            $repository->deleteById(User::class, $member->profile->id);
+            return new JsonResponse(['error' => 'Member does not exist!'], Response::HTTP_BAD_REQUEST);
         }
+
+        $this->memberRepository->delete($member);
+        $repository->deleteById(User::class, (int)$member->profile->id);
 
         return new JsonResponse();
     }

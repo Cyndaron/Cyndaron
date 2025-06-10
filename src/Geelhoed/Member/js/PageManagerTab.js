@@ -158,25 +158,29 @@ $('#gum-popup-save').on('click keyup', function ()
     $.post({
         url: '/api/member/save',
         data: $('#gum-user-popup').serialize(),
-    }).done(function (record)
+    }).done(function (records)
     {
-        new bootstrap.Modal('#gum-edit-user-dialog').hide();
+        bootstrap.Modal.getInstance('#gum-edit-user-dialog').hide();
 
         const gumTableBody = document.getElementById('gum-table-body');
         const startOfNextQuarter = gumTableBody.attributes['data-next-quarter-start'].value;
         const csrfTokenMemberDelete = gumTableBody.attributes['data-csrf-token-member-delete'].value;
-        const existingElement = document.getElementById('pm-row-member-' + record.id);
-        if (existingElement)
-        {
-            existingElement.remove();
-        }
-        else
-        {
-            const totalCountElement = document.getElementById('gum-num-members');
-            totalCountElement.innerText = (parseInt(totalCountElement.innerText) + 1).toString();
-        }
 
-        addMemberToGrid(gumTableBody, startOfNextQuarter, csrfTokenMemberDelete, record);
+        for (const record of records)
+        {
+            const existingElement = document.getElementById('pm-row-member-' + record.id);
+            if (existingElement)
+            {
+                existingElement.remove();
+            }
+            else
+            {
+                const totalCountElement = document.getElementById('gum-num-members');
+                totalCountElement.innerText = (parseInt(totalCountElement.innerText) + 1).toString();
+            }
+
+            addMemberToGrid(gumTableBody, startOfNextQuarter, csrfTokenMemberDelete, record);
+        }
         sortGrid();
 
         setNormalPointer();

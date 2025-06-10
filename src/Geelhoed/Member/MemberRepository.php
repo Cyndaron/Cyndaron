@@ -146,7 +146,6 @@ final class MemberRepository implements RepositoryInterface
     public function save(Model $model): void
     {
         $this->genericRepository->save($model);
-        $this->rebuildMonthlyFeeCache();
     }
 
     private function rebuildHoursCache(): void
@@ -255,6 +254,37 @@ final class MemberRepository implements RepositoryInterface
         return null;
     }
 
+    /**
+     * @return Member[]
+     */
+    public function rebuildMonthlyFeeCacheForMember(Member $member): array
+    {
+        if (empty(self::$monthlyFeeCacheHandle))
+        {
+            self::$monthlyFeeCacheHandle = new FileCache('member_monthly_fee_cache', []);
+            self::$monthlyFeeCacheHandle->load(self::$monthlyFeeCache);
+        }
+
+        if (!empty($member->iban))
+        {
+            $membersOnSameAccount = $this->fetchAll(['iban = ?'], [$member->iban]);
+        }
+        else
+        {
+            $membersOnSameAccount = [$member];
+        }
+
+        foreach ($membersOnSameAccount as $member)
+        {
+            assert(is_int($member->id));
+            $fee = $this->getMonthlyFeeUncached($member);
+            self::$monthlyFeeCache[$member->id] = $fee;
+        }
+
+        self::$monthlyFeeCacheHandle->save(self::$monthlyFeeCache);
+        return $membersOnSameAccount;
+    }
+
     private function rebuildMonthlyFeeCache(): void
     {
         if (empty(self::$monthlyFeeCacheHandle))
@@ -326,6 +356,11 @@ final class MemberRepository implements RepositoryInterface
 
     private function getMonthlyFeeUncached(Member $member): float
     {
+        if (empty($member->iban))
+        {
+            return $this->getMonthlyFeeRaw($member);
+        }
+
         $membersOnSameAccount = $this->fetchAll(['iban = ?'], [$member->iban]);
 
         if (count($membersOnSameAccount) === 1)
