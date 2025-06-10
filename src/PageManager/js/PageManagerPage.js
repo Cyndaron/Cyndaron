@@ -5,6 +5,7 @@ const pmDeleteFunction = function () {
     let id = $(this).data('id');
     let type = $(this).data('type');
     let csrfToken = $(this).data('csrf-token');
+    const modal = new bootstrap.Modal('#confirm-dangerous');
 
     $('#confirm-dangerous .modal-body').html('Weet u zeker dat u dit wilt verwijderen?');
     $('#confirm-dangerous-yes').off();
@@ -12,10 +13,10 @@ const pmDeleteFunction = function () {
     {
         $.post('/api/' + type + '/delete/' + id, { csrfToken: csrfToken }).done(function() {
             $('#pm-row-' + type + '-' + id).remove();
-            new bootstrap.Modal('#confirm-dangerous').hide();
+            modal.hide();
         });
     });
-    new bootstrap.Modal('#confirm-dangerous').show();
+    modal.show();
 }
 
 $(document).ready(function () {
