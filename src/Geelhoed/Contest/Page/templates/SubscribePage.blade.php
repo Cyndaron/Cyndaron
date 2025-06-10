@@ -16,7 +16,7 @@
         @component ('View/Widget/Form/FormWrapper', ['id' => 'graduationId', 'label' => "Band {$sportName}"])
             @slot('right')
                 <select id="graduationId" name="graduationId" class="form-control custom-select" required>
-                    @foreach ($gradiations as $graduation)
+                    @foreach ($graduations as $graduation)
                         @php $highestGrad = $memberRepository->getHighestGraduation($member, $sport) @endphp
                         <option value="{{ $graduation->id }}" @if ($highestGrad !== null && $highestGrad->id === $graduation->id) selected @endif>{{ $graduation->name }}</option>
                     @endforeach
