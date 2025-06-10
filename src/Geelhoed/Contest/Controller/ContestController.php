@@ -805,7 +805,7 @@ final class ContestController
     }
 
     #[RouteAttribute('subscribe', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function subscribePage(QueryBits $queryBits, User $currentUser, SubscribePage $subscribePage): Response
+    public function subscribePage(QueryBits $queryBits, User $currentUser, GraduationRepository $graduationRepository): Response
     {
         $contestId = $queryBits->getInt(2);
         $memberId = $queryBits->getInt(3);
@@ -843,6 +843,7 @@ final class ContestController
             return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Voor deze wedstrijd kan niet meer worden ingeschreven!'), status:  Response::HTTP_BAD_REQUEST);
         }
 
+        $subscribePage = new SubscribePage($contest, $member, $graduationRepository, $this->memberRepository);
         return $this->pageRenderer->renderResponse($subscribePage);
     }
 
