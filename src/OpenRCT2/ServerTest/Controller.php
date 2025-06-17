@@ -11,6 +11,7 @@ use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use RuntimeException;
 use Safe\Exceptions\JsonException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use function Safe\preg_replace;
 use function fsockopen;
@@ -34,11 +35,12 @@ final class Controller
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function get(): Response
+    public function get(Request $request): Response
     {
         $page = new Page();
         $page->title = 'Server test';
         $page->template = 'OpenRCT2/ServerTest/FormPage';
+        $page->addTemplateVar('currentIP', $request->getClientIp());
 
         return $this->renderer->renderResponse($page);
     }
