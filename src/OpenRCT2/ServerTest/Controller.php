@@ -40,7 +40,8 @@ final class Controller
         $page = new Page();
         $page->title = 'Server test';
         $page->template = 'OpenRCT2/ServerTest/FormPage';
-        $page->addTemplateVar('currentIP', $request->getClientIp());
+        $ip = $request->headers->get('X-Forwarded-For') ?: $request->getClientIp();
+        $page->addTemplateVar('currentIP', $ip);
 
         return $this->renderer->renderResponse($page);
     }
