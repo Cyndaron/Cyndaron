@@ -12,6 +12,12 @@ use function file_put_contents;
 use function serialize;
 use function unserialize;
 use const CACHE_DIR;
+use function fread;
+use function filesize;
+use function fopen;
+use function flock;
+use function fwrite;
+use function fclose;
 
 final class FileCache
 {
@@ -40,21 +46,44 @@ final class FileCache
     {
         try
         {
-            if (file_exists($this->filename))
+            if (!file_exists($this->filename))
             {
-                $serialized = file_get_contents($this->filename);
-                if ($serialized)
-                {
-                    $unserialized = unserialize($serialized, ['allowed_classes' => $this->allowedClasses]);
-                    if ($unserialized)
-                    {
-                        $target = $unserialized;
-                        return true;
-                    }
-                }
+                return false;
             }
 
-            return false;
+            $filesize = filesize($this->filename);
+            if ($filesize === false || $filesize === 0)
+            {
+                return false;
+            }
+
+            $fp = fopen($this->filename, 'rb');
+            if ($fp === false)
+            {
+                return false;
+            }
+
+            if (!flock($fp, LOCK_SH))
+            {
+                fclose($fp);
+                return false;
+            }
+
+            $serialized = fread($fp, $filesize);
+            fclose($fp);
+            if (!$serialized)
+            {
+                return false;
+            }
+
+            $unserialized = unserialize($serialized, ['allowed_classes' => $this->allowedClasses]);
+            if (!$unserialized)
+            {
+                return false;
+            }
+
+            $target = $unserialized;
+            return true;
         }
         catch (Throwable)
         {
@@ -65,6 +94,17 @@ final class FileCache
     public function save(mixed &$target): void
     {
         Util::ensureDirectoryExists(self::CACHE_DIR);
-        file_put_contents($this->filename, serialize($target));
+        $serialized = serialize($target);
+        $fp = fopen($this->filename, 'wb');
+        if ($fp === false)
+        {
+            return;
+        }
+
+        if (flock($fp, LOCK_EX))
+        {
+            fwrite($fp, $serialized);
+        }
+        fclose($fp);
     }
 }
