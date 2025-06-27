@@ -704,13 +704,19 @@ final class ContestController
     }
 
     #[RouteAttribute('editSubscription', RequestMethod::POST, UserLevel::LOGGED_IN)]
-    public function editSubscription(QueryBits $queryBits, RequestParameters $post, UserSession $userSession, UserRepository $repository, MailFactory $mailFactory): Response
+    public function editSubscription(QueryBits $queryBits, RequestParameters $post, UserSession $userSession, UserRepository $repository, MailFactory $mailFactory, GraduationRepository $graduationRepository): Response
     {
         $id = $queryBits->getInt(2);
         $contestMember = $this->contestMemberRepository->fetchById($id);
         if ($contestMember === null)
         {
             return new Response('Record bestaat niet!', Response::HTTP_NOT_FOUND);
+        }
+
+        $graduation = $graduationRepository->fetchById($post->getInt('graduationId'));
+        if ($graduation === null)
+        {
+            return new Response('Band/graduatie bestaat niet!', Response::HTTP_NOT_FOUND);
         }
 
         $currentUser = $userSession->getProfile();
@@ -737,7 +743,7 @@ final class ContestController
         }
 
         $contestMember->weight = $post->getInt('weight');
-        $contestMember->graduation = new Graduation($post->getInt('graduationId'));
+        $contestMember->graduation = $graduation;
         $this->contestMemberRepository->save($contestMember);
 
         $userSession->addNotification('Wijzigingen opgeslagen.');
