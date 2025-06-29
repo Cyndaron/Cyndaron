@@ -18,25 +18,29 @@ use function fopen;
 use function flock;
 use function fwrite;
 use function fclose;
+use function is_array;
 
 final class FileCache
 {
     public const CACHE_DIR = CACHE_DIR . 'cyndaron';
 
     public readonly string $filename;
-    /** @var class-string[] */
-    public readonly array $allowedClasses;
+    /** @var class-string[]|bool */
+    public readonly array|bool $allowedClasses;
 
     /**
      * @param string $cacheKey
      * @param class-string[] $allowedClasses
      */
-    public function __construct(string $cacheKey, array $allowedClasses)
+    public function __construct(string $cacheKey, array|bool $allowedClasses)
     {
-        $allowedClasses[] = DateTime::class;
-        $allowedClasses[] = DateTimeImmutable::class;
-        $allowedClasses[] = \Safe\DateTime::class;
-        $allowedClasses[] = \Safe\DateTimeImmutable::class;
+        if (is_array($allowedClasses))
+        {
+            $allowedClasses[] = DateTime::class;
+            $allowedClasses[] = DateTimeImmutable::class;
+            $allowedClasses[] = \Safe\DateTime::class;
+            $allowedClasses[] = \Safe\DateTimeImmutable::class;
+        }
 
         $this->filename = self::CACHE_DIR . "/$cacheKey.phps";
         $this->allowedClasses = $allowedClasses;
