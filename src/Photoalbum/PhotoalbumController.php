@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
@@ -14,17 +14,16 @@ use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Util\Util;
-use Illuminate\Support\Js;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use function base64_decode;
-use function pathinfo;
 use function assert;
+use function base64_decode;
 use function is_array;
+use function pathinfo;
 
 final class PhotoalbumController
 {

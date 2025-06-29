@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\DBAL;
+namespace Cyndaron\DBAL\Repository;
 
 use BadMethodCallException;
+use Cyndaron\DBAL\Model;
 use function get_class;
 
 trait RepositoryTrait

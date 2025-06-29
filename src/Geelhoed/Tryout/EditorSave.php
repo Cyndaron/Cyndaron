@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Tryout;
 
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Location\Location;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;

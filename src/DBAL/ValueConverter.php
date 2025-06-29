@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\DBAL;
 
 use BackedEnum;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Util\Util;
 use DateTimeInterface;
 use ReflectionIntersectionType;
@@ -15,10 +16,9 @@ use function is_a;
 use function is_bool;
 use function is_float;
 use function is_int;
-use function is_scalar;
+use function is_object;
 use function is_string;
 use function str_contains;
-use function is_object;
 
 final class ValueConverter
 {

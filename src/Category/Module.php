@@ -2,8 +2,7 @@
 namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\DBAL\Model;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;

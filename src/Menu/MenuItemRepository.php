@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace Cyndaron\Menu;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\DBAL\RepositoryInterface;
-use Cyndaron\DBAL\RepositoryTrait;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryInterface;
+use Cyndaron\DBAL\Repository\RepositoryTrait;
 use Cyndaron\Util\Link;
-use function str_replace;
 use function sprintf;
+use function str_replace;
 
 /**
  * @implements RepositoryInterface<MenuItem>

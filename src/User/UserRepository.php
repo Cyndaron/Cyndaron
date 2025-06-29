@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace Cyndaron\User;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
-use Cyndaron\DBAL\RepositoryInterface;
-use Cyndaron\DBAL\RepositoryTrait;
-use function strtolower;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryInterface;
+use Cyndaron\DBAL\Repository\RepositoryTrait;
 use function count;
 use function random_int;
+use function strtolower;
 
 /**
  * @implements RepositoryInterface<User>

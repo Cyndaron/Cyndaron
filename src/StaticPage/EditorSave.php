@@ -2,13 +2,12 @@
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\Category\CategoryRepository;
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
 use Symfony\Component\HttpFoundation\Request;
-use function trim;
 use function assert;
+use function trim;
 
 final class EditorSave extends \Cyndaron\Editor\EditorSave
 {

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Location;
 
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
 

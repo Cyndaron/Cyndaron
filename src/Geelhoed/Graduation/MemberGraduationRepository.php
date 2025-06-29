@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Graduation;
 
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
-use Cyndaron\DBAL\RepositoryInterface;
-use Cyndaron\DBAL\RepositoryTrait;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryInterface;
+use Cyndaron\DBAL\Repository\RepositoryTrait;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Util\FileCache;
 use function array_key_exists;

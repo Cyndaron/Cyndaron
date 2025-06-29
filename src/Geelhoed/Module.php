@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed;
 
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Geelhoed\Clubactie\ClubactieController;
 use Cyndaron\Geelhoed\Contest\Controller\ContestController;
 use Cyndaron\Geelhoed\Contest\Model\Contest;

@@ -1,10 +1,8 @@
 <?php
 namespace Cyndaron\RichLink;
 
-use Cyndaron\Category\Category;
 use Cyndaron\Category\CategoryRepository;
-use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\DBAL\Model;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
@@ -12,7 +10,6 @@ use Cyndaron\Module\UrlProvider;
 use Cyndaron\Url\Url;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
-use function assert;
 
 final class Module implements Datatypes, UrlProvider, Routes
 {

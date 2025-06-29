@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Member;
 
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Geelhoed\Graduation\GraduationRepository;
 use Cyndaron\Geelhoed\Graduation\MemberGraduation;
 use Cyndaron\Geelhoed\Graduation\MemberGraduationRepository;
@@ -22,12 +22,11 @@ use PDOException;
 use Safe\DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-
-use function sprintf;
-use function array_merge;
-use function implode;
-use function assert;
 use function array_map;
+use function array_merge;
+use function assert;
+use function implode;
+use function sprintf;
 
 final class MemberController
 {

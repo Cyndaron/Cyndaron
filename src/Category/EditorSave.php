@@ -1,7 +1,7 @@
 <?php
 namespace Cyndaron\Category;
 
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;

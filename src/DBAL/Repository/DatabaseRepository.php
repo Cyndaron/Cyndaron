@@ -1,18 +1,23 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\DBAL;
+namespace Cyndaron\DBAL\Repository;
 
+use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\DatabaseError;
+use Cyndaron\DBAL\ImproperSubclassing;
+use Cyndaron\DBAL\Model;
+use Cyndaron\DBAL\ValueConverter;
 use DateTime;
 use PDOException;
-use function count;
-use function reset;
 use function array_fill;
-use function implode;
 use function array_key_exists;
+use function count;
 use function get_class;
+use function implode;
+use function reset;
 
-final class GenericRepository
+final class DatabaseRepository implements GenericRepository
 {
     public function __construct(private readonly Connection $connection)
     {

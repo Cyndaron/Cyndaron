@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\Concert;
 
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Location\Location;
 use Cyndaron\Ticketsale\DeliveryCost\FlatFee;
 use Cyndaron\Ticketsale\DeliveryCost\Staffel;
 use Cyndaron\View\Template\ViewHelpers;
-use function assert;
 use function asort;
+use function assert;
 
 final class EditorPage extends \Cyndaron\Editor\EditorPage
 {

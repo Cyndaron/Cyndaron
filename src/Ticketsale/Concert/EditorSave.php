@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\Concert;
 
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Location\Location;
 use Cyndaron\Request\RequestParameters;

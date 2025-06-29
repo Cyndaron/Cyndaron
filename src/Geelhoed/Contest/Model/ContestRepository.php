@@ -3,21 +3,19 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Contest\Model;
 
-use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\DBAL\RepositoryInterface;
-use Cyndaron\DBAL\RepositoryTrait;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryInterface;
+use Cyndaron\DBAL\Repository\RepositoryTrait;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberRepository;
 use Cyndaron\User\User;
 use Cyndaron\User\UserRepository;
-use DateTimeInterface;
 use Safe\Exceptions\DatetimeException;
-use function Safe\strtotime;
 use function array_map;
-use function implode;
-use function time;
 use function count;
-use function reset;
+use function implode;
+use function Safe\strtotime;
+use function time;
 
 /**
  * @implements RepositoryInterface<Contest>

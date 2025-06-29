@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Calendar;
 
 use Cyndaron\Base\ModuleRegistry;
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Page\Page;
 use function array_filter;
 use function usort;

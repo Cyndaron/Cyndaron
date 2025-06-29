@@ -5,10 +5,10 @@ namespace Cyndaron\Gopher;
 
 use Cyndaron\Category\Category;
 use Cyndaron\Category\CategoryRepository;
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Gopher\Response\FilestreamResponse;
-use Cyndaron\Gopher\Response\PlainTextResponse;
 use Cyndaron\Gopher\Response\ListingResponse;
+use Cyndaron\Gopher\Response\PlainTextResponse;
 use Cyndaron\Gopher\Response\ResponseInterface;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Photoalbum\Photoalbum;
@@ -18,20 +18,20 @@ use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\ViewHelpers;
-use function substr;
-use function str_repeat;
-use function ltrim;
-use function assert;
-use function strtr;
-use function html_entity_decode;
-use function strip_tags;
-use function explode;
-use function str_starts_with;
 use function array_key_exists;
-use function str_ends_with;
-use function trim;
-use function strlen;
 use function array_map;
+use function assert;
+use function explode;
+use function html_entity_decode;
+use function ltrim;
+use function str_ends_with;
+use function str_repeat;
+use function str_starts_with;
+use function strip_tags;
+use function strlen;
+use function strtr;
+use function substr;
+use function trim;
 
 final class Controller
 {

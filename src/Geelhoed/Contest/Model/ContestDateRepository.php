@@ -4,16 +4,16 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Contest\Model;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
-use Cyndaron\DBAL\RepositoryInterface;
-use Cyndaron\DBAL\RepositoryTrait;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryInterface;
+use Cyndaron\DBAL\Repository\RepositoryTrait;
 use DateTimeInterface;
 use function array_map;
 use function count;
-use function sprintf;
 use function implode;
 use function reset;
+use function sprintf;
 
 /**
  * @implements RepositoryInterface<ContestDate>

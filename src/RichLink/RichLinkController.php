@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\RichLink;
 
 use Cyndaron\Category\CategoryRepository;
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;

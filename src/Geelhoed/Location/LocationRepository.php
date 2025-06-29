@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Location;
 
-use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\DBAL\RepositoryInterface;
-use Cyndaron\DBAL\RepositoryTrait;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryInterface;
+use Cyndaron\DBAL\Repository\RepositoryTrait;
 use Cyndaron\Geelhoed\Hour\Hour;
 use Cyndaron\Geelhoed\Hour\HourRepository;
 use Cyndaron\Location\Location;
-use function array_unique;
 use function array_filter;
+use function array_unique;
 use function usort;
 
 /**

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Calendar;
 
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 
 interface CalendarAppointmentsProvider
 {

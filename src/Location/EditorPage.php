@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Location;
 
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 
 class EditorPage extends \Cyndaron\Editor\EditorPage
 {

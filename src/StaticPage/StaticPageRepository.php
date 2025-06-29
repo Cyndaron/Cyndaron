@@ -5,9 +5,9 @@ namespace Cyndaron\StaticPage;
 
 use Cyndaron\Category\ModelWithCategoryRepository;
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
-use Cyndaron\DBAL\RepositoryTrait;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryTrait;
 
 /**
  * @extends ModelWithCategoryRepository<StaticPageModel>

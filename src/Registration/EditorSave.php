@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;

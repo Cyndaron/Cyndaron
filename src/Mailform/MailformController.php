@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Mailform;
 
 use Cyndaron\DBAL\DatabaseError;
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Menu\MenuItemRepository;

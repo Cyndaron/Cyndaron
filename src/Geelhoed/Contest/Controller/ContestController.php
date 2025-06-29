@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Contest\Controller;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\GenericRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Geelhoed\Contest\Model\Contest;
 use Cyndaron\Geelhoed\Contest\Model\ContestClassRepository;
 use Cyndaron\Geelhoed\Contest\Model\ContestDate;

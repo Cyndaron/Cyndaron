@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Cyndaron\DBAL;
+namespace Cyndaron\DBAL\Repository;
 
+use Cyndaron\DBAL\Model as T;
 use PDOException;
 
 /**
- * @template T of Model
+ * @template T of T
  */
 interface RepositoryInterface
 {
@@ -14,13 +15,13 @@ interface RepositoryInterface
      * @param int|null $id
      * @return T
      */
-    public function fetchOrCreate(int|null $id): Model;
+    public function fetchOrCreate(int|null $id): T;
 
     /**
      * @param int $id
      * @return T|null
      */
-    public function fetchById(int $id): Model|null;
+    public function fetchById(int $id): T|null;
 
     /**
      * @param string[] $where
@@ -28,7 +29,7 @@ interface RepositoryInterface
      * @param string $afterWhere
      * @return T|null
      */
-    public function fetch(array $where = [], array $args = [], string $afterWhere = ''): Model|null;
+    public function fetch(array $where = [], array $args = [], string $afterWhere = ''): T|null;
 
     /**
      * @param string[] $where
@@ -43,14 +44,14 @@ interface RepositoryInterface
      * @throws PDOException
      * @return void
      */
-    public function save(Model $model): void;
+    public function save(T $model): void;
 
     /**
      * @param T $model
      * @throws PDOException
      * @return void
      */
-    public function delete(Model $model): void;
+    public function delete(T $model): void;
 
     /**
      * @return T[]
@@ -61,5 +62,5 @@ interface RepositoryInterface
      * @param array<string, float|int|string|null> $array
      * @return T
      */
-    public function createFromArray(array $array): Model;
+    public function createFromArray(array $array): T;
 }

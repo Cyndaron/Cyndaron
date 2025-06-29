@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Minecraft\Member;
 
-use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\DBAL\RepositoryInterface;
-use Cyndaron\DBAL\RepositoryTrait;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryInterface;
+use Cyndaron\DBAL\Repository\RepositoryTrait;
 use function count;
 use function reset;
 

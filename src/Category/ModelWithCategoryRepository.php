@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\DBAL\RepositoryInterface;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryInterface;
 use function assert;
-use function usort;
 use function reset;
+use function usort;
 
 /**
  * @template T of ModelWithCategory

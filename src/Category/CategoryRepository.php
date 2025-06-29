@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\DBAL\RepositoryInterface;
-use Cyndaron\DBAL\RepositoryTrait;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryTrait;
 use Cyndaron\Photoalbum\PhotoalbumRepository;
 use Cyndaron\RichLink\RichLinkRepository;
 use Cyndaron\StaticPage\StaticPageRepository;

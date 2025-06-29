@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Contest\Model;
 
-use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\DBAL\RepositoryInterface;
-use Cyndaron\DBAL\RepositoryTrait;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryInterface;
+use Cyndaron\DBAL\Repository\RepositoryTrait;
 
 /**
  * @implements RepositoryInterface<ContestClass>

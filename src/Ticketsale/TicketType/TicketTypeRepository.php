@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\TicketType;
 
-use Cyndaron\DBAL\GenericRepository;
-use Cyndaron\DBAL\RepositoryInterface;
-use Cyndaron\DBAL\RepositoryTrait;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryInterface;
+use Cyndaron\DBAL\Repository\RepositoryTrait;
 use Cyndaron\Ticketsale\Concert\Concert;
 use function usort;
 

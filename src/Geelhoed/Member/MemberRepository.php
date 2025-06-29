@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\GenericRepository;
 use Cyndaron\DBAL\Model;
-use Cyndaron\DBAL\RepositoryInterface;
-use Cyndaron\DBAL\RepositoryTrait;
+use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\DBAL\Repository\RepositoryInterface;
+use Cyndaron\DBAL\Repository\RepositoryTrait;
 use Cyndaron\Geelhoed\Graduation\Graduation;
 use Cyndaron\Geelhoed\Graduation\MemberGraduationRepository;
 use Cyndaron\Geelhoed\Hour\Hour;
@@ -16,15 +16,15 @@ use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\User\User;
 use Cyndaron\Util\FileCache;
 use function array_filter;
-use function usort;
 use function array_key_exists;
-use function trim;
 use function array_reverse;
 use function assert;
+use function count;
 use function is_int;
 use function reset;
-use function count;
+use function trim;
 use function uasort;
+use function usort;
 
 /**
  * @implements RepositoryInterface<Member>
