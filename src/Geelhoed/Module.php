@@ -134,7 +134,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
             }
 
             $isContestantParent = $repository->userHasRight($profile, Contest::RIGHT_PARENT);
-            $member = $memberRepository->fetch(['userId = ?'], [$profile->id]);
+            $member = $memberRepository->fetchByProfile($profile);
             $isContestant = $member !== null && $member->isContestant;
             return ($isContestant || $isContestantParent);
         };

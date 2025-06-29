@@ -45,6 +45,8 @@ final class MemberRepository implements RepositoryInterface
     private static array $monthlyFeeCache = [];
     private static FileCache $monthlyFeeCacheHandle;
 
+    /** @var array<int, Member>|null */
+    private array|null $byProfileCache = null;
 
     public function __construct(
         private readonly GenericRepository $genericRepository,
@@ -56,14 +58,19 @@ final class MemberRepository implements RepositoryInterface
 
     public function fetchByProfile(User $profile): Member|null
     {
-        $results = $this->fetchAll(['userId = ?'], [$profile->id]);
-        if (count($results) <= 0)
+        if ($this->byProfileCache === null)
         {
-            return null;
+            $this->byProfileCache = [];
+            $members = $this->fetchAll();
+            foreach ($members as $member)
+            {
+                $userId = $member->profile->id;
+                assert($userId !== null);
+                $this->byProfileCache[$userId] = $member;
+            }
         }
 
-        $firstElem = reset($results);
-        return $firstElem;
+        return $this->byProfileCache[$profile->id];
     }
 
     /**

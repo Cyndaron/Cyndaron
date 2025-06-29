@@ -6,6 +6,7 @@ namespace Cyndaron\Geelhoed\Webshop\Model;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\DBAL\Repository\RepositoryInterface;
 use Cyndaron\DBAL\Repository\RepositoryTrait;
+use function array_filter;
 
 /**
  * @implements RepositoryInterface<OrderItem>
@@ -25,6 +26,9 @@ final class OrderItemRepository implements RepositoryInterface
      */
     public function fetchAllByOrder(Order $order): array
     {
-        return $this->fetchAll(['orderId = ?'], [$order->id]);
+        return array_filter($this->fetchAll(), static function(OrderItem $orderItem) use ($order)
+        {
+            return $orderItem->order->id = $order->id;
+        });
     }
 }

@@ -20,6 +20,7 @@ use Cyndaron\Util\Setting;
 use Cyndaron\Util\SettingsRepository;
 use Cyndaron\View\Template\TemplateRenderer;
 use function sprintf;
+use function usort;
 
 final class MenuRenderer
 {
@@ -42,7 +43,15 @@ final class MenuRenderer
         {
             return [];
         }
-        return $this->menuItemRepository->fetchAll([], [], 'ORDER BY priority, id');
+
+        $ret = $this->menuItemRepository->fetchAll();
+        usort($ret, static function(MenuItem $mi1, MenuItem $mi2): int
+        {
+            $byPriority = (int)$mi1->priority <=> (int)$mi2->priority;
+            return $byPriority != 0 ? $byPriority : ($mi1->id <=> $mi2->id);
+        });
+
+        return $ret;
     }
 
     /**
