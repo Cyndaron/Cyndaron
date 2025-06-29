@@ -5,6 +5,7 @@ namespace Cyndaron\Geelhoed\Member;
 
 use Cyndaron\Geelhoed\Sport\SportRepository;
 use Cyndaron\Util\FileCache;
+use Cyndaron\Util\FileCacheLoadResult;
 use function array_values;
 use function usort;
 use function strtolower;
@@ -22,7 +23,7 @@ final class PageManagerMemberGrid
         $this->memberRepository = $memberRepository;
         $this->sportRepository = $sportRepository;
         $this->cacheHandle = new FileCache('geelhoed-page-manager-member-grid', [PageManagerMemberGridItem::class]);
-        if (!$this->cacheHandle->load($this->cache))
+        if ($this->cacheHandle->load($this->cache) !== FileCacheLoadResult::OK)
         {
             $this->rebuild();
         }

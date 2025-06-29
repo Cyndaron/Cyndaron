@@ -42,52 +42,52 @@ final class FileCache
         $this->allowedClasses = $allowedClasses;
     }
 
-    public function load(mixed &$target): bool
+    public function load(mixed &$target): FileCacheLoadResult
     {
         try
         {
             if (!file_exists($this->filename))
             {
-                return false;
+                return FileCacheLoadResult::NO_CACHE_FILE_EXISTS;
             }
 
             $filesize = filesize($this->filename);
             if ($filesize === false || $filesize === 0)
             {
-                return false;
+                return FileCacheLoadResult::NO_CACHE_FILE_EXISTS;
             }
 
             $fp = fopen($this->filename, 'rb');
             if ($fp === false)
             {
-                return false;
+                return FileCacheLoadResult::CACHE_FILE_INACCESSIBLE;
             }
 
             if (!flock($fp, LOCK_SH))
             {
                 fclose($fp);
-                return false;
+                return FileCacheLoadResult::CACHE_FILE_INACCESSIBLE;
             }
 
             $serialized = fread($fp, $filesize);
             fclose($fp);
             if (!$serialized)
             {
-                return false;
+                return FileCacheLoadResult::CACHE_FILE_BROKEN;
             }
 
             $unserialized = unserialize($serialized, ['allowed_classes' => $this->allowedClasses]);
             if (!$unserialized)
             {
-                return false;
+                return FileCacheLoadResult::CACHE_FILE_BROKEN;
             }
 
             $target = $unserialized;
-            return true;
+            return FileCacheLoadResult::OK;
         }
         catch (Throwable)
         {
-            return false;
+            return FileCacheLoadResult::CACHE_FILE_INACCESSIBLE;
         }
     }
 
