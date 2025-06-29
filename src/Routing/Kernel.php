@@ -7,7 +7,8 @@ use Cyndaron\Base\CyndaronConfig;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
 use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\DBConnection;
+use Cyndaron\DBAL\Repository\FileCachedRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Logger\FileLogger;
 use Cyndaron\Logger\MultiLogger;
 use Cyndaron\Mail\MailLogger;
@@ -95,6 +96,11 @@ final class Kernel
 
         $dic->add($connection);
         $dic->add($connection, PDO::class);
+
+        // Since all repositories ask for a GenericRepository (an interface),
+        // we have to help the DIC a bit here.
+        $repo = $dic->createClassWithDependencyInjection(FileCachedRepository::class);
+        $dic->add($repo, GenericRepository::class);
 
         $dic->add($registry);
         $dic->add($request);
