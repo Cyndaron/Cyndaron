@@ -70,7 +70,7 @@ final class MemberRepository implements RepositoryInterface
             }
         }
 
-        return $this->byProfileCache[$profile->id];
+        return $this->byProfileCache[$profile->id] ?? null;
     }
 
     /**
