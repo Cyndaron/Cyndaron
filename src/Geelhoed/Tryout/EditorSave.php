@@ -20,9 +20,11 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
     public function save(int|null $id): int
     {
+        $location = $this->repository->fetchById(Location::class, $this->post->getInt('locationId'));
+        assert($location !== null);
         $tryout = $this->repository->fetchOrCreate(Tryout::class, $id);
         $tryout->name = $this->post->getHTML('titel');
-        $tryout->location = new Location($this->post->getInt('locationId'));
+        $tryout->location = $location;
         $tryout->start = $this->post->getDateObject('start');
         $tryout->end = $this->post->getDateObject('end');
 

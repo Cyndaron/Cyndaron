@@ -131,7 +131,7 @@ final class ContestController
     }
 
     #[RouteAttribute('subscribe', RequestMethod::POST, UserLevel::LOGGED_IN)]
-    public function subscribe(QueryBits $queryBits, RequestParameters $post, UserSession $userSession): Response
+    public function subscribe(QueryBits $queryBits, RequestParameters $post, UserSession $userSession, GraduationRepository $graduationRepository): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -162,6 +162,13 @@ final class ContestController
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_FORBIDDEN);
         }
 
+        $graduation = $graduationRepository->fetchById($post->getInt('graduationId'));
+        if ($graduation === null)
+        {
+            $page = new SimplePage('Fout', 'Ongeldige band/kyu');
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_FORBIDDEN);
+        }
+
         assert($contest->id !== null);
         assert($member->id !== null);
 
@@ -174,7 +181,7 @@ final class ContestController
         $contestMember = new ContestMember();
         $contestMember->contest = $contest;
         $contestMember->member = $member;
-        $contestMember->graduation = new Graduation($post->getInt('graduationId'));
+        $contestMember->graduation = $graduation;
         $contestMember->weight = $post->getInt('weight');
         $contestMember->comments = $post->getSimpleString('comments');
         $contestMember->isPaid = false;
@@ -412,8 +419,14 @@ final class ContestController
     }
 
     #[RouteAttribute('edit', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true, right: Contest::RIGHT_MANAGE)]
-    public function createOrEdit(RequestParameters $post): JsonResponse
+    public function createOrEdit(RequestParameters $post, SportRepository $sportRepository): JsonResponse
     {
+        $sport = $sportRepository->fetchById($post->getInt('sportId'));
+        if ($sport === null)
+        {
+            return new JsonResponse(['error' => 'Sport does not exist!'], Response::HTTP_NOT_FOUND);
+        }
+
         $id = $post->getInt('id');
         if ($id > 0)
         {
@@ -431,7 +444,7 @@ final class ContestController
         $contest->name = $post->getHTML('name');
         $contest->description = $post->getHTML('description');
         $contest->location = $post->getHTML('location');
-        $contest->sport = new Sport($post->getInt('sportId'));
+        $contest->sport = $sport;
         $contest->registrationDeadline = $post->getDate('registrationDeadline');
         $contest->registrationChangeDeadline = $post->getDate('registrationChangeDeadline');
         $contest->price = $post->getFloat('price');

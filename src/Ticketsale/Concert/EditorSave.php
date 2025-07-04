@@ -23,6 +23,9 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
     public function save(int|null $id): int
     {
+        $location = $this->repository->fetchById(Location::class, $this->post->getInt('locationId'));
+        assert($location !== null);
+
         $concert = $this->repository->fetchOrCreate(Concert::class, $id);
         $concert->name = $this->post->getHTML('titel');
         $concert->description = $this->imageExtractor->process($this->post->getHTML('artikel'));
@@ -36,7 +39,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
         $concert->numReservedSeats = $this->post->getInt('numReservedSeats');
         $concert->deliveryCostInterface = $this->post->getSimpleString('deliveryCostInterface');
         $concert->date = $this->post->getSimpleString('date');
-        $concert->location = new Location($this->post->getInt('locationId'));
+        $concert->location = $location;
         $concert->ticketInfo = $this->post->getHTML('ticketInfo');
 
         $delivery = TicketDelivery::from($this->post->getInt('delivery'));
