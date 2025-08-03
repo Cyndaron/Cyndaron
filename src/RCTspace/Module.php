@@ -10,6 +10,7 @@ namespace Cyndaron\RCTspace;
 
 use Cyndaron\Module\Routes;
 use Cyndaron\RCTspace\Downloads\DownloadsController;
+use Cyndaron\RCTspace\RideExchange\RideExchangeController;
 
 final class Module implements Routes
 {
@@ -17,6 +18,7 @@ final class Module implements Routes
     {
         return [
             'downloads' =>  DownloadsController::class,
+            'ride-exchange' =>  RideExchangeController::class,
         ];
     }
 }
