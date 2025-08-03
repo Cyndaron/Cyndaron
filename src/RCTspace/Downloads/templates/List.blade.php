@@ -16,12 +16,12 @@
         @foreach($rows as $row)
             @php
                 $fileId = $row['file_id'];
-                $name = $row['file_name'];
-                $category = $row['cname'] ?? '';
-                $submitter = $row['submitter'] ?? '?';
+                $name = html_entity_decode($row['file_name'], encoding: 'UTF-8');
+                $category = html_entity_decode($row['cname'], encoding: 'UTF-8') ?? '';
+                $submitter = html_entity_decode($row['submitter'], encoding: 'UTF-8') ?? '?';
                 $submitDate = date('Y-m-d H:i:s', $row['file_submitted']);
                 if ($row['file_version'])
-                    $name .= " {$row['file_version']}";
+                    $name .= ' ' . html_entity_decode($row['file_version'], encoding: 'UTF-8');
             @endphp
             <tr>
                 <td class="align-right">{{ $loop->iteration }}</td>
