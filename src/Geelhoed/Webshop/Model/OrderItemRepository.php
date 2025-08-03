@@ -28,7 +28,7 @@ final class OrderItemRepository implements RepositoryInterface
     {
         return array_filter($this->fetchAll(), static function(OrderItem $orderItem) use ($order)
         {
-            return $orderItem->order->id = $order->id;
+            return $orderItem->order->id == $order->id;
         });
     }
 }
