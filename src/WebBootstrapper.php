@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Cyndaron;
 
 use Cyndaron\Base\CyndaronConfig;
-use Cyndaron\DBAL\DBConnection;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Util\Error\BootFailure;
 use Cyndaron\Routing\Kernel;
