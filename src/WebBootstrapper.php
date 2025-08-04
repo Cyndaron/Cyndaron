@@ -8,8 +8,8 @@ use Cyndaron\DBAL\Connection;
 use Cyndaron\Util\Error\BootFailure;
 use Cyndaron\Routing\Kernel;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\UserSafeError;
 use ErrorException;
-use RuntimeException;
 
 use Symfony\Component\HttpFoundation\Request;
 use function Safe\ini_set;
@@ -31,7 +31,7 @@ final class WebBootstrapper
             [$config, $connection] = $this->processSettings();
             $this->handleRequest($request, $config, $connection);
         }
-        catch (RuntimeException $e)
+        catch (UserSafeError $e)
         {
             echo $e->getMessage();
         }
