@@ -20,7 +20,7 @@ final class PhotoalbumIndexPage extends Page
             'model' => null,
             'pages' => $photoalbums,
             'tags' => [],
-            'viewMode' => ViewMode::Titles,
+            'viewMode' => ViewMode::Blog,
             'urlService' => $urlService,
         ]);
     }
