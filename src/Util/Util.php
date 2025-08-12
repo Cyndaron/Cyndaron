@@ -32,7 +32,7 @@ use function is_dir;
 use function str_replace;
 use function number_format;
 use function stream_context_create;
-use function file_get_contents;
+use function Safe\file_get_contents;
 
 final class Util
 {
@@ -198,6 +198,6 @@ final class Util
     {
         $options  = ['http' => ['user_agent' => CyndaronInfo::PRODUCT_NAME . ' ' . CyndaronInfo::ENGINE_VERSION]];
         $context  = stream_context_create($options);
-        return (string)file_get_contents($url, context: $context);
+        return file_get_contents($url, context: $context);
     }
 }
