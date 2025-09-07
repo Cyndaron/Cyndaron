@@ -72,7 +72,7 @@ final class View implements Htmlable, ViewContract
      * @return string
      *
      */
-    public function render(callable $callback = null): string
+    public function render(callable|null $callback = null): string
     {
         try
         {
