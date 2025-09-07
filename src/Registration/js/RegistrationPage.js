@@ -1,5 +1,5 @@
 /**
- * Copyright © 2009-2020 Michael Steenbeek
+ * Copyright © 2009-2025 Michael Steenbeek
  *
  * Cyndaron is licensed under the MIT License. See the LICENSE file for more details.
  */
