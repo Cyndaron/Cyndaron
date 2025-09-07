@@ -37,15 +37,10 @@
                 </tr>
                 @php /** @var \Cyndaron\Ticketsale\TicketType\TicketType[] $ticketTypes */ @endphp
                 @foreach ($ticketTypes as $ticketType)
-                    <tr>
-                        <td>{{ $ticketType->name }}</td>
-                        <td>{{ $ticketType->price|euro }}</td>
-                        <td>
-                            <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ $ticketType->id }}" id="tickettype-{{ $ticketType->id }}" value="0"/>
-                            <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ $ticketType->id }}">@include('View/Widget/Icon', ['type' => 'new'])</button>
-                            <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ $ticketType->id }}">@include('View/Widget/Icon', ['type' => 'minus'])</button>
-                        </td>
-                    </tr>
+                    @include(
+                        'Event/Form/Order/TicketLine',
+                        ['name' => $ticketType->name, 'id' => $ticketType->id, 'price' => $ticketType->price]
+                    )
                 @endforeach
             </table>
             <div @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\TicketDelivery::COLLECT_OR_DELIVER) style="display:none" @endif>
