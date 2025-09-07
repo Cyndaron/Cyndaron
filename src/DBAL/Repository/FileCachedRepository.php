@@ -72,7 +72,6 @@ final class FileCachedRepository implements GenericRepository
             return;
         }
 
-        // @phpstan-ignore-next-line
         $this->cache[$class::TABLE] = [];
         $handle = new FileCache($this->getCacheKey($class), true);
         $loadResult = $handle->load($this->cache[$class::TABLE]);
