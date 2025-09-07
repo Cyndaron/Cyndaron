@@ -71,6 +71,7 @@ final class ValueConverter
         if ($type instanceof ReflectionUnionType || $type instanceof ReflectionIntersectionType)
         {
             $type = $type->getTypes()[0];
+            assert($type instanceof ReflectionNamedType);
         }
 
         $typeName = $type->getName();
@@ -87,7 +88,6 @@ final class ValueConverter
         }
         if (is_a($typeName, Model::class, true))
         {
-            assert(!is_object($typeName));
             return $genericRepository->fetchById($typeName, (int)$var);
         }
         if (is_a($typeName, DateTimeInterface::class, true))

@@ -126,7 +126,6 @@ final class Registration extends Model
 
                 return 'Afgewezen, niet betaald';
         }
-        return 'Onbekend';
     }
 
     public function shouldPay(): bool
