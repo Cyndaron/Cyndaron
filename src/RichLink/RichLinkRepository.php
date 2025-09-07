@@ -4,17 +4,20 @@ declare(strict_types=1);
 namespace Cyndaron\RichLink;
 
 use Cyndaron\Category\ModelWithCategoryRepository;
+use Cyndaron\Category\ModelWithCategoryRepositoryTrait;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\DBAL\Repository\RepositoryTrait;
 
 /**
- * @extends  ModelWithCategoryRepository<RichLink>
+ * @implements ModelWithCategoryRepository<RichLink>
  */
-final class RichLinkRepository extends ModelWithCategoryRepository
+final class RichLinkRepository implements ModelWithCategoryRepository
 {
-    protected const UNDERLYING_CLASS = RichLink::class;
+    private const UNDERLYING_CLASS = RichLink::class;
 
+    /** @use ModelWithCategoryRepositoryTrait<RichLink> */
+    use ModelWithCategoryRepositoryTrait;
     use RepositoryTrait;
 
     public function __construct(

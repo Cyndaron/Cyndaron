@@ -14,12 +14,14 @@ use function strcasecmp;
 use function usort;
 
 /**
- * @extends  ModelWithCategoryRepository<Category>
+ * @implements ModelWithCategoryRepository<Category>
  */
-final class CategoryRepository extends ModelWithCategoryRepository
+final class CategoryRepository implements ModelWithCategoryRepository
 {
-    protected const UNDERLYING_CLASS = Category::class;
+    private const UNDERLYING_CLASS = Category::class;
 
+    /** @use ModelWithCategoryRepositoryTrait<Category> */
+    use ModelWithCategoryRepositoryTrait;
     use RepositoryTrait;
 
     public function __construct(

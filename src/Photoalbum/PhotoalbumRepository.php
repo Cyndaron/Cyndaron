@@ -4,17 +4,20 @@ declare(strict_types=1);
 namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Category\ModelWithCategoryRepository;
+use Cyndaron\Category\ModelWithCategoryRepositoryTrait;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\DBAL\Repository\RepositoryTrait;
 
 /**
- * @extends  ModelWithCategoryRepository<Photoalbum>
+ * @implements ModelWithCategoryRepository<Photoalbum>
  */
-final class PhotoalbumRepository extends ModelWithCategoryRepository
+final class PhotoalbumRepository implements ModelWithCategoryRepository
 {
-    protected const UNDERLYING_CLASS = Photoalbum::class;
+    private const UNDERLYING_CLASS = Photoalbum::class;
 
+    /** @use ModelWithCategoryRepositoryTrait<Photoalbum> */
+    use ModelWithCategoryRepositoryTrait;
     use RepositoryTrait;
 
     public function __construct(
