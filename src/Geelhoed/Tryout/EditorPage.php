@@ -29,7 +29,7 @@ final class EditorPage extends \Cyndaron\Editor\EditorPage
             $tryout = $this->tryoutRepository->fetchById($this->id);
             assert($tryout !== null);
             $this->model = $tryout;
-            $this->content = $this->model->description ?? '';
+            $this->content = '';
             $this->contentTitle = $this->model->name ?? '';
         }
 
