@@ -9,7 +9,7 @@ Licences for third-party code (and all changes made to it):
 N.B.: Licences of third-party code not directly included in the code base can be found in their respective directories under the “vendor” folder.
 
 ## Code style
-De code style used is [PSR-12](http://www.php-fig.org/psr/psr-12/), with the following changes:
+The code style used is [PSR-12](http://www.php-fig.org/psr/psr-12/), with the following changes:
 - All braces are on their own line.
 - Braces on if blocks are not required, provided both `if` and `else` instructions (if present) only have a single instruction.
 
