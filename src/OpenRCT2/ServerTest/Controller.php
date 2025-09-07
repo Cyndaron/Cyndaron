@@ -75,9 +75,15 @@ final class Controller
             {
                 throw new RuntimeException('Invalid packet size!');
             }
+            $restLength = $length - 4;
+            if ($restLength === 0)
+            {
+                throw new RuntimeException('Payload is empty!');
+            }
+
             // Contains the command ID, which we’re not interested in.
             fseek($fp, 4, SEEK_CUR);
-            $rest = fread($fp, $length - 4) or throw new RuntimeException('Cannot read payload!');
+            $rest = fread($fp, $restLength) or throw new RuntimeException('Cannot read payload!');
             $nullPos = strpos($rest, "\x00");
             if ($nullPos !== false)
             {
