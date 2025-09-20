@@ -18,6 +18,8 @@ use function is_array;
 use function array_key_exists;
 use function readfile;
 use function assert;
+use function html_entity_decode;
+use function date;
 
 final class RideExchangeController
 {
@@ -38,6 +40,46 @@ final class RideExchangeController
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function list(): Response
     {
+        $trackDesigns = $this->getTrackDesigns();
+
+        $page = new Page();
+        $page->title = 'Ride Exchange';
+        $page->template = 'RCTspace/RideExchange/List';
+
+        return $this->pageRenderer->renderResponse($page, [
+            'trackDesigns' => $trackDesigns,
+        ]);
+    }
+
+    #[RouteAttribute('download', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function download(QueryBits $queryBits): Response
+    {
+        $id = $queryBits->getInt(2);
+
+        $trackDesigns = $this->getTrackDesigns();
+        $trackDesign = $trackDesigns[$id] ?? null;
+
+        if ($trackDesign === null)
+        {
+            $page = new ErrorPage('Error', 'File not found!', Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderErrorResponse($page);
+        }
+
+
+        return new StreamedResponse(function() use ($trackDesign)
+        {
+            readfile($trackDesign->getPath());
+        }, headers: [
+            'Content-disposition' => 'attachment;filename="' . $trackDesign->realFilename . '"',
+            'Content-Type' => $trackDesign->getMimeType(),
+        ]);
+    }
+
+    /**
+     * @return RideExchangeTrack[]
+     */
+    private function getTrackDesigns(): array
+    {
         $query = 'SELECT * FROM for_ridex3_typename';
         $stmt = $this->connector->connection->prepare($query);
         $stmt->execute();
@@ -52,62 +94,6 @@ final class RideExchangeController
         }
         unset($vehicleMap['NONE']);
 
-        $stmt = $this->getTrackDesigns();
-
-        $page = new Page();
-        $page->title = 'Ride Exchange';
-        $page->template = 'RCTspace/RideExchange/List';
-
-        return $this->pageRenderer->renderResponse($page, [
-            'categoryMap' => self::CATEGORY_MAP,
-            'rows' => $stmt->fetchAll(PDO::FETCH_ASSOC),
-            'rideMap' => $rideMap,
-            'vehicleMap' => $vehicleMap,
-        ]);
-    }
-
-    #[RouteAttribute('download', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function download(QueryBits $queryBits): Response
-    {
-        $file_id = $queryBits->getInt(2);
-        $record = null;
-
-        $stmt = $this->getTrackDesigns();
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
-        {
-            if (!is_array($row) || !array_key_exists('Id', $row))
-            {
-                break;
-            }
-
-            if ($row['Id'] == $file_id)
-            {
-                $record = $row;
-                break;
-            }
-        }
-
-        if ($record === null)
-        {
-            $page = new ErrorPage('Error', 'File not found!', Response::HTTP_NOT_FOUND);
-            return $this->pageRenderer->renderErrorResponse($page);
-        }
-
-        $filename = $record['Disk_fname'];
-        $mimetype = 'application/zip';
-
-        return new StreamedResponse(function() use ($record)
-        {
-            $pathOnDisk = $this->connector->offurlPathRideExchange . $record['new_fname'] . '.zip';
-            readfile($pathOnDisk);
-        }, headers: [
-            'Content-disposition' => 'attachment;filename="' . $filename . '"',
-            'Content-Type' => $mimetype,
-        ]);
-    }
-
-    private function getTrackDesigns(): \PDOStatement
-    {
         $query = '
 	SELECT frr.*, fm.name as uploader_name
 	FROM for_ridex3_rides frr
@@ -117,6 +103,49 @@ final class RideExchangeController
         $stmt = $this->connector->connection->prepare($query);
         $stmt->execute();
 
-        return $stmt;
+        $ret = [];
+        while ($row = $stmt->fetch())
+        {
+            if (!is_array($row) || !array_key_exists('Id', $row))
+            {
+                continue;
+            }
+
+            $id = $row['Id'];
+            assert(!array_key_exists($id, $ret));
+
+            $name = html_entity_decode($row['Ride_name'], encoding: 'UTF-8');
+            $vehicle = $row['Vehicle_type'];
+            if ($vehicle == 'NONE')
+            {
+                $vehicle = '';
+            }
+            $categoryId = $vehicleMap[$vehicle] ?? -1;
+            if ($categoryId == -1)
+            {
+                $categoryId = $rideMap[$row['Ride_type']] ?? -1;
+            }
+
+            $category = (self::CATEGORY_MAP[$categoryId] ?? '');
+            $submitter = html_entity_decode($row['uploader_name'] ?? '?', encoding: 'UTF-8');
+            $submitDate = date('Y-m-d H:i:s', $row['Upload_date']);
+
+            $ret[$id] = new RideExchangeTrack(
+                id: $id,
+                name: $name,
+                vehicle: $vehicle,
+                category: $category,
+                submitter: $submitter,
+                submitDate: $submitDate,
+                zipLocation: $this->connector->offurlPathRideExchangeZip . $row['new_fname'] . '.zip',
+                zipLocation2: $this->connector->offurlPathRideExchangeZipOld . $row['Disk_fname'] . '.zip',
+                zipLocation3: $this->connector->offurlPathRideExchangeZipOlder . $row['Disk_fname'] . '.zip',
+                uncompressedLocation: $this->connector->offurlPathRideExchangePlain . $row['new_fname'] . '.td6',
+                uncompressedLocation2: $this->connector->offurlPathRideExchangePlain . $row['new_fname'] . '.td4',
+                realFilename: $row['Disk_fname'],
+            );
+        }
+
+        return $ret;
     }
 }

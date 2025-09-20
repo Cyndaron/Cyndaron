@@ -16,7 +16,7 @@ class Download
         public readonly string $submitDate,
         public readonly string $offUrlRoot,
         /**
-         * @var string Relative to URL path
+         * @var string Relative to off URL root
          */
         public readonly string $relativeLocation,
         public readonly string $realFilename,

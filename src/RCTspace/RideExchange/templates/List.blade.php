@@ -14,29 +14,25 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($rows as $row)
-            @php
-                $fileId = $row['Id'];
-                $name = html_entity_decode($row['Ride_name'], encoding: 'UTF-8');
-                $vehicle = $row['Vehicle_type'];
-                if ($vehicle == 'NONE')
-                    $vehicle = '';
-                $categoryId = $vehicleMap[$vehicle] ?? -1;
-                if ($categoryId == -1)
-                    $categoryId = $rideMap[$row['Ride_type']] ?? -1;
-
-                $category = ($categoryMap[$categoryId] ?? '');
-                $submitter = html_entity_decode($row['uploader_name'] ?? '?', encoding: 'UTF-8');
-                $submitDate = date('Y-m-d H:i:s', $row['Upload_date']);
-            @endphp
+        @php /** @var \Cyndaron\RCTspace\RideExchange\RideExchangeTrack[] $trackDesigns */ @endphp
+        @foreach($trackDesigns as $trackDesign)
             <tr>
                 <td class="align-right">{{ $loop->iteration }}</td>
-                <td>{{ $name }}</td>
-                <td>{{ $category }}</td>
-                <td>{{ $vehicle }}</td>
-                <td>{{ $submitter }}</td>
-                <td>{{ $submitDate }}</td>
-                <td><a href="/ride-exchange/download/{{ $fileId }}" target='_blank'>Download</a>
+                <td>{{ $trackDesign->name }}</td>
+                <td>{{ $trackDesign->category }}</td>
+                <td>{{ $trackDesign->vehicle }}</td>
+                <td>{{ $trackDesign->submitter }}</td>
+                <td>{{ $trackDesign->submitDate }}</td>
+                <td>
+                    @if ($trackDesign->presentOnDisk())
+                        <a href="/ride-exchange/download/{{ $trackDesign->id }}" target='_blank'>Download</a>
+                        @if ($trackDesign->fallbackMessage)
+                            {{ $trackDesign->fallbackMessage }}
+                        @endif
+                    @else
+                        Missing file on disk: {{ basename($trackDesign->zipLocation) }}
+                    @endif
+                </td>
             </tr>
         @endforeach
         </tbody>
