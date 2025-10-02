@@ -10,12 +10,16 @@ use Cyndaron\Geelhoed\Contest\Model\ContestRepository;
 use Cyndaron\Geelhoed\Graduation\GraduationRepository;
 use Cyndaron\Geelhoed\Location\LocationRepository;
 use Cyndaron\Geelhoed\Sport\SportRepository;
+use Cyndaron\Geelhoed\Tryout\Ticket\OrderTicketTypeRepository;
+use Cyndaron\Geelhoed\Tryout\Ticket\TypeRepository;
 use Cyndaron\Geelhoed\Tryout\TryoutRepository;
 use Cyndaron\Geelhoed\Webshop\Model\OrderRepository;
 use Cyndaron\Geelhoed\Webshop\Model\ProductRepository;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\View\Template\TemplateRenderer;
 use function usort;
+use function array_key_exists;
 
 final class PageManagerTabs
 {
@@ -92,6 +96,58 @@ final class PageManagerTabs
         $products = $repository->fetchAll();
         return $templateRenderer->render('Geelhoed/Webshop/Page/PageManagerTabProduct', [
             'products' => $products,
+        ]);
+    }
+
+    public static function tryoutTicketTypesTab(TemplateRenderer $templateRenderer, TypeRepository $repository): string
+    {
+        $types = $repository->fetchAll();
+        return $templateRenderer->render('Geelhoed/Tryout/Ticket/PageManagerTab', [
+            'types' => $types,
+        ]);
+    }
+
+    public static function tryoutOrdersTab(TemplateRenderer $templateRenderer, QueryBits $queryBits, TryoutRepository $tryoutRepository, \Cyndaron\Geelhoed\Tryout\Ticket\OrderRepository $orderRepository, OrderTicketTypeRepository $ottRepository): string
+    {
+        $eventId = $queryBits->getInt(2);
+        $event = $tryoutRepository->fetchById($eventId);
+        if ($event === null)
+        {
+            $event = $tryoutRepository->fetch(afterWhere: 'ORDER BY id DESC');
+            if ($event == null)
+            {
+                throw new \Exception('Evenement niet gevonden!');
+            }
+        }
+
+        $orderRecords = [];
+        foreach ($orderRepository->fetchByEvent($event) as $order)
+        {
+            if (!$order->isPaid)
+            {
+                continue;
+            }
+
+            $orderRecords[$order->id]['order'] = $order;
+        }
+        foreach ($ottRepository->fetchAll() as $ott)
+        {
+            $orderId = $ott->order->id;
+            if ($orderId === null || !array_key_exists($orderId, $orderRecords))
+            {
+                continue;
+            }
+
+            $orderRecords[$orderId]['ticketTypes'][] = $ott;
+        }
+
+        usort($orderRecords, function(array $input1, array $input2)
+        {
+            return $input1['order']->name <=> $input2['order']->name;
+        });
+
+        return $templateRenderer->render('Geelhoed/Tryout/Ticket/PageManagerTabOrders', [
+            'orderRecords' => $orderRecords,
         ]);
     }
 }

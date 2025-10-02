@@ -16,6 +16,7 @@ use Cyndaron\Geelhoed\Member\MemberRepository;
 use Cyndaron\Geelhoed\Sport\SportController;
 use Cyndaron\Geelhoed\Tryout\EditorPage;
 use Cyndaron\Geelhoed\Tryout\EditorSave;
+use Cyndaron\Geelhoed\Tryout\Ticket\Controller as TryoutTicketController;
 use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Geelhoed\Tryout\TryoutController;
 use Cyndaron\Geelhoed\Volunteer\VolunteerController;
@@ -82,6 +83,16 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
                 singular: 'Product',
                 plural: 'Producten',
                 pageManagerTab: PageManagerTabs::productsTab(...),
+            ),
+            'tryouttickettypes' => new Datatype(
+                singular: 'Tryoutkaarttype',
+                plural: 'Tryoutkaarttypes',
+                pageManagerTab: PageManagerTabs::tryoutTicketTypesTab(...),
+            ),
+            'tryoutorders' => new Datatype(
+                singular: 'Tryout-orders',
+                plural: 'Tryout-orders',
+                pageManagerTab: PageManagerTabs::tryoutOrdersTab(...),
             )
         ];
     }
@@ -95,6 +106,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
             'contest' => ContestController::class,
             'vrijwilligers' => VolunteerController::class,
             'tryout' => TryoutController::class,
+            'tryout-ticket' => TryoutTicketController::class,
             'sport' => SportController::class,
             'clubactie' => ClubactieController::class,
             'webwinkel' => WebshopController::class,
