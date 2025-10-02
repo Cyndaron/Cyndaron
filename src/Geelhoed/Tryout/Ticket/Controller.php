@@ -58,7 +58,7 @@ final class Controller
         $now = new \DateTimeImmutable();
         if ($now > $tryout->end)
         {
-            //return $this->pageRenderer->renderErrorResponse(new ErrorPage('Kaartverkoop gesloten', 'Dit toernooi is al afgelopen!'));
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Kaartverkoop gesloten', 'Dit toernooi is al afgelopen!'));
         }
 
         $ticketTypes = $this->typeRepository->fetchAll();
