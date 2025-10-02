@@ -307,7 +307,7 @@ final class Controller
 
         $mail = $mailFactory->createMailWithDefaults(
             new Address($order->email),
-            'Betalingsbevestiging',
+            'Bestelling',
             $text
         );
         $mail->send();

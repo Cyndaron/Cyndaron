@@ -32,7 +32,7 @@ final class OrderTicketTypeRepository implements RepositoryInterface
             $this->fetchAll(),
             function(OrderTicketType $candidate) use ($order)
             {
-                return $candidate->order === $order;
+                return $candidate->order->id === $order->id;
             },
         );
         return $items;
