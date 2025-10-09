@@ -66,13 +66,21 @@ final class OrderController
     }
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function add(RequestParameters $post, UrlInfo $urlInfo, OrderConfirmationMailFactory $confirmationMailFactory, Connection $connection, TicketTypeRepository $ticketTypeRepository): Response
+    public function add(RequestParameters $post, UrlInfo $urlInfo, MailFactory $mailFactory, OrderConfirmationMailFactory $confirmationMailFactory, Connection $connection, TicketTypeRepository $ticketTypeRepository): Response
     {
         try
         {
             $order = $this->processOrder($post, $urlInfo, $confirmationMailFactory, $connection, $ticketTypeRepository);
             $concert = $order->concert;
-            if ($concert->getDelivery() === TicketDelivery::DIGITAL)
+            if ($order->isPaid)
+            {
+                $this->setOrderAsPaidAndSendMail($order, $urlInfo, $mailFactory);
+                $page = new SimplePage(
+                    'Bestelling verwerkt',
+                    'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging en de tickets.',
+                );
+            }
+            elseif ($concert->getDelivery() === TicketDelivery::DIGITAL)
             {
                 $paymentLink = $this->getPaymentLink($order, $urlInfo->schemeAndHost);
                 $paymentLinkText = sprintf('<br><br><a href="%s" role="button" class="btn btn-primary btn-lg">Naar de betaalomgeving</a>', $paymentLink);
@@ -88,7 +96,6 @@ final class OrderController
                     'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw bestelling en betaalinformatie.',
                 );
             }
-
 
             return $this->pageRenderer->renderResponse($page);
         }
@@ -250,11 +257,6 @@ final class OrderController
         $totalNumTickets = $orderTotal->numTickets;
         $payForDelivery = $orderTotal->payForDelivery;
 
-        if ($totalAmount <= 0)
-        {
-            throw new InvalidOrder('U heeft een bestelling van 0 kaarten geplaatst of het formulier is niet goed aangekomen.');
-        }
-
         $email = $post->getEmail('email');
         $lastName = $post->getSimpleString('lastName');
         $initials = $post->getInitials('initials');
@@ -278,6 +280,7 @@ final class OrderController
         $order->deliveryMemberName = $deliveryMemberName;
         $order->addressIsAbroad = $addressIsAbroad;
         $order->comments = $comments;
+        $order->isPaid = $orderTotal->amount === 0.00;
         $order->setAdditonalData([
             'donor' => $post->getBool('donor'),
             'subscribeToNewsletter' => $post->getBool('subscribeToNewsletter')
@@ -340,9 +343,13 @@ final class OrderController
             }
         }
 
-        $paymentLink = $this->getPaymentLink($order, $urlInfo->schemeAndHost);
-        $confirmationMail = $confirmationMailFactory->create($order, $concert, $reserveSeats, $totalAmount, $ticketTypes, $orderTicketTypes, $paymentLink);
-        $confirmationMail->send();
+        if (!$order->isPaid)
+        {
+            $paymentLink = $this->getPaymentLink($order, $urlInfo->schemeAndHost);
+            $confirmationMail = $confirmationMailFactory->create($order, $concert, $reserveSeats, $totalAmount, $ticketTypes, $orderTicketTypes, $paymentLink);
+            $confirmationMail->send();
+        }
+
         return $order;
     }
 
