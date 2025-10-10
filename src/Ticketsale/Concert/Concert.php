@@ -46,6 +46,8 @@ final class Concert extends Model
     public string $date = '';
     #[DatabaseField(dbName: 'locationId')]
     public Location|null $location = null;
+    #[DatabaseField(dbName: 'location')]
+    public string $locationLegacy = '';
     #[DatabaseField]
     public string $ticketInfo = '';
 
@@ -86,5 +88,10 @@ final class Concert extends Model
             return new DateTimeImmutable();
         }
         return $result;
+    }
+
+    public function getLocationName(): string
+    {
+        return $this->location ? $this->location->name : $this->locationLegacy;
     }
 }

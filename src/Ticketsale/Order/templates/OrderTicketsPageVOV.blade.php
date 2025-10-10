@@ -44,7 +44,7 @@
                 @endforeach
             </table>
             @php /** @var \Cyndaron\Location\Location $location */ @endphp
-            @if ($location->name === 'Sint Jacobskerk')
+            @if ($concert->getLocationName() === 'Sint Jacobskerk')
                 <div class="alert alert-info">Voor donateurs van de Stichting Vrienden van de VOV zijn in het middenschip van de kerk aparte plaatsen gereserveerd.</div>
             @endif
             <div @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\Concert\TicketDelivery::COLLECT_OR_DELIVER) style="display:none" @endif>
