@@ -1,10 +1,9 @@
-<table class="table table-striped table-bordered pm-table">
+<table class="table table-striped table-bordered">
     <thead>
         <tr>
             <th>ID</th>
             <th>Naam</th>
             <th>Bestelling</th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -12,20 +11,17 @@
             @php
             /** @var \Cyndaron\Geelhoed\Tryout\Ticket\Order $order */
             $order = $orderRecord['order'];
-            /** @var \Cyndaron\Geelhoed\Tryout\Ticket\OrderTicketType[] $ticketTypes */
-            $ticketTypes = $orderRecord['ticketTypes'];
+            /** @var \Cyndaron\Geelhoed\Tryout\Ticket\OrderTotal $orderTotal */
+            $orderTotal = $orderRecord['orderTotal'];
             @endphp
             <tr>
                 <td>{{ $order->id }}</td>
                 <td>{{ $order->name }}</td>
                 <td>
                     <ul>
-                        @foreach ($ticketTypes as $ticketType)
-                            <li>{{ $ticketType->amount }}× {{ $ticketType->type->name }}</li>
-                        @endforeach
+                        {!! $orderTotal->asListItems() !!}
                     </ul>
                 </td>
-                <td></td>
             </tr>
         @endforeach
     </tbody>

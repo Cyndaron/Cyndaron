@@ -11,13 +11,17 @@ use Cyndaron\Geelhoed\Graduation\GraduationRepository;
 use Cyndaron\Geelhoed\Location\LocationRepository;
 use Cyndaron\Geelhoed\Sport\SportRepository;
 use Cyndaron\Geelhoed\Tryout\Ticket\OrderTicketTypeRepository;
+use Cyndaron\Geelhoed\Tryout\Ticket\OrderTotal;
 use Cyndaron\Geelhoed\Tryout\Ticket\TypeRepository;
 use Cyndaron\Geelhoed\Tryout\TryoutRepository;
 use Cyndaron\Geelhoed\Webshop\Model\OrderRepository;
 use Cyndaron\Geelhoed\Webshop\Model\ProductRepository;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\User\CSRFTokenHandler;
+use Cyndaron\Util\Util;
 use Cyndaron\View\Template\TemplateRenderer;
+use DateInterval;
+use DateTime;
 use function usort;
 use function array_key_exists;
 
@@ -107,13 +111,20 @@ final class PageManagerTabs
         ]);
     }
 
-    public static function tryoutOrdersTab(TemplateRenderer $templateRenderer, QueryBits $queryBits, TryoutRepository $tryoutRepository, \Cyndaron\Geelhoed\Tryout\Ticket\OrderRepository $orderRepository, OrderTicketTypeRepository $ottRepository): string
+    public static function tryoutOrdersTab(TemplateRenderer $templateRenderer, QueryBits $queryBits, TryoutRepository $tryoutRepository, Tryout\Ticket\OrderRepository $orderRepository, OrderTicketTypeRepository $ottRepository): string
     {
         $eventId = $queryBits->getInt(2);
         $event = $tryoutRepository->fetchById($eventId);
         if ($event === null)
         {
-            $event = $tryoutRepository->fetch(afterWhere: 'ORDER BY id DESC');
+            $now = new DateTime();
+            $cutoff = new DateTime();
+            $cutoff->add(new DateInterval('P1W'));
+            $event = $tryoutRepository->fetch(
+                ['start <= ?', 'end >= ?'],
+                [$cutoff->format(Util::SQL_DATE_TIME_FORMAT), $now->format(Util::SQL_DATE_TIME_FORMAT)],
+                'ORDER BY start'
+            );
             if ($event == null)
             {
                 throw new \Exception('Evenement niet gevonden!');
@@ -129,16 +140,8 @@ final class PageManagerTabs
             }
 
             $orderRecords[$order->id]['order'] = $order;
-        }
-        foreach ($ottRepository->fetchAll() as $ott)
-        {
-            $orderId = $ott->order->id;
-            if ($orderId === null || !array_key_exists($orderId, $orderRecords))
-            {
-                continue;
-            }
-
-            $orderRecords[$orderId]['ticketTypes'][] = $ott;
+            $orderTicketTypes = $ottRepository->fetchAllByOrder($order);
+            $orderRecords[$order->id]['orderTotal'] = OrderTotal::fromOrderTicketTypes($orderTicketTypes);
         }
 
         usort($orderRecords, function(array $input1, array $input2)

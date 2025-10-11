@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Geelhoed\Tryout\Ticket;
 
 use Cyndaron\Error\ErrorPage;
+use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Geelhoed\Tryout\TryoutRepository;
 use Cyndaron\Page\Page;
 use Cyndaron\Page\PageRenderer;
@@ -20,8 +21,12 @@ use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\MailFactory;
+use Cyndaron\Util\RuntimeUserSafeError;
 use Cyndaron\Util\SettingsRepository;
+use Cyndaron\Util\Util;
 use Cyndaron\View\Template\ViewHelpers;
+use DateInterval;
+use DateTime;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -51,12 +56,7 @@ final class Controller
     #[RouteAttribute('bestellen', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function showOrderForm(QueryBits $queryBits): Response
     {
-        $tryoutId = $queryBits->getInt(2);
-        $tryout = $this->tryoutRepository->fetchById($tryoutId);
-        if ($tryout === null)
-        {
-            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Toernooi niet gevonden!'));
-        }
+        $tryout = $this->getRequestedOrCurrentTryout($queryBits->getInt(2));
         $now = new \DateTimeImmutable();
         if ($now > $tryout->end)
         {
@@ -70,6 +70,7 @@ final class Controller
         $page->title = "Kaartverkoop Tryout {$date}";
         $page->template = 'Geelhoed/Tryout/Ticket/OrderTicketsPage';
         $page->addScript('/src/Geelhoed/Tryout/Ticket/js/OrderTicketsPage.js');
+        $page->addCss('/src/Ticketsale/css/Ticketsale.min.css');
         $page->addTemplateVars([
             'event' => $tryout,
             'ticketTypes' => $ticketTypes,
@@ -296,14 +297,11 @@ final class Controller
         $text = "Hartelijk dank voor uw bestelling bij {$organisation}.\n\n";
         $text .= "U kunt uw bestelling betalen middels de volgende link: {$paymentLink}\n\n";
         $text .= "Reserveringsnummer: {$order->id}\n\n";
-        $total = 0.0;
-        foreach ($this->ottRepository->fetchAllByOrder($order) as $orderTicketType)
-        {
-            $text .= "{$orderTicketType->amount}× {$orderTicketType->type->name}\n";
-            $total += ($orderTicketType->amount * $orderTicketType->type->price);
-        }
 
-        $totalFormatted = ViewHelpers::formatEuro($total);
+        $orderTotal = OrderTotal::fromOrderTicketTypes($this->ottRepository->fetchAllByOrder($order));
+        $text .= $orderTotal->asPlainText();
+
+        $totalFormatted = ViewHelpers::formatEuro($orderTotal->total);
         $text .= "\nTotaalbedrag: {$totalFormatted}\n\n";
         $text .= "Met vriendelijke groet,\nSportschool Geelhoed";
 
@@ -323,14 +321,11 @@ final class Controller
 
         $text = "Hartelijk dank voor uw bestelling bij {$organisation}. Wij hebben uw betaling in goede orde ontvangen.\n\n";
         $text .= "Reserveringsnummer: {$order->id}\n\n";
-        $total = 0.0;
-        foreach ($this->ottRepository->fetchAllByOrder($order) as $orderTicketType)
-        {
-            $text .= "{$orderTicketType->amount}× {$orderTicketType->type->name}\n";
-            $total += ($orderTicketType->amount * $orderTicketType->type->price);
-        }
 
-        $totalFormatted = ViewHelpers::formatEuro($total);
+        $orderTotal = OrderTotal::fromOrderTicketTypes($this->ottRepository->fetchAllByOrder($order));
+        $text .= $orderTotal->asPlainText();
+
+        $totalFormatted = ViewHelpers::formatEuro($orderTotal->total);
         $text .= "\nTotaalbedrag: {$totalFormatted}\n\n";
         $text .= "Met vriendelijke groet,\nSportschool Geelhoed";
 
@@ -358,18 +353,20 @@ final class Controller
     }
 
     #[RouteAttribute('afterPayment', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function afterPayment(QueryBits $queryBits): Response
+    public function afterPayment(QueryBits $queryBits, OrderTicketTypeRepository $ottRepository): Response
     {
         $orderId = $queryBits->getInt(2);
         $order = $this->orderRepository->fetchById($orderId);
         if ($order !== null && $order->isPaid)
         {
-            $page = new SimplePage(
-                'Bestelling verwerkt',
-                "Uw betaling is ontvangen. U krijgt ook nog een bevestiging per e-mail.
-                        <br><br>Bestellings-ID: {$order->id}
-                        <br><br>Toon deze pagina, of de bevestigingsmail, bij de kassa ter controle.",
-            );
+            $orderTotal = OrderTotal::fromOrderTicketTypes($ottRepository->fetchAllByOrder($order));
+            $page = new Page();
+            $page->title = 'Bestelling verwerkt';
+            $page->template = 'Geelhoed/Tryout/Ticket/PaymentComplete';
+            $page->addTemplateVars([
+                'order' => $order,
+                'orderTotal' => $orderTotal,
+            ]);
         }
         else
         {
@@ -411,5 +408,29 @@ final class Controller
         }
 
         return new JsonResponse($answer);
+    }
+
+    private function getRequestedOrCurrentTryout(int $eventId): Tryout
+    {
+        $event = $this->tryoutRepository->fetchById($eventId);
+        if ($event !== null)
+        {
+            return $event;
+        }
+
+        $now = new DateTime();
+        $cutoff = new DateTime();
+        $cutoff->add(new DateInterval('P1W'));
+        $event = $this->tryoutRepository->fetch(
+            ['start <= ?', 'end >= ?'],
+            [$cutoff->format(Util::SQL_DATE_TIME_FORMAT), $now->format(Util::SQL_DATE_TIME_FORMAT)],
+            'ORDER BY start'
+        );
+        if ($event == null)
+        {
+            throw new RuntimeUserSafeError('Geen actief tryout-evenement gevonden!');
+        }
+
+        return $event;
     }
 }
