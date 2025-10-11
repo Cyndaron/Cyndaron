@@ -36,6 +36,8 @@ use function error_log;
 
 final class Controller
 {
+    public const RIGHT_MANAGE = 'tryoutorders_edit';
+
     public function __construct(
         private readonly PageRenderer $pageRenderer,
         private readonly SettingsRepository $settingsRepository,

@@ -167,6 +167,8 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
             new UserMenuItem(new Link('/contest/overview', 'Wedstrijdagenda'), UserLevel::LOGGED_IN, checkVisibility: $contestVisibilityCheck1),
             new UserMenuItem(new Link('/pagemanager/gcaSubscribers', 'Lotenverkopers'), UserLevel::ADMIN, WebshopController::RIGHT_MANAGE, checkVisibility: $contestVisibilityCheck2),
             new UserMenuItem(new Link('/pagemanager/orders', 'Webshoporders'), UserLevel::ADMIN, WebshopController::RIGHT_MANAGE, checkVisibility: $contestVisibilityCheck2),
+            new UserMenuItem(new Link('/pagemanager/tryout', 'Tryouts'), UserLevel::ADMIN, TryoutController::RIGHT_MANAGE, checkVisibility: $contestVisibilityCheck2),
+            new UserMenuItem(new Link('/pagemanager/tryoutorders', 'Bestellingen tryout'), UserLevel::ADMIN, TryoutTicketController::RIGHT_MANAGE, checkVisibility: $contestVisibilityCheck2),
         ];
     }
 

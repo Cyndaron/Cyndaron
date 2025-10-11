@@ -38,6 +38,7 @@ use function explode;
 
 class TryoutController
 {
+    public const RIGHT_MANAGE = 'tryout_edit';
     public const RIGHT_UPLOAD = 'geelhoed_tryout_upload';
 
     private const BATCH_SIZE = 250;
