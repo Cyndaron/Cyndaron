@@ -290,7 +290,7 @@ final class OrderController
 
         $saveResult = false;
         $lastError = null;
-        for ($i = 0; $i < self::MAX_SECRET_CODE_RETRIES; $i++)
+        for ($i = 0; $saveResult === false && $i < self::MAX_SECRET_CODE_RETRIES; $i++)
         {
             $order->secretCode = Util::generateSecretCode();
             try
