@@ -29,6 +29,7 @@ use Cyndaron\Util\Setting;
 use Cyndaron\View\Template\TemplateRenderer;
 use Exception;
 use Mpdf\Output\Destination;
+use Psr\Log\LoggerInterface;
 use Safe\Exceptions\JsonException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -62,6 +63,7 @@ final class OrderController
         private readonly OrderRepository $orderRepository,
         private readonly ConcertRepository $concertRepository,
         private readonly OrderTicketTypesRepository $orderTicketTypesRepository,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -287,6 +289,7 @@ final class OrderController
         ]);
 
         $saveResult = false;
+        $lastError = null;
         for ($i = 0; $i < self::MAX_SECRET_CODE_RETRIES; $i++)
         {
             $order->secretCode = Util::generateSecretCode();
@@ -295,14 +298,19 @@ final class OrderController
                 $this->orderRepository->save($order);
                 $saveResult = true;
             }
-            catch (\Throwable)
+            catch (\Throwable $t)
             {
+                $lastError = $t;
             }
         }
 
         if ($saveResult === false)
         {
             throw new InvalidOrder('Opslaan bestelling mislukt!');
+        }
+        if ($lastError !== null)
+        {
+            $this->logger->error((string)$lastError);
         }
 
         /** @var int $orderId */
