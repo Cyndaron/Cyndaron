@@ -55,7 +55,7 @@ final class Order extends Model
     #[DatabaseField]
     public string $comments = '';
     #[DatabaseField]
-    protected string $additionalData = '';
+    public string $additionalData = '';
 
     /**
      * @return array<string, mixed>
