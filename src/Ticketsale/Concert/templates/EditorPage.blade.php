@@ -25,8 +25,6 @@
 
     @include('View/Widget/Form/BasicInput', ['id' => 'date', 'type' => 'datetime-local', 'label' => 'Datum', 'value' => $model->date ?? ''])
 
-    @include('View/Widget/Form/BasicInput', ['id' => 'location', 'type' => 'text', 'label' => 'Locatie', 'value' => $model->location ?? ''])
-
     @include('View/Widget/Form/Select', ['id' => 'locationId', 'label' => 'Locatie', 'selected' => $model->location?->id, 'options' => $locations])
 
     @component('View/Widget/Form/FormWrapper', ['id' => 'ticketInfo', 'label' => 'Informatie op de tickets'])
