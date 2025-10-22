@@ -96,7 +96,7 @@
                     </td>
                 @endforeach
                 @php $registrationTicketTypes = $ticketTypesByRegistration[$registrationId] ?? [] @endphp
-                <td>{{ $registration->calculateTotal($registrationTicketTypes)|euro }}</td>
+                <td>{{ $registration->calculateTotal($registrationTicketTypeRepository)|euro }}</td>
                 <td>{{ $registration->isPaid|boolToText }}</td>
                 <td>
                     <div class="btn-group btn-group-sm">
