@@ -71,7 +71,12 @@
                 </div>
             </div>
 
-            <h3>Kaarten voor vrienden/familie:</h3>
+            <h3>Extra’s</h3>
+            @if ((new DateTimeImmutable())->format('Y-m-d') < DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2025-12-15 00:00:00'))
+                @include('View/Widget/Form/Checkbox', ['id' => 'masterclass', 'label' => 'Ik schrijf mij in voor de masterclass door Carina Vinke  en Martijn Sanders op vrijdag 6 maart 2026 van 14:00 - 17:00'])
+            @endif
+
+            <h4>Kaarten voor vrienden/familie:</h4>
             <table class="kaartverkoop table table-striped">
                 <thead>
                     <tr>
@@ -81,8 +86,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php /** @var \Cyndaron\Registration\EventTicketType[] $ticketTypes */ @endphp
+                    @php
+                         /** @var \Cyndaron\Registration\EventTicketType[] $ticketTypes */
+                        $wijn = null;
+                    @endphp
                     @foreach ($ticketTypes as $ticketType)
+                        @if ($ticketType->name === 'Jubileumwijn')
+                            @php $wijn = $ticketType @endphp
+                            @continue(1)
+                        @endif
                         <tr>
                             <td>{{ $ticketType->name }}</td>
                             <td>{{ $ticketType->price|euro }}@if ($ticketType->discountPer5) (5 halen, 4 betalen)@endif</td>
@@ -95,6 +107,28 @@
                     @endforeach
                 </tbody>
             </table>
+            @if ($wijn != null)
+                U kunt dit jaar jubileumwijn meebestellen. Dit is een Dominio de la Granadilla verdejo Rueda.
+
+                <table class="kaartverkoop table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Prijs per stuk:</th>
+                        <th>Aantal:</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ $wijn->price|euro }}</td>
+                            <td>
+                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ $wijn->id }}">@include('View/Widget/Icon', ['type' => 'minus'])</button>
+                                <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ $wijn->id }}" id="tickettype-{{ $wijn->id }}" value="0"/>
+                                <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ $wijn->id }}">@include('View/Widget/Icon', ['type' => 'new'])</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            @endif
 
             <div><b>Totaalprijs:</b> <span id="prijsvak">€&nbsp;0,00</span></div>
 

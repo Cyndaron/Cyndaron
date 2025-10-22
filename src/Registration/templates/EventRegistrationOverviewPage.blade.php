@@ -31,6 +31,9 @@
                 <th class="rotate">
                     <div><span>Lunch?</span></div>
                 </th>
+                <th class="rotate">
+                    <div><span>Masterclass?</span></div>
+                </th>
                 @php /** @var \Cyndaron\Registration\EventTicketType[] $ticketTypes */ @endphp
                 @foreach ($ticketTypes as $ticketType)
                 <th class="rotate">
@@ -84,6 +87,9 @@
                     @if ($registration->numPosters > 0)<br>Wil <b>{{ $registration->numPosters }}</b> raamposters @endif
                 </td>
                 <td>@if ($registration->lunch){{ $registration->lunchType }} @else Nee @endif</td>
+                <td>
+                    {{ $registration->masterClass|boolToDingbat }}
+                </td>
 
                 @foreach ($ticketTypes as $ticketType)
                 @php $ticketTypeId = $ticketType->id @endphp

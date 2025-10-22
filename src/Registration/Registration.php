@@ -30,6 +30,8 @@ final class Registration extends Model
     #[DatabaseField]
     public bool $bhv = false;
     #[DatabaseField]
+    public bool $masterClass = false;
+    #[DatabaseField]
     public bool $kleinkoor = false;
     #[DatabaseField]
     public string $kleinkoorExplanation = '';
