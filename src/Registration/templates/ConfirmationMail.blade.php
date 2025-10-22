@@ -16,7 +16,7 @@ Voorletters: {{ $registration->initials }}
 Stemsoort: {{ $registration->vocalRange }}
 Arts / BHV / AED: {{ $registration->bhv|boolToText }}
 Lunch: {{ $lunchText }}
-@if ($registration->masterClass): Inclusief inschrijving voor de masterclass op vrijdag 6 maart 2026 (14-17h)@endif
+@if ($registration->masterclass): Inclusief inschrijving voor de masterclass op vrijdag 6 maart 2026 (14-17h)@endif
 
 @foreach ($extraFields as $description => $contents)
 @if (!empty(trim((string)$contents))){{ $description }}: {{ $contents }}

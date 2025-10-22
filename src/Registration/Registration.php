@@ -30,7 +30,7 @@ final class Registration extends Model
     #[DatabaseField]
     public bool $bhv = false;
     #[DatabaseField]
-    public bool $masterClass = false;
+    public bool $masterclass = false;
     #[DatabaseField]
     public bool $kleinkoor = false;
     #[DatabaseField]

@@ -135,7 +135,7 @@ final class RegistrationController
             $registration->lunchType = $post->getSimpleString('lunchType');
         }
         $registration->bhv = $post->getBool('bhv');
-        $registration->masterClass = $post->getBool('masterClass');
+        $registration->masterclass = $post->getBool('masterclass');
         $registration->kleinkoor = $post->getBool('kleinkoor');
         $registration->kleinkoorExplanation = $post->getSimpleString('kleinkoorExplanation');
         $registration->participatedBefore = min(9, $post->getInt('participatedBefore'));

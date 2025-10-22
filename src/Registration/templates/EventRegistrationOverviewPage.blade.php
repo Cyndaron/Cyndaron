@@ -88,7 +88,7 @@
                 </td>
                 <td>@if ($registration->lunch){{ $registration->lunchType }} @else Nee @endif</td>
                 <td>
-                    {{ $registration->masterClass|boolToDingbat }}
+                    {{ $registration->masterclass|boolToDingbat }}
                 </td>
 
                 @foreach ($ticketTypes as $ticketType)
