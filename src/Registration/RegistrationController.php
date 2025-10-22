@@ -154,12 +154,6 @@ final class RegistrationController
         $registration->comments = $post->getHTML('comments');
         $registration->approvalStatus = $eventObj->requireApproval ? RegistrationApprovalStatus::UNDECIDED : RegistrationApprovalStatus::APPROVED;
 
-        $registrationTotal = $registration->calculateTotal($this->registrationTicketTypeRepository);
-        if ($registrationTotal === 0.00)
-        {
-            $registration->isPaid = true;
-        }
-
         try
         {
             $this->registrationRepository->save($registration);
@@ -167,7 +161,6 @@ final class RegistrationController
         catch (\Throwable)
         {
             throw new DatabaseError('Opslaan aanmelding mislukt!');
-
         }
 
         assert($registration->id !== null);
@@ -182,6 +175,13 @@ final class RegistrationController
                 $rtt->amount = $registrationTicketTypes[$ticketType->id];
                 $this->registrationTicketTypeRepository->save($rtt);
             }
+        }
+
+        $registrationTotal = $registration->calculateTotal($this->registrationTicketTypeRepository);
+        if ($registrationTotal === 0.00)
+        {
+            $registration->isPaid = true;
+            $this->registrationRepository->save($registration);
         }
 
         return $this->sendIntroductionMail($registration, $mailFactory, $registrationTotal, $registrationTicketTypes, $this->templateRenderer);

@@ -102,7 +102,7 @@ final class Registration extends Model
                 $num -= floor($num / 5);
             }
 
-            $registrationTotal +=  $num * $rtt->ticketType->price;
+            $registrationTotal += $num * $rtt->ticketType->price;
         }
         return $registrationTotal;
     }
