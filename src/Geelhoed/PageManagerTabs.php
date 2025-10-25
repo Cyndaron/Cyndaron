@@ -150,6 +150,7 @@ final class PageManagerTabs
         });
 
         return $templateRenderer->render('Geelhoed/Tryout/Ticket/PageManagerTabOrders', [
+            'event' => $event,
             'orderRecords' => $orderRecords,
         ]);
     }

@@ -1,3 +1,7 @@
+@php /** @var \Cyndaron\Geelhoed\Tryout\Tryout $event */ @endphp
+<h1>{{ $event->name }}</h1>
+<h2>{{ $event->start|dmy }}</h2>
+
 <table class="table table-striped table-bordered">
     <thead>
         <tr>

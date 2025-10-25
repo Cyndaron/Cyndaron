@@ -31,8 +31,9 @@
                     {{ $tryout->getStart()|dmy }}
                 </td>
                 <td>
+                    <a href="/pagemanager/tryoutorders/{{ $tryout->id }}">Voorverkoop</a>
                     @if ($tryout->photoalbumLink !== '')
-                        <a href="{{ $tryout->photoalbumLink }}">Fotoalbums</a>
+                        <br><a href="{{ $tryout->photoalbumLink }}">Fotoalbums</a>
                     @endif
                 </td>
                 <td>
