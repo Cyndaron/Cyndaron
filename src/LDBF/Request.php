@@ -7,6 +7,8 @@ use Cyndaron\DBAL\Model;
 
 final class Request extends Model
 {
+    public const TABLE = 'ldbf_mailform_request';
+
     public string $secretCode = '';
     public string $email = '';
     public string $mailBody = '';
