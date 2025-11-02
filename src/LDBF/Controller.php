@@ -69,7 +69,7 @@ final class Controller
 
         $page = new SimplePage(
             'Bevestig uw e-mailadres',
-            'Wij hebben u een e-mail gestuurd om uw adres te bevestigen. Klik op de link in de e-mail om uw aanvraag te voltooien'
+            'Wij hebben u een e-mail gestuurd om uw adres te bevestigen. Klik op de link in de e-mail om uw aanvraag te voltooien.'
         );
         return $this->pageRenderer->renderResponse($page);
     }
@@ -101,7 +101,7 @@ final class Controller
             throw new DatabaseError('Wegens een technisch probleem is het versturen van de e-mail niet gelukt.');
         }
 
-        $page = new SimplePage('Formulier verstuurd', 'Het versturen is gelukt. U krijgt nog een kopie van de aanvraag per e-mail');
+        $page = new SimplePage('Aanvraag verstuurd', 'Het versturen is gelukt. U krijgt nog een kopie van de aanvraag per e-mail.');
         return $this->pageRenderer->renderResponse($page);
     }
 
