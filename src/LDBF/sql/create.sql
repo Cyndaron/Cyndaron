@@ -2,7 +2,7 @@ create table ldbf_mailform_request
 (
     id         int auto_increment
         primary key,
-    secretCode varchar(9)                         not null,
+    secretCode varchar(10)                        not null,
     email      varchar(200)                       not null,
     mailBody   TEXT                               not null,
     confirmed  bool     default 0                 not null,
