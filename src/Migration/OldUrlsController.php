@@ -22,7 +22,6 @@ class OldUrlsController
 {
     public function __construct(
         private readonly PageRenderer $pageRenderer,
-        private readonly TemplateRenderer $templateRenderer,
     ) {
     }
 
@@ -53,7 +52,7 @@ class OldUrlsController
         }
 
         $id = $request->query->getInt('id');
-        $controller = new MailformController($this->templateRenderer, $this->pageRenderer, $mailformRepository);
+        $controller = new MailformController($this->pageRenderer, $mailformRepository);
         $queryBits = new QueryBits(['mailform', 'process', (string)$id]);
         return $controller->process($queryBits, $requestParameters, $mailFactory);
     }

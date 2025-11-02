@@ -1,12 +1,12 @@
 <?php
-namespace Cyndaron\Mailform;
+namespace Cyndaron\LDBF;
 
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Util\MailFactory;
 use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\Mime\Address;
 
-final class MailFormLDBF
+final class MailformRenderer
 {
     private const MAIL_TEMPLATE_VARS = [
         'geslacht',
@@ -35,13 +35,11 @@ final class MailFormLDBF
         'ookaanvraag',
     ];
 
-    private string $mailBody;
-
-    public function __construct(private readonly MailFactory $mailFactory)
+    public function __construct()
     {
     }
 
-    public function fillMailTemplate(RequestParameters $post, TemplateRenderer $templateRenderer): void
+    public function renderMailBody(RequestParameters $post, TemplateRenderer $templateRenderer): string
     {
         $templateVars = [];
         foreach (self::MAIL_TEMPLATE_VARS as $templateVar)
@@ -54,27 +52,6 @@ final class MailFormLDBF
 
             $templateVars[$templateVar] = $post->getHTML($requestVarName);
         }
-        $this->mailBody = $templateRenderer->render('Mailform/LDBFMail.blade.php', $templateVars);
-    }
-
-    public function sendMail(string $requesterMail): bool
-    {
-        $mail1 = $this->mailFactory->createMailWithDefaults(
-            new Address('voorzitter@leendebroekertfonds.nl'),
-            'Nieuwe aanvraag',
-            null,
-            $this->mailBody
-        );
-        $mail1->addReplyTo(new Address($requesterMail));
-
-        $mail2 = $this->mailFactory->createMailWithDefaults(
-            new Address($requesterMail),
-            'Kopie aanvraag',
-            null,
-            $this->mailBody
-        );
-        $mail2->addReplyTo(new Address('voorzitter@leendebroekertfonds.nl'));
-
-        return $mail1->send() && $mail2->send();
+        return $templateRenderer->render('LDBF/Mailform.blade.php', $templateVars);
     }
 }

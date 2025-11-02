@@ -14,7 +14,6 @@ use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
 use Cyndaron\Util\Error\IncompleteData;
 use Cyndaron\Util\MailFactory;
-use Cyndaron\View\Template\TemplateRenderer;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +24,6 @@ use function strtr;
 final class MailformController
 {
     public function __construct(
-        private readonly TemplateRenderer $templateRenderer,
         private readonly PageRenderer $pageRenderer,
         private readonly MailformRepository $mailformRepository,
     ) {
@@ -56,45 +54,6 @@ final class MailformController
             $page = new SimplePage('Formulier versturen mislukt', $e->getMessage());
             return $this->pageRenderer->renderResponse($page);
         }
-    }
-
-    #[RouteAttribute('process-ldbf', RequestMethod::POST, UserLevel::ANONYMOUS, skipCSRFCheck: true)]
-    public function processLDBF(RequestParameters $post, MailFormLDBF $mailForm): Response
-    {
-        try
-        {
-            $this->processLDBFHelper($post, $mailForm);
-
-            $page = new SimplePage('Formulier verstuurd', 'Het versturen is gelukt.');
-            return $this->pageRenderer->renderResponse($page);
-        }
-        catch (Exception $e)
-        {
-            $page = new SimplePage('Formulier versturen mislukt', $e->getMessage());
-            return $this->pageRenderer->renderResponse($page);
-        }
-    }
-
-    private function processLDBFHelper(RequestParameters $post, MailFormLDBF $mailForm): bool
-    {
-        if ($post->isEmpty())
-        {
-            throw new IncompleteData('Ongeldig formulier.');
-        }
-        if (empty($post->getEmail('E-mailadres')))
-        {
-            throw new IncompleteData('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
-        }
-
-        $mailForm->fillMailTemplate($post, $this->templateRenderer);
-        $mailSent = $mailForm->sendMail($post->getEmail('E-mailadres'));
-
-        if (!$mailSent)
-        {
-            throw new DatabaseError('Wegens een technisch probleem is het versturen van de e-mail niet gelukt.');
-        }
-
-        return true;
     }
 
     /**
