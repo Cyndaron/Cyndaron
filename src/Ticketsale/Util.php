@@ -28,7 +28,7 @@ final class Util
         TicketTypeRepository $ticketTypeRepository,
     ): string {
         $templateVars = [
-            'concerts' => $concertRepository->fetchAll(),
+            'concerts' => $concertRepository->fetchAll(afterWhere: 'ORDER BY date DESC'),
             'urlService' => $urlService,
             'baseUrl' => $request->getSchemeAndHttpHost(),
             'tokenDelete' => $tokenHandler->get('concert', 'delete'),
