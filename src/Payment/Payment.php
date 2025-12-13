@@ -14,26 +14,32 @@ final class Payment
     private string $currency;
     private string $redirectUrl;
     private string $webhookUrl;
+    private string $apiKey;
 
     public function __construct(
         string $description,
         float $amount,
         string $currency,
         string $redirectUrl,
-        string $webhookUrl
+        string $webhookUrl,
+        string $apiKey = ''
     ) {
         $this->description = $description;
         $this->amount = $amount;
         $this->currency = $currency;
         $this->redirectUrl = $redirectUrl;
         $this->webhookUrl = $webhookUrl;
+        if ($apiKey === '')
+        {
+            $apiKey = Setting::get('mollieApiKey');
+        }
+        $this->apiKey = $apiKey;
     }
 
     public function sendToMollie(): MolliePayment
     {
-        $apiKey = Setting::get('mollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
-        $mollie->setApiKey($apiKey);
+        $mollie->setApiKey($this->apiKey);
 
         $formattedAmount = number_format($this->amount, 2, '.', '');
 
