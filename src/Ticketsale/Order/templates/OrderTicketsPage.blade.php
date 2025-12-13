@@ -43,7 +43,7 @@
                     )
                 @endforeach
             </table>
-            <div @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\TicketDelivery::COLLECT_OR_DELIVER) style="display:none" @endif>
+            <div @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\Concert\TicketDelivery::COLLECT_OR_DELIVER) style="display:none" @endif>
                 <input id="bezorgen" name="bezorgen" type="checkbox" value="1" class="recalculateTotal">
                 <label for="bezorgen">
                     Bezorg mijn kaarten thuis (hiervoor worden extra kosten in rekening gebracht)
@@ -156,7 +156,7 @@
                                              class="form-control"/></div>
             </div>
 
-            @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\TicketDelivery::FORCED_PHYSICAL)
+            @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\Concert\TicketDelivery::FORCED_PHYSICAL)
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label" for="postcode">Postcode:</label>
                     <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control" autocomplete="postal-code"/></div>
