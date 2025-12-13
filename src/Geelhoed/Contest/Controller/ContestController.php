@@ -46,10 +46,12 @@ use Cyndaron\User\UserRepository;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Template\TemplateRenderer;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
+use Illuminate\Http\Request as HttpRequest;
 use Mollie\Api\Resources\Payment;
 use PhpOffice\PhpSpreadsheet\Shared\Date as PHPSpreadsheetDate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -87,6 +89,7 @@ final class ContestController
         private readonly ContestDateRepository $contestDateRepository,
         private readonly ContestMemberRepository $contestMemberRepository,
         private readonly MemberRepository $memberRepository,
+        private readonly SettingsRepository $settingsRepository,
     ) {
     }
 
@@ -204,7 +207,8 @@ final class ContestController
     {
         $webhookUrl = "{$schemeAndHost}/api/contest/mollieWebhook";
 
-        $payment = new \Cyndaron\Payment\Payment($description, $price, Currency::EUR, $redirectUrl, $webhookUrl);
+        $apiKey = $this->settingsRepository->get('geelhoed_contestMollieApiKey');
+        $payment = new \Cyndaron\Payment\Payment($description, $price, Currency::EUR, $redirectUrl, $webhookUrl, $apiKey);
         $molliePayment = $payment->sendToMollie();
 
         if (empty($molliePayment->id))
