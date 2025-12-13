@@ -22,12 +22,10 @@ use Cyndaron\Geelhoed\Contest\Page\OverviewPage;
 use Cyndaron\Geelhoed\Contest\Page\ParentAccountsPage;
 use Cyndaron\Geelhoed\Contest\Page\SubscribePage;
 use Cyndaron\Geelhoed\Contest\Page\SubscriptionListPage;
-use Cyndaron\Geelhoed\Graduation\Graduation;
 use Cyndaron\Geelhoed\Graduation\GraduationRepository;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberRepository;
 use Cyndaron\Geelhoed\PageManagerTabs;
-use Cyndaron\Geelhoed\Sport\Sport;
 use Cyndaron\Geelhoed\Sport\SportRepository;
 use Cyndaron\Page\Page;
 use Cyndaron\Page\PageRenderer;
@@ -45,7 +43,6 @@ use Cyndaron\User\UserLevel;
 use Cyndaron\User\UserRepository;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\MailFactory;
-use Cyndaron\Util\Setting;
 use Cyndaron\Util\SettingsRepository;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Template\TemplateRenderer;
@@ -252,7 +249,7 @@ final class ContestController
     #[RouteAttribute('mollieWebhook', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
     public function mollieWebhook(RequestParameters $post): Response
     {
-        $apiKey = Setting::get('geelhoed_contestMollieApiKey');
+        $apiKey = $this->settingsRepository->get('geelhoed_contestMollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
         $mollie->setApiKey($apiKey);
 
@@ -767,7 +764,7 @@ final class ContestController
         if ($contestMember->isPaid)
         {
             $mailText = "{$contestMember->member->profile->getFullName()} heeft zijn/haar inschrijving voor {$contestMember->contest->name} gewijzigd. Het gewicht is nu {$contestMember->weight} kg en de graduatie is: {$contestMember->graduation->name}.";
-            $to = Setting::get('geelhoed_contestMaintainerMail');
+            $to = $this->settingsRepository->get('geelhoed_contestMaintainerMail');
             $mail = $mailFactory->createMailWithDefaults(new Address($to), 'Wijziging inschrijving', $mailText);
             $mail->send();
         }
