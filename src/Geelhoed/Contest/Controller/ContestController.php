@@ -51,7 +51,6 @@ use Cyndaron\Util\Util;
 use Cyndaron\View\Template\TemplateRenderer;
 use Cyndaron\View\Template\ViewHelpers;
 use Exception;
-use Illuminate\Http\Request as HttpRequest;
 use Mollie\Api\Resources\Payment;
 use PhpOffice\PhpSpreadsheet\Shared\Date as PHPSpreadsheetDate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
