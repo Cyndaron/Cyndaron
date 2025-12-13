@@ -3,7 +3,7 @@
 
 @section ('contentSpecificButtons')
 
-    @include('View/Widget/Form/Checkbox', ['id' => 'openForSales', 'label' => 'Open voor verkoop', 'checked' => (bool)($model->openForSales ?? false)])
+    @include('View/Widget/Form/Checkbox', ['id' => 'openForSales', 'label' => 'Open voor verkoop', 'checked' => (bool)($model?->openForSales ?? false)])
 
     @component('View/Widget/Form/FormWrapper', ['id' => 'descriptionWhenClosed', 'label' => 'Beschijving indien gesloten'])
         @slot('right')
@@ -23,21 +23,21 @@
 
     @include('View/Widget/Form/Number', ['id' => 'numFreeSeats', 'label' => 'Aantal vrije plaatsen', 'value' => $numFreeSeats])
 
-    @include('View/Widget/Form/BasicInput', ['id' => 'date', 'type' => 'datetime-local', 'label' => 'Datum', 'value' => $model->date ?? ''])
+    @include('View/Widget/Form/BasicInput', ['id' => 'date', 'type' => 'datetime-local', 'label' => 'Datum', 'value' => $model?->date ?? ''])
 
-    @include('View/Widget/Form/Select', ['id' => 'locationId', 'label' => 'Locatie', 'selected' => $model->location?->id, 'options' => $locations])
+    @include('View/Widget/Form/Select', ['id' => 'locationId', 'label' => 'Locatie', 'selected' => $model?->location?->id, 'options' => $locations])
 
     @component('View/Widget/Form/FormWrapper', ['id' => 'ticketInfo', 'label' => 'Informatie op de tickets'])
         @slot('right')
-            @include('View/Widget/Form/Editor', ['id' => 'ticketInfo', 'value' => $model->ticketInfo ?? ''])
+            @include('View/Widget/Form/Editor', ['id' => 'ticketInfo', 'value' => $model?->ticketInfo ?? ''])
         @endslot
     @endcomponent
 
     <hr>
 
-    @include('View/Widget/Form/Checkbox', ['id' => 'hasReservedSeats', 'label' => 'Heeft gereserveerde plaatsen', 'checked' => (bool)($model->hasReservedSeats ?? false)])
+    @include('View/Widget/Form/Checkbox', ['id' => 'hasReservedSeats', 'label' => 'Heeft gereserveerde plaatsen', 'checked' => (bool)($model?->hasReservedSeats ?? false)])
 
-    @include('View/Widget/Form/Checkbox', ['id' => 'reservedSeatsAreSoldOut', 'label' => 'Gereserveerde plaatsen zijn uitverkocht', 'checked' => (bool)($model->reservedSeatsAreSoldOut ?? false)])
+    @include('View/Widget/Form/Checkbox', ['id' => 'reservedSeatsAreSoldOut', 'label' => 'Gereserveerde plaatsen zijn uitverkocht', 'checked' => (bool)($model?->reservedSeatsAreSoldOut ?? false)])
 
     @include('View/Widget/Form/Number', ['id' => 'numReservedSeats', 'label' => 'Aantal gereserveerde plaatsen', 'value' => $numReservedSeats])
 
