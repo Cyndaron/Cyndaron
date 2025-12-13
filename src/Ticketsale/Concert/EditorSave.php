@@ -64,15 +64,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
             $concert->secretCode = Util::generateSecretCode();
         }
 
-        try
-        {
-            $this->repository->save($concert);
-            $this->userSession->addNotification('Concert opgeslagen.');
-        }
-        catch (\PDOException)
-        {
-            $this->userSession->addNotification('Fout bij opslaan concert');
-        }
+        $this->repository->save($concert);
 
         $this->returnUrl = '/concert/order/' . $concert->id;
 
