@@ -253,7 +253,7 @@ final class ContestController
     #[RouteAttribute('mollieWebhook', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
     public function mollieWebhook(RequestParameters $post): Response
     {
-        $apiKey = Setting::get('mollieApiKey');
+        $apiKey = Setting::get('geelhoed_contestMollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
         $mollie->setApiKey($apiKey);
 
