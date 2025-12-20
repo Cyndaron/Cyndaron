@@ -10,7 +10,7 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\UserLevel;
-use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use PDO;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,18 +21,19 @@ use function base64_encode;
 use function random_bytes;
 use function str_contains;
 
-class Controller
+final class Controller
 {
     public function __construct(
-        protected readonly PageRenderer $pageRenderer,
+        private readonly PageRenderer $pageRenderer,
+        private readonly SettingsRepository $settingsRepository,
     ) {
     }
 
     private function createPDO(): PDO
     {
-        $username = Setting::get('postfix_sql_username');
-        $password = Setting::get('postfix_sql_password');
-        $database = Setting::get('postfix_sql_database');
+        $username = $this->settingsRepository->get('postfix_sql_username');
+        $password = $this->settingsRepository->get('postfix_sql_password');
+        $database = $this->settingsRepository->get('postfix_sql_database');
 
         $pdo = new PDO("mysql://host=localhost;dbname={$database}", $username, $password);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

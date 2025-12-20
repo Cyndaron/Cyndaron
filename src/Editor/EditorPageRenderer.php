@@ -10,6 +10,7 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use Cyndaron\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +28,7 @@ final class EditorPageRenderer
         private readonly PageRenderer $pageRenderer,
         private readonly UrlService $urlService,
         private readonly CategoryRepository $categoryRepository,
+        private readonly SettingsRepository $settingsRepository,
     ) {
     }
 
@@ -82,7 +84,8 @@ final class EditorPageRenderer
             }
             else
             {
-                $editorPage->templateVars['selectedCategories'][Setting::get('defaultCategory')] = 1;
+                $defaultCategoryId = (int)$this->settingsRepository->get('defaultCategory');
+                $editorPage->templateVars['selectedCategories'][$defaultCategoryId] = 1;
             }
 
             $showBreadcrumbs = false;

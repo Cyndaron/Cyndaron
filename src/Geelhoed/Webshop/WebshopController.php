@@ -37,6 +37,7 @@ use Cyndaron\User\UserSession;
 use Cyndaron\Util\MailFactory;
 use Cyndaron\Util\RuntimeUserSafeError;
 use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Template\ViewHelpers;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -324,9 +325,9 @@ Sportschool Geelhoed";
     }
 
     #[RouteAttribute('mollieWebhook', RequestMethod::POST, UserLevel::ANONYMOUS, isApiMethod: true, skipCSRFCheck: true)]
-    public function mollieWebhook(RequestParameters $post, MailFactory $mailFactory): Response
+    public function mollieWebhook(RequestParameters $post, MailFactory $mailFactory, SettingsRepository $settingsRepository): Response
     {
-        $apiKey = Setting::get('mollieApiKey');
+        $apiKey = $settingsRepository->get('mollieApiKey');
         $mollie = new \Mollie\Api\MollieApiClient();
         $mollie->setApiKey($apiKey);
 

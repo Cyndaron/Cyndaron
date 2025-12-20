@@ -12,6 +12,7 @@ use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\UserLevel;
+use Cyndaron\Util\SettingsRepository;
 use Cyndaron\Util\Util;
 use Cyndaron\View\Template\ViewHelpers;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,6 +23,7 @@ final class LocationController
     public function __construct(
         private readonly PageRenderer $pageRenderer,
         private readonly LocationRepository $locationRepository,
+        private readonly SettingsRepository $settingsRepository,
     ) {
     }
 
@@ -41,14 +43,14 @@ final class LocationController
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
-        $page = new LocationPage($location, $this->locationRepository);
+        $page = new LocationPage($location, $this->getNotification(), $this->locationRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('overzicht', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function overview(): Response
     {
-        $page = new LocationOverview($this->locationRepository);
+        $page = new LocationOverview($this->getNotification(), $this->locationRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -57,7 +59,7 @@ final class LocationController
     {
         // Run the value through the slug again to filter out any unwanted characters.
         $city = Util::getSlug($queryBits->getString(2));
-        $page = new LocationOverview($this->locationRepository, LocationFilter::CITY, $city);
+        $page = new LocationOverview($this->getNotification(), $this->locationRepository, LocationFilter::CITY, $city);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -65,7 +67,7 @@ final class LocationController
     public function overviewByDay(QueryBits $queryBits): Response
     {
         $day = $queryBits->getInt(2);
-        $page = new LocationOverview($this->locationRepository, LocationFilter::DAY, (string)$day);
+        $page = new LocationOverview($this->getNotification(), $this->locationRepository, LocationFilter::DAY, (string)$day);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -102,5 +104,10 @@ final class LocationController
 
         $page = new SearchResultsByAgePage($age, $sport, $hourRepository);
         return $this->pageRenderer->renderResponse($page);
+    }
+
+    private function getNotification(): string
+    {
+        return $this->settingsRepository->get('geelhoed_locationNotification');
     }
 }

@@ -16,7 +16,7 @@ use Cyndaron\Photoalbum\PhotoRepository;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
-use Cyndaron\Util\Setting;
+use Cyndaron\Util\SettingsRepository;
 use Cyndaron\View\Template\ViewHelpers;
 use function array_key_exists;
 use function array_map;
@@ -41,6 +41,7 @@ final class Controller
         private readonly GenericRepository $genericRepository,
         private readonly CategoryRepository $categoryRepository,
         private readonly PhotoRepository $photoRepository,
+        private readonly SettingsRepository $settingsRepository,
     ) {
     }
 
@@ -85,8 +86,8 @@ final class Controller
 
     public function listIndex(): ListingResponse
     {
-        $websiteTitle = Setting::get('siteName');
-        $subtitle = Setting::get('subTitle');
+        $websiteTitle = $this->settingsRepository->get('siteName');
+        $subtitle = $this->settingsRepository->get('subTitle');
         $separator = str_repeat('-', strlen($subtitle));
         $entries = [
             $this->menuEntryFactory->createTitleEntry($websiteTitle),

@@ -8,7 +8,6 @@ use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Location\Location;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Ticketsale\Util;
-use Cyndaron\User\UserSession;
 use function assert;
 
 final class EditorSave extends \Cyndaron\Editor\EditorSave
@@ -16,7 +15,6 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
     public function __construct(
         private readonly RequestParameters $post,
         private readonly ImageExtractor    $imageExtractor,
-        private readonly UserSession       $userSession,
         private readonly GenericRepository $repository,
     ) {
     }
