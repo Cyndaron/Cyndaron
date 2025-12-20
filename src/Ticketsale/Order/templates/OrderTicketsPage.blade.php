@@ -32,7 +32,7 @@
             <table class="kaartverkoop table table-striped">
                 <tr>
                     <th>Kaartsoort:</th>
-                    <th>Prijs per stuk:</th>
+                    <th>Prijs:</th>
                     <th>Aantal:</th>
                 </tr>
                 @php /** @var \Cyndaron\Ticketsale\TicketType\TicketType[] $ticketTypes */ @endphp

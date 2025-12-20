@@ -81,7 +81,7 @@
                 <thead>
                     <tr>
                         <th>Kaartsoort:</th>
-                        <th>Prijs per stuk:</th>
+                        <th>Prijs:</th>
                         <th>Aantal:</th>
                     </tr>
                 </thead>
@@ -113,7 +113,7 @@
                 <table class="kaartverkoop table table-striped">
                     <thead>
                     <tr>
-                        <th>Prijs per stuk:</th>
+                        <th>Prijs:</th>
                         <th>Aantal:</th>
                     </tr>
                     </thead>

@@ -14,11 +14,19 @@ table.kaartverkoop tr th
     text-align: left;
 }
 
-table.kaartverkoop tr td,
-table.kaartverkoop tr th
+table.kaartverkoop tr td + td,
+table.kaartverkoop tr th + th
 {
-    padding-right: 30px;
+    padding-left: 30px;
     vertical-align: middle;
+}
+@media (max-width: 767px)
+{
+    table.kaartverkoop tr td + td,
+    table.kaartverkoop tr th + th
+    {
+        padding-left: 20px;
+    }
 }
 
 input.numTickets
