@@ -48,6 +48,7 @@ final class SystemController
         $sr->set('frontPage', $post->getUrl('frontPage'));
         $sr->set('frontPageIsJumbo', (string)(int)$post->getBool('frontPageIsJumbo'));
         $sr->set('mail_logRecipient', $post->getEmail('mail_logRecipient'));
+        $sr->set('mollieApiKey', $post->getSimpleString('mollieApiKey'));
         $sr->buildCache();
 
         // Redirect to GET

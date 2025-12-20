@@ -112,6 +112,7 @@ final class SystemPage extends Page
             ['name' => 'frontPage', 'description' => 'Voorpagina', 'type' => 'text', 'value' => $sr->get('frontPage')],
             ['name' => 'frontPageIsJumbo', 'description' => 'Jumbotron op voorpagina', 'type' => 'checkbox', 'value' => 1, 'extraAttr' => $frontPageIsJumbo ? 'checked' : ''],
             ['name' => 'mail_logRecipient', 'description' => 'Mailadres bij fouten', 'type' => 'email', 'value' => $sr->get('mail_logRecipient')],
+            ['name' => 'mollieApiKey', 'description' => 'API-key voor Mollie', 'type' => 'text', 'value' => $sr->get('mollieApiKey')],
 
         ];
         $this->templateVars['formItems'] = $formItems;
