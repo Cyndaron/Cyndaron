@@ -57,6 +57,11 @@ final class Controller
     public function showOrderForm(QueryBits $queryBits): Response
     {
         $tryout = $this->getRequestedOrCurrentTryout($queryBits->getInt(2));
+        if ($tryout === null)
+        {
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Kaartverkoop gesloten', 'Geen actief tryout-evenement gevonden!'));
+        }
+
         $now = new \DateTimeImmutable();
         if ($now > $tryout->end)
         {
@@ -410,7 +415,7 @@ final class Controller
         return new JsonResponse($answer);
     }
 
-    private function getRequestedOrCurrentTryout(int $eventId): Tryout
+    private function getRequestedOrCurrentTryout(int $eventId): Tryout|null
     {
         $event = $this->tryoutRepository->fetchById($eventId);
         if ($event !== null)
@@ -426,10 +431,6 @@ final class Controller
             [$cutoff->format(Util::SQL_DATE_TIME_FORMAT), $now->format(Util::SQL_DATE_TIME_FORMAT)],
             'ORDER BY start'
         );
-        if ($event == null)
-        {
-            throw new RuntimeUserSafeError('Geen actief tryout-evenement gevonden!');
-        }
 
         return $event;
     }
