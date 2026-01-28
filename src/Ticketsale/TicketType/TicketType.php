@@ -17,4 +17,6 @@ final class TicketType extends Model
     public string $name = '';
     #[DatabaseField]
     public float $price = 0.00;
+    #[DatabaseField]
+    public bool $discountPer5 = false;
 }

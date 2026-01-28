@@ -75,8 +75,6 @@
             @foreach ($orders as $order)
                 @php
                     $orderId = $order->id;
-                    $deliveryCost = $order->delivery * $concert->deliveryCost;
-                    $reservedSeatCharge = $order->hasReservedSeats * $concert->reservedSeatCharge;
                     $isDonor = $order->getAdditionalData()['donor'] ?? false;
                 @endphp
 

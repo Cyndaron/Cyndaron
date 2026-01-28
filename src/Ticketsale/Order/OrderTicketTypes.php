@@ -16,7 +16,7 @@ final class OrderTicketTypes extends Model
     public Order $order;
     #[DatabaseField('tickettypeId')]
     public TicketType $ticketType;
-    /** @deprecated  */
+    /** @deprecated Historic, will always be 1 for new orders. */
     #[DatabaseField]
     public int $amount = 1;
     #[DatabaseField]

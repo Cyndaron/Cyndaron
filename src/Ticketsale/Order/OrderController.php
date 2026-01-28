@@ -64,6 +64,7 @@ final class OrderController
         private readonly ConcertRepository $concertRepository,
         private readonly OrderTicketTypesRepository $orderTicketTypesRepository,
         private readonly LoggerInterface $logger,
+        private readonly OrderHelper $orderHelper,
     ) {
     }
 
@@ -127,9 +128,6 @@ final class OrderController
         bool $addressIsAbroad,
         int $postcode
     ): OrderTotal {
-        $totalPrice = 0.0;
-        $totalNumTickets = 0;
-
         if ($concert->forcedDelivery)
         {
             $qualifiesForFreeDelivery = ($addressIsAbroad) ? false : Util::postcodeQualifiesForFreeDelivery($postcode);
@@ -155,15 +153,8 @@ final class OrderController
 
         $reservedSeatCharge = $reserveSeats ? $concert->reservedSeatCharge : 0;
 
-        foreach ($orderTicketTypes as $orderTicketType)
-        {
-            // Historic, will always be 1 for new orders.
-            $amount = $orderTicketType->amount;
-            $ticketType = $orderTicketType->ticketType;
-            $totalPrice += $amount * $ticketType->price;
-            $totalPrice += $amount * $reservedSeatCharge;
-            $totalNumTickets += $amount;
-        }
+        $ticketTotal = $this->orderHelper->calculateOrderTicketTotal($orderTicketTypes, $reservedSeatCharge);
+        $totalPrice = $ticketTotal['totalPrice'];
 
         $deliveryCostInterface = $concert->getDeliveryCostInterface();
         $tempOrder = new Order();
@@ -175,7 +166,7 @@ final class OrderController
 
         $orderTotal = new OrderTotal();
         $orderTotal->amount = $totalPrice;
-        $orderTotal->numTickets = $totalNumTickets;
+        $orderTotal->numTickets = $ticketTotal['totalNumTickets'];
         $orderTotal->ticketTypes = $orderTicketTypes;
         $orderTotal->payForDelivery = $payForDelivery;
 
@@ -492,7 +483,7 @@ final class OrderController
     }
 
     #[RouteAttribute('pay', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function pay(QueryBits $queryBits, Request $request, UserSession $userSession, OrderHelper $orderHelper): Response
+    public function pay(QueryBits $queryBits, Request $request, UserSession $userSession): Response
     {
         $orderId = $queryBits->getInt(2);
         $order = $this->orderRepository->fetchById($orderId);
@@ -517,7 +508,7 @@ final class OrderController
         }
 
         $concert = $order->concert;
-        $price = $orderHelper->calculateOrderTotal($order);
+        $price = $this->orderHelper->calculateOrderTotal($order);
 
         $description = "Ticket(s) {$concert->name}";
         $baseUrl = $request->getSchemeAndHttpHost();

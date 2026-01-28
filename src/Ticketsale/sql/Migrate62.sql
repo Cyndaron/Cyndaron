@@ -22,3 +22,6 @@ alter table ticketsale_concerts
 #
 # alter table ticketsale_concerts
 #     drop column location;
+
+alter table ticketsale_tickettypes
+    add discountPer5 bool default 0 not null after price;

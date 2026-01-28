@@ -84,6 +84,7 @@ final class ConcertController
             $answer['tickettypes'][] = [
                 'id' => $ticketType->id,
                 'price' => $ticketType->price,
+                'discountPer5' => $ticketType->discountPer5,
             ];
         }
 

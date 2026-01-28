@@ -15,7 +15,7 @@ final class OrderTicketsPage extends Page
 {
     public function __construct(Concert $concert, TicketTypeRepository $ticketTypeRepository)
     {
-        $this->addScript('/src/Ticketsale/Order/js/OrderTicketsPage.js?r=1');
+        $this->addScript('/src/Ticketsale/Order/js/OrderTicketsPage.js?r=2');
 
         $shortCode = strtoupper(Setting::get(BuiltinSetting::SHORT_CODE));
         $specificTemplate = "OrderTicketsPage{$shortCode}-{$concert->id}";

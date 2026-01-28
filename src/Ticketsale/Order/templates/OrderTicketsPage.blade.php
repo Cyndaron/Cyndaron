@@ -39,7 +39,7 @@
                 @foreach ($ticketTypes as $ticketType)
                     @include(
                         'Event/Form/Order/TicketLine',
-                        ['name' => $ticketType->name, 'id' => $ticketType->id, 'price' => $ticketType->price]
+                        ['name' => $ticketType->name, 'id' => $ticketType->id, 'price' => $ticketType->price, 'description' => ($ticketType->discountPer5 ? '5 halen, 4 betalen' : '')]
                     )
                 @endforeach
             </table>

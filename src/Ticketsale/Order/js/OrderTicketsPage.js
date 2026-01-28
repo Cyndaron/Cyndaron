@@ -223,12 +223,17 @@ function calculateTotal(delivery)
     let total = 0.0;
     let totalNumTickets = 0;
     tickettypes.forEach(function (item) {
-        let count = parseInt(document.getElementById('tickettype-' + item.id).value);
-        totalNumTickets += count;
-        total = total + (item.price * count);
-        total = total + (seatSurCharge * count);
+        let amount = parseInt(document.getElementById('tickettype-' + item.id).value);
+        let billedAmount = amount;
+        if (item.discountPer5) {
+            const numFree = Math.floor(amount / 5);
+            billedAmount -= numFree;
+        }
+        totalNumTickets += amount;
+        total = total + (item.price * billedAmount);
+        total = total + (seatSurCharge * billedAmount);
         if (!isZck)
-            total = total + (deliveryCost * count);
+            total = total + (deliveryCost * billedAmount);
     });
 
     if (isZck && delivery)
