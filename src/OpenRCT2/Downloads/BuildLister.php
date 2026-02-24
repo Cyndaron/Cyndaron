@@ -22,7 +22,7 @@ final class BuildLister
     {
         $tagName = $json['tag_name'];
         $publishedAt = DateTimeImmutable::createFromFormat(DateTimeInterface::ATOM, $json['published_at']);
-        $signedBySignPath = $buildType === BuildType::RELEASE && $publishedAt > DateTimeImmutable::createFromFormat('Y-m-d', '2024-12-01');
+        $winBuildSignedBySignPath = $buildType === BuildType::RELEASE && $publishedAt > DateTimeImmutable::createFromFormat('Y-m-d', '2024-12-01');
 
         $artifacts = [];
         foreach ($json['assets'] as $asset)
@@ -34,14 +34,14 @@ final class BuildLister
 
             $gitHubAsset = GitHubAsset::fromArray($asset);
 
-            $artifacts[] = Artifact::fromArray($tagName, $publishedAt, $gitHubAsset, $signedBySignPath);
+            $artifacts[] = Artifact::fromArray($tagName, $publishedAt, $gitHubAsset, $winBuildSignedBySignPath);
         }
         usort($artifacts, function(Artifact $artifact1, Artifact $artifact2)
         {
             return $artifact1->operatingSystem->getPriority() <=> $artifact2->operatingSystem->getPriority();
         });
 
-        return new Build($buildType, $tagName, $json['body'], $publishedAt, $artifacts, $signedBySignPath);
+        return new Build($buildType, $tagName, $json['body'], $publishedAt, $artifacts, $winBuildSignedBySignPath);
     }
 
     /**

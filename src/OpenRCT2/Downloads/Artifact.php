@@ -34,7 +34,7 @@ final class Artifact
     ) {
     }
 
-    public static function fromArray(string $tagName, DateTimeInterface $publishedAt, GitHubAsset $asset, bool $signedBySignPath): self
+    public static function fromArray(string $tagName, DateTimeInterface $publishedAt, GitHubAsset $asset, bool $winBuildSignedBySignPath): self
     {
         $version = $tagName;
         $assetName = strtolower($asset->name);
@@ -76,7 +76,7 @@ final class Artifact
         }
         elseif (str_contains($assetName, 'linux') || str_ends_with($assetName, '.deb') || str_ends_with($assetName, '.rpm'))
         {
-            return self::processLinuxArtifact($asset, $version, $publishedAt, false);
+            return self::processLinuxArtifact($asset, $version, $publishedAt);
         }
         elseif (str_contains($assetName, 'macos'))
         {
@@ -93,10 +93,10 @@ final class Artifact
         }
         elseif (str_contains($assetName, 'windows'))
         {
-            return self::processWindowsArtifact($asset, $version, $publishedAt, $signedBySignPath);
+            return self::processWindowsArtifact($asset, $version, $publishedAt, $winBuildSignedBySignPath);
         }
 
-        return new self($version, $publishedAt, $operatingSystem, $architecture, $osVersion, $type, $asset->size, $asset->browserDownloadUrl, $inDefaultSelection, $signedBySignPath);
+        return new self($version, $publishedAt, $operatingSystem, $architecture, $osVersion, $type, $asset->size, $asset->browserDownloadUrl, $inDefaultSelection, false);
     }
 
     private static function processWindowsArtifact(GitHubAsset $asset, string $version, DateTimeInterface $publishedAt, bool $signedBySignPath): self
@@ -150,7 +150,7 @@ final class Artifact
         );
     }
 
-    private static function processLinuxArtifact(GitHubAsset $asset, string $version, DateTimeInterface $publishedAt, bool $signedBySignPath): self
+    private static function processLinuxArtifact(GitHubAsset $asset, string $version, DateTimeInterface $publishedAt): self
     {
         $type = Type::PORTABLE;
         $inDefaultSelection = false;
@@ -202,7 +202,7 @@ final class Artifact
             $asset->size,
             $asset->browserDownloadUrl,
             $inDefaultSelection,
-            $signedBySignPath
+            false
         );
     }
 }
