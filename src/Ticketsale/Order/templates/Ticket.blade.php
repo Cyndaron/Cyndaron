@@ -13,7 +13,7 @@
     <h1>{{ $concert->name }}</h1>
     <h2>{{ $organisation }}</h2>
     <h4>{{ $concert->date|dmyHm }} uur</h4>
-    <h4>{{ $location->getName() }}</h4>
+    <h4>{{ $concert->getLocationName() }}</h4>
 
     <h1>Kaartsoort: {{ $ticketTypeDescription }}</h1>
     Prijs: {{ $orderTicketType->getPrice()|euro }}<br>
