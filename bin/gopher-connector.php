@@ -1,5 +1,8 @@
 #!/usr/bin/env php
 <?php
+
+use Cyndaron\DBAL\Repository\FileCachedRepository;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Gopher\MenuEntryFactory;
 use Cyndaron\Util\Setting;
 
@@ -26,11 +29,16 @@ $connection = \Cyndaron\DBAL\Connection::create(
     $config->databasePassword,
 );
 $dic->add($connection);
+$dic->add($connection, PDO::class);
 Setting::load($connection);
 $menuEntryFactory = new MenuEntryFactory($gopherDomain, $gopherSubdomain, $gopherPort);
 $dic->add($menuEntryFactory);
 $request = new Symfony\Component\HttpFoundation\Request([]);
 $dic->add($request);
+// Since all repositories ask for a GenericRepository (an interface),
+// we have to help the DIC a bit here.
+$repo = $dic->createClassWithDependencyInjection(FileCachedRepository::class);
+$dic->add($repo, GenericRepository::class);
 
 $controller = $dic->createClassWithDependencyInjection(\Cyndaron\Gopher\Controller::class);
 
