@@ -195,7 +195,7 @@ final class Kernel
         }
 
         $upgradeInsecureRequests = $https ? 'upgrade-insecure-requests;' : '';
-        return "{$upgradeInsecureRequests} frame-ancestors 'self'; default-src 'none'; base-uri 'none'; child-src 'none'; connect-src 'self'; font-src 'self'; frame-src 'self' youtube.com *.youtube.com youtu.be docs.google.com; img-src 'self' https: data:;  manifest-src 'self'; media-src 'self' data: https:; object-src 'none'; script-src $scriptSrc; style-src 'self' 'unsafe-inline'";
+        return "{$upgradeInsecureRequests} frame-ancestors 'self'; default-src 'none'; base-uri 'none'; child-src 'none'; connect-src 'self'; font-src 'self'; frame-src 'self' youtube-nocookie.com *.youtube-nocookie.com youtube.com *.youtube.com youtu.be docs.google.com; img-src 'self' https: data:;  manifest-src 'self'; media-src 'self' data: https:; object-src 'none'; script-src $scriptSrc; style-src 'self' 'unsafe-inline'";
     }
 
     private function loadModules(CyndaronConfig $config): ModuleRegistry
