@@ -127,7 +127,7 @@ final class PageManagerTabs
             );
             if ($event == null)
             {
-                throw new \Exception('Evenement niet gevonden!');
+                return 'Geen actual toernooi.';
             }
         }
 
