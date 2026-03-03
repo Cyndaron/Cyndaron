@@ -30,7 +30,7 @@ final class Sender
         try
         {
             $unsubscribeLink = $this->addressHelper->getUnsubscribeLink($toAddress->getAddress());
-            $unsubscribeMessage = '<hr><i>U ontvangt deze e-mail omdat u lid bent of omdat zich heeft ingeschreven voor de nieuwsbrief. <a href="' . $unsubscribeLink . '">Klik hier om u uit te schrijven.</a></i>';
+            $unsubscribeMessage = '<hr><i>U ontvangt deze e-mail omdat u lid bent of omdat u zich heeft ingeschreven voor de nieuwsbrief. <a href="' . $unsubscribeLink . '">Klik hier om u uit te schrijven.</a></i>';
 
             $email = (new Email())
                 ->from($this->fromAddress)
