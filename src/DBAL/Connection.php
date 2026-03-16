@@ -25,7 +25,6 @@ final class Connection extends PDO
         {
             $options = [];
         }
-        $options[PDO::ATTR_PERSISTENT] = true;
         $options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
         // Setting this to false makes PDO use native prepared statements.
         $options[PDO::ATTR_EMULATE_PREPARES] = false;
