@@ -6,6 +6,8 @@ namespace Cyndaron\OpenRCT2\Downloads;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Page\Page;
 use Cyndaron\Page\SimplePage;
+use Cyndaron\Translation\Translator;
+use Illuminate\Http\Request;
 use function explode;
 use function str_starts_with;
 use function substr;
@@ -20,8 +22,10 @@ use function is_string;
 
 final class ChangelogPageFactory
 {
-    public function __construct(private readonly APIFetcher $fetcher)
-    {
+    public function __construct(
+        private readonly APIFetcher $fetcher,
+        private readonly Translator $t
+    ) {
     }
 
     public function getPageForGeneralChangelog(): Page
@@ -44,7 +48,7 @@ final class ChangelogPageFactory
                 $mainRepo = 'OpenRCT2/OpenLauncher';
                 break;
             default:
-                throw new \Exception('Cannot show changelog for these builds!');
+                throw new \Exception($this->t->get('Cannot show changelog for these builds!'));
         }
 
         $foundBuild = null;
@@ -59,12 +63,12 @@ final class ChangelogPageFactory
 
         if ($foundBuild === null)
         {
-            $page = new ErrorPage('Version not found!', "Could not find version {$version}!");
+            $page = new ErrorPage($this->t->get('Version not found!'), sprintf($this->t->get("Could not find version %s!"), $version));
             return $page->toPage();
         }
 
-        $contents = str_replace("\r\n", "\n", $foundBuild->body); //nl2br($foundBuild->body);
-        $page = new SimplePage("Changelog for {$version}", $this->render($contents, $mainRepo));
+        $contents = str_replace("\r\n", "\n", $foundBuild->body);
+        $page = new SimplePage(sprintf($this->t->get('Changelog for %s'), $version), $this->render($contents, $mainRepo));
         return $page->toPage();
     }
 

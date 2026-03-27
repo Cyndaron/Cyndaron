@@ -4,9 +4,9 @@
         <h5 class="card-title">{{ $artifact->operatingSystem->getFriendlyName() }}</h5>
         <h6 class="card-subtitle mb-2 text-muted">
             {{ $artifact->architecture->getFriendlyName() }},
-            {{ $artifact->type->getFriendlyName() }}
+            {{ $t->get($artifact->type->getFriendlyName()) }}
         </h6>
-        <p class="card-text">Size: {{ \Cyndaron\Util\Util::formatSize($artifact->size) }}</p>
-        <a href="{{ $artifact->downloadLink }}" class="card-link">Download</a>
+        <p class="card-text">{{ $t->get('Size:') }} {{ \Cyndaron\Util\Util::formatSize($artifact->size) }}</p>
+        <a href="{{ $artifact->downloadLink }}" class="card-link">{{ $t->get('Download') }}</a>
     </div>
 </div>

@@ -2,13 +2,13 @@
 
 @section('contents')
     <h2>
-        {{ $newestBuild->version }} (latest)
+        {{ $newestBuild->version }} {{ $t->get('(latest)') }}
     </h2>
     @php /** @var \Cyndaron\OpenRCT2\Downloads\Build $newestBuild */ @endphp
     @include('OpenRCT2/Downloads/BuildListing', ['build' => $newestBuild])
 
     @php /** @var \Cyndaron\OpenRCT2\Downloads\Build[] $olderBuilds */ @endphp
-    <h2>Older builds</h2>
+    <h2>{{ $t->get('Older builds') }}</h2>
     <div id="older-builds">
         @foreach ($olderBuilds as $build)
 

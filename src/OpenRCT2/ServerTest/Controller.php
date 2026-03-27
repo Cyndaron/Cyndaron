@@ -8,6 +8,7 @@ use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
+use Cyndaron\Translation\Translator;
 use Cyndaron\User\UserLevel;
 use RuntimeException;
 use Safe\Exceptions\JsonException;
@@ -35,10 +36,10 @@ final class Controller
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function get(Request $request): Response
+    public function get(Request $request, Translator $t): Response
     {
         $page = new Page();
-        $page->title = 'Server test';
+        $page->title = $t->get('Server test');
         $page->template = 'OpenRCT2/ServerTest/FormPage';
         $ip = $request->headers->get('X-Forwarded-For') ?: $request->getClientIp();
         $page->addTemplateVar('currentIP', $ip);
@@ -47,7 +48,7 @@ final class Controller
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::ANONYMOUS)]
-    public function post(RequestParameters $post): Response
+    public function post(RequestParameters $post, Translator $t): Response
     {
         $ip = $post->getSimpleString('ip');
         /** @var string $ip */
@@ -95,15 +96,15 @@ final class Controller
         }
         catch (JsonException $e)
         {
-            $message = 'A connection was established, but the resulting data could not be parsed.';
+            $message = $t->get('A connection was established, but the resulting data could not be parsed.');
         }
         catch (\Throwable)
         {
-            $message = 'Could not connect to server';
+            $message = $t->get('Could not connect to server.');
         }
 
         $page = new Page();
-        $page->title = 'Server test results';
+        $page->title = $t->get('Server test results');
         $page->template = 'OpenRCT2/ServerTest/ResultPage';
 
         return $this->renderer->renderResponse($page, [

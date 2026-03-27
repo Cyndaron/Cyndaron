@@ -13,6 +13,7 @@ use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\RouteAttribute;
+use Cyndaron\Translation\Translator;
 use Cyndaron\User\UserLevel;
 use Psr\Log\LoggerInterface;
 use ReflectionEnum;
@@ -24,7 +25,8 @@ use function assert;
 final class DownloadController
 {
     public function __construct(
-        protected readonly PageRenderer $pageRenderer,
+        private readonly PageRenderer $pageRenderer,
+        private readonly Translator $t
     ) {
     }
 
@@ -34,13 +36,13 @@ final class DownloadController
         {
             $builds = BuildLister::fetchAndProcessBuilds($call);
 
-            $page = new DownloadPage($name, $builds);
+            $page = new DownloadPage($this->t->get($name), $builds);
             return $this->pageRenderer->renderResponse($page);
         }
         catch (\Throwable $e)
         {
-            $logger->error('Error retrieving builds: ' . $e);
-            return $this->pageRenderer->renderErrorResponse(new ErrorPage($name, 'Could not retrieve list!'));
+            $logger->error($this->t->get('Error retrieving builds: ') . $e);
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage($name, $this->t->get('Could not retrieve list!')));
         }
     }
 
@@ -65,7 +67,7 @@ final class DownloadController
     #[RouteAttribute('changelog', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function showChangelog(QueryBits $queryBits): Response
     {
-        $factory = new ChangelogPageFactory(new APIFetcher());
+        $factory = new ChangelogPageFactory(new APIFetcher(), $this->t);
         if ($queryBits->hasIndex(2))
         {
             $buildType = BuildType::from($queryBits->getString(2));

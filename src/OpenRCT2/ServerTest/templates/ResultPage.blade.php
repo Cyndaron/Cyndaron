@@ -10,8 +10,8 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Key</th>
-                <th>Value</th>
+                <th>{{ $t->get('Key') }}</th>
+                <th>{{ $t->get('Value') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -26,7 +26,7 @@
                             @endforeach
                         </ul>
                     @elseif (is_bool($value))
-                        {{ $value ? 'Yes' : 'No' }}
+                        {{ $t->get($value ? 'Yes' : 'No') }}
                     @else
                         {{ $value }}
                     @endif

@@ -11,6 +11,7 @@ namespace Cyndaron\OpenRCT2\Downloads;
 use Cyndaron\OpenRCT2\Downloads\Classification\Architecture;
 use Cyndaron\OpenRCT2\Downloads\Classification\OperatingSystem;
 use Cyndaron\OpenRCT2\Downloads\Classification\Type;
+use Cyndaron\Translation\Translator;
 use Cyndaron\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
 use function preg_replace_callback;
@@ -22,8 +23,10 @@ use function implode;
 
 final class DownloadProcessor implements \Cyndaron\Module\TextPostProcessor
 {
-    public function __construct(private readonly Request $request)
-    {
+    public function __construct(
+        private readonly Request $request,
+        private readonly Translator $t
+    ) {
     }
 
     public function process(string $text): string
@@ -64,10 +67,10 @@ final class DownloadProcessor implements \Cyndaron\Module\TextPostProcessor
         ];
         if ($artifact->signedWithSignPath)
         {
-            $informationParts[] = '<a href="/code-signing-policy">Signed</a>';
+            $informationParts[] = '<a href="/code-signing-policy">' . $this->t->get('Signed') . '</a>';
         }
 
-        $firstLine = '<a href="' . $artifact->downloadLink . '">' . $title . '</a>';
+        $firstLine = '<a href="' . $artifact->downloadLink . '">' . $this->t->get($title) . '</a>';
         $secondLine = '<div class="information">' . implode(' — ', $informationParts) . '</div>';
 
         return $firstLine . $secondLine;

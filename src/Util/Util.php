@@ -7,6 +7,7 @@
 namespace Cyndaron\Util;
 
 use Cyndaron\CyndaronInfo;
+use NumberFormatter;
 use RuntimeException;
 use Safe\DateTimeImmutable;
 use Safe\Exceptions\FilesystemException;
@@ -190,8 +191,10 @@ final class Util
             $size /= 1024;
         }
 
+        $language = Setting::get(BuiltinSetting::LANGUAGE) ?: 'nl';
+        $formatter = new NumberFormatter($language, NumberFormatter::DECIMAL);
         $postfix = self::BYTE_POSTFIXES[$power];
-        return number_format($size, 1) . $postfix;
+        return $formatter->format(round($size, 1)) . $postfix;
     }
 
     public static function fetch(string $url): string
