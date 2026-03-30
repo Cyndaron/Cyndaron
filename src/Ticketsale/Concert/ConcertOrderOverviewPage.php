@@ -5,21 +5,20 @@ use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\Page;
 use Cyndaron\Ticketsale\Order\OrderHelper;
 use Cyndaron\Ticketsale\Order\OrderRepository;
+use Cyndaron\Ticketsale\TicketType\TicketTypeRepository;
 use function array_key_exists;
 
 final class ConcertOrderOverviewPage extends Page
 {
     public string $extraBodyClasses = 'ticketsale-concert-order-overview';
 
-    private const TICKET_TYPES_QUERY = 'SELECT * FROM `ticketsale_tickettypes` WHERE concertId=? ORDER BY price DESC';
-
     private const BOUGHT_TICKET_TYPES_QUERY = 'SELECT orderId, tickettypeId, SUM(amount) AS amount
         FROM `ticketsale_orders_tickettypes`
         GROUP BY orderId,tickettypeId;';
 
-    public function __construct(Concert $concert, OrderRepository $orderRepository, Connection $connection, OrderHelper $orderHelper)
+    public function __construct(Concert $concert, TicketTypeRepository $ticketTypeRepository, OrderRepository $orderRepository, Connection $connection, OrderHelper $orderHelper)
     {
-        $ticketTypes = $connection->doQueryAndFetchAll(self::TICKET_TYPES_QUERY, [$concert->id]);
+        $ticketTypes = $ticketTypeRepository->fetchByConcertAndSortByPrice($concert);
         $ticketTypesByOrder = $this->getTicketTypesPerOrder($connection);
         $orders = $orderRepository->fetchByConcert($concert);
         $totals = [];

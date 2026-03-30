@@ -12,6 +12,7 @@
 
     @php /** @var \Cyndaron\Ticketsale\Concert\Concert $concert */ @endphp
     @php /** @var \Cyndaron\Ticketsale\Order\OrderHelper $orderHelper */ @endphp
+    @php /** @var \Cyndaron\Ticketsale\TicketType\TicketType[] $ticketTypes */ @endphp
     <table class="overzichtBestellingen table table-striped">
         <thead>
             <tr class="rotate">
@@ -35,7 +36,7 @@
                 </th>
 
                 @foreach ($ticketTypes as $ticketType)
-                    <th class="rotate"><div><span>{{ $ticketType['name'] }}</span></div></th>
+                    <th class="rotate"><div><span>{{ $ticketType->name }}</span></div></th>
                 @endforeach
 
                 <th class="rotate">
@@ -91,9 +92,9 @@
 
                     @foreach ($ticketTypes as $ticketType)
                         <td>
-                        @if (\array_key_exists($order->id, $ticketTypesByOrder) && \array_key_exists($ticketType['id'], $ticketTypesByOrder[$order->id]))
-                            <b>{{ $ticketTypesByOrder[$order->id][$ticketType['id']] }}</b>
-                            @php $isDonor = $isDonor || str_contains(strtolower($ticketType['name']), 'donateur'); @endphp
+                        @if (\array_key_exists($order->id, $ticketTypesByOrder) && \array_key_exists($ticketType->id, $ticketTypesByOrder[$order->id]))
+                            <b>{{ $ticketTypesByOrder[$order->id][$ticketType->id] }}</b>
+                            @php $isDonor = $isDonor || str_contains(strtolower($ticketType->name), 'donateur'); @endphp
                         @else
                             &nbsp;
                         @endif
@@ -165,8 +166,8 @@
         <tbody>
             @foreach ($ticketTypes as $ticketType)
             <tr>
-                <td>{{ $ticketType['name'] }}</td>
-                <td>{{ $totals[$ticketType['id']] ?? 0 }}</td>
+                <td>{{ $ticketType->name }}</td>
+                <td>{{ $totals[$ticketType->id] ?? 0 }}</td>
             </tr>
             @endforeach
         </tbody>

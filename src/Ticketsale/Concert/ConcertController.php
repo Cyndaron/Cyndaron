@@ -112,7 +112,7 @@ final class ConcertController
     }
 
     #[RouteAttribute('viewOrders', RequestMethod::GET, UserLevel::ADMIN)]
-    public function viewOrders(QueryBits $queryBits, OrderRepository $orderRepository, Connection $connection, OrderHelper $orderHelper): Response
+    public function viewOrders(QueryBits $queryBits, TicketTypeRepository $ticketTypeRepository, OrderRepository $orderRepository, Connection $connection, OrderHelper $orderHelper): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -122,7 +122,7 @@ final class ConcertController
         }
         $concert = $this->concertRepository->fetchById($id);
         assert($concert !== null);
-        $page = new ConcertOrderOverviewPage($concert, $orderRepository, $connection, $orderHelper);
+        $page = new ConcertOrderOverviewPage($concert, $ticketTypeRepository, $orderRepository, $connection, $orderHelper);
         return $this->pageRenderer->renderResponse($page);
     }
 
