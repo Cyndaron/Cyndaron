@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Menu;
 
-use Cyndaron\DBAL\Connection;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\DBAL\DatabaseError;
@@ -21,23 +20,35 @@ final class MenuController
 
     }
 
-    #[RouteAttribute('addItem', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
-    public function addItem(RequestParameters $post, Connection $connection): JsonResponse
+    private function getCurrentMaximumPriority(): int
     {
+        $maxPriority = 0;
+        foreach ($this->menuItemRepository->fetchAll() as $menuItem)
+        {
+            if ($menuItem->priority > $maxPriority)
+            {
+                $maxPriority = $menuItem->priority;
+            }
+        }
+
+        return $maxPriority;
+    }
+
+    #[RouteAttribute('addItem', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
+    public function addItem(RequestParameters $post): JsonResponse
+    {
+        $priority = $post->getInt('priority');
+        if ($priority === 0)
+        {
+            $priority = $this->getCurrentMaximumPriority() + 1;
+        }
+
         $menuItem = new MenuItem();
         $menuItem->link = $post->getUrl('link');
         $menuItem->alias = $post->getSimpleString('alias');
         $menuItem->isDropdown = $post->getBool('isDropdown');
         $menuItem->isImage = $post->getBool('isImage');
-        if ($post->hasVar('priority'))
-        {
-            $menuItem->priority = $post->getInt('priority');
-        }
-        else
-        {
-            $currentHighPriority = (int)($connection->doQueryAndFetchOne('SELECT MAX(priority) FROM menu'));
-            $menuItem->priority = $currentHighPriority + 1;
-        }
+        $menuItem->priority = $priority;
 
         $this->menuItemRepository->save($menuItem);
         return new JsonResponse();
