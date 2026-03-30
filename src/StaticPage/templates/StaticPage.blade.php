@@ -1,4 +1,5 @@
 @extends('Index')
+@php /** @var \Cyndaron\StaticPage\Reply[] $replies */ @endphp
 
 @section ('titleControls')
     <a href="/editor/sub/{{ $model->id }}" class="btn btn-outline-cyndaron" title="Bewerk deze statische pagina">@include('View/Widget/Icon', ['type' => 'edit'])</a>
@@ -13,10 +14,10 @@
     @foreach ($replies as $reply)
         <article class="card mb-2">
             <div class="card-header">
-                Reactie van <strong>{{ $reply['author'] }}</strong> op <time datetime="{{ $reply['created'] }}">{{ $reply['friendlyDate'] }} om {{ $reply['friendlyTime'] }}</time>
+                Reactie van <strong>{{ $reply->author }}</strong> op <time datetime="{{ $reply->created }}">{{ $reply->created|dmyHm }}</time>
             </div>
             <div class="card-body">
-                {{ $reply['text'] }}
+                {{ $reply->text }}
             </div>
         </article>
     @endforeach

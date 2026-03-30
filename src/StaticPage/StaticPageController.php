@@ -29,7 +29,7 @@ final class StaticPageController
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function routeGet(QueryBits $queryBits, TextRenderer $textRenderer, Connection $connection): Response
+    public function routeGet(QueryBits $queryBits, TextRenderer $textRenderer, ReplyRepository $replyRepository): Response
     {
         $id = $queryBits->getInt(1);
         if ($id < 1)
@@ -42,7 +42,7 @@ final class StaticPageController
             $page = new SimplePage('Fout', 'Statische pagina niet gevonden.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
-        $page = new StaticPage($model, $this->staticPageRepository, $connection, $textRenderer);
+        $page = new StaticPage($model, $this->staticPageRepository, $replyRepository, $textRenderer);
         return $this->pageRenderer->renderResponse($page);
     }
 
