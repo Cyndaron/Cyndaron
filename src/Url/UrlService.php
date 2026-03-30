@@ -5,10 +5,10 @@ namespace Cyndaron\Url;
 
 use Closure;
 use Cyndaron\Base\ModuleRegistry;
-use Cyndaron\DBAL\Connection;
-use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\Repository\GenericRepository;
+use Cyndaron\FriendlyUrl\FriendlyUrl;
+use Cyndaron\FriendlyUrl\FriendlyUrlRepository;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Util\Error\IncompleteData;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +30,7 @@ class UrlService
     private string $requestUri;
 
     public function __construct(
-        private readonly Connection $connection,
+        private readonly FriendlyUrlRepository $friendlyUrlRepository,
         private readonly GenericRepository $genericRepository,
         Request $request,
         ModuleRegistry $registry,
@@ -58,9 +58,9 @@ class UrlService
             }
         }
 
-        if ($name = $this->connection->doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target=?', [$link]))
+        if ($friendly = $this->friendlyUrlRepository->fetchByTarget($link))
         {
-            return $name;
+            return $friendly->name;
         }
 
         return $link;
@@ -68,9 +68,9 @@ class UrlService
 
     public function toFriendly(Url|string $url): Url
     {
-        if ($friendly = $this->connection->doQueryAndFetchOne('SELECT name FROM friendlyurls WHERE target=?', [(string)$url]))
+        if ($friendly = $this->friendlyUrlRepository->fetchByTarget((string)$url))
         {
-            return new Url('/' . $friendly);
+            return new Url('/' . $friendly->name);
         }
 
         return is_string($url) ? new Url($url) : $url;
@@ -78,9 +78,9 @@ class UrlService
 
     public function toUnfriendly(Url|string $url): Url
     {
-        if ($unfriendly = $this->connection->doQueryAndFetchOne('SELECT target FROM friendlyurls WHERE name=?', [trim((string)$url, '/')]))
+        if ($friendly = $this->friendlyUrlRepository->fetchByName((string)$url))
         {
-            return new Url($unfriendly);
+            return new Url($friendly->target);
         }
 
         return is_string($url) ? new Url($url) : $url;
@@ -102,10 +102,11 @@ class UrlService
         {
             throw new IncompleteData('Cannot create friendly URL with no name or no URL!');
         }
-        if ($this->connection->insert('INSERT INTO friendlyurls(name,target) VALUES (?,?)', [$name, (string)$unfriendlyUrl]) === false)
-        {
-            throw new DatabaseError('Could not insert friendly URL! Is the URL unique?');
-        }
+
+        $model = new FriendlyUrl();
+        $model->name = $name;
+        $model->target = (string)$unfriendlyUrl;
+        $this->friendlyUrlRepository->save($model);
     }
 
     public function isCurrentPage(Url|string $url): bool
