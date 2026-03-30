@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Ticketsale\Order;
 
 use Cyndaron\Mail\Mail;
-use Cyndaron\Request\UrlInfo;
 use Cyndaron\Ticketsale\Concert\Concert;
-use Cyndaron\Ticketsale\Concert\TicketDelivery;
 use Cyndaron\Ticketsale\TicketType\TicketType;
 use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\MailFactory;
@@ -44,51 +42,6 @@ final class OrderConfirmationMailFactory
         return $orderTicketTypeStats;
     }
 
-    private function getDeliveryText(Order $order, Concert $concert): string
-    {
-        if ($concert->getDelivery() === TicketDelivery::DIGITAL)
-        {
-            $deliveryText = 'per e-mail aan u opgestuurd worden';
-        }
-        elseif ($order->delivery || ($concert->forcedDelivery && !$order->deliveryByMember))
-        {
-            $deliveryText = 'naar uw adres verstuurd worden';
-        }
-        elseif ($concert->forcedDelivery && $order->deliveryByMember)
-        {
-            $deliveryText = 'worden meegegeven aan ' . $order->deliveryMemberName;
-        }
-        else
-        {
-            $deliveryText = 'voor u klaargelegd worden bij de ingang van de kerk';
-        }
-
-        return $deliveryText;
-    }
-
-    public function getPaymentText(Order $order, TicketDelivery $deliveryType, float $total, string $paymentLink): string
-    {
-        if ($deliveryType === TicketDelivery::DIGITAL)
-        {
-            return "
-
-U kunt betalen via deze link: {$paymentLink}
-
-";
-        }
-        else
-        {
-            return '
-
-Gebruik bij het betalen de volgende gegevens:
-   Rekeningnummer: NL06INGB0000545925 t.n.v. Vlissingse Oratorium Vereniging
-   Bedrag: ' . ViewHelpers::formatEuro($total) . '
-   Onder vermelding van: bestelnummer ' . $order->id . '
-
-';
-        }
-    }
-
     public function getReservedSeatsText(OrderReserveSeats $reserveSeats): string
     {
         /*if ($reserveSeats === OrderReserveSeats::RESERVE)
@@ -110,9 +63,6 @@ Gebruik bij het betalen de volgende gegevens:
 Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
 
         $extraFields = [
-            'Straatnaam en huisnummer' => $order->street,
-            'Postcode' => $order->postcode,
-            'Woonplaats' => $order->city,
             'Opmerkingen' => $order->comments,
         ];
 
@@ -134,6 +84,7 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
      * @param float $total
      * @param TicketType[] $ticketTypes
      * @param OrderTicketTypes[] $orderTicketTypes
+     * @param string $paymentLink
      * @return Mail
      */
     public function create(Order $order, Concert $concert, OrderReserveSeats $reserveSeats, float $total, array $ticketTypes, array $orderTicketTypes, string $paymentLink): Mail
@@ -141,18 +92,15 @@ Voorletters: ' . $order->initials . PHP_EOL . PHP_EOL;
         $orderTicketTypeStats = $this->getOrderTicketTypeStats($orderTicketTypes);
 
         $organisation = Setting::get(BuiltinSetting::ORGANISATION);
-        $deliveryText = $this->getDeliveryText($order, $concert);
         $reservedSeatsText = $this->getReservedSeatsText($reserveSeats);
-        $text = 'Hartelijk dank voor uw bestelling bij ' . $organisation . '.
-Na betaling zullen uw kaarten ' . $deliveryText . '.' . $reservedSeatsText;
+        $text = "Hartelijk dank voor uw bestelling bij {$organisation}.
+Na betaling zullen uw kaarten per e-mail aan u opgestuurd worden." . $reservedSeatsText . "
 
-        $deliveryType = $concert->getDelivery();
-        $text .= $this->getPaymentText($order, $deliveryType, $total, $paymentLink);
+U kunt betalen via deze link: {$paymentLink}
 
-        $text .= '
 Hieronder volgt een overzicht van uw bestelling.
 
-Bestelnummer: ' . $order->id . '
+Bestelnummer: {$order->id}" . '
 
 Kaartsoorten:
 ';
@@ -163,10 +111,6 @@ Kaartsoorten:
             {
                 $text .= '   ' . $ticketType->name . ': ' . $numTicketsOfType . ' à ' . ViewHelpers::formatEuro($ticketType->price) . PHP_EOL;
             }
-        }
-        if ($deliveryType === TicketDelivery::COLLECT_OR_DELIVER)
-        {
-            $text .= PHP_EOL . 'Kaarten bezorgen: ' . ViewHelpers::boolToText($order->delivery);
         }
 
         if ($concert->hasReservedSeats)

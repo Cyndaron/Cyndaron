@@ -1,5 +1,5 @@
 /**
- * Copyright © 2009-2025 Michael Steenbeek
+ * Copyright © 2009-2026 Michael Steenbeek
  *
  * Cyndaron is licensed under the MIT License. See the LICENSE file for more
  * details.
@@ -9,8 +9,6 @@
 
 const concertId = $('#concertId').val();
 let tickettypes;
-let deliveryType;
-let addressIsAbroad = false;
 let defaultDeliveryCost;
 let reservedSeatCharge;
 
@@ -18,7 +16,6 @@ $.ajax('/api/concert/getInfo/' + concertId, {
     dataType: "json"
 }).done(function (json) {
     tickettypes = json.tickettypes;
-    deliveryType = parseInt(json.deliveryType);
     defaultDeliveryCost = json.defaultDeliveryCost;
     reservedSeatCharge = json.reservedSeatCharge;
 });
@@ -65,21 +62,6 @@ function checkNameAndEmail()
     return (lastName.length > 0 && initials.length > 0 && email.length > 0)
 }
 
-function checkAddressInfo(delivery, deliveryByMember)
-{
-    if (addressIsRequired(delivery, deliveryByMember))
-    {
-        let street = document.getElementById('street').value;
-        let postcode = document.getElementById('postcode').value;
-        let city = document.getElementById('city').value;
-
-        if (!(street.length > 0 && postcode.length > 0 && city.length > 0))
-            return false;
-    }
-
-    return true;
-}
-
 function checkForm()
 {
     if (!checkGeneralFormFields())
@@ -91,66 +73,13 @@ function checkForm()
         return false;
     }
 
-    const delivery = document.getElementById('bezorgen').checked;
-    const deliveryByMemberElem = document.getElementById('deliveryByMember');
-    const deliveryByMember = deliveryByMemberElem ? deliveryByMemberElem.checked : false;
-    if (!checkAddressInfo(delivery, deliveryByMember))
-    {
-        return false;
-    }
-
-    if ((deliveryByMember || addressIsAbroad) &&
-        document.getElementById('deliveryMemberName').value.length < 2)
-        return false;
-
     return true;
 }
 
 function blockFormOnInvalidInput()
 {
-    let invoerIsCorrect = checkForm();
-
-    document.getElementById('verzendknop').disabled = !invoerIsCorrect;
-}
-
-function postcodeQualifiesForFreeDelivery(postcode)
-{
-    if (addressIsAbroad === true)
-        return false;
-
-    postcode = parseInt(postcode);
-
-    if (postcode >= 4330 && postcode <= 4399)
-        return true;
-    else
-        return false;
-}
-
-function updateAddressRequirement(delivery, deliveryByMember)
-{
-    const isRequired = addressIsRequired(delivery, deliveryByMember);
-    const newText = (isRequired) ? "Uw adresgegevens (verplicht):" : "Uw adresgegevens (niet verplicht):";
-    document.getElementById('adresgegevensKop').innerHTML = newText;
-}
-
-function addressIsRequired(delivery, deliveryByMember)
-{
-    if (deliveryType === 2)
-    {
-        return false;
-    }
-    else if (deliveryByMember)
-    {
-        return false;
-    }
-    else if (deliveryType === 1)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    let inputIsCorrect = checkForm();
+    document.getElementById('verzendknop').disabled = !inputIsCorrect;
 }
 
 function updateVisibleTotal(total)
@@ -161,58 +90,8 @@ function updateVisibleTotal(total)
     document.getElementById('prijsvak').innerHTML = totalFormatted;
 }
 
-function updateAddressIsAbroadFields()
+function calculateTotal()
 {
-    const deliverybyMemberElem = document.getElementById('deliveryByMember');
-
-    if (addressIsAbroad)
-    {
-        if (deliverybyMemberElem)
-        {
-            deliverybyMemberElem.checked = true;
-            deliverybyMemberElem.disabled = true;
-        }
-
-
-        $('.postcode-related').css({display: 'none'});
-    }
-    else
-    {
-        if (deliverybyMemberElem)
-        {
-            deliverybyMemberElem.disabled = false;
-        }
-
-        $('.postcode-related').css({display: 'flex'});
-    }
-}
-
-function zckGetDeliveryPrice(numTickets)
-{
-    numTickets = parseInt(numTickets);
-    if (numTickets <= 0)
-        return 0.0;
-    if (numTickets === 1)
-        return 2.0;
-    if (numTickets === 2)
-        return 3.0;
-    if (numTickets >= 3 && numTickets <= 7)
-        return 4.0;
-
-    return 5.0;
-}
-
-function calculateTotal(delivery)
-{
-    const organisation = $('#organisation-value').val();
-    const isZck = (organisation === 'Vlissingse Oratorium Vereniging' ||
-        organisation === 'Zeeuws Concertkoor');
-    let deliveryCost = 0.0;
-    if (delivery)
-    {
-        deliveryCost = defaultDeliveryCost;
-    }
-
     let seatSurCharge = 0.0;
     const hasReservedElement = document.getElementById('hasReservedSeats-1');
     if (hasReservedElement && hasReservedElement.checked)
@@ -232,66 +111,15 @@ function calculateTotal(delivery)
         totalNumTickets += amount;
         total = total + (item.price * billedAmount);
         total = total + (seatSurCharge * billedAmount);
-        if (!isZck)
-            total = total + (deliveryCost * billedAmount);
     });
-
-    if (isZck && delivery)
-    {
-        total += zckGetDeliveryPrice(totalNumTickets);
-    }
 
     return total;
 }
 
 function updateForm()
 {
-    updateAddressIsAbroadFields();
-
-    let delivery = false;
-    let deliveryByMember = false;
-    if (deliveryType === 1)
-    {
-        let postcode = document.getElementById('postcode').value;
-
-        if (postcode.length < 6 && !addressIsAbroad)
-        {
-            document.getElementById('prijsvak').innerHTML = "€&nbsp;-";
-            return;
-        }
-
-        let qualifiesForFreeDelivery = postcodeQualifiesForFreeDelivery(postcode);
-        deliveryByMember = document.getElementById('deliveryByMember').checked;
-
-        if (!qualifiesForFreeDelivery)
-        {
-            document.getElementById('deliveryByMember_div').style.display = "block";
-        }
-        else
-        {
-            document.getElementById('deliveryByMember_div').style.display = "none";
-        }
-
-        if (!qualifiesForFreeDelivery && !deliveryByMember)
-        {
-            delivery = true;
-        }
-        else
-        {
-            delivery = false;
-            document.getElementById('adresgegevensKop').innerHTML =
-                "Uw adresgegevens (niet verplicht):";
-        }
-    }
-    else if (deliveryType === 0)
-    {
-        delivery = document.getElementById('bezorgen').checked;
-    }
-
-    let total = calculateTotal(delivery);
-
+    let total = calculateTotal();
     updateVisibleTotal(total);
-    updateAddressRequirement(delivery, deliveryByMember);
 }
 
 $('.numTickets-increase').on('click', function () {
@@ -302,17 +130,6 @@ $('.numTickets-decrease').on('click', function () {
 });
 $('.recalculateTotal').on('click', function () {
     updateForm();
-});
-$('input[type=radio][name=country]').on('change', function () {
-    if (this.value === 'abroad')
-    {
-        addressIsAbroad = true;
-    }
-    else
-    {
-        addressIsAbroad = false;
-        document.getElementById('deliveryByMember').checked = false;
-    }
 });
 
 setInterval(blockFormOnInvalidInput, 1000);

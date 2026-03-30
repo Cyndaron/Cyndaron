@@ -27,7 +27,7 @@ final class Concert extends Model
     #[DatabaseField]
     public bool $forcedDelivery = true;
     #[DatabaseField]
-    public bool $digitalDelivery = false;
+    public bool $digitalDelivery = true;
     #[DatabaseField]
     public bool $hasReservedSeats = true;
     #[DatabaseField]

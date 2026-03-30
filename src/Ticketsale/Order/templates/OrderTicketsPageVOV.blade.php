@@ -47,12 +47,6 @@
             @if ($concert->getLocationName() === 'Sint Jacobskerk')
                 <div class="alert alert-info">Voor donateurs van de Stichting Vrienden van de VOV zijn in het middenschip van de kerk aparte plaatsen gereserveerd.</div>
             @endif
-            <div @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\Concert\TicketDelivery::COLLECT_OR_DELIVER) style="display:none" @endif>
-                <input id="bezorgen" name="bezorgen" type="checkbox" value="1" class="recalculateTotal">
-                <label for="bezorgen">
-                    Bezorg mijn kaarten thuis (hiervoor worden extra kosten in rekening gebracht)
-                </label>
-            </div>
 
             @if ($concert->hasReservedSeats)
                 @if ($concert->reservedSeatsAreSoldOut)
@@ -78,59 +72,6 @@
                 @endif
             @else
                 <input id="hasReservedSeats-0" name="hasReservedSeats" type="hidden" value="0">
-            @endif
-
-            @if ($concert->getDelivery() === \Cyndaron\Ticketsale\Concert\TicketDelivery::FORCED_PHYSICAL)
-                <h3>Bezorging</h3>
-                <p>
-                    Bij dit concert is het alleen mogelijk om uw kaarten te laten thuisbezorgen. Als u op Walcheren
-                    woont is dit gratis.
-                    @if (strpos($concert->deliveryCostInterface, 'FlatFee') !== false)
-                        Woont u buiten Walcheren, dan kost het
-                        thuisbezorgen {{ $concert->deliveryCost|euro }} per kaart.<br>
-                    @else
-                        Woont u buiten Walcheren, dan worden er verzendkosten in rekening gebracht.
-                    @endif
-                    Het is ook mogelijk om uw kaarten te laten ophalen door een koorlid. Dit is gratis.
-                </p>
-
-                <div class="radio">
-                    <label for="country-nederland">
-                        <input id="country-nederland" name="country" type="radio" value="nederland" checked/>
-                        Ik woon in Nederland
-                    </label>
-                </div>
-                <div class="radio">
-                    <label for="country-abroad">
-                        <input id="country-abroad" name="country" type="radio" value="abroad"/>
-                        Ik woon niet in Nederland
-                    </label>
-                </div>
-                <br>
-
-
-                <p class="postcode-related">
-                    Vul hieronder uw postcode in om de totaalprijs te laten berekenen.
-                </p>
-
-                <div class="form-group row postcode-related">
-                    <label class="col-sm-3 col-form-label" for="postcode">Postcode (verplicht):</label>
-                    <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control form-control-inline"
-                                                 maxlength="7" autocomplete="postal-code"/></div>
-                </div>
-
-                <div id="deliveryByMember_div" style="display:none;">
-                    <input id="deliveryByMember" name="deliveryByMember" type="checkbox" value="1"
-                           class="recalculateTotal">
-                    <label for="deliveryByMember">Mijn kaarten laten ophalen door een koorlid</label>
-                    <br>
-
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label" for="deliveryMemberName">Naam koorlid:</label>
-                        <div class="col-sm-5"><input id="deliveryMemberName" name="deliveryMemberName" type="text"
-                                                     class="form-control"/></div>
-                    </div>
-                </div>
             @endif
 
             <div class="well"><b>Totaalprijs:</b> <span id="prijsvak">€&nbsp;0,00</span></div>
@@ -166,27 +107,6 @@
                     Ik ben geen donateur
                 </label>
             </div>-->
-
-            <h3 id="adresgegevensKop">Uw adresgegevens:</h3>
-
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="street">Straatnaam en huisnummer:</label>
-                <div class="col-sm-5"><input id="street" name="street"
-                                             class="form-control"/></div>
-            </div>
-
-            @if ($concert->getDelivery() !== \Cyndaron\Ticketsale\Concert\TicketDelivery::FORCED_PHYSICAL)
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label" for="postcode">Postcode:</label>
-                    <div class="col-sm-5"><input id="postcode" name="postcode" class="form-control" autocomplete="postal-code"/></div>
-                </div>
-            @endif
-
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="city">Woonplaats:</label>
-                <div class="col-sm-5"><input id="city" name="city" class="form-control"/></div>
-            </div>
-
 
             <h3>Verzenden:</h3>
 

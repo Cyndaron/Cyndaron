@@ -27,15 +27,15 @@ final class Order extends Model
     #[DatabaseField]
     public string $street = '';
     #[DatabaseField]
-    public int $houseNumber;
+    public int $houseNumber = 9;
     #[DatabaseField]
     public string $houseNumberAddition = '';
     #[DatabaseField]
-    public string $postcode;
+    public string $postcode = '';
     #[DatabaseField]
-    public string $city;
+    public string $city = '';
     #[DatabaseField]
-    public bool $delivery;
+    public bool $delivery = false;
     #[DatabaseField]
     public bool $isDelivered = false;
     #[DatabaseField]
@@ -43,7 +43,7 @@ final class Order extends Model
     #[DatabaseField]
     public bool $isPaid = false;
     #[DatabaseField]
-    public bool $deliveryByMember;
+    public bool $deliveryByMember = false;
     #[DatabaseField]
     public string $deliveryMemberName = '';
     #[DatabaseField]

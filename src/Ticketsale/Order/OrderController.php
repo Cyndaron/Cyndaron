@@ -113,44 +113,10 @@ final class OrderController
      * @param Concert $concert
      * @param OrderTicketTypes[] $orderTicketTypes
      * @param bool $reserveSeats
-     * @param bool $wantDelivery
-     * @param bool $deliveryByMember
-     * @param bool $addressIsAbroad
-     * @param int $postcode
      * @return OrderTotal
      */
-    private function calculateTotal(
-        Concert $concert,
-        array $orderTicketTypes,
-        bool $reserveSeats,
-        bool $wantDelivery,
-        bool &$deliveryByMember,
-        bool $addressIsAbroad,
-        int $postcode
-    ): OrderTotal {
-        if ($concert->forcedDelivery)
-        {
-            $qualifiesForFreeDelivery = ($addressIsAbroad) ? false : Util::postcodeQualifiesForFreeDelivery($postcode);
-
-            if ($qualifiesForFreeDelivery)
-            {
-                $payForDelivery = false;
-                $deliveryByMember = false;
-            }
-            elseif ($deliveryByMember)
-            {
-                $payForDelivery = false;
-            }
-            else
-            {
-                $payForDelivery = true;
-            }
-        }
-        else
-        {
-            $payForDelivery = $wantDelivery;
-        }
-
+    private function calculateTotal(Concert $concert, array $orderTicketTypes, bool $reserveSeats): OrderTotal
+    {
         $reservedSeatCharge = $reserveSeats ? $concert->reservedSeatCharge : 0;
 
         $ticketTotal = $this->orderHelper->calculateOrderTicketTotal($orderTicketTypes, $reservedSeatCharge);
@@ -158,7 +124,6 @@ final class OrderController
 
         $deliveryCostInterface = $concert->getDeliveryCostInterface();
         $tempOrder = new Order();
-        $tempOrder->delivery = $payForDelivery;
         /** @var DeliveryCostInterface $deliveryCost */
         $deliveryCost = new $deliveryCostInterface($concert, $tempOrder, $orderTicketTypes);
 
@@ -168,7 +133,6 @@ final class OrderController
         $orderTotal->amount = $totalPrice;
         $orderTotal->numTickets = $ticketTotal['totalNumTickets'];
         $orderTotal->ticketTypes = $orderTicketTypes;
-        $orderTotal->payForDelivery = $payForDelivery;
 
         return $orderTotal;
     }
@@ -203,13 +167,7 @@ final class OrderController
             throw new InvalidOrder('De verkoop voor dit concert is helaas gesloten, u kunt geen kaarten meer bestellen.');
         }
 
-        $postcode = $post->getPostcode('postcode');
-        $addressIsAbroad = $post->getUnfilteredString('country') === 'abroad';
-        $deliveryByMember = $post->getBool('deliveryByMember');
-        $deliveryByMember = $addressIsAbroad ? true : $deliveryByMember;
-        $deliveryMemberName = $post->getSimpleString('deliveryMemberName');
-
-        $incorrecteVelden = $this->checkForm($concert->forcedDelivery, $deliveryByMember, $post);
+        $incorrecteVelden = $this->checkForm($post);
         if (!empty($incorrecteVelden))
         {
             $message = 'De volgende velden zijn niet goed ingevuld of niet goed aangekomen: ';
@@ -240,10 +198,6 @@ final class OrderController
             $concert,
             $orderTicketTypes,
             $reserveSeats === OrderReserveSeats::RESERVE,
-            $post->getBool('bezorgen'),
-            $deliveryByMember,
-            $addressIsAbroad,
-            (int)$postcode
         );
 
         $totalAmount = $orderTotal->amount;
@@ -253,9 +207,6 @@ final class OrderController
         $email = $post->getEmail('email');
         $lastName = $post->getSimpleString('lastName');
         $initials = $post->getInitials('initials');
-        $street = $post->getSimpleString('street');
-        $postcode = $post->getPostcode('postcode');
-        $city = $post->getSimpleString('city');
         $comments = $post->getSimpleString('comments');
 
         $order = new Order();
@@ -263,15 +214,8 @@ final class OrderController
         $order->lastName = $lastName;
         $order->initials = $initials;
         $order->email = $email;
-        $order->street = $street;
-        $order->houseNumber = 0;
-        $order->postcode = $postcode;
-        $order->city = $city;
         $order->delivery = $payForDelivery;
         $order->hasReservedSeats = ($reserveSeats === OrderReserveSeats::RESERVE);
-        $order->deliveryByMember = $deliveryByMember;
-        $order->deliveryMemberName = $deliveryMemberName;
-        $order->addressIsAbroad = $addressIsAbroad;
         $order->comments = $comments;
         $order->isPaid = $orderTotal->amount === 0.00;
         $order->setAdditonalData([
@@ -353,12 +297,10 @@ final class OrderController
     }
 
     /**
-     * @param bool $forcedDelivery
-     * @param bool $memberDelivery
      * @param RequestParameters $post
      * @return string[]
      */
-    private function checkForm(bool $forcedDelivery, bool $memberDelivery, RequestParameters $post): array
+    private function checkForm(RequestParameters $post): array
     {
         $incorrectFields = [];
         if (strtoupper($post->getAlphaNum('antispam')) !== 'VLISSINGEN')
@@ -381,23 +323,6 @@ final class OrderController
             $incorrectFields[] = 'E-mailadres';
         }
 
-        if (($forcedDelivery && !$memberDelivery) || (!$forcedDelivery && $post->getBool('delivery')))
-        {
-            if ($post->getSimpleString('street') === '')
-            {
-                $incorrectFields[] = 'Straatnaam en huisnummer';
-            }
-
-            if ($post->getPostcode('postcode') === '')
-            {
-                $incorrectFields[] = 'Postcode';
-            }
-
-            if ($post->getSimpleString('city') === '')
-            {
-                $incorrectFields[] = 'Woonplaats';
-            }
-        }
         return $incorrectFields;
     }
 
