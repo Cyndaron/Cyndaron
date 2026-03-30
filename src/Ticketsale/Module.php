@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
-use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Linkable;
@@ -20,7 +20,6 @@ use Cyndaron\Ticketsale\TicketType\EditorSave as TicketTypeEditorSave;
 use Cyndaron\Ticketsale\TicketType\TicketType;
 use Cyndaron\Url\Url;
 use Cyndaron\Util\Link;
-use function array_map;
 
 final class Module implements Routes, Datatypes, Templated, Linkable
 {
@@ -53,14 +52,15 @@ final class Module implements Routes, Datatypes, Templated, Linkable
         ];
     }
 
-    public function getList(Connection $connection): array
+    public function getList(GenericRepository $genericRepository): array
     {
-        /** @var list<array{name: string, link: string}> $list */
-        $list = $connection->doQueryAndFetchAll('SELECT CONCAT(\'/concert/order/\', id) AS link, CONCAT(\'Concert: \', name) AS name FROM ticketsale_concerts');
-        return array_map(static function(array $item)
+        $list = [];
+        foreach ($genericRepository->fetchAll(Concert::class) as $concert)
         {
-            return Link::fromArray($item);
-        }, $list);
+            $list[] = new Link("/concert/order/{$concert->id}", "Concert pagina: {$concert->name}");
+        }
+
+        return $list;
     }
 
     public function getTemplateRoot(): TemplateRoot

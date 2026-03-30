@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Module;
 
-use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Util\Link;
 
 interface Linkable
@@ -11,5 +11,5 @@ interface Linkable
     /**
      * @return Link[]
      */
-    public function getList(Connection $connection): array;
+    public function getList(GenericRepository $genericRepository): array;
 }

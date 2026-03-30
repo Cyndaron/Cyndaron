@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
-use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
@@ -15,7 +14,6 @@ use Cyndaron\User\User;
 use Cyndaron\User\UserRepository;
 use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
-use function array_map;
 
 final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithTextPostProcessors
 {
@@ -61,14 +59,15 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
         return $album?->name;
     }
 
-    public function getList(Connection $connection): array
+    public function getList(GenericRepository $genericRepository): array
     {
-        /** @var list<array{name: string, link: string}> $list */
-        $list = $connection->doQueryAndFetchAll('SELECT CONCAT(\'/photoalbum/\', id) AS link, CONCAT(\'Fotoalbum: \', name) AS name FROM photoalbums');
-        return array_map(static function(array $item)
+        $list = [];
+        foreach ($genericRepository->fetchAll(Photoalbum::class) as $album)
         {
-            return Link::fromArray($item);
-        }, $list);
+            $list[] = new Link("/photoalbum/{$album->id}", "Fotoalbum: {$album->name}");
+        }
+
+        return $list;
     }
 
     public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, PhotoalbumRepository $photoalbumRepository, UserRepository $userRepository): string

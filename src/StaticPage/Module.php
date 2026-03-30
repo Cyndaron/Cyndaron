@@ -15,7 +15,6 @@ use Cyndaron\Url\Url;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
-use function array_map;
 
 final class Module implements Datatypes, Routes, UrlProvider, Linkable
 {
@@ -54,14 +53,15 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         return $model?->name;
     }
 
-    public function getList(Connection $connection): array
+    public function getList(GenericRepository $genericRepository): array
     {
-        /** @var list<array{name: string, link: string}> $list */
-        $list = $connection->doQueryAndFetchAll('SELECT CONCAT(\'/sub/\', id) AS link, CONCAT(\'Statische pag.: \', name) AS name FROM subs');
-        return array_map(static function(array $item)
+        $list = [];
+        foreach ($genericRepository->fetchAll(StaticPageModel::class) as $staticPage)
         {
-            return Link::fromArray($item);
-        }, $list);
+            $list[] = new Link("/sub/{$staticPage->id}", "Statische pagina: {$staticPage->name}");
+        }
+
+        return $list;
     }
 
     public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, Translator $t, Connection $connection): string

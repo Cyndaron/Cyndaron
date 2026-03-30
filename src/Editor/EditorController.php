@@ -5,6 +5,7 @@ namespace Cyndaron\Editor;
 
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\FriendlyUrl\FriendlyUrlRepository;
 use Cyndaron\Imaging\ImageExtractor;
@@ -27,7 +28,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
 use function array_merge;
-use function strlen;
 use function usort;
 
 final class EditorController
@@ -42,7 +42,7 @@ final class EditorController
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::LOGGED_IN)]
-    public function routeGet(Request $request, QueryBits $queryBits, User $currentUser, ModuleRegistry $registry, Connection $connection, UserRepository $userRepository, DependencyInjectionContainer $dic): Response
+    public function routeGet(Request $request, QueryBits $queryBits, User $currentUser, ModuleRegistry $registry, GenericRepository $genericRepository, UserRepository $userRepository, DependencyInjectionContainer $dic): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorPages))
@@ -58,7 +58,7 @@ final class EditorController
         $class = $registry->editorPages[$type];
         $id = $queryBits->getNullableInt(2);
         $previous = $queryBits->getString(3) === 'previous';
-        $editorVariables = new EditorVariables($id, $previous, $this->getInternalLinks($registry->internalLinkTypes, $connection));
+        $editorVariables = new EditorVariables($id, $previous, $this->getInternalLinks($registry->internalLinkTypes, $genericRepository));
         $dic->add($editorVariables);
 
         /** @var EditorPage $editorPage */
@@ -106,7 +106,7 @@ final class EditorController
      * @param class-string<Linkable>[] $internalLinkTypes
      * @return Link[]
      */
-    private function getInternalLinks(array $internalLinkTypes, Connection $connection): array
+    private function getInternalLinks(array $internalLinkTypes, GenericRepository $genericRepository): array
     {
         /** @var Link[] $internalLinks */
         $internalLinks = [];
@@ -114,7 +114,7 @@ final class EditorController
         {
             /** @var Linkable $class */
             $class = new $internalLinkType();
-            $internalLinks = array_merge($internalLinks, $class->getList($connection));
+            $internalLinks = array_merge($internalLinks, $class->getList($genericRepository));
         }
         usort($internalLinks, static function(Link $link1, Link $link2)
         {

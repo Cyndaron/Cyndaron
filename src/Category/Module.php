@@ -1,7 +1,6 @@
 <?php
 namespace Cyndaron\Category;
 
-use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
@@ -14,7 +13,6 @@ use Cyndaron\User\User;
 use Cyndaron\User\UserRepository;
 use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
-use function array_map;
 
 final class Module implements Datatypes, Routes, UrlProvider, Linkable
 {
@@ -59,14 +57,15 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
         return $category?->name;
     }
 
-    public function getList(Connection $connection): array
+    public function getList(GenericRepository $genericRepository): array
     {
-        /** @var list<array{name: string, link: string}> $list */
-        $list = $connection->doQueryAndFetchAll('SELECT CONCAT(\'/category/\', id) AS link, CONCAT(\'Categorie: \', name) AS name FROM categories');
-        return array_map(static function(array $item)
+        $list = [];
+        foreach ($genericRepository->fetchAll(Category::class) as $category)
         {
-            return Link::fromArray($item);
-        }, $list);
+            $list[] = new Link("/category/{$category->id}", "Categorie: {$category->name}");
+        }
+
+        return $list;
     }
 
     public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, UserRepository $userRepository, CategoryRepository $categoryRepository): string
