@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Page;
 
-use Cyndaron\DBAL\Connection;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Menu\MenuItemRepository;
 use Cyndaron\Translation\Translator;
@@ -16,7 +15,6 @@ use Cyndaron\Url\UrlService;
 use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\User\UserSession;
 use Cyndaron\Util\LinkWithIcon;
-use Cyndaron\Util\Setting;
 use Cyndaron\Util\SettingsRepository;
 use Cyndaron\View\Template\TemplateRenderer;
 use function sprintf;
@@ -28,7 +26,6 @@ final class MenuRenderer
         private readonly UrlService $urlService,
         private readonly Translator $translator,
         private readonly TemplateRenderer $templateRenderer,
-        private readonly Connection $connection,
         private readonly MenuItemRepository $menuItemRepository,
         private readonly SettingsRepository $sr,
     ) {
@@ -91,7 +88,6 @@ final class MenuRenderer
 
         $vars['notifications'] = $userSession->getNotifications();
         $vars['t'] = $this->translator;
-        $vars['connection'] = $this->connection;
         $vars['menuItemRepository'] = $this->menuItemRepository;
 
         return $this->templateRenderer->render('Menu', $vars);
