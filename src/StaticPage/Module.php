@@ -7,7 +7,6 @@ use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
-use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Translation\Translator;
@@ -16,7 +15,7 @@ use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
 
-final class Module implements Datatypes, Routes, UrlProvider, Linkable
+final class Module implements Datatypes, Routes, UrlProvider
 {
     /**
      * @inheritDoc
@@ -51,17 +50,6 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
     {
         $model = $genericRepository->fetchById(StaticPageModel::class, (int)$linkParts[1]);
         return $model?->name;
-    }
-
-    public function getList(GenericRepository $genericRepository): array
-    {
-        $list = [];
-        foreach ($genericRepository->fetchAll(StaticPageModel::class) as $staticPage)
-        {
-            $list[] = new Link("/sub/{$staticPage->id}", "Statische pagina: {$staticPage->name}");
-        }
-
-        return $list;
     }
 
     public static function pageManagerTab(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, Translator $t, Connection $connection): string

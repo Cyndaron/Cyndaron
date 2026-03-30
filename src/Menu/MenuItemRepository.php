@@ -3,18 +3,13 @@ declare(strict_types=1);
 
 namespace Cyndaron\Menu;
 
-use Cyndaron\Category\Category;
 use Cyndaron\Category\CategoryRepository;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\DBAL\Repository\RepositoryInterface;
 use Cyndaron\DBAL\Repository\RepositoryTrait;
-use Cyndaron\Photoalbum\Photoalbum;
-use Cyndaron\RichLink\RichLink;
-use Cyndaron\StaticPage\StaticPage;
+use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Link;
-use function sprintf;
 use function str_replace;
-use function get_class;
 use function ltrim;
 
 /**
@@ -26,16 +21,10 @@ final class MenuItemRepository implements RepositoryInterface
 
     use RepositoryTrait;
 
-    private const URL_MAPPING = [
-        StaticPage::class => 'sub',
-        Category::class => 'category',
-        Photoalbum::class => 'photoalbum',
-        RichLink::class => 'richlink',
-    ];
-
     public function __construct(
         private readonly GenericRepository $genericRepository,
-        private readonly CategoryRepository $categoryRepository
+        private readonly CategoryRepository $categoryRepository,
+        private readonly UrlService $urlService
     ) {
     }
 
@@ -57,17 +46,8 @@ final class MenuItemRepository implements RepositoryInterface
         $items = [];
         foreach ($pagesInCategory as $page)
         {
-            if ($page instanceof RichLink)
-            {
-                $url = $page->url;
-            }
-            else
-            {
-                $type = self::URL_MAPPING[get_class($page)] ?? '';
-                $url = sprintf('/%s/%d', $type, $page->id);
-            }
-
-            $items[] = new Link($url, $page->name);
+            $url = $this->urlService->getUrlForModel($page);
+            $items[] = new Link((string)$url, $page->name);
         }
         return $items;
     }

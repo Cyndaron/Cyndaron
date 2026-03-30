@@ -4,17 +4,15 @@ namespace Cyndaron\Category;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
-use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Url\Url;
 use Cyndaron\User\CSRFTokenHandler;
 use Cyndaron\User\User;
 use Cyndaron\User\UserRepository;
-use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
 
-final class Module implements Datatypes, Routes, UrlProvider, Linkable
+final class Module implements Datatypes, Routes, UrlProvider
 {
     /**
      * @inheritDoc
@@ -55,17 +53,6 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable
 
         $category = $genericRepository->fetchById(Category::class, (int)$linkParts[1]);
         return $category?->name;
-    }
-
-    public function getList(GenericRepository $genericRepository): array
-    {
-        $list = [];
-        foreach ($genericRepository->fetchAll(Category::class) as $category)
-        {
-            $list[] = new Link("/category/{$category->id}", "Categorie: {$category->name}");
-        }
-
-        return $list;
     }
 
     public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, UserRepository $userRepository, CategoryRepository $categoryRepository): string

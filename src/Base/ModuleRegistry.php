@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace Cyndaron\Base;
 
-use Closure;
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
 use Cyndaron\DBAL\Model;
-use Cyndaron\Module\Linkable;
+use Cyndaron\Module\Datatype;
 use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\TextPostProcessor;
 use Cyndaron\Module\UrlProvider;
@@ -16,6 +15,7 @@ use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\Route;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\User\Module\UserMenuItem;
+use PhpParser\Node\Expr\AssignOp\Mod;
 use ReflectionClass;
 use function in_array;
 use function rtrim;
@@ -34,9 +34,6 @@ final class ModuleRegistry
 
     /** @var array<string, class-string> */
     public array $editorSaveClasses = [];
-
-    /** @var class-string<Linkable>[] */
-    public array $internalLinkTypes = [];
 
     /** @var PageManagerTab[] */
     public array $pageManagerTabs = [];
@@ -59,8 +56,8 @@ final class ModuleRegistry
     /** @var array<string, string> */
     public array $templateRoots = [];
 
-    /** @var array<class-string<Model>, Closure> */
-    public array $modelToUrlPrefixers = [];
+    /** @var array<class-string<Model>, Datatype> */
+    public array $modelToDatatypes = [];
 
     /**
      * @param string $module
@@ -109,15 +106,6 @@ final class ModuleRegistry
         $this->editorSaveClasses[$module] = $className;
     }
 
-    /**
-     * @param class-string<Linkable> $moduleClass
-     * @return void
-     */
-    public function addInternalLinkType(string $moduleClass): void
-    {
-        $this->internalLinkTypes[] = $moduleClass;
-    }
-
     public function addPageManagerTab(PageManagerTab $tab): void
     {
         $this->pageManagerTabs[$tab->type] = $tab;
@@ -137,9 +125,9 @@ final class ModuleRegistry
     /**
      * @param class-string<Model> $modelClass
      */
-    public function addModelToUrlPrefixer(string $modelClass, Closure $closure): void
+    public function addDatatype(string $modelClass, Datatype $datatype): void
     {
-        $this->modelToUrlPrefixers[$modelClass] = $closure;
+        $this->modelToDatatypes[$modelClass] = $datatype;
     }
 
     public function addCalendarAppointmentsProvider(CalendarAppointmentsProvider $provider): void

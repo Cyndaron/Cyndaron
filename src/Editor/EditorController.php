@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace Cyndaron\Editor;
 
 use Cyndaron\Base\ModuleRegistry;
-use Cyndaron\DBAL\Connection;
+use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\FriendlyUrl\FriendlyUrlRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Menu\MenuItemRepository;
-use Cyndaron\Module\Linkable;
+use Cyndaron\Module\Datatype;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
@@ -28,8 +28,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use function array_key_exists;
-use function array_merge;
 use function usort;
+use function property_exists;
 
 final class EditorController
 {
@@ -59,7 +59,7 @@ final class EditorController
         $class = $registry->editorPages[$type];
         $id = $queryBits->getNullableInt(2);
         $previous = $queryBits->getString(3) === 'previous';
-        $editorVariables = new EditorVariables($id, $previous, $this->getInternalLinks($registry->internalLinkTypes, $genericRepository));
+        $editorVariables = new EditorVariables($id, $previous, $this->getInternalLinks($registry->modelToDatatypes, $genericRepository));
         $dic->add($editorVariables);
 
         /** @var EditorPage $editorPage */
@@ -104,18 +104,31 @@ final class EditorController
     }
 
     /**
-     * @param class-string<Linkable>[] $internalLinkTypes
+     * @param array<class-string<Model>, Datatype> $modelToDatatypes
      * @return Link[]
      */
-    private function getInternalLinks(array $internalLinkTypes, GenericRepository $genericRepository): array
+    private function getInternalLinks(array $modelToDatatypes, GenericRepository $genericRepository): array
     {
         /** @var Link[] $internalLinks */
         $internalLinks = [];
-        foreach ($internalLinkTypes as $internalLinkType)
+        foreach ($modelToDatatypes as $modelClass => $datatype)
         {
-            /** @var Linkable $class */
-            $class = new $internalLinkType();
-            $internalLinks = array_merge($internalLinks, $class->getList($genericRepository));
+            foreach ($genericRepository->fetchAll($modelClass) as $model)
+            {
+                if (!property_exists($model, 'name'))
+                {
+                    continue;
+                }
+
+                $closure = $datatype->modelToUrl;
+                if ($closure === null)
+                {
+                    continue;
+                }
+
+                $url = $closure($model);
+                $internalLinks[] = new Link((string)$url, "{$datatype->singular}: {$model->name}");
+            }
         }
         usort($internalLinks, static function(Link $link1, Link $link2)
         {

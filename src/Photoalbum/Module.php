@@ -4,7 +4,6 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
-use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\WithTextPostProcessors;
@@ -15,7 +14,7 @@ use Cyndaron\User\UserRepository;
 use Cyndaron\Util\Link;
 use Cyndaron\View\Template\TemplateRenderer;
 
-final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithTextPostProcessors
+final class Module implements Datatypes, Routes, UrlProvider, WithTextPostProcessors
 {
     /**
      * @inheritDoc
@@ -57,17 +56,6 @@ final class Module implements Datatypes, Routes, UrlProvider, Linkable, WithText
     {
         $album = $genericRepository->fetchById(Photoalbum::class, (int)$linkParts[1]);
         return $album?->name;
-    }
-
-    public function getList(GenericRepository $genericRepository): array
-    {
-        $list = [];
-        foreach ($genericRepository->fetchAll(Photoalbum::class) as $album)
-        {
-            $list[] = new Link("/photoalbum/{$album->id}", "Fotoalbum: {$album->name}");
-        }
-
-        return $list;
     }
 
     public static function pageManagerTab(User $currentUser, TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, PhotoalbumRepository $photoalbumRepository, UserRepository $userRepository): string

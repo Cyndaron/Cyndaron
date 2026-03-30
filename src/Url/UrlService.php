@@ -9,13 +9,16 @@ use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\FriendlyUrl\FriendlyUrl;
 use Cyndaron\FriendlyUrl\FriendlyUrlRepository;
+use Cyndaron\Module\Datatype;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Util\Error\IncompleteData;
+use Cyndaron\Util\Link;
 use Symfony\Component\HttpFoundation\Request;
 use function array_key_exists;
 use function explode;
 use function is_string;
 use function trim;
+use function property_exists;
 
 class UrlService
 {
@@ -23,10 +26,12 @@ class UrlService
      * @var class-string<UrlProvider>[]
      */
     private readonly array $urlProviders;
+
     /**
-     * @var array<class-string<Model>, Closure>
+     * @var array<class-string<Model>, Datatype>
      */
-    private readonly array $modelToUrlPrefixers;
+    private readonly array $modelToDatatypes;
+
     private string $requestUri;
 
     public function __construct(
@@ -37,7 +42,7 @@ class UrlService
     ) {
         $this->requestUri = $request->getRequestUri();
         $this->urlProviders = $registry->urlProviders;
-        $this->modelToUrlPrefixers = $registry->modelToUrlPrefixers;
+        $this->modelToDatatypes = $registry->modelToDatatypes;
     }
 
     public function getPageTitle(Url|string $url): string
@@ -123,13 +128,14 @@ class UrlService
 
     public function getUrlForModel(Model $model): Url
     {
-        if (!array_key_exists($model::class, $this->modelToUrlPrefixers))
+        $datatype = $this->modelToDatatypes[$model::class] ?? null;
+        if ($datatype === null || $datatype->modelToUrl === null)
         {
             throw new \Exception('No url providers for this model!');
         }
 
-        $closureName = $this->modelToUrlPrefixers[$model::class];
-        return $closureName($model);
+        $closure = $datatype->modelToUrl;
+        return $closure($model);
     }
 
     public function getFriendlyUrlForModel(Model $model): Url

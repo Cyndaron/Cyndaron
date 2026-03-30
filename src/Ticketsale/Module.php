@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale;
 
-use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
-use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\TemplateRoot;
@@ -21,7 +19,7 @@ use Cyndaron\Ticketsale\TicketType\TicketType;
 use Cyndaron\Url\Url;
 use Cyndaron\Util\Link;
 
-final class Module implements Routes, Datatypes, Templated, Linkable
+final class Module implements Routes, Datatypes, Templated
 {
     public function routes(): array
     {
@@ -50,17 +48,6 @@ final class Module implements Routes, Datatypes, Templated, Linkable
                 class: TicketType::class
             ),
         ];
-    }
-
-    public function getList(GenericRepository $genericRepository): array
-    {
-        $list = [];
-        foreach ($genericRepository->fetchAll(Concert::class) as $concert)
-        {
-            $list[] = new Link("/concert/order/{$concert->id}", "Concert pagina: {$concert->name}");
-        }
-
-        return $list;
     }
 
     public function getTemplateRoot(): TemplateRoot

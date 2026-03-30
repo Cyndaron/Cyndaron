@@ -13,7 +13,6 @@ use Cyndaron\Logger\FileLogger;
 use Cyndaron\Logger\MultiLogger;
 use Cyndaron\Mail\MailLogger;
 use Cyndaron\Module\Datatypes;
-use Cyndaron\Module\Linkable;
 use Cyndaron\Module\Routes;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\UrlProvider;
@@ -245,17 +244,13 @@ final class Kernel
                         $tab = new PageManagerTab($dataTypeName, $definition->plural, $definition->pageManagerTab, $definition->pageManagerJS ?? null);
                         $registry->addPageManagerTab($tab);
                     }
-                    if ($definition->class !== null && $definition->modelToUrl !== null)
+                    if ($definition->class !== null)
                     {
-                        $registry->addModelToUrlPrefixer($definition->class, $definition->modelToUrl);
+                        $registry->addDatatype($definition->class, $definition);
                     }
                     if ($module instanceof UrlProvider)
                     {
                         $registry->addNameFromUrlProvider($dataTypeName, $module::class);
-                    }
-                    if ($module instanceof Linkable)
-                    {
-                        $registry->addInternalLinkType($module::class);
                     }
                 }
             }
