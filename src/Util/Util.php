@@ -31,9 +31,9 @@ use function dirname;
 use function strlen;
 use function is_dir;
 use function str_replace;
-use function number_format;
 use function stream_context_create;
 use function Safe\file_get_contents;
+use function round;
 
 final class Util
 {
