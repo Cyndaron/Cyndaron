@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
-use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -29,7 +28,7 @@ final class EventController
     }
 
     #[RouteAttribute('getInfo', RequestMethod::GET, UserLevel::ANONYMOUS, isApiMethod: true)]
-    public function getEventInfo(QueryBits $queryBits, Connection $db): JsonResponse
+    public function getEventInfo(QueryBits $queryBits, EventTicketTypeRepository $ettr): JsonResponse
     {
         $eventId = $queryBits->getInt(2);
         $event = $this->eventRepository->fetchById($eventId);
@@ -38,8 +37,7 @@ final class EventController
             return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
         }
 
-        $ticketTypes = $db->doQueryAndFetchAll('SELECT * FROM registration_tickettypes WHERE eventId=? ORDER BY price DESC', [$eventId]);
-
+        $ticketTypes = $ettr->loadByEvent($event);
         $answer = [
             'registrationCost0' => $event->registrationCost0,
             'registrationCost1' => $event->registrationCost1,
@@ -70,7 +68,7 @@ final class EventController
     }
 
     #[RouteAttribute('viewRegistrations', RequestMethod::GET, UserLevel::ADMIN)]
-    public function viewRegistrations(QueryBits $queryBits, Connection $connection, RegistrationRepository $registrationRepository, RegistrationTicketTypeRepository $registrationTicketTypeRepository): Response
+    public function viewRegistrations(QueryBits $queryBits, RegistrationRepository $registrationRepository, RegistrationTicketTypeRepository $registrationTicketTypeRepository): Response
     {
         $id = $queryBits->getInt(2);
         if ($id < 1)
@@ -82,7 +80,7 @@ final class EventController
         {
             return new JsonResponse(['error' => 'Event does not exist!'], Response::HTTP_NOT_FOUND);
         }
-        $page = new EventRegistrationOverviewPage($event, $connection, $registrationRepository, $registrationTicketTypeRepository, $this->eventTicketTypeRepository);
+        $page = new EventRegistrationOverviewPage($event, $registrationRepository, $registrationTicketTypeRepository, $this->eventTicketTypeRepository);
         return $this->pageRenderer->renderResponse($page);
     }
 

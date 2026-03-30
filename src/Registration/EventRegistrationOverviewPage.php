@@ -3,18 +3,15 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
-use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\Page;
 use function array_key_exists;
 
 final class EventRegistrationOverviewPage extends Page
 {
     public const TOTALS_FORMAT = [0 => ['amount' => 0, 'num' => 0], 1 => ['amount' => 0, 'num' => 0]];
-    private readonly Connection $connection;
 
-    public function __construct(Event $event, Connection $connection, RegistrationRepository $registrationRepository, RegistrationTicketTypeRepository $registrationTicketTypeRepository, EventTicketTypeRepository $eventTicketTypeRepository)
+    public function __construct(Event $event, RegistrationRepository $registrationRepository, RegistrationTicketTypeRepository $registrationTicketTypeRepository, EventTicketTypeRepository $eventTicketTypeRepository)
     {
-        $this->connection = $connection;
         $ticketTypes = $eventTicketTypeRepository->loadByEvent($event);
         $registrations = $registrationRepository->loadByEvent($event);
 
@@ -25,7 +22,7 @@ final class EventRegistrationOverviewPage extends Page
 
         $totals = $this->calculateTotals($registrations, $registrationTicketTypeRepository);
 
-        $ticketTypesByRegistration = $this->getTicketTypesByRegistration();
+        $ticketTypesByRegistration = $this->getTicketTypesByRegistration($event, $registrationTicketTypeRepository);
         $this->addTemplateVars([
             'event' => $event,
             'ticketTypes' => $ticketTypes,
@@ -39,21 +36,24 @@ final class EventRegistrationOverviewPage extends Page
     /**
      * @return array<int, array<int, int>>
      */
-    private function getTicketTypesByRegistration(): array
+    private function getTicketTypesByRegistration(Event $event, RegistrationTicketTypeRepository $registrationTicketTypeRepository): array
     {
-        $boughtTicketTypes = $this->connection->doQueryAndFetchAll('SELECT * FROM `registration_orders_tickettypes`') ?: [];
-
         $ticketTypesByRegistration = [];
-        foreach ($boughtTicketTypes as $boughtTicketType)
+        foreach ($registrationTicketTypeRepository->fetchAll() as $boughtTicketType)
         {
-            $registrationId = (int)$boughtTicketType['orderId'];
-            $ticketType = (int)$boughtTicketType['tickettypeId'];
+            if ($boughtTicketType->registration->event->id != $event->id)
+            {
+                continue;
+            }
+
+            $registrationId = (int)$boughtTicketType->registration->id;
+            $ticketType = (int)$boughtTicketType->ticketType->id;
             if (!array_key_exists($registrationId, $ticketTypesByRegistration))
             {
                 $ticketTypesByRegistration[$registrationId] = [];
             }
 
-            $ticketTypesByRegistration[$registrationId][$ticketType] = (int)$boughtTicketType['amount'];
+            $ticketTypesByRegistration[$registrationId][$ticketType] = $boughtTicketType->amount;
         }
         return $ticketTypesByRegistration;
     }
