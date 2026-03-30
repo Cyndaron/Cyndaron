@@ -9,6 +9,7 @@ use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\FriendlyUrl\FriendlyUrlRepository;
 use Cyndaron\Imaging\ImageExtractor;
+use Cyndaron\Menu\MenuItemRepository;
 use Cyndaron\Module\Linkable;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\SimplePage;
@@ -67,7 +68,7 @@ final class EditorController
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::LOGGED_IN)]
-    public function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry, UrlService $urlService, UserRepository $userRepository, Connection $connection, FriendlyUrlRepository $friendlyUrlRepository): Response
+    public function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry, UrlService $urlService, UserRepository $userRepository, MenuItemRepository $menuItemRepository, FriendlyUrlRepository $friendlyUrlRepository): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorSaveClasses))
@@ -90,7 +91,7 @@ final class EditorController
             /** @var EditorSave $editorSave */
             $editorSave = $dic->createClassWithDependencyInjection($class);
             $id = $editorSave->save($id);
-            $editorSave->updateFriendlyUrl($urlService, $connection, $friendlyUrlRepository, $id, $post->getUrl('friendlyUrl'));
+            $editorSave->updateFriendlyUrl($urlService, $menuItemRepository, $friendlyUrlRepository, $id, $post->getUrl('friendlyUrl'));
             $returnUrl = $editorSave->getReturnUrl() ?: '/';
 
             return new RedirectResponse($returnUrl);

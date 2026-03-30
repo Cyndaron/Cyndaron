@@ -6,8 +6,8 @@ namespace Cyndaron\Editor;
 use Cyndaron\Category\CategoryRepository;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Category\ModelWithCategoryRepository;
-use Cyndaron\DBAL\Connection;
 use Cyndaron\FriendlyUrl\FriendlyUrlRepository;
+use Cyndaron\Menu\MenuItemRepository;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\Url\Url;
 use Cyndaron\Url\UrlService;
@@ -25,7 +25,7 @@ abstract class EditorSave
     public const PAGE_HEADER_DIR = Util::UPLOAD_DIR . '/images/page-header';
     public const PAGE_PREVIEW_DIR = Util::UPLOAD_DIR . '/images/page-preview';
 
-    final public function updateFriendlyUrl(UrlService $urlService, Connection $connection, FriendlyUrlRepository $repository, int $id, string $friendlyUrl): void
+    final public function updateFriendlyUrl(UrlService $urlService, MenuItemRepository $menuItemRepository, FriendlyUrlRepository $repository, int $id, string $friendlyUrl): void
     {
         // True if content does not support friendly URLs.
         if ($id <= 0)
@@ -43,8 +43,13 @@ abstract class EditorSave
                 $repository->delete($oldFriendlyUrlObj);
             }
             $urlService->createFriendlyUrl($unfriendlyUrl, $friendlyUrl);
-            // Als de friendly URL gebruikt is in het menu moet deze daar ook worden aangepast
-            $connection->executeQuery('UPDATE menu SET link = ? WHERE link = ?', [$friendlyUrl, $oldFriendlyUrl]);
+            // Menu items may refer to the old friendly URL. If so, update them.
+            $menuItems = $menuItemRepository->fetchByLink($oldFriendlyUrl);
+            foreach ($menuItems as $menuItem)
+            {
+                $menuItem->link = $friendlyUrl;
+                $menuItemRepository->save($menuItem);
+            }
         }
         // TODO oude URL verwijderen
     }
