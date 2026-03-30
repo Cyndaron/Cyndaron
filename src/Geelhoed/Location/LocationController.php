@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Location;
 
-use Cyndaron\DBAL\Connection;
 use Cyndaron\Geelhoed\Hour\HourRepository;
 use Cyndaron\Geelhoed\Sport\SportRepository;
 use Cyndaron\Page\PageRenderer;
@@ -72,13 +71,11 @@ final class LocationController
     }
 
     #[RouteAttribute('zoeken', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function search(Connection $connection, SportRepository $sportRepository): Response
+    public function search(SportRepository $sportRepository): Response
     {
-        $dayRecords = $connection->doQueryAndFetchAll('SELECT DISTINCT(day) AS number FROM geelhoed_hours ORDER by number') ?: [];
         $days = [];
-        foreach ($dayRecords as $dayRecord)
+        for ($number = 1; $number <= 6; $number++)
         {
-            $number = (int)$dayRecord['number'];
             $days[$number] = ViewHelpers::getDutchWeekday($number);
         }
         $page = new SearchPage($days, $this->locationRepository, $sportRepository);
