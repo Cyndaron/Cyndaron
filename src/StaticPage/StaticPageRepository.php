@@ -9,6 +9,8 @@ use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\DBAL\Repository\RepositoryTrait;
+use function array_filter;
+use function in_array;
 
 /**
  * @implements ModelWithCategoryRepository<StaticPageModel>
@@ -52,5 +54,14 @@ final class StaticPageRepository implements ModelWithCategoryRepository
     public function hasBackup(StaticPageModel $model): bool
     {
         return !!$this->connection->doQueryAndFetchOne('SELECT * FROM sub_backups WHERE id= ?', [$model->id]);
+    }
+
+    /**
+     * @param string $tag
+     * @return StaticPageModel[]
+     */
+    public function fetchAllByTag(string $tag): array
+    {
+        return array_filter($this->fetchAll(), fn (StaticPageModel $page) => in_array($tag, $page->getTagList(), true));
     }
 }

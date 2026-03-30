@@ -37,7 +37,7 @@ final class CategoryController
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService, Connection $connection, StaticPageRepository $staticPageRepository, PhotoalbumRepository $photoalbumRepository): Response
+    public function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService, StaticPageRepository $staticPageRepository, PhotoalbumRepository $photoalbumRepository): Response
     {
         $id = $queryBits->getString(1);
 
@@ -54,7 +54,7 @@ final class CategoryController
                 $page = new SimplePage('Foute aanvraag', 'Lege tag ontvangen.');
                 return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
             }
-            $page = new TagIndexPage($urlService, $connection, $staticPageRepository, $tag);
+            $page = new TagIndexPage($urlService, $staticPageRepository, $tag);
             return $this->pageRenderer->renderResponse($page);
         }
         if ($id === '' || $id < 0)
