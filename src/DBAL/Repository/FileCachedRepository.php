@@ -110,19 +110,16 @@ final class FileCachedRepository implements GenericRepository
 
     public function delete(Model $model): void
     {
-        if ($model->id !== null && array_key_exists($model::TABLE, $this->cache) && array_key_exists($model->id, $this->cache[$model::TABLE]))
-        {
-            unset($this->cache[$model::TABLE][$model->id]);
-        }
-
-        $this->nonCached->delete($model);
+        $this->deleteById($model::class, (int)$model->id);
     }
 
     public function deleteById(string $class, int $id): void
     {
+        $this->loadCache($class);
         if (array_key_exists($class::TABLE, $this->cache) && array_key_exists($id, $this->cache[$class::TABLE]))
         {
             unset($this->cache[$class::TABLE][$id]);
+            $this->saveCache($class);
         }
 
         $this->nonCached->deleteById($class, $id);
