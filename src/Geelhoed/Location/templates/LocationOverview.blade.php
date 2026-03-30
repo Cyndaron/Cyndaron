@@ -29,7 +29,7 @@
                 <a href="/locaties/details/{{ $location->id }}">Meer informatie</a>
 
                 @foreach ($hoursPerWeekday as $weekDay => $hours)
-                    <h4>{{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($weekDay) }}</h4>
+                    <h4>{{ $weekDay|weekday }}</h4>
 
                     @include('Geelhoed/Location/HoursTable', ['hours' => $hours])
                 @endforeach

@@ -20,7 +20,7 @@
     <h3>Lessen</h3>
 
     @foreach ($locationRepository->getHoursSortedByWeekday($location) as $weekday => $hours)
-        <h4>{{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($weekday) }}</h4>
+        <h4>{{ $weekday|weekday }}</h4>
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>

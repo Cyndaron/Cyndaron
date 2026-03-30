@@ -45,8 +45,7 @@
     <table class="table table-bordered table-striped">
         @foreach($locationRepository->getHours($hour->location, $hour->departmentId) as $locationHour)
             <tr>
-                @php $weekday = \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($locationHour->day) @endphp
-                <td><a href="/hour/memberList/{{ $locationHour->id }}">{{ $weekday }} {{ $locationHour->getRange() }}</a></td>
+                <td><a href="/hour/memberList/{{ $locationHour->id }}">{{ $locationHour->day|weekday }} {{ $locationHour->getRange() }}</a></td>
                 <td>{{ $locationHour->getSportName() }}</td>
             </tr>
         @endforeach

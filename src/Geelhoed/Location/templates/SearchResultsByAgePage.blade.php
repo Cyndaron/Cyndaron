@@ -30,7 +30,7 @@
                                 {{ $location->city }}, {{ $location->street }}
                             </a>
                         </td>
-                        <td>{{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($hour->day) }}</td>
+                        <td>{{ $hour->day|weekday }}</td>
                         <td>{{ $hour->description }}</td>
                         <td>{{ $hour->from|hm }}</td>
                         <td>{{ $hour->until|hm }}</td>

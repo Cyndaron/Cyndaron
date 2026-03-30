@@ -19,6 +19,7 @@ class TemplateRendererFactory
         'hm' => ViewHelpers::class . '::filterHm',
         'dmy' => ViewHelpers::class . '::filterDutchDate',
         'dmyHm' => ViewHelpers::class . '::filterDutchDateTime',
+        'weekday' => ViewHelpers::class . '::getDutchWeekday',
         'boolToText' => ViewHelpers::class . '::boolToText',
         'boolToDingbat' => ViewHelpers::class . '::boolToDingbat',
         'slug' => Util::class . '::getSlug',

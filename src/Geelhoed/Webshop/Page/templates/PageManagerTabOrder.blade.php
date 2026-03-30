@@ -30,7 +30,7 @@
                 <td>{{ $order->status->getDescription() }}</td>
                 <td>
                     {{ $order->hour->location->getName() }}<br>
-                    {{ \Cyndaron\View\Template\ViewHelpers::getDutchWeekday($order->hour->day) }} {{ $order->hour->getRange() }}
+                    {{ $order->hour->day|weekday }} {{ $order->hour->getRange() }}
                 </td>
                 <td>
                     <div class="btn-group">

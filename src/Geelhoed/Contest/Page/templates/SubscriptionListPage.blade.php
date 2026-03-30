@@ -51,7 +51,7 @@
                 <td>{{ $contestMember->graduation->name }}</td>
                 <td>{{ $contestMember->weight }}</td>
                 <td>{{ $member->jbnNumber }}</td>
-                <td>{{ \Cyndaron\View\Template\ViewHelpers::boolToText($contestMember->isPaid) }}</td>
+                <td>{{ $contestMember->isPaid|boolToText }}</td>
                 <td>{{ $contestMember->molliePaymentId }}</td>
                 <td>{{ $contestMember->comments }}</td>
                 <td>
