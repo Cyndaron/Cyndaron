@@ -37,26 +37,9 @@ final class CategoryController
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService, StaticPageRepository $staticPageRepository, PhotoalbumRepository $photoalbumRepository): Response
+    public function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService, StaticPageRepository $staticPageRepository): Response
     {
         $id = $queryBits->getString(1);
-
-        if ($id === '0' || $id === 'fotoboeken')
-        {
-            $page = new PhotoalbumIndexPage($urlService, $photoalbumRepository);
-            return $this->pageRenderer->renderResponse($page);
-        }
-        if ($id === 'tag')
-        {
-            $tag = $queryBits->getString(2);
-            if ($tag === '')
-            {
-                $page = new SimplePage('Foute aanvraag', 'Lege tag ontvangen.');
-                return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
-            }
-            $page = new TagIndexPage($urlService, $staticPageRepository, $tag);
-            return $this->pageRenderer->renderResponse($page);
-        }
         if ($id === '' || $id < 0)
         {
             $page = new SimplePage('Foute aanvraag', 'Incorrecte parameter ontvangen.');
@@ -72,6 +55,28 @@ final class CategoryController
         $page = new CategoryIndexPage($urlService, $staticPageRepository, $this->categoryRepository, $category, $textRenderer);
         return $this->pageRenderer->renderResponse($page);
     }
+
+    #[RouteAttribute('0', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    #[RouteAttribute('fotoboeken', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function viewPhotoalbumIndex(UrlService $urlService, PhotoalbumRepository $photoalbumRepository): Response
+    {
+        $page = new PhotoalbumIndexPage($urlService, $photoalbumRepository);
+        return $this->pageRenderer->renderResponse($page);
+    }
+
+    #[RouteAttribute('tag', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function viewTag(QueryBits $queryBits, UrlService $urlService, StaticPageRepository $staticPageRepository): Response
+    {
+        $tag = $queryBits->getString(2);
+        if ($tag === '')
+        {
+            $page = new SimplePage('Foute aanvraag', 'Lege tag ontvangen.');
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
+        }
+        $page = new TagIndexPage($urlService, $staticPageRepository, $tag);
+        return $this->pageRenderer->renderResponse($page);
+    }
+
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function add(RequestParameters $post): JsonResponse
