@@ -3,7 +3,7 @@
 @extends ('Index')
 
 @section ('titleControls')
-    @if ($model)
+    @if (isset($model))
         <a href="/editor/category/{{ $model->id }}" class="btn btn-outline-cyndaron" title="Deze categorie bewerken" role="button">@include('View/Widget/Icon', ['type' => 'edit'])</a>
     @endif
 @endsection
