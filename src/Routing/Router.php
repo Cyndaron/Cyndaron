@@ -6,7 +6,7 @@ namespace Cyndaron\Routing;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -54,7 +54,7 @@ final class Router
             return new JsonResponse(['error' => 'Unacceptable request method!'], Response::HTTP_METHOD_NOT_ALLOWED, ['allow' => 'GET, POST']);
         }
 
-        $page = new SimplePage('Verkeerde aanvraag', 'U kunt geen aanvraag doen met deze methode.');
+        $page = Page::createSimple('Verkeerde aanvraag', 'U kunt geen aanvraag doen met deze methode.');
         return $this->pageRenderer->renderResponse($page, status: Response::HTTP_METHOD_NOT_ALLOWED, headers: ['allow' => 'GET, POST']);
     }
 
@@ -65,7 +65,7 @@ final class Router
             return new JsonResponse(['error' => 'Route not found!'], Response::HTTP_NOT_FOUND);
         }
 
-        $page = new SimplePage('Fout', 'Deze route is niet bekend.');
+        $page = Page::createSimple('Fout', 'Deze route is niet bekend.');
         return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
     }
 
@@ -193,7 +193,7 @@ final class Router
                     return new JsonResponse(['error' => 'CSRF token incorrect!'], Response::HTTP_FORBIDDEN);
                 }
 
-                $page = new SimplePage('Controle CSRF-token gefaald!', 'Uw CSRF-token is niet correct.');
+                $page = Page::createSimple('Controle CSRF-token gefaald!', 'Uw CSRF-token is niet correct.');
                 return $this->pageRenderer->renderResponse($page, status: Response::HTTP_FORBIDDEN);
             }
         }

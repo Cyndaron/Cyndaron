@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Error;
 
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\RouteAttribute;
@@ -38,12 +38,12 @@ final class ErrorController
 
         if (!array_key_exists($code, self::KNOWN_ERRORS))
         {
-            $page = new SimplePage('Onbekende fout', 'Er is een onbekende fout opgetreden. Code: ' . $code);
+            $page = Page::createSimple('Onbekende fout', 'Er is een onbekende fout opgetreden. Code: ' . $code);
             return $this->pageRenderer->renderResponse($page);
         }
 
         $error = self::KNOWN_ERRORS[$code];
-        $page = new SimplePage($error['pageTitle'], $error['notification']);
+        $page = Page::createSimple($error['pageTitle'], $error['notification']);
         return $this->pageRenderer->renderResponse($page, status: $code);
     }
 }

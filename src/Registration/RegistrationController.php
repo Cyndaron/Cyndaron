@@ -5,7 +5,7 @@ namespace Cyndaron\Registration;
 
 use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -62,7 +62,7 @@ final class RegistrationController
                 $body = 'Hartelijk dank voor uw aanmelding. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw aanmelding.';
             }
 
-            $page = new SimplePage(
+            $page = Page::createSimple(
                 'Aanmelding verwerkt',
                 $body
             );
@@ -70,7 +70,7 @@ final class RegistrationController
         }
         catch (Exception $e)
         {
-            $page = new SimplePage('Fout bij verwerken aanmelding', $e->getMessage());
+            $page = Page::createSimple('Fout bij verwerken aanmelding', $e->getMessage());
             return $this->pageRenderer->renderResponse($page);
         }
     }

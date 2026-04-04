@@ -6,7 +6,7 @@ namespace Cyndaron\Ticketsale\Order;
 use Cyndaron\Barcode\Code128;
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Payment\Currency;
 use Cyndaron\Payment\Payment;
 use Cyndaron\Request\QueryBits;
@@ -78,7 +78,7 @@ final class OrderController
             if ($order->isPaid)
             {
                 $this->setOrderAsPaidAndSendMail($order, $urlInfo, $mailFactory);
-                $page = new SimplePage(
+                $page = Page::createSimple(
                     'Bestelling verwerkt',
                     'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging en de tickets.',
                 );
@@ -87,14 +87,14 @@ final class OrderController
             {
                 $paymentLink = $this->getPaymentLink($order, $urlInfo->schemeAndHost);
                 $paymentLinkText = sprintf('<br><br><a href="%s" role="button" class="btn btn-primary btn-lg">Naar de betaalomgeving</a>', $paymentLink);
-                $page = new SimplePage(
+                $page = Page::createSimple(
                     'Bestelling betalen',
                     'Hartelijk dank voor uw bestelling. Na betaling zullen wij deze verwerken. U kunt betalen door middel van onderstaande knop.' . $paymentLinkText,
                 );
             }
             else
             {
-                $page = new SimplePage(
+                $page = Page::createSimple(
                     'Bestelling verwerkt',
                     'Hartelijk dank voor uw bestelling. U ontvangt binnen enkele minuten een e-mail met een bevestiging van uw bestelling en betaalinformatie.',
                 );
@@ -104,7 +104,7 @@ final class OrderController
         }
         catch (Exception $e)
         {
-            $page = new SimplePage('Fout bij verwerken bestelling', $e->getMessage());
+            $page = Page::createSimple('Fout bij verwerken bestelling', $e->getMessage());
             return $this->pageRenderer->renderResponse($page);
         }
     }
@@ -414,13 +414,13 @@ final class OrderController
         $order = $this->orderRepository->fetchById($orderId);
         if ($order === null)
         {
-            $page = new SimplePage('Fout', 'Order niet gevonden!');
+            $page = Page::createSimple('Fout', 'Order niet gevonden!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         if ($order->isPaid)
         {
-            $page = new SimplePage(
+            $page = Page::createSimple(
                 'Betalen',
                 'Deze order is al betaald! Check uw e-mail voor de betalingsbevestiging, hierin zitten uw kaartjes.'
             );
@@ -428,7 +428,7 @@ final class OrderController
         }
         if (!empty($order->transactionCode) && strtotime($order->modified->format('U')) > strtotime('-30 minutes'))
         {
-            $page = new SimplePage('Betalen', 'Er loopt al een betaling voor deze order. Wacht 30 minuten om het opnieuw te proberen.');
+            $page = Page::createSimple('Betalen', 'Er loopt al een betaling voor deze order. Wacht 30 minuten om het opnieuw te proberen.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
@@ -445,7 +445,7 @@ final class OrderController
 
         if (empty($molliePayment->id))
         {
-            $page = new SimplePage('Fout bij inschrijven', 'Betaling niet gevonden!');
+            $page = Page::createSimple('Fout bij inschrijven', 'Betaling niet gevonden!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
@@ -456,7 +456,7 @@ final class OrderController
         }
         catch (\Throwable)
         {
-            $page = new SimplePage('Fout bij betaling', 'Kon de betalings-ID niet opslaan!');
+            $page = Page::createSimple('Fout bij betaling', 'Kon de betalings-ID niet opslaan!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -530,20 +530,20 @@ final class OrderController
         $order = $this->orderRepository->fetchById($orderId);
         if ($order === null)
         {
-            $page = new SimplePage('Fout', 'Bestelling niet gevonden!');
+            $page = Page::createSimple('Fout', 'Bestelling niet gevonden!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         $secretCode = $queryBits->getString(3);
         if (empty($order->secretCode) || $order->secretCode !== $secretCode)
         {
-            $page = new SimplePage('Fout', 'Geheime code klopt niet!');
+            $page = Page::createSimple('Fout', 'Geheime code klopt niet!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_FORBIDDEN);
         }
 
         if ($order->isPaid === false)
         {
-            $page = new SimplePage('Fout', 'Bestelling is nog niet betaald!');
+            $page = Page::createSimple('Fout', 'Bestelling is nog niet betaald!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_PAYMENT_REQUIRED);
         }
 
@@ -714,7 +714,7 @@ final class OrderController
                 $secretCode = $queryBits->getString(3);
                 if (!empty($order->secretCode) && $order->secretCode === $secretCode)
                 {
-                    $page = new SimplePage(
+                    $page = Page::createSimple(
                         'Bestelling verwerkt',
                         sprintf('Hartelijk dank voor uw betaling.<br><br><a href="%s" role="button" class="btn btn-primary" target="_blank">Tickets ophalen</a>', $this->getLinkToTickets($order, $baseUrl)),
                     );
@@ -723,7 +723,7 @@ final class OrderController
             }
         }
 
-        $page = new SimplePage(
+        $page = Page::createSimple(
             'Bestelling verwerkt',
             'Hartelijk dank voor uw bestelling. Als de betaling is gelukt, ontvangt binnen enkele minuten een e-mail met een link om de kaartjes te downloaden.',
         );

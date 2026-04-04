@@ -8,7 +8,6 @@ use Cyndaron\Geelhoed\Tryout\Tryout;
 use Cyndaron\Geelhoed\Tryout\TryoutRepository;
 use Cyndaron\Page\Page;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
 use Cyndaron\Payment\Currency;
 use Cyndaron\Payment\Payment;
 use Cyndaron\Request\QueryBits;
@@ -93,7 +92,7 @@ final class Controller
 
             $paymentLink = $this->getPaymentLink($order, $urlInfo->schemeAndHost);
             $paymentLinkText = sprintf('<br><br><a href="%s" role="button" class="btn btn-primary btn-lg">Naar de betaalomgeving</a>', $paymentLink);
-            $page = new SimplePage(
+            $page = Page::createSimple(
                 'Bestelling betalen',
                 'Hartelijk dank voor uw bestelling. Na betaling zullen wij deze verwerken. U kunt betalen door middel van onderstaande knop.' . $paymentLinkText,
             );
@@ -102,7 +101,7 @@ final class Controller
         }
         catch (Exception $e)
         {
-            $page = new SimplePage('Fout bij verwerken bestelling', $e->getMessage());
+            $page = Page::createSimple('Fout bij verwerken bestelling', $e->getMessage());
             return $this->pageRenderer->renderResponse($page);
         }
     }
@@ -186,13 +185,13 @@ final class Controller
         $order = $this->orderRepository->fetchById($orderId);
         if ($order === null)
         {
-            $page = new SimplePage('Fout', 'Order niet gevonden!');
+            $page = Page::createSimple('Fout', 'Order niet gevonden!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
         if ($order->isPaid)
         {
-            $page = new SimplePage(
+            $page = Page::createSimple(
                 'Betalen',
                 'Deze order is al betaald! Check uw e-mail voor de betalingsbevestiging.'
             );
@@ -200,7 +199,7 @@ final class Controller
         }
         if (!empty($order->transactionCode) && strtotime($order->modified->format('U')) > strtotime('-30 minutes'))
         {
-            $page = new SimplePage('Betalen', 'Er loopt al een betaling voor deze order. Wacht 30 minuten om het opnieuw te proberen.');
+            $page = Page::createSimple('Betalen', 'Er loopt al een betaling voor deze order. Wacht 30 minuten om het opnieuw te proberen.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
@@ -217,7 +216,7 @@ final class Controller
 
         if (empty($molliePayment->id))
         {
-            $page = new SimplePage('Fout bij inschrijven', 'Betaling niet gevonden!');
+            $page = Page::createSimple('Fout bij inschrijven', 'Betaling niet gevonden!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
@@ -228,7 +227,7 @@ final class Controller
         }
         catch (\Throwable)
         {
-            $page = new SimplePage('Fout bij betaling', 'Kon de betalings-ID niet opslaan!');
+            $page = Page::createSimple('Fout bij betaling', 'Kon de betalings-ID niet opslaan!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -375,7 +374,7 @@ final class Controller
         }
         else
         {
-            $page = new SimplePage(
+            $page = Page::createSimple(
                 'Bestelling verwerkt',
                 'Hartelijk dank voor uw bestelling. Als de betaling is gelukt, ontvangt binnen enkele minuten een e-mail met een betaalbevestiging.',
             );

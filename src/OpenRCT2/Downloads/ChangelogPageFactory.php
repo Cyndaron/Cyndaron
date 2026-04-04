@@ -5,9 +5,7 @@ namespace Cyndaron\OpenRCT2\Downloads;
 
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Page\Page;
-use Cyndaron\Page\SimplePage;
 use Cyndaron\Translation\Translator;
-use Illuminate\Http\Request;
 use function explode;
 use function str_starts_with;
 use function substr;
@@ -31,7 +29,7 @@ final class ChangelogPageFactory
     public function getPageForGeneralChangelog(): Page
     {
         $contents = $this->fetcher->fetch(APICall::CHANGELOG);
-        $page = new SimplePage('Changelog', $this->render($contents));
+        $page = Page::createSimple('Changelog', $this->render($contents));
         return $page->toPage();
     }
 
@@ -68,7 +66,7 @@ final class ChangelogPageFactory
         }
 
         $contents = str_replace("\r\n", "\n", $foundBuild->body);
-        $page = new SimplePage(sprintf($this->t->get('Changelog for %s'), $version), $this->render($contents, $mainRepo));
+        $page = Page::createSimple(sprintf($this->t->get('Changelog for %s'), $version), $this->render($contents, $mainRepo));
         return $page->toPage();
     }
 

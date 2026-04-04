@@ -4,7 +4,6 @@ namespace Cyndaron\Category;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Page\Page;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\RouteAttribute;
@@ -33,7 +32,7 @@ final class CategoryIndexPage
         $id = $queryBits->getInt(1);
         if ($id < 1)
         {
-            $page = new SimplePage('Foute aanvraag', 'Incorrecte parameter ontvangen.');
+            $page = Page::createSimple('Foute aanvraag', 'Incorrecte parameter ontvangen.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 

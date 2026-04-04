@@ -5,7 +5,6 @@ namespace Cyndaron\Category;
 
 use Cyndaron\Page\Page;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\RouteAttribute;
@@ -33,7 +32,7 @@ final class TagIndexPage
         $tag = $queryBits->getString(2);
         if ($tag === '')
         {
-            $page = new SimplePage('Foute aanvraag', 'Lege tag ontvangen.');
+            $page = Page::createSimple('Foute aanvraag', 'Lege tag ontvangen.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 

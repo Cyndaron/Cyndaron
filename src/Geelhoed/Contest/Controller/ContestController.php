@@ -29,7 +29,6 @@ use Cyndaron\Geelhoed\PageManagerTabs;
 use Cyndaron\Geelhoed\Sport\SportRepository;
 use Cyndaron\Page\Page;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
 use Cyndaron\Payment\Currency;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
@@ -122,7 +121,7 @@ final class ContestController
         $contest = $this->contestRepository->fetchById($id);
         if ($contest === null)
         {
-            $page = new SimplePage('Onbekende wedstrijd', 'Kon de wedstrijd niet vinden');
+            $page = Page::createSimple('Onbekende wedstrijd', 'Kon de wedstrijd niet vinden');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
@@ -140,7 +139,7 @@ final class ContestController
         $contest = $this->contestRepository->fetchById($id);
         if ($contest === null)
         {
-            $page = new SimplePage('Onbekende wedstrijd', 'Kon de wedstrijd niet vinden');
+            $page = Page::createSimple('Onbekende wedstrijd', 'Kon de wedstrijd niet vinden');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
@@ -148,7 +147,7 @@ final class ContestController
         $member = $this->memberRepository->fetchById($memberId);
         if ($member === null)
         {
-            $page = new SimplePage('Onbekend lid', 'Kon het lid niet vinden.');
+            $page = Page::createSimple('Onbekend lid', 'Kon het lid niet vinden.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
         $controlledMemberIds = array_map(static function(Member $member)
@@ -157,14 +156,14 @@ final class ContestController
         }, $this->fetchMembersByLoggedInUser($userSession));
         if (!in_array($memberId, $controlledMemberIds, true))
         {
-            $page = new SimplePage('Fout', 'U mag dit lid niet beheren.');
+            $page = Page::createSimple('Fout', 'U mag dit lid niet beheren.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_FORBIDDEN);
         }
 
         $graduation = $graduationRepository->fetchById($post->getInt('graduationId'));
         if ($graduation === null)
         {
-            $page = new SimplePage('Fout', 'Ongeldige band/kyu');
+            $page = Page::createSimple('Fout', 'Ongeldige band/kyu');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_FORBIDDEN);
         }
 
@@ -209,7 +208,7 @@ final class ContestController
 
         if (empty($molliePayment->id))
         {
-            $page = new SimplePage('Fout bij inschrijven', 'Betaling niet gevonden!');
+            $page = Page::createSimple('Fout bij inschrijven', 'Betaling niet gevonden!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
@@ -837,29 +836,29 @@ final class ContestController
 
         if (!in_array($memberId, $memberIds, true))
         {
-            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'U kunt deze judoka niet beheren!'), status:  Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse(Page::createSimple('Fout', 'U kunt deze judoka niet beheren!'), status:  Response::HTTP_BAD_REQUEST);
         }
         $member = $this->memberRepository->fetchById($memberId);
         if ($member === null)
         {
-            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Lid niet gevonden!'), status:  Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse(Page::createSimple('Fout', 'Lid niet gevonden!'), status:  Response::HTTP_NOT_FOUND);
         }
 
         $contest = $this->contestRepository->fetchById($contestId);
         if ($contest === null)
         {
-            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Wedstrijd niet gevonden!'), status:  Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse(Page::createSimple('Fout', 'Wedstrijd niet gevonden!'), status:  Response::HTTP_NOT_FOUND);
         }
 
         $contestMember = $this->contestMemberRepository->fetchByContestAndMember($contest, $member);
         if ($contestMember !== null)
         {
-            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Deze judoka is al ingeschreven!'), status:  Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse(Page::createSimple('Fout', 'Deze judoka is al ingeschreven!'), status:  Response::HTTP_NOT_FOUND);
         }
 
         if (strtotime($contest->registrationDeadline) < time())
         {
-            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Voor deze wedstrijd kan niet meer worden ingeschreven!'), status:  Response::HTTP_BAD_REQUEST);
+            return $this->pageRenderer->renderResponse(Page::createSimple('Fout', 'Voor deze wedstrijd kan niet meer worden ingeschreven!'), status:  Response::HTTP_BAD_REQUEST);
         }
 
         $subscribePage = new SubscribePage($contest, $member, $graduationRepository, $this->memberRepository);
@@ -965,14 +964,14 @@ final class ContestController
         $user = $userRepository->fetchById($userId);
         if ($user === null)
         {
-            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Gebruiker bestaat niet!'), status:  Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse(Page::createSimple('Fout', 'Gebruiker bestaat niet!'), status:  Response::HTTP_NOT_FOUND);
         }
 
         $memberId = $post->getInt('memberId');
         $member = $this->memberRepository->fetchById($memberId);
         if ($member === null)
         {
-            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Lid bestaat niet!'), status:  Response::HTTP_NOT_FOUND);
+            return $this->pageRenderer->renderResponse(Page::createSimple('Fout', 'Lid bestaat niet!'), status:  Response::HTTP_NOT_FOUND);
         }
 
         $db->executeQuery('INSERT INTO geelhoed_users_members(`userId`, `memberId`) VALUES(?, ?)', [$userId, $memberId]);

@@ -11,7 +11,6 @@ namespace Cyndaron\Error;
 
 use Cyndaron\Page\Page;
 use Cyndaron\Page\Pageable;
-use Cyndaron\Page\SimplePage;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -19,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ErrorPage implements Pageable
 {
-    private readonly SimplePage $page;
+    private readonly Page $page;
     public readonly int $status;
     /** @var array<string, string> */
     public readonly array $headers;
@@ -36,7 +35,7 @@ class ErrorPage implements Pageable
         int $status = Response::HTTP_INTERNAL_SERVER_ERROR,
         array $headers = []
     ) {
-        $this->page = new SimplePage($title, $body);
+        $this->page = Page::createSimple($title, $body);
         $this->status = $status;
         $this->headers = $headers;
     }

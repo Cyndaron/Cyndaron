@@ -19,7 +19,7 @@ use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\WithTextPostProcessors;
 use Cyndaron\Page\Module\WithPageProcessors;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\PageManager\PageManagerTab;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\UrlInfo;
@@ -68,7 +68,7 @@ final class Kernel
         set_exception_handler(static function(Throwable $t) use ($logger, $pageRenderer, $translator)
         {
             $logger->error((string)$t);
-            $page = new SimplePage($translator->get('Fout'), $translator->get('Er ging iets mis bij het laden van deze pagina!'));
+            $page = Page::createSimple($translator->get('Fout'), $translator->get('Er ging iets mis bij het laden van deze pagina!'));
             $response = $pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
             $response->send();
         });
@@ -151,7 +151,7 @@ final class Kernel
                 return new JsonResponse(['error' => $error->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
-            $page = new SimplePage($translator->get('Fout'), $error->getMessage());
+            $page = Page::createSimple($translator->get('Fout'), $error->getMessage());
             return $pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         catch (Throwable $t)
@@ -173,7 +173,7 @@ final class Kernel
                 return new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
-            $page = new SimplePage($translator->get('Fout'), $translator->get('Er ging iets mis bij het laden van deze pagina!'));
+            $page = Page::createSimple($translator->get('Fout'), $translator->get('Er ging iets mis bij het laden van deze pagina!'));
             return $pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

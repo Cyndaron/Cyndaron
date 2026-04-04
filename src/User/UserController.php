@@ -6,7 +6,7 @@ namespace Cyndaron\User;
 use Cyndaron\Geelhoed\Contest\Model\Contest;
 use Cyndaron\Imaging\GdHelper;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -55,7 +55,7 @@ Uw nieuwe wachtwoord is: %s';
         $userLevel = $currentUser !== null ? $currentUser->level : UserLevel::ANONYMOUS;
         if ($userLevel < $minLevel)
         {
-            $page = new SimplePage($t->get('Fout'), $t->get('U heeft onvoldoende rechten om deze pagina te bekijken.'));
+            $page = Page::createSimple($t->get('Fout'), $t->get('U heeft onvoldoende rechten om deze pagina te bekijken.'));
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_UNAUTHORIZED);
         }
 
@@ -139,12 +139,12 @@ Uw nieuwe wachtwoord is: %s';
         }
         catch (IncorrectCredentials $e)
         {
-            $page = new SimplePage($t->get('Inloggen mislukt'), $e->getMessage());
+            $page = Page::createSimple($t->get('Inloggen mislukt'), $e->getMessage());
             return $this->pageRenderer->renderResponse($page);
         }
         catch (Exception $e)
         {
-            $page = new SimplePage($t->get('Inloggen mislukt'), $t->get('Onbekende fout: ') . $e->getMessage());
+            $page = Page::createSimple($t->get('Inloggen mislukt'), $t->get('Onbekende fout: ') . $e->getMessage());
             return $this->pageRenderer->renderResponse($page);
         }
     }
@@ -245,7 +245,7 @@ Uw nieuwe wachtwoord is: %s';
         $user = $this->userRepository->fetchById($userId);
         if ($user === null)
         {
-            $page = new SimplePage('Fout bij veranderen avatar', 'Kon gebruiker niet vinden!');
+            $page = Page::createSimple('Fout bij veranderen avatar', 'Kon gebruiker niet vinden!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
@@ -290,7 +290,7 @@ Uw nieuwe wachtwoord is: %s';
         $profile = $userSession->getProfile();
         if ($profile === null)
         {
-            return $this->pageRenderer->renderResponse(new SimplePage('Fout', 'Geen profiel gevonden!'), status:  Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->pageRenderer->renderResponse(Page::createSimple('Fout', 'Geen profiel gevonden!'), status:  Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $oldPassword = $post->getUnfilteredString('oldPassword');

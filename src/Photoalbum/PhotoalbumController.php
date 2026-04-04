@@ -6,7 +6,7 @@ namespace Cyndaron\Photoalbum;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -39,7 +39,7 @@ final class PhotoalbumController
         $id = $queryBits->getInt(1);
         if ($id < 1)
         {
-            $page = new SimplePage('Fotoalbum', 'Ongeldige parameter.');
+            $page = Page::createSimple('Fotoalbum', 'Ongeldige parameter.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
         $album = $this->photoalbumRepository->fetchById($id);
@@ -172,20 +172,20 @@ final class PhotoalbumController
         $filename = $queryBits->getString(3);
         if ($filename === '')
         {
-            $page = new SimplePage('Fout bij verwijderen foto', 'Geen bestandsnaam opgegeven!');
+            $page = Page::createSimple('Fout bij verwijderen foto', 'Geen bestandsnaam opgegeven!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
         $filename = base64_decode($filename, true);
         if ($filename === false)
         {
-            $page = new SimplePage('Fout bij verwijderen foto', 'Bestandsnaam onjuist gecodeerd!');
+            $page = Page::createSimple('Fout bij verwijderen foto', 'Bestandsnaam onjuist gecodeerd!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
         $numDeleted = PhotoRepository::deleteByAlbumAndFilename($album, $filename);
         if ($numDeleted === 0)
         {
-            $page = new SimplePage('Fout bij verwijderen foto', 'Kon de bestanden niet vinden!');
+            $page = Page::createSimple('Fout bij verwijderen foto', 'Kon de bestanden niet vinden!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 

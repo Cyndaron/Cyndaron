@@ -6,7 +6,7 @@ namespace Cyndaron\Mailform;
 use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -46,12 +46,12 @@ final class MailformController
                 throw new IncompleteData('Formulier niet gevonden!');
             }
             $this->processHelper($form, $mailFactory, $post);
-            $page = new SimplePage('Formulier verstuurd', 'Het versturen is gelukt.');
+            $page = Page::createSimple('Formulier verstuurd', 'Het versturen is gelukt.');
             return $this->pageRenderer->renderResponse($page);
         }
         catch (Exception $e)
         {
-            $page = new SimplePage('Formulier versturen mislukt', $e->getMessage());
+            $page = Page::createSimple('Formulier versturen mislukt', $e->getMessage());
             return $this->pageRenderer->renderResponse($page);
         }
     }

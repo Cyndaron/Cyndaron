@@ -80,4 +80,13 @@ class Page implements Pageable
     {
         return $this;
     }
+
+    public static function createSimple(string $title, string $body): self
+    {
+        $page = new self();
+        $page->title = $title;
+        $page->addTemplateVar('contents', $body);
+
+        return $page;
+    }
 }

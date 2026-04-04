@@ -25,7 +25,6 @@ use Cyndaron\Geelhoed\Webshop\Page\OverviewPage;
 use Cyndaron\Geelhoed\Webshop\Page\ShopPage;
 use Cyndaron\Page\Page;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -267,7 +266,7 @@ Sportschool Geelhoed";
                 'De volledige bestelling is meegegeven aan de docent.',
         };
 
-        $page = new SimplePage('Status bestelling', $status);
+        $page = Page::createSimple('Status bestelling', $status);
         return $this->pageRenderer->renderResponse($page);
     }
 
@@ -306,7 +305,7 @@ Sportschool Geelhoed";
 
         if (empty($molliePayment->id))
         {
-            $page = new SimplePage('Fout bij inschrijven', 'Betaling niet gevonden!');
+            $page = Page::createSimple('Fout bij inschrijven', 'Betaling niet gevonden!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
@@ -587,7 +586,7 @@ Sportschool Geelhoed";
             return new RedirectResponse("/webwinkel/winkelen/{$hash}");
         }
 
-        $page = new SimplePage(
+        $page = Page::createSimple(
             'Aanvraag gelukt',
             'Je aanvraag is gelukt. Je krijgt automatisch bericht zodra we je lotenaantal hebben gecheckt.'
         );

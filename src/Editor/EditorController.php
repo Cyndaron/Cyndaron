@@ -12,7 +12,7 @@ use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Menu\MenuItemRepository;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -98,7 +98,7 @@ final class EditorController
         }
         catch (\PDOException $e)
         {
-            $page = new SimplePage('Fout bij opslaan', $e->getFile() . ':' . $e->getLine() . ' ' . $e->getTraceAsString() . PHP_EOL . $e->getMessage());
+            $page = Page::createSimple('Fout bij opslaan', $e->getFile() . ':' . $e->getLine() . ' ' . $e->getTraceAsString() . PHP_EOL . $e->getMessage());
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

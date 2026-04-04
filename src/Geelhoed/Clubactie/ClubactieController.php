@@ -6,7 +6,7 @@ namespace Cyndaron\Geelhoed\Clubactie;
 use Cyndaron\Geelhoed\Webshop\Model\OrderRepository;
 use Cyndaron\Geelhoed\Webshop\WebshopController;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -48,7 +48,7 @@ final class ClubactieController
         $subscriber->email = $email;
         $this->subscriberRepository->save($subscriber);
 
-        $page = new SimplePage('Inschrijven Grote Clubactie', 'Je inschrijving is binnen. Bedankt voor je deelname!');
+        $page = Page::createSimple('Inschrijven Grote Clubactie', 'Je inschrijving is binnen. Bedankt voor je deelname!');
         return $this->pageRenderer->renderResponse($page);
     }
 

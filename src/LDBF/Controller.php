@@ -6,7 +6,7 @@ namespace Cyndaron\LDBF;
 use Cyndaron\DBAL\DatabaseError;
 use Cyndaron\Error\ErrorPage;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -67,7 +67,7 @@ final class Controller
             return $this->pageRenderer->renderErrorResponse($page);
         }
 
-        $page = new SimplePage(
+        $page = Page::createSimple(
             'Bevestig uw e-mailadres',
             'Wij hebben u een e-mail gestuurd om uw adres te bevestigen. Klik op de link in de e-mail om uw aanvraag te voltooien.'
         );
@@ -101,7 +101,7 @@ final class Controller
             throw new DatabaseError('Wegens een technisch probleem is het versturen van de e-mail niet gelukt.');
         }
 
-        $page = new SimplePage('Aanvraag verstuurd', 'Het versturen is gelukt. U krijgt nog een kopie van de aanvraag per e-mail.');
+        $page = Page::createSimple('Aanvraag verstuurd', 'Het versturen is gelukt. U krijgt nog een kopie van de aanvraag per e-mail.');
         return $this->pageRenderer->renderResponse($page);
     }
 

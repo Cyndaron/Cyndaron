@@ -5,7 +5,7 @@ namespace Cyndaron\Ticketsale\Concert;
 
 use Cyndaron\DBAL\Connection;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\RouteAttribute;
@@ -97,13 +97,13 @@ final class ConcertController
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
-            $page = new SimplePage('Fout', 'Incorrect ID!');
+            $page = Page::createSimple('Fout', 'Incorrect ID!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
         $concert = $this->concertRepository->fetchById($id);
         if ($concert === null)
         {
-            $page = new SimplePage('Fout', 'Concert bestaat niet!');
+            $page = Page::createSimple('Fout', 'Concert bestaat niet!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
@@ -117,7 +117,7 @@ final class ConcertController
         $id = $queryBits->getInt(2);
         if ($id < 1)
         {
-            $page = new SimplePage('Fout', 'Incorrect ID!');
+            $page = Page::createSimple('Fout', 'Incorrect ID!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
         $concert = $this->concertRepository->fetchById($id);

@@ -7,7 +7,7 @@ use Cyndaron\DBAL\Connection;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Menu\MenuItemRepository;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
@@ -39,7 +39,7 @@ final class StaticPageController
         $model = $this->staticPageRepository->fetchById($id);
         if ($model === null)
         {
-            $page = new SimplePage('Fout', 'Statische pagina niet gevonden.');
+            $page = Page::createSimple('Fout', 'Statische pagina niet gevonden.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
         $page = new StaticPage($model, $this->staticPageRepository, $replyRepository, $textRenderer);
@@ -83,7 +83,7 @@ final class StaticPageController
         $model = $this->staticPageRepository->fetchById($id);
         if ($model === null)
         {
-            $page = new SimplePage('Fout', 'Statische pagina niet gevonden.');
+            $page = Page::createSimple('Fout', 'Statische pagina niet gevonden.');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 

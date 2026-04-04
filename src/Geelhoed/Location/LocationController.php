@@ -6,7 +6,7 @@ namespace Cyndaron\Geelhoed\Location;
 use Cyndaron\Geelhoed\Hour\HourRepository;
 use Cyndaron\Geelhoed\Sport\SportRepository;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
+use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Routing\RouteAttribute;
@@ -38,7 +38,7 @@ final class LocationController
 
         if ($location === null)
         {
-            $page = new SimplePage('Fout bij laden locatie', 'Locatie niet gevonden!');
+            $page = Page::createSimple('Fout bij laden locatie', 'Locatie niet gevonden!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
         }
 
@@ -88,14 +88,14 @@ final class LocationController
         $age = $queryBits->getInt(2);
         if ($age <= 0)
         {
-            $page = new SimplePage('Fout bij zoeken', 'Ongeldige leeftijd opgegeven!');
+            $page = Page::createSimple('Fout bij zoeken', 'Ongeldige leeftijd opgegeven!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
         $sportId = $queryBits->getInt(3);
         $sport = $sportRepository->fetchById($sportId);
         if ($sport === null)
         {
-            $page = new SimplePage('Fout bij zoeken', 'Ongeldige sport opgegeven!');
+            $page = Page::createSimple('Fout bij zoeken', 'Ongeldige sport opgegeven!');
             return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
         }
 
