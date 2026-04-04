@@ -7,16 +7,13 @@ use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Menu\MenuItemRepository;
-use Cyndaron\Page\PageRenderer;
 use Cyndaron\Photoalbum\Photoalbum;
-use Cyndaron\Photoalbum\PhotoalbumRepository;
 use Cyndaron\Request\QueryBits;
 use Cyndaron\Request\RequestMethod;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\RichLink\RichLink;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\StaticPage\StaticPageModel;
-use Cyndaron\Url\UrlService;
 use Cyndaron\User\UserLevel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,20 +21,11 @@ use function explode;
 use function get_class;
 use function strpos;
 
-final class CategoryController
+final class CategoryAPIController
 {
     public function __construct(
-        private readonly PageRenderer $pageRenderer,
         private readonly CategoryRepository $categoryRepository,
     ) {
-    }
-
-    #[RouteAttribute('0', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    #[RouteAttribute('fotoboeken', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function viewPhotoalbumIndex(UrlService $urlService, PhotoalbumRepository $photoalbumRepository): Response
-    {
-        $page = new PhotoalbumIndexPage($urlService, $photoalbumRepository);
-        return $this->pageRenderer->renderResponse($page);
     }
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]

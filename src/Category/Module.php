@@ -41,8 +41,9 @@ final class Module implements Datatypes, Routes, UrlProvider
     {
         return [
             'category' => [
-                CategoryController::class,
+                CategoryAPIController::class,
                 CategoryIndexPage::class,
+                PhotoalbumIndexPage::class,
                 TagIndexPage::class,
             ]
         ];
