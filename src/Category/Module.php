@@ -40,7 +40,11 @@ final class Module implements Datatypes, Routes, UrlProvider
     public function routes(): array
     {
         return [
-            'category' => CategoryController::class,
+            'category' => [
+                CategoryController::class,
+                CategoryIndexPage::class,
+                TagIndexPage::class,
+            ]
         ];
     }
 

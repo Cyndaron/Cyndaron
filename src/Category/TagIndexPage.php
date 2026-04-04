@@ -4,24 +4,48 @@ declare(strict_types=1);
 namespace Cyndaron\Category;
 
 use Cyndaron\Page\Page;
+use Cyndaron\Page\PageRenderer;
+use Cyndaron\Page\SimplePage;
+use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\StaticPage\StaticPageRepository;
 use Cyndaron\Url\UrlService;
+use Cyndaron\User\UserLevel;
+use Symfony\Component\HttpFoundation\Response;
 use function in_array;
 use function strtolower;
 use function ucfirst;
 
-final class TagIndexPage extends Page
+final class TagIndexPage
 {
-    public string $template = 'Category/CategoryPage';
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+        private readonly UrlService $urlService,
+        private readonly StaticPageRepository $staticPageRepository
+    ) {
 
-    public function __construct(UrlService $urlService, StaticPageRepository $staticPageRepository, string $tag)
+    }
+
+    #[RouteAttribute('tag', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function show(QueryBits $queryBits): Response
     {
-        $this->title = ucfirst($tag);
+        $tag = $queryBits->getString(2);
+        if ($tag === '')
+        {
+            $page = new SimplePage('Foute aanvraag', 'Lege tag ontvangen.');
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
+        }
+
+        $page = new Page();
+        $page->template = 'Category/CategoryPage';
+
+        $page->title = ucfirst($tag);
 
         $tags = [];
         $pages = [];
 
-        $subs = $staticPageRepository->fetchAllByTag($tag);
+        $subs = $this->staticPageRepository->fetchAllByTag($tag);
         foreach ($subs as $sub)
         {
             $tagList = $sub->getTagList();
@@ -35,12 +59,14 @@ final class TagIndexPage extends Page
             }
         }
 
-        $this->addTemplateVars([
+        $page->addTemplateVars([
             'type' => 'tag',
             'pages' => $pages,
             'tags' => $tags,
             'viewMode' => ViewMode::Blog,
-            'urlService' => $urlService,
+            'urlService' => $this->urlService,
         ]);
+
+        return $this->pageRenderer->renderResponse($page);
     }
 }

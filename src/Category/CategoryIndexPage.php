@@ -1,44 +1,76 @@
 <?php
 namespace Cyndaron\Category;
 
+use Cyndaron\Error\ErrorPage;
 use Cyndaron\Page\Page;
+use Cyndaron\Page\PageRenderer;
+use Cyndaron\Page\SimplePage;
+use Cyndaron\Request\QueryBits;
+use Cyndaron\Request\RequestMethod;
+use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\StaticPage\StaticPageModel;
 use Cyndaron\StaticPage\StaticPageRepository;
 use Cyndaron\Url\UrlService;
+use Cyndaron\User\UserLevel;
 use Cyndaron\View\Renderer\TextRenderer;
+use Symfony\Component\HttpFoundation\Response;
 use function count;
 
-final class CategoryIndexPage extends Page
+final class CategoryIndexPage
 {
-    public string $template = 'Category/CategoryPage';
+    public function __construct(
+        private readonly PageRenderer $pageRenderer,
+        private readonly TextRenderer $textRenderer,
+        private readonly UrlService $urlService,
+        private readonly StaticPageRepository $staticPageRepository,
+        private readonly CategoryRepository $categoryRepository,
+    ) {
+    }
 
-    public function __construct(UrlService $urlService, StaticPageRepository $staticPageRepository, CategoryRepository $categoryRepository, Category $category, TextRenderer $textRenderer)
+    #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
+    public function show(QueryBits $queryBits): Response
     {
-        $this->model = $category;
-        $this->category = $categoryRepository->getFirstLinkedCategory($category);
+        $id = $queryBits->getInt(1);
+        if ($id < 1)
+        {
+            $page = new SimplePage('Foute aanvraag', 'Incorrecte parameter ontvangen.');
+            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
+        }
 
-        $this->title = $this->model->name;
+        $category = $this->categoryRepository->fetchById($id);
+        if ($category === null)
+        {
+            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Categorie niet gevonden!', Response::HTTP_NOT_FOUND));
+        }
 
-        $subs = $staticPageRepository->fetchAllByCategory($category, 'ORDER BY id DESC');
+        $page = new Page();
+        $page->title = $category->name;
+        $page->template = 'Category/CategoryPage';
+        $page->model = $category;
+        $page->category = $this->categoryRepository->getFirstLinkedCategory($category);
 
-        $this->addTemplateVars([
+        $subs = $this->staticPageRepository->fetchAllByCategory($category, 'ORDER BY id DESC');
+
+        $page->addTemplateVars([
             'type' => 'subs',
             'model' => $category,
-            'parsedDescription' => $textRenderer->render($category->description),
+            'parsedDescription' => $this->textRenderer->render($category->description),
             'viewMode' => $category->viewMode,
-            'pages' => $categoryRepository->getUnderlyingPages($category),
+            'pages' => $this->categoryRepository->getUnderlyingPages($category),
             'tags' => $this->getTags($subs),
-            'portfolioContent' => $this->getPortfolioContent($categoryRepository, $staticPageRepository),
+            'portfolioContent' => $this->getPortfolioContent($category),
             'pageImage' => $category->getImage(),
-            'urlService' => $urlService,
+            'urlService' => $this->urlService,
         ]);
+
+        return $this->pageRenderer->renderResponse($page);
     }
 
     /**
      * @param StaticPageModel[] $subs
      * @return string[]
      */
-    protected function getTags(array $subs): array
+    private function getTags(array $subs): array
     {
         $tags = [];
         foreach ($subs as $sub)
@@ -56,16 +88,16 @@ final class CategoryIndexPage extends Page
      * @throws \Exception
      * @return array<string, list<StaticPageModel>>
      */
-    protected function getPortfolioContent(CategoryRepository $categoryRepository, StaticPageRepository $staticPageRepository): array
+    private function getPortfolioContent(Category $category): array
     {
         $portfolioContent = [];
 
-        if ($this->model instanceof Category && $this->model->viewMode === ViewMode::Portfolio)
+        if ($category->viewMode === ViewMode::Portfolio)
         {
-            $subCategories = $categoryRepository->fetchAllByCategory($this->model);
+            $subCategories = $this->categoryRepository->fetchAllByCategory($category);
             foreach ($subCategories as $subCategory)
             {
-                $subs = $staticPageRepository->fetchAllByCategory($this->model, 'ORDER BY id DESC');
+                $subs = $this->staticPageRepository->fetchAllByCategory($category, 'ORDER BY id DESC');
                 $portfolioContent[$subCategory->name] = $subs;
             }
         }

@@ -5,11 +5,9 @@ namespace Cyndaron\Category;
 
 use Cyndaron\DBAL\Connection;
 use Cyndaron\DBAL\Repository\GenericRepository;
-use Cyndaron\Error\ErrorPage;
 use Cyndaron\Menu\MenuItem;
 use Cyndaron\Menu\MenuItemRepository;
 use Cyndaron\Page\PageRenderer;
-use Cyndaron\Page\SimplePage;
 use Cyndaron\Photoalbum\Photoalbum;
 use Cyndaron\Photoalbum\PhotoalbumRepository;
 use Cyndaron\Request\QueryBits;
@@ -18,10 +16,8 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\RichLink\RichLink;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\StaticPage\StaticPageModel;
-use Cyndaron\StaticPage\StaticPageRepository;
 use Cyndaron\Url\UrlService;
 use Cyndaron\User\UserLevel;
-use Cyndaron\View\Renderer\TextRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use function explode;
@@ -36,26 +32,6 @@ final class CategoryController
     ) {
     }
 
-    #[RouteAttribute('', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function view(QueryBits $queryBits, TextRenderer $textRenderer, UrlService $urlService, StaticPageRepository $staticPageRepository): Response
-    {
-        $id = $queryBits->getString(1);
-        if ($id === '' || $id < 0)
-        {
-            $page = new SimplePage('Foute aanvraag', 'Incorrecte parameter ontvangen.');
-            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
-        }
-
-        $category = $this->categoryRepository->fetchById((int)$id);
-        if ($category === null)
-        {
-            return $this->pageRenderer->renderErrorResponse(new ErrorPage('Fout', 'Categorie niet gevonden!', Response::HTTP_NOT_FOUND));
-        }
-
-        $page = new CategoryIndexPage($urlService, $staticPageRepository, $this->categoryRepository, $category, $textRenderer);
-        return $this->pageRenderer->renderResponse($page);
-    }
-
     #[RouteAttribute('0', RequestMethod::GET, UserLevel::ANONYMOUS)]
     #[RouteAttribute('fotoboeken', RequestMethod::GET, UserLevel::ANONYMOUS)]
     public function viewPhotoalbumIndex(UrlService $urlService, PhotoalbumRepository $photoalbumRepository): Response
@@ -63,20 +39,6 @@ final class CategoryController
         $page = new PhotoalbumIndexPage($urlService, $photoalbumRepository);
         return $this->pageRenderer->renderResponse($page);
     }
-
-    #[RouteAttribute('tag', RequestMethod::GET, UserLevel::ANONYMOUS)]
-    public function viewTag(QueryBits $queryBits, UrlService $urlService, StaticPageRepository $staticPageRepository): Response
-    {
-        $tag = $queryBits->getString(2);
-        if ($tag === '')
-        {
-            $page = new SimplePage('Foute aanvraag', 'Lege tag ontvangen.');
-            return $this->pageRenderer->renderResponse($page, status: Response::HTTP_BAD_REQUEST);
-        }
-        $page = new TagIndexPage($urlService, $staticPageRepository, $tag);
-        return $this->pageRenderer->renderResponse($page);
-    }
-
 
     #[RouteAttribute('add', RequestMethod::POST, UserLevel::ADMIN, isApiMethod: true)]
     public function add(RequestParameters $post): JsonResponse
