@@ -143,13 +143,6 @@ final class Router
         $module = $queryBits->getString(0);
         $action = $queryBits->getString(1);
 
-        $controllers = $this->moduleRegistry->controllers;
-
-        if (!array_key_exists($module, $controllers))
-        {
-            return $this->sendNotFound($isApiCall);
-        }
-
         $userSession = $this->dic->get(UserSession::class);
         $redirect = $this->getLoginRedirect($queryBits, $userSession, $requestUri);
         if ($redirect !== null)
@@ -170,9 +163,6 @@ final class Router
         {
             $this->dic->add($profile);
         }
-
-        $classname = $controllers[$module];
-        $controller = $this->dic->createClassWithDependencyInjection($classname);
 
         $requestMethod = RequestMethod::tryFrom($request->getRealMethod());
         if ($requestMethod === null)
@@ -209,6 +199,7 @@ final class Router
         }
 
         $userRepository = $this->dic->get(UserRepository::class);
+        $controller = $this->dic->createClassWithDependencyInjection($route->className);
         return $this->callRoute($controller, $route, $userSession, $userRepository, $requestUri);
     }
 

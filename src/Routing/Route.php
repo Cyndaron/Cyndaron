@@ -12,7 +12,11 @@ use Cyndaron\User\UserLevel;
 
 final class Route
 {
+    /**
+     * @param class-string $className
+     */
     public function __construct(
+        public readonly string $className,
         public readonly string $function,
         public readonly int $level = UserLevel::ADMIN,
         public readonly string|null $right = null,

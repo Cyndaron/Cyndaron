@@ -23,9 +23,6 @@ use function Safe\class_implements;
 
 final class ModuleRegistry
 {
-    /** @var array<string, class-string> */
-    public array $controllers = [];
-
     /** @var array<string, array<string, array<string, array<int, Route>>>> */
     public array $routes = [];
 
@@ -66,7 +63,6 @@ final class ModuleRegistry
      */
     public function addController(string $module, string $className): void
     {
-        $this->controllers[$module] = $className;
         $rc = new ReflectionClass($className);
         foreach ($rc->getMethods() as $method)
         {
@@ -75,6 +71,7 @@ final class ModuleRegistry
                 /** @var RouteAttribute $instance */
                 $instance = $attribute->newInstance();
                 $route = new Route(
+                    $className,
                     $method->getName(),
                     $instance->level,
                     $instance->right,
