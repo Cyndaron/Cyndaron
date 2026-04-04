@@ -16,7 +16,6 @@ final class Module implements Routes
             'menu' => \Cyndaron\Menu\MenuController::class,
             'menu-editor' => \Cyndaron\Menu\MenuEditorController::class,
             'pagemanager' => \Cyndaron\PageManager\PageManagerController::class,
-            'system' => \Cyndaron\System\SystemController::class,
         ];
     }
 }

@@ -203,6 +203,7 @@ final class Kernel
         $registry = new ModuleRegistry();
         $modules = [
             \Cyndaron\Base\Module::class,
+            \Cyndaron\System\Module::class,
             \Cyndaron\Migration\Module::class,
             \Cyndaron\User\Module::class,
             \Cyndaron\View\Module::class,
