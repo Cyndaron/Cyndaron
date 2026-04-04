@@ -53,6 +53,7 @@ use function Safe\error_log;
 use function set_exception_handler;
 use function str_starts_with;
 use function assert;
+use function is_array;
 
 final class Kernel
 {
@@ -222,9 +223,19 @@ final class Kernel
 
             if ($module instanceof Routes)
             {
-                foreach ($module->routes() as $path => $controller)
+                foreach ($module->routes() as $path => $controllers)
                 {
-                    $registry->addController($path, $controller);
+                    if (is_array($controllers))
+                    {
+                        foreach ($controllers as $controller)
+                        {
+                            $registry->addController($path, $controller);
+                        }
+                    }
+                    else
+                    {
+                        $registry->addController($path, $controllers);
+                    }
                 }
             }
             if ($module instanceof Datatypes)

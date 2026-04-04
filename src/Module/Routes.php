@@ -9,7 +9,7 @@ interface Routes
      * Additional routes in the form of
      * ['route' => Controller::class]
      *
-     * @return array<string, class-string>
+     * @return array<string, class-string|class-string[]>
      */
     public function routes(): array;
 }
