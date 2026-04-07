@@ -13,7 +13,7 @@
                 @php /** @var \Cyndaron\Menu\MenuItemRepository $menuItemRepository*/ @endphp
                 @foreach ($menuItems as $menuitem)
                     @if ($menuitem->isCategoryDropdown())
-                        @include('View/Widget/MenuDropdown', ['title' => $menuitem->getTitle($urlService), 'icon' => '', 'items' => $menuItemRepository->getSubmenu($menuitem), 'urlService' => $urlService])
+                        @include('View/Widget/MenuDropdown', ['title' => $menuitem->getTitle($urlService), 'icon' => '', 'isImage' => $menuitem->isImage, 'items' => $menuItemRepository->getSubmenu($menuitem), 'urlService' => $urlService])
                     @else
                         <li class="nav-item @if ($urlService->isCurrentPage($menuitem->getLink()))active @endif @if ($menuitem->isImage) nav-item-image @endif">
                             @if ($menuitem->isImage)

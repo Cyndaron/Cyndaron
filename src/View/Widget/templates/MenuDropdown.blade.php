@@ -1,7 +1,14 @@
-@php /** @var \Cyndaron\Url\UrlService $urlService */ @endphp
+@php
+/** @var \Cyndaron\Url\UrlService $urlService */
+$isImage ??= false;
+@endphp
 <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        @if (!empty($icon)) @include('View/Widget/Icon', ['type' => $icon]) @endif {{ $title }}
+        @if ($isImage)
+            <img src="{{ $title }}"/>
+        @else
+            @if (!empty($icon)) @include('View/Widget/Icon', ['type' => $icon]) @endif {{ $title }}
+        @endif
     </a>
     <ul class="dropdown-menu">
         @php /** @var \Cyndaron\Util\Link[] $items */ @endphp
