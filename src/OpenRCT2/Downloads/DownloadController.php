@@ -70,7 +70,13 @@ final class DownloadController
         $factory = new ChangelogPageFactory(new APIFetcher(), $this->t);
         if ($queryBits->hasIndex(2))
         {
-            $buildType = BuildType::from($queryBits->getString(2));
+            $buildType = BuildType::tryFrom($queryBits->getString(2));
+            if ($buildType === null)
+            {
+                $errorPage = new ErrorPage($this->t->get('Fout'), 'Not a valid download type!', Response::HTTP_BAD_REQUEST);
+                return $this->pageRenderer->renderErrorResponse($errorPage);
+            }
+
             $version = preg_replace('/[^0-9a-z\.\-]/', '', $queryBits->getString(3));
             assert($version !== null);
             $response = $factory->getPageForSpecificChangelog($buildType, $version);
