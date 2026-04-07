@@ -2,7 +2,7 @@
 /** @var \Cyndaron\Url\UrlService $urlService */
 $isImage ??= false;
 @endphp
-<li class="nav-item dropdown">
+<li class="nav-item dropdown @if ($isImage) nav-item-image @endif">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         @if ($isImage)
             <img src="{{ $title }}"/>
