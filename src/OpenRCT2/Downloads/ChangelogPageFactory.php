@@ -29,8 +29,7 @@ final class ChangelogPageFactory
     public function getPageForGeneralChangelog(): Page
     {
         $contents = $this->fetcher->fetch(APICall::CHANGELOG);
-        $page = Page::createSimple('Changelog', $this->render($contents));
-        return $page->toPage();
+        return Page::createSimple('Changelog', $this->render($contents));
     }
 
     public function getPageForSpecificChangelog(BuildType $buildType, string $version): Page
@@ -62,12 +61,11 @@ final class ChangelogPageFactory
         if ($foundBuild === null)
         {
             $page = new ErrorPage($this->t->get('Version not found!'), sprintf($this->t->get("Could not find version %s!"), $version));
-            return $page->toPage();
+            return $page->page;
         }
 
         $contents = str_replace("\r\n", "\n", $foundBuild->body);
-        $page = Page::createSimple(sprintf($this->t->get('Changelog for %s'), $version), $this->render($contents, $mainRepo));
-        return $page->toPage();
+        return Page::createSimple(sprintf($this->t->get('Changelog for %s'), $version), $this->render($contents, $mainRepo));
     }
 
     private function render(string $contents, string $mainRepo = 'OpenRCT2/OpenRCT2'): string

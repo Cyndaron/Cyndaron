@@ -10,15 +10,14 @@ declare(strict_types=1);
 namespace Cyndaron\Error;
 
 use Cyndaron\Page\Page;
-use Cyndaron\Page\Pageable;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Makes it easy to return a simple error page from a controller method.
  */
-class ErrorPage implements Pageable
+final class ErrorPage
 {
-    private readonly Page $page;
+    public readonly Page $page;
     public readonly int $status;
     /** @var array<string, string> */
     public readonly array $headers;
@@ -38,10 +37,5 @@ class ErrorPage implements Pageable
         $this->page = Page::createSimple($title, $body);
         $this->status = $status;
         $this->headers = $headers;
-    }
-
-    public function toPage(): Page
-    {
-        return $this->page->toPage();
     }
 }

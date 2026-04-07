@@ -48,13 +48,13 @@ final class PageRenderer
      * @param array<string, mixed> $vars
      * @param array<string, string> $headers
      */
-    public function renderResponse(Pageable $page, array $vars = [], int $status = 200, array $headers = []): Response
+    public function renderResponse(Page $page, array $vars = [], int $status = 200, array $headers = []): Response
     {
-        return new Response($this->render($page->toPage(), $vars), $status, $headers);
+        return new Response($this->render($page, $vars), $status, $headers);
     }
 
     public function renderErrorResponse(ErrorPage $errorPage): Response
     {
-        return $this->renderResponse($errorPage, status: $errorPage->status, headers: $errorPage->headers);
+        return $this->renderResponse($errorPage->page, status: $errorPage->status, headers: $errorPage->headers);
     }
 }

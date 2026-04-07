@@ -14,7 +14,7 @@ use function array_merge;
 use function assert;
 use function is_array;
 
-class Page implements Pageable
+class Page
 {
     public string $title = '';
 
@@ -74,11 +74,6 @@ class Page implements Pageable
     public function getTemplateVar(string $name): mixed
     {
         return $this->templateVars[$name] ?? null;
-    }
-
-    public function toPage(): Page
-    {
-        return $this;
     }
 
     public static function createSimple(string $title, string $body): self
