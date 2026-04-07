@@ -19,9 +19,9 @@
 @endif
 @if ($build->signedWithSignPath)
     <div class="alert alert-info">
-        {{ $t->get('Free code signing provided by <a href="https://about.signpath.io/">SignPath.io</a>, certificate by <a href="https://signpath.org/">SignPath Foundation</a>.') }}<br><br>
+        {!! $t->get('Free code signing provided by <a href="https://about.signpath.io/">SignPath.io</a>, certificate by <a href="https://signpath.org/">SignPath Foundation</a>.') !!}<br><br>
 
-        {{ $t->get('For more details, see our <a href="/code-signing-policy">Code signing policy</a>.') }}
+        {!! $t->get('For more details, see our <a href="/code-signing-policy">Code signing policy</a>.') !!}
     </div>
 @endif
 @if ($hasOtherArtifacts)
