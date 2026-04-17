@@ -19,6 +19,7 @@ use Cyndaron\View\Template\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Exception\RfcComplianceException;
 
 final class Controller
 {
@@ -42,6 +43,14 @@ final class Controller
         {
             throw new IncompleteData('U heeft uw e-mailadres niet of niet goed ingevuld. Klik op Vorige om het te herstellen.');
         }
+        try
+        {
+            $toAddress = new Address($requesterMail);
+        }
+        catch (RfcComplianceException)
+        {
+            throw new IncompleteData('U heeft een ongeldig e-mailadres ingevuld. Klik op Vorige om het te herstellen.');
+        }
 
         $mailBody = $this->mailformRenderer->renderMailBody($post, $this->templateRenderer);
         $request = new Request();
@@ -54,7 +63,7 @@ final class Controller
         $confirmationLink = "{$httpRequest->getSchemeAndHttpHost()}/ldbf/confirm/{$request->id}/{$request->secretCode}";
 
         $mail = $this->mailFactory->createMailWithDefaults(
-            new Address($request->email),
+            $toAddress,
             'Bevestiging uw e-mailadres',
             "Om uw aanvraag te voltooien, klikt u op de volgende link: {$confirmationLink}",
             "Om uw aanvraag te voltooien, klikt u op de volgende link: <a href=\"{$confirmationLink}\">{$confirmationLink}</a>"
