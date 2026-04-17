@@ -20,6 +20,9 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Exception\RfcComplianceException;
+use function strlen;
+use function str_contains;
+use function str_starts_with;
 
 final class Controller
 {
@@ -50,6 +53,24 @@ final class Controller
         catch (RfcComplianceException)
         {
             throw new IncompleteData('U heeft een ongeldig e-mailadres ingevuld. Klik op Vorige om het te herstellen.');
+        }
+
+        $initials = $post->getUnfilteredString('voorletters');
+        if (strlen($initials) > 10 || str_contains($initials, 'http:') || str_contains($initials, 'https:'))
+        {
+            throw new IncompleteData('Ongeldige tekens in voornaamveld! Klik op Vorige om het te herstellen.');
+        }
+
+        $dateOfBirth = $post->getUnfilteredString('geboortedatum');
+        if (strlen($dateOfBirth) > 20)
+        {
+            throw new IncompleteData('Ongeldige tekens in veld geboortedatum! Klik op Vorige om het te herstellen.');
+        }
+
+        $telephone = $post->getUnfilteredString('telefoon');
+        if (str_starts_with($telephone, '+1-'))
+        {
+            throw new IncompleteData('Ongeldige tekens in veld voor telefoonnummer! Klik op Vorige om het te herstellen.');
         }
 
         $mailBody = $this->mailformRenderer->renderMailBody($post, $this->templateRenderer);
