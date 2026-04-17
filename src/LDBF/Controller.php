@@ -85,7 +85,7 @@ final class Controller
 
         $mail = $this->mailFactory->createMailWithDefaults(
             $toAddress,
-            'Bevestiging uw e-mailadres',
+            'Bevestig uw e-mailadres',
             "Om uw aanvraag te voltooien, klikt u op de volgende link: {$confirmationLink}",
             "Om uw aanvraag te voltooien, klikt u op de volgende link: <a href=\"{$confirmationLink}\">{$confirmationLink}</a>"
         );
