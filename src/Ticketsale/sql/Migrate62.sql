@@ -25,3 +25,6 @@ alter table ticketsale_concerts
 
 alter table ticketsale_tickettypes
     add discountPer5 bool default 0 not null after price;
+
+alter table ticketsale_tickettypes
+    add maximum int default 0 not null after discountPer5;

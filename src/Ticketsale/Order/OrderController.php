@@ -185,6 +185,10 @@ final class OrderController
             $amount = $post->getInt('tickettype-' . $ticketType->id);
             for ($i = 0; $i < $amount; $i++)
             {
+                if ($ticketType->hasMaximum() && $amount > $ticketType->maximum)
+                {
+                    throw new InvalidOrder("Voor kaartype {$ticketType->name} kunnen maximaal {$ticketType->maximum} kaarten besteld worden (bestelling is voor {$amount} kaarten).");
+                }
                 $ott = new OrderTicketTypes();
                 $ott->ticketType = $ticketType;
 

@@ -8,7 +8,7 @@
     <td>{{ $price|euro }}</td>
     <td>
         <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-decrease" data-kaartsoort="{{ $id }}">@include('View/Widget/Icon', ['type' => 'minus'])</button>
-        <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ $id }}" id="tickettype-{{ $id }}" value="0"/>
+        <input class="numTickets form-control form-control-inline" readonly="readonly" size="2" name="tickettype-{{ $id }}" id="tickettype-{{ $id }}" value="0" @if (isset($max)) max="{{ $max }}" @endif/>
         <button type="button" class="numTickets btn btn-outline-cyndaron numTickets-increase" data-kaartsoort="{{ $id }}">@include('View/Widget/Icon', ['type' => 'new'])</button>
     </td>
 </tr>

@@ -23,7 +23,14 @@ $.ajax('/api/concert/getInfo/' + concertId, {
 function increase(vak)
 {
     let element = document.getElementById(vak);
-    if (element.value < 100)
+    let max = 100;
+    const localMax = parseInt(element.getAttribute('max'));
+    if (localMax > 0)
+    {
+        max = localMax;
+    }
+
+    if (element.value < max)
     {
         element.value++;
         updateForm()

@@ -19,4 +19,11 @@ final class TicketType extends Model
     public float $price = 0.00;
     #[DatabaseField]
     public bool $discountPer5 = false;
+    #[DatabaseField]
+    public int $maximum = 0;
+
+    public function hasMaximum(): bool
+    {
+        return $this->maximum > 0;
+    }
 }
