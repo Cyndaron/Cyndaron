@@ -38,7 +38,6 @@
                 @php /** @var \Cyndaron\Ticketsale\TicketType\TicketType[] $ticketTypes */ @endphp
                 @foreach ($ticketTypes as $ticketType)
                     @php
-                    var_dump($ticketType);
                         $description = $ticketType->maximum > 0 ? "Maximaal {$ticketType->maximum} per persoon" : '';
                         $max = $ticketType->maximum > 0 ? $ticketType->maximum : null;
                     @endphp
