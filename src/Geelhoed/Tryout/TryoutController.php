@@ -105,7 +105,7 @@ class TryoutController
                     $time = DateTimeImmutable::createFromFormat(Util::SQL_DATE_TIME_FORMAT, $punt['tijd']);
                     $datetime = $date->setTime((int)$time->format('H'), (int)$time->format('i'), (int)$time->format('s'));
                 }
-                catch(Throwable)
+                catch (Throwable)
                 {
                     $datetime = null;
                 }
