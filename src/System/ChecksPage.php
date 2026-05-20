@@ -19,9 +19,9 @@ final class ChecksPage
     use SystemPageTrait;
 
     private const WRITABLE_FILES_AND_FOLDERS = [
-        '/cache',
         '/public_html/uploads',
         '/public_html/uploads/images',
+        '/var',
     ];
 
     private const UNWRITEABLE_FILES_AND_FOLDERS = [
