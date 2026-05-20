@@ -5,6 +5,7 @@ namespace Cyndaron\Geelhoed\Webshop\Page;
 
 use Cyndaron\Geelhoed\Webshop\Model\OrderItem;
 use Cyndaron\Geelhoed\Webshop\Model\OrderItemRepository;
+use Cyndaron\Geelhoed\Webshop\Model\OrderStatus;
 use Cyndaron\Geelhoed\Webshop\Model\Product;
 use Cyndaron\Geelhoed\Webshop\Model\ProductRepository;
 use Cyndaron\Page\Page;
@@ -61,6 +62,24 @@ final class ItemTotalsPage extends Page
         $totals = [];
         foreach ($orderItemRepository->fetchAll() as $orderItem)
         {
+            $include = false;
+            switch ($orderItem->order->status)
+            {
+                case OrderStatus::QUOTE:
+                case OrderStatus::PENDING_TICKET_CHECK:
+                case OrderStatus::PENDING_PAYMENT:
+                case OrderStatus::SHIPPED_FULLY:
+                    break;
+                case OrderStatus::IN_PROGRESS:
+                case OrderStatus::SHIPPED_PARTIALLY:
+                    $include = true;
+            }
+
+            if (!$include)
+            {
+                continue;
+            }
+
             if ($orderItem->product->id === Product::DONATE_TICKETS_ID)
             {
                 continue;
