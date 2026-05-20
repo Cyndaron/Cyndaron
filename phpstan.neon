@@ -10,25 +10,22 @@ parameters:
     reportMaybesInMethodSignatures: true
     reportStaticMethodSignatures: true
     strictRules:
-    		allRules: false
+        allRules: false
+        disallowedLooseComparison: false
+        booleansInConditions: false
+        uselessCast: false
+        requireParentConstructorCall: true
+        overwriteVariablesWithLoop: false
+        closureUsesThis: false
+        matchingInheritedMethodNames: true
+        numericOperandsInArithmeticOperators: true
+        strictCalls: true
+        switchConditionsMatchingType: true
+        noVariableVariables: false
+        strictArrayFilter: false
 
 includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
 
 rules:
-	- PHPStan\Rules\Classes\RequireParentConstructCallRule
-	- PHPStan\Rules\DisallowedConstructs\DisallowedImplicitArrayCreationRule
-	- PHPStan\Rules\Methods\WrongCaseOfInheritedMethodRule
-	- PHPStan\Rules\Operators\OperandInArithmeticPostDecrementRule
-	- PHPStan\Rules\Operators\OperandInArithmeticPostIncrementRule
-	- PHPStan\Rules\Operators\OperandInArithmeticPreDecrementRule
-	- PHPStan\Rules\Operators\OperandInArithmeticPreIncrementRule
-	- PHPStan\Rules\Operators\OperandsInArithmeticAdditionRule
-	- PHPStan\Rules\Operators\OperandsInArithmeticDivisionRule
-	- PHPStan\Rules\Operators\OperandsInArithmeticExponentiationRule
-	- PHPStan\Rules\Operators\OperandsInArithmeticModuloRule
-	- PHPStan\Rules\Operators\OperandsInArithmeticMultiplicationRule
-	- PHPStan\Rules\Operators\OperandsInArithmeticSubtractionRule
-	- PHPStan\Rules\StrictCalls\DynamicCallOnStaticMethodsRule
-	- PHPStan\Rules\StrictCalls\StrictFunctionCallsRule
-	- PHPStan\Rules\SwitchConditions\MatchingTypeInSwitchCaseConditionRule
+    - PHPStan\Rules\DisallowedConstructs\DisallowedImplicitArrayCreationRule

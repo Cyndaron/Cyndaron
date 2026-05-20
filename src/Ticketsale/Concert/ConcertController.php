@@ -224,7 +224,6 @@ final class ConcertController
                 }
 
                 $sheet->setCellValue("{$column}{$row}", $contents);
-                /** @phpstan-ignore-next-line (you _can_ increment a string that consists of a letter) */
                 $column++;
             }
 
