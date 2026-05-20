@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace Cyndaron\System;
 
+use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Category\CategoryRepository;
+use Cyndaron\Module\Setting;
+use Cyndaron\Module\SettingType;
 use Cyndaron\Page\Page;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Request\RequestMethod;
@@ -11,10 +14,11 @@ use Cyndaron\Request\RequestParameters;
 use Cyndaron\Routing\RouteAttribute;
 use Cyndaron\Translation\Translator;
 use Cyndaron\User\UserLevel;
-use Cyndaron\Util\BuiltinSetting;
 use Cyndaron\Util\SettingsRepository;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use function in_array;
 
 final class ConfigPage
 {
@@ -25,8 +29,20 @@ final class ConfigPage
         private readonly Translator $t,
         private readonly CategoryRepository $categoryRepository,
         private readonly SettingsRepository $sr,
+        private readonly ModuleRegistry $registry,
     ) {
 
+    }
+
+    private function getHTMLInputType(SettingType $settingType): string
+    {
+        return match ($settingType)
+        {
+            SettingType::COLOR => 'color',
+            SettingType::CHECKBOX => 'checkbox',
+            SettingType::EMAIL => 'email',
+            default => 'text',
+        };
     }
 
     #[RouteAttribute('', RequestMethod::GET, UserLevel::ADMIN)]
@@ -41,26 +57,30 @@ final class ConfigPage
 
         $page->templateVars['defaultCategory'] = $this->sr->get('defaultCategory');
 
-        $frontPageIsJumbo = (bool)(int)$this->sr->get('frontPageIsJumbo');
+        $formItems = [];
+        foreach ($this->registry->settings as $setting)
+        {
+            if (in_array($setting->code, ['menuTheme', 'defaultCategory'], true))
+            {
+                continue;
+            }
 
-        $formItems = [
-            ['name' => 'siteName', 'description' => 'Naam website', 'type' => 'text', 'value' => $this->sr->get('siteName')],
-            ['name' => 'organisation', 'description' => 'Organisatie', 'type' => 'text', 'value' => $this->sr->get(BuiltinSetting::ORGANISATION)],
-            ['name' => 'shortCode', 'description' => 'Code (3 letters)', 'type' => 'text', 'value' => $this->sr->get(BuiltinSetting::SHORT_CODE)],
-            ['name' => 'logo', 'description' => 'Websitelogo', 'type' => 'text', 'value' => $this->sr->get('logo')],
-            ['name' => 'subTitle', 'description' => 'Ondertitel', 'type' => 'text', 'value' => $this->sr->get('subTitle')],
-            ['name' => 'favicon', 'description' => 'Websitepictogram', 'type' => 'text', 'value' => $this->sr->get('favicon')],
-            ['name' => 'backgroundColor', 'description' => 'Achtergrondkleur hele pagina', 'type' => 'color', 'value' => $this->sr->get('backgroundColor')],
-            ['name' => 'menuColor', 'description' => 'Achtergrondkleur menu', 'type' => 'color', 'value' => $this->sr->get('menuColor')],
-            ['name' => 'articleColor', 'description' => 'Achtergrondkleur artikel', 'type' => 'color', 'value' => $this->sr->get('articleColor')],
-            ['name' => 'accentColor', 'description' => 'Accentkleur', 'type' => 'color', 'value' => $this->sr->get('accentColor')],
-            ['name' => 'menuBackground', 'description' => 'Achtergrondafbeelding menu', 'type' => 'text', 'value' => $this->sr->get('menuBackground')],
-            ['name' => 'frontPage', 'description' => 'Voorpagina', 'type' => 'text', 'value' => $this->sr->get('frontPage')],
-            ['name' => 'frontPageIsJumbo', 'description' => 'Jumbotron op voorpagina', 'type' => 'checkbox', 'value' => 1, 'extraAttr' => $frontPageIsJumbo ? 'checked' : ''],
-            ['name' => 'mail_logRecipient', 'description' => 'Mailadres bij fouten', 'type' => 'email', 'value' => $this->sr->get('mail_logRecipient')],
-            ['name' => 'mollieApiKey', 'description' => 'API-key voor Mollie', 'type' => 'text', 'value' => $this->sr->get('mollieApiKey')],
+            $formItem = [
+                'name' => $setting->code,
+                'description' => $setting->description,
+                'type' => $this->getHTMLInputType($setting->type),
+                'value' => $this->sr->get($setting->code),
+            ];
+            if ($setting->type === SettingType::CHECKBOX)
+            {
+                $enabled = (bool)(int)$formItem['value'];
+                $formItem['value'] = 1;
+                $formItem['extraAttr'] = $enabled ? 'checked' : '';
+            }
 
-        ];
+            $formItems[] = $formItem;
+        }
+
         $page->templateVars['formItems'] = $formItems;
 
         $page->templateVars['categories'] = $this->categoryRepository->fetchAllAndSortByName();
@@ -75,23 +95,22 @@ final class ConfigPage
     #[RouteAttribute('config', RequestMethod::POST, UserLevel::ADMIN)]
     public function routePost(RequestParameters $post, SettingsRepository $sr): Response
     {
-        $sr->set('siteName', $post->getHTML('siteName'));
-        $sr->set('organisation', $post->getHTML('organisation'));
-        $sr->set('shortCode', $post->getHTML('shortCode'));
-        $sr->set('logo', $post->getFilenameWithDirectory('logo'));
-        $sr->set('subTitle', $post->getHTML('subTitle'));
-        $sr->set('favicon', $post->getFilenameWithDirectory('favicon'));
-        $sr->set('backgroundColor', $post->getColor('backgroundColor'));
-        $sr->set('menuColor', $post->getColor('menuColor'));
-        $sr->set('menuBackground', $post->getFilenameWithDirectory('menuBackground'));
-        $sr->set('articleColor', $post->getColor('articleColor'));
-        $sr->set('accentColor', $post->getColor('accentColor'));
-        $sr->set('defaultCategory', (string)$post->getInt('defaultCategory'));
-        $sr->set('menuTheme', $post->getSimpleString('menuTheme'));
-        $sr->set('frontPage', $post->getUrl('frontPage'));
-        $sr->set('frontPageIsJumbo', (string)(int)$post->getBool('frontPageIsJumbo'));
-        $sr->set('mail_logRecipient', $post->getEmail('mail_logRecipient'));
-        $sr->set('mollieApiKey', $post->getSimpleString('mollieApiKey'));
+        foreach ($this->registry->settings as $setting)
+        {
+            $filteredValue = match($setting->type)
+            {
+                SettingType::COLOR => $post->getColor($setting->code),
+                SettingType::CHECKBOX => (string)(int)$post->getBool($setting->code),
+                SettingType::EMAIL => $post->getEmail($setting->code),
+                SettingType::FILENAME_WITH_DIRECTORY => $post->getFilenameWithDirectory($setting->code),
+                SettingType::HTML => $post->getHTML($setting->code),
+                SettingType::INTEGER => (string)$post->getInt($setting->code),
+                SettingType::SIMPLE_STRING => $post->getSimpleString($setting->code),
+                SettingType::URL => $post->getUrl($setting->code),
+            };
+            $sr->set($setting->code, $filteredValue);
+        }
+
         $sr->buildCache();
 
         // Redirect to GET

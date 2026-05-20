@@ -14,6 +14,7 @@ use Cyndaron\Logger\MultiLogger;
 use Cyndaron\Mail\MailLogger;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
+use Cyndaron\Module\Settings;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\UrlProvider;
 use Cyndaron\Module\WithTextPostProcessors;
@@ -295,6 +296,10 @@ final class Kernel
             if ($module instanceof CalendarAppointmentsProvider)
             {
                 $registry->addCalendarAppointmentsProvider($module);
+            }
+            if ($module instanceof Settings)
+            {
+                $registry->addSettings($module->settings());
             }
         }
 

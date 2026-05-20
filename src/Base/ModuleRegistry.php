@@ -6,6 +6,7 @@ namespace Cyndaron\Base;
 use Cyndaron\Calendar\CalendarAppointmentsProvider;
 use Cyndaron\DBAL\Model;
 use Cyndaron\Module\Datatype;
+use Cyndaron\Module\Setting;
 use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\TextPostProcessor;
 use Cyndaron\Module\UrlProvider;
@@ -20,6 +21,7 @@ use ReflectionClass;
 use function in_array;
 use function rtrim;
 use function Safe\class_implements;
+use function array_merge;
 
 final class ModuleRegistry
 {
@@ -55,6 +57,9 @@ final class ModuleRegistry
 
     /** @var array<class-string<Model>, Datatype> */
     public array $modelToDatatypes = [];
+
+    /** @var Setting[] */
+    public array $settings = [];
 
     /**
      * @param string $module
@@ -159,5 +164,13 @@ final class ModuleRegistry
     public function getRoute(string $module, string $action, RequestMethod $method, bool $isApiCall): Route|null
     {
         return $this->routes[$module][$action][$method->value][(int)$isApiCall] ?? null;
+    }
+
+    /**
+     * @param Setting[] $settings
+     */
+    public function addSettings(array $settings): void
+    {
+        $this->settings = array_merge($this->settings, $settings);
     }
 }

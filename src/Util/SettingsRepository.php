@@ -66,5 +66,6 @@ final class SettingsRepository
 
         $setting = $this->connection->prepare('REPLACE INTO settings(`name`, `value`) VALUES (?, ?)');
         $setting->execute([$name, $value]);
+        self::$cache[$name] = $value;
     }
 }
