@@ -91,13 +91,7 @@ final class Controller
             $order = $this->processOrder($post, $urlInfo, $mailFactory);
 
             $paymentLink = $this->getPaymentLink($order, $urlInfo->schemeAndHost);
-            $paymentLinkText = sprintf('<br><br><a href="%s" role="button" class="btn btn-primary btn-lg">Naar de betaalomgeving</a>', $paymentLink);
-            $page = Page::createSimple(
-                'Bestelling betalen',
-                'Hartelijk dank voor uw bestelling. Na betaling zullen wij deze verwerken. U kunt betalen door middel van onderstaande knop.' . $paymentLinkText,
-            );
-
-            return $this->pageRenderer->renderResponse($page);
+            return new RedirectResponse($paymentLink);
         }
         catch (Exception $e)
         {
