@@ -24,6 +24,9 @@ use Cyndaron\Geelhoed\Webshop\WebshopController;
 use Cyndaron\Module\Datatype;
 use Cyndaron\Module\Datatypes;
 use Cyndaron\Module\Routes;
+use Cyndaron\Module\Setting;
+use Cyndaron\Module\Settings;
+use Cyndaron\Module\SettingType;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\UrlProvider;
@@ -37,7 +40,7 @@ use function array_key_exists;
 use function array_merge;
 use function implode;
 
-final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, Templated, CalendarAppointmentsProvider
+final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, Templated, CalendarAppointmentsProvider, Settings
 {
     public function dataTypes(): array
     {
@@ -180,5 +183,14 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
     public function getAppointments(GenericRepository $repository): array
     {
         return array_merge($repository->fetchAll(Tryout::class), $repository->fetchAll(ContestDate::class));
+    }
+
+    public function settings(): array
+    {
+        return [
+            new Setting('geelhoed_contestMaintainerMail', SettingType::EMAIL, 'E-mail wedstrijdadministratie'),
+            new Setting('geelhoed_contestMollieApiKey', SettingType::SIMPLE_STRING, 'API-key Mollie wedstrijdrekening'),
+            new Setting('geelhoed_locationNotification', SettingType::HTML, 'Melding lesrooster'),
+        ];
     }
 }
