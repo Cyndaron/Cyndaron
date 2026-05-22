@@ -15,6 +15,10 @@ extra-body-start.php
 extra-body-end.php
 public_html/user.css
 public_html/uploads/
+# Legacy site-specific (now placed in /uploads)
+public_html/afb/
+public_html/doc/
+public_html/org/
 
 # Generated/autodownloaded
 vendor/
