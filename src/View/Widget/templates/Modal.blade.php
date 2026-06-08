@@ -1,3 +1,4 @@
+<!-- Should probably be <dialog>, but this does not seem to work with the current CSS. -->
 <div id="{{ $id }}" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog {{ $sizeClass ?? '' }}" role="document">
         <div class="modal-content">

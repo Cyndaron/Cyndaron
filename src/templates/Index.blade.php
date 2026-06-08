@@ -104,8 +104,8 @@
     </header>
 @endif
 
-<main class="container main-content-container">
-    <article class="main-content">
+<div class="container main-content-container">
+    <main class="main-content">
         <div class="page-title {{ $pageCaptionClasses }}">
             <h1>{!! $pageCaption !!}</h1>
             @if ($isAdmin)
@@ -119,8 +119,8 @@
             {!! $contents !!}
         @show
 
-    </article>
-</main>
+    </main>
+</div>
 
 @component('View/Widget/Modal', ['id' => 'confirm-dangerous', 'title' => 'Weet u het zeker?'])
     @slot('body')
