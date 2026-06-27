@@ -48,19 +48,19 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
             'member' => new Datatype(
                 singular: 'Lid',
                 plural: 'Leden',
-                pageManagerTab: PageManagerTabs::membersTab(...),
+                pageManagerTab: \Cyndaron\Geelhoed\Member\PageManagerTab::class,
                 pageManagerJS: '/src/Geelhoed/Member/js/PageManagerTab.js',
             ),
             'contest' => new Datatype(
                 singular: 'Wedstrijd',
                 plural: 'Wedstrijden',
-                pageManagerTab: PageManagerTabs::contestsTab(...),
+                pageManagerTab: \Cyndaron\Geelhoed\Contest\PageManagerTab::class,
                 pageManagerJS: '/src/Geelhoed/Contest/js/ContestManager.js',
             ),
             'sport' => new Datatype(
                 singular: 'Sport',
                 plural: 'Sporten',
-                pageManagerTab: PageManagerTabs::sportsTab(...),
+                pageManagerTab: \Cyndaron\Geelhoed\Sport\PageManagerTab::class,
                 pageManagerJS: '/src/Geelhoed/Sport/js/PageManagerTab.js',
             ),
             'tryout' => new Datatype(
@@ -68,13 +68,13 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
                 plural: 'Tryout-toernooien',
                 editorPage: EditorPage::class,
                 editorSave: EditorSave::class,
-                pageManagerTab: PageManagerTabs::tryoutTab(...),
+                pageManagerTab: \Cyndaron\Geelhoed\Tryout\PageManager\TryoutsTab::class,
                 pageManagerJS: '/src/Geelhoed/Tryout/js/PageManagerTab.js',
             ),
             'gcaSubscribers' => new Datatype(
                 singular: 'Lotenverkoper',
                 plural: 'Lotenverkopers',
-                pageManagerTab: PageManagerTabs::clubactieTab(...),
+                pageManagerTab: \Cyndaron\Geelhoed\Clubactie\PageManagerTab::class,
                 pageManagerJS: '/src/Geelhoed/Clubactie/js/PageManagerTab.js',
             ),
             'orders' => new Datatype(
@@ -95,7 +95,7 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
             'tryoutorders' => new Datatype(
                 singular: 'Tryout-orders',
                 plural: 'Tryout-orders',
-                pageManagerTab: PageManagerTabs::tryoutOrdersTab(...),
+                pageManagerTab: \Cyndaron\Geelhoed\Tryout\PageManager\OrdersTab::class,
             )
         ];
     }

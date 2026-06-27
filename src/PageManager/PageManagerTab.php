@@ -10,7 +10,8 @@ final class PageManagerTab
     public function __construct(
         public readonly string $type,
         public readonly string $name,
-        public readonly Closure|null $tabDraw,
+        /** @var Closure|class-string<PageManagerTabInterface> */
+        public readonly Closure|string $tabDraw,
         public readonly string|null $js,
     ) {
     }

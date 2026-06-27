@@ -22,6 +22,7 @@ use Cyndaron\Geelhoed\Contest\Page\OverviewPage;
 use Cyndaron\Geelhoed\Contest\Page\ParentAccountsPage;
 use Cyndaron\Geelhoed\Contest\Page\SubscribePage;
 use Cyndaron\Geelhoed\Contest\Page\SubscriptionListPage;
+use Cyndaron\Geelhoed\Contest\PageManagerTab;
 use Cyndaron\Geelhoed\Graduation\GraduationRepository;
 use Cyndaron\Geelhoed\Member\Member;
 use Cyndaron\Geelhoed\Member\MemberRepository;
@@ -287,7 +288,7 @@ final class ContestController
     }
 
     #[RouteAttribute('manageOverview', RequestMethod::GET, UserLevel::ADMIN, right: Contest::RIGHT_MANAGE)]
-    public function manageOverview(TemplateRenderer $templateRenderer, CSRFTokenHandler $tokenHandler, SportRepository $sportRepository): Response
+    public function manageOverview(PageManagerTab $pageManagerTab, QueryBits $queryBits): Response
     {
         $page = new Page();
         $page->title = 'Overzicht wedstrijden';
@@ -295,7 +296,7 @@ final class ContestController
         return $this->pageRenderer->renderResponse(
             $page,
             [
-                'contents' => PageManagerTabs::contestsTab($templateRenderer, $tokenHandler, $this->contestRepository, $this->contestDateRepository, $sportRepository)
+                'contents' => $pageManagerTab->render($queryBits),
             ]
         );
     }

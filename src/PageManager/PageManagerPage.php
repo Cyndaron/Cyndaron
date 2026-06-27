@@ -6,6 +6,7 @@ namespace Cyndaron\PageManager;
 use Closure;
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Page\Page;
+use Cyndaron\Request\QueryBits;
 use Cyndaron\Translation\Translator;
 use Cyndaron\User\User;
 use Cyndaron\User\UserRepository;
@@ -68,9 +69,17 @@ final class PageManagerPage
 
         $tab = $this->pageManagerTabs[$currentPage];
         $drawingFunction = $tab->tabDraw;
-        assert($drawingFunction instanceof Closure);
-        /** @var string $tabContents */
-        $tabContents = $dic->callClosureWithDependencyInjection($drawingFunction);
+        if ($drawingFunction instanceof Closure)
+        {
+            /** @var string $tabContents */
+            $tabContents = $dic->callClosureWithDependencyInjection($drawingFunction);
+        }
+        else
+        {
+            /** @var PageManagerTabInterface $class */
+            $class = $dic->createClassWithDependencyInjection($drawingFunction);
+            $tabContents = $class->render($dic->get(QueryBits::class));
+        }
 
         $page->addTemplateVars([
             'pageTabs' => $pageTabs,
