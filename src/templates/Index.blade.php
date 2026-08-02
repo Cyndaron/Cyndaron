@@ -23,7 +23,9 @@
     <link href="/contrib/Glyphicons/css/glyphicons.min.css?r={{ $version }}" type="text/css" rel="stylesheet"/>
     <link href="/css/lightbox.min.css?r={{ $version }}" type="text/css" rel="stylesheet"/>
     <link href="/css/cyndaron.min.css?r={{ $version }}" type="text/css" rel="stylesheet"/>
-    <link href="/user.css?r={{ $version }}" type="text/css" rel="stylesheet"/>
+    @if ($userCssModifiedTime > 0)
+        <link href="/user.css?r={{ $userCssModifiedTime }}" type="text/css" rel="stylesheet"/>
+    @endif
     @foreach ($extraCss as $extraCssScript)
         <link href="{{ $extraCssScript }}?r={{ $version }}" type="text/css" rel="stylesheet"/>
     @endforeach

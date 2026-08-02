@@ -139,6 +139,13 @@ final class PageBuilder
         $page->addTemplateVar('extraBodyClasses', $page->extraBodyClasses);
         $page->addTemplateVar('tokenHandler', $this->tokenHandler);
         $page->addTemplateVar('t', $this->translator);
+        $userCssModifiedTime = 0;
+        $userCssLocation = PUB_DIR . '/user.css';
+        if (file_exists($userCssLocation))
+        {
+            $userCssModifiedTime = filemtime($userCssLocation);
+        }
+        $page->addTemplateVar('userCssModifiedTime', $userCssModifiedTime);
 
         foreach (self::INCLUDES_MAPPING as $varName => $filename)
         {
