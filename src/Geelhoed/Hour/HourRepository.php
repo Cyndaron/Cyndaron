@@ -28,6 +28,6 @@ final class HourRepository implements RepositoryInterface
      */
     public function fetchByAgeAndSport(int $age, Sport $sport): array
     {
-        return $this->fetchAll(['minAge <= ?', '(maxAge IS NULL OR maxAge >= ?)', 'sportId = ?'], [$age, $age, $sport->id], 'ORDER BY locationId, day');
+        return $this->fetchAll(['minAge <= ?', '(maxAge IS NULL OR maxAge >= ?)', 'sportId = ?', 'deleted = 0'], [$age, $age, $sport->id], 'ORDER BY locationId, day');
     }
 }

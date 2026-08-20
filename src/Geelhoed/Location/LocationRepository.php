@@ -35,7 +35,7 @@ final class LocationRepository implements RepositoryInterface
      */
     public function getHours(Location $location, int|null $departmentId = null): array
     {
-        $hours = $this->hourRepository->fetchAll();
+        $hours = $this->hourRepository->fetchAll(['deleted = 0']);
         $filtered = array_filter($hours, function(Hour $hour) use ($location, $departmentId)
         {
             if ($hour->location->id !== $location->id)

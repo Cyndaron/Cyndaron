@@ -36,6 +36,8 @@ final class Hour extends Model
     public int $capacity;
     #[DatabaseField]
     public string $notes;
+    #[DatabaseField]
+    public bool $deleted;
 
     public function getSportName(): string
     {
