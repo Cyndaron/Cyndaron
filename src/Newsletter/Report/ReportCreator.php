@@ -89,6 +89,11 @@ class ReportCreator
 
         foreach ($messages as $message)
         {
+            if ($message->deleted)
+            {
+                continue;
+            }
+
             $messageNum = $message->msgno;
             $structure = imap_fetchstructure($this->connection, $messageNum);
 
