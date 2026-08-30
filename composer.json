@@ -33,7 +33,8 @@
         "phpoffice/phpspreadsheet": "^5.7",
         "mpdf/mpdf": "*",
         "psr/log": "^2.0",
-        "ext-intl": "*"
+        "ext-intl": "*",
+        "ext-imap": "*"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

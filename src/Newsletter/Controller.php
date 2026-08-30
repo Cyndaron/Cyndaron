@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace Cyndaron\Newsletter;
 
+use Cyndaron\Newsletter\Report\Action;
+use Cyndaron\Newsletter\Report\ReportCreator;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
@@ -30,6 +32,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use function array_udiff;
 use function base64_decode;
+use function count;
 
 class Controller
 {
@@ -45,6 +48,45 @@ class Controller
     {
         $page = new ViewSubscribersPage($tokenHandler, $this->subscriberRepository);
         return $this->pageRenderer->renderResponse($page);
+    }
+
+    #[RouteAttribute('report', RequestMethod::GET, UserLevel::ADMIN)]
+    public function report(ReportCreator $reportCreator): Response
+    {
+        $results = $reportCreator->create();
+
+        $page = new Page();
+        $page->title = 'Rapport';
+        $page->template = 'Newsletter/Report/MailReportPage';
+
+        return $this->pageRenderer->renderResponse($page, [
+            'results' => $results,
+            'resultsCount' => count($results),
+        ]);
+    }
+
+    #[RouteAttribute('reportFixAll', RequestMethod::POST, UserLevel::ADMIN)]
+    public function reportFixAll(ReportCreator $reportCreator): Response
+    {
+        $results = $reportCreator->create();
+        foreach ($results as $result)
+        {
+            switch ($result->proposedAction)
+            {
+                case Action::DELETE_ADDRESS:
+                    $this->addressHelper->delete($result->email);
+                    $reportCreator->deleteMessageByUid($result->messageUid);
+                    break;
+                case Action::UNSUBSCRIBE:
+                    $this->addressHelper->unsubscribe($result->email);
+                    $reportCreator->deleteMessageByUid($result->messageUid);
+                    break;
+                case Action::WAIT:
+                    break;
+            }
+        }
+
+        return new RedirectResponse('/newsletter/report');
     }
 
     #[RouteAttribute('compose', RequestMethod::GET, UserLevel::ADMIN)]

@@ -30,6 +30,7 @@ use function str_replace;
 use function basename;
 use function strtoupper;
 use function file_exists;
+use function filemtime;
 
 final class PageBuilder
 {
