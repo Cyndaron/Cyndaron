@@ -77,6 +77,9 @@ class Controller
                     $this->addressHelper->delete($result->email);
                     $reportCreator->deleteMessageByUid($result->messageUid);
                     break;
+                case Action::DELETE_REPORT:
+                    $reportCreator->deleteMessageByUid($result->messageUid);
+                    break;
                 case Action::UNSUBSCRIBE:
                     $this->addressHelper->unsubscribe($result->email);
                     $reportCreator->deleteMessageByUid($result->messageUid);
@@ -85,6 +88,7 @@ class Controller
                     break;
             }
         }
+        // TODO: Expunge deleted messages
 
         return new RedirectResponse('/newsletter/report');
     }

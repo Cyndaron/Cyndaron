@@ -9,4 +9,5 @@ enum Status
     case ADDRESS_FORMAT_INVALID;
     case DOMAIN_DOES_NOT_EXIST;
     case MAILBOX_FULL;
+    case OUT_OF_OFFICE;
 }
