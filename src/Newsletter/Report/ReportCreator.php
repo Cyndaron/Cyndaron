@@ -23,6 +23,7 @@ use function trim;
 use function is_object;
 use function is_string;
 use function imap_expunge;
+use function assert;
 
 class ReportCreator
 {
