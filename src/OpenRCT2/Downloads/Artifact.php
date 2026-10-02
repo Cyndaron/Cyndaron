@@ -68,11 +68,8 @@ final class Artifact
         elseif (str_contains($assetName, 'android'))
         {
             $operatingSystem = OperatingSystem::ANDROID;
-            if (str_contains($assetName, '-arm'))
-            {
-                $architecture = Architecture::ARM_64;
-                $inDefaultSelection = true;
-            }
+            $architecture = Architecture::UNIVERSAL;
+            $inDefaultSelection = true;
         }
         elseif (str_contains($assetName, 'linux') || str_ends_with($assetName, '.deb') || str_ends_with($assetName, '.rpm'))
         {
