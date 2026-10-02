@@ -7,7 +7,7 @@
 "use strict";
 
 $('.internal-link-insert').on('click', function() {
-    const target = $(this).data('target');
+    const target = $(this).data('bs-target');
     const linkButton = $(`#cke_${target} .cke_button__link`).first();
     if (linkButton.length === 0)
     {
@@ -19,13 +19,13 @@ $('.internal-link-insert').on('click', function() {
 
     setTimeout(function ()
     {
-        const href = $(`.internal-link-href[data-target=${target}]`).val();
+        const href = $(`.internal-link-href[data-bs-target=${target}]`).val();
         // After opening the dialog, the focus will be on the link field, so we can simply "paste" our value
         const linkInput = $(':focus');
         linkInput.val(href);
 
         // Set the selector for the protocol to "other", to allow for relative URLs
-        const protocolSelector = focus.parent().parent().parent().parent().parent().find('select');
+        const protocolSelector = linkInput.parent().parent().parent().parent().parent().find('select');
         protocolSelector.val('');
     }, 800);
 });
