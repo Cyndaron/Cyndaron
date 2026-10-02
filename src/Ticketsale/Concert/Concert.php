@@ -92,6 +92,6 @@ final class Concert extends Model
 
     public function getLocationName(): string
     {
-        return $this->location ? $this->location->name : $this->locationLegacy;
+        return $this->location ? "{$this->location->name}, {$this->location->city}" : $this->locationLegacy;
     }
 }
