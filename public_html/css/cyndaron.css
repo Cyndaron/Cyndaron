@@ -362,7 +362,7 @@ input[type=color].form-control {
   border-left: 0;
   border-right: 0; }
 
-.form-group {
+.form-group, .cke {
   margin-bottom: 1rem !important; }
 
 #navbarSupportedContent > *:first-child {
