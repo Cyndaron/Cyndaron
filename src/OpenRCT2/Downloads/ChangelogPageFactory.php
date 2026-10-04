@@ -74,6 +74,7 @@ final class ChangelogPageFactory
         /** @var string $contents */
         $contents = preg_replace('/([0-9].*?)\n(----+\n)/', '<h2>$1</h2>' . "\n", $contents);
         $contents = preg_replace('/```([\s\S]+?)```/', '<pre>$1</pre>' . "\n", $contents);
+        $contents = preg_replace('/`(.+?)`/', '<code>$1</code>', $contents);
         assert(is_string($contents));
 
         $lines = explode(PHP_EOL, $contents);
