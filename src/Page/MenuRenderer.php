@@ -58,11 +58,18 @@ final class MenuRenderer
     {
         $websiteName = $this->sr->get('siteName');
         $logo = $this->sr->get('logo');
+        $navbar = $websiteName;
+        if ($logo !== '')
+        {
+            $altText = $this->translator->get('Websitelogo, gebruikt als link naar de voorpagina');
+            $navbar = sprintf('<img alt="%s" src="%s"> ', $altText, $logo);
+        }
+
         $vars = [
             'isLoggedIn' => $userSession->isLoggedIn(),
             'isAdmin' => $userSession->isAdmin(),
             'inverseClass' => ($this->sr->get('menuTheme') === 'dark') ? 'navbar-dark' : 'navbar-light',
-            'navbar' => $logo !== '' ? sprintf('<img alt="" src="%s"> ', $logo) : $websiteName,
+            'navbar' => $navbar,
         ];
 
         $vars['urlService'] = $this->urlService;

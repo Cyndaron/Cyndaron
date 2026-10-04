@@ -46,4 +46,6 @@ return [
     'Dit album is leeg.' => 'This album is empty',
     'Dit album bevat 1 foto. Klik op de verkleinde foto om een vergroting te zien.' => 'This album contains 1 photo. Click the thumbnail to enlarge.',
     'Dit album bevat %d foto’s. Klik op de verkleinde foto’s om een vergroting te zien.' => 'This album contains %d photos. Click a thumbnail to enlarge.',
+
+    'Websitelogo, gebruikt als link naar de voorpagina' => 'Website logo, used as link to the front page',
 ];
