@@ -1,7 +1,15 @@
-@php /** @var \Cyndaron\OpenRCT2\Downloads\Artifact $artifact */ @endphp
+@php
+ /** @var \Cyndaron\OpenRCT2\Downloads\Artifact $artifact */
+$friendlyName = $artifact->operatingSystem->getFriendlyName();
+@endphp
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">{{ $artifact->operatingSystem->getFriendlyName() }}</h5>
+        @if ($artifact->operatingSystem != \Cyndaron\OpenRCT2\Downloads\Classification\OperatingSystem::OTHER)
+            <a href="{{ $artifact->downloadLink }}" class="card-link rct-ride-image-link">
+                <img src="{{ $artifact->operatingSystem->getImage() }}" alt="Image for {{ $friendlyName }}, leading to the download" class="rct-ride-image">
+            </a>
+        @endif
+        <h5 class="card-title">{{ $friendlyName }}</h5>
         <h6 class="card-subtitle mb-2 text-muted">
             {{ $artifact->architecture->getFriendlyName() }},
             {{ $t->get($artifact->type->getFriendlyName()) }}

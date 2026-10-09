@@ -23,5 +23,6 @@ class DownloadPage extends Page
         $newestBuild = array_shift($builds);
         $this->addTemplateVar('newestBuild', $newestBuild);
         $this->addTemplateVar('olderBuilds', $builds);
+        $this->addCss('/src/OpenRCT2/Downloads/css/downloads.css');
     }
 }

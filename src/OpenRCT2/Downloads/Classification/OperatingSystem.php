@@ -34,4 +34,16 @@ enum OperatingSystem
             self::OTHER => 5,
         };
     }
+
+    public function getImage(): string
+    {
+        return match ($this)
+        {
+            self::WINDOWS => '/src/OpenRCT2/Downloads/img/windows.png',
+            self::MACOS => '/src/OpenRCT2/Downloads/img/macos.png',
+            self::LINUX => '/src/OpenRCT2/Downloads/img/linux.png',
+            self::ANDROID => '/src/OpenRCT2/Downloads/img/android.png',
+            self::OTHER => '',
+        };
+    }
 }

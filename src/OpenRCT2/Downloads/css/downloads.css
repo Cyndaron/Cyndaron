@@ -1,0 +1,16 @@
+.rct-ride-image-link
+{
+    float: right;
+}
+
+.rct-ride-image,
+.main-content img.rct-ride-image:not(.lb-image),
+.main-content img.rct-ride-image:not(.sys)
+{
+    mask-image: url(/src/OpenRCT2/Downloads/img/feathered-border.png);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    height: 112px;
+    width: 112px;
+    padding: 0;
+}
