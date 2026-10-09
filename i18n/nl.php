@@ -43,5 +43,13 @@ return [
     'Symbols' => 'Symbolen',
     'DEB package' => 'DEB-pakket',
     'RPM package' => 'RPM-pakket',
-    '(latest)' => '(nieuwste versie)'
+    '(latest)' => '(nieuwste versie)',
+
+    'openrct2.multiplayer.serverlist' => 'Serverlijst',
+    'openrct2.multiplayer.serverlist.server' => 'Server',
+    'openrct2.multiplayer.serverlist.players' => 'Spelers',
+    'openrct2.multiplayer.serverlist.date' => 'Datum',
+    'openrct2.multiplayer.serverlist.version' => 'Versie',
+
+    'openrct2.yearmonth' => '%s, jaar %d',
 ];

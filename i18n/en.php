@@ -48,4 +48,12 @@ return [
     'Dit album bevat %d foto’s. Klik op de verkleinde foto’s om een vergroting te zien.' => 'This album contains %d photos. Click a thumbnail to enlarge.',
 
     'Websitelogo, gebruikt als link naar de voorpagina' => 'Website logo, used as link to the front page',
+
+    'openrct2.multiplayer.serverlist' => 'Server list',
+    'openrct2.multiplayer.serverlist.server' => 'Server',
+    'openrct2.multiplayer.serverlist.players' => 'Players',
+    'openrct2.multiplayer.serverlist.date' => 'Date',
+    'openrct2.multiplayer.serverlist.version' => 'Version',
+
+    'openrct2.yearmonth' => '%s, Year %d',
 ];

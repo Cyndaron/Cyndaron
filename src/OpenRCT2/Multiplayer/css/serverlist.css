@@ -1,0 +1,82 @@
+table.table.serverlist > :not(caption) > * > *
+{
+    background: #4387e3;
+    color: white;
+    font-weight: bold;
+}
+
+table.serverlist .description
+{
+    font-size: 0.8rem;
+}
+
+.rct-babyblue
+{
+    color: #8fd3f3;
+}
+
+.rct-black
+{
+    color: #172323;
+}
+
+.rct-celadon
+{
+    color: #afdbc3;
+}
+
+.rct-green
+{
+    color: #6fcf57;
+}
+
+.rct-grey
+{
+    color: #9fafaf;
+}
+
+.rct-lightpink
+{
+    color: #ffbfbf;
+}
+
+.rct-palegold
+{
+    color: #dbc787;
+}
+
+.rct-palelavender
+{
+    color: #d7c3f3;
+}
+
+.rct-palesilver
+{
+    color: #cfc3ab;
+}
+
+.rct-pearlaqua
+{
+    color: #83cfcf;
+}
+
+.rct-red
+{
+    color: #ff0700;
+}
+
+.rct-topaz
+{
+    color: #ffb76b;
+}
+
+.rct-white
+{
+    color: #eff3f3;
+}
+
+.rct-yellow
+{
+    color: #fff35f;
+}
+
