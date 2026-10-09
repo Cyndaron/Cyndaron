@@ -24,7 +24,7 @@
                     @endif
                 </td>
                 <td>{{ $server->dateFormatted }}</td>
-                <td>{{ $server->playersCurrently }} / {{ $server->playersMaximum }}</td>
+                <td>{{ $server->playersCurrently }} / {{ $server->playersMaximum }}</td>
                 <td>@if ($server->requiresPassword)🔒@endif</td>
                 <td>{{ $server->version }}</td>
             </tr>
