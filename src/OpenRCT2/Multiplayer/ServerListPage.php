@@ -24,6 +24,10 @@ use function strlen;
 use function strpos;
 use function strtolower;
 use function substr;
+use function assert;
+use function floor;
+use function sprintf;
+use function usort;
 
 final class ServerListPage
 {
@@ -170,6 +174,17 @@ final class ServerListPage
                 $jsonServer['requiresPassword']
             );
         }
+
+        usort($ret, static function(Server $a, Server $b)
+        {
+            $cmp1 = $b->version <=> $a->version;
+            if ($cmp1 !== 0)
+            {
+                return $cmp1;
+            }
+
+            return $a->name <=> $b->name;
+        });
 
         return $ret;
     }
