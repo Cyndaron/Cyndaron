@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Cyndaron\Error;
 
-use Cyndaron\Page\Page;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -17,11 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final class ErrorPage
 {
-    public readonly Page $page;
-    public readonly int $status;
-    /** @var array<string, string> */
-    public readonly array $headers;
-
     /**
      * @param string $title
      * @param string $body
@@ -29,13 +23,10 @@ final class ErrorPage
      * @param array<string, string> $headers Extra HTTP headers (optional)
      */
     public function __construct(
-        string $title,
-        string $body,
-        int $status = Response::HTTP_INTERNAL_SERVER_ERROR,
-        array $headers = []
+        public readonly string $title,
+        public readonly string $body,
+        public readonly int $status = Response::HTTP_INTERNAL_SERVER_ERROR,
+        public readonly array $headers = []
     ) {
-        $this->page = Page::createSimple($title, $body);
-        $this->status = $status;
-        $this->headers = $headers;
     }
 }

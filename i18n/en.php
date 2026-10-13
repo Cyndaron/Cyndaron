@@ -3,6 +3,7 @@ return [
     'Meer lezen…' => 'Read more…',
     'Fout' => 'Error',
     'Er ging iets mis bij het laden van deze pagina!' => 'Something went wrong while loading this page!',
+    'Pagina niet gevonden.' => 'Page not found.',
 
     'Inloggen' => 'Log in',
     'Als u inloggegevens hebt gekregen voor deze website, dan kunt u hieronder inloggen.' => 'If you recieved account data for this website, you can log in below.',

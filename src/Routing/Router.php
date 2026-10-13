@@ -5,6 +5,7 @@ namespace Cyndaron\Routing;
 
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\DBAL\Connection;
+use Cyndaron\Error\ErrorPage;
 use Cyndaron\Page\PageRenderer;
 use Cyndaron\Page\Page;
 use Cyndaron\Request\QueryBits;
@@ -65,8 +66,8 @@ final class Router
             return new JsonResponse(['error' => 'Route not found!'], Response::HTTP_NOT_FOUND);
         }
 
-        $page = Page::createSimple('Fout', 'Deze route is niet bekend.');
-        return $this->pageRenderer->renderResponse($page, status: Response::HTTP_NOT_FOUND);
+        $errorPage = new ErrorPage('Fout', 'Pagina niet gevonden.', Response::HTTP_NOT_FOUND);
+        return $this->pageRenderer->renderErrorResponse($errorPage);
     }
 
     private function getFrontpageUrl(): Url

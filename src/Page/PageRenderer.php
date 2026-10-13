@@ -5,6 +5,7 @@ namespace Cyndaron\Page;
 
 use Cyndaron\Base\ModuleRegistry;
 use Cyndaron\Error\ErrorPage;
+use Cyndaron\Translation\Translator;
 use Cyndaron\User\UserMenu;
 use Cyndaron\User\UserSession;
 use Cyndaron\View\Template\TemplateRenderer;
@@ -21,6 +22,7 @@ final class PageRenderer
         private readonly UserSession $userSession,
         private readonly Request $request,
         private readonly UserMenu $userMenu,
+        private readonly Translator $t,
     ) {
     }
 
@@ -55,6 +57,7 @@ final class PageRenderer
 
     public function renderErrorResponse(ErrorPage $errorPage): Response
     {
-        return $this->renderResponse($errorPage->page, status: $errorPage->status, headers: $errorPage->headers);
+        $page = Page::createSimple($this->t->get($errorPage->title), $this->t->get($errorPage->body));
+        return $this->renderResponse($page, status: $errorPage->status, headers: $errorPage->headers);
     }
 }

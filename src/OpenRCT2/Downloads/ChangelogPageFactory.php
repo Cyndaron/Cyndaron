@@ -60,8 +60,7 @@ final class ChangelogPageFactory
 
         if ($foundBuild === null)
         {
-            $page = new ErrorPage($this->t->get('Version not found!'), sprintf($this->t->get("Could not find version %s!"), $version));
-            return $page->page;
+            return Page::createSimple($this->t->get('Version not found!'), sprintf($this->t->get("Could not find version %s!"), $version));
         }
 
         $contents = str_replace("\r\n", "\n", $foundBuild->body);
