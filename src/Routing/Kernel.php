@@ -259,7 +259,7 @@ final class Kernel
                     }
                     if ($definition->class !== null)
                     {
-                        $registry->addDatatype($definition->class, $definition);
+                        $registry->addDatatype($dataTypeName, $definition);
                     }
                     if ($module instanceof UrlProvider)
                     {

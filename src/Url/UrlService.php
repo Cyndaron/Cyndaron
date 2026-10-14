@@ -42,7 +42,15 @@ class UrlService
     ) {
         $this->requestUri = $request->getRequestUri();
         $this->urlProviders = $registry->urlProviders;
-        $this->modelToDatatypes = $registry->modelToDatatypes;
+        $modelToDataTypes = [];
+        foreach ($registry->datatypes as $dataType)
+        {
+            /** @var class-string<Model> $modelClass */
+            $modelClass = (string)$dataType->class;
+            $modelToDataTypes[$modelClass] = $dataType;
+        }
+
+        $this->modelToDatatypes = $modelToDataTypes;
     }
 
     public function getPageTitle(Url|string $url): string
@@ -126,15 +134,24 @@ class UrlService
         return false;
     }
 
-    public function getUrlForModel(Model $model): Url
+    private function getModelToUrlClosure(Model $model): Closure|null
     {
         $datatype = $this->modelToDatatypes[$model::class] ?? null;
-        if ($datatype === null || $datatype->modelToUrl === null)
+        return $datatype?->modelToUrl;
+    }
+
+    public function modelSupportsFriendlyUrls(Model $model): bool
+    {
+        return $this->getModelToUrlClosure($model) !== null;
+    }
+
+    public function getUrlForModel(Model $model): Url
+    {
+        $closure = $this->getModelToUrlClosure($model);
+        if ($closure === null)
         {
             throw new \Exception('No url providers for this model!');
         }
-
-        $closure = $datatype->modelToUrl;
         return $closure($model);
     }
 

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Editor;
 
+use Cyndaron\Module\Datatype;
 use Cyndaron\Util\Link;
 
 final class EditorVariables
@@ -12,6 +13,7 @@ final class EditorVariables
         public readonly bool $useBackup,
         /** @var Link[] $internalLinks */
         public readonly array $internalLinks,
+        public readonly Datatype $datatype,
     ) {
     }
 }

@@ -55,8 +55,8 @@ final class ModuleRegistry
     /** @var array<string, string> */
     public array $templateRoots = [];
 
-    /** @var array<class-string<Model>, Datatype> */
-    public array $modelToDatatypes = [];
+    /** @var array<string, Datatype> */
+    public array $datatypes = [];
 
     /** @var Setting[] */
     public array $settings = [];
@@ -124,12 +124,9 @@ final class ModuleRegistry
         }
     }
 
-    /**
-     * @param class-string<Model> $modelClass
-     */
-    public function addDatatype(string $modelClass, Datatype $datatype): void
+    public function addDatatype(string $type, Datatype $datatype): void
     {
-        $this->modelToDatatypes[$modelClass] = $datatype;
+        $this->datatypes[$type] = $datatype;
     }
 
     public function addCalendarAppointmentsProvider(CalendarAppointmentsProvider $provider): void

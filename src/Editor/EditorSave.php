@@ -6,11 +6,8 @@ namespace Cyndaron\Editor;
 use Cyndaron\Category\CategoryRepository;
 use Cyndaron\Category\ModelWithCategory;
 use Cyndaron\Category\ModelWithCategoryRepository;
-use Cyndaron\FriendlyUrl\FriendlyUrlRepository;
-use Cyndaron\Menu\MenuItemRepository;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Request\RequestParameters;
-use Cyndaron\Url\Url;
-use Cyndaron\Url\UrlService;
 use Cyndaron\Util\Util;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,43 +15,12 @@ use function Safe\error_log;
 
 abstract class EditorSave
 {
-    public const TYPE = '';
-
     protected string $returnUrl = '';
 
     public const PAGE_HEADER_DIR = Util::UPLOAD_DIR . '/images/page-header';
     public const PAGE_PREVIEW_DIR = Util::UPLOAD_DIR . '/images/page-preview';
 
-    final public function updateFriendlyUrl(UrlService $urlService, MenuItemRepository $menuItemRepository, FriendlyUrlRepository $repository, int $id, string $friendlyUrl): void
-    {
-        // True if content does not support friendly URLs.
-        if ($id <= 0)
-        {
-            return;
-        }
-
-        if ($friendlyUrl !== '')
-        {
-            $unfriendlyUrl = new Url('/' . static::TYPE . '/' . $id);
-            $oldFriendlyUrl = (string)$urlService->toFriendly($unfriendlyUrl);
-            $oldFriendlyUrlObj = $repository->fetchByName($oldFriendlyUrl);
-            if ($oldFriendlyUrlObj !== null)
-            {
-                $repository->delete($oldFriendlyUrlObj);
-            }
-            $urlService->createFriendlyUrl($unfriendlyUrl, $friendlyUrl);
-            // Menu items may refer to the old friendly URL. If so, update them.
-            $menuItems = $menuItemRepository->fetchByLink($oldFriendlyUrl);
-            foreach ($menuItems as $menuItem)
-            {
-                $menuItem->link = $friendlyUrl;
-                $menuItemRepository->save($menuItem);
-            }
-        }
-        // TODO oude URL verwijderen
-    }
-
-    abstract public function save(int|null $id): int;
+    abstract public function save(int|null $id): Model|null;
 
     public function getReturnUrl(): string
     {

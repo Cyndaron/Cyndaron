@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Registration;
 
+use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
@@ -19,7 +20,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
     ) {
     }
 
-    public function save(int|null $id): int
+    public function save(int|null $id): Model
     {
         $event = $this->repository->fetchOrCreate(Event::class, $id);
         $event->name = $this->post->getHTML('titel');
@@ -50,6 +51,6 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
         assert($event->id !== null);
         $this->returnUrl = '/event/register/' . $event->id;
-        return $event->id;
+        return $event;
     }
 }

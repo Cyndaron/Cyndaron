@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\Concert;
 
+use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Location\Location;
@@ -19,7 +20,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
     ) {
     }
 
-    public function save(int|null $id): int
+    public function save(int|null $id): Model
     {
         $location = $this->repository->fetchById(Location::class, $this->post->getInt('locationId'));
         assert($location !== null);
@@ -64,9 +65,6 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
         $this->repository->save($concert);
 
-        $this->returnUrl = '/concert/order/' . $concert->id;
-
-        assert($concert->id !== null);
-        return $concert->id;
+        return $concert;
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Ticketsale\TicketType;
 
+use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
@@ -16,7 +17,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
     ) {
     }
 
-    public function save(int|null $id): int
+    public function save(int|null $id): Model|null
     {
         $ticketType = $this->repository->fetchOrCreate(TicketType::class, $id);
 
@@ -40,6 +41,6 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
         $this->returnUrl = '/pagemanager/concert';
 
-        return -1;
+        return null;
     }
 }

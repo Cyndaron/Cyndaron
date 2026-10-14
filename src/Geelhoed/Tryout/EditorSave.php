@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Tryout;
 
+use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Location\Location;
 use Cyndaron\Request\RequestParameters;
@@ -18,7 +19,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
     ) {
     }
 
-    public function save(int|null $id): int
+    public function save(int|null $id): Model
     {
         $location = $this->repository->fetchById(Location::class, $this->post->getInt('locationId'));
         assert($location !== null);
@@ -40,7 +41,6 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
         $this->returnUrl = '/pagemanager/tryout';
 
-        assert($tryout->id !== null);
-        return $tryout->id;
+        return $tryout;
     }
 }

@@ -40,7 +40,7 @@ final class Module implements Routes, Datatypes, Templated
                 pageManagerTab: Util::drawPageManagerTab(...),
                 class: Concert::class,
                 modelToUrl: function(Concert $concert)
-                { return new Url("/concert/{$concert->id}"); }
+                { return new Url("/concert/order/{$concert->id}"); }
             ),
             'ticketType' => new Datatype(
                 editorPage: TicketTypeEditorPage::class,

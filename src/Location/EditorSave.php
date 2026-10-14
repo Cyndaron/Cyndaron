@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Location;
 
+use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
@@ -16,7 +17,7 @@ class EditorSave extends \Cyndaron\Editor\EditorSave
     ) {
     }
 
-    public function save(?int $id): int
+    public function save(?int $id): Model
     {
         $location = $this->repository->fetchOrCreate(Location::class, $id);
         $location->name = $this->post->getSimpleString('name');
@@ -25,19 +26,10 @@ class EditorSave extends \Cyndaron\Editor\EditorSave
         $location->postalCode = $this->post->getSimpleString('postalCode');
         $location->city = $this->post->getSimpleString('city');
 
-        try
-        {
-            $this->repository->save($location);
-            $newId = (int)$location->id;
-            $this->userSession->addNotification('Locatie opgeslagen.');
-            $this->returnUrl = '/locaties/details/' . $newId;
-            return $newId;
-        }
-        catch (\PDOException)
-        {
-            $this->userSession->addNotification('Fout bij opslaan locatie');
-            $this->returnUrl = '/pagemanager/locations';
-            return -1;
-        }
+        $this->repository->save($location);
+        $newId = (int)$location->id;
+        $this->userSession->addNotification('Locatie opgeslagen.');
+        $this->returnUrl = '/locaties/details/' . $newId;
+        return $location;
     }
 }

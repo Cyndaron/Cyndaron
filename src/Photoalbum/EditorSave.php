@@ -4,16 +4,14 @@ declare(strict_types=1);
 namespace Cyndaron\Photoalbum;
 
 use Cyndaron\Category\CategoryRepository;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
 use Symfony\Component\HttpFoundation\Request;
-use function assert;
 
 final class EditorSave extends \Cyndaron\Editor\EditorSave
 {
-    public const TYPE = 'photoalbum';
-
     public function __construct(
         private readonly RequestParameters $post,
         private readonly Request           $request,
@@ -24,7 +22,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
     ) {
     }
 
-    public function save(int|null $id): int
+    public function save(int|null $id): Model
     {
         $photoalbum = $this->photoalbumRepository->fetchOrCreate($id);
         $photoalbum->name = $this->post->getHTML('titel');
@@ -41,8 +39,6 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
         $this->userSession->addNotification('Fotoalbum bewerkt.');
 
-        assert($photoalbum->id !== null);
-        $this->returnUrl = '/photoalbum/' . $photoalbum->id;
-        return $photoalbum->id;
+        return $photoalbum;
     }
 }

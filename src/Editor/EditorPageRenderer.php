@@ -21,6 +21,7 @@ use function trim;
 use function is_dir;
 use function array_filter;
 use function str_starts_with;
+use function is_callable;
 
 final class EditorPageRenderer
 {
@@ -30,6 +31,40 @@ final class EditorPageRenderer
         private readonly CategoryRepository $categoryRepository,
         private readonly SettingsRepository $settingsRepository,
     ) {
+    }
+
+    private function getUnfriendlyUrl(EditorPage $editorPage, EditorVariables $editorVariables): Url|null
+    {
+        if ($editorPage->model == null)
+        {
+            return null;
+        }
+
+        if (!is_callable($editorVariables->datatype->modelToUrl))
+        {
+            return null;
+        }
+
+        $closure = $editorVariables->datatype->modelToUrl;
+        return $closure($editorPage->model);
+    }
+
+    private function getFriendlyUrl(EditorPage $editorPage, EditorVariables $editorVariables): string
+    {
+        $unfriendlyUrl = $this->getUnfriendlyUrl($editorPage, $editorVariables);
+        if ($unfriendlyUrl === null)
+        {
+            return '';
+        }
+
+        $friendlyUrlCandidate = (string)$this->urlService->toFriendly($unfriendlyUrl);
+
+        if ((string)$unfriendlyUrl === $friendlyUrlCandidate)
+        {
+            return '';
+        }
+
+        return $friendlyUrlCandidate;
     }
 
     public function render(Request $request, QueryBits $queryBits, EditorPage $editorPage, EditorVariables $editorVariables): Response
@@ -45,13 +80,7 @@ final class EditorPageRenderer
         $editorPage->addScript('/vendor/ckeditor/ckeditor/ckeditor.js');
         $editorPage->addScript('/js/editor.js');
 
-        $unfriendlyUrl = new Url('/' . $editorPage::TYPE . '/' . $editorPage->id);
-        $friendlyUrl = (string)$this->urlService->toFriendly($unfriendlyUrl);
-
-        if ((string)$unfriendlyUrl === $friendlyUrl)
-        {
-            $friendlyUrl = '';
-        }
+        $friendlyUrl = $this->getFriendlyUrl($editorPage, $editorVariables);
 
         $saveUrl = sprintf($editorPage::SAVE_URL, $editorPage->id ? (string)$editorPage->id : '');
         $editorPage->templateVars['id'] = $editorPage->id;

@@ -3,16 +3,14 @@ declare(strict_types=1);
 
 namespace Cyndaron\Mailform;
 
+use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
-use function assert;
 
 final class EditorSave extends \Cyndaron\Editor\EditorSave
 {
-    public const TYPE = 'mailform';
-
     public function __construct(
         private readonly RequestParameters $post,
         private readonly ImageExtractor    $imageExtractor,
@@ -21,7 +19,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
     ) {
     }
 
-    public function save(int|null $id): int
+    public function save(int|null $id): Model
     {
         $mailform = $this->repository->fetchOrCreate(Mailform::class, $id);
         $mailform->name = $this->post->getHTML('titel');
@@ -42,7 +40,6 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
         $this->returnUrl = '/pagemanager/mailform';
 
-        assert($mailform->id !== null);
-        return $mailform->id;
+        return $mailform;
     }
 }

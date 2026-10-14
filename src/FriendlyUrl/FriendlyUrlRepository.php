@@ -6,6 +6,7 @@ namespace Cyndaron\FriendlyUrl;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\DBAL\Repository\RepositoryInterface;
 use Cyndaron\DBAL\Repository\RepositoryTrait;
+use Cyndaron\Url\Url;
 use function trim;
 
 /**
@@ -26,8 +27,8 @@ final class FriendlyUrlRepository implements RepositoryInterface
         return $this->fetch(['name = ?'], [trim($name, '/')]);
     }
 
-    public function fetchByTarget(string $target): FriendlyUrl|null
+    public function fetchByTarget(Url|string $target): FriendlyUrl|null
     {
-        return $this->fetch(['target = ?'], [$target]);
+        return $this->fetch(['target = ?'], [(string)$target]);
     }
 }

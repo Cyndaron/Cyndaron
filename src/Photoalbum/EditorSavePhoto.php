@@ -1,14 +1,13 @@
 <?php
 namespace Cyndaron\Photoalbum;
 
+use Cyndaron\DBAL\Model;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
 
 final class EditorSavePhoto extends \Cyndaron\Editor\EditorSave
 {
-    public const TYPE = 'photo';
-
     public function __construct(
         private readonly RequestParameters $post,
         private readonly ImageExtractor $imageExtractor,
@@ -17,7 +16,7 @@ final class EditorSavePhoto extends \Cyndaron\Editor\EditorSave
     ) {
     }
 
-    public function save(int|null $id): int
+    public function save(int|null $id): Model|null
     {
         $photoalbumId = $this->post->getInt('photoalbumId');
         $hash = $this->post->getAlphaNum('hash');
@@ -34,6 +33,6 @@ final class EditorSavePhoto extends \Cyndaron\Editor\EditorSave
         $this->userSession->addNotification('Bijschrift bewerkt.');
         $this->returnUrl = '/photoalbum/' . $photoalbumId;
 
-        return -1;
+        return null;
     }
 }

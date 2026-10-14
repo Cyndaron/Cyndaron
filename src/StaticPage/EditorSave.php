@@ -2,17 +2,15 @@
 namespace Cyndaron\StaticPage;
 
 use Cyndaron\Category\CategoryRepository;
+use Cyndaron\DBAL\Model;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
 use Cyndaron\User\UserSession;
 use Symfony\Component\HttpFoundation\Request;
-use function assert;
 use function trim;
 
 final class EditorSave extends \Cyndaron\Editor\EditorSave
 {
-    public const TYPE = 'sub';
-
     public function __construct(
         private readonly RequestParameters $post,
         private readonly Request           $request,
@@ -23,7 +21,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
     ) {
     }
 
-    public function save(int|null $id): int
+    public function save(int|null $id): Model
     {
         $titel = $this->post->getHTML('titel');
         $text = $this->imageExtractor->process($this->post->getHTML('artikel'));
@@ -45,14 +43,12 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
             $this->saveCategories($this->staticPageRepository, $this->categoryRepository, $model, $this->post);
 
             $this->userSession->addNotification('Pagina bewerkt.');
-            $this->returnUrl = '/sub/' . $model->id;
         }
         catch (\PDOException)
         {
             $this->userSession->addNotification('Pagina opslaan mislukt');
         }
 
-        assert($model->id !== null);
-        return $model->id;
+        return $model;
     }
 }

@@ -57,9 +57,14 @@ final class EditorController
 
         /** @var class-string<EditorPage> $class */
         $class = $registry->editorPages[$type];
+        $datatype = $registry->datatypes[$type] ?? null;
+        if ($datatype === null)
+        {
+            throw new \RuntimeException("Datatype {$type} not found!");
+        }
         $id = $queryBits->getNullableInt(2);
         $previous = $queryBits->getString(3) === 'previous';
-        $editorVariables = new EditorVariables($id, $previous, $this->getInternalLinks($registry->modelToDatatypes, $genericRepository));
+        $editorVariables = new EditorVariables($id, $previous, $this->getInternalLinks($registry->datatypes, $genericRepository), $datatype);
         $dic->add($editorVariables);
 
         /** @var EditorPage $editorPage */
@@ -68,7 +73,7 @@ final class EditorController
     }
 
     #[RouteAttribute('', RequestMethod::POST, UserLevel::LOGGED_IN)]
-    public function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry, UrlService $urlService, UserRepository $userRepository, MenuItemRepository $menuItemRepository, FriendlyUrlRepository $friendlyUrlRepository): Response
+    public function routePost(QueryBits $queryBits, DependencyInjectionContainer $dic, RequestParameters $post, User $currentUser, ModuleRegistry $registry, UrlService $urlService, UserRepository $userRepository, FriendlyUrlHelper $friendlyUrlHelper): Response
     {
         $type = $queryBits->getString(1);
         if (!array_key_exists($type, $registry->editorSaveClasses))
@@ -90,9 +95,21 @@ final class EditorController
 
             /** @var EditorSave $editorSave */
             $editorSave = $dic->createClassWithDependencyInjection($class);
-            $id = $editorSave->save($id);
-            $editorSave->updateFriendlyUrl($urlService, $menuItemRepository, $friendlyUrlRepository, $id, $post->getUrl('friendlyUrl'));
-            $returnUrl = $editorSave->getReturnUrl() ?: '/';
+            $savedModel = $editorSave->save($id);
+            $returnUrl = $editorSave->getReturnUrl();
+            if ($savedModel !== null)
+            {
+                $friendlyUrlHelper->updateFriendlyUrl($savedModel, $post->getUrl('friendlyUrl'));
+                if ($returnUrl === '')
+                {
+                    $returnUrl = (string)$urlService->getFriendlyUrlForModel($savedModel);
+                }
+            }
+
+            if (empty($returnUrl))
+            {
+                $returnUrl = '/';
+            }
 
             return new RedirectResponse($returnUrl);
         }
@@ -104,15 +121,17 @@ final class EditorController
     }
 
     /**
-     * @param array<class-string<Model>, Datatype> $modelToDatatypes
+     * @param array<string, Datatype> $modelToDatatypes
      * @return Link[]
      */
     private function getInternalLinks(array $modelToDatatypes, GenericRepository $genericRepository): array
     {
         /** @var Link[] $internalLinks */
         $internalLinks = [];
-        foreach ($modelToDatatypes as $modelClass => $datatype)
+        foreach ($modelToDatatypes as $datatype)
         {
+            /** @var class-string<Model> $modelClass */
+            $modelClass = (string)$datatype->class;
             foreach ($genericRepository->fetchAll($modelClass) as $model)
             {
                 if (!property_exists($model, 'name'))

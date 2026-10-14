@@ -1,6 +1,7 @@
 <?php
 namespace Cyndaron\Category;
 
+use Cyndaron\DBAL\Model;
 use Cyndaron\DBAL\Repository\GenericRepository;
 use Cyndaron\Imaging\ImageExtractor;
 use Cyndaron\Request\RequestParameters;
@@ -10,8 +11,6 @@ use function assert;
 
 final class EditorSave extends \Cyndaron\Editor\EditorSave
 {
-    public const TYPE = 'category';
-
     public function __construct(
         private readonly RequestParameters $post,
         private readonly Request           $request,
@@ -22,7 +21,7 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
     ) {
     }
 
-    public function save(int|null $id): int
+    public function save(int|null $id): Model
     {
         $category = $this->repository->fetchOrCreate(Category::class, $id);
         $category->name = $this->post->getHTML('titel');
@@ -36,8 +35,6 @@ final class EditorSave extends \Cyndaron\Editor\EditorSave
 
         $this->userSession->addNotification('Categorie bewerkt.');
 
-        assert($category->id !== null);
-        $this->returnUrl = '/category/' . $category->id;
-        return $category->id;
+        return $category;
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cyndaron\Editor;
 
 use Cyndaron\Category\Category;
+use Cyndaron\Module\Datatype;
 use Cyndaron\Page\Page;
 
 abstract class EditorPage extends Page
