@@ -73,37 +73,11 @@
             <input type="hidden" id="mm-id" />
             <input type="hidden" id="mm-csrf-token" />
 
-            <div class="form-group row">
-                <label for="mm-link" class="col-sm-2 col-form-label">Link:</label>
-                <div class="col-sm-10">
-                    <input class="form-control" id="mm-link">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="mm-alias" class="col-sm-2 col-form-label">Alias:</label>
-                <div class="col-sm-10">
-                    <input class="form-control" id="mm-alias">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="mm-priority" class="col-sm-2 col-form-label">Prioriteit:</label>
-                <div class="col-sm-10">
-                    <input class="form-control" id="mm-priority" type="number">
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class="col-sm-12">
-                    <input type="checkbox" class="" id="mm-isDropdown" value="1">
-                    <label class="form-check-label" for="mm-isDropdown">Dropdown</label>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-sm-12">
-                    <input type="checkbox" class="" id="mm-isImage" value="1">
-                    <label class="form-check-label" for="mm-isImage">Als afbeelding</label>
-                </div>
-            </div>
+            @include('View/Widget/Form/BasicInput', ['id' => 'mm-link', 'required' => true, 'label' => $t->get('Link')])
+            @include('View/Widget/Form/BasicInput', ['id' => 'mm-alias', 'required' => false, 'label' => $t->get('Alias')])
+            @include('View/Widget/Form/Number', ['id' => 'mm-priority', 'required' => false, 'label' => $t->get('Prioriteit')])
+            @include ('View/Widget/Form/Checkbox', ['id' => 'mm-isDropdown', 'description' => $t->get('Dropdown')])
+            @include ('View/Widget/Form/Checkbox', ['id' => 'mm-isImage', 'description' => $t->get('Als afbeelding')])
         @endslot
         @slot('footer')
             <button id="mm-edit-item-save" type="button" class="btn btn-primary">Opslaan</button>

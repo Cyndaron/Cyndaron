@@ -41,27 +41,20 @@
     @slot('body')
         <form id="pm-edit-modal-form">
             <input type="hidden" name="csrfToken" value="{{ $tokenEdit }}">
-            <div class="form-group row">
-                <label for="pm-edit-modal-name" class="col-md-3 col-form-label">Naam:</label>
-                <div class="col-md-6">
-                    <input type="text" class="form-control" id="pm-edit-modal-name" name="name" value="">
-                </div>
-            </div>
 
-            <div class="form-group row">
-                <label for="pm-edit-modal-junior-fee" class="col-md-3 col-form-label">Bedrag junioren:</label>
-                <div class="col-md-6">
+            @include('View/Widget/Form/BasicInput', ['id' => 'pm-edit-modal-name', 'name' => 'name', 'required' => true, 'label' => 'Naam'])
+
+            @component('View/Widget/Form/FormWrapper', ['id' => 'pm-edit-modal-junior-fee', 'label' => 'Bedrag junioren'])
+                @slot('right')
                     <input type="number" class="form-control" step="0.25" min="0" pattern="[0-9\.,]+" id="pm-edit-modal-junior-fee" name="juniorFee" value="">
-                </div>
-            </div>
+                @endslot
+            @endcomponent
 
-            <div class="form-group row">
-                <label for="pm-edit-modal-senior-fee" class="col-md-3 col-form-label">Bedrag senioren:</label>
-                <div class="col-md-6">
+            @component('View/Widget/Form/FormWrapper', ['id' => 'pm-edit-modal-senior-fee', 'label' => 'Bedrag senioren'])
+                @slot('right')
                     <input type="number" class="form-control" step="0.25" min="0" pattern="[0-9\.,]+" id="pm-edit-modal-senior-fee" name="seniorFee" value="">
-                </div>
-            </div>
-
+                @endslot
+            @endcomponent
         </form>
     @endslot
     @slot('footer')

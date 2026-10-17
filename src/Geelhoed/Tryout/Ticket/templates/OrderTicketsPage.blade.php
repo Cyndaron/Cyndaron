@@ -24,19 +24,22 @@
 
         <h3>Uw gegevens (verplicht):</h3>
 
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="name">Naam:</label>
-            <div class="col-sm-5"><input id="name" name="name" class="form-control" autocomplete="family-name" required /></div>
-        </div>
+        @component('View/Widget/Form/FormWrapper', ['id' => 'name', 'label' => 'Naam'])
+            @slot('right')
+                <input id="name" name="name" class="form-control" autocomplete="family-name" required />
+            @endslot
+        @endcomponent
 
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="email">E-mailadres:</label>
-            <div class="col-sm-5"><input id="email" name="email" type="email" class="form-control" autocomplete="email" required /></div>
-        </div>
+        @component('View/Widget/Form/FormWrapper', ['id' => 'email', 'label' => 'E-mailadres'])
+            @slot('right')
+                <input id="email" name="email" type="email" class="form-control" autocomplete="email" required />
+            @endslot
+        @endcomponent
 
-        <div class="form-group row">
-            <div class="col-sm-3"></div>
-            <div class="col-sm-5"><input id="verzendknop" class="btn btn-primary btn-lg" type="submit" value="Bestellen"/></div>
-        </div>
+        @component('View/Widget/Form/FormWrapper')
+            @slot('right')
+                <input id="verzendknop" class="btn btn-primary btn-lg" type="submit" value="Bestellen"/>
+            @endslot
+        @endcomponent
     </form>
 @endsection
