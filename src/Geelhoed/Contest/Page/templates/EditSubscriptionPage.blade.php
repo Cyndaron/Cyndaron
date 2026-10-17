@@ -11,6 +11,7 @@
         @endcomponent
         @include('View/Widget/Form/Number', ['id' => 'weight', 'label' => 'Gewicht', 'required' => true, 'value' => $contestMember->weight])
         @include('View/Widget/Form/Select', ['id' => 'graduationId', 'label' => 'Band', 'required' => true, 'selected' => $contestMember->graduation->id, 'options' => $graduations])
+        @include('View/Widget/Form/Textarea', ['id' => 'comments', 'label' => 'Opmerkingen', 'maxLength' => 200, 'value' => $contestMember->comments])
 
         <input type="submit" value="Opslaan" class="btn btn-primary">
     </form>

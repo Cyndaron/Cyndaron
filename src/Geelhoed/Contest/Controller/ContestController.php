@@ -757,6 +757,7 @@ final class ContestController
 
         $contestMember->weight = $post->getInt('weight');
         $contestMember->graduation = $graduation;
+        $contestMember->comments = $post->getSimpleString('comments');
         $this->contestMemberRepository->save($contestMember);
 
         $userSession->addNotification('Wijzigingen opgeslagen.');
