@@ -42,6 +42,10 @@ final class ContestantsEmailPage extends Page
             }
         }
 
+        usort($pairs, static function(array $pair1, array $pair2) {
+            return $pair1['name'] <=> $pair2['name'];
+        });
+
         $this->addTemplateVars(['emailAddressPairs' => $pairs]);
     }
 }
