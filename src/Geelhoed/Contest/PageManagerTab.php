@@ -24,7 +24,7 @@ final class PageManagerTab implements PageManagerTabInterface
 
     public function render(QueryBits $queryBits): string
     {
-        $contests = $this->contestRepository->fetchAll([], [], 'ORDER BY registrationDeadline DESC');
+        $contests = $this->contestRepository->fetchAll([], [], 'ORDER BY id DESC');
         return $this->templateRenderer->render('Geelhoed/Contest/Page/PageManagerTab', [
             'contests' => $contests,
             'contestRepository' => $this->contestRepository,
