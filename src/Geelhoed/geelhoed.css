@@ -40,4 +40,7 @@
         height: 100%;
         background-color: #cccccc; }
 
+.geelhoed-subscription-list-page .main-content {
+  overflow-x: scroll; }
+
 /*# sourceMappingURL=geelhoed.css.map */

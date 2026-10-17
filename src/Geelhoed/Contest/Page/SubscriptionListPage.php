@@ -15,6 +15,7 @@ final class SubscriptionListPage extends Page
     {
         $this->title = 'Overzicht inschrijvingen ' . $contest->name;
         $this->addScript('/src/Geelhoed/Contest/js/SubscriptionListPage.js');
+        $this->addCss('/src/Geelhoed/geelhoed.css');
         $this->addTemplateVars([
             'contest' => $contest,
             'contestDateRepository' => $contestDateRepository,
