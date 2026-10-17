@@ -30,6 +30,7 @@ use Cyndaron\Module\SettingType;
 use Cyndaron\Module\Templated;
 use Cyndaron\Module\TemplateRoot;
 use Cyndaron\Module\UrlProvider;
+use Cyndaron\Url\Url;
 use Cyndaron\User\Module\UserMenuItem;
 use Cyndaron\User\Module\UserMenuProvider;
 use Cyndaron\User\UserLevel;
@@ -70,6 +71,9 @@ final class Module implements Datatypes, Routes, UrlProvider, UserMenuProvider, 
                 editorSave: EditorSave::class,
                 pageManagerTab: \Cyndaron\Geelhoed\Tryout\PageManager\TryoutsTab::class,
                 pageManagerJS: '/src/Geelhoed/Tryout/js/PageManagerTab.js',
+                class: Tryout::class,
+                modelToUrl: function(Tryout $tryout)
+                { return new Url("/tryout/{$tryout->id}"); },
             ),
             'gcaSubscribers' => new Datatype(
                 singular: 'Lotenverkoper',
