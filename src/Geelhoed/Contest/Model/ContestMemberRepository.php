@@ -11,6 +11,7 @@ use function array_map;
 use function count;
 use function implode;
 use function reset;
+use function usort;
 
 /**
  * @implements RepositoryInterface<ContestMember>
@@ -78,7 +79,8 @@ final class ContestMemberRepository implements RepositoryInterface
         }
 
         $list = $this->fetchAll($args, [$contest->id]);
-        usort($list, static function(ContestMember $cm1, ContestMember $cm2) {
+        usort($list, static function(ContestMember $cm1, ContestMember $cm2)
+        {
             return $cm2->member->profile->dateOfBirth <=> $cm1->member->profile->dateOfBirth;
         });
         return $list;

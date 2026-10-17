@@ -10,6 +10,7 @@ use Cyndaron\User\User;
 use Cyndaron\User\UserRepository;
 use function array_map;
 use function implode;
+use function usort;
 
 final class ContestantsEmailPage extends Page
 {
@@ -42,7 +43,8 @@ final class ContestantsEmailPage extends Page
             }
         }
 
-        usort($pairs, static function(array $pair1, array $pair2) {
+        usort($pairs, static function(array $pair1, array $pair2)
+        {
             return $pair1['name'] <=> $pair2['name'];
         });
 
