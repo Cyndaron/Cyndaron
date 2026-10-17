@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cyndaron\Geelhoed\Contest\Page;
 
+use Cyndaron\Geelhoed\Contest\Model\Contest;
 use Cyndaron\Geelhoed\Contest\Model\ContestDateRepository;
 use Cyndaron\Geelhoed\Contest\Model\ContestMemberRepository;
 use Cyndaron\Geelhoed\Contest\Model\ContestRepository;
@@ -14,6 +15,7 @@ use Cyndaron\User\User;
 use function array_map;
 use function count;
 use function implode;
+use function usort;
 
 final class MyContestsPage
 {
@@ -45,7 +47,11 @@ final class MyContestsPage
             {
                 return $member->id;
             }, $controlledMembers);
-            $contests = $this->contestRepository->fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (' . implode(',', $memberIds) . '))'], [], 'ORDER BY registrationDeadline DESC');
+            $contests = $this->contestRepository->fetchAll(['id IN (SELECT contestId FROM geelhoed_contests_members WHERE memberId IN (' . implode(',', $memberIds) . '))'], [], );
+            usort($contests, function(Contest $c1, Contest $c2)
+            {
+                return $this->contestDateRepository->getFirstByContest($c2) <=> $this->contestDateRepository->getFirstByContest($c1);
+            });
             [$due, $contestMembers] = $this->contestRepository->getTotalDue($this->currentUser, $this->memberRepository);
         }
 
