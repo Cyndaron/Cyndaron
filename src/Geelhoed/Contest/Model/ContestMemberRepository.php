@@ -77,6 +77,10 @@ final class ContestMemberRepository implements RepositoryInterface
             $args[] = 'isPaid = 1';
         }
 
-        return $this->fetchAll($args, [$contest->id]);
+        $list = $this->fetchAll($args, [$contest->id]);
+        usort($list, static function(ContestMember $cm1, ContestMember $cm2) {
+            return $cm2->member->profile->dateOfBirth <=> $cm1->member->profile->dateOfBirth;
+        });
+        return $list;
     }
 }
