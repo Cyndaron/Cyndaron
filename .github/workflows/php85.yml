@@ -33,6 +33,9 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
 
+      - name: Check for packages with vulnerabities
+        run: composer audit
+
       # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
       # Docs: https://getcomposer.org/doc/articles/scripts.md
       - name: Run PHPStan
