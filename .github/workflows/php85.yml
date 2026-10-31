@@ -33,7 +33,7 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
 
-      - name: Check for packages with vulnerabities
+      - name: Check for packages with vulnerabilities
         run: composer audit
 
       # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
