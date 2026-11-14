@@ -69,6 +69,7 @@ final class ChangelogPageFactory
 
     private function render(string $contents, string $mainRepo = 'OpenRCT2/OpenRCT2'): string
     {
+        $contents = htmlentities($contents, ENT_NOQUOTES, 'UTF-8');
         // Titles
         /** @var string $contents */
         $contents = preg_replace('/([0-9].*?)\n(----+\n)/', '<h2>$1</h2>' . "\n", $contents);
